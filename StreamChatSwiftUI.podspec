@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name = "StreamChatSwiftUI"
-    spec.version = "4.5.0"
+    spec.version = "4.5.3"
     spec.summary = "StreamChat SwiftUI Components"
     spec.description = "StreamChatUI SDK offers flexible SwiftUI components able to display data provided by StreamChat SDK."
   
@@ -13,13 +13,13 @@ Pod::Spec.new do |spec|
     spec.source = { :git => "https://github.com/GetStream/stream-chat-swiftui.git" }
     spec.requires_arc = true
   
-    spec.source_files = "StreamChatSwiftUI/**/*.swift"
-    spec.exclude_files = ["StreamChatSwiftUI/**/*_Tests.swift", "StreamChatSwiftUI/**/*_Mock.swift"]
-    spec.resource_bundles = { "StreamChatSwiftUI" => ["StreamChatSwiftUI/Resources/**/*"] }
+    spec.source_files = "Sources/StreamChatSwiftUI/**/*.swift"
+    spec.exclude_files = ["Sources/StreamChatSwiftUI/**/*_Tests.swift", "Sources/StreamChatSwiftUI/**/*_Mock.swift"]
+    spec.resource_bundles = { "StreamChatSwiftUI" => ["Sources/StreamChatSwiftUI/Resources/**/*"] }
   
     spec.framework = "Foundation", "UIKit", "SwiftUI"
   
-    spec.dependency "StreamChat", "#{spec.version}"
+    spec.dependency "StreamChat", "~> 4.5.0"
     spec.dependency "Nuke", "~> 10.0"
     spec.dependency "SwiftyGif", "~> 5.0"
     spec.dependency "NukeUI", "~> 0.7.0"
