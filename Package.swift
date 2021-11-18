@@ -17,6 +17,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.5.0"),        
         .package(url: "https://github.com/kean/Nuke.git", from: "10.0.0"),
         .package(url: "https://github.com/kirualex/SwiftyGif.git", from: "5.3.0"),
         .package(url: "https://github.com/kean/NukeUI.git", from: "0.7.0")
