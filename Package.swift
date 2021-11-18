@@ -8,7 +8,7 @@ let package = Package(
     name: "StreamChatSwiftUI",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v14), .macOS(.v10_16)
+        .iOS(.v14), .macOS(.v11)
     ],
     products: [
         .library(
