@@ -325,7 +325,7 @@
 		8465FBAB2746873A00AF091E = {
 			isa = PBXGroup;
 			children = (
-				8465FBB72746873A00AF091E /* StreamChatSwiftUI */,
+				8465FBB72746873A00AF091E /* Sources */,
 				8465FBC12746873A00AF091E /* StreamChatSwiftUITests */,
 				8465FCBD27468B6900AF091E /* DemoAppSwiftUI */,
 				8465FBB62746873A00AF091E /* Products */,
@@ -343,7 +343,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8465FBB72746873A00AF091E /* StreamChatSwiftUI */ = {
+		8465FBB72746873A00AF091E /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				8465FC24274689DF00AF091E /* README.md */,
@@ -368,7 +368,7 @@
 				8465FBB82746873A00AF091E /* StreamChatSwiftUI.h */,
 				8465FBE3274689DE00AF091E /* Info.plist */,
 			);
-			path = StreamChatSwiftUI;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		8465FBC12746873A00AF091E /* StreamChatSwiftUITests */ = {
@@ -782,7 +782,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./bootstrap.sh\"\nfi\n";
+			shellScript = "if which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config Sources/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./bootstrap.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1094,7 +1094,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = StreamChatSwiftUI/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1127,7 +1127,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = StreamChatSwiftUI/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
