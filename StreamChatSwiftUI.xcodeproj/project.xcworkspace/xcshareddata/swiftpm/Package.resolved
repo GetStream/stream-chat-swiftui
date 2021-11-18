@@ -1,0 +1,61 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Gifu",
+        "repositoryURL": "https://github.com/kaishin/Gifu",
+        "state": {
+          "branch": null,
+          "revision": "51f2eab32903e336f590c013267cfa4d7f8b06c4",
+          "version": "3.3.1"
+        }
+      },
+      {
+        "package": "Nuke",
+        "repositoryURL": "https://github.com/kean/Nuke.git",
+        "state": {
+          "branch": null,
+          "revision": "472a03c15f39592007d94f25abe554350bc8aa2b",
+          "version": "10.5.1"
+        }
+      },
+      {
+        "package": "NukeUI",
+        "repositoryURL": "https://github.com/kean/NukeUI.git",
+        "state": {
+          "branch": null,
+          "revision": "08e953d8d80b409bebcd95ba0635fdd748934ce0",
+          "version": "0.7.0"
+        }
+      },
+      {
+        "package": "Starscream",
+        "repositoryURL": "https://github.com/daltoniam/Starscream.git",
+        "state": {
+          "branch": null,
+          "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
+          "version": "4.0.4"
+        }
+      },
+      {
+        "package": "StreamChat",
+        "repositoryURL": "https://github.com/GetStream/stream-chat-swift.git",
+        "state": {
+          "branch": "main",
+          "revision": "2f2138ffd0cf85390c77363cc5d4db54f243ca83",
+          "version": null
+        }
+      },
+      {
+        "package": "SwiftyGif",
+        "repositoryURL": "https://github.com/kirualex/SwiftyGif.git",
+        "state": {
+          "branch": null,
+          "revision": "0cd770feed5807d9fd4fa8df5ad74b56b814b0c8",
+          "version": "5.4.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
