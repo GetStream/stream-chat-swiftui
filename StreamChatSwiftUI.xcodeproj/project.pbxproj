@@ -451,13 +451,13 @@
 		8465FCFC2746A95600AF091E /* ChatChannel */ = {
 			isa = PBXGroup;
 			children = (
+				8465FD2D2746A95600AF091E /* ChatChannelView.swift */,
+				8465FD302746A95600AF091E /* ChatChannelViewModel.swift */,
+				8465FD2E2746A95600AF091E /* ChannelHeader */,
 				8465FCFD2746A95600AF091E /* MessageList */,
 				8465FD0F2746A95600AF091E /* Composer */,
 				8465FD1F2746A95600AF091E /* Reactions */,
 				8465FD2A2746A95600AF091E /* Utils */,
-				8465FD2D2746A95600AF091E /* ChatChannelView.swift */,
-				8465FD2E2746A95600AF091E /* ChannelHeader */,
-				8465FD302746A95600AF091E /* ChatChannelViewModel.swift */,
 			);
 			path = ChatChannel;
 			sourceTree = "<group>";
@@ -465,23 +465,23 @@
 		8465FCFD2746A95600AF091E /* MessageList */ = {
 			isa = PBXGroup;
 			children = (
-				8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */,
 				8465FCFF2746A95600AF091E /* MessageListView.swift */,
+				8465FD052746A95600AF091E /* MessageContainerView.swift */,
+				8465FD0E2746A95600AF091E /* MessageView.swift */,
+				8465FD0D2746A95600AF091E /* MessageAvatarView.swift */,
+				8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */,
 				8465FD002746A95600AF091E /* FileAttachmentPreview.swift */,
 				8465FD012746A95600AF091E /* FileAttachmentView.swift */,
+				8465FD0B2746A95600AF091E /* LinkTextView.swift */,
+				8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */,
 				8465FD022746A95600AF091E /* DeletedMessageView.swift */,
 				8465FD032746A95600AF091E /* VideoPlayerView.swift */,
 				8465FD042746A95600AF091E /* GiphyBadgeView.swift */,
-				8465FD052746A95600AF091E /* MessageContainerView.swift */,
 				8465FD062746A95600AF091E /* MessageBubble.swift */,
 				8465FD072746A95600AF091E /* VideoAttachmentView.swift */,
 				8465FD082746A95600AF091E /* MessageTypeResolver.swift */,
 				8465FD092746A95600AF091E /* WebView.swift */,
 				8465FD0A2746A95600AF091E /* SystemMessageView.swift */,
-				8465FD0B2746A95600AF091E /* LinkTextView.swift */,
-				8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */,
-				8465FD0D2746A95600AF091E /* MessageAvatarView.swift */,
-				8465FD0E2746A95600AF091E /* MessageView.swift */,
 			);
 			path = MessageList;
 			sourceTree = "<group>";
@@ -489,21 +489,21 @@
 		8465FD0F2746A95600AF091E /* Composer */ = {
 			isa = PBXGroup;
 			children = (
+				8465FD1B2746A95600AF091E /* MessageComposerView.swift */,
 				8465FD102746A95600AF091E /* MessageComposerViewModel.swift */,
+				8465FD1C2746A95600AF091E /* AttachmentPickerView.swift */,
+				8465FD1D2746A95600AF091E /* PhotoAttachmentPickerView.swift */,
+				8465FD172746A95600AF091E /* AddedImageAttachmentsView.swift */,
 				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
+				8465FD1E2746A95600AF091E /* AddedFileAttachmentsView.swift */,
 				8465FD122746A95600AF091E /* SendMessageButton.swift */,
 				8465FD132746A95600AF091E /* ComposerTextInputView.swift */,
 				8465FD142746A95600AF091E /* DiscardAttachmentButton.swift */,
 				8465FD152746A95600AF091E /* FilePickerView.swift */,
 				8465FD162746A95600AF091E /* ImagePickerView.swift */,
-				8465FD172746A95600AF091E /* AddedImageAttachmentsView.swift */,
-				8465FD182746A95600AF091E /* PhotoAssetsUtils.swift */,
 				8465FD192746A95600AF091E /* AttachmentUploadingStateView.swift */,
 				8465FD1A2746A95600AF091E /* ComposerHelperViews.swift */,
-				8465FD1B2746A95600AF091E /* MessageComposerView.swift */,
-				8465FD1C2746A95600AF091E /* AttachmentPickerView.swift */,
-				8465FD1D2746A95600AF091E /* PhotoAttachmentPickerView.swift */,
-				8465FD1E2746A95600AF091E /* AddedFileAttachmentsView.swift */,
+				8465FD182746A95600AF091E /* PhotoAssetsUtils.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -511,13 +511,13 @@
 		8465FD1F2746A95600AF091E /* Reactions */ = {
 			isa = PBXGroup;
 			children = (
+				8465FD262746A95600AF091E /* MessageActions */,
+				8465FD222746A95600AF091E /* ReactionsView.swift */,
+				8465FD242746A95600AF091E /* ReactionsBubbleView.swift */,
+				8465FD232746A95600AF091E /* ReactionsOverlayView.swift */,
 				8465FD202746A95600AF091E /* ReactionsOverlayContainer.swift */,
 				8465FD212746A95600AF091E /* ReactionsOverlayViewModel.swift */,
-				8465FD222746A95600AF091E /* ReactionsView.swift */,
-				8465FD232746A95600AF091E /* ReactionsOverlayView.swift */,
-				8465FD242746A95600AF091E /* ReactionsBubbleView.swift */,
 				8465FD252746A95600AF091E /* ReactionsHelperViews.swift */,
-				8465FD262746A95600AF091E /* MessageActions */,
 			);
 			path = Reactions;
 			sourceTree = "<group>";
@@ -525,9 +525,9 @@
 		8465FD262746A95600AF091E /* MessageActions */ = {
 			isa = PBXGroup;
 			children = (
-				8465FD272746A95600AF091E /* DefaultMessageActions.swift */,
 				8465FD282746A95600AF091E /* MessageActionsView.swift */,
 				8465FD292746A95600AF091E /* MessageActionsViewModel.swift */,
+				8465FD272746A95600AF091E /* DefaultMessageActions.swift */,
 			);
 			path = MessageActions;
 			sourceTree = "<group>";
@@ -592,22 +592,22 @@
 		8465FD4C2746A95600AF091E /* ChatChannelList */ = {
 			isa = PBXGroup;
 			children = (
+				8465FD552746A95700AF091E /* ChatChannelListScreen.swift */,
+				8465FD512746A95600AF091E /* ChatChannelList.swift */,
+				8465FD582746A95700AF091E /* ChatChannelListViewModel.swift */,
+				8465FD542746A95700AF091E /* ChatChannelListHeader.swift */,
+				8465FD5C2746A95700AF091E /* ChatChannelListView.swift */,
+				8465FD5A2746A95700AF091E /* ChatChannelSwipeableListItem.swift */,
+				8465FD532746A95600AF091E /* ChatChannelNavigatableListItem.swift */,
+				8465FD592746A95700AF091E /* ChatChannelListItem.swift */,
 				8465FD4D2746A95600AF091E /* ChannelAvatarsMerger.swift */,
 				8465FD4E2746A95600AF091E /* ChatChannelHelperViews.swift */,
-				8465FD4F2746A95600AF091E /* MoreChannelActionsView.swift */,
 				8465FD502746A95600AF091E /* DefaultChannelActions.swift */,
-				8465FD512746A95600AF091E /* ChatChannelList.swift */,
 				8465FD522746A95600AF091E /* NoChannelsView.swift */,
-				8465FD532746A95600AF091E /* ChatChannelNavigatableListItem.swift */,
-				8465FD542746A95700AF091E /* ChatChannelListHeader.swift */,
-				8465FD552746A95700AF091E /* ChatChannelListScreen.swift */,
 				8465FD562746A95700AF091E /* ChatChannelDeepLink.swift */,
 				8465FD572746A95700AF091E /* ChannelHeaderLoader.swift */,
-				8465FD582746A95700AF091E /* ChatChannelListViewModel.swift */,
-				8465FD592746A95700AF091E /* ChatChannelListItem.swift */,
-				8465FD5A2746A95700AF091E /* ChatChannelSwipeableListItem.swift */,
+				8465FD4F2746A95600AF091E /* MoreChannelActionsView.swift */,
 				8465FD5B2746A95700AF091E /* MoreChannelActionsViewModel.swift */,
-				8465FD5C2746A95700AF091E /* ChatChannelListView.swift */,
 			);
 			path = ChatChannelList;
 			sourceTree = "<group>";
