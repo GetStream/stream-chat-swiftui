@@ -228,24 +228,32 @@ extension ViewFactory {
         text: Binding<String>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
+        addedCustomAttachments: [CustomAttachment],
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
     ) -> some View {
         if shouldScroll {
             ScrollView {
                 ComposerInputView(
+                    factory: self,
                     text: text,
                     addedAssets: addedAssets,
                     addedFileURLs: addedFileURLs,
+                    addedCustomAttachments: addedCustomAttachments,
+                    onCustomAttachmentTap: onCustomAttachmentTap,
                     removeAttachmentWithId: removeAttachmentWithId
                 )
             }
             .frame(height: 240)
         } else {
             ComposerInputView(
+                factory: self,
                 text: text,
                 addedAssets: addedAssets,
                 addedFileURLs: addedFileURLs,
+                addedCustomAttachments: addedCustomAttachments,
+                onCustomAttachmentTap: onCustomAttachmentTap,
                 removeAttachmentWithId: removeAttachmentWithId
             )
         }
@@ -270,7 +278,9 @@ extension ViewFactory {
         onPickerStateChange: @escaping (AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>?,
         onAssetTap: @escaping (AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         isAssetSelected: @escaping (String) -> Bool,
+        addedCustomAttachments: [CustomAttachment],
         cameraImageAdded: @escaping (AddedAsset) -> Void,
         askForAssetsAccessPermissions: @escaping () -> Void,
         isDisplayed: Bool,
@@ -286,7 +296,9 @@ extension ViewFactory {
             onPickerStateChange: onPickerStateChange,
             photoLibraryAssets: photoLibraryAssets,
             onAssetTap: onAssetTap,
+            onCustomAttachmentTap: onCustomAttachmentTap,
             isAssetSelected: isAssetSelected,
+            addedCustomAttachments: addedCustomAttachments,
             cameraImageAdded: cameraImageAdded,
             askForAssetsAccessPermissions: askForAssetsAccessPermissions,
             isDisplayed: isDisplayed,
@@ -294,6 +306,20 @@ extension ViewFactory {
         )
         .offset(y: isDisplayed ? 0 : popupHeight)
         .animation(.spring())
+    }
+    
+    public func makeCustomAttachmentView(
+        addedCustomAttachments: [CustomAttachment],
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
+    ) -> some View {
+        EmptyView()
+    }
+    
+    public func makeCustomAttachmentPreviewView(
+        addedCustomAttachments: [CustomAttachment],
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
+    ) -> some View {
+        EmptyView()
     }
     
     public func makeAttachmentSourcePickerView(

@@ -132,6 +132,7 @@
 		8465FDD52746A95800AF091E /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD672746A95700AF091E /* NewChatView.swift */; };
 		8465FDD72746A95800AF091E /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD692746A95700AF091E /* Appearance.swift */; };
 		8465FDD82746AA2700AF091E /* StreamChatSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 8465FD602746A95700AF091E /* StreamChatSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -291,6 +292,7 @@
 		8465FD672746A95700AF091E /* NewChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
 		8465FD682746A95700AF091E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8465FD692746A95700AF091E /* Appearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
+		8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComposerAttachmentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -371,6 +373,7 @@
 				8465FCD1274694D200AF091E /* LaunchScreen.swift */,
 				8465FCD5274694D200AF091E /* SceneDelegate.swift */,
 				8465FCC027468B6900AF091E /* ContentView.swift */,
+				8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */,
 				8465FCCA27468B7500AF091E /* Info.plist */,
 				8465FCC227468B6A00AF091E /* Assets.xcassets */,
 				8465FCC427468B6A00AF091E /* Preview Content */,
@@ -491,13 +494,13 @@
 			children = (
 				8465FD1B2746A95600AF091E /* MessageComposerView.swift */,
 				8465FD102746A95600AF091E /* MessageComposerViewModel.swift */,
+				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
 				8465FD1C2746A95600AF091E /* AttachmentPickerView.swift */,
+				8465FD132746A95600AF091E /* ComposerTextInputView.swift */,
 				8465FD1D2746A95600AF091E /* PhotoAttachmentPickerView.swift */,
 				8465FD172746A95600AF091E /* AddedImageAttachmentsView.swift */,
-				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
 				8465FD1E2746A95600AF091E /* AddedFileAttachmentsView.swift */,
 				8465FD122746A95600AF091E /* SendMessageButton.swift */,
-				8465FD132746A95600AF091E /* ComposerTextInputView.swift */,
 				8465FD142746A95600AF091E /* DiscardAttachmentButton.swift */,
 				8465FD152746A95600AF091E /* FilePickerView.swift */,
 				8465FD162746A95600AF091E /* ImagePickerView.swift */,
@@ -916,6 +919,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */,
 				8465FCC127468B6900AF091E /* ContentView.swift in Sources */,
 				8465FCDC274694D200AF091E /* SceneDelegate.swift in Sources */,
 				8465FCD9274694D200AF091E /* LaunchAnimationState.swift in Sources */,

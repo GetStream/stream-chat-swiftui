@@ -43,6 +43,11 @@ public class MessageComposerViewModel: ObservableObject {
             checkPickerSelectionState()
         }
     }
+    @Published var addedCustomAttachments = [CustomAttachment]() {
+        didSet {
+            checkPickerSelectionState()
+        }
+    }
 
     @Published var pickerTypeState: PickerTypeState = .expanded(.none) {
         didSet {
@@ -87,6 +92,10 @@ public class MessageComposerViewModel: ObservableObject {
                 return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
             }
             
+            attachments += addedCustomAttachments.map { attachment in
+                return attachment.content
+            }
+            
             channelController.createNewMessage(
                 text: text,
                 attachments: attachments
@@ -102,13 +111,17 @@ public class MessageComposerViewModel: ObservableObject {
             text = ""
             addedAssets = []
             addedFileURLs = []
+            addedCustomAttachments = []
         } catch {
             errorShown = true
         }
     }
     
     public var sendButtonEnabled: Bool {
-        !addedAssets.isEmpty || !text.isEmpty || !addedFileURLs.isEmpty
+        !addedAssets.isEmpty ||
+        !text.isEmpty ||
+        !addedFileURLs.isEmpty ||
+        !addedCustomAttachments.isEmpty
     }
     
     public func change(pickerState: AttachmentPickerState) {
@@ -118,6 +131,10 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     public var inputComposerShouldScroll: Bool {
+        if addedCustomAttachments.count > 3 {
+            return true
+        }
+        
         if addedFileURLs.count > 2 {
             return true
         }
@@ -182,6 +199,34 @@ public class MessageComposerViewModel: ObservableObject {
         return false
     }
     
+    func customAttachmentTapped(_ attachment: CustomAttachment) {
+        var temp = [CustomAttachment]()
+        var attachmentRemoved = false
+        for existing in addedCustomAttachments {
+            if existing.id != attachment.id {
+                temp.append(existing)
+            } else {
+                attachmentRemoved = true
+            }
+        }
+        
+        if !attachmentRemoved {
+            temp.append(attachment)
+        }
+        
+        self.addedCustomAttachments = temp
+    }
+    
+    func isCustomAttachmentSelected(_ attachment: CustomAttachment) -> Bool {
+        for existing in addedCustomAttachments {
+            if existing.id == attachment.id {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     func askForPhotosPermission() {
         PHPhotoLibrary.requestAuthorization { (status) in
             switch status {
@@ -235,6 +280,7 @@ public enum AttachmentPickerState {
     case files
     case photos
     case camera
+    case custom
 }
 
 /// Struct representing an asset added to the composer.
@@ -250,4 +296,20 @@ public struct AddedAsset: Identifiable {
 public enum AssetType {
     case image
     case video
+}
+
+public struct CustomAttachment: Identifiable, Equatable {
+    
+    public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
+        lhs.id == rhs.id
+    }    
+    
+    public let id: String
+    public let content: AnyAttachmentPayload
+    
+    public init(id: String, content: AnyAttachmentPayload) {
+        self.id = id
+        self.content = content
+    }
+    
 }

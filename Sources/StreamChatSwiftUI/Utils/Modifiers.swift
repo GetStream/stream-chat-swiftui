@@ -67,15 +67,15 @@ struct IconOverImageModifier: ViewModifier {
 
 extension View {
     /// View extension that applies default padding to elements.
-    func standardPadding() -> some View {
+    public func standardPadding() -> some View {
         modifier(StandardPaddingModifier())
     }
     
-    func roundWithBorder(cornerRadius: CGFloat = 18) -> some View {
+    public func roundWithBorder(cornerRadius: CGFloat = 18) -> some View {
         modifier(RoundedBorderModifier(cornerRadius: cornerRadius))
     }
     
-    func applyDefaultIconOverlayStyle() -> some View {
+    public func applyDefaultIconOverlayStyle() -> some View {
         modifier(IconOverImageModifier())
     }
 }

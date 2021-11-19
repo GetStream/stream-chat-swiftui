@@ -225,6 +225,8 @@ public protocol ViewFactory: AnyObject {
     ///  - text: the text displayed in the input view.
     ///  - addedAssets: list of the added assets (in case they need to be displayed in the input view).
     ///  - addedFileURLs: list of the added file URLs (in case they need to be displayed in the input view).
+    ///  - addedCustomAttachments: list of added custom attachments.
+    ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
     ///  - shouldScroll: whether the input field is scrollable.
     ///  - removeAttachmentWithId: called when the attachment is removed from the input view.
     /// - Returns: view displayed in the middle area of the message composer view.
@@ -233,6 +235,8 @@ public protocol ViewFactory: AnyObject {
         text: Binding<String>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
+        addedCustomAttachments: [CustomAttachment],
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
     ) -> ComposerInputViewType
@@ -258,7 +262,9 @@ public protocol ViewFactory: AnyObject {
     ///  - onPickerStateChange: called when the picker state is changed.
     ///  - photoLibraryAssets: list of assets fetched from the photo library.
     ///  - onAssetTap: called when an asset is tapped on.
+    ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
     ///  - isAssetSelected: checks whether an asset is selected.
+    ///  - addedCustomAttachments: list of added custom attachments.
     ///  - cameraImageAdded: called when an asset from the camera is added.
     ///  - askForAssetsAccessPermissions: provides access to photos library (and others if needed).
     ///  - isDisplayed: thether the attachment picker view is displayed.
@@ -273,7 +279,9 @@ public protocol ViewFactory: AnyObject {
         onPickerStateChange: @escaping (AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>?,
         onAssetTap: @escaping (AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         isAssetSelected: @escaping (String) -> Bool,
+        addedCustomAttachments: [CustomAttachment],
         cameraImageAdded: @escaping (AddedAsset) -> Void,
         askForAssetsAccessPermissions: @escaping () -> Void,
         isDisplayed: Bool,
@@ -328,6 +336,28 @@ public protocol ViewFactory: AnyObject {
         cameraPickerShown: Binding<Bool>,
         cameraImageAdded: @escaping (AddedAsset) -> Void
     ) -> CameraPickerViewType
+    
+    associatedtype CustomComposerAttachmentViewType: View
+    /// Creates a custom attachment view shown in the message composer.
+    /// - Parameters:
+    ///  - addedCustomAttachments: list of already added custom attachments.
+    ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
+    /// - Returns: view shown in the custom slot in the message composer.
+    func makeCustomAttachmentView(
+        addedCustomAttachments: [CustomAttachment],
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
+    ) -> CustomComposerAttachmentViewType
+    
+    associatedtype CustomAttachmentPreviewViewType: View
+    /// Creates a custom attachment view shown in the preview in the composer input.
+    /// - Parameters:
+    ///  - addedCustomAttachments: list of already added custom attachments.
+    ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
+    /// - Returns: view shown in the preview slot for custom composer input.
+    func makeCustomAttachmentPreviewView(
+        addedCustomAttachments: [CustomAttachment],
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
+    ) -> CustomAttachmentPreviewViewType
     
     associatedtype AssetsAccessPermissionViewType: View
     /// Creates the assets access permission view.

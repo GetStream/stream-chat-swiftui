@@ -82,14 +82,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         */
         
         /*
-         let messageTypeResolver = CustomMessageResolver()
-         let utils = Utils(messageTypeResolver: messageTypeResolver)
+        let messageTypeResolver = CustomMessageTypeResolver()
+        let utils = Utils(messageTypeResolver: messageTypeResolver)
          
-         streamChat = StreamChat(chatClient: chatClient, utils: utils)
-         */
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        */
         
         streamChat = StreamChat(chatClient: chatClient)
-        
+         
         chatClient.connectUser(
                 userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
                 token: token

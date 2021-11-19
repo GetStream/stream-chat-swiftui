@@ -4,6 +4,7 @@
 
 import Photos
 import SwiftUI
+import StreamChat
 
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
@@ -18,7 +19,9 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     var onPickerStateChange: (AttachmentPickerState) -> Void
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onAssetTap: (AddedAsset) -> Void
+    var onCustomAttachmentTap: (CustomAttachment) -> Void
     var isAssetSelected: (String) -> Bool
+    var addedCustomAttachments: [CustomAttachment]
     var cameraImageAdded: (AddedAsset) -> Void
     var askForAssetsAccessPermissions: () -> Void
     
@@ -49,11 +52,16 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     filePickerShown: $filePickerShown,
                     addedFileURLs: $addedFileURLs
                 )
-            } else {
+            } else if selectedPickerState == .camera {
                 viewFactory.makeCameraPickerView(
                     selected: $selectedPickerState,
                     cameraPickerShown: $cameraPickerShown,
                     cameraImageAdded: cameraImageAdded
+                )
+            } else if selectedPickerState == .custom {
+                viewFactory.makeCustomAttachmentView(
+                    addedCustomAttachments: addedCustomAttachments,
+                    onCustomAttachmentTap: onCustomAttachmentTap
                 )
             }
         }
@@ -106,7 +114,8 @@ struct AttachmentSourcePickerView: View {
 }
 
 /// Button used for picking of attachment types.
-struct AttachmentPickerButton: View {
+public struct AttachmentPickerButton: View {
+    
     @Injected(\.colors) var colors
     
     var iconName: String
@@ -114,7 +123,19 @@ struct AttachmentPickerButton: View {
     var isSelected: Bool
     var onTap: (AttachmentPickerState) -> Void
     
-    var body: some View {
+    public init(
+        iconName: String,
+        pickerType: AttachmentPickerState,
+        isSelected: Bool,
+        onTap: @escaping (AttachmentPickerState) -> Void
+    ) {
+        self.iconName = iconName
+        self.pickerType = pickerType
+        self.isSelected = isSelected
+        self.onTap = onTap
+    }
+    
+    public var body: some View {
         Button {
             onTap(pickerType)
         } label: {

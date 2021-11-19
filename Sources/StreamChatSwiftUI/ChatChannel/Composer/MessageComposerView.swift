@@ -39,6 +39,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     text: $viewModel.text,
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
+                    addedCustomAttachments: viewModel.addedCustomAttachments,
+                    onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
@@ -59,7 +61,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 onPickerStateChange: viewModel.change(pickerState:),
                 photoLibraryAssets: viewModel.imageAssets,
                 onAssetTap: viewModel.imageTapped(_:),
+                onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                 isAssetSelected: viewModel.isImageSelected(with:),
+                addedCustomAttachments: viewModel.addedCustomAttachments,
                 cameraImageAdded: viewModel.cameraImageAdded(_:),
                 askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
                 isDisplayed: viewModel.overlayShown,
@@ -86,12 +90,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 }
 
 /// View for the composer's input (text and media).
-public struct ComposerInputView: View {
+public struct ComposerInputView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
     
+    var factory: Factory
     @Binding var text: String
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
+    var addedCustomAttachments: [CustomAttachment]
+    var onCustomAttachmentTap: (CustomAttachment) -> ()
     
     var removeAttachmentWithId: (String) -> Void
     
@@ -133,6 +140,12 @@ public struct ComposerInputView: View {
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .padding(.trailing, 8)
+            }
+            
+            if !addedCustomAttachments.isEmpty {
+                factory.makeCustomAttachmentPreviewView(
+                    addedCustomAttachments: addedCustomAttachments,
+                    onCustomAttachmentTap: onCustomAttachmentTap)
             }
             
             ComposerTextInputView(

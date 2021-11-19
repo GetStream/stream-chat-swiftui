@@ -34,12 +34,17 @@ struct VideoDurationIndicatorView: View {
 }
 
 /// Container that displays attachment types.
-struct AttachmentTypeContainer<Content: View>: View {
+public struct AttachmentTypeContainer<Content: View>: View {
+        
     @Injected(\.colors) var colors
     
     var content: () -> Content
     
-    var body: some View {
+    public init(content: @escaping () -> Content) {
+        self.content = content
+    }
+    
+    public var body: some View {
         VStack(spacing: 0) {
             Color(colors.background)
                 .frame(height: 20)
