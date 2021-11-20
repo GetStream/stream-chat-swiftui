@@ -63,8 +63,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
         .accentColor(colors.tintColor)
         .overlay(
             viewModel.reactionsShown ?
-                ReactionsOverlayView(
-                    factory: factory,
+                factory.makeReactionsOverlayView(
                     currentSnapshot: viewModel.currentSnapshot!,
                     messageDisplayInfo: messageDisplayInfo!,
                     onBackgroundTap: {

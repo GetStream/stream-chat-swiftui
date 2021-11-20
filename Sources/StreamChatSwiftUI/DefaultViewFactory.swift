@@ -398,6 +398,25 @@ extension ViewFactory {
         
         return MessageActionsView(messageActions: messageActions)
     }
+    
+    public func makeMessageReactionView(
+        message: ChatMessage
+    ) -> some View {
+        ReactionsContainer(message: message)
+    }
+    
+    public func makeReactionsOverlayView(
+        currentSnapshot: UIImage,
+        messageDisplayInfo: MessageDisplayInfo,
+        onBackgroundTap: @escaping () -> Void
+    ) -> some View {
+        ReactionsOverlayView(
+            factory: self,
+            currentSnapshot: currentSnapshot,
+            messageDisplayInfo: messageDisplayInfo,
+            onBackgroundTap: onBackgroundTap
+        )
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

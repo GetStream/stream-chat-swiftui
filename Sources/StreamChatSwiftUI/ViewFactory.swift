@@ -387,4 +387,25 @@ public protocol ViewFactory: AnyObject {
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageActionsViewType
+    
+    associatedtype MessageReactionViewType
+    /// Creates the reactions view shown above the message.
+    /// - Parameter message: the message for which reactions are shown.
+    /// - Returns: view shown in the message reactions slot.
+    func makeMessageReactionView(
+        message: ChatMessage
+    ) -> MessageReactionViewType
+    
+    associatedtype ReactionsOverlayViewType
+    /// Creates the reactions overlay view.
+    /// - Parameters:
+    ///  - currentSnapshot: current snapshot of the screen (in case blur effect is needed).
+    ///  - messageDisplayInfo: information about the displayed message.
+    ///  - onBackgroundTap: called when the background is tapped (to dismiss the view).
+    /// - Returns: view displayed in the reactions overlay slot.
+    func makeReactionsOverlayView(
+        currentSnapshot: UIImage,
+        messageDisplayInfo: MessageDisplayInfo,
+        onBackgroundTap: @escaping () -> Void
+    ) -> ReactionsOverlayViewType
 }

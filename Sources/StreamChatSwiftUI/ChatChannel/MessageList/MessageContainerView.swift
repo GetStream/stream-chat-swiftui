@@ -46,7 +46,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         isFirst: showsAllInfo
                     )
                     .overlay(
-                        reactionsShown ? ReactionsContainer(message: message) : nil
+                        reactionsShown ?
+                            factory.makeMessageReactionView(message: message)
+                            : nil
                     )
                     .background(
                         GeometryReader { proxy in

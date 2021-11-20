@@ -61,7 +61,8 @@
             "swiftui/components/custom-avatar",
             "swiftui/components/channel-header",
             "swiftui/components/attachments",
-            "swiftui/components/message-composer"
+            "swiftui/components/message-composer",
+            "swiftui/components/message-reactions"
           ]
         }
       ]
