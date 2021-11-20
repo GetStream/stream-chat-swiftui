@@ -60,7 +60,8 @@
             "swiftui/components/list-tap-events",
             "swiftui/components/custom-avatar",
             "swiftui/components/channel-header",
-            "swiftui/components/attachments"
+            "swiftui/components/attachments",
+            "swiftui/components/message-composer"
           ]
         }
       ]

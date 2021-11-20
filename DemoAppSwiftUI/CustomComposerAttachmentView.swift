@@ -18,8 +18,6 @@ struct ContactAttachmentPayload: AttachmentPayload {
     let phoneNumber: String
 }
 
-typealias ContactAttachment = ChatMessageAttachment<ContactAttachmentPayload>
-
 extension ContactAttachmentPayload: Identifiable {
     
     var id: String {
@@ -53,7 +51,6 @@ class CustomAttachmentsFactory: ViewFactory {
             id: "127",
             content: AnyAttachmentPayload(payload: ContactAttachmentPayload(name: "Test 5", phoneNumber: "534534543543534"))
         )
-        
     ]
     
     func makeAttachmentSourcePickerView(
@@ -203,7 +200,7 @@ struct CustomContactAttachmentView: View {
                     .frame(maxWidth: .infinity)
                 }
             }
-        }        
+        }
     }
         
 }

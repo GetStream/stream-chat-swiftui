@@ -20,6 +20,8 @@ public enum AttachmentPickerType {
     case media
     /// Giphy commands are selected.
     case giphy
+    /// Custom attachment picker type.
+    case custom
 }
 
 /// View for picking the attachment type (media or giphy commands).
