@@ -63,6 +63,7 @@ public struct LinkAttachmentView: View {
             if !imageHidden {
                 ZStack {
                     LazyImage(source: linkAttachment.previewURL!)
+                        .onDisappear(.reset)
                         .processors([ImageProcessors.Resize(width: width)])
                         .priority(.high)
                         .frame(width: width - 2 * padding, height: (width - 2 * padding) / 2)

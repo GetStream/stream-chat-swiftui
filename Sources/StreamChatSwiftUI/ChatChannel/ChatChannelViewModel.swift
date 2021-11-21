@@ -12,6 +12,8 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     @Injected(\.utils) var utils
     
     private var cancellables = Set<AnyCancellable>()
+    private var lastRefreshThreshold = 200
+    private let refreshThreshold = 200
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -38,6 +40,7 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     var channelController: ChatChannelController
     
     @Published var scrolledId: String?
+    @Published var listId = UUID().uuidString
 
     @Published var showScrollToLatestButton = false
     @Published var currentDateString: String?
@@ -120,6 +123,12 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     ) {
         messages = channelController.messages
         
+        let count = channelController.messages.count
+        if count > lastRefreshThreshold {
+            lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
+            listId = UUID().uuidString
+        }
+        
         if !showScrollToLatestButton {
             scrollToLastMessage()
         }
@@ -168,10 +177,13 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
         }
 
         if _loadingPreviousMessages.compareAndSwap(old: false, new: true) {
-            channelController.loadPreviousMessages(limit: 250, completion: { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingPreviousMessages = false
-            })
+            channelController.loadPreviousMessages(
+                limit: refreshThreshold,
+                completion: { [weak self] _ in
+                    guard let self = self else { return }
+                    self.loadingPreviousMessages = false
+                }
+            )
         }
     }
     

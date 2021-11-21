@@ -23,12 +23,13 @@ public struct MessageAvatarView: View {
             )
             
             LazyImage(source: adjustedURL)
+                .onDisappear(.reset)
                 .clipShape(Circle())
                 .frame(
                     width: CGSize.messageAvatarSize.width,
                     height: CGSize.messageAvatarSize.height
                 )
-                .id(url)
+            
         } else {
             Image(systemName: "person.circle")
                 .resizable()
@@ -36,7 +37,6 @@ public struct MessageAvatarView: View {
                     width: CGSize.messageAvatarSize.width,
                     height: CGSize.messageAvatarSize.height
                 )
-                .id("placeholder")
         }
     }
 }

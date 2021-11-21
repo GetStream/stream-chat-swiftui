@@ -16,6 +16,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var currentDateString: String?
     var isGroup: Bool
     var unreadCount: Int
+    var listId: String
     
     var onMessageAppear: (Int) -> Void
     var onScrollToBottom: () -> Void
@@ -89,6 +90,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 }
                             }
                         }
+                        .id(listId)
                     }
                 }
                 .coordinateSpace(name: scrollAreaId)
