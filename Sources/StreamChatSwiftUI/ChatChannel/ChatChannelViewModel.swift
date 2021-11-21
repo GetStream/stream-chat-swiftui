@@ -163,12 +163,12 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     }
     
     private func checkForNewMessages(index: Int) {
-        if index < channelController.messages.count - 10 {
+        if index < channelController.messages.count - 25 {
             return
         }
 
         if _loadingPreviousMessages.compareAndSwap(old: false, new: true) {
-            channelController.loadPreviousMessages(completion: { [weak self] _ in
+            channelController.loadPreviousMessages(limit: 250, completion: { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingPreviousMessages = false
             })

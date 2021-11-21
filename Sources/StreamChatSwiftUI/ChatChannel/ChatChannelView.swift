@@ -40,7 +40,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 onScrollToBottom: viewModel.scrollToLastMessage,
                 onLongPress: { displayInfo in
                     withAnimation {
-                        self.messageDisplayInfo = displayInfo
+                        messageDisplayInfo = displayInfo
                         viewModel.showReactionOverlay()
                     }
                 }

@@ -229,6 +229,7 @@ struct LazyLoadingImage: View {
                 }
             }
         }
+        .onDisappear(.reset)
         .processors([ImageProcessors.Resize(width: width)])
         .priority(.high)
     }
