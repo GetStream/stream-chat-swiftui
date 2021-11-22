@@ -89,9 +89,9 @@ let utils = Utils(channelNamer: channelNamer)
 let streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
 ```
 
-### Accessing chat context functionalities
+### Accessing chat context functionalities through injectable variables
 
-If you build your own view components and you want to use the chat context providing options, you can do so in a way that's very similar to SwiftUI's environment. You just need to define the corresponding keypath of the functionality you need, anywhere in your code. 
+If you build your own view components and you want to use the chat context providing options, you can do so in a way that's very similar to SwiftUI's environment. You just need to define the corresponding keypath of the functionality you need, anywhere in your code.
 
 ```swift
 @Injected(\.chatClient) var chatClient
@@ -99,7 +99,7 @@ If you build your own view components and you want to use the chat context provi
 @Injected(\.colors) var colors
 @Injected(\.images) var images
 @Injected(\.utils) var utils
-``` 
+```
 
 ### Putting it all together
 
