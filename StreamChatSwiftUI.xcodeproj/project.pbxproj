@@ -128,8 +128,6 @@
 		8465FDD12746A95700AF091E /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD622746A95700AF091E /* Images.swift */; };
 		8465FDD22746A95800AF091E /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD632746A95700AF091E /* Utils.swift */; };
 		8465FDD32746A95800AF091E /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD642746A95700AF091E /* ColorPalette.swift */; };
-		8465FDD42746A95800AF091E /* NewChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD662746A95700AF091E /* NewChatViewModel.swift */; };
-		8465FDD52746A95800AF091E /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD672746A95700AF091E /* NewChatView.swift */; };
 		8465FDD72746A95800AF091E /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD692746A95700AF091E /* Appearance.swift */; };
 		8465FDD82746AA2700AF091E /* StreamChatSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 8465FD602746A95700AF091E /* StreamChatSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */; };
@@ -288,8 +286,6 @@
 		8465FD622746A95700AF091E /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		8465FD632746A95700AF091E /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		8465FD642746A95700AF091E /* ColorPalette.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
-		8465FD662746A95700AF091E /* NewChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewChatViewModel.swift; sourceTree = "<group>"; };
-		8465FD672746A95700AF091E /* NewChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
 		8465FD682746A95700AF091E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8465FD692746A95700AF091E /* Appearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComposerAttachmentView.swift; sourceTree = "<group>"; };
@@ -414,7 +410,6 @@
 				8465FCFC2746A95600AF091E /* ChatChannel */,
 				8465FCF92746A95600AF091E /* CommonViews */,
 				8465FD312746A95600AF091E /* Utils */,
-				8465FD652746A95700AF091E /* NewChat */,
 				8465FCEC2746A95600AF091E /* Generated */,
 				8465FCF32746A95600AF091E /* Resources */,
 				8465FD5D2746A95700AF091E /* README.md */,
@@ -613,15 +608,6 @@
 				8465FD5B2746A95700AF091E /* MoreChannelActionsViewModel.swift */,
 			);
 			path = ChatChannelList;
-			sourceTree = "<group>";
-		};
-		8465FD652746A95700AF091E /* NewChat */ = {
-			isa = PBXGroup;
-			children = (
-				8465FD662746A95700AF091E /* NewChatViewModel.swift */,
-				8465FD672746A95700AF091E /* NewChatView.swift */,
-			);
-			path = NewChat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -833,7 +819,6 @@
 				8465FDCD2746A95700AF091E /* Fonts.swift in Sources */,
 				8465FD9A2746A95700AF091E /* ReactionsHelperViews.swift in Sources */,
 				8465FDC02746A95700AF091E /* ChatChannelList.swift in Sources */,
-				8465FDD42746A95800AF091E /* NewChatViewModel.swift in Sources */,
 				8465FD9F2746A95700AF091E /* ChatChannelExtensions.swift in Sources */,
 				8465FD882746A95700AF091E /* SendMessageButton.swift in Sources */,
 				8465FDC82746A95700AF091E /* ChatChannelListItem.swift in Sources */,
@@ -878,7 +863,6 @@
 				8465FDD72746A95800AF091E /* Appearance.swift in Sources */,
 				8465FD8A2746A95700AF091E /* DiscardAttachmentButton.swift in Sources */,
 				8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */,
-				8465FDD52746A95800AF091E /* NewChatView.swift in Sources */,
 				8465FDD22746A95800AF091E /* Utils.swift in Sources */,
 				8465FDA12746A95700AF091E /* ChatChannelHeaderViewModifier.swift in Sources */,
 				8465FDA02746A95700AF091E /* ChatChannelView.swift in Sources */,

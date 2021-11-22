@@ -34,12 +34,6 @@ public class ViewModelsFactory {
         return viewModel
     }
     
-    /// Creates the `NewChatViewModel`.
-    public static func makeNewChatViewModel() -> NewChatViewModel {
-        let viewModel = NewChatViewModel()
-        return viewModel
-    }
-    
     /// Creates the view model for the more channel actions.
     ///
     /// - Parameters:

@@ -31,15 +31,6 @@ public struct NoChannelsView: View {
             .padding(.horizontal, 32)
 
             Spacer()
-            
-            NavigationLink {
-                NewChatView()
-            } label: {
-                Text(L10n.Channel.NoContent.start)
-                    .foregroundColor(Color(colors.highlightedAccentBackground))
-                    .font(fonts.bodyBold)
-            }
-            .padding(.bottom, bottomButtonPadding)
         }
         .frame(maxWidth: .infinity)
         .background(Color(colors.background1))

@@ -21,14 +21,6 @@ public struct DefaultChatChannelListHeader: ToolbarContent {
             Text(title)
                 .font(fonts.bodyBold)
         }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            NavigationLink {
-                NewChatView()
-            } label: {
-                Image(uiImage: images.messageActionEdit)
-                    .resizable()
-            }
-        }
     }
 }
 
