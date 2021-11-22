@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
+		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
+		84335018274BAD4B007A1B81 /* NewChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335017274BAD4B007A1B81 /* NewChatViewModel.swift */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		8465FBC32746873A00AF091E /* StreamChatSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FBC22746873A00AF091E /* StreamChatSwiftUITests.swift */; };
 		8465FCB427468A8D00AF091E /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB327468A8D00AF091E /* StreamChat */; };
@@ -166,6 +169,9 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
+		84335015274BABF3007A1B81 /* NewChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
+		84335017274BAD4B007A1B81 /* NewChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatViewModel.swift; sourceTree = "<group>"; };
 		8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StreamChatSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamChatSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8465FBC22746873A00AF091E /* StreamChatSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatSwiftUITests.swift; sourceTree = "<group>"; };
@@ -371,7 +377,10 @@
 				8465FCD1274694D200AF091E /* LaunchScreen.swift */,
 				8465FCD5274694D200AF091E /* SceneDelegate.swift */,
 				8465FCC027468B6900AF091E /* ContentView.swift */,
+				84335015274BABF3007A1B81 /* NewChatView.swift */,
+				84335017274BAD4B007A1B81 /* NewChatViewModel.swift */,
 				8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */,
+				84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */,
 				8465FCCA27468B7500AF091E /* Info.plist */,
 				8465FCC227468B6A00AF091E /* Assets.xcassets */,
 				8465FCC427468B6A00AF091E /* Preview Content */,
@@ -906,9 +915,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */,
+				84335016274BABF3007A1B81 /* NewChatView.swift in Sources */,
 				8465FCC127468B6900AF091E /* ContentView.swift in Sources */,
+				84335018274BAD4B007A1B81 /* NewChatViewModel.swift in Sources */,
 				8465FCDC274694D200AF091E /* SceneDelegate.swift in Sources */,
 				8465FCD9274694D200AF091E /* LaunchAnimationState.swift in Sources */,
+				84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */,
 				8465FCDE274694D200AF091E /* CustomChannelHeader.swift in Sources */,
 				8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */,
 				8465FCDB274694D200AF091E /* DemoUser.swift in Sources */,

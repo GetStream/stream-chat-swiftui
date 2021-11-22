@@ -1,0 +1,144 @@
+//
+//  Created by Martin Mitrevski on 22.11.21.
+//
+
+import SwiftUI
+import StreamChat
+import StreamChatSwiftUI
+
+class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+    
+    @Injected(\.chatClient) var chatClient
+    
+    @Published var searchText: String = "" {
+        didSet {
+            searchUsers(with: searchText)
+        }
+    }
+    @Published var messageText: String = ""
+    @Published var chatUsers = LazyCachedMapCollection<ChatUser>()
+    @Published var state: NewChatState = .initial
+    @Published var selectedUsers = [ChatUser]() {
+        didSet {
+            if selectedUsers.count > 0 {
+                let selectedUserIds = Set(selectedUsers.map { $0.id })
+                do {
+                    channelController = try chatClient.channelController(
+                        createDirectMessageChannelWith: selectedUserIds,
+                        name: nil,
+                        imageURL: nil,
+                        extraData: [:]
+                    )
+                    channelController?.synchronize { [weak self] error in
+                        if error != nil {
+                            self?.state = .error
+                        } else {
+                            withAnimation {
+                                self?.state = .channel
+                            }
+                            
+                        }                        
+                    }
+                } catch {
+                    state = .error
+                }
+                
+            } else {
+                withAnimation {
+                    state = .loaded
+                }                
+            }
+        }
+    }
+    
+    @Atomic private var loadingNextUsers: Bool = false
+    
+    var channelController: ChatChannelController?
+    
+    private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
+    private let lastSeenDateFormatter = DateUtils.timeAgo
+    
+    init() {
+        chatUsers = searchController.users
+        searchController.delegate = self
+        // Empty initial search to get all users
+        searchUsers(with: nil)
+    }
+    
+    func userTapped(_ user: ChatUser) {
+        if selectedUsers.contains(user) {
+            selectedUsers.removeAll { selected in
+                selected == user
+            }
+        } else {
+            selectedUsers.append(user)
+        }
+    }
+    
+    func onlineInfo(for user: ChatUser) -> String {
+        if user.isOnline {
+            return "Online"
+        } else if let lastActiveAt = user.lastActiveAt,
+                  let timeAgo = lastSeenDateFormatter(lastActiveAt) {
+            return timeAgo
+        } else {
+            return "Offline"
+        }
+    }
+    
+    func isSelected(user: ChatUser) -> Bool {
+        selectedUsers.contains(user)
+    }
+    
+    func onChatUserAppear(_ user: ChatUser) {
+        guard let index = chatUsers.firstIndex(where: { element in
+            user.id == element.id
+        }) else {
+            return
+        }
+        
+        if index < chatUsers.count - 10 {
+            return
+        }
+        
+        if _loadingNextUsers.compareAndSwap(old: false, new: true) {
+            searchController.loadNextUsers(limit: 50) { [weak self] error in
+                guard let self = self else { return }
+                self.chatUsers = self.searchController.users
+                self.loadingNextUsers = false
+            }
+        }
+    }
+    
+    //MARK: - ChatUserSearchControllerDelegate
+    
+    func controller(
+        _ controller: ChatUserSearchController,
+        didChangeUsers changes: [ListChange<ChatUser>]
+    ) {
+        chatUsers = controller.users
+    }
+    
+    //MARK: - private
+    
+    private func searchUsers(with term: String?) {
+        self.state = .loading
+        searchController.search(term: term) { [weak self] error in
+            if error != nil {
+                self?.state = .error
+            } else {
+                self?.state = .loaded
+            }
+        }
+    }
+    
+}
+
+enum NewChatState {
+    case initial
+    case loading
+    case noUsers
+    case error
+    case loaded
+    case channel
+}

@@ -12,6 +12,11 @@ public struct SendMessageButton: View {
     var enabled: Bool
     var onTap: () -> Void
     
+    public init(enabled: Bool, onTap: @escaping () -> Void) {
+        self.enabled = enabled
+        self.onTap = onTap
+    }
+    
     public var body: some View {
         Button {
             onTap()

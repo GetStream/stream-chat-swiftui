@@ -7,12 +7,11 @@ import SwiftUI
 import StreamChatSwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
-        
+    
     public var title: String
-    public var onTapLeading: () -> ()
     
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
@@ -21,37 +20,23 @@ public struct CustomChannelHeader: ToolbarContent {
         }
         ToolbarItem(placement: .navigationBarTrailing) {
             NavigationLink {
-                Text("This is injected view")
+                NewChatView()
             } label: {
                 Image(uiImage: images.messageActionEdit)
                     .resizable()
             }
         }
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button {
-                onTapLeading()
-            } label: {
-                Image(systemName: "line.3.horizontal")
-                    .resizable()
-            }
-        }
     }
+
 }
 
 struct CustomChannelModifier: ChannelListHeaderViewModifier {
     
     var title: String
     
-    @State var profileShown = false
-    
     func body(content: Content) -> some View {
         content.toolbar {
-            CustomChannelHeader(title: title) {
-                profileShown = true
-            }
-        }
-        .sheet(isPresented: $profileShown) {
-            Text("Profile View")
+            CustomChannelHeader(title: title)
         }
     }
     
