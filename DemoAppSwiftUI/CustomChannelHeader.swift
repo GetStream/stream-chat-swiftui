@@ -12,6 +12,7 @@ public struct CustomChannelHeader: ToolbarContent {
     @Injected(\.images) var images
     
     public var title: String
+    @Binding var isNewChatShown: Bool
     
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
@@ -19,12 +20,12 @@ public struct CustomChannelHeader: ToolbarContent {
                 .font(fonts.bodyBold)
         }
         ToolbarItem(placement: .navigationBarTrailing) {
-            NavigationLink {
-                NewChatView()
+            Button {
+                isNewChatShown = true
             } label: {
                 Image(uiImage: images.messageActionEdit)
                     .resizable()
-            }
+            }            
         }
     }
 
@@ -34,10 +35,25 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
     
     var title: String
     
+    @State var isNewChatShown = false
+    
     func body(content: Content) -> some View {
-        content.toolbar {
-            CustomChannelHeader(title: title)
+        ZStack {
+            content.toolbar {
+                CustomChannelHeader(
+                    title: title,
+                    isNewChatShown: $isNewChatShown
+                )
+            }
+            
+            NavigationLink(isActive: $isNewChatShown) {
+                NewChatView(isNewChatShown: $isNewChatShown)
+            } label: {
+                EmptyView()
+            }
+            .isDetailLink(false)
         }
+        
     }
     
 }

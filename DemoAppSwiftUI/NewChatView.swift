@@ -1,17 +1,21 @@
 //
-//  Created by Martin Mitrevski on 22.11.21.
+//  Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
 
-struct NewChatView: View {
+struct NewChatView: View, KeyboardReadable {
     
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
     
     @StateObject var viewModel = NewChatViewModel()
+    
+    @Binding var isNewChatShown: Bool
+    
+    @State private var keyboardShown = false
     
     let columns = [GridItem(.adaptive(minimum: 120), spacing: 2)]
     
@@ -43,18 +47,8 @@ struct NewChatView: View {
             .padding()
             
             if viewModel.state != .channel {
-                CreateGroupButton()
-                
-                HStack {
-                    Text("On the platform")
-                        .padding(.horizontal)
-                        .padding(.vertical, 2)
-                        .font(fonts.body)
-                        .foregroundColor(Color(colors.textLowEmphasis))
-                    
-                    Spacer()
-                }
-                .background(Color(colors.background1))
+                CreateGroupButton(isNewChatShown: $isNewChatShown)
+                UsersHeaderView()
             }
             
             if viewModel.state == .loading {
@@ -68,10 +62,14 @@ struct NewChatView: View {
                             viewModel.userTapped(user)
                         }
                     } label: {
-                        ChatUserView(viewModel: viewModel, user: user)
-                            .onAppear {
-                                viewModel.onChatUserAppear(user)
-                            }
+                        ChatUserView(
+                            user: user,
+                            onlineText: viewModel.onlineInfo(for: user),
+                            isSelected: viewModel.isSelected(user: user)
+                        )
+                        .onAppear {
+                            viewModel.onChatUserAppear(user)
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -98,6 +96,10 @@ struct NewChatView: View {
             }
         }
         .navigationTitle("New Chat")
+        .onReceive(keyboardPublisher) { visible in
+            keyboardShown = visible
+        }
+        .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
     }
     
 }
@@ -165,26 +167,27 @@ struct CreateGroupButton: View {
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
-
+    
+    @Binding var isNewChatShown: Bool
+    
     var body: some View {
-        HStack {
-            Button {
+        NavigationLink {
+            CreateGroupView(isNewChatShown: $isNewChatShown)
+        } label: {
+            HStack {
+                Image(systemName: "person.3")
+                    .renderingMode(.template)
+                    .foregroundColor(colors.tintColor)
                 
-            } label: {
-                HStack {
-                    Image(systemName: "person.3")
-                        .renderingMode(.template)
-                        .foregroundColor(colors.tintColor)
-                    
-                    Text("Create a group")
-                        .font(fonts.bodyBold)
-                        .foregroundColor(Color(colors.text))
-                }
+                Text("Create a group")
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.text))
+                
+                Spacer()
             }
-
-            Spacer()
+            .padding()
         }
-        .padding()
+        .isDetailLink(false)
     }
     
 }
@@ -194,8 +197,9 @@ struct ChatUserView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     
-    @StateObject var viewModel: NewChatViewModel
     var user: ChatUser
+    var onlineText: String
+    var isSelected: Bool
     
     var body: some View {
         HStack {
@@ -204,18 +208,40 @@ struct ChatUserView: View {
                 Text(user.name ?? user.id)
                     .lineLimit(1)
                     .font(fonts.bodyBold)
-                Text(viewModel.onlineInfo(for: user))
+                Text(onlineText)
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
             Spacer()
             
-            if viewModel.isSelected(user: user) {
+            if isSelected {
                 Image(systemName: "checkmark")
                     .renderingMode(.template)
                     .foregroundColor(colors.tintColor)
             }
         }
+    }
+    
+}
+
+struct UsersHeaderView: View {
+    
+    @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
+    
+    var title = "On the platform"
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .padding(.horizontal)
+                .padding(.vertical, 2)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textLowEmphasis))
+            
+            Spacer()
+        }
+        .background(Color(colors.background1))
     }
     
 }

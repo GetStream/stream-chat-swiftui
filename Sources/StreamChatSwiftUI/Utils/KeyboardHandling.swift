@@ -7,14 +7,14 @@ import SwiftUI
 import UIKit
 
 /// Publisher to read keyboard changes.
-protocol KeyboardReadable {
+public protocol KeyboardReadable {
     var keyboardPublisher: AnyPublisher<Bool, Never> { get }
     var keyboardHeight: AnyPublisher<CGFloat, Never> { get }
 }
 
 /// Default implementation.
 extension KeyboardReadable {
-    var keyboardPublisher: AnyPublisher<Bool, Never> {
+    public var keyboardPublisher: AnyPublisher<Bool, Never> {
         Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
@@ -27,7 +27,7 @@ extension KeyboardReadable {
         .eraseToAnyPublisher()
     }
     
-    var keyboardHeight: AnyPublisher<CGFloat, Never> {
+    public var keyboardHeight: AnyPublisher<CGFloat, Never> {
         NotificationCenter
             .default
             .publisher(for: UIResponder.keyboardWillShowNotification)
@@ -46,11 +46,16 @@ extension KeyboardReadable {
 }
 
 /// View modifier for hiding the keyboard on tap.
-struct HideKeyboardOnTapGesture: ViewModifier {
+public struct HideKeyboardOnTapGesture: ViewModifier {
     var shouldAdd: Bool
     var onTapped: (() -> Void)?
     
-    func body(content: Content) -> some View {
+    public init(shouldAdd: Bool, onTapped: (() -> Void)? = nil) {
+        self.shouldAdd = shouldAdd
+        self.onTapped = onTapped
+    }
+    
+    public func body(content: Content) -> some View {
         content
             .gesture(shouldAdd ? TapGesture().onEnded { _ in
                 resignFirstResponder()

@@ -119,19 +119,6 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
             }
             
-//            if !viewModel.typingUsers.isEmpty {
-//                VStack {
-//                    Spacer()
-//                    HStack {
-//                        Text("\(viewModel.typingUsers[0]) is typing...")
-//                            .padding(.horizontal)
-//                            .padding(.vertical, 2)
-//                        Spacer()
-//                    }
-//                    .background(Color.white.opacity(0.9))
-//                }
-//            }
-//
             if showScrollToLatestButton {
                 ScrollToBottomButton(
                     unreadCount: unreadCount,

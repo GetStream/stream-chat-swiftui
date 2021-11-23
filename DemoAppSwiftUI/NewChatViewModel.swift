@@ -1,5 +1,5 @@
 //
-//  Created by Martin Mitrevski on 22.11.21.
+//  Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -20,38 +20,27 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     @Published var state: NewChatState = .initial
     @Published var selectedUsers = [ChatUser]() {
         didSet {
-            if selectedUsers.count > 0 {
-                let selectedUserIds = Set(selectedUsers.map { $0.id })
-                do {
-                    channelController = try chatClient.channelController(
-                        createDirectMessageChannelWith: selectedUserIds,
-                        name: nil,
-                        imageURL: nil,
-                        extraData: [:]
-                    )
-                    channelController?.synchronize { [weak self] error in
-                        if error != nil {
-                            self?.state = .error
-                        } else {
-                            withAnimation {
-                                self?.state = .channel
-                            }
-                            
-                        }                        
+            if _updatingSelectedUsers.compareAndSwap(old: false, new: true) {
+                if selectedUsers.count > 0 {
+                    do {
+                        try makeChannelController()
+                    } catch {
+                        state = .error
+                        updatingSelectedUsers = false
                     }
-                } catch {
-                    state = .error
+                    
+                } else {
+                    withAnimation {
+                        state = .loaded
+                        updatingSelectedUsers = false
+                    }
                 }
-                
-            } else {
-                withAnimation {
-                    state = .loaded
-                }                
             }
         }
     }
     
     @Atomic private var loadingNextUsers: Bool = false
+    @Atomic private var updatingSelectedUsers: Bool = false
     
     var channelController: ChatChannelController?
     
@@ -66,6 +55,10 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
     
     func userTapped(_ user: ChatUser) {
+        if updatingSelectedUsers {
+            return
+        }
+        
         if selectedUsers.contains(user) {
             selectedUsers.removeAll { selected in
                 selected == user
@@ -128,6 +121,28 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                 self?.state = .error
             } else {
                 self?.state = .loaded
+            }
+        }
+    }
+    
+    private func makeChannelController() throws {
+        let selectedUserIds = Set(selectedUsers.map { $0.id })
+        channelController = try chatClient.channelController(
+            createDirectMessageChannelWith: selectedUserIds,
+            name: nil,
+            imageURL: nil,
+            extraData: [:]
+        )
+        channelController?.synchronize { [weak self] error in
+            if error != nil {
+                self?.state = .error
+                self?.updatingSelectedUsers = false
+            } else {
+                withAnimation {
+                    self?.state = .channel
+                    self?.updatingSelectedUsers = false
+                }
+                
             }
         }
     }
