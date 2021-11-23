@@ -15,7 +15,6 @@
 		8465FCB427468A8D00AF091E /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB327468A8D00AF091E /* StreamChat */; };
 		8465FCB727468B0600AF091E /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB627468B0600AF091E /* NukeUI */; };
 		8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */; };
-		8465FCC127468B6900AF091E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCC027468B6900AF091E /* ContentView.swift */; };
 		8465FCC327468B6A00AF091E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCC227468B6A00AF091E /* Assets.xcassets */; };
 		8465FCC627468B6A00AF091E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCC527468B6A00AF091E /* Preview Assets.xcassets */; };
 		8465FCD8274694D200AF091E /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCD1274694D200AF091E /* LaunchScreen.swift */; };
@@ -137,6 +136,8 @@
 		84B288CD274C544B00DD090B /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288CC274C544B00DD090B /* CreateGroupView.swift */; };
 		84B288CF274C545900DD090B /* CreateGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288CE274C545900DD090B /* CreateGroupViewModel.swift */; };
 		84B288D1274CEDD000DD090B /* GroupNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D0274CEDD000DD090B /* GroupNameView.swift */; };
+		84B288D3274D23AF00DD090B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D2274D23AF00DD090B /* LoginView.swift */; };
+		84B288D5274D286500DD090B /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D4274D286500DD090B /* LoginViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -180,7 +181,6 @@
 		8465FBC22746873A00AF091E /* StreamChatSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatSwiftUITests.swift; sourceTree = "<group>"; };
 		8465FCBC27468B6900AF091E /* DemoAppSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoAppSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppSwiftUIApp.swift; sourceTree = "<group>"; };
-		8465FCC027468B6900AF091E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8465FCC227468B6A00AF091E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8465FCC527468B6A00AF091E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8465FCCA27468B7500AF091E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -302,6 +302,8 @@
 		84B288CC274C544B00DD090B /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		84B288CE274C545900DD090B /* CreateGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewModel.swift; sourceTree = "<group>"; };
 		84B288D0274CEDD000DD090B /* GroupNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNameView.swift; sourceTree = "<group>"; };
+		84B288D2274D23AF00DD090B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		84B288D4274D286500DD090B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -340,7 +342,6 @@
 				8465FBB72746873A00AF091E /* Sources */,
 				8465FBC12746873A00AF091E /* StreamChatSwiftUITests */,
 				8465FCBD27468B6900AF091E /* DemoAppSwiftUI */,
-				8465FBB62746873A00AF091E /* Products */,
 				8465FCE5274695B400AF091E /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -353,6 +354,7 @@
 				8465FCBC27468B6900AF091E /* DemoAppSwiftUI.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		8465FBB72746873A00AF091E /* Sources */ = {
@@ -382,7 +384,8 @@
 				8465FCD2274694D200AF091E /* LaunchAnimationState.swift */,
 				8465FCD1274694D200AF091E /* LaunchScreen.swift */,
 				8465FCD5274694D200AF091E /* SceneDelegate.swift */,
-				8465FCC027468B6900AF091E /* ContentView.swift */,
+				84B288D2274D23AF00DD090B /* LoginView.swift */,
+				84B288D4274D286500DD090B /* LoginViewModel.swift */,
 				84335015274BABF3007A1B81 /* NewChatView.swift */,
 				84335017274BAD4B007A1B81 /* NewChatViewModel.swift */,
 				84B288CC274C544B00DD090B /* CreateGroupView.swift */,
@@ -392,6 +395,7 @@
 				84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */,
 				8465FCCA27468B7500AF091E /* Info.plist */,
 				8465FCC227468B6A00AF091E /* Assets.xcassets */,
+				8465FBB62746873A00AF091E /* Products */,
 				8465FCC427468B6A00AF091E /* Preview Content */,
 			);
 			path = DemoAppSwiftUI;
@@ -925,7 +929,6 @@
 			files = (
 				8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */,
 				84335016274BABF3007A1B81 /* NewChatView.swift in Sources */,
-				8465FCC127468B6900AF091E /* ContentView.swift in Sources */,
 				84335018274BAD4B007A1B81 /* NewChatViewModel.swift in Sources */,
 				84B288CD274C544B00DD090B /* CreateGroupView.swift in Sources */,
 				8465FCDC274694D200AF091E /* SceneDelegate.swift in Sources */,
@@ -933,6 +936,8 @@
 				84B288D1274CEDD000DD090B /* GroupNameView.swift in Sources */,
 				84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */,
 				8465FCDE274694D200AF091E /* CustomChannelHeader.swift in Sources */,
+				84B288D3274D23AF00DD090B /* LoginView.swift in Sources */,
+				84B288D5274D286500DD090B /* LoginViewModel.swift in Sources */,
 				8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */,
 				8465FCDB274694D200AF091E /* DemoUser.swift in Sources */,
 				8465FCDD274694D200AF091E /* CustomAttachment.swift in Sources */,

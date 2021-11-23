@@ -209,14 +209,15 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
         channels = controller.channels
         
         loading = true
-        controller.synchronize { [unowned self] error in
-            loading = false
+        controller.synchronize { [weak self] error in
+            guard let self = self else { return }
+            self.loading = false
             if error != nil {
                 // handle error
-                channelAlertType = .error
+                self.channelAlertType = .error
             } else {
                 // access channels
-                self.channels = controller.channels
+                self.channels = self.controller.channels
                 self.checkForDeeplinks()
             }
         }
