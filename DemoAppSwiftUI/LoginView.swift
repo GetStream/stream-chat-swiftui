@@ -12,7 +12,6 @@ struct LoginView: View {
     
     var body: some View {
         VStack {
-            
             Image("STREAMMARK")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -40,6 +39,9 @@ struct LoginView: View {
             
             Spacer()
         }
+        .overlay(
+            viewModel.loading ? ProgressView() : nil
+        )
     }
     
 }

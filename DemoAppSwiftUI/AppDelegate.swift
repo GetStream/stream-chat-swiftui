@@ -54,7 +54,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         streamChat = StreamChat(chatClient: chatClient)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            AppState.shared.userState = .notLoggedIn
+            withAnimation {
+                AppState.shared.userState = .notLoggedIn
+            }            
         }
         
         return true

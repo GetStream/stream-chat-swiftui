@@ -4,15 +4,19 @@
 //
 
 import SwiftUI
+import StreamChat
 import StreamChatSwiftUI
+import NukeUI
 
 public struct CustomChannelHeader: ToolbarContent {
-
+    
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
     
-    public var title: String
+    var title: String
+    var currentUserController: CurrentChatUserController
     @Binding var isNewChatShown: Bool
+    @Binding var logoutAlertShown: Bool
     
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
@@ -27,23 +31,53 @@ public struct CustomChannelHeader: ToolbarContent {
                     .resizable()
             }            
         }
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                logoutAlertShown = true
+            } label: {
+                LazyImage(source: currentUserController.currentUser?.imageURL)
+                    .onDisappear(.reset)
+                    .clipShape(Circle())
+                    .frame(
+                        width: 30,
+                        height: 30
+                    )
+            }
+
+        }
     }
 
 }
 
 struct CustomChannelModifier: ChannelListHeaderViewModifier {
     
+    @Injected(\.chatClient) var chatClient
+    
     var title: String
     
     @State var isNewChatShown = false
+    @State var logoutAlertShown = false
     
     func body(content: Content) -> some View {
         ZStack {
             content.toolbar {
                 CustomChannelHeader(
                     title: title,
-                    isNewChatShown: $isNewChatShown
+                    currentUserController: chatClient.currentUserController(),
+                    isNewChatShown: $isNewChatShown,
+                    logoutAlertShown: $logoutAlertShown
                 )
+            }
+            .alert(isPresented: $logoutAlertShown) {
+                Alert(
+                    title: Text("Sign out"),
+                    message: Text("Are you sure you want to sign out?"),
+                    primaryButton: .destructive(Text("Sign out")) {
+                        withAnimation {
+                            AppState.shared.userState = .notLoggedIn
+                        }                        
+                    },
+                    secondaryButton: .cancel())
             }
             
             NavigationLink(isActive: $isNewChatShown) {

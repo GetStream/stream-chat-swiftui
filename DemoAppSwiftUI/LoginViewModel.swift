@@ -9,6 +9,7 @@ import StreamChatSwiftUI
 class LoginViewModel: ObservableObject {
     
     @Published var demoUsers = UserCredentials.builtInUsers
+    @Published var loading = false
     
     @Injected(\.chatClient) var chatClient
     
@@ -17,6 +18,7 @@ class LoginViewModel: ObservableObject {
     }
     
     private func connectUser(withCredentials credentials: UserCredentials) {
+        loading = true
         let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .warning
          
@@ -29,8 +31,11 @@ class LoginViewModel: ObservableObject {
                 return
             }
             
-            DispatchQueue.main.async {
-                AppState.shared.userState = .loggedIn
+            DispatchQueue.main.async { [weak self] in
+                withAnimation {
+                    self?.loading = false
+                    AppState.shared.userState = .loggedIn
+                }                
             }            
         }
     }
