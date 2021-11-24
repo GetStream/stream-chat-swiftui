@@ -102,7 +102,6 @@ public struct LinkAttachmentView: View {
             .padding(.bottom, 8)
         }
         .padding(.horizontal, padding)
-        .frame(maxWidth: width)
         .onTapGesture {
             if UIApplication.shared.canOpenURL(linkAttachment.originalURL) {
                 UIApplication.shared.open(linkAttachment.originalURL, options: [:])
