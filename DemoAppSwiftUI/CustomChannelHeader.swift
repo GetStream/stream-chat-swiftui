@@ -68,6 +68,13 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     logoutAlertShown: $logoutAlertShown
                 )
             }
+                        
+            NavigationLink(isActive: $isNewChatShown) {
+                NewChatView(isNewChatShown: $isNewChatShown)
+            } label: {
+                EmptyView()
+            }
+            .isDetailLink(false)            
             .alert(isPresented: $logoutAlertShown) {
                 Alert(
                     title: Text("Sign out"),
@@ -75,17 +82,10 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     primaryButton: .destructive(Text("Sign out")) {
                         withAnimation {
                             AppState.shared.userState = .notLoggedIn
-                        }                        
+                        }
                     },
                     secondaryButton: .cancel())
             }
-            
-            NavigationLink(isActive: $isNewChatShown) {
-                NewChatView(isNewChatShown: $isNewChatShown)
-            } label: {
-                EmptyView()
-            }
-            .isDetailLink(false)
         }
         
     }

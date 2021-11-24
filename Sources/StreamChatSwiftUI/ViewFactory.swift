@@ -388,7 +388,7 @@ public protocol ViewFactory: AnyObject {
         onError: @escaping (Error) -> Void
     ) -> MessageActionsViewType
     
-    associatedtype MessageReactionViewType
+    associatedtype MessageReactionViewType: View
     /// Creates the reactions view shown above the message.
     /// - Parameter message: the message for which reactions are shown.
     /// - Returns: view shown in the message reactions slot.

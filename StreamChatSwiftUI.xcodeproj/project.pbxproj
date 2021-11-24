@@ -133,6 +133,7 @@
 		8465FDD72746A95800AF091E /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD692746A95700AF091E /* Appearance.swift */; };
 		8465FDD82746AA2700AF091E /* StreamChatSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 8465FD602746A95700AF091E /* StreamChatSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */; };
+		84AD8425274E2C380098C3C4 /* ChatChannelScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AD8424274E2C380098C3C4 /* ChatChannelScreen.swift */; };
 		84B288CD274C544B00DD090B /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288CC274C544B00DD090B /* CreateGroupView.swift */; };
 		84B288CF274C545900DD090B /* CreateGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288CE274C545900DD090B /* CreateGroupViewModel.swift */; };
 		84B288D1274CEDD000DD090B /* GroupNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D0274CEDD000DD090B /* GroupNameView.swift */; };
@@ -299,6 +300,7 @@
 		8465FD682746A95700AF091E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8465FD692746A95700AF091E /* Appearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComposerAttachmentView.swift; sourceTree = "<group>"; };
+		84AD8424274E2C380098C3C4 /* ChatChannelScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelScreen.swift; sourceTree = "<group>"; };
 		84B288CC274C544B00DD090B /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		84B288CE274C545900DD090B /* CreateGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewModel.swift; sourceTree = "<group>"; };
 		84B288D0274CEDD000DD090B /* GroupNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNameView.swift; sourceTree = "<group>"; };
@@ -473,6 +475,7 @@
 		8465FCFC2746A95600AF091E /* ChatChannel */ = {
 			isa = PBXGroup;
 			children = (
+				84AD8424274E2C380098C3C4 /* ChatChannelScreen.swift */,
 				8465FD2D2746A95600AF091E /* ChatChannelView.swift */,
 				8465FD302746A95600AF091E /* ChatChannelViewModel.swift */,
 				8465FD2E2746A95600AF091E /* ChannelHeader */,
@@ -859,6 +862,7 @@
 				8465FD822746A95700AF091E /* LinkTextView.swift in Sources */,
 				8465FD6D2746A95700AF091E /* ViewModelsFactory.swift in Sources */,
 				8465FDBA2746A95700AF091E /* BundleExtensions.swift in Sources */,
+				84AD8425274E2C380098C3C4 /* ChatChannelScreen.swift in Sources */,
 				8465FD812746A95700AF091E /* SystemMessageView.swift in Sources */,
 				8465FD7D2746A95700AF091E /* MessageBubble.swift in Sources */,
 				8465FDC62746A95700AF091E /* ChannelHeaderLoader.swift in Sources */,
