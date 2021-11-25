@@ -226,9 +226,9 @@ internal enum L10n {
 // MARK: - Implementation Details
 
 extension L10n {
+
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-     // TODO: Using using Appearance.default prohibits using Appearance injection
-     let format = Appearance.default.localizationProvider(key, table)
+     let format = Appearance.localizationProvider(key, table)
      return String(format: format, locale: Locale.current, arguments: args)
   }
 }

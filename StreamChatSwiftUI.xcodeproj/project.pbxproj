@@ -140,6 +140,7 @@
 		84B288D1274CEDD000DD090B /* GroupNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D0274CEDD000DD090B /* GroupNameView.swift */; };
 		84B288D3274D23AF00DD090B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D2274D23AF00DD090B /* LoginView.swift */; };
 		84B288D5274D286500DD090B /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288D4274D286500DD090B /* LoginViewModel.swift */; };
+		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -308,6 +309,7 @@
 		84B288D0274CEDD000DD090B /* GroupNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNameView.swift; sourceTree = "<group>"; };
 		84B288D2274D23AF00DD090B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		84B288D4274D286500DD090B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +399,7 @@
 				84B288CE274C545900DD090B /* CreateGroupViewModel.swift */,
 				8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */,
 				84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */,
+				84EDBC36274FE5CD0057218D /* Localizable.strings */,
 				8465FCCA27468B7500AF091E /* Info.plist */,
 				8465FCC227468B6A00AF091E /* Assets.xcassets */,
 				8465FBB62746873A00AF091E /* Products */,
@@ -786,6 +789,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8465FCC627468B6A00AF091E /* Preview Assets.xcassets in Resources */,
+				84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */,
 				8465FCC327468B6A00AF091E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
