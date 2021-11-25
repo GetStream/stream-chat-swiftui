@@ -34,6 +34,7 @@ struct LoginView: View {
                     DemoUserView(user: user)
                 }
                 .padding(.vertical, 4)
+                .animation(nil)
             }
             .listStyle(.plain)
             

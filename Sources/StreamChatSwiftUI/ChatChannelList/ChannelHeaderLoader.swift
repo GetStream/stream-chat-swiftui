@@ -105,7 +105,9 @@ open class ChannelHeaderLoader: ObservableObject {
             guard let self = self else { return }
             switch result {
             case let .success(image):
-                self.loadedImages[channel.cid.id] = image
+                DispatchQueue.main.async {
+                    self.loadedImages[channel.cid.id] = image
+                }
             case let .failure(error):
                 log.error("error loading image: \(error.localizedDescription)")
             }

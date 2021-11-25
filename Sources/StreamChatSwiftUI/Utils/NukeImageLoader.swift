@@ -14,6 +14,7 @@ open class NukeImageLoader: ImageLoading {
     open func loadImage(
         using urlRequest: URLRequest,
         cachingKey: String?,
+        priority: ImageRequest.Priority = .normal,
         completion: @escaping ((Result<UIImage, Error>) -> Void)
     ) {
         var userInfo: [ImageRequest.UserInfoKey: Any]?
@@ -51,12 +52,13 @@ open class NukeImageLoader: ImageLoading {
             var placeholderIndex = 0
             
             let thumbnailUrl = imageCDN.thumbnailURL(originalURL: avatarUrl, preferredSize: .avatarThumbnailSize)
-            let imageRequest = imageCDN.urlRequest(forImage: thumbnailUrl)
+            var imageRequest = imageCDN.urlRequest(forImage: thumbnailUrl)
+            imageRequest.timeoutInterval = 8
             let cachingKey = imageCDN.cachingKey(forImage: avatarUrl)
 
             group.enter()
 
-            loadImage(using: imageRequest, cachingKey: cachingKey) { result in
+            loadImage(using: imageRequest, cachingKey: cachingKey, priority: .low) { result in
                 switch result {
                 case let .success(image):
                     images.append(image)
