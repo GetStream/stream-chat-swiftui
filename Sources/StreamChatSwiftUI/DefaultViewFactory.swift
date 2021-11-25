@@ -126,8 +126,7 @@ extension ViewFactory {
         ImageAttachmentContainer(
             message: message,
             width: availableWidth,
-            isFirst: isFirst,
-            isGiphy: false
+            isFirst: isFirst
         )
     }
     
@@ -135,12 +134,11 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> ImageAttachmentContainer {
-        ImageAttachmentContainer(
+    ) -> GiphyAttachmentView {
+        GiphyAttachmentView(
             message: message,
             width: availableWidth,
-            isFirst: isFirst,
-            isGiphy: true
+            isFirst: isFirst
         )
     }
     

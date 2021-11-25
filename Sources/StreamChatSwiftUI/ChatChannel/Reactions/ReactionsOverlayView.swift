@@ -73,7 +73,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             onBackgroundTap()
                         }
                     )
-                    .id(viewModel.message.reactionScoresId)
                     .offset(
                         x: messageDisplayInfo.frame.origin.x,
                         y: -24

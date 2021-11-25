@@ -31,6 +31,7 @@ public struct MessageAvatarView: View {
             
             LazyImage(source: adjustedURL)
                 .onDisappear(.reset)
+                .priority(.normal)
                 .clipShape(Circle())
                 .frame(
                     width: size.width,
