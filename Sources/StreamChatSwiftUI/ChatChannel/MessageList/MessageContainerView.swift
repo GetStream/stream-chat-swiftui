@@ -109,7 +109,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var reactionsShown: Bool {
-        !message.reactionScores.isEmpty
+        !message.reactionScores.isEmpty && !message.isDeleted
     }
 }
 

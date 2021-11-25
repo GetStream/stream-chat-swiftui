@@ -105,15 +105,17 @@ public struct ChannelAvatarView: View {
     var size: CGSize = .defaultAvatarSize
     
     public var body: some View {
-        AvatarView(avatar: avatar, size: size)
-            .overlay(
-                showOnlineIndicator ?
-                    TopRightView {
-                        OnlineIndicatorView(indicatorSize: size.width * 0.3)
-                    }
-                    .offset(x: 3, y: -1)
-                    : nil
-            )
+        LazyView(
+            AvatarView(avatar: avatar, size: size)
+                .overlay(
+                    showOnlineIndicator ?
+                        TopRightView {
+                            OnlineIndicatorView(indicatorSize: size.width * 0.3)
+                        }
+                        .offset(x: 3, y: -1)
+                        : nil
+                )
+        )
     }
 }
 

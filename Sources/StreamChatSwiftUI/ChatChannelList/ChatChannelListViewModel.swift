@@ -50,7 +50,6 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
     }
 
     @Published var deeplinkChannel: ChatChannel?
-    @Published var loadedImages = [String: UIImage]()
     @Published var currentChannelId: String?
     @Published var channelAlertType: ChannelAlertType? {
         didSet {

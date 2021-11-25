@@ -203,7 +203,10 @@ struct ChatUserView: View {
     
     var body: some View {
         HStack {
-            MessageAvatarView(author: user)
+            LazyView(
+                MessageAvatarView(author: user)
+            )
+            
             VStack(alignment: .leading, spacing: 4) {
                 Text(user.name ?? user.id)
                     .lineLimit(1)
