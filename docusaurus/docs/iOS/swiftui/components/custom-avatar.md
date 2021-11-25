@@ -45,7 +45,7 @@ class CustomFactory: ViewFactory {
     
     init() {}
    
-    func makeAvatarView(for user: ChatUser) -> some View {
+    func makeMessageAvatarView(for user: ChatUser) -> some View {
         CustomUserAvatar(author: user)
     }
     
