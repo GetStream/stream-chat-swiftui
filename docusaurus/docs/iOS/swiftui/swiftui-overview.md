@@ -35,17 +35,15 @@ To get started integrating Stream Chat in your iOS app, install the `StreamChatS
 
 ### Install with Swift Package Manager
 
-Open your `.xcodeproj`, select the option "Add Package Dependency" in File > Swift Packages, and paste the URL: "https://github.com/getstream/stream-chat-swift".
+Open your `.xcodeproj`, select the option "Add Package Dependency" in File > Add Packages, and paste the URL: https://github.com/GetStream/stream-chat-swiftui.git.
 
-![Screenshot shows Xcode with the Add Package Dependency dialog opened and Stream Chat iOS SDK GitHub URL in the input field](../assets/spm-00.png)
+Xcode will look for the repository and automatically select the latest version tagged. Press next and Xcode will download the dependency. While the SDK is in beta mode, it's best to stay on the main branch as a dependency.
 
-After pressing next, Xcode will look for the repository and automatically select the latest version tagged. Press next and Xcode will download the dependency.
+![Screenshot shows Xcode with the Add Package Dependency dialog opened and Stream Chat iOS SDK GitHub URL in the input field](../assets/spm-sui-01.png)
 
-![Screenshot shows an Xcode screen selecting a dependency version and an Xcode screen downloading that dependency](../assets/spm-01.png)
+The repository contains 1 target - StreamChatSwiftUI.
 
-The repository contains 3 targets: StreamChat, StreamChatUI and StreamChatSwiftUI. If you'll use the UI components, select one of StreamChatUI or StreamChatSwiftUI. They both provide the same functionalities, the only difference is the underlying iOS technology (SwiftUI vs. UIKit). If you don't need the UI components, select just StreamChat.
-
-![Screenshot shows an Xcode screen with dependency targets to be selected](../assets/spm-02.png)
+![Screenshot shows an Xcode screen with dependency targets to be selected](../assets/spm-sui-02.png)
 
 After you press finish, it's done!
 
@@ -55,7 +53,7 @@ Because StreamChat SDKs have to be distributed with its resources, the minimal S
 
 ### Install with CocoaPods
 
-In your project's Podfile, add: `pod 'StreamChatSwiftUI', '~> 0.0.1'`. It should look similar to the snippet below.
+In your project's Podfile, add: `pod 'StreamChatSwiftUI', '~> 4.5.3'`. It should look similar to the snippet below.
 
 ```ruby
 target 'MyProject' do
@@ -63,11 +61,11 @@ target 'MyProject' do
   use_frameworks!
 
   # Pods for MyProject
-  pod 'StreamChatSwiftUI', '~> 0.0.1'
+  pod 'StreamChatSwiftUI', '~> 4.5.3'
 end
 ```
 
-The StreamChatUI pod will automatically include the StreamChat dependency. If you want just the StreamChat dependency, without the UI components, add `pod 'StreamChat', '~> 4.0'` to your Podfile instead. It should look similar to the snippet below.
+The StreamChatSwiftUI pod will automatically include the StreamChat dependency. If you want just the StreamChat dependency, without the SwiftUI components, add `pod 'StreamChat', '~> 4.0'` to your Podfile instead. It should look similar to the snippet below.
 
 ```ruby
 target 'MyProject' do
@@ -87,4 +85,4 @@ pod install --repo-update
 
 The above command will generate the **MyProject.xcworkspace** file automatically.
 
-To stay up-to-date with our updates and get a detailed breakdown of what's new, subscribe to the releases of [getstream/stream-chat-swift](https://github.com/GetStream/stream-chat-swift/releases) by clicking the "watch" button. You can further tweak your watch preferences and subscribe only to the release events.
+To stay up-to-date with our updates and get a detailed breakdown of what's new, subscribe to the releases of [getstream/stream-chat-swift](https://github.com/GetStream/stream-chat-swiftui/releases) by clicking the "watch" button. You can further tweak your watch preferences and subscribe only to the release events.

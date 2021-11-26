@@ -227,6 +227,7 @@ struct LazyLoadingImage: View {
                     .scaledToFill()
                     .aspectRatio(contentMode: .fill)
                     .clipped()
+                    .allowsHitTesting(false)
             } else if error != nil {
                 Color(.secondarySystemBackground)
             } else {
