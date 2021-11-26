@@ -4,7 +4,7 @@
 
 ## SwiftUI - Currently in Development 🏗
 
-The SwiftUI SDK is built on top of the `StreamChat` framework and it's a SwiftUI alternative to the `StreamChatUI` SDK. It's built completely in SwiftUI, using declarative patterns, that will be familiar to developers working with SwiftUI. The SDK includes an extensive set of performant and customizable UI components which allow you to get started quickly with little to no plumbing required.
+The SwiftUI SDK is built on top of the [StreamChat](https://getstream.io/chat/docs/ios-swift/?language=swift) framework and it's a SwiftUI alternative to the [StreamChatUI](https://getstream.io/chat/docs/sdk/ios/) SDK. It's built completely in SwiftUI, using declarative patterns, that will be familiar to developers working with SwiftUI. The SDK includes an extensive set of performant and customizable UI components which allow you to get started quickly with little to no plumbing required.
 
 ## Main Features
 
@@ -53,7 +53,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of channels matching provided query </td>
-    <th rowspan="7"><img src="ReadmeAssets/Channel_List_Bezel.png?raw=true" width="80%" /></th>
+    <th rowspan="8"><img src="ReadmeAssets/Channel_List_Bezel.png?raw=true" width="80%" /></th>
   </tr>
    <tr> <td> Channel name and image based on the channel members or custom data</td> </tr>
   <tr> <td> Unread messages indicator </td> </tr>
@@ -74,7 +74,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of messages in a channel </td>
-    <th rowspan="9"><img src="ReadmeAssets/Message_List_Bezel.png?raw=true" width="80%" /></th>
+    <th rowspan="10"><img src="ReadmeAssets/Message_List_Bezel.png?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Photo attachments </td> </tr>
   <tr> <td> Giphy attachments </td> </tr>
@@ -99,7 +99,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> Support for multiline text, expands and shrinks as needed </td>
-    <th rowspan="6"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
+    <th rowspan="5"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Image, video and file attachments </td> </tr>
   <tr> <td> Camera integration </td> </tr>
