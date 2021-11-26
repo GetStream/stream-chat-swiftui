@@ -53,7 +53,7 @@ Because StreamChat SDKs have to be distributed with its resources, the minimal S
 
 ### Install with CocoaPods
 
-In your project's Podfile, add: `pod 'StreamChatSwiftUI', '~> 4.5.3'`. It should look similar to the snippet below.
+In your project's Podfile, add: `pod 'StreamChatSwiftUI', '~> 4.6.0'`. It should look similar to the snippet below.
 
 ```ruby
 target 'MyProject' do
@@ -61,7 +61,7 @@ target 'MyProject' do
   use_frameworks!
 
   # Pods for MyProject
-  pod 'StreamChatSwiftUI', '~> 4.5.3'
+  pod 'StreamChatSwiftUI', '~> 4.6.0'
 end
 ```
 
