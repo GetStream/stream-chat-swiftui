@@ -62,7 +62,7 @@ public protocol ViewFactory: AnyObject {
     ///  - onDismiss: handler when the more actions view is dismissed.
     ///  - onError: handler when an error happened.
     /// - Returns: list of `ChannelAction` items.
-    func suppotedMoreChannelActions(
+    func supportedMoreChannelActions(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
@@ -369,7 +369,7 @@ public protocol ViewFactory: AnyObject {
     ///  - onDismiss: handler when the more actions view is dismissed.
     ///  - onError: handler when an error happened.
     /// - Returns: list of `MessageAction` items.
-    func suppotedMessageActions(
+    func supportedMessageActions(
         for message: ChatMessage,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void

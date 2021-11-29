@@ -28,7 +28,7 @@ extension ViewFactory {
         DefaultChannelListHeaderModifier(title: title)
     }
     
-    public func suppotedMoreChannelActions(
+    public func supportedMoreChannelActions(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
@@ -48,7 +48,7 @@ extension ViewFactory {
     ) -> MoreChannelActionsView {
         MoreChannelActionsView(
             channel: channel,
-            channelActions: suppotedMoreChannelActions(
+            channelActions: supportedMoreChannelActions(
                 for: channel,
                 onDismiss: onDismiss,
                 onError: onError
@@ -370,7 +370,7 @@ extension ViewFactory {
         AssetsAccessPermissionView()
     }
     
-    public func suppotedMessageActions(
+    public func supportedMessageActions(
         for message: ChatMessage,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
@@ -388,7 +388,7 @@ extension ViewFactory {
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> some View {
-        let messageActions = suppotedMessageActions(
+        let messageActions = supportedMessageActions(
             for: message,
             onDismiss: onDismiss,
             onError: onError

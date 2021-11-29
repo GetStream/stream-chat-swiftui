@@ -12,10 +12,10 @@ The SwiftUI SDK allows you to either use the same view, with additional actions 
 
 First, we will explore how you can extend the existing channel actions view with your own actions. The default actions provided by the SDK are leaving group, muting/unmuting group and users, as well as deleting the conversation. 
 
-Let's now add additional action that will freeze the channel. In order to do this, we need to create our own view factory, which will provide its own implementation of the `suppotedMoreChannelActions` method of the SDK. This method returns an array of the channel actions displayed when the ellipsis button is tapped in the swiped state of a channel.
+Let's now add additional action that will freeze the channel. In order to do this, we need to create our own view factory, which will provide its own implementation of the `supportedMoreChannelActions` method of the SDK. This method returns an array of the channel actions displayed when the ellipsis button is tapped in the swiped state of a channel.
 
 ```swift
-func suppotedMoreChannelActions(
+func supportedMoreChannelActions(
     for channel: ChatChannel,
     onDismiss: @escaping () -> Void,
     onError: @escaping (Error) -> Void

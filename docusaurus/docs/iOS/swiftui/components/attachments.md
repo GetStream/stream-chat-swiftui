@@ -114,7 +114,7 @@ Next, you need to define a custom rule in our `MessageTypeResolving` protocol, w
 class CustomMessageResolver: MessageTypeResolving {
     
     func hasCustomAttachment(message: ChatMessage) -> Bool {
-        let messageComponents = message.text.components(separatedBy: " ")
+        let messageComponents = message.text.components(separatedBy: CharacterSet.whitespacesAndNewlines)
         return messageComponents.filter { component in
             isValidEmail(component)
         }
