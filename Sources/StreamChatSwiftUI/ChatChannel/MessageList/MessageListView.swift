@@ -25,6 +25,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var width: CGFloat?
     @State private var height: CGFloat?
     @State private var keyboardShown = false
+    @State private var pendingKeyboardUpdate: Bool?
     
     private var dateFormatter: DateFormatter {
         utils.dateFormatter
@@ -101,7 +102,13 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
-                    showScrollToLatestButton = value ?? 0 < -20
+                    DispatchQueue.main.async {
+                        let offsetValue = value ?? 0
+                        showScrollToLatestButton = offsetValue < -20
+                        if keyboardShown {
+                            resignFirstResponder()
+                        }
+                    }
                 }
                 .onPreferenceChange(HeightPreferenceKey.self) { value in
                     if let value = value, value != height {
@@ -132,8 +139,18 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         }
         .onReceive(keyboardPublisher) { visible in
-            keyboardShown = visible
+            if currentDateString != nil {
+                pendingKeyboardUpdate = visible
+            } else {
+                keyboardShown = visible
+            }
         }
+        .onChange(of: currentDateString, perform: { dateString in
+            if dateString == nil, let keyboardUpdate = pendingKeyboardUpdate {
+                keyboardShown = keyboardUpdate
+                pendingKeyboardUpdate = nil
+            }
+        })
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
     }
     

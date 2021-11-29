@@ -31,7 +31,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     var onMessageSent: () -> Void
     
     public var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack(alignment: .bottom) {
                 factory.makeLeadingComposerView(state: $viewModel.pickerTypeState)
 
@@ -98,7 +98,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
-    var onCustomAttachmentTap: (CustomAttachment) -> ()
+    var onCustomAttachmentTap: (CustomAttachment) -> Void
     
     var removeAttachmentWithId: (String) -> Void
     
@@ -145,7 +145,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
             if !addedCustomAttachments.isEmpty {
                 factory.makeCustomAttachmentPreviewView(
                     addedCustomAttachments: addedCustomAttachments,
-                    onCustomAttachmentTap: onCustomAttachmentTap)
+                    onCustomAttachmentTap: onCustomAttachmentTap
+                )
             }
             
             ComposerTextInputView(
