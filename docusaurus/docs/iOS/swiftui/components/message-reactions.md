@@ -36,10 +36,10 @@ public func makeMessageReactionView(
 
 ## Customizing the reactions overlay view
 
-The reactions overlay view (shown on long press of a message), also provides access to the message actions. If you want to replace / extend the default message actions, you can do so via the `suppotedMessageActions` method in the `ViewFactory`. As an inspiration, here's a glimpse on how the default message actions are configured.
+The reactions overlay view (shown on long press of a message), also provides access to the message actions. If you want to replace / extend the default message actions, you can do so via the `supportedMessageActions` method in the `ViewFactory`. As an inspiration, here's a glimpse on how the default message actions are configured.
 
 ```swift
-public func suppotedMessageActions(
+public func supportedMessageActions(
         for message: ChatMessage,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
@@ -185,7 +185,7 @@ public func makeMessageActionsView(
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
 ) -> some View {
-    let messageActions = suppotedMessageActions(
+    let messageActions = supportedMessageActions(
         for: message,
         onDismiss: onDismiss,
         onError: onError

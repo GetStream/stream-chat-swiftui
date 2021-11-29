@@ -32,7 +32,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.currentSnapshot = currentSnapshot
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
-        messageActionsCount = factory.suppotedMessageActions(
+        messageActionsCount = factory.supportedMessageActions(
             for: messageDisplayInfo.message,
             onDismiss: {},
             onError: { _ in }

@@ -65,7 +65,7 @@ class CustomFactory: ViewFactory {
     
     
     // Example for an injected action. Uncomment to see it in action.
-    func suppotedMoreChannelActions(
+    func supportedMoreChannelActions(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
