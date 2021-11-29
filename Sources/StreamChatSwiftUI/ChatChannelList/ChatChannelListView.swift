@@ -92,7 +92,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 }
             }
             .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title))
-            .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
             .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
         }

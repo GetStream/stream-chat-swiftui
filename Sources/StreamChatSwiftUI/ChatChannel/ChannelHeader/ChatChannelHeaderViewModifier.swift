@@ -45,6 +45,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 showOnlineIndicator: onlineIndicatorShown,
                 size: CGSize(width: 36, height: 36)
             )
+            .offset(x: 8)
         }
     }
     

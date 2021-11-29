@@ -79,6 +79,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .padding(.horizontal, 8)
                             .padding(.bottom, showsAllData(for: message) ? 8 : 2)
+                            .padding(.top, message == messages.last ? 8 : 0)
                             .flippedUpsideDown()
                             .onAppear {
                                 let index = messages.firstIndex { msg in
