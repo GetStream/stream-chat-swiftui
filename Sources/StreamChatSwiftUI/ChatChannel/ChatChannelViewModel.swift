@@ -142,25 +142,14 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     }
     
     func showReactionOverlay() {
-        let view: UIView = topVC()!.view
+        guard let view: UIView = topVC()?.view else {
+            currentSnapshot = UIImage(systemName: "photo")
+            return
+        }
         UIGraphicsBeginImageContext(view.frame.size)
         view.layer.render(in: UIGraphicsGetCurrentContext()!)
         currentSnapshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-    }
-    
-    func topVC() -> UIViewController? {
-        let keyWindow = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-        
-        if var topController = keyWindow?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            
-            return topController
-        }
-        
-        return nil
     }
     
     // MARK: - private
@@ -185,6 +174,20 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
                 }
             )
         }
+    }
+    
+    private func topVC() -> UIViewController? {
+        let keyWindow = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+        
+        if var topController = keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            
+            return topController
+        }
+        
+        return nil
     }
     
     private func save(lastDate: Date) {
