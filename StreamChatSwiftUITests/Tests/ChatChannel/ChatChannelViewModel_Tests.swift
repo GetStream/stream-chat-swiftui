@@ -165,27 +165,10 @@ class ChatChannelViewModel_Tests: XCTestCase {
     private func makeChannelController(
         messages: [ChatMessage] = []
     ) -> ChatChannelController_Mock {
-        let channel = ChatChannel.mockDMChannel()
-        let channelQuery = ChannelQuery(cid: channel.cid)
-        let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId!]))
-        let channelController = ChatChannelController_Mock(
-            channelQuery: channelQuery,
-            channelListQuery: channelListQuery,
-            client: chatClient
+        return ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient,
+            messages: messages
         )
-        var channelMessages = messages
-        if channelMessages.isEmpty {
-            let message = ChatMessage.mock(
-                id: .unique,
-                cid: channel.cid,
-                text: "Test message",
-                author: ChatUser.mock(id: chatClient.currentUserId!)
-            )
-            channelMessages = [message]
-        }
-
-        channelController.simulateInitial(channel: channel, messages: channelMessages, state: .initialized)
-        return channelController
     }
 
 }
