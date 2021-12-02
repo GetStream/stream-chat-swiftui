@@ -241,8 +241,7 @@ extension ChatMessage: Identifiable {
         
         let strings = states.map { "\($0)" }
         let combined = strings.joined(separator: "-")
-        let statesId = "\(id)-\(combined)"
-        return statesId
+        return combined
     }
     
     var reactionScoresId: String {

@@ -6,8 +6,6 @@ import XCTest
 @testable import StreamChatSwiftUI
 @testable import StreamChat
 
-import XCTest
-
 class MessageComposerViewModel_Tests: XCTestCase {
     
     private let testImage = UIImage(systemName: "checkmark")!
