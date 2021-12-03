@@ -20,7 +20,7 @@ public struct FileAttachmentPreview: View {
         NavigationView {
             ZStack {
                 if error != nil {
-                    Text("Error occured while previewing the file.")
+                    Text(L10n.Message.FileAttachment.errorPreview)
                         .font(fonts.body)
                         .padding()
                 } else {

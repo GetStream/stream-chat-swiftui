@@ -59,7 +59,7 @@ extension ChannelAction {
         actions.append(deleteConversation)
         
         let cancel = ChannelAction(
-            title: "Cancel",
+            title: L10n.Alert.Actions.cancel,
             iconName: "xmark.circle",
             action: onDismiss,
             confirmationPopup: nil,
@@ -88,12 +88,12 @@ extension ChannelAction {
             }
         }
         let confirmationPopup = ConfirmationPopup(
-            title: "Mute \(naming(for: channel))",
-            message: "Are you sure you want to mute this \(naming(for: channel))?",
-            buttonTitle: "Mute"
+            title: "\(L10n.Channel.Item.mute) \(naming(for: channel))",
+            message: "\(L10n.Alert.Actions.muteChannelTitle) \(naming(for: channel))?",
+            buttonTitle: L10n.Channel.Item.mute
         )
         let muteUser = ChannelAction(
-            title: "Mute \(naming(for: channel))",
+            title: "\(L10n.Channel.Item.mute) \(naming(for: channel))",
             iconName: "speaker.slash",
             action: muteAction,
             confirmationPopup: confirmationPopup,
@@ -119,12 +119,12 @@ extension ChannelAction {
             }
         }
         let confirmationPopup = ConfirmationPopup(
-            title: "Unmute \(naming(for: channel))",
-            message: "Are you sure you want to unmute this \(naming(for: channel))?",
-            buttonTitle: "Unmute"
+            title: "\(L10n.Channel.Item.unmute) \(naming(for: channel))",
+            message: "\(L10n.Alert.Actions.unmuteChannelTitle) \(naming(for: channel))?",
+            buttonTitle: L10n.Channel.Item.unmute
         )
         let unmuteUser = ChannelAction(
-            title: "Unmute \(naming(for: channel))",
+            title: "\(L10n.Channel.Item.unmute) \(naming(for: channel))",
             iconName: "speaker.wave.1",
             action: unMuteAction,
             confirmationPopup: confirmationPopup,
@@ -184,12 +184,12 @@ extension ChannelAction {
             }
         }
         let confirmationPopup = ConfirmationPopup(
-            title: "Leave group",
-            message: "Are you sure you want to leave this group?",
-            buttonTitle: "Leave"
+            title: L10n.Alert.Actions.leaveGroupTitle,
+            message: L10n.Alert.Actions.leaveGroupMessage,
+            buttonTitle: L10n.Alert.Actions.leaveGroupButton
         )
         let leaveConversation = ChannelAction(
-            title: "Leave group",
+            title: L10n.Alert.Actions.leaveGroupTitle,
             iconName: "person.fill.xmark",
             action: leaveAction,
             confirmationPopup: confirmationPopup,
@@ -200,6 +200,6 @@ extension ChannelAction {
     }
     
     private static func naming(for channel: ChatChannel) -> String {
-        channel.isDirectMessageChannel ? "user" : "group"
+        channel.isDirectMessageChannel ? L10n.Channel.Name.directMessage : L10n.Channel.Name.group
     }
 }

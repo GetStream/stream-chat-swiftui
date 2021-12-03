@@ -21,8 +21,18 @@ internal enum L10n {
       internal static var deleteChannelMessage: String { L10n.tr("Localizable", "alert.actions.delete-channel-message") }
       /// Delete conversation
       internal static var deleteChannelTitle: String { L10n.tr("Localizable", "alert.actions.delete-channel-title") }
+      /// Leave
+      internal static var leaveGroupButton: String { L10n.tr("Localizable", "alert.actions.leave-group-button") }
+      /// Are you sure you want to leave this group?
+      internal static var leaveGroupMessage: String { L10n.tr("Localizable", "alert.actions.leave-group-message") }
+      /// Leave group
+      internal static var leaveGroupTitle: String { L10n.tr("Localizable", "alert.actions.leave-group-title") }
+      /// Are you sure you want to mute this
+      internal static var muteChannelTitle: String { L10n.tr("Localizable", "alert.actions.mute-channel-title") }
       /// Ok
       internal static var ok: String { L10n.tr("Localizable", "alert.actions.ok") }
+      /// Are you sure you want to unmute this
+      internal static var unmuteChannelTitle: String { L10n.tr("Localizable", "alert.actions.unmute-channel-title") }
     }
     internal enum Error {
       /// The operation couldn't be completed.
@@ -41,10 +51,16 @@ internal enum L10n {
     internal enum Item {
       /// No messages
       internal static var emptyMessages: String { L10n.tr("Localizable", "channel.item.empty-messages") }
+      /// Mute
+      internal static var mute: String { L10n.tr("Localizable", "channel.item.mute") }
+      /// Channel is muted
+      internal static var muted: String { L10n.tr("Localizable", "channel.item.muted") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
       /// is typing ...
       internal static var typingSingular: String { L10n.tr("Localizable", "channel.item.typing-singular") }
+      /// Unmute
+      internal static var unmute: String { L10n.tr("Localizable", "channel.item.unmute") }
     }
     internal enum Name {
       /// and
@@ -53,6 +69,10 @@ internal enum L10n {
       internal static func andXMore(_ p1: Any) -> String {
         return L10n.tr("Localizable", "channel.name.andXMore", String(describing: p1))
       }
+      /// user
+      internal static var directMessage: String { L10n.tr("Localizable", "channel.name.direct-message") }
+      /// group
+      internal static var group: String { L10n.tr("Localizable", "channel.name.group") }
       /// NoChannel
       internal static var missing: String { L10n.tr("Localizable", "channel.name.missing") }
     }
@@ -72,6 +92,16 @@ internal enum L10n {
       internal static var channelReply: String { L10n.tr("Localizable", "composer.checkmark.channel-reply") }
       /// Also send as direct message
       internal static var directMessageReply: String { L10n.tr("Localizable", "composer.checkmark.direct-message-reply") }
+    }
+    internal enum Files {
+      /// Add more files
+      internal static var addMore: String { L10n.tr("Localizable", "composer.files.add-more") }
+    }
+    internal enum Images {
+      /// Change in Settings
+      internal static var accessSettings: String { L10n.tr("Localizable", "composer.images.access-settings") }
+      /// You have not granted access to the photo library.
+      internal static var noAccessLibrary: String { L10n.tr("Localizable", "composer.images.no-access-library") }
     }
     internal enum Picker {
       /// Cancel
@@ -182,6 +212,14 @@ internal enum L10n {
         /// Flag Message
         internal static var confirmationTitle: String { L10n.tr("Localizable", "message.actions.flag.confirmation-title") }
       }
+    }
+    internal enum FileAttachment {
+      /// Error occured while previewing the file.
+      internal static var errorPreview: String { L10n.tr("Localizable", "message.file-attachment.error-preview") }
+    }
+    internal enum GiphyAttachment {
+      /// GIPHY
+      internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
     internal enum Sending {
       /// UPLOADING FAILED

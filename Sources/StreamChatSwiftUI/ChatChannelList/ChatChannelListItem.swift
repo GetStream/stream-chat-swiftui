@@ -74,7 +74,7 @@ public struct ChatChannelListItem: View {
     
     private var subtitleText: String {
         if channel.isMuted {
-            return "Channel is muted"
+            return L10n.Channel.Item.muted
         } else if let latestMessage = channel.latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {

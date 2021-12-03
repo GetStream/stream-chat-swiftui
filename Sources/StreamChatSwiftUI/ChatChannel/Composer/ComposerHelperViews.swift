@@ -70,7 +70,7 @@ struct FilePickerDisplayView: View {
                 Button {
                     filePickerShown = true
                 } label: {
-                    Text("Add more files")
+                    Text(L10n.Composer.Files.addMore)
                         .font(fonts.bodyBold)
                 }
             }
@@ -109,12 +109,12 @@ struct AssetsAccessPermissionView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
-            Text("You have not granted access to the photo library.")
+            Text(L10n.Composer.Images.noAccessLibrary)
                 .font(fonts.body)
             Button {
                 openAppPrivacySettings()
             } label: {
-                Text("Change in Settings")
+                Text(L10n.Composer.Images.accessSettings)
                     .font(fonts.bodyBold)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color(colors.highlightedAccentBackground))
