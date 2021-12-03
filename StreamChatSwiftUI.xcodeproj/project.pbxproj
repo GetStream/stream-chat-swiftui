@@ -218,6 +218,7 @@
 		84C94D5A275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D59275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift */; };
 		84C94D5C275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5B275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift */; };
 		84C94D5E275A3AA9007FE2B9 /* ImageCDN_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */; };
+		84C94D60275A45D2007FE2B9 /* ViewFactory_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -466,6 +467,7 @@
 		84C94D59275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChat_Utils_Tests.swift; sourceTree = "<group>"; };
 		84C94D5B275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatUtilsMocks.swift; sourceTree = "<group>"; };
 		84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCDN_Tests.swift; sourceTree = "<group>"; };
+		84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactory_Tests.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -987,6 +989,7 @@
 				84C94D55275A1AE1007FE2B9 /* StringExtensions_Tests.swift */,
 				84C94D59275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift */,
 				84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */,
+				84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1293,6 +1296,7 @@
 				84C94CE427578B92007FE2B9 /* ChatChannelController_Mock.swift in Sources */,
 				84C94D58275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift in Sources */,
 				84C94D282757954C007FE2B9 /* VirtualTimer.swift in Sources */,
+				84C94D60275A45D2007FE2B9 /* ViewFactory_Tests.swift in Sources */,
 				84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */,
 				84C94D5127591DE2007FE2B9 /* ChatMessageIDs_Tests.swift in Sources */,
 				84C94CD727578B92007FE2B9 /* ChatMessageLinkAttachment_Mock.swift in Sources */,

@@ -10,11 +10,11 @@ import SwiftUI
 extension ViewFactory {
     // MARK: channels
     
-    public func makeNoChannelsView() -> NoChannelsView {
+    public func makeNoChannelsView() -> some View {
         NoChannelsView()
     }
     
-    public func makeLoadingView() -> LoadingView {
+    public func makeLoadingView() -> some View {
         LoadingView()
     }
     
@@ -45,7 +45,7 @@ extension ViewFactory {
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
-    ) -> MoreChannelActionsView {
+    ) -> some View {
         MoreChannelActionsView(
             channel: channel,
             channelActions: supportedMoreChannelActions(
@@ -100,7 +100,7 @@ extension ViewFactory {
         }
     }
     
-    public func makeMessageAvatarView(for author: ChatUser) -> MessageAvatarView {
+    public func makeMessageAvatarView(for author: ChatUser) -> some View {
         MessageAvatarView(author: author)
     }
     
@@ -114,7 +114,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> MessageTextView {
+    ) -> some View {
         MessageTextView(message: message, isFirst: isFirst)
     }
     
@@ -122,7 +122,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> ImageAttachmentContainer {
+    ) -> some View {
         ImageAttachmentContainer(
             message: message,
             width: availableWidth,
@@ -134,7 +134,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> GiphyAttachmentView {
+    ) -> some View {
         GiphyAttachmentView(
             message: message,
             width: availableWidth,
@@ -146,7 +146,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> LinkAttachmentContainer {
+    ) -> some View {
         LinkAttachmentContainer(
             message: message,
             width: availableWidth,
@@ -158,7 +158,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> FileAttachmentsContainer {
+    ) -> some View {
         FileAttachmentsContainer(
             message: message,
             width: availableWidth,
@@ -170,7 +170,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> VideoAttachmentsContainer {
+    ) -> some View {
         VideoAttachmentsContainer(
             message: message,
             width: availableWidth
@@ -181,7 +181,7 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> DeletedMessageView {
+    ) -> some View {
         DeletedMessageView(
             message: message,
             isFirst: isFirst
@@ -192,14 +192,14 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat
-    ) -> EmptyView {
+    ) -> some View {
         EmptyView()
     }
     
     public func makeGiphyBadgeViewType(
         for message: ChatMessage,
         availableWidth: CGFloat
-    ) -> GiphyBadgeView {
+    ) -> some View {
         GiphyBadgeView()
     }
     
