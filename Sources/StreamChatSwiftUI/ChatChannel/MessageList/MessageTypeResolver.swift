@@ -45,10 +45,6 @@ public protocol MessageTypeResolving {
 
 /// Default methods implementation of the `MessageTypeResolving` protocol.
 extension MessageTypeResolving {
-    public var groupImageAndGiphy: Bool {
-        true
-    }
-    
     public func isDeleted(message: ChatMessage) -> Bool {
         message.isDeleted
     }
