@@ -20,4 +20,18 @@ class ImageLoader_Mock: ImageLoading {
             completion(.success(Self.defaultLoadedImage))
     }
     
+    func loadImages(
+        from urls: [URL],
+        placeholders: [UIImage],
+        loadThumbnails: Bool,
+        thumbnailSize: CGSize,
+        imageCDN: ImageCDN,
+        completion: @escaping (([UIImage]) -> Void)
+    ) {
+        let result = urls.map { _ in
+            Self.defaultLoadedImage
+        }
+        completion(result)
+    }
+    
 }

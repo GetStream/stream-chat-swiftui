@@ -221,6 +221,7 @@
 		84C94D60275A45D2007FE2B9 /* ViewFactory_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */; };
 		84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */; };
 		84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */; };
+		84C94D68275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -472,6 +473,7 @@
 		84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactory_Tests.swift; sourceTree = "<group>"; };
 		84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelNamer_Tests.swift; sourceTree = "<group>"; };
 		84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionsViewModel_Tests.swift; sourceTree = "<group>"; };
+		84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelHeaderLoader_Tests.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -813,6 +815,7 @@
 			children = (
 				84C94C7F27567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift */,
 				84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */,
+				84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */,
 				84C94D412757C16D007FE2B9 /* ChatChannelListTestHelpers.swift */,
 			);
 			path = ChatChannelList;
@@ -1307,6 +1310,7 @@
 				84C94D5127591DE2007FE2B9 /* ChatMessageIDs_Tests.swift in Sources */,
 				84C94CD727578B92007FE2B9 /* ChatMessageLinkAttachment_Mock.swift in Sources */,
 				84C94D0527578BF2007FE2B9 /* TestRunnerEnvironment.swift in Sources */,
+				84C94D68275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift in Sources */,
 				84C94D1A27579273007FE2B9 /* TestRequest.swift in Sources */,
 				84C94D0927578BF2007FE2B9 /* TestManagedObject.swift in Sources */,
 				84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */,
