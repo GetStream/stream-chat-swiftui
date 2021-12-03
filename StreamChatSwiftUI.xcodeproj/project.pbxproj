@@ -219,6 +219,7 @@
 		84C94D5C275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5B275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift */; };
 		84C94D5E275A3AA9007FE2B9 /* ImageCDN_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */; };
 		84C94D60275A45D2007FE2B9 /* ViewFactory_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */; };
+		84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -468,6 +469,7 @@
 		84C94D5B275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatUtilsMocks.swift; sourceTree = "<group>"; };
 		84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCDN_Tests.swift; sourceTree = "<group>"; };
 		84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactory_Tests.swift; sourceTree = "<group>"; };
+		84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelNamer_Tests.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -990,6 +992,7 @@
 				84C94D59275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift */,
 				84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */,
 				84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */,
+				84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1308,6 +1311,7 @@
 				84C94D4D2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift in Sources */,
 				84C94CDB27578B92007FE2B9 /* NSManagedObject+ContextChange.swift in Sources */,
 				84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */,
+				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
 				84C94D492758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift in Sources */,
 				84C94CE027578B92007FE2B9 /* CurrentUserPayload.swift in Sources */,
 				84C94CCD27578B92007FE2B9 /* ChannelUnreadCount_Mock.swift in Sources */,
