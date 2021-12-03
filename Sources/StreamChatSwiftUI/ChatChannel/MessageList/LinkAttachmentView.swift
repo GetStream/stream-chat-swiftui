@@ -10,7 +10,7 @@ import SwiftUI
 /// Container for presenting link attachments.
 /// In case of more than one link, only the first link is previewed.
 public struct LinkAttachmentContainer: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var message: ChatMessage
     var width: CGFloat
@@ -49,8 +49,8 @@ extension ChatMessageLinkAttachment: Identifiable {}
 
 /// View for previewing link attachments.
 public struct LinkAttachmentView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     private let padding: CGFloat = 8
     

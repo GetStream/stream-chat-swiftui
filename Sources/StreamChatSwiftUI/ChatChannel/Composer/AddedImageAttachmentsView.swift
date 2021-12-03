@@ -6,8 +6,8 @@ import SwiftUI
 
 /// View for an added image displayed in the composer input.
 public struct AddedImageAttachmentsView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     public var images: [AddedAsset]
     public var onDiscardAttachment: (String) -> Void

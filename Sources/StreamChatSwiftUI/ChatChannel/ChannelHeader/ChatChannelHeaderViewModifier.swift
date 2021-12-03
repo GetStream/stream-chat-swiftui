@@ -12,10 +12,10 @@ public protocol ChatChannelHeaderViewModifier: ViewModifier {
 
 /// The default channel header.
 public struct DefaultChatChannelHeader: ToolbarContent {
-    @Injected(\.fonts) var fonts
-    @Injected(\.utils) var utils
-    @Injected(\.colors) var colors
-    @Injected(\.chatClient) var chatClient
+    @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
+    @Injected(\.colors) private var colors
+    @Injected(\.chatClient) private var chatClient
     
     private var channelNamer: ChatChannelNamer {
         utils.channelNamer

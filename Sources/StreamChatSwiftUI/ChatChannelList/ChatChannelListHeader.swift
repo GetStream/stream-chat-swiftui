@@ -11,8 +11,8 @@ public protocol ChannelListHeaderViewModifier: ViewModifier {
 
 /// The default channel list header.
 public struct DefaultChatChannelListHeader: ToolbarContent {
-    @Injected(\.fonts) var fonts
-    @Injected(\.images) var images
+    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
     
     public var title: String
     

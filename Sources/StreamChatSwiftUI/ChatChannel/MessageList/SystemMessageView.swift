@@ -6,8 +6,8 @@ import SwiftUI
 
 /// View displaying system messages.
 public struct SystemMessageView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     var message: String
     

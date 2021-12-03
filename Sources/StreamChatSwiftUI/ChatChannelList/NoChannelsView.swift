@@ -8,8 +8,8 @@ import SwiftUI
 ///
 /// Different view can be injected in its place.
 public struct NoChannelsView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     public var body: some View {
         VStack(spacing: 8) {

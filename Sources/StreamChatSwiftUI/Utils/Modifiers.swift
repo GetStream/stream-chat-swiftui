@@ -6,7 +6,7 @@ import SwiftUI
 
 /// Modifier for adding shadow and corner radius to a view.
 struct ShadowViewModifier: ViewModifier {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var cornerRadius: CGFloat = 16
 
@@ -43,7 +43,7 @@ struct StandardPaddingModifier: ViewModifier {
 }
 
 struct RoundedBorderModifier: ViewModifier {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     var cornerRadius: CGFloat = 18
     
     func body(content: Content) -> some View {
@@ -56,7 +56,7 @@ struct RoundedBorderModifier: ViewModifier {
 }
 
 struct IconOverImageModifier: ViewModifier {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     func body(content: Content) -> some View {
         content

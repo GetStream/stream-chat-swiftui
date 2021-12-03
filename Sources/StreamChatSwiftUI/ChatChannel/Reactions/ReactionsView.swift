@@ -53,8 +53,8 @@ struct ReactionsContainer: View {
 }
 
 struct ReactionsView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.images) var images
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
     
     let message: ChatMessage
     var useLargeIcons = false

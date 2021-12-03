@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 public struct ImageAttachmentContainer: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     let message: ChatMessage
     let width: CGFloat
@@ -53,9 +53,9 @@ public struct ImageAttachmentContainer: View {
 }
 
 struct ImageAttachmentView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
-    @Injected(\.utils) var utils
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
     
     let message: ChatMessage
     let width: CGFloat
@@ -211,7 +211,7 @@ struct MultiImageView: View {
 }
 
 struct LazyLoadingImage: View {
-    @Injected(\.utils) var utils
+    @Injected(\.utils) private var utils
     
     @State private var image: UIImage?
     @State private var error: Error?

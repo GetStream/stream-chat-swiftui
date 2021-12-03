@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Modifier that enables message bubble container.
 public struct ReactionsBubbleModifier: ViewModifier {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
         
     var message: ChatMessage
     

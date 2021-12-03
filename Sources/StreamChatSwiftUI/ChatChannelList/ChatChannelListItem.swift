@@ -7,9 +7,9 @@ import SwiftUI
 
 /// View for the channel list item.
 public struct ChatChannelListItem: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
-    @Injected(\.utils) var utils
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
         
     var channel: ChatChannel
     var channelName: String
@@ -121,7 +121,7 @@ public struct ChannelAvatarView: View {
 
 /// View used for the online indicator.
 public struct OnlineIndicatorView: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var indicatorSize: CGFloat
     
@@ -144,8 +144,8 @@ public struct OnlineIndicatorView: View {
 
 /// View displaying the user's unread messages in the channel list item.
 public struct UnreadIndicatorView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     var unreadCount: Int
     

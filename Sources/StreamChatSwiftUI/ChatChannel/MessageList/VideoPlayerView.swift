@@ -9,8 +9,8 @@ import SwiftUI
 public struct VideoPlayerView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     let attachment: ChatMessageVideoAttachment
     let author: ChatUser

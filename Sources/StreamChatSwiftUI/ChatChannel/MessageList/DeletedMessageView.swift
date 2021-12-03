@@ -7,9 +7,9 @@ import SwiftUI
 
 /// View displayed when a message is deleted.
 public struct DeletedMessageView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
-    @Injected(\.utils) var utils
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
     
     private var dateFormatter: DateFormatter {
         utils.dateFormatter

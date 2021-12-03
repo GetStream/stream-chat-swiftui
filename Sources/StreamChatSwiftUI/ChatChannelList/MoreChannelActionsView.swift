@@ -7,9 +7,9 @@ import SwiftUI
 
 /// Default view for the channel more actions view.
 public struct MoreChannelActionsView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.images) var images
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
     
     @StateObject var viewModel: MoreChannelActionsViewModel
     var onDismiss: () -> Void
@@ -119,7 +119,7 @@ public struct MoreChannelActionsView: View {
 
 /// View displaying channel members with image and name.
 public struct ChannelMemberView: View {
-    @Injected(\.fonts) var fonts
+    @Injected(\.fonts) private var fonts
     
     let avatar: UIImage
     let name: String

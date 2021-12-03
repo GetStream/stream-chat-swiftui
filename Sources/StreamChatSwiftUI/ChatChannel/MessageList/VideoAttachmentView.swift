@@ -28,7 +28,7 @@ public struct VideoAttachmentsContainer: View {
 }
 
 public struct VideoAttachmentView: View {
-    @Injected(\.utils) var utils
+    @Injected(\.utils) private var utils
     
     private var videoPreviewLoader: VideoPreviewLoader {
         utils.videoPreviewLoader

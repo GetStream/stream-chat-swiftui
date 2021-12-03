@@ -3,13 +3,13 @@
 //
 
 import Photos
-import SwiftUI
 import StreamChat
+import SwiftUI
 
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
         
     var viewFactory: Factory
     @Binding var selectedPickerState: AttachmentPickerState
@@ -77,7 +77,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
 /// View for picking the source of the attachment (photo, files or camera).
 struct AttachmentSourcePickerView: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var selected: AttachmentPickerState
     var onTap: (AttachmentPickerState) -> Void
@@ -115,8 +115,7 @@ struct AttachmentSourcePickerView: View {
 
 /// Button used for picking of attachment types.
 public struct AttachmentPickerButton: View {
-    
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var iconName: String
     var pickerType: AttachmentPickerState

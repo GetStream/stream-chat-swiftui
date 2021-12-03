@@ -9,9 +9,9 @@ import UIKit
 /// View model for the more channel actions.
 public class MoreChannelActionsViewModel: ObservableObject {
     /// Context provided values.
-    @Injected(\.utils) var utils
-    @Injected(\.chatClient) var chatClient
-    @Injected(\.images) var images
+    @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.images) private var images
     
     /// Private vars.
     private lazy var channelNamer = utils.channelNamer

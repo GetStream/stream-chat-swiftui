@@ -18,8 +18,8 @@ struct VideoIndicatorView: View {
 
 /// View displaying the duration of the video.
 struct VideoDurationIndicatorView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     var duration: String
     
@@ -35,8 +35,7 @@ struct VideoDurationIndicatorView: View {
 
 /// Container that displays attachment types.
 public struct AttachmentTypeContainer<Content: View>: View {
-        
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var content: () -> Content
     
@@ -59,8 +58,8 @@ public struct AttachmentTypeContainer<Content: View>: View {
 
 /// View shown after the native file picker is closed.
 struct FilePickerDisplayView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     @Binding var filePickerShown: Bool
     @Binding var addedFileURLs: [URL]
@@ -105,8 +104,8 @@ struct CameraPickerDisplayView: View {
 
 /// View displayed when there's no access permission to the photo library.
 struct AssetsAccessPermissionView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {

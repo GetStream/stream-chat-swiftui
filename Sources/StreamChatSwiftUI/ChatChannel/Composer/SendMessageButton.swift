@@ -6,8 +6,8 @@ import SwiftUI
 
 /// View for the button for sending messages.
 public struct SendMessageButton: View {
-    @Injected(\.images) var images
-    @Injected(\.colors) var colors
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
     
     var enabled: Bool
     var onTap: () -> Void

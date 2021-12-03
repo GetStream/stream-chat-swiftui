@@ -6,9 +6,9 @@ import SwiftUI
 
 /// View for the  action item in an action list (for channels and messages).
 public struct ActionItemView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.images) var images
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
 
     var title: String
     var iconName: String

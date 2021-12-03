@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 struct MessageView<Factory: ViewFactory>: View {
-    @Injected(\.utils) var utils
+    @Injected(\.utils) private var utils
     
     private var messageTypeResolver: MessageTypeResolving {
         utils.messageTypeResolver
@@ -93,8 +93,8 @@ struct MessageView<Factory: ViewFactory>: View {
 }
 
 public struct MessageTextView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     var message: ChatMessage
     var isFirst: Bool
@@ -111,7 +111,7 @@ public struct MessageTextView: View {
 public struct EmojiTextView: View {
     var message: ChatMessage
     
-    @Injected(\.fonts) var fonts
+    @Injected(\.fonts) private var fonts
     
     public var body: some View {
         Text(message.text)

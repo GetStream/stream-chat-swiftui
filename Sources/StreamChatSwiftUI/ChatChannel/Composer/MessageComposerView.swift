@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Main view for the message composer.
 public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
@@ -91,7 +91,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     var factory: Factory
     @Binding var text: String

@@ -7,7 +7,7 @@ import SwiftUI
 
 /// View for the chat channel.
 public struct ChatChannelView<Factory: ViewFactory>: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     @StateObject private var viewModel: ChatChannelViewModel
     

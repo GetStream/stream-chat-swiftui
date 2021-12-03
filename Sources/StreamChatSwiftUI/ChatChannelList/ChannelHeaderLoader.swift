@@ -7,9 +7,9 @@ import StreamChat
 import UIKit
 
 open class ChannelHeaderLoader: ObservableObject {
-    @Injected(\.images) var images
-    @Injected(\.utils) var utils
-    @Injected(\.chatClient) var chatClient
+    @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
     
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4

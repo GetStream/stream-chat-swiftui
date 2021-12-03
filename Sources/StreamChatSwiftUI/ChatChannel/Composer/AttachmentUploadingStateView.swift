@@ -7,9 +7,9 @@ import SwiftUI
 
 /// View used for displaying progress while an asset is being uploaded.
 struct AttachmentUploadingStateView: View {
-    @Injected(\.images) var images
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     var uploadState: AttachmentUploadingState
     var url: URL

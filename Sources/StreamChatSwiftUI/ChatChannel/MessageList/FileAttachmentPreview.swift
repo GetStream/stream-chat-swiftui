@@ -8,7 +8,7 @@ import SwiftUI
 public struct FileAttachmentPreview: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @Injected(\.fonts) var fonts
+    @Injected(\.fonts) private var fonts
     
     var url: URL
     

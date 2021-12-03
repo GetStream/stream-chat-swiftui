@@ -6,7 +6,7 @@ import SwiftUI
 
 /// View for the message actions.
 public struct MessageActionsView: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     @StateObject var viewModel: MessageActionsViewModel
     

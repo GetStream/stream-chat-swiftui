@@ -7,7 +7,7 @@ import SwiftUI
 
 /// View for the photo attachment picker.
 public struct PhotoAttachmentPickerView: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     @StateObject var assetLoader = PhotoAssetLoader()
     
@@ -37,9 +37,9 @@ public struct PhotoAttachmentPickerView: View {
 
 /// Photo cell displayed in the picker view.
 public struct PhotoAttachmentCell: View {
-    @Injected(\.colors) var colors
-    @Injected(\.images) var images
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
     
     @StateObject var assetLoader: PhotoAssetLoader
     

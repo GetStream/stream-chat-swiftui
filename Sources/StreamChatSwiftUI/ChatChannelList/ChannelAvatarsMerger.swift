@@ -15,8 +15,8 @@ public protocol ChannelAvatarsMerging {
 public class ChannelAvatarsMerger: ChannelAvatarsMerging {
     public init() {}
     
-    @Injected(\.utils) var utils
-    @Injected(\.images) var images
+    @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
     
     /// Context provided utils.
     private lazy var imageProcessor = utils.imageProcessor

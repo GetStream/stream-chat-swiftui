@@ -26,8 +26,8 @@ public enum AttachmentPickerType {
 
 /// View for picking the attachment type (media or giphy commands).
 public struct AttachmentPickerTypeView: View {
-    @Injected(\.images) var images
-    @Injected(\.colors) var colors
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
     
     @Binding var pickerTypeState: PickerTypeState
     
@@ -64,8 +64,8 @@ public struct AttachmentPickerTypeView: View {
 
 /// View for the picker type button.
 struct PickerTypeButton: View {
-    @Injected(\.images) var images
-    @Injected(\.colors) var colors
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
     
     @Binding var pickerTypeState: PickerTypeState
     

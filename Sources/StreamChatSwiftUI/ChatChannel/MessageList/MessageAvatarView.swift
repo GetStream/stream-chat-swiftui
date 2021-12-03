@@ -7,8 +7,8 @@ import StreamChat
 import SwiftUI
 
 public struct MessageAvatarView: View {
-    @Injected(\.utils) var utils
-    @Injected(\.colors) var colors
+    @Injected(\.utils) private var utils
+    @Injected(\.colors) private var colors
     
     private var imageCDN: ImageCDN {
         utils.imageCDN

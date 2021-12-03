@@ -7,8 +7,8 @@ import SwiftUI
 
 /// View for the chat channel list.
 public struct ChatChannelListView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     @StateObject private var viewModel: ChatChannelListViewModel
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()

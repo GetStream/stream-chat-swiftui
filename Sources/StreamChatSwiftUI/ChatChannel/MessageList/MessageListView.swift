@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
-    @Injected(\.utils) var utils
+    @Injected(\.utils) private var utils
     
     var factory: Factory
     var messages: LazyCachedMapCollection<ChatMessage>
@@ -164,8 +164,8 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 }
 
 public struct ScrollToBottomButton: View {
-    @Injected(\.images) var images
-    @Injected(\.colors) var colors
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
     
     private let buttonSize: CGFloat = 40
     
@@ -192,8 +192,8 @@ public struct ScrollToBottomButton: View {
 }
 
 struct UnreadButtonIndicator: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     private let size: CGFloat = 16
     
@@ -215,8 +215,8 @@ struct UnreadButtonIndicator: View {
 }
 
 public struct DateIndicatorView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     var date: String
     

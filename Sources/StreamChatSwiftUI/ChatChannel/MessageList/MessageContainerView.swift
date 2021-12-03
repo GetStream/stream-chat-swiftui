@@ -9,8 +9,8 @@ import StreamChat
 import SwiftUI
 
 struct MessageContainerView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     var factory: Factory
     let message: ChatMessage
@@ -114,8 +114,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 }
 
 struct MessageAuthorAndDateView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     var message: ChatMessage
     
@@ -131,9 +131,9 @@ struct MessageAuthorAndDateView: View {
 }
 
 struct MessageDateView: View {
-    @Injected(\.utils) var utils
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.utils) private var utils
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     private var dateFormatter: DateFormatter {
         utils.dateFormatter

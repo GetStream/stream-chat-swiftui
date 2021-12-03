@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Chat channel cell that is swipeable.
 public struct ChatChannelSwipeableListItem<ChannelDestination: View>: View {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     @State private var offsetX: CGFloat = 0
     @State private var openSideLock: SwipeDirection?

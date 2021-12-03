@@ -6,9 +6,9 @@ import SwiftUI
 
 /// Default view for the giphy badge.
 public struct GiphyBadgeView: View {
-    @Injected(\.images) var images
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     public var body: some View {
         BottomLeftView {

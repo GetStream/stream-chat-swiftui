@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 public class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
-    @Injected(\.chatClient) var chatClient
+    @Injected(\.chatClient) private var chatClient
     
     @Published var message: ChatMessage
     @Published var errorShown = false

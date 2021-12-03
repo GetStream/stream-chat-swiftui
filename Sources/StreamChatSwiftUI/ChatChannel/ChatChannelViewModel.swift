@@ -8,8 +8,8 @@ import StreamChat
 import SwiftUI
 
 public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelegate {
-    @Injected(\.chatClient) var chatClient
-    @Injected(\.utils) var utils
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
     
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200

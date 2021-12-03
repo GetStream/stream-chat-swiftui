@@ -6,8 +6,8 @@ import SwiftUI
 
 /// View for displaying subtitle text.
 public struct SubtitleText: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     var text: String
     

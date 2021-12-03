@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Modifier that enables message bubble container.
 public struct MessageBubbleModifier: ViewModifier {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
         
     var message: ChatMessage
     var isFirst: Bool
@@ -54,7 +54,7 @@ public struct MessageBubbleModifier: ViewModifier {
 
 /// Modifier that enables bubble container.
 public struct BubbleModifier: ViewModifier {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     private let cornerRadius: CGFloat = 18
     

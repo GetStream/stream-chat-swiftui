@@ -42,9 +42,9 @@ public struct FileAttachmentsContainer: View {
 }
 
 public struct FileAttachmentView: View {
-    @Injected(\.images) var images
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     @State private var fullScreenShown = false
     
@@ -77,9 +77,9 @@ public struct FileAttachmentView: View {
 }
 
 struct FileAttachmentDisplayView: View {
-    @Injected(\.images) var images
-    @Injected(\.fonts) var fonts
-    @Injected(\.colors) var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
     
     var url: URL
     var title: String

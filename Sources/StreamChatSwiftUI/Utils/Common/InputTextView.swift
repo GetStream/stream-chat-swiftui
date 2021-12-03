@@ -5,7 +5,7 @@
 import UIKit
 
 class InputTextView: UITextView {
-    @Injected(\.colors) var colors
+    @Injected(\.colors) private var colors
     
     /// Label used as placeholder for textView when it's empty.
     open private(set) lazy var placeholderLabel: UILabel = UILabel()
