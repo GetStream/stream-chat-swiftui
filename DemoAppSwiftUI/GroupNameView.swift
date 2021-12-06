@@ -1,9 +1,9 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChatSwiftUI
+import SwiftUI
 
 struct GroupNameView: View, KeyboardReadable {
     
@@ -60,7 +60,6 @@ struct GroupNameView: View, KeyboardReadable {
                 }
             }
             .listStyle(.plain)
-            
         }
         .navigationTitle("Name of Group Chat")
         .alert(isPresented: $viewModel.errorShown) {
@@ -71,7 +70,6 @@ struct GroupNameView: View, KeyboardReadable {
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
     }
-    
 }
 
 struct GroupControlsView: View {
@@ -121,8 +119,6 @@ struct GroupControlsView: View {
                 EmptyView()
             }
             .isDetailLink(false)
-
         }
     }
-    
 }
