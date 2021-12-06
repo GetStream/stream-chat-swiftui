@@ -75,7 +75,7 @@ end
 desc "Runs tests in Debug config"
 lane :test_ui do |options|
 
-  setCIEnvironmentVariable("../StreamChatUITests/Tests/StreamChatSwiftUI.xctestplan")
+  setCIEnvironmentVariable("../StreamChatSwiftUITests/Tests/StreamChatSwiftUI.xctestplan")
 
   scan(
     project: "StreamChatSwiftUI.xcodeproj",
