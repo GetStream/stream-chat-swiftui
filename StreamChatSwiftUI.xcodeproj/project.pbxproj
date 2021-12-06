@@ -258,6 +258,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
 		84335015274BABF3007A1B81 /* NewChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
 		84335017274BAD4B007A1B81 /* NewChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatViewModel.swift; sourceTree = "<group>"; };
@@ -970,6 +971,7 @@
 		84C94D4027579EAF007FE2B9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */,
 				84C94C7D27567CC2007FE2B9 /* ChatChannelList */,
 				84C94D472758BDB2007FE2B9 /* ChatChannel */,
 				84C94D52275A135F007FE2B9 /* Utils */,

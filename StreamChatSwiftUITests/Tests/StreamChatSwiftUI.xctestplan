@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "8EC9ED67-3425-42F1-B34A-A5A9F2670614",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
+        "identifier" : "8465FBBC2746873A00AF091E",
+        "name" : "StreamChatSwiftUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
