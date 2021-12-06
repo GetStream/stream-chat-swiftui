@@ -95,7 +95,7 @@ end
 
 def build_example_app(scheme, options)
   scan(
-    project: "StreamChatSwifUI.xcodeproj",
+    project: "StreamChatSwiftUI.xcodeproj",
     scheme: scheme,
     clean: true,
     build_for_testing: true,
