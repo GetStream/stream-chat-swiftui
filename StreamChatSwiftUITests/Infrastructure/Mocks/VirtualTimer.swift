@@ -3,8 +3,8 @@
 //
 
 import Foundation
-import XCTest
 @testable import StreamChat
+import XCTest
 
 struct VirtualTimeTimer: StreamChat.Timer {
     static var time: VirtualTime!
