@@ -77,12 +77,12 @@ jobs:
         xcode: "13.0"
     - name: Run Tests (Debug)
       run: bundle exec fastlane test_ui device:"iPhone 12 (15.0)"
-    - uses: 8398a7/action-slack@v3
+    - uses: codecov/codecov-action@v1
       with:
-        status: ${{ job.status }}
-        text: "You shall not pass!"
-        job_name: "Test UI (Debug)"
-        fields: message,commit,author,action,workflow,job,took
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: unit-tests
+        fail_ci_if_error: true # if codecov upload fails, should fail ci
+        verbose: true
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
