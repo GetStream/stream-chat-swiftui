@@ -21,14 +21,14 @@ public class MessageComposerViewModel: ObservableObject {
             }
         }
     }
-
+    
     @Published private(set) var imageAssets: PHFetchResult<PHAsset>?
     @Published private(set) var addedAssets = [AddedAsset]() {
         didSet {
             checkPickerSelectionState()
         }
     }
-
+    
     @Published var text = "" {
         didSet {
             if text != "" {
@@ -43,12 +43,13 @@ public class MessageComposerViewModel: ObservableObject {
             checkPickerSelectionState()
         }
     }
+
     @Published var addedCustomAttachments = [CustomAttachment]() {
         didSet {
             checkPickerSelectionState()
         }
     }
-
+    
     @Published var pickerTypeState: PickerTypeState = .expanded(.none) {
         didSet {
             switch pickerTypeState {
@@ -59,7 +60,7 @@ public class MessageComposerViewModel: ObservableObject {
             }
         }
     }
-
+    
     @Published private(set) var overlayShown = false {
         didSet {
             if overlayShown == true {
@@ -93,7 +94,7 @@ public class MessageComposerViewModel: ObservableObject {
             }
             
             attachments += addedCustomAttachments.map { attachment in
-                return attachment.content
+                attachment.content
             }
             
             channelController.createNewMessage(
@@ -119,9 +120,9 @@ public class MessageComposerViewModel: ObservableObject {
     
     public var sendButtonEnabled: Bool {
         !addedAssets.isEmpty ||
-        !text.isEmpty ||
-        !addedFileURLs.isEmpty ||
-        !addedCustomAttachments.isEmpty
+            !text.isEmpty ||
+            !addedFileURLs.isEmpty ||
+            !addedCustomAttachments.isEmpty
     }
     
     public func change(pickerState: AttachmentPickerState) {
@@ -195,7 +196,7 @@ public class MessageComposerViewModel: ObservableObject {
                 return true
             }
         }
-
+        
         return false
     }
     
@@ -214,7 +215,7 @@ public class MessageComposerViewModel: ObservableObject {
             temp.append(attachment)
         }
         
-        self.addedCustomAttachments = temp
+        addedCustomAttachments = temp
     }
     
     func isCustomAttachmentSelected(_ attachment: CustomAttachment) -> Bool {
@@ -302,7 +303,7 @@ public struct CustomAttachment: Identifiable, Equatable {
     
     public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
         lhs.id == rhs.id
-    }    
+    }
     
     public let id: String
     public let content: AnyAttachmentPayload
@@ -311,5 +312,4 @@ public struct CustomAttachment: Identifiable, Equatable {
         self.id = id
         self.content = content
     }
-    
 }

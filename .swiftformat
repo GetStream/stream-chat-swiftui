@@ -6,6 +6,7 @@
 --disable redundantType
 --disable extensionAccessControl
 --disable andOperator
+--disable blankLinesAtStartOfScope
 
 # Rules inferred from Swift Standard Library:
 --disable anyObjectProtocol, wrapMultilineStatementBraces
