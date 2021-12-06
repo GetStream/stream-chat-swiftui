@@ -2,9 +2,9 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class MessageComposerViewModel_Tests: XCTestCase {
     
@@ -16,7 +16,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         url: testURL,
         type: .image
     )
-
+    
     private var chatClient: ChatClient = {
         let client = ChatClient.mock()
         client.currentUserId = .unique
@@ -24,7 +24,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
     }()
     
     private var streamChat: StreamChat?
-        
+    
     override func setUp() {
         super.setUp()
         streamChat = StreamChat(chatClient: chatClient)
@@ -157,7 +157,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         viewModel.imageTapped(defaultAsset) // removed from the attachments list
         
         // Then
-        XCTAssert(viewModel.addedAssets.count == 0)
+        XCTAssert(viewModel.addedAssets.isEmpty)
     }
     
     func test_messageComposerVM_removeFileAttachment() {
@@ -169,7 +169,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         viewModel.removeAttachment(with: testURL.absoluteString)
         
         // Then
-        XCTAssert(viewModel.addedFileURLs.count == 0)
+        XCTAssert(viewModel.addedFileURLs.isEmpty)
     }
     
     func test_messageComposerVM_removeImageAttachment() {
@@ -181,7 +181,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         viewModel.removeAttachment(with: defaultAsset.id)
         
         // Then
-        XCTAssert(viewModel.addedAssets.count == 0)
+        XCTAssert(viewModel.addedAssets.isEmpty)
     }
     
     func test_messageComposerVM_cameraImageAdded() {
@@ -245,7 +245,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         
         // Then
         XCTAssert(isSelected == false)
-        XCTAssert(viewModel.addedCustomAttachments.count == 0)
+        XCTAssert(viewModel.addedCustomAttachments.isEmpty)
     }
     
     func test_messageComposerVM_cameraPickerShown() {
@@ -311,7 +311,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         }
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {
         let channelController = makeChannelController()
@@ -322,12 +322,11 @@ class MessageComposerViewModel_Tests: XCTestCase {
     private func makeChannelController(
         messages: [ChatMessage] = []
     ) -> ChatChannelController_Mock {
-        return ChatChannelTestHelpers.makeChannelController(
+        ChatChannelTestHelpers.makeChannelController(
             chatClient: chatClient,
             messages: messages
         )
     }
-
 }
 
 extension PickerTypeState: Equatable {
@@ -343,10 +342,5 @@ extension PickerTypeState: Equatable {
         }
         
         return false
-        
     }
-    
-    
-    
-    
 }

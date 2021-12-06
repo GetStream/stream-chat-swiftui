@@ -28,7 +28,7 @@ class StreamChat_Utils_Tests: XCTestCase {
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-
+    
     func test_streamChatUtils_injectVideoPreviewLoader() {
         // Given
         let videoPreviewLoader = utils.videoPreviewLoader as! VideoPreviewLoader_Mock
@@ -50,11 +50,10 @@ class StreamChat_Utils_Tests: XCTestCase {
             imageCDN: utils.imageCDN,
             resize: true,
             preferredSize: nil,
-            completion: {_ in }
+            completion: { _ in }
         )
         
         // Then
         XCTAssert(imageLoader.loadImageCalled == true)
     }
-    
 }

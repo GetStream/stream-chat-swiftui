@@ -2,10 +2,8 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
-
+@testable import StreamChatSwiftUI
 import XCTest
 
 class MessageTypeResolver_Tests: XCTestCase {
@@ -148,5 +146,4 @@ class MessageTypeResolver_Tests: XCTestCase {
         // Then
         XCTAssert(hasFileAttachments == true)
     }
-
 }

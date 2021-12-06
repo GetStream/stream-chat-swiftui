@@ -1,8 +1,12 @@
+//
+// Copyright © 2021 Stream.io Inc. All rights reserved.
+//
+
 import Foundation
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-import XCTest
 import SwiftUI
+import XCTest
 
 class ViewFactory_Tests: XCTestCase {
     
@@ -20,7 +24,7 @@ class ViewFactory_Tests: XCTestCase {
     )
     
     private var streamChat: StreamChat?
-        
+    
     override func setUp() {
         super.setUp()
         streamChat = StreamChat(chatClient: chatClient)
@@ -36,7 +40,7 @@ class ViewFactory_Tests: XCTestCase {
         // Then
         XCTAssert(view is NoChannelsView)
     }
-
+    
     func test_viewFactory_makeLoadingView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -134,7 +138,6 @@ class ViewFactory_Tests: XCTestCase {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
-        
         // When
         let view = viewFactory.makeMessageTextView(
             for: message,
@@ -194,7 +197,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeFileAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeFileAttachmentView(
             for: message,
@@ -209,7 +212,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeVideoAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeVideoAttachmentView(
             for: message,
@@ -224,7 +227,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeDeletedMessageView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeDeletedMessageView(
             for: message,
@@ -239,7 +242,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeCustomAttachmentViewType() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeCustomAttachmentViewType(
             for: message,
@@ -254,7 +257,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeGiphyBadgeViewType() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeGiphyBadgeViewType(for: message, availableWidth: 300)
         
@@ -265,7 +268,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeCustomAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeCustomAttachmentView(
             addedCustomAttachments: [],
@@ -279,7 +282,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeCustomAttachmentPreviewView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeCustomAttachmentPreviewView(
             addedCustomAttachments: [],
@@ -293,7 +296,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeFilePickerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeFilePickerView(
             filePickerShown: .constant(true),
@@ -307,7 +310,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeCameraPickerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeCameraPickerView(
             selected: .constant(.photos),
@@ -322,7 +325,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeAssetsAccessPermissionView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeAssetsAccessPermissionView()
         
@@ -354,7 +357,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeMessageActionsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeMessageActionsView(
             for: message,
@@ -369,7 +372,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeMessageReactionsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeMessageReactionView(message: message)
         
@@ -380,7 +383,7 @@ class ViewFactory_Tests: XCTestCase {
     func test_viewFactory_makeReactionsOverlayView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-
+        
         // When
         let view = viewFactory.makeReactionsOverlayView(
             currentSnapshot: UIImage(systemName: "checkmark")!,
@@ -388,14 +391,14 @@ class ViewFactory_Tests: XCTestCase {
                 message: message,
                 frame: .zero,
                 contentWidth: 300,
-                isFirst: true),
+                isFirst: true
+            ),
             onBackgroundTap: {}
         )
         
         // Then
         XCTAssert(view is ReactionsOverlayView<DefaultViewFactory>)
     }
-    
 }
 
 extension ChannelAction: Equatable {
@@ -403,5 +406,4 @@ extension ChannelAction: Equatable {
     public static func == (lhs: ChannelAction, rhs: ChannelAction) -> Bool {
         lhs.id == rhs.id
     }
-    
 }

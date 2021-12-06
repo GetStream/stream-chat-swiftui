@@ -2,10 +2,8 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
-
+@testable import StreamChatSwiftUI
 import XCTest
 
 class MessageActionsViewModel_Tests: XCTestCase {
@@ -46,5 +44,4 @@ class MessageActionsViewModel_Tests: XCTestCase {
         XCTAssert(action.confirmationPopup != nil)
         XCTAssert(viewModel.alertShown == true)
     }
-
 }

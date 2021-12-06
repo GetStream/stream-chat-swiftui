@@ -12,8 +12,7 @@ class VideoPreviewLoader_Mock: VideoPreviewLoader {
     
     func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
-    }    
-    
+    }
 }
 
 /// Mock implementation of `ImageLoading`.
@@ -30,5 +29,4 @@ class ImageLoaderUtils_Mock: ImageLoading {
     ) {
         loadImageCalled = true
     }
-
 }

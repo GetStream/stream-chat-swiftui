@@ -2,9 +2,9 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class ChatMessageIDs_Tests: XCTestCase {
         
@@ -93,5 +93,4 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Then
         XCTAssert(messageId == expectedId)
     }
-
 }

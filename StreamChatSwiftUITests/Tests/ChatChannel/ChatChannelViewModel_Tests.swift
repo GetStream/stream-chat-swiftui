@@ -2,9 +2,9 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class ChatChannelViewModel_Tests: XCTestCase {
 
@@ -160,15 +160,14 @@ class ChatChannelViewModel_Tests: XCTestCase {
         XCTAssert(initialListId == newListId)
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func makeChannelController(
         messages: [ChatMessage] = []
     ) -> ChatChannelController_Mock {
-        return ChatChannelTestHelpers.makeChannelController(
+        ChatChannelTestHelpers.makeChannelController(
             chatClient: chatClient,
             messages: messages
         )
     }
-
 }

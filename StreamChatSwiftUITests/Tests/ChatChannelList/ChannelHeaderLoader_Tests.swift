@@ -2,12 +2,12 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class ChannelHeaderLoader_Tests: XCTestCase {
-
+    
     @Injected(\.images) var images
     
     private let testURL = URL(string: "https://example.com")!
@@ -19,7 +19,7 @@ class ChannelHeaderLoader_Tests: XCTestCase {
     }()
     
     private var streamChat: StreamChat?
-        
+    
     override func setUp() {
         super.setUp()
         let imageLoader = ImageLoader_Mock()
@@ -30,7 +30,7 @@ class ChannelHeaderLoader_Tests: XCTestCase {
     func test_channelHeaderLoader_channelImageURL() {
         // Given
         let channel = ChatChannel.mockDMChannel(imageURL: testURL)
-
+        
         // Then
         loadImagesAndAssert(
             for: channel,
@@ -66,7 +66,7 @@ class ChannelHeaderLoader_Tests: XCTestCase {
             expectedLoadedImage: images.userAvatarPlaceholder4
         )
     }
-
+    
     func test_channelHeaderLoader_group_activeMembersEmpty() {
         // Given
         let channel = ChatChannel.mockNonDMChannel()
@@ -107,7 +107,7 @@ class ChannelHeaderLoader_Tests: XCTestCase {
         )
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func loadImagesAndAssert(
         for channel: ChatChannel,
@@ -138,5 +138,4 @@ class ChannelHeaderLoader_Tests: XCTestCase {
             XCTAssert(firstImage != secondImage)
         }
     }
-
 }

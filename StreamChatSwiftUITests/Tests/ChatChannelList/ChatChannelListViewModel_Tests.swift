@@ -2,9 +2,9 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class ChatChannelListViewModel_Tests: XCTestCase {
     
@@ -15,12 +15,12 @@ class ChatChannelListViewModel_Tests: XCTestCase {
     }()
     
     private var streamChat: StreamChat?
-        
+    
     override func setUp() {
         super.setUp()
         streamChat = StreamChat(chatClient: chatClient)
     }
-
+    
     func test_channelListVMCreation_channelsLoaded() {
         // Given
         let channelListController = makeChannelListController()
@@ -188,10 +188,10 @@ class ChatChannelListViewModel_Tests: XCTestCase {
         )
         
         // Then
-        XCTAssert(viewModel.channels.count == 0)
+        XCTAssert(viewModel.channels.isEmpty)
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func makeChannelListController(
         channels: [ChatChannel] = []
@@ -219,5 +219,4 @@ class ChatChannelListViewModel_Tests: XCTestCase {
         
         return viewModel
     }
-
 }

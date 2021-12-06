@@ -2,9 +2,9 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class ChatChannelTestHelpers {
     
@@ -98,11 +98,11 @@ class ChatChannelTestHelpers {
                 id: .unique,
                 type: .video,
                 payload: VideoAttachmentPayload(
-                            title: "test",
-                            videoRemoteURL: testURL,
-                            file: attachmentFile,
-                            extraData: nil
-                         ),
+                    title: "test",
+                    videoRemoteURL: testURL,
+                    file: attachmentFile,
+                    extraData: nil
+                ),
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -151,12 +151,12 @@ class ChatChannelTestHelpers {
                 id: .unique,
                 type: .file,
                 payload:
-                    FileAttachmentPayload(
-                        title: "test",
-                        assetRemoteURL: testURL,
-                        file: attachmentFile,
-                        extraData: nil
-                    ),
+                FileAttachmentPayload(
+                    title: "test",
+                    assetRemoteURL: testURL,
+                    file: attachmentFile,
+                    extraData: nil
+                ),
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -164,5 +164,4 @@ class ChatChannelTestHelpers {
         
         return fileAttachments
     }()
-    
 }

@@ -9,7 +9,7 @@ import XCTest
 class ChatChannelNamer_Tests: XCTestCase {
     
     var defaultMembers: [ChatChannelMember]!
-
+    
     override func setUp() {
         super.setUp()
         
@@ -34,7 +34,7 @@ class ChatChannelNamer_Tests: XCTestCase {
             )
         ]
     }
-
+    
     func test_defaultChannelNamer_whenChannelHasName_showsChannelName() {
         // Given
         let channel = ChatChannel.mock(
@@ -48,11 +48,11 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, "Darth Channel")
     }
-
+    
     func test_defaultChannelNamer_directChannel_whenChannelHasNoName_andExactly2Members_showsCurrentMembers() {
         // Given
         defaultMembers = [
@@ -78,11 +78,11 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, "Darth Maul and Darth Vader")
     }
-
+    
     func test_defaultChannelNamer_directChannel_whenChannelHasNoName_whenChannelHasNoMembers_showsCurrentUserId() {
         // Given
         let channel = ChatChannel.mockDMChannel(
@@ -93,11 +93,11 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, nil)
     }
-
+    
     func test_defaultChannelNamer_directChannel_whenChannelHasNoName_whenChannelHasOnlyCurrentMember_showsCurrentMemberName() {
         // Given
         let currentUser: ChatChannelMember = .mock(id: .unique, name: "Luke Skywalker")
@@ -110,11 +110,11 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, currentUser.name)
     }
-
+    
     func test_defaultChannelNamer_directChannel_whenChannelHasNoName_andMoreThan2Members_showsMembersAndNMore() {
         // Given
         let channel = ChatChannel.mockDMChannel(
@@ -126,7 +126,7 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, "Darth Maul, Darth Vader and 1 more")
     }
@@ -143,11 +143,11 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, nil)
     }
-
+    
     func test_defaultChannelNamer_withModifiedParameters_customSeparator() {
         // Given
         let channel = ChatChannel.mockDMChannel(
@@ -159,11 +159,11 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, "Darth Maul | Darth Vader and 1 more")
     }
-
+    
     func test_defaultChannelNamer_withModifiedParameters_numberOfMaximumMembers() {
         // Given
         defaultMembers = [
@@ -201,9 +201,8 @@ class ChatChannelNamer_Tests: XCTestCase {
         
         // When
         let nameForChannel = namer(channel, currentUserId)
-
+        
         // Then
         XCTAssertEqual(nameForChannel, "Darth Bane | Darth Maul | Darth Vader | Kylo Ren")
     }
-    
 }

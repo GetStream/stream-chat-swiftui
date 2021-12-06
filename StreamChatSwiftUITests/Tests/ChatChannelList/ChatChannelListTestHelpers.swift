@@ -2,8 +2,8 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
 
 extension ChannelAlertType: Equatable {
     
@@ -31,5 +31,4 @@ extension ChannelPopupType: Equatable {
         
         return false
     }
-    
 }

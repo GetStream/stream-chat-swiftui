@@ -3,9 +3,9 @@
 //
 
 import Foundation
-import UIKit
 @testable import StreamChat
 import StreamChatSwiftUI
+import UIKit
 
 class ImageLoader_Mock: ImageLoading {
     
@@ -16,8 +16,9 @@ class ImageLoader_Mock: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)) {
-            completion(.success(Self.defaultLoadedImage))
+        completion: @escaping ((Result<UIImage, Error>) -> Void)
+    ) {
+        completion(.success(Self.defaultLoadedImage))
     }
     
     func loadImages(
@@ -33,5 +34,4 @@ class ImageLoader_Mock: ImageLoading {
         }
         completion(result)
     }
-    
 }

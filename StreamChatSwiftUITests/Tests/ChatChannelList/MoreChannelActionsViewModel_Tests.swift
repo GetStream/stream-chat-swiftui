@@ -2,9 +2,9 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import XCTest
-@testable import StreamChatSwiftUI
 @testable import StreamChat
+@testable import StreamChatSwiftUI
+import XCTest
 
 class MoreChannelActionsViewModel_Tests: XCTestCase {
     
@@ -17,14 +17,14 @@ class MoreChannelActionsViewModel_Tests: XCTestCase {
     }()
     
     private var streamChat: StreamChat?
-        
+    
     override func setUp() {
         super.setUp()
         let imageLoader = ImageLoader_Mock()
         let utils = Utils(imageLoader: imageLoader)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-
+    
     func test_moreActionsVM_membersLoaded() {
         // Given
         let memberId: String = .unique
@@ -73,7 +73,7 @@ class MoreChannelActionsViewModel_Tests: XCTestCase {
         XCTAssert(cachedImage == secondImage)
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func makeMoreActionsViewModel(
         members: [ChatChannelMember] = []
@@ -103,5 +103,4 @@ class MoreChannelActionsViewModel_Tests: XCTestCase {
         
         return moreActionsVM
     }
-
 }
