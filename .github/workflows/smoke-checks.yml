@@ -83,6 +83,12 @@ jobs:
         flags: unit-tests
         fail_ci_if_error: true # if codecov upload fails, should fail ci
         verbose: true
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: "You shall not pass!"
+        job_name: "Test (Debug)"
+        fields: message,commit,author,action,workflow,job,took
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
