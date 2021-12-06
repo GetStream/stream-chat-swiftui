@@ -1,5 +1,5 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -19,7 +19,8 @@ struct StreamLogoLaunch: View {
                     .scaleEffect(0.6)
                     .rotationEffect(
                         .degrees(swinging ? -10 : 10),
-                        anchor: swinging ? .bottomLeading : .bottomTrailing)
+                        anchor: swinging ? .bottomLeading : .bottomTrailing
+                    )
                     .offset(y: -15)
                     .animation(.easeInOut(duration: 1).repeatCount(14, autoreverses: true), value: swinging)
                 VStack(spacing: -46) {
