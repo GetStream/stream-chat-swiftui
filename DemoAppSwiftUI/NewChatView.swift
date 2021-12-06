@@ -1,10 +1,10 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 struct NewChatView: View, KeyboardReadable {
     
@@ -27,16 +27,17 @@ struct NewChatView: View, KeyboardReadable {
                     .foregroundColor(Color(colors.textLowEmphasis))
                 
                 VStack {
-                    if viewModel.selectedUsers.count > 0 {
+                    if !viewModel.selectedUsers.isEmpty {
                         LazyVGrid(columns: columns, alignment: .leading) {
                             ForEach(viewModel.selectedUsers) { user in
                                 SelectedUserView(user: user)
-                                    .onTapGesture(perform: {
-                                        withAnimation {
-                                            viewModel.userTapped(user)
+                                    .onTapGesture(
+                                        perform: {
+                                            withAnimation {
+                                                viewModel.userTapped(user)
+                                            }
                                         }
-                                    }
-                                )
+                                    )
                             }
                         }
                     }
@@ -101,7 +102,6 @@ struct NewChatView: View, KeyboardReadable {
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
     }
-    
 }
 
 struct SelectedUserView: View {
@@ -125,7 +125,6 @@ struct SelectedUserView: View {
         .background(Color(colors.background1))
         .cornerRadius(16)
     }
-    
 }
 
 struct SearchUsersView: View {
@@ -146,7 +145,6 @@ struct SearchUsersView: View {
             }
         }
     }
-    
 }
 
 struct VerticallyCenteredView<Content: View>: View {
@@ -160,7 +158,6 @@ struct VerticallyCenteredView<Content: View>: View {
             Spacer()
         }
     }
-    
 }
 
 struct CreateGroupButton: View {
@@ -189,7 +186,6 @@ struct CreateGroupButton: View {
         }
         .isDetailLink(false)
     }
-    
 }
 
 struct ChatUserView: View {
@@ -224,7 +220,6 @@ struct ChatUserView: View {
             }
         }
     }
-    
 }
 
 struct UsersHeaderView: View {
@@ -246,5 +241,4 @@ struct UsersHeaderView: View {
         }
         .background(Color(colors.background1))
     }
-    
 }

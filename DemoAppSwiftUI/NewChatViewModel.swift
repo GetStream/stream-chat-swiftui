@@ -1,10 +1,10 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     
@@ -15,13 +15,14 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             searchUsers(with: searchText)
         }
     }
+
     @Published var messageText: String = ""
     @Published var chatUsers = LazyCachedMapCollection<ChatUser>()
     @Published var state: NewChatState = .initial
     @Published var selectedUsers = [ChatUser]() {
         didSet {
             if _updatingSelectedUsers.compareAndSwap(old: false, new: true) {
-                if selectedUsers.count > 0 {
+                if !selectedUsers.isEmpty {
                     do {
                         try makeChannelController()
                     } catch {
@@ -95,7 +96,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         }
         
         if _loadingNextUsers.compareAndSwap(old: false, new: true) {
-            searchController.loadNextUsers(limit: 50) { [weak self] error in
+            searchController.loadNextUsers(limit: 50) { [weak self] _ in
                 guard let self = self else { return }
                 self.chatUsers = self.searchController.users
                 self.loadingNextUsers = false
@@ -103,7 +104,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         }
     }
     
-    //MARK: - ChatUserSearchControllerDelegate
+    // MARK: - ChatUserSearchControllerDelegate
     
     func controller(
         _ controller: ChatUserSearchController,
@@ -112,10 +113,10 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         chatUsers = controller.users
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func searchUsers(with term: String?) {
-        self.state = .loading
+        state = .loading
         searchController.search(term: term) { [weak self] error in
             if error != nil {
                 self?.state = .error
@@ -126,7 +127,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
     
     private func makeChannelController() throws {
-        let selectedUserIds = Set(selectedUsers.map { $0.id })
+        let selectedUserIds = Set(selectedUsers.map(\.id))
         channelController = try chatClient.channelController(
             createDirectMessageChannelWith: selectedUserIds,
             name: nil,
@@ -142,11 +143,9 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                     self?.state = .channel
                     self?.updatingSelectedUsers = false
                 }
-                
             }
         }
     }
-    
 }
 
 enum NewChatState {

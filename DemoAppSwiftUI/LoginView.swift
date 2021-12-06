@@ -1,10 +1,10 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
-import StreamChatSwiftUI
 import NukeUI
+import StreamChatSwiftUI
+import SwiftUI
 
 struct LoginView: View {
     
@@ -44,7 +44,6 @@ struct LoginView: View {
             viewModel.loading ? ProgressView() : nil
         )
     }
-    
 }
 
 struct DemoUserView: View {
@@ -73,14 +72,12 @@ struct DemoUserView: View {
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
-                        
+            
             Spacer()
             
             Image(systemName: "arrow.forward")
                 .renderingMode(.template)
                 .foregroundColor(colors.tintColor)
         }
-        
     }
-    
 }

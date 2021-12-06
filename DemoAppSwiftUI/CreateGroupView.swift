@@ -1,10 +1,10 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 struct CreateGroupView: View, KeyboardReadable {
     
@@ -20,7 +20,7 @@ struct CreateGroupView: View, KeyboardReadable {
     var body: some View {
         VStack(spacing: 0) {
             SearchBar(text: $viewModel.searchText)
-                .padding(.vertical, viewModel.selectedUsers.count > 0 ? 0 : 16)
+                .padding(.vertical, !viewModel.selectedUsers.isEmpty ? 0 : 16)
             
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
@@ -31,7 +31,7 @@ struct CreateGroupView: View, KeyboardReadable {
                         )
                     }
                 }
-                .padding(.all, viewModel.selectedUsers.count > 0 ? 16 : 0)
+                .padding(.all, !viewModel.selectedUsers.isEmpty ? 16 : 0)
             }
             
             UsersHeaderView()
@@ -61,7 +61,7 @@ struct CreateGroupView: View, KeyboardReadable {
                     Image(systemName: "arrow.forward")
                 }
                 .isDetailLink(false)
-                .disabled(viewModel.selectedUsers.count == 0)
+                .disabled(viewModel.selectedUsers.isEmpty)
             }
         })
         .navigationTitle("Add group members")
@@ -73,7 +73,6 @@ struct CreateGroupView: View, KeyboardReadable {
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
     }
-    
 }
 
 struct SelectedUserGroupView: View {
@@ -118,7 +117,6 @@ struct SelectedUserGroupView: View {
         )
         .frame(width: avatarSize)
     }
-    
 }
 
 struct SearchBar: View {
@@ -126,9 +124,9 @@ struct SearchBar: View {
     @Injected(\.colors) var colors
     
     @Binding var text: String
-
+    
     @State private var isEditing = false
-        
+    
     var body: some View {
         HStack {
             

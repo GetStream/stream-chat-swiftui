@@ -1,22 +1,23 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     
     @Injected(\.chatClient) var chatClient
     
     var channelController: ChatChannelController!
-            
+    
     @Published var searchText = "" {
         didSet {
             searchUsers(with: searchText)
         }
     }
+
     @Published var state: NewChatState = .initial
     @Published var chatUsers = LazyCachedMapCollection<ChatUser>()
     @Published var selectedUsers = [ChatUser]()
@@ -35,7 +36,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
     
     var canCreateGroup: Bool {
-        selectedUsers.count > 0 && !groupName.isEmpty
+        !selectedUsers.isEmpty && !groupName.isEmpty
     }
     
     func userTapped(_ user: ChatUser) {
@@ -78,7 +79,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                     self?.errorShown = true
                 } else {
                     self?.showGroupConversation = true
-                }                
+                }
             }
             
         } catch {
@@ -86,7 +87,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         }
     }
     
-    //MARK: - ChatUserSearchControllerDelegate
+    // MARK: - ChatUserSearchControllerDelegate
     
     func controller(
         _ controller: ChatUserSearchController,
@@ -95,10 +96,10 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         chatUsers = controller.users
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func searchUsers(with term: String?) {
-        self.state = .loading
+        state = .loading
         searchController.search(term: term) { [weak self] error in
             if error != nil {
                 self?.state = .error
@@ -107,5 +108,4 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             }
         }
     }
-    
 }

@@ -1,10 +1,10 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 class LoginViewModel: ObservableObject {
     
@@ -21,10 +21,10 @@ class LoginViewModel: ObservableObject {
         loading = true
         let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .warning
-         
+        
         chatClient.connectUser(
-                userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
-                token: token
+            userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
+            token: token
         ) { error in
             if let error = error {
                 log.error("connecting the user failed \(error)")
@@ -35,9 +35,8 @@ class LoginViewModel: ObservableObject {
                 withAnimation {
                     self?.loading = false
                     AppState.shared.userState = .loggedIn
-                }                
-            }            
+                }
+            }
         }
     }
-    
 }

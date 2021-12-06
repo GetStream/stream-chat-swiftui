@@ -1,10 +1,10 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 class DemoAppFactory: ViewFactory {
     
@@ -17,7 +17,6 @@ class DemoAppFactory: ViewFactory {
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
-    
 }
 
 struct CustomChannelDestination: View {
@@ -29,7 +28,6 @@ struct CustomChannelDestination: View {
             Text("This is the channel \(channel.name ?? "")")
         }
     }
-    
 }
 
 class CustomFactory: ViewFactory {
@@ -62,7 +60,6 @@ class CustomFactory: ViewFactory {
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
-    
     
     // Example for an injected action. Uncomment to see it in action.
     func supportedMoreChannelActions(
@@ -109,20 +106,20 @@ class CustomFactory: ViewFactory {
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void) -> some View {
-            VStack {
-                Text("This is our custom view")
-                Spacer()
-                HStack {
-                    Button {
-                        onDismiss()
-                    } label: {
-                        Text("Action")
-                    }
-
+        onError: @escaping (Error) -> Void
+    ) -> some View {
+        VStack {
+            Text("This is our custom view")
+            Spacer()
+            HStack {
+                Button {
+                    onDismiss()
+                } label: {
+                    Text("Action")
                 }
-                .padding()
             }
+            .padding()
+        }
     }
     
     func makeMessageTextView(
@@ -147,6 +144,4 @@ class CustomFactory: ViewFactory {
             isFirst: isFirst
         )
     }
-    
-    
 }

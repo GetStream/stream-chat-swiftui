@@ -1,12 +1,11 @@
 //
-//  Created by Martin Mitrevski on 22.10.21.
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
+import NukeUI
 import StreamChat
 import StreamChatSwiftUI
-import NukeUI
+import SwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
     
@@ -29,7 +28,7 @@ public struct CustomChannelHeader: ToolbarContent {
             } label: {
                 Image(uiImage: images.messageActionEdit)
                     .resizable()
-            }            
+            }
         }
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
@@ -43,10 +42,8 @@ public struct CustomChannelHeader: ToolbarContent {
                         height: 30
                     )
             }
-
         }
     }
-
 }
 
 struct CustomChannelModifier: ChannelListHeaderViewModifier {
@@ -68,13 +65,13 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     logoutAlertShown: $logoutAlertShown
                 )
             }
-                        
+            
             NavigationLink(isActive: $isNewChatShown) {
                 NewChatView(isNewChatShown: $isNewChatShown)
             } label: {
                 EmptyView()
             }
-            .isDetailLink(false)            
+            .isDetailLink(false)
             .alert(isPresented: $logoutAlertShown) {
                 Alert(
                     title: Text("Sign out"),
@@ -84,10 +81,9 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                             AppState.shared.userState = .notLoggedIn
                         }
                     },
-                    secondaryButton: .cancel())
+                    secondaryButton: .cancel()
+                )
             }
         }
-        
     }
-    
 }

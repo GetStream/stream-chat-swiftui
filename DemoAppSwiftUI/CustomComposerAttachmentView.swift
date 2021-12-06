@@ -1,11 +1,11 @@
 //
-//  Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
 import StreamChat
-import SwiftUI
 import StreamChatSwiftUI
+import SwiftUI
 
 extension AttachmentType {
     static let contact = Self(rawValue: "contact")
@@ -13,7 +13,7 @@ extension AttachmentType {
 
 struct ContactAttachmentPayload: AttachmentPayload {
     static let type: AttachmentType = .contact
-
+    
     let name: String
     let phoneNumber: String
 }
@@ -23,7 +23,6 @@ extension ContactAttachmentPayload: Identifiable {
     var id: String {
         "\(name)-\(phoneNumber)"
     }
-    
 }
 
 class CustomAttachmentsFactory: ViewFactory {
@@ -108,16 +107,14 @@ class CustomAttachmentsFactory: ViewFactory {
             onCustomAttachmentTap: onCustomAttachmentTap
         )
     }
-    
 }
 
 class CustomMessageTypeResolver: MessageTypeResolving {
     
     func hasCustomAttachment(message: ChatMessage) -> Bool {
         let contactAttachments = message.attachments(payloadType: ContactAttachmentPayload.self)
-        return contactAttachments.count > 0
+        return !contactAttachments.isEmpty
     }
-    
 }
 
 struct CustomAttachmentSourcePickerView: View {
@@ -163,7 +160,6 @@ struct CustomAttachmentSourcePickerView: View {
         .frame(height: 56)
         .background(Color(colors.background1))
     }
-    
 }
 
 struct CustomContactAttachmentView: View {
@@ -174,7 +170,7 @@ struct CustomContactAttachmentView: View {
     let contacts: [CustomAttachment]
     let addedContacts: [CustomAttachment]
     var onCustomAttachmentTap: (CustomAttachment) -> Void
-        
+    
     var body: some View {
         AttachmentTypeContainer {
             VStack(alignment: .leading) {
@@ -202,7 +198,6 @@ struct CustomContactAttachmentView: View {
             }
         }
     }
-        
 }
 
 struct CustomContactAttachmentComposerPreview: View {
@@ -239,7 +234,6 @@ struct CustomContactAttachmentComposerPreview: View {
             }
         }
     }
-    
 }
 
 struct CustomContactAttachmentPreview: View {
@@ -252,7 +246,7 @@ struct CustomContactAttachmentPreview: View {
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var isAttachmentSelected: Bool
     var hasSpacing = true
-        
+    
     var body: some View {
         Button {
             withAnimation {
@@ -283,8 +277,6 @@ struct CustomContactAttachmentPreview: View {
                         .foregroundColor(Color(colors.textLowEmphasis))
                 }
             }
-            
         }
     }
-    
 }
