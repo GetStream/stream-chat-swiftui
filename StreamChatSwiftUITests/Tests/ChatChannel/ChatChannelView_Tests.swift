@@ -18,7 +18,7 @@ class ChatChannelView_Tests: XCTestCase {
     private let testMessage = ChatMessage.mock(
         id: "test",
         cid: .unique,
-        text: "This is a test message",
+        text: "This is a test message 1",
         author: .mock(id: "test", name: "martin")
     )
     
