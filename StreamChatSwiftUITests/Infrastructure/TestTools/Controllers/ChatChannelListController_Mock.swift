@@ -27,6 +27,10 @@ public class ChatChannelListController_Mock: ChatChannelListController {
     override public func loadNextChannels(limit: Int?, completion: ((Error?) -> Void)?) {
         loadNextChannelsIsCalled = true
     }
+    
+    override public func synchronize(_ completion: ((Error?) -> Void)? = nil) {
+        completion?(nil)
+    }
 }
 
 public extension ChatChannelListController_Mock {
