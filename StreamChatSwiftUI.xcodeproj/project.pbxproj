@@ -132,7 +132,6 @@
 		8465FDD72746A95800AF091E /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD692746A95700AF091E /* Appearance.swift */; };
 		8465FDD82746AA2700AF091E /* StreamChatSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 8465FD602746A95700AF091E /* StreamChatSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */; };
-		848399E8275FB3BE003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E7275FB3BE003075E4 /* SnapshotTesting */; };
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399EE275FBC84003075E4 /* ChatChannelView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399ED275FBC84003075E4 /* ChatChannelView_Tests.swift */; };
@@ -496,7 +495,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				848399E8275FB3BE003075E4 /* SnapshotTesting in Frameworks */,
 				8465FCB427468A8D00AF091E /* StreamChat in Frameworks */,
 				8465FCB727468B0600AF091E /* NukeUI in Frameworks */,
 			);
@@ -1055,7 +1053,6 @@
 			packageProductDependencies = (
 				8465FCB327468A8D00AF091E /* StreamChat */,
 				8465FCB627468B0600AF091E /* NukeUI */,
-				848399E7275FB3BE003075E4 /* SnapshotTesting */,
 			);
 			productName = StreamChatSwiftUI;
 			productReference = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */;
@@ -1859,11 +1856,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
 			productName = StreamChat;
-		};
-		848399E7275FB3BE003075E4 /* SnapshotTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
-			productName = SnapshotTesting;
 		};
 		848399E9275FB3E9003075E4 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
