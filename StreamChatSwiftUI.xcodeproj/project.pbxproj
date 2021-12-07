@@ -226,6 +226,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		844AE868275EB8CF003225E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8465FBAC2746873A00AF091E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8465FCBB27468B6900AF091E;
+			remoteInfo = DemoAppSwiftUI;
+		};
 		8465FBBF2746873A00AF091E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8465FBAC2746873A00AF091E /* Project object */;
@@ -540,9 +547,9 @@
 		8465FBC12746873A00AF091E /* StreamChatSwiftUITests */ = {
 			isa = PBXGroup;
 			children = (
-				84C94C7E27567D3F007FE2B9 /* StreamChatSwiftUITests-Bridging-Header.h */,
 				84C94D4027579EAF007FE2B9 /* Tests */,
 				84C94D3F27579E9B007FE2B9 /* Infrastructure */,
+				84C94C7E27567D3F007FE2B9 /* StreamChatSwiftUITests-Bridging-Header.h */,
 			);
 			path = StreamChatSwiftUITests;
 			sourceTree = "<group>";
@@ -1055,6 +1062,7 @@
 			);
 			dependencies = (
 				8465FBC02746873A00AF091E /* PBXTargetDependency */,
+				844AE869275EB8CF003225E5 /* PBXTargetDependency */,
 			);
 			name = StreamChatSwiftUITests;
 			productName = StreamChatSwiftUITests;
@@ -1407,6 +1415,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		844AE869275EB8CF003225E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8465FCBB27468B6900AF091E /* DemoAppSwiftUI */;
+			targetProxy = 844AE868275EB8CF003225E5 /* PBXContainerItemProxy */;
+		};
 		8465FBC02746873A00AF091E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8465FBB42746873A00AF091E /* StreamChatSwiftUI */;

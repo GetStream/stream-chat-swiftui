@@ -11,6 +11,69 @@ before_all do
   end
 end
 
+desc "Release a new version"
+lane :release do |options|
+  ensure_git_branch(branch: 'main') # We can only release on default branch
+  ensure_git_status_clean unless options[:no_ensure_clean]
+
+  UI.user_error!("Please set GITHUB_TOKEN environment value. See https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token") unless !ENV["GITHUB_TOKEN"].nil?
+
+  if (!options[:version].nil?) # User passed a version, use it
+    version_number = options.fetch(:version)
+    increment_version_number_in_plist(version_number: version_number, xcodeproj: "StreamChatSwiftUI.xcodeproj", target: "StreamChatSwiftUI")
+  else
+    UI.user_error!("Please use type parameter with one of the options: type:patch, type:minor, type:major") unless ["patch", "minor", "major"].include?(options[:type])
+    version_number = increment_version_number_in_plist(bump_type: options[:type], xcodeproj: "StreamChatSwiftUI.xcodeproj", target: "StreamChatSwiftUI")
+  end
+
+  if git_tag_exists(tag: version_number)
+    UI.user_error!("Tag for version #{version_number} already exists!")
+  end
+
+  changes = touch_changelog(release_version: version_number)
+
+   # Make sure the podspecs actually build before pushing
+  pod_lib_lint(podspec: "StreamChatSwiftUI.podspec", allow_warnings: true)
+
+  version_bump_podspec(path: "StreamChatSwiftUI.podspec", version_number: version_number)
+
+  sh("git add -A")
+
+  if(!prompt(text: "Will commit changes. All looking good?", boolean: true))
+    UI.user_error!("Not committing changes")
+  end
+
+  sh("git commit -m 'Bump #{version_number}'")
+  sh("git tag #{version_number}")
+
+  if(!prompt(text: "Will push changes. All looking good?", boolean: true))
+    UI.user_error!("Not pushing changes")
+  end
+
+  push_to_git_remote(tags: true)
+
+  github_release = set_github_release(
+                     repository_name: "GetStream/stream-chat-swiftui",
+                     api_token: ENV["GITHUB_TOKEN"],
+                     name: version_number,
+                     tag_name: version_number,
+                     description: changes
+                   )
+
+  # The & operator makes sure truthy values are converted to bool true
+  # and falsy (false and nil) values are converted to bool false
+  push_pods(sync: options[:sync] & true)
+
+  UI.success("Successfully released #{version_number}")
+  UI.success("Github release was created, please visit #{github_release["url"]} to see it")
+end
+
+desc "Pushes the StreamChatSwiftUI SDK podspec to Cocoapods trunk"
+lane :push_pods do |options|
+  # First pod release will not have any problems
+  pod_push(path: "StreamChatSwiftUI.podspec", allow_warnings: true)
+end
+
 desc "If `readonly: true` (by default), installs all Certs and Profiles necessary for development and ad-hoc.\nIf `readonly: false`, recreates all Profiles necessary for development and ad-hoc, updates them locally and remotely."
 lane :match_me do |options|
   # Get `:readonly` value, fallback to `true` if it's missing.
