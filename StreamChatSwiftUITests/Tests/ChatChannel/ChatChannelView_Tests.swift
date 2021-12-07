@@ -38,8 +38,10 @@ class ChatChannelView_Tests: XCTestCase {
         )
         
         // When
-        let view = ChatChannelScreen(chatChannelController: controller)
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        let view = VerticallyCenteredView {
+            ChatChannelScreen(chatChannelController: controller)
+        }
+        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
         
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -54,10 +56,12 @@ class ChatChannelView_Tests: XCTestCase {
         )
         
         // When
-        let view = ChatChannelView(
-            viewFactory: DefaultViewFactory.shared,
-            channelController: controller
-        )
+        let view = VerticallyCenteredView {
+            ChatChannelView(
+                viewFactory: DefaultViewFactory.shared,
+                channelController: controller
+            )
+        }
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
