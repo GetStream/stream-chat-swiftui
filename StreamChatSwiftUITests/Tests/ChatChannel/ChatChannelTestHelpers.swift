@@ -35,7 +35,7 @@ class ChatChannelTestHelpers {
         return channelController
     }
     
-    static let testURL = URL(string: "https://example.com")!
+    static let testURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg")!
     
     static var imageAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .png, size: 0, mimeType: "image/png")
