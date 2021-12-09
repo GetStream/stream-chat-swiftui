@@ -76,6 +76,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
         .overlay(
             viewModel.reactionsShown ?
                 factory.makeReactionsOverlayView(
+                    channel: viewModel.channel,
                     currentSnapshot: viewModel.currentSnapshot!,
                     messageDisplayInfo: messageDisplayInfo!,
                     onBackgroundTap: {
@@ -86,5 +87,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 .edgesIgnoringSafeArea(.all)
                 : nil
         )
+        .onAppear {
+            viewModel.reactionsShown = false
+        }
     }
 }

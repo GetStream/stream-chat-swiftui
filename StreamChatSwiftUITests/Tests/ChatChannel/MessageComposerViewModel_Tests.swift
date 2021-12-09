@@ -315,7 +315,10 @@ class MessageComposerViewModel_Tests: XCTestCase {
     
     private func makeComposerViewModel() -> MessageComposerViewModel {
         let channelController = makeChannelController()
-        let viewModel = MessageComposerViewModel(channelController: channelController)
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
         return viewModel
     }
     

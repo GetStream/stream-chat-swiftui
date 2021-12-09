@@ -30,6 +30,7 @@ public struct MessageAction: Identifiable, Equatable {
     public var action: () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
+    public var navigationDestination: AnyView?
     
     public init(
         title: String,

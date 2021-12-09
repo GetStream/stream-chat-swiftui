@@ -2,12 +2,14 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @StateObject var viewModel: ReactionsOverlayViewModel
     
     var factory: Factory
+    var channel: ChatChannel
     var currentSnapshot: UIImage
     var messageDisplayInfo: MessageDisplayInfo
     var onBackgroundTap: () -> Void
@@ -19,6 +21,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     
     public init(
         factory: Factory,
+        channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
         onBackgroundTap: @escaping () -> Void
@@ -28,12 +31,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 message: messageDisplayInfo.message
             )
         )
+        self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
         messageActionsCount = factory.supportedMessageActions(
             for: messageDisplayInfo.message,
+            channel: channel,
             onDismiss: {},
             onError: { _ in }
         ).count
@@ -85,6 +90,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 
                 factory.makeMessageActionsView(
                     for: messageDisplayInfo.message,
+                    channel: channel,
                     onDismiss: onBackgroundTap,
                     onError: { _ in
                         viewModel.errorShown = true

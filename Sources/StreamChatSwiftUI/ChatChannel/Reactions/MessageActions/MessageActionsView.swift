@@ -21,19 +21,32 @@ public struct MessageActionsView: View {
         VStack(spacing: 0) {
             ForEach(viewModel.messageActions) { action in
                 VStack(spacing: 0) {
-                    Button {
-                        if action.confirmationPopup != nil {
-                            viewModel.alertAction = action
-                        } else {
-                            action.action()
+                    if let destination = action.navigationDestination {
+                        NavigationLink {
+                            destination
+                        } label: {
+                            ActionItemView(
+                                title: action.title,
+                                iconName: action.iconName,
+                                isDestructive: action.isDestructive,
+                                boldTitle: false
+                            )
                         }
-                    } label: {
-                        ActionItemView(
-                            title: action.title,
-                            iconName: action.iconName,
-                            isDestructive: action.isDestructive,
-                            boldTitle: false
-                        )
+                    } else {
+                        Button {
+                            if action.confirmationPopup != nil {
+                                viewModel.alertAction = action
+                            } else {
+                                action.action()
+                            }
+                        } label: {
+                            ActionItemView(
+                                title: action.title,
+                                iconName: action.iconName,
+                                isDestructive: action.isDestructive,
+                                boldTitle: false
+                            )
+                        }
                     }
                     
                     Divider()

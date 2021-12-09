@@ -396,11 +396,14 @@ extension ViewFactory {
     
     public func supportedMessageActions(
         for message: ChatMessage,
+        channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         MessageAction.defaultActions(
+            factory: self,
             for: message,
+            channel: channel,
             chatClient: chatClient,
             onDismiss: onDismiss,
             onError: onError
@@ -409,11 +412,13 @@ extension ViewFactory {
     
     public func makeMessageActionsView(
         for message: ChatMessage,
+        channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> some View {
         let messageActions = supportedMessageActions(
             for: message,
+            channel: channel,
             onDismiss: onDismiss,
             onError: onError
         )
@@ -428,12 +433,14 @@ extension ViewFactory {
     }
     
     public func makeReactionsOverlayView(
+        channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
         onBackgroundTap: @escaping () -> Void
     ) -> some View {
         ReactionsOverlayView(
             factory: self,
+            channel: channel,
             currentSnapshot: currentSnapshot,
             messageDisplayInfo: messageDisplayInfo,
             onBackgroundTap: onBackgroundTap

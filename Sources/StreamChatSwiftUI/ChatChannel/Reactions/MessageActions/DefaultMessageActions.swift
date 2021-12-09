@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import SwiftUI
 
 extension MessageAction {
     /// Returns the default message actions.
@@ -12,30 +13,27 @@ extension MessageAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `MessageAction`.
-    public static func defaultActions(
+    public static func defaultActions<Factory: ViewFactory>(
+        factory: Factory,
         for message: ChatMessage,
+        channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
-        guard let channelId = message.cid else {
-            return []
-        }
-        
         var messageActions = [MessageAction]()
         
         if !message.isPartOfThread {
-            let replyThreadAction = {
-                onDismiss()
-            }
-            
-            let replyThread = MessageAction(
+            var replyThread = MessageAction(
                 title: L10n.Message.Actions.threadReply,
                 iconName: "icn_thread_reply",
-                action: replyThreadAction,
+                action: onDismiss,
                 confirmationPopup: nil,
                 isDestructive: false
             )
+            
+            let destination = factory.makeMessageThreadDestination()
+            replyThread.navigationDestination = AnyView(destination(channel, message))
             
             messageActions.append(replyThread)
         }
@@ -43,7 +41,7 @@ extension MessageAction {
         if message.isSentByCurrentUser {
             let deleteAction = deleteMessageAction(
                 for: message,
-                channelId: channelId,
+                channel: channel,
                 chatClient: chatClient,
                 onDismiss: onDismiss,
                 onError: onError
@@ -53,7 +51,7 @@ extension MessageAction {
         } else {
             let flagAction = flagMessageAction(
                 for: message,
-                channelId: channelId,
+                channel: channel,
                 chatClient: chatClient,
                 onDismiss: onDismiss,
                 onError: onError
@@ -67,13 +65,13 @@ extension MessageAction {
     
     private static func deleteMessageAction(
         for message: ChatMessage,
-        channelId: ChannelId,
+        channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
-            cid: channelId,
+            cid: channel.cid,
             messageId: message.id
         )
         
@@ -106,13 +104,13 @@ extension MessageAction {
     
     private static func flagMessageAction(
         for message: ChatMessage,
-        channelId: ChannelId,
+        channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
-            cid: channelId,
+            cid: channel.cid,
             messageId: message.id
         )
         

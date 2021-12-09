@@ -35,6 +35,7 @@ class ReactionsOverlayView_Tests: XCTestCase {
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
+                channel: .mockDMChannel(),
                 currentSnapshot: UIImage(systemName: "checkmark")!,
                 messageDisplayInfo: MessageDisplayInfo(
                     message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),

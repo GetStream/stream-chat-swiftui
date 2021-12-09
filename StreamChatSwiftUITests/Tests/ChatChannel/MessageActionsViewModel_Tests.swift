@@ -24,18 +24,20 @@ class MessageActionsViewModel_Tests: XCTestCase {
     func test_messageActionsViewModel_confirmationAlertShown() {
         // Given
         let actions = MessageAction.defaultActions(
+            factory: DefaultViewFactory.shared,
             for: .mock(
                 id: .unique,
                 cid: .unique,
                 text: "test",
                 author: .mock(id: .unique)
             ),
+            channel: .mockDMChannel(),
             chatClient: chatClient,
             onDismiss: {},
             onError: { _ in }
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
-        let action = actions[0]
+        let action = actions[1]
         
         // When
         viewModel.alertAction = action

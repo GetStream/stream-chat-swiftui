@@ -375,11 +375,13 @@ public protocol ViewFactory: AnyObject {
     /// Returns the supported  message actions.
     /// - Parameters:
     ///  - message: the message where the actions are applied.
+    ///  - channel: the channel of the message.
     ///  - onDismiss: handler when the more actions view is dismissed.
     ///  - onError: handler when an error happened.
     /// - Returns: list of `MessageAction` items.
     func supportedMessageActions(
         for message: ChatMessage,
+        channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction]
@@ -388,11 +390,13 @@ public protocol ViewFactory: AnyObject {
     /// Creates the message actions view.
     /// - Parameters:
     ///  - message: the message where the actions are applied.
+    ///  - channel: the channel of the message.
     ///  - onDismiss: handler when the more actions view is dismissed.
     ///  - onError: handler when an error happened.
     /// - Returns: view displayed in the message actions slot.
     func makeMessageActionsView(
         for message: ChatMessage,
+        channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageActionsViewType
@@ -408,11 +412,13 @@ public protocol ViewFactory: AnyObject {
     associatedtype ReactionsOverlayViewType
     /// Creates the reactions overlay view.
     /// - Parameters:
+    ///  - channel: the channel of the message.
     ///  - currentSnapshot: current snapshot of the screen (in case blur effect is needed).
     ///  - messageDisplayInfo: information about the displayed message.
     ///  - onBackgroundTap: called when the background is tapped (to dismiss the view).
     /// - Returns: view displayed in the reactions overlay slot.
     func makeReactionsOverlayView(
+        channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
         onBackgroundTap: @escaping () -> Void

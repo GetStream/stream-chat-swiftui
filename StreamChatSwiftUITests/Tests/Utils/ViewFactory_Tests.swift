@@ -337,7 +337,9 @@ class ViewFactory_Tests: XCTestCase {
         // Given
         let viewFactory = DefaultViewFactory.shared
         let expected = MessageAction.defaultActions(
+            factory: DefaultViewFactory.shared,
             for: message,
+            channel: .mockDMChannel(),
             chatClient: chatClient,
             onDismiss: {},
             onError: { _ in }
@@ -346,6 +348,7 @@ class ViewFactory_Tests: XCTestCase {
         // When
         let actions = viewFactory.supportedMessageActions(
             for: message,
+            channel: .mockDMChannel(),
             onDismiss: {},
             onError: { _ in }
         )
@@ -361,6 +364,7 @@ class ViewFactory_Tests: XCTestCase {
         // When
         let view = viewFactory.makeMessageActionsView(
             for: message,
+            channel: .mockDMChannel(),
             onDismiss: {},
             onError: { _ in }
         )
@@ -386,6 +390,7 @@ class ViewFactory_Tests: XCTestCase {
         
         // When
         let view = viewFactory.makeReactionsOverlayView(
+            channel: .mockDMChannel(),
             currentSnapshot: UIImage(systemName: "checkmark")!,
             messageDisplayInfo: .init(
                 message: message,
