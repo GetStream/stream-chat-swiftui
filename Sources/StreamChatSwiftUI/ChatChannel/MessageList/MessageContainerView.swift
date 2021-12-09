@@ -13,6 +13,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     
     var factory: Factory
+    let channel: ChatChannel
     let message: ChatMessage
     let isInGroup: Bool
     var width: CGFloat?
@@ -78,6 +79,14 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
                     })
                     
+                    if message.replyCount > 0 && !message.threadParticipants.isEmpty {
+                        MessageRepliesView(
+                            factory: factory,
+                            channel: channel,
+                            message: message
+                        )
+                    }
+                                        
                     if showsAllInfo && !message.isDeleted {
                         if isInGroup && !message.isSentByCurrentUser {
                             MessageAuthorAndDateView(message: message)

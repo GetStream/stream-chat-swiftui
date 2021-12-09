@@ -23,6 +23,22 @@ extension MessageAction {
         }
         
         var messageActions = [MessageAction]()
+        
+        if !message.isPartOfThread {
+            let replyThreadAction = {
+                onDismiss()
+            }
+            
+            let replyThread = MessageAction(
+                title: L10n.Message.Actions.threadReply,
+                iconName: "icn_thread_reply",
+                action: replyThreadAction,
+                confirmationPopup: nil,
+                isDestructive: false
+            )
+            
+            messageActions.append(replyThread)
+        }
 
         if message.isSentByCurrentUser {
             let deleteAction = deleteMessageAction(

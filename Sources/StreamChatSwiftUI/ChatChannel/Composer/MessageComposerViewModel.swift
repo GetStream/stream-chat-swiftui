@@ -72,11 +72,17 @@ public class MessageComposerViewModel: ObservableObject {
     @Published var filePickerShown = false
     @Published var cameraPickerShown = false
     @Published var errorShown = false
+    @Published var showReplyInChannel = false
     
     private let channelController: ChatChannelController
+    private var messageController: ChatMessageController?
     
-    public init(channelController: ChatChannelController) {
+    public init(
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?
+    ) {
         self.channelController = channelController
+        self.messageController = messageController
     }
     
     public func sendMessage(completion: @escaping () -> Void) {
@@ -97,15 +103,30 @@ public class MessageComposerViewModel: ObservableObject {
                 attachment.content
             }
             
-            channelController.createNewMessage(
-                text: text,
-                attachments: attachments
-            ) { [weak self] in
-                switch $0 {
-                case .success:
-                    completion()
-                case .failure:
-                    self?.errorShown = true
+            if let messageController = messageController {
+                messageController.createNewReply(
+                    text: text,
+                    attachments: attachments,
+                    showReplyInChannel: showReplyInChannel
+                ) { [weak self] in
+                    switch $0 {
+                    case .success:
+                        completion()
+                    case .failure:
+                        self?.errorShown = true
+                    }
+                }
+            } else {
+                channelController.createNewMessage(
+                    text: text,
+                    attachments: attachments
+                ) { [weak self] in
+                    switch $0 {
+                    case .success:
+                        completion()
+                    case .failure:
+                        self?.errorShown = true
+                    }
                 }
             }
             
@@ -123,6 +144,14 @@ public class MessageComposerViewModel: ObservableObject {
             !text.isEmpty ||
             !addedFileURLs.isEmpty ||
             !addedCustomAttachments.isEmpty
+    }
+    
+    public var sendInChannelShown: Bool {
+        messageController != nil
+    }
+    
+    public var isDirectChannel: Bool {
+        channelController.channel?.isDirectMessageChannel ?? false
     }
     
     public func change(pickerState: AttachmentPickerState) {

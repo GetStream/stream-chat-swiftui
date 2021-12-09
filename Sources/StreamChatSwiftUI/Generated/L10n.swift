@@ -230,12 +230,16 @@ internal enum L10n {
       internal static func count(_ p1: Int) -> String {
         return L10n.tr("Localizable", "message.threads.count", p1)
       }
+      /// Thread Replies
+      internal static var replies: String { L10n.tr("Localizable", "message.threads.replies") }
       /// Thread Reply
       internal static var reply: String { L10n.tr("Localizable", "message.threads.reply") }
       /// with %@
       internal static func replyWith(_ p1: Any) -> String {
         return L10n.tr("Localizable", "message.threads.replyWith", String(describing: p1))
       }
+      /// with messages
+      internal static var subtitle: String { L10n.tr("Localizable", "message.threads.subtitle") }
     }
     internal enum Title {
       /// %d members, %d online

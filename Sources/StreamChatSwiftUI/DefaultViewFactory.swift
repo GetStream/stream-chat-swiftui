@@ -100,6 +100,24 @@ extension ViewFactory {
         }
     }
     
+    public func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
+        { [unowned self] channel, message in
+            let channelController = chatClient.channelController(
+                for: channel.cid,
+                messageOrdering: .topToBottom
+            )
+            let messageController = chatClient.messageController(
+                cid: channel.cid,
+                messageId: message.id
+            )
+            return ChatChannelView(
+                viewFactory: self,
+                channelController: channelController,
+                messageController: messageController
+            )
+        }
+    }
+    
     public func makeMessageAvatarView(for author: ChatUser) -> some View {
         MessageAvatarView(author: author)
     }
@@ -108,6 +126,10 @@ extension ViewFactory {
         for channel: ChatChannel
     ) -> some ChatChannelHeaderViewModifier {
         DefaultChannelHeaderModifier(channel: channel)
+    }
+    
+    public func makeMessageThreadHeaderViewModifier() -> some MessageThreadHeaderViewModifier {
+        DefaultMessageThreadHeaderModifier()
     }
     
     public func makeMessageTextView(
@@ -205,11 +227,13 @@ extension ViewFactory {
     
     public func makeMessageComposerViewType(
         with channelController: ChatChannelController,
+        messageController: ChatMessageController?,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerView<Self> {
         MessageComposerView(
             viewFactory: self,
             channelController: channelController,
+            messageController: messageController,
             onMessageSent: onMessageSent
         )
     }

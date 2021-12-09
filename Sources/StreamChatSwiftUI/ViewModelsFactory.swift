@@ -26,11 +26,17 @@ public class ViewModelsFactory {
     }
     
     /// Creates the `ChatChannelViewModel`.
-    /// - Parameter channelController: the channel controller.
+    /// - Parameters:
+    ///    - channelController: the channel controller.
+    ///    - messageController: optional message controller (used in threads).
     public static func makeChannelViewModel(
-        with channelController: ChatChannelController
+        with channelController: ChatChannelController,
+        messageController: ChatMessageController?
     ) -> ChatChannelViewModel {
-        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let viewModel = ChatChannelViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
         return viewModel
     }
     
@@ -52,12 +58,18 @@ public class ViewModelsFactory {
     }
     
     /// Makes the message composer view model.
-    /// - Parameter channelController: the channel controller.
+    /// - Parameters:
+    ///  -  channelController: the channel controller.
+    ///  - messageController: optional message controller (used in threads).
     /// - Returns: `MessageComposerViewModel`.
     public static func makeMessageComposerViewModel(
-        with channelController: ChatChannelController
+        with channelController: ChatChannelController,
+        messageController: ChatMessageController?
     ) -> MessageComposerViewModel {
-        MessageComposerViewModel(channelController: channelController)
+        MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
     }
     
     /// Makes the reactions overlay view model.

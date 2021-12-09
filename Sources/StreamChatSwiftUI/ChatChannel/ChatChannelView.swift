@@ -14,21 +14,28 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
     @State private var messageDisplayInfo: MessageDisplayInfo?
     
     private var factory: Factory
+    private var isInThread: Bool
             
     public init(
         viewFactory: Factory,
-        channelController: ChatChannelController
+        channelController: ChatChannelController,
+        messageController: ChatMessageController? = nil
     ) {
         _viewModel = StateObject(
-            wrappedValue: ViewModelsFactory.makeChannelViewModel(with: channelController)
+            wrappedValue: ViewModelsFactory.makeChannelViewModel(
+                with: channelController,
+                messageController: messageController
+            )
         )
         factory = viewFactory
+        isInThread = messageController != nil
     }
     
     public var body: some View {
         VStack(spacing: 0) {
             MessageListView(
                 factory: factory,
+                channel: viewModel.channel,
                 messages: viewModel.messages,
                 messagesGroupingInfo: viewModel.messagesGroupingInfo,
                 scrolledId: $viewModel.scrolledId,
@@ -52,12 +59,16 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 .if(viewModel.reactionsShown, transform: { view in
                     view.navigationBarHidden(true)
                 })
-                .if(!viewModel.reactionsShown) { view in
+                .if(!viewModel.reactionsShown && !isInThread) { view in
                     view.modifier(factory.makeChannelHeaderViewModifier(for: viewModel.channel))
+                }
+                .if(!viewModel.reactionsShown && isInThread) { view in
+                    view.modifier(factory.makeMessageThreadHeaderViewModifier())
                 }
             
             factory.makeMessageComposerViewType(
                 with: viewModel.channelController,
+                messageController: viewModel.messageController,
                 onMessageSent: viewModel.scrollToLastMessage
             )
         }

@@ -7,10 +7,12 @@ import Nuke
 import StreamChat
 import SwiftUI
 
-public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelegate {
+public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
+    
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     
+    private var channelDataSource: ChannelDataSource
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
@@ -38,6 +40,7 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     @Atomic private var lastMessageRead: String?
     
     var channelController: ChatChannelController
+    var messageController: ChatMessageController?
     
     @Published var scrolledId: String?
     @Published var listId = UUID().uuidString
@@ -85,9 +88,24 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
         channelController.channel!
     }
             
-    public init(channelController: ChatChannelController) {
+    public init(
+        channelController: ChatChannelController,
+        messageController: ChatMessageController? = nil
+    ) {
         self.channelController = channelController
-        setupChannelController()
+        channelController.synchronize()
+        if let messageController = messageController {
+            self.messageController = messageController
+            messageController.synchronize()
+            channelDataSource = MessageThreadDataSource(
+                channelController: channelController,
+                messageController: messageController
+            )
+        } else {
+            channelDataSource = ChatChannelDataSource(controller: channelController)
+        }
+        channelDataSource.delegate = self
+        messages = channelDataSource.messages
         
         NotificationCenter.default.addObserver(
             self,
@@ -117,13 +135,13 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
         }
     }
     
-    public func channelController(
-        _ channelController: ChatChannelController,
-        didUpdateMessages changes: [ListChange<ChatMessage>]
+    func dataSource(
+        channelDataSource: ChannelDataSource,
+        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
     ) {
-        messages = channelController.messages
+        self.messages = messages
         
-        let count = channelController.messages.count
+        let count = messages.count
         if count > lastRefreshThreshold {
             lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
             listId = UUID().uuidString
@@ -134,13 +152,14 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
         }
     }
     
-    public func channelController(
-        _ channelController: ChatChannelController,
-        didUpdateChannel channel: EntityChange<ChatChannel>
+    func dataSource(
+        channelDataSource: ChannelDataSource,
+        didUpdateChannel channel: EntityChange<ChatChannel>,
+        channelController: ChatChannelController
     ) {
         messages = channelController.messages
     }
-    
+
     func showReactionOverlay() {
         guard let view: UIView = topVC()?.view else {
             currentSnapshot = UIImage(systemName: "photo")
@@ -154,19 +173,14 @@ public class ChatChannelViewModel: ObservableObject, ChatChannelControllerDelega
     
     // MARK: - private
     
-    private func setupChannelController() {
-        channelController.delegate = self
-        channelController.synchronize()
-        messages = channelController.messages
-    }
-    
     private func checkForNewMessages(index: Int) {
-        if index < channelController.messages.count - 25 {
+        if index < channelDataSource.messages.count - 25 {
             return
         }
 
         if _loadingPreviousMessages.compareAndSwap(old: false, new: true) {
-            channelController.loadPreviousMessages(
+            channelDataSource.loadPreviousMessages(
+                before: nil,
                 limit: refreshThreshold,
                 completion: { [weak self] _ in
                     guard let self = self else { return }
@@ -222,11 +236,20 @@ extension ChatMessage: Identifiable {
             }
         }
         
-        return baseId + statesId + reactionScoresId
+        return baseId + statesId + reactionScoresId + repliesCountId
     }
     
     private var baseId: String {
         isDeleted ? "\(id)-deleted" : id
+    }
+    
+    var repliesCountId: String {
+        var repliesCountId = ""
+        if replyCount > 0 {
+            repliesCountId = "\(replyCount)"
+        }
+
+        return repliesCountId
     }
     
     var uploadingStatesId: String {

@@ -9,6 +9,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
     
     var factory: Factory
+    var channel: ChatChannel
     var messages: LazyCachedMapCollection<ChatMessage>
     var messagesGroupingInfo: [String: [String]]
     @Binding var scrolledId: String?
@@ -51,6 +52,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             MessageContainerView(
                                 factory: factory,
+                                channel: channel,
                                 message: message,
                                 isInGroup: isGroup,
                                 width: width,

@@ -27,7 +27,7 @@ public struct MessageAction: Identifiable, Equatable {
 
     public let title: String
     public let iconName: String
-    public let action: () -> Void
+    public var action: () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
     

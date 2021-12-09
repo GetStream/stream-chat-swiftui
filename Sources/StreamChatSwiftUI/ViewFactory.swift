@@ -74,6 +74,10 @@ public protocol ViewFactory: AnyObject {
     /// Returns a function that creates the channel destination.
     func makeChannelDestination() -> (ChatChannel) -> ChannelDestination
     
+    associatedtype MessageThreadDestination: View
+    /// Returns a function that creats the message thread destination.
+    func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> MessageThreadDestination
+    
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
     /// - Parameter author: the message author whose avatar is displayed.
@@ -83,6 +87,10 @@ public protocol ViewFactory: AnyObject {
     /// Creates the channel header view modifier.
     /// - Parameter channel: the displayed channel.
     func makeChannelHeaderViewModifier(for channel: ChatChannel) -> ChatHeaderViewModifier
+    
+    associatedtype ThreadHeaderViewModifier: MessageThreadHeaderViewModifier
+    /// Creates the message thread header view modifier.
+    func makeMessageThreadHeaderViewModifier() -> ThreadHeaderViewModifier
     
     associatedtype MessageTextViewType: View
     /// Creates the message text view.
@@ -209,6 +217,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed in the message composer slot.
     func makeMessageComposerViewType(
         with channelController: ChatChannelController,
+        messageController: ChatMessageController?,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerViewType
     

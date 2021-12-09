@@ -17,11 +17,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     public init(
         viewFactory: Factory,
         channelController: ChatChannelController,
+        messageController: ChatMessageController?,
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
         _viewModel = StateObject(
-            wrappedValue: ViewModelsFactory.makeMessageComposerViewModel(with: channelController)
+            wrappedValue: ViewModelsFactory.makeMessageComposerViewModel(
+                with: channelController,
+                messageController: messageController
+            )
         )
         self.onMessageSent = onMessageSent
     }
@@ -52,6 +56,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .padding(.all, 8)
+            
+            if viewModel.sendInChannelShown {
+                SendInChannelView(
+                    sendInChannel: $viewModel.showReplyInChannel,
+                    isDirectMessage: viewModel.isDirectChannel
+                )
+            }
             
             factory.makeAttachmentPickerView(
                 attachmentPickerState: $viewModel.pickerState,

@@ -37,7 +37,9 @@
 "messageList.typingIndicator.typing-unknown" = "Someone is typing";
 
 "message.threads.reply" = "Thread Reply";
+"message.threads.replies" = "Thread Replies";
 "message.threads.replyWith" = "with %@";
+"message.threads.subtitle" = "with messages";
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
