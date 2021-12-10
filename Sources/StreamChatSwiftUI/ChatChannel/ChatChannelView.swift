@@ -14,7 +14,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
     @State private var messageDisplayInfo: MessageDisplayInfo?
     
     private var factory: Factory
-    private var isInThread: Bool
             
     public init(
         viewFactory: Factory,
@@ -28,7 +27,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
             )
         )
         factory = viewFactory
-        isInThread = messageController != nil
     }
     
     public var body: some View {
@@ -60,10 +58,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 .if(viewModel.reactionsShown, transform: { view in
                     view.navigationBarHidden(true)
                 })
-                .if(!viewModel.reactionsShown && !isInThread) { view in
+                .if(!viewModel.reactionsShown && !viewModel.isMessageThread) { view in
                     view.modifier(factory.makeChannelHeaderViewModifier(for: viewModel.channel))
                 }
-                .if(!viewModel.reactionsShown && isInThread) { view in
+                .if(!viewModel.reactionsShown && viewModel.isMessageThread) { view in
                     view.modifier(factory.makeMessageThreadHeaderViewModifier())
                 }
             
