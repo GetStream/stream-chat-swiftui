@@ -18,6 +18,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var isGroup: Bool
     var unreadCount: Int
     var listId: String
+    var isMessageThread: Bool
     
     var onMessageAppear: (Int) -> Void
     var onScrollToBottom: () -> Void
@@ -57,6 +58,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 isInGroup: isGroup,
                                 width: width,
                                 showsAllInfo: showsAllData(for: message),
+                                isInThread: isMessageThread,
                                 onLongPress: { messageDisplayInfo in
                                     if keyboardShown {
                                         resignFirstResponder()

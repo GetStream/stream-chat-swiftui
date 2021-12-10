@@ -44,6 +44,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 isGroup: !viewModel.channel.isDirectMessageChannel,
                 unreadCount: viewModel.channel.unreadCount.messages,
                 listId: viewModel.listId,
+                isMessageThread: viewModel.isMessageThread,
                 onMessageAppear: viewModel.handleMessageAppear(index:),
                 onScrollToBottom: viewModel.scrollToLastMessage,
                 onLongPress: { displayInfo in

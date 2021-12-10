@@ -87,6 +87,10 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     var channel: ChatChannel {
         channelController.channel!
     }
+    
+    var isMessageThread: Bool {
+        messageController != nil
+    }
             
     public init(
         channelController: ChatChannelController,
@@ -139,7 +143,13 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelDataSource: ChannelDataSource,
         didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
     ) {
-        self.messages = messages
+        if let message = messageController?.message {
+            var array = Array(messages)
+            array.append(message)
+            self.messages = LazyCachedMapCollection(source: array, map: { $0 })
+        } else {
+            self.messages = messages
+        }
         
         let count = messages.count
         if count > lastRefreshThreshold {

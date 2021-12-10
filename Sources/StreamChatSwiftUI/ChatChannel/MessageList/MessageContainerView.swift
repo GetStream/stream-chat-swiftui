@@ -18,6 +18,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     let isInGroup: Bool
     var width: CGFloat?
     var showsAllInfo: Bool
+    var isInThread: Bool
     var onLongPress: (MessageDisplayInfo) -> Void
     
     @State private var frame: CGRect = .zero
@@ -79,7 +80,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
                     })
                     
-                    if message.replyCount > 0 && !message.threadParticipants.isEmpty {
+                    if message.replyCount > 0 && !message.threadParticipants.isEmpty && !isInThread {
                         MessageRepliesView(
                             factory: factory,
                             channel: channel,
