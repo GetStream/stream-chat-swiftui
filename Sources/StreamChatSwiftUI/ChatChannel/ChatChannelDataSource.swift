@@ -94,6 +94,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         self.channelController = channelController
         self.messageController = messageController
         self.messageController.delegate = self
+        self.messageController.loadPreviousReplies()
     }
     
     func messageController(
