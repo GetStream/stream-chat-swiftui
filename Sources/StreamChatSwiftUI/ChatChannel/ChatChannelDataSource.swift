@@ -4,13 +4,24 @@
 
 import StreamChat
 
+/// Data source providing the chat messages.
 protocol MessagesDataSource: AnyObject {
     
+    /// Called when the messages are updated.
+    ///
+    /// - Parameters:
+    ///  - channelDataSource, the channel's data source.
+    ///  - messages, the collection of updated messages.
     func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
     )
     
+    /// Called when the channel is updated.
+    /// - Parameters:
+    ///  - channelDataSource: the channel's data source.
+    ///  - channel: the updated channel.
+    ///  - channelController: the channel's controller.
     func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateChannel channel: EntityChange<ChatChannel>,
@@ -18,12 +29,20 @@ protocol MessagesDataSource: AnyObject {
     )
 }
 
+/// The data source for the channel.
 protocol ChannelDataSource: AnyObject {
     
+    /// Delegate implementing the `MessagesDataSource`.
     var delegate: MessagesDataSource? { get set }
     
+    /// List of the messages.
     var messages: LazyCachedMapCollection<ChatMessage> { get }
     
+    /// Loads the previous messages.
+    /// - Parameters:
+    ///  - messageId: the id of the last received message.
+    ///  - limit: the max number of messages to be retrieved.
+    ///  - completion: called when the messages are loaded.
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
@@ -31,6 +50,7 @@ protocol ChannelDataSource: AnyObject {
     )
 }
 
+/// Implementation of `ChannelDataSource`. Loads the messages of the channel.
 class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
 
     let controller: ChatChannelController
@@ -78,6 +98,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     }
 }
 
+/// Implementation of the `ChannelDataSource`. Loads the messages in a reply thread.
 class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate {
     
     let channelController: ChatChannelController
