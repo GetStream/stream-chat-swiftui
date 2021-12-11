@@ -84,7 +84,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         MessageRepliesView(
                             factory: factory,
                             channel: channel,
-                            message: message
+                            message: message,
+                            replyCount: message.replyCount
                         )
                     }
                                         

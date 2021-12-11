@@ -14,6 +14,7 @@ struct MessageRepliesView<Factory: ViewFactory>: View {
     var factory: Factory
     var channel: ChatChannel
     var message: ChatMessage
+    var replyCount: Int
     
     var threadDestination: Factory.MessageThreadDestination {
         let threadDestination = factory.makeMessageThreadDestination()
@@ -31,7 +32,7 @@ struct MessageRepliesView<Factory: ViewFactory>: View {
                         size: .init(width: 16, height: 16)
                     )
                 }
-                Text("\(message.replyCount) \(repliesText)")
+                Text("\(replyCount) \(repliesText)")
                     .font(fonts.footnoteBold)
                 if message.isSentByCurrentUser {
                     MessageAvatarView(
