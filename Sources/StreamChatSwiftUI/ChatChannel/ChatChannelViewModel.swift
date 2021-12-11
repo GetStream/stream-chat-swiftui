@@ -7,6 +7,7 @@ import Nuke
 import StreamChat
 import SwiftUI
 
+/// View model for the `ChatChannelView`.
 public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @Injected(\.chatClient) private var chatClient

@@ -58,8 +58,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .padding(.all, 8)
             
             if viewModel.sendInChannelShown {
-                SendInChannelView(
-                    sendInChannel: $viewModel.showReplyInChannel,
+                factory.makeSendInChannelView(
+                    showReplyInChannel: $viewModel.showReplyInChannel,
                     isDirectMessage: viewModel.isDirectChannel
                 )
             }

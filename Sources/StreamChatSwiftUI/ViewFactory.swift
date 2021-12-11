@@ -386,6 +386,16 @@ public protocol ViewFactory: AnyObject {
         onError: @escaping (Error) -> Void
     ) -> [MessageAction]
     
+    associatedtype SendInChannelViewType: View
+    /// Creates the view that allows thread messages to be sent in a channel.
+    /// - Parameters:
+    ///  - showReplyInChannel: whether the message should be send also in the channel.
+    ///  - isDirectMessage: whether the message is direct.
+    func makeSendInChannelView(
+        showReplyInChannel: Binding<Bool>,
+        isDirectMessage: Bool
+    ) -> SendInChannelViewType
+    
     associatedtype MessageActionsViewType: View
     /// Creates the message actions view.
     /// - Parameters:

@@ -394,6 +394,16 @@ extension ViewFactory {
         AssetsAccessPermissionView()
     }
     
+    public func makeSendInChannelView(
+        showReplyInChannel: Binding<Bool>,
+        isDirectMessage: Bool
+    ) -> some View {
+        SendInChannelView(
+            sendInChannel: showReplyInChannel,
+            isDirectMessage: isDirectMessage
+        )
+    }
+    
     public func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,

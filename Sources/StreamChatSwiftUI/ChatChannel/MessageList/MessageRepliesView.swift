@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View shown below a message, when there are replies to it.
 struct MessageRepliesView<Factory: ViewFactory>: View {
     
     @Injected(\.fonts) private var fonts
