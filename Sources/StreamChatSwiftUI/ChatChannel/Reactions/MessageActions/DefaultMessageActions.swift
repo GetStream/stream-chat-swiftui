@@ -130,7 +130,7 @@ extension MessageAction {
             buttonTitle: L10n.Message.Actions.flag
         )
         
-        let flageMessage = MessageAction(
+        let flagMessage = MessageAction(
             title: L10n.Message.Actions.flag,
             iconName: "flag",
             action: flagAction,
@@ -138,6 +138,6 @@ extension MessageAction {
             isDestructive: false
         )
         
-        return flageMessage
+        return flagMessage
     }
 }

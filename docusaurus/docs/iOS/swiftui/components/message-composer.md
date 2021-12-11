@@ -2,7 +2,7 @@
 title: Message composer
 ---
 
-## Message composer overview
+## Message Composer Overview
 
 The message composer is the component that allows you to send messages consisting of text, images, video, files and links. The composer is customizable - you can provide your own views for several slots. The default component consists of several parts:
 
@@ -11,7 +11,7 @@ The message composer is the component that allows you to send messages consistin
 - Trailing composer view - displayed in the right part of the component. Usually used for sending the message.
 - Attachment picker view - component that allows you to pick several different types of attachments. The default component has three types of attachments (images and videos from the photo library, files and camera input). When an attachment is selected, by default it is added to the composer's input view. You can inject custom views (alternative pickers) in the component itself as well. 
 
-## Customizing the leading composer view
+## Customizing the Leading Composer View
 
 You can completely swap the leading composer view with your own implementation. This might be useful if you want to change the behaviour of the attachment picker (provide a different one), or even just hide the component. 
 
@@ -34,16 +34,16 @@ The `AttachmentPickerTypeView` comes with a lot of functionalities, in terms of 
 For example, let's say we want to add additional contacts picker, which will allow us to send contacts via the chat. We also want to keep the existing functionalities, therefore we will explore ways to customize the existing component.
 
 There are few things we need to do in order to accomplish this: 
-- introduce new type of payload for contacts
-- create new contact attachment type component
-- enable the new contact component to be selectable from the attachment types picker
-- implement the UI for previewing the selected item (contact) in the message composer
-- update the message resolving logic of the message list to include the contact payload
-- provide UI for the contacts attachment in the message list
+- Introduce a new type of payload for contacts
+- Create a new contact attachment type component
+- Enable the new contact component to be selectable from the attachment types picker
+- Implement the UI for previewing the selected item (contact) in the message composer
+- Update the message resolving logic of the message list to include the contact payload
+- Provide UI for the contacts attachment in the message list
 
 Let's explore these steps in more details
 
-### Contact payload
+### Contact Payload
 
 First, we need to create a new `AttachmentType` for contacts, and define its payload.
 
@@ -60,7 +60,7 @@ struct ContactAttachmentPayload: AttachmentPayload {
 }
 ```
 
-Since we will go through the attachments in a scrollable list, we also need to conform the payload to the `Identifiable` protocol. For an id, it's enough to use a key that's combination of the name and the phone number.
+Since we will go through the attachments in a scrollable list, we also need to conform the payload to the `Identifiable` protocol. For an id, it's enough to use a key that's a combination of the name and the phone number.
 
 ```swift
 extension ContactAttachmentPayload: Identifiable {
@@ -72,7 +72,7 @@ extension ContactAttachmentPayload: Identifiable {
 }
 ```
 
-### Create new contact attachment type component
+### Create New Contact Attachment Type Component
 
 Next, we need to create the component that will be displayed in the slot for custom attachment type pickers. In order to do inject our custom views, we need to create a new view factory, conforming to the `ViewFactory` protocol. The slot that's used for custom attachment type views can be filled via the `makeCustomAttachmentView` method from the `ViewFactory` protocol. This method has two parameters - one is for the list of already added custom attachments (maintained by the `MessageComposerViewModel`), and a callback that you should call when an attachment is tapped. In this method, we will return our newly created `CustomContactAttachmentView`, which will display a list of contacts. For simplicity, mock contacts are provided in the sample, but you can easily use the `Contacts` framework from Apple if you want to fetch the user's real contacts.
 
@@ -204,7 +204,7 @@ struct CustomContactAttachmentPreview: View {
 }
 ```
 
-### Make the component selectable in the attachment type picker 
+### Make the Component Selectable in the Attachment Type Picker 
 
 Next, we need to swap the current attachment picker, with a new one that will provide access to the custom component. To do this, we need to use the `makeAttachmentSourcePickerView` from the `ViewFactory` protocol. The method provides information about the selected `AttachmentPickerState`, as well as a callback that you should call when you want to switch the state. Here, we will return a new view, which will be of type `CustomAttachmentSourcePickerView`.
 
@@ -270,7 +270,7 @@ struct CustomAttachmentSourcePickerView: View {
 }
 ```
 
-### Previewing in the message composer's input view
+### Previewing in the Message Composer's Input View
 
 When any attachment is selected, it's displayed in the composer's input view. This notifies the user which attachments they are about to send in the chat. The composer's input view allows additional attachment previews to be injected in its own custom views slot. In our case, we want to display the selected contact.
 
@@ -331,7 +331,7 @@ struct CustomContactAttachmentComposerPreview: View {
 
 This is a good example on how to use composition to create new views while re-using the existing ones. With this, we are done with everything that needs to be done in order for you to send a custom attachment.
 
-### Updating the message resolving logic
+### Updating the Message Resolving Logic
 
 Next, we need to go to the message list and update its rendering logic, in order for it to support displaying the newly created type of attachment. First, we need to update how messages are resolved based on their attachment types. The SDK supports displaying custom attachments via its `MessageTypeResolving` protocol. In our case, we need to create a new implementation of this protocol, specifically the `hasCustomAttachment` method. 
 
@@ -355,7 +355,7 @@ let utils = Utils(messageTypeResolver: messageTypeResolver)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
-### Providing new view in the message list
+### Providing New View in the Message List
 
 The final step that we need to do is to provide a new view that the message list will render if the attachment type is of type `.contact`. To do this, we will go back to our custom view factory, and implement the `makeCustomAttachmentViewType` method. The method provides us the message that's going to be displayed, whether it's the first one (last sending date in a group) and the available width it has.
 

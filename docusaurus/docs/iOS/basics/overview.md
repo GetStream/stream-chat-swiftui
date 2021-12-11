@@ -47,7 +47,7 @@ This SDK tries to keep the list of external dependencies to a minimum, these are
 
 - [Nuke](https://github.com/kean/Nuke) for loading images  
 - [NukeUI](https://github.com/kean/Nuke) for loading images  
-- [SwiftyGif](https://github.com/kirualex/SwiftyGif) for high performance GIF rendering
+- [Gifu](hhttps://github.com/kaishin/Gifu) for high performance GIF rendering
 - StreamChat the low-level client to Stream Chat API
 
 #### StreamChat
@@ -65,7 +65,7 @@ The StreamChat Swift SDK adheres to the [semantic versioning](https://semver.org
 Occasionally, the SDK can include visual changes (whitespace, color changes, sizing, etc) in minor versions, as we are continuously improving the default look of our UI components. Bumping the major version for such changes would not be practical. 
 
 
-### How should I specify my dependency version? 
+### How Should I Specify My Dependency Version? 
 
 You should either use a fixed version, or an optimitistic operator (a.k.a. squiggly arrow), with **all three versions specified**.
 

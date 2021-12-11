@@ -2,11 +2,11 @@
 title: Message reactions
 ---
 
-## Reactions overview
+## Reactions Overview
 
 The SwiftUI chat SDK provides a default view that's displayed as an overlay of the message. When you long press on a message, the message reactions overlay is shown. By default, it shows a blurred background and a possibility to react to a message or remove a reaction. Additionally, the reactions overlay has a "message actions" slot, which allows you to perform actions on the message. Both the displayed reactions on a message and the reactions overlay can be replaced by your own views. 
 
-## Customizing the message reactions view
+## Customizing the Message Reactions View
 
 The simplest way to customize the message reactions view is to replace its reaction icons. Those are available under the `availableReactions` property in the Images class, which is part of the Appearance class in the StreamChat object. The `availableReactions` property is a dictionary, which contains mappings between `MessageReactionType` and its corresponding `ChatMessageReactionAppearanceType`, which consists of small and large icon for a reaction. If you change these properties, make sure to inject the updated `Images` class in the StreamChat object.
 
@@ -22,7 +22,7 @@ let appearance = Appearance(images: images)
 streamChat = StreamChat(chatClient: chatClient, appearance: appearance)
 ```
 
-## Changing the message reactions view
+## Changing the Message Reactions View
 
 Alternatively, you can completely swap the `ReactionsContainer` view with your own implementation. In order to do that, you need to implement the `makeMessageReactionView` method from the `ViewFactory`, which is called with the message as a parameter. 
 
@@ -34,48 +34,57 @@ public func makeMessageReactionView(
 }
 ```
 
-## Customizing the reactions overlay view
+## Customizing the Reactions Overlay View
 
 The reactions overlay view (shown on long press of a message), also provides access to the message actions. If you want to replace / extend the default message actions, you can do so via the `supportedMessageActions` method in the `ViewFactory`. As an inspiration, here's a glimpse on how the default message actions are configured.
 
 ```swift
 public func supportedMessageActions(
         for message: ChatMessage,
+        channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
 ) -> [MessageAction] {
     MessageAction.defaultActions(
-        for: message,
-        chatClient: chatClient,
-        onDismiss: onDismiss,
-        onError: onError
-    )
+            factory: self,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onDismiss: onDismiss,
+            onError: onError
+        )
 }
 
 extension MessageAction {
-    /// Returns the default message actions.
-    ///
-    ///  - Parameters:
-    ///     - message: the current message.
-    ///     - chatClient: the chat client.
-    ///     - onDimiss: called when the action is executed.
-    ///  - Returns: array of `MessageAction`.
-    public static func defaultActions(
+    public static func defaultActions<Factory: ViewFactory>(
+        factory: Factory,
         for message: ChatMessage,
+        channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
-        guard let channelId = message.cid else {
-            return []
-        }
-        
         var messageActions = [MessageAction]()
+        
+        if !message.isPartOfThread {
+            var replyThread = MessageAction(
+                title: L10n.Message.Actions.threadReply,
+                iconName: "icn_thread_reply",
+                action: onDismiss,
+                confirmationPopup: nil,
+                isDestructive: false
+            )
+            
+            let destination = factory.makeMessageThreadDestination()
+            replyThread.navigationDestination = AnyView(destination(channel, message))
+            
+            messageActions.append(replyThread)
+        }
 
         if message.isSentByCurrentUser {
             let deleteAction = deleteMessageAction(
                 for: message,
-                channelId: channelId,
+                channel: channel,
                 chatClient: chatClient,
                 onDismiss: onDismiss,
                 onError: onError
@@ -85,7 +94,7 @@ extension MessageAction {
         } else {
             let flagAction = flagMessageAction(
                 for: message,
-                channelId: channelId,
+                channel: channel,
                 chatClient: chatClient,
                 onDismiss: onDismiss,
                 onError: onError
@@ -99,13 +108,13 @@ extension MessageAction {
     
     private static func deleteMessageAction(
         for message: ChatMessage,
-        channelId: ChannelId,
+        channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
-            cid: channelId,
+            cid: channel.cid,
             messageId: message.id
         )
         
@@ -138,13 +147,13 @@ extension MessageAction {
     
     private static func flagMessageAction(
         for message: ChatMessage,
-        channelId: ChannelId,
+        channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
-            cid: channelId,
+            cid: channel.cid,
             messageId: message.id
         )
         
@@ -164,7 +173,7 @@ extension MessageAction {
             buttonTitle: L10n.Message.Actions.flag
         )
         
-        let flageMessage = MessageAction(
+        let flagMessage = MessageAction(
             title: L10n.Message.Actions.flag,
             iconName: "flag",
             action: flagAction,
@@ -172,9 +181,8 @@ extension MessageAction {
             isDestructive: false
         )
         
-        return flageMessage
+        return flagMessage
     }
-}
 ```
 
 Alternatively, you can swap the whole `MessageActionsView` with your own implementation, by implementing the `makeMessageActionsView` method in the `ViewFactory`. 
@@ -182,11 +190,13 @@ Alternatively, you can swap the whole `MessageActionsView` with your own impleme
 ```swift
 public func makeMessageActionsView(
         for message: ChatMessage,
+        channel: ChatChannel,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
 ) -> some View {
     let messageActions = supportedMessageActions(
         for: message,
+        channel: channel,
         onDismiss: onDismiss,
         onError: onError
     )
@@ -199,12 +209,14 @@ Additionally, you can swap the whole `ReactionsOverlayView` with your own implem
 
 ```swift
 public func makeReactionsOverlayView(
+        channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
         onBackgroundTap: @escaping () -> Void
 ) -> some View {
     ReactionsOverlayView(
         factory: self,
+        channel: channel,
         currentSnapshot: currentSnapshot,
         messageDisplayInfo: messageDisplayInfo,
         onBackgroundTap: onBackgroundTap

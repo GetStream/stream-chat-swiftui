@@ -1,14 +1,14 @@
 ---
-title: Swipe actions for the channel list
+title: Swipe Actions for the Channel List
 ---
 
-## Changing the swipe actions UI
+## Changing the Swipe Actions Ui
 
 When the user swipes left on a channel in the channel list, there are additional actions that can be performed on that channel. By default, one of them is the deleting of a conversation, while the other one is about performing other actions.
 
 The SwiftUI SDK allows you to either use the same view, with additional actions you want to provide, or inject a completely different view, with your own design.
 
-### Adding additional actions
+### Adding Additional Actions
 
 First, we will explore how you can extend the existing channel actions view with your own actions. The default actions provided by the SDK are leaving group, muting/unmuting group and users, as well as deleting the conversation. 
 
@@ -74,7 +74,7 @@ var body: some Scene {
 }
 ```
 
-### Swapping the whole view
+### Swapping the Whole View
 
 If the user interface or logic don't match your app's requirements, you can easily create your own view and inject it in the place of the SDK's default one. In order to do that, similarly to other places in the SDK, you just need to implement the corresponding method of the `ViewFactory` in your own custom implementation. In this case, that's the `makeMoreChannelActionsView` method.
 

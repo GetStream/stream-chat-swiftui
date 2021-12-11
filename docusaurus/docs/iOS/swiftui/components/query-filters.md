@@ -2,7 +2,7 @@
 title: Channels filters and sorting
 ---
 
-## Filters and sorting
+## Filters and Sorting
 
 The `ChatChannelListView` component uses the `ChannelListController` to fetch the list of channels matching your query and to stay up-to-date with all changes. The SwiftUI SDK allows you to list channels based on your own query and sorting criteria.
 

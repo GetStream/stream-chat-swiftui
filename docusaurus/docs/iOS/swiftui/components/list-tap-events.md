@@ -1,8 +1,8 @@
 ---
-title: Handling channel list tap events
+title: Handling Channel List Tap Events
 ---
 
-## Navigation destination
+## Navigation Destination
 
 The SwiftUI SDK comes with default navigation, which can be updated per your needs. For example, you can completely swap the default chat channel view with your own implementation. Alternatively, you can also intercept the on-tap events and provide your own handling.
 
@@ -41,7 +41,7 @@ class CustomFactory: ViewFactory {
 
 Those are the only two things you need to do in order to change the chat channel view with your own custom implementation.
 
-## Handling tap events
+## Handling Tap Events
 
 In some cases, you don't want to push a screen to the navigation stack. You might want to show it as a modal, or do additional checks (show alerts), before going to the next screen.
 

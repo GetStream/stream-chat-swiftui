@@ -1,8 +1,8 @@
 ---
-title: Message avatar view
+title: Message Avatar View
 ---
 
-## Injecting custom avatar view
+## Injecting Custom Avatar View
 
 The default avatar shown for the message sender in the SDK is a rounded image with the user's photo. You can change the look and feel of this component, as well as introduce additional elements, such as the sender name.
 

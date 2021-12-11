@@ -3,7 +3,8 @@
     {
       "Basics": [
         "basics/overview",
-        "basics/glossary"
+        "basics/glossary",
+        "basics/logs"
       ]
     },
     {
@@ -78,6 +79,7 @@
       },
     {
       "Guides": [
+        "guides/importance-of-synchronize",
         "guides/customize-message-actions",
         "guides/push-notifications",
         "guides/working-with-attachments",
