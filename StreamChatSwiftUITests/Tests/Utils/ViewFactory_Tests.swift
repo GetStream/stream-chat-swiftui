@@ -404,6 +404,31 @@ class ViewFactory_Tests: XCTestCase {
         // Then
         XCTAssert(view is ReactionsOverlayView<DefaultViewFactory>)
     }
+    
+    func test_viewFactory_makeMessageThreadHeaderViewModifier() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let viewModifier = viewFactory.makeMessageThreadHeaderViewModifier()
+        
+        // Then
+        XCTAssert(viewModifier is DefaultMessageThreadHeaderModifier)
+    }
+    
+    func test_viewFactory_makeSendInChannelView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeSendInChannelView(
+            showReplyInChannel: .constant(true),
+            isDirectMessage: true
+        )
+        
+        // Then
+        XCTAssert(view is SendInChannelView)
+    }
 }
 
 extension ChannelAction: Equatable {

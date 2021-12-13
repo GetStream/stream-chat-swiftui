@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */; };
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
 		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
 		84335018274BAD4B007A1B81 /* NewChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335017274BAD4B007A1B81 /* NewChatViewModel.swift */; };
@@ -275,6 +276,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelDataSource_Tests.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
 		84335015274BABF3007A1B81 /* NewChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
@@ -1023,6 +1025,7 @@
 				84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */,
 				84DEC8DE2760A1D100172876 /* MessageView_Tests.swift */,
 				848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */,
+				842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */,
 				84C94D4E2758FE59007FE2B9 /* ChatChannelTestHelpers.swift */,
 			);
 			path = ChatChannel;
@@ -1393,6 +1396,7 @@
 				84C94CDD27578B92007FE2B9 /* MemberPayload.swift in Sources */,
 				84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */,
 				84C94CD927578B92007FE2B9 /* ChatChannelMember_Mock.swift in Sources */,
+				842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */,
 				84DEC8DF2760A1D100172876 /* MessageView_Tests.swift in Sources */,
 				84C94CDA27578B92007FE2B9 /* ChatUser_Mock.swift in Sources */,
 				84C94D2C275796F7007FE2B9 /* RequestRecorderURLProtocol.swift in Sources */,
