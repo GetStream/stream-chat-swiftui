@@ -87,7 +87,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 : nil
         )
         .onAppear {
-            viewModel.reactionsShown = false
+            viewModel.onViewAppear()
+        }
+        .onDisappear {
+            viewModel.onViewDissappear()
         }
     }
 }

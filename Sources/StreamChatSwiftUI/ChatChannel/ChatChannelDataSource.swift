@@ -128,6 +128,13 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         delegate?.dataSource(channelDataSource: self, didUpdateMessages: controller.replies)
     }
     
+    func messageController(
+        _ controller: ChatMessageController,
+        didChangeMessage change: EntityChange<ChatMessage>
+    ) {
+        delegate?.dataSource(channelDataSource: self, didUpdateMessages: controller.replies)
+    }
+    
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,

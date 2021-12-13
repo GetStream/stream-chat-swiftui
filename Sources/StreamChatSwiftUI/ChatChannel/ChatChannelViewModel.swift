@@ -27,6 +27,8 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             currentDateString = messageListDateOverlay.string(from: currentDate)
         }
     }
+
+    private var isActive = true
     
     private let messageListDateOverlay: DateFormatter = {
         let df = DateFormatter()
@@ -144,6 +146,10 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelDataSource: ChannelDataSource,
         didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
     ) {
+        if !isActive {
+            return
+        }
+        
         if let message = messageController?.message {
             var array = Array(messages)
             array.append(message)
@@ -180,6 +186,16 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         view.layer.render(in: UIGraphicsGetCurrentContext()!)
         currentSnapshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+    }
+    
+    func onViewAppear() {
+        reactionsShown = false
+        isActive = true
+        messages = channelDataSource.messages
+    }
+    
+    func onViewDissappear() {
+        isActive = false
     }
     
     // MARK: - private
