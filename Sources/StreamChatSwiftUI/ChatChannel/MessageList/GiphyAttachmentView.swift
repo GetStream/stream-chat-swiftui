@@ -14,29 +14,31 @@ public struct GiphyAttachmentView: View {
     let isFirst: Bool
                 
     public var body: some View {
-        ZStack {
-            if message.text.isEmpty {
-                LazyGiphyView(
-                    source: message.giphyAttachments[0].previewURL,
-                    width: width
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
+            if let quotedMessage = message.quotedMessage {
+                QuotedMessageViewContainer(
+                    quotedMessage: quotedMessage,
+                    message: message
                 )
-                .messageBubble(for: message, isFirst: isFirst)
-            } else {
-                VStack(spacing: 0) {
-                    LazyGiphyView(
-                        source: message.giphyAttachments[0].previewURL,
-                        width: width
-                    )
+            }
+            
+            LazyGiphyView(
+                source: message.giphyAttachments[0].previewURL,
+                width: width
+            )
 
-                    HStack {
-                        Text(message.text)
-                            .standardPadding()
-                        Spacer()
-                    }
+            if !message.text.isEmpty {
+                HStack {
+                    Text(message.text)
+                        .standardPadding()
+                    Spacer()
                 }
-                .messageBubble(for: message, isFirst: isFirst)
             }
         }
+        .messageBubble(for: message, isFirst: isFirst)
         .frame(maxWidth: width)
     }
 }

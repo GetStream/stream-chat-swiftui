@@ -11,32 +11,41 @@ public struct FileAttachmentsContainer: View {
     var isFirst: Bool
     
     public var body: some View {
-        VStack(spacing: 4) {
-            ForEach(message.fileAttachments, id: \.self) { attachment in
-                if message.text.isEmpty {
-                    FileAttachmentView(
-                        attachment: attachment,
-                        width: width,
-                        isFirst: isFirst
-                    )
-                } else {
-                    VStack(spacing: 0) {
+        VStack(alignment: message.alignmentInBubble) {
+            if let quotedMessage = message.quotedMessage {
+                QuotedMessageViewContainer(
+                    quotedMessage: quotedMessage,
+                    message: message
+                )
+            }
+            
+            VStack(spacing: 4) {
+                ForEach(message.fileAttachments, id: \.self) { attachment in
+                    if message.text.isEmpty {
                         FileAttachmentView(
                             attachment: attachment,
                             width: width,
                             isFirst: isFirst
                         )
+                    } else {
+                        VStack(spacing: 0) {
+                            FileAttachmentView(
+                                attachment: attachment,
+                                width: width,
+                                isFirst: isFirst
+                            )
 
-                        HStack {
-                            Text(message.text)
-                                .standardPadding()
-                            Spacer()
+                            HStack {
+                                Text(message.text)
+                                    .standardPadding()
+                                Spacer()
+                            }
                         }
                     }
                 }
             }
+            .padding(.all, 4)
         }
-        .padding(.all, 4)
         .messageBubble(for: message, isFirst: isFirst)
     }
 }

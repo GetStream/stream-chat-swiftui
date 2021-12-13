@@ -19,7 +19,17 @@ public struct LinkAttachmentContainer: View {
     private let padding: CGFloat = 8
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
+            if let quotedMessage = message.quotedMessage {
+                QuotedMessageViewContainer(
+                    quotedMessage: quotedMessage,
+                    message: message
+                )
+            }
+            
             let size = message.text.frameSize(maxWidth: width - 2 * padding)
             LinkTextView(
                 text: message.text,

@@ -100,11 +100,23 @@ public struct MessageTextView: View {
     var isFirst: Bool
     
     public var body: some View {
-        Text(message.text)
-            .standardPadding()
-            .messageBubble(for: message, isFirst: isFirst)
-            .foregroundColor(Color(colors.text))
-            .font(fonts.body)
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
+            if let quotedMessage = message.quotedMessage {
+                QuotedMessageViewContainer(
+                    quotedMessage: quotedMessage,
+                    message: message
+                )
+            }
+            
+            Text(message.text)
+                .standardPadding()
+                .foregroundColor(Color(colors.text))
+                .font(fonts.body)
+        }
+        .messageBubble(for: message, isFirst: isFirst)
     }
 }
 

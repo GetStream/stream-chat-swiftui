@@ -15,19 +15,23 @@ public struct ImageAttachmentContainer: View {
     let isFirst: Bool
                 
     public var body: some View {
-        if message.text.isEmpty {
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
+            if let quotedMessage = message.quotedMessage {
+                QuotedMessageViewContainer(
+                    quotedMessage: quotedMessage,
+                    message: message
+                )
+            }
+            
             ImageAttachmentView(
                 message: message,
                 width: width
             )
-            .messageBubble(for: message, isFirst: isFirst)
-        } else {
-            VStack(spacing: 0) {
-                ImageAttachmentView(
-                    message: message,
-                    width: width
-                )
-                
+            
+            if !message.text.isEmpty {
                 HStack {
                     Text(message.text)
                         .standardPadding()
@@ -35,8 +39,8 @@ public struct ImageAttachmentContainer: View {
                 }
                 .background(Color(backgroundColor))
             }
-            .messageBubble(for: message, isFirst: isFirst)
         }
+        .messageBubble(for: message, isFirst: isFirst)
     }
     
     private var backgroundColor: UIColor {
@@ -219,6 +223,8 @@ struct LazyLoadingImage: View {
     let source: URL
     let width: CGFloat
     
+    var resize: Bool = true
+    
     var body: some View {
         ZStack {
             if let image = image {
@@ -245,7 +251,7 @@ struct LazyLoadingImage: View {
             utils.imageLoader.loadImage(
                 url: source,
                 imageCDN: utils.imageCDN,
-                resize: true,
+                resize: resize,
                 preferredSize: CGSize(width: width, height: 3 * width / 4),
                 completion: { result in
                     switch result {
@@ -258,5 +264,12 @@ struct LazyLoadingImage: View {
             )
         }
         .clipped()
+    }
+}
+
+extension ChatMessage {
+    
+    var alignmentInBubble: HorizontalAlignment {
+        .leading
     }
 }

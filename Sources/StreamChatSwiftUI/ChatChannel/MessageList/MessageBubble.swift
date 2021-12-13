@@ -12,13 +12,15 @@ public struct MessageBubbleModifier: ViewModifier {
     var message: ChatMessage
     var isFirst: Bool
     var injectedBackgroundColor: UIColor?
+    var cornerRadius: CGFloat = 18
     
     public func body(content: Content) -> some View {
         content
             .modifier(
                 BubbleModifier(
                     corners: corners,
-                    backgroundColor: Color(backgroundColor)
+                    backgroundColor: Color(backgroundColor),
+                    cornerRadius: cornerRadius
                 )
             )
     }
@@ -56,11 +58,10 @@ public struct MessageBubbleModifier: ViewModifier {
 public struct BubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
     
-    private let cornerRadius: CGFloat = 18
-    
     var corners: UIRectCorner
     var backgroundColor: Color
     var borderColor: Color? = nil
+    var cornerRadius: CGFloat = 18
     
     public func body(content: Content) -> some View {
         content
@@ -108,13 +109,15 @@ extension View {
     public func messageBubble(
         for message: ChatMessage,
         isFirst: Bool,
-        backgroundColor: UIColor? = nil
+        backgroundColor: UIColor? = nil,
+        cornerRadius: CGFloat = 18
     ) -> some View {
         modifier(
             MessageBubbleModifier(
                 message: message,
                 isFirst: isFirst,
-                injectedBackgroundColor: backgroundColor
+                injectedBackgroundColor: backgroundColor,
+                cornerRadius: cornerRadius
             )
         )
     }
