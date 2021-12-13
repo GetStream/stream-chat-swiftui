@@ -311,6 +311,41 @@ class MessageComposerViewModel_Tests: XCTestCase {
         }
     }
     
+    func test_messageComposerVM_notInThread() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        let sendInChannel = viewModel.sendInChannelShown
+        let isDMChannel = viewModel.isDirectChannel
+        
+        // Then
+        XCTAssert(sendInChannel == false)
+        XCTAssert(isDMChannel == true)
+    }
+    
+    func test_messageComposerVM_inThread() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageController_Mock(
+            client: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        
+        // When
+        let sendInChannel = viewModel.sendInChannelShown
+        let isDMChannel = viewModel.isDirectChannel
+        
+        // Then
+        XCTAssert(sendInChannel == true)
+        XCTAssert(isDMChannel == true)
+    }
+    
     // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {

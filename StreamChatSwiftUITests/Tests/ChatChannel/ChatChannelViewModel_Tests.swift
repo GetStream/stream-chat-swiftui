@@ -31,6 +31,7 @@ class ChatChannelViewModel_Tests: XCTestCase {
         
         // Then
         XCTAssert(messages.count == 1)
+        XCTAssert(viewModel.isMessageThread == false)
     }
     
     func test_chatChannelVM_messageGrouping() {
@@ -158,6 +159,26 @@ class ChatChannelViewModel_Tests: XCTestCase {
         // Then
         let newListId = viewModel.listId
         XCTAssert(initialListId == newListId)
+    }
+    
+    func test_chatChannelVM_messageThread() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageController_Mock(
+            client: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = ChatChannelViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        
+        // When
+        let isMessageThread = viewModel.isMessageThread
+        
+        // Then
+        XCTAssert(isMessageThread == true)
     }
     
     // MARK: - private
