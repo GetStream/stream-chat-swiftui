@@ -26,19 +26,25 @@ public struct ImageAttachmentContainer: View {
                 )
             }
             
-            ImageAttachmentView(
-                message: message,
-                width: width
-            )
-            
-            if !message.text.isEmpty {
-                HStack {
-                    Text(message.text)
-                        .standardPadding()
-                    Spacer()
+            VStack(
+                alignment: message.alignmentInBubble,
+                spacing: 0
+            ) {
+                ImageAttachmentView(
+                    message: message,
+                    width: width
+                )
+                
+                if !message.text.isEmpty {
+                    HStack {
+                        Text(message.text)
+                            .standardPadding()
+                        Spacer()
+                    }
+                    .background(Color(backgroundColor))
                 }
-                .background(Color(backgroundColor))
             }
+            .clipped()
         }
         .messageBubble(for: message, isFirst: isFirst)
     }
