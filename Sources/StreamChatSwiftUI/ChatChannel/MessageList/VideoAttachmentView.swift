@@ -12,17 +12,45 @@ public struct VideoAttachmentsContainer: View {
         
     public var body: some View {
         VStack {
-            ForEach(message.videoAttachments, id: \.self) { attachment in
-                VideoAttachmentView(
-                    attachment: attachment,
+            if let quotedMessage = message.quotedMessage {
+                VStack {
+                    QuotedMessageViewContainer(
+                        quotedMessage: quotedMessage,
+                        message: message
+                    )
+                    
+                    VideoAttachmentsList(
+                        message: message,
+                        width: width
+                    )
+                }
+                .messageBubble(for: message, isFirst: false)
+            } else {
+                VideoAttachmentsList(
                     message: message,
                     width: width
                 )
-                .withUploadingStateIndicator(
-                    for: attachment.uploadingState,
-                    url: attachment.videoURL
-                )
             }
+        }
+    }
+}
+
+public struct VideoAttachmentsList: View {
+    
+    let message: ChatMessage
+    let width: CGFloat
+    
+    public var body: some View {
+        ForEach(message.videoAttachments, id: \.self) { attachment in
+            VideoAttachmentView(
+                attachment: attachment,
+                message: message,
+                width: width
+            )
+            .withUploadingStateIndicator(
+                for: attachment.uploadingState,
+                url: attachment.videoURL
+            )
         }
     }
 }
@@ -37,6 +65,8 @@ public struct VideoAttachmentView: View {
     let attachment: ChatMessageVideoAttachment
     let message: ChatMessage
     let width: CGFloat
+    var ratio: CGFloat = 0.75
+    var cornerRadius: CGFloat = 24
     
     @State var previewImage: UIImage?
     @State var error: Error?
@@ -67,8 +97,8 @@ public struct VideoAttachmentView: View {
                 }
             }
         }
-        .frame(width: width, height: 3 * width / 4)
-        .cornerRadius(24)
+        .frame(width: width, height: width * ratio)
+        .cornerRadius(cornerRadius)
         .fullScreenCover(isPresented: $fullScreenShown) {
             VideoPlayerView(
                 attachment: attachment,
@@ -86,6 +116,5 @@ public struct VideoAttachmentView: View {
                 }
             }
         }
-        .cornerRadius(24)
     }
 }

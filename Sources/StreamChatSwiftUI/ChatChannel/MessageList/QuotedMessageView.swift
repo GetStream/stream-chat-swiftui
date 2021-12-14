@@ -16,7 +16,7 @@ struct QuotedMessageViewContainer: View {
     
     var body: some View {
         HStack(alignment: .bottom) {
-            if !message.isSentByCurrentUser {
+            if !quotedMessage.isSentByCurrentUser {
                 MessageAvatarView(
                     author: quotedMessage.author,
                     size: .init(width: avatarSize, height: avatarSize)
@@ -55,36 +55,40 @@ struct QuotedMessageView: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            ZStack {
-                if !quotedMessage.imageAttachments.isEmpty {
-                    LazyLoadingImage(
-                        source: quotedMessage.imageAttachments[0].imagePreviewURL,
-                        width: attachmentWidth,
-                        resize: false
-                    )
-                } else if !quotedMessage.giphyAttachments.isEmpty {
-                    LazyGiphyView(
-                        source: quotedMessage.giphyAttachments[0].previewURL,
-                        width: attachmentWidth
-                    )
-                } else if !quotedMessage.fileAttachments.isEmpty {
-                    Image(uiImage: filePreviewImage(for: quotedMessage.fileAttachments[0].assetURL))
-                } else if !quotedMessage.videoAttachments.isEmpty {
-                    VideoAttachmentView(
-                        attachment: quotedMessage.videoAttachments[0],
-                        message: quotedMessage,
-                        width: attachmentWidth
-                    )
-                } else if !quotedMessage.linkAttachments.isEmpty {
-                    LazyImage(source: quotedMessage.linkAttachments[0].previewURL!)
-                        .onDisappear(.reset)
-                        .processors([ImageProcessors.Resize(width: attachmentWidth)])
-                        .priority(.high)
+            if !quotedMessage.attachmentCounts.isEmpty {
+                ZStack {
+                    if !quotedMessage.imageAttachments.isEmpty {
+                        LazyLoadingImage(
+                            source: quotedMessage.imageAttachments[0].imagePreviewURL,
+                            width: attachmentWidth,
+                            resize: false
+                        )
+                    } else if !quotedMessage.giphyAttachments.isEmpty {
+                        LazyGiphyView(
+                            source: quotedMessage.giphyAttachments[0].previewURL,
+                            width: attachmentWidth
+                        )
+                    } else if !quotedMessage.fileAttachments.isEmpty {
+                        Image(uiImage: filePreviewImage(for: quotedMessage.fileAttachments[0].assetURL))
+                    } else if !quotedMessage.videoAttachments.isEmpty {
+                        VideoAttachmentView(
+                            attachment: quotedMessage.videoAttachments[0],
+                            message: quotedMessage,
+                            width: attachmentWidth,
+                            ratio: 1.0,
+                            cornerRadius: 0
+                        )
+                    } else if !quotedMessage.linkAttachments.isEmpty {
+                        LazyImage(source: quotedMessage.linkAttachments[0].previewURL!)
+                            .onDisappear(.reset)
+                            .processors([ImageProcessors.Resize(width: attachmentWidth)])
+                            .priority(.high)
+                    }
                 }
+                .frame(width: attachmentWidth, height: attachmentWidth)
+                .aspectRatio(1, contentMode: .fill)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .frame(width: attachmentWidth, height: attachmentWidth)
-            .aspectRatio(1, contentMode: .fill)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Text(textForMessage)
                 .lineLimit(3)
