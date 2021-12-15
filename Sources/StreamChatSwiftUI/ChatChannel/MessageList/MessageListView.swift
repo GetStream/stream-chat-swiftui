@@ -14,6 +14,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var messagesGroupingInfo: [String: [String]]
     @Binding var scrolledId: String?
     @Binding var showScrollToLatestButton: Bool
+    @Binding var quotedMessage: ChatMessage?
     var currentDateString: String?
     var isGroup: Bool
     var unreadCount: Int
@@ -60,6 +61,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 showsAllInfo: showsAllData(for: message),
                                 isInThread: isMessageThread,
                                 scrolledId: $scrolledId,
+                                quotedMessage: $quotedMessage,
                                 onLongPress: { messageDisplayInfo in
                                     if keyboardShown {
                                         resignFirstResponder()

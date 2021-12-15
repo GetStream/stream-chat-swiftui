@@ -11,6 +11,7 @@ import SwiftUI
 struct MessageContainerView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
     
     var factory: Factory
     let channel: ChatChannel
@@ -20,10 +21,15 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     var showsAllInfo: Bool
     var isInThread: Bool
     @Binding var scrolledId: String?
+    @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
     
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
+    @State private var offsetX: CGFloat = 0
+    @GestureState private var offset: CGSize = .zero
+    
+    private let replyThreshold: CGFloat = 60
     
     var body: some View {
         HStack(alignment: .bottom) {
@@ -39,6 +45,14 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         Color.clear
                             .frame(width: CGSize.messageAvatarSize.width)
                     }
+                }
+                
+                if offsetX > 0 {
+                    VStack {
+                        Image(uiImage: images.messageActionInlineReply)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
                 }
                 
                 VStack(alignment: message.isSentByCurrentUser ? .trailing : .leading) {
@@ -80,6 +94,37 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                             )
                         }
 
+                    })
+                    .offset(x: self.offsetX)
+                    .simultaneousGesture(
+                        DragGesture(
+                            minimumDistance: 10,
+                            coordinateSpace: .local
+                        )
+                        .updating($offset) { (value, gestureState, _) in
+                            if message.isDeleted {
+                                return
+                            }
+                            // Using updating since onEnded is not called if the gesture is canceled.
+                            let diff = CGSize(
+                                width: value.location.x - value.startLocation.x,
+                                height: value.location.y - value.startLocation.y
+                            )
+                            
+                            if diff == .zero {
+                                gestureState = .zero
+                            } else {
+                                gestureState = value.translation
+                            }
+                        }
+                    )
+                    .onChange(of: offset, perform: { _ in
+                        if offset == .zero {
+                            // gesture ended or cancelled
+                            setOffsetX(value: 0)
+                        } else {
+                            dragChanged(to: offset.width)
+                        }
                     })
                     
                     if message.replyCount > 0 && !message.threadParticipants.isEmpty && !isInThread {
@@ -123,6 +168,34 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     
     private var reactionsShown: Bool {
         !message.reactionScores.isEmpty && !message.isDeleted
+    }
+    
+    private func dragChanged(to value: CGFloat) {
+        let horizontalTranslation = value
+         
+        if horizontalTranslation < 0 {
+            // prevent swiping to right.
+            return
+        }
+                 
+        if horizontalTranslation > 0 {
+            offsetX = horizontalTranslation
+        } else {
+            offsetX = 0
+        }
+        
+        if offsetX > replyThreshold && quotedMessage != message {
+            triggerHapticFeedback(style: .medium)
+            withAnimation {
+                quotedMessage = message
+            }
+        }
+    }
+    
+    private func setOffsetX(value: CGFloat) {
+        withAnimation {
+            self.offsetX = value
+        }
     }
 }
 
