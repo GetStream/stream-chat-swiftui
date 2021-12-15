@@ -59,6 +59,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 width: width,
                                 showsAllInfo: showsAllData(for: message),
                                 isInThread: isMessageThread,
+                                scrolledId: $scrolledId,
                                 onLongPress: { messageDisplayInfo in
                                     if keyboardShown {
                                         resignFirstResponder()

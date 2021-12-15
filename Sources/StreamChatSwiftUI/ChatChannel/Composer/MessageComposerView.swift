@@ -161,7 +161,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: true,
-                    forceLeftToRight: true
+                    forceLeftToRight: true,
+                    scrolledId: .constant(nil)
                 )
             }
             

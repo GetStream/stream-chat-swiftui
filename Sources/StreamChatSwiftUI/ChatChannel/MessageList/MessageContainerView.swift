@@ -19,6 +19,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     var width: CGFloat?
     var showsAllInfo: Bool
     var isInThread: Bool
+    @Binding var scrolledId: String?
     var onLongPress: (MessageDisplayInfo) -> Void
     
     @State private var frame: CGRect = .zero
@@ -45,7 +46,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         factory: factory,
                         message: message,
                         contentWidth: contentWidth,
-                        isFirst: showsAllInfo
+                        isFirst: showsAllInfo,
+                        scrolledId: $scrolledId
                     )
                     .overlay(
                         reactionsShown ?

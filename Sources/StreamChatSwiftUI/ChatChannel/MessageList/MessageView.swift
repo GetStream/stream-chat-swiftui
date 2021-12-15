@@ -16,6 +16,7 @@ struct MessageView<Factory: ViewFactory>: View {
     var message: ChatMessage
     var contentWidth: CGFloat
     var isFirst: Bool
+    @Binding var scrolledId: String?
     
     var body: some View {
         VStack {
@@ -36,7 +37,8 @@ struct MessageView<Factory: ViewFactory>: View {
                     factory.makeLinkAttachmentView(
                         for: message,
                         isFirst: isFirst,
-                        availableWidth: contentWidth
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
                 }
                 
@@ -44,7 +46,8 @@ struct MessageView<Factory: ViewFactory>: View {
                     factory.makeFileAttachmentView(
                         for: message,
                         isFirst: isFirst,
-                        availableWidth: contentWidth
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
                 }
                 
@@ -52,7 +55,8 @@ struct MessageView<Factory: ViewFactory>: View {
                     factory.makeImageAttachmentView(
                         for: message,
                         isFirst: isFirst,
-                        availableWidth: contentWidth
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
                 }
                 
@@ -61,7 +65,8 @@ struct MessageView<Factory: ViewFactory>: View {
                         factory.makeGiphyAttachmentView(
                             for: message,
                             isFirst: isFirst,
-                            availableWidth: contentWidth
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
                         )
                         factory.makeGiphyBadgeViewType(
                             for: message,
@@ -74,7 +79,8 @@ struct MessageView<Factory: ViewFactory>: View {
                     factory.makeVideoAttachmentView(
                         for: message,
                         isFirst: isFirst,
-                        availableWidth: contentWidth
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
                 }
             } else {
@@ -84,7 +90,8 @@ struct MessageView<Factory: ViewFactory>: View {
                     factory.makeMessageTextView(
                         for: message,
                         isFirst: isFirst,
-                        availableWidth: contentWidth
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
                 }
             }
@@ -98,6 +105,7 @@ public struct MessageTextView: View {
     
     var message: ChatMessage
     var isFirst: Bool
+    @Binding var scrolledId: String?
     
     public var body: some View {
         VStack(
@@ -107,7 +115,8 @@ public struct MessageTextView: View {
             if let quotedMessage = message.quotedMessage {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    scrolledId: $scrolledId
                 )
             }
             

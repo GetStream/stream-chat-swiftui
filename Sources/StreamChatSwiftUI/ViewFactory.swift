@@ -98,11 +98,13 @@ public protocol ViewFactory: AnyObject {
     ///   - message: the message that will be displayed.
     ///   - isFirst: whether it is first in the group (latest creation date).
     ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
     ///  - Returns: view displayed in the text message slot.
     func makeMessageTextView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> MessageTextViewType
     
     associatedtype ImageAttachmentViewType: View
@@ -111,11 +113,13 @@ public protocol ViewFactory: AnyObject {
     ///   - message: the message that will be displayed.
     ///   - isFirst: whether it is first in the group (latest creation date).
     ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
     ///  - Returns: view displayed in the image attachment slot.
     func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> ImageAttachmentViewType
     
     associatedtype GiphyAttachmentViewType: View
@@ -124,11 +128,13 @@ public protocol ViewFactory: AnyObject {
     ///   - message: the message that will be displayed.
     ///   - isFirst: whether it is first in the group (latest creation date).
     ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
     ///  - Returns: view displayed in the giphy attachment slot.
     func makeGiphyAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> GiphyAttachmentViewType
     
     associatedtype LinkAttachmentViewType: View
@@ -137,11 +143,13 @@ public protocol ViewFactory: AnyObject {
     ///   - message: the message that will be displayed.
     ///   - isFirst: whether it is first in the group (latest creation date).
     ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
     ///  - Returns: view displayed in the link attachment slot.
     func makeLinkAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> LinkAttachmentViewType
     
     associatedtype FileAttachmentViewType: View
@@ -150,11 +158,13 @@ public protocol ViewFactory: AnyObject {
     ///   - message: the message that will be displayed.
     ///   - isFirst: whether it is first in the group (latest creation date).
     ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
     ///  - Returns: view displayed in the file attachment slot.
     func makeFileAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> FileAttachmentViewType
     
     associatedtype VideoAttachmentViewType: View
@@ -163,11 +173,13 @@ public protocol ViewFactory: AnyObject {
     ///   - message: the message that will be displayed.
     ///   - isFirst: whether it is first in the group (latest creation date).
     ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
     ///  - Returns: view displayed in the video attachment slot.
     func makeVideoAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> VideoAttachmentViewType
     
     associatedtype DeletedMessageViewType: View

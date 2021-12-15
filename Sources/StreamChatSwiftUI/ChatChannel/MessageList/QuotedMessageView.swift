@@ -14,6 +14,7 @@ struct QuotedMessageViewContainer: View {
     var quotedMessage: ChatMessage
     var fillAvailableSpace: Bool
     var forceLeftToRight = false
+    @Binding var scrolledId: String?
     
     var body: some View {
         HStack(alignment: .bottom) {
@@ -42,6 +43,9 @@ struct QuotedMessageViewContainer: View {
             }
         }
         .padding(.all, 8)
+        .onTapGesture(perform: {
+            scrolledId = quotedMessage.messageId
+        })
     }
 }
 
@@ -92,6 +96,7 @@ struct QuotedMessageView: View {
                 .frame(width: attachmentWidth, height: attachmentWidth)
                 .aspectRatio(1, contentMode: .fill)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                .allowsHitTesting(false)
             }
             
             Text(textForMessage)

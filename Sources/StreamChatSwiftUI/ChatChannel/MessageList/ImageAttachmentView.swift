@@ -13,6 +13,7 @@ public struct ImageAttachmentContainer: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
+    @Binding var scrolledId: String?
                 
     public var body: some View {
         VStack(
@@ -22,7 +23,8 @@ public struct ImageAttachmentContainer: View {
             if let quotedMessage = message.quotedMessage {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    scrolledId: $scrolledId
                 )
             }
             

@@ -37,7 +37,8 @@ class MessageView_Tests: XCTestCase {
             factory: DefaultViewFactory.shared,
             message: textMessage,
             contentWidth: defaultScreenSize.width,
-            isFirst: true
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
@@ -60,7 +61,8 @@ class MessageView_Tests: XCTestCase {
             factory: DefaultViewFactory.shared,
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
-            isFirst: true
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
@@ -83,7 +85,8 @@ class MessageView_Tests: XCTestCase {
             factory: DefaultViewFactory.shared,
             message: giphyMessage,
             contentWidth: defaultScreenSize.width,
-            isFirst: true
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
@@ -106,7 +109,8 @@ class MessageView_Tests: XCTestCase {
             factory: DefaultViewFactory.shared,
             message: linkMessage,
             contentWidth: defaultScreenSize.width,
-            isFirst: true
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
@@ -129,7 +133,8 @@ class MessageView_Tests: XCTestCase {
             factory: DefaultViewFactory.shared,
             message: videoMessage,
             contentWidth: defaultScreenSize.width,
-            isFirst: true
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
@@ -152,7 +157,8 @@ class MessageView_Tests: XCTestCase {
             factory: DefaultViewFactory.shared,
             message: fileMessage,
             contentWidth: defaultScreenSize.width,
-            isFirst: true
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 

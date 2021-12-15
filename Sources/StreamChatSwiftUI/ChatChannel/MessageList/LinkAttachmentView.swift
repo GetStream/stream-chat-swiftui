@@ -15,6 +15,7 @@ public struct LinkAttachmentContainer: View {
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
+    @Binding var scrolledId: String?
     
     private let padding: CGFloat = 8
     
@@ -26,7 +27,8 @@ public struct LinkAttachmentContainer: View {
             if let quotedMessage = message.quotedMessage {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    scrolledId: $scrolledId
                 )
             }
             

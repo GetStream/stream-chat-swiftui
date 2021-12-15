@@ -142,7 +142,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeMessageTextView(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then
@@ -157,7 +158,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeImageAttachmentView(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then
@@ -172,7 +174,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeGiphyAttachmentView(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then
@@ -187,7 +190,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeLinkAttachmentView(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then
@@ -202,7 +206,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeFileAttachmentView(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then
@@ -217,7 +222,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeVideoAttachmentView(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then
@@ -341,7 +347,7 @@ class ViewFactory_Tests: XCTestCase {
             for: message,
             channel: .mockDMChannel(),
             chatClient: chatClient,
-            onDismiss: {},
+            onFinish: { _ in },
             onError: { _ in }
         )
         
@@ -349,7 +355,7 @@ class ViewFactory_Tests: XCTestCase {
         let actions = viewFactory.supportedMessageActions(
             for: message,
             channel: .mockDMChannel(),
-            onDismiss: {},
+            onFinish: { _ in },
             onError: { _ in }
         )
         
@@ -365,7 +371,7 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeMessageActionsView(
             for: message,
             channel: .mockDMChannel(),
-            onDismiss: {},
+            onFinish: { _ in },
             onError: { _ in }
         )
         
@@ -398,7 +404,8 @@ class ViewFactory_Tests: XCTestCase {
                 contentWidth: 300,
                 isFirst: true
             ),
-            onBackgroundTap: {}
+            onBackgroundTap: {},
+            onActionExecuted: { _ in }
         )
         
         // Then

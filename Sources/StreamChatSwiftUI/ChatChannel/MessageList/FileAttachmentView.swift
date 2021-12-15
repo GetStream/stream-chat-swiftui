@@ -9,13 +9,15 @@ public struct FileAttachmentsContainer: View {
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
+    @Binding var scrolledId: String?
     
     public var body: some View {
         VStack(alignment: message.alignmentInBubble) {
             if let quotedMessage = message.quotedMessage {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    scrolledId: $scrolledId
                 )
             }
             

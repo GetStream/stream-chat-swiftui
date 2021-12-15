@@ -33,11 +33,11 @@ class MessageActionsViewModel_Tests: XCTestCase {
             ),
             channel: .mockDMChannel(),
             chatClient: chatClient,
-            onDismiss: {},
+            onFinish: { _ in },
             onError: { _ in }
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
-        let action = actions[1]
+        let action = actions[2]
         
         // When
         viewModel.alertAction = action

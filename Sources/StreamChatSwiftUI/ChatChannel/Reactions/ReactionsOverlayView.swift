@@ -67,7 +67,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     factory: factory,
                     message: messageDisplayInfo.message,
                     contentWidth: messageDisplayInfo.contentWidth,
-                    isFirst: messageDisplayInfo.isFirst
+                    isFirst: messageDisplayInfo.isFirst,
+                    scrolledId: .constant(nil)
                 )
                 .offset(
                     x: messageDisplayInfo.frame.origin.x

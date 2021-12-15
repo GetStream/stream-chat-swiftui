@@ -9,6 +9,7 @@ import SwiftUI
 public struct VideoAttachmentsContainer: View {
     let message: ChatMessage
     let width: CGFloat
+    @Binding var scrolledId: String?
         
     public var body: some View {
         VStack {
@@ -16,7 +17,8 @@ public struct VideoAttachmentsContainer: View {
                 VStack {
                     QuotedMessageViewContainer(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        scrolledId: $scrolledId
                     )
                     
                     VideoAttachmentsList(
@@ -79,6 +81,7 @@ public struct VideoAttachmentView: View {
                     .resizable()
                     .scaledToFill()
                     .clipped()
+                    .allowsHitTesting(false)
                 
                 Button {
                     fullScreenShown = true

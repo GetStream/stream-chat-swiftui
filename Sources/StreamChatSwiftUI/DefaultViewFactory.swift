@@ -135,67 +135,82 @@ extension ViewFactory {
     public func makeMessageTextView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
-        MessageTextView(message: message, isFirst: isFirst)
+        MessageTextView(
+            message: message,
+            isFirst: isFirst,
+            scrolledId: scrolledId
+        )
     }
     
     public func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
         ImageAttachmentContainer(
             message: message,
             width: availableWidth,
-            isFirst: isFirst
+            isFirst: isFirst,
+            scrolledId: scrolledId
         )
     }
     
     public func makeGiphyAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
         GiphyAttachmentView(
             message: message,
             width: availableWidth,
-            isFirst: isFirst
+            isFirst: isFirst,
+            scrolledId: scrolledId
         )
     }
     
     public func makeLinkAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
         LinkAttachmentContainer(
             message: message,
             width: availableWidth,
-            isFirst: isFirst
+            isFirst: isFirst,
+            scrolledId: scrolledId
         )
     }
     
     public func makeFileAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
         FileAttachmentsContainer(
             message: message,
             width: availableWidth,
-            isFirst: isFirst
+            isFirst: isFirst,
+            scrolledId: scrolledId
         )
     }
     
     public func makeVideoAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
         VideoAttachmentsContainer(
             message: message,
-            width: availableWidth
+            width: availableWidth,
+            scrolledId: scrolledId
         )
     }
     

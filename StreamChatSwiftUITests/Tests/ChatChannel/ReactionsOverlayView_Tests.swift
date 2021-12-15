@@ -43,7 +43,8 @@ class ReactionsOverlayView_Tests: XCTestCase {
                     contentWidth: 200,
                     isFirst: true
                 ),
-                onBackgroundTap: {}
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
             )
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
         }
