@@ -8,6 +8,8 @@ import SwiftUI
 
 /// View model for the `MessageComposerView`.
 public class MessageComposerViewModel: ObservableObject {
+    @Injected(\.chatClient) private var chatClient
+    
     @Published var pickerState: AttachmentPickerState = .photos {
         didSet {
             if pickerState == .camera {
@@ -85,7 +87,10 @@ public class MessageComposerViewModel: ObservableObject {
         self.messageController = messageController
     }
     
-    public func sendMessage(completion: @escaping () -> Void) {
+    public func sendMessage(
+        quotedMessage: ChatMessage?,
+        completion: @escaping () -> Void
+    ) {
         do {
             var attachments = try addedAssets.map { added in
                 try AnyAttachmentPayload(
@@ -107,7 +112,8 @@ public class MessageComposerViewModel: ObservableObject {
                 messageController.createNewReply(
                     text: text,
                     attachments: attachments,
-                    showReplyInChannel: showReplyInChannel
+                    showReplyInChannel: showReplyInChannel,
+                    quotedMessageId: quotedMessage?.id
                 ) { [weak self] in
                     switch $0 {
                     case .success:
@@ -119,7 +125,8 @@ public class MessageComposerViewModel: ObservableObject {
             } else {
                 channelController.createNewMessage(
                     text: text,
-                    attachments: attachments
+                    attachments: attachments,
+                    quotedMessageId: quotedMessage?.id
                 ) { [weak self] in
                     switch $0 {
                     case .success:

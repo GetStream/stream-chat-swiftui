@@ -18,23 +18,24 @@ extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
         
+        let replyAction = replyAction(
+            for: message,
+            channel: channel,
+            onFinish: onFinish
+        )
+        messageActions.append(replyAction)
+        
         if !message.isPartOfThread {
-            var replyThread = MessageAction(
-                title: L10n.Message.Actions.threadReply,
-                iconName: "icn_thread_reply",
-                action: onDismiss,
-                confirmationPopup: nil,
-                isDestructive: false
+            let replyThread = threadReplyAction(
+                factory: factory,
+                for: message,
+                channel: channel
             )
-            
-            let destination = factory.makeMessageThreadDestination()
-            replyThread.navigationDestination = AnyView(destination(channel, message))
-            
             messageActions.append(replyThread)
         }
 
@@ -43,7 +44,7 @@ extension MessageAction {
                 for: message,
                 channel: channel,
                 chatClient: chatClient,
-                onDismiss: onDismiss,
+                onFinish: onFinish,
                 onError: onError
             )
             
@@ -53,7 +54,7 @@ extension MessageAction {
                 for: message,
                 channel: channel,
                 chatClient: chatClient,
-                onDismiss: onDismiss,
+                onFinish: onFinish,
                 onError: onError
             )
             
@@ -63,11 +64,54 @@ extension MessageAction {
         return messageActions
     }
     
+    // MARK: - private
+    
+    private static func replyAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        onFinish: @escaping (MessageActionInfo) -> Void
+    ) -> MessageAction {
+        let replyAction = MessageAction(
+            title: L10n.Message.Actions.inlineReply,
+            iconName: "icn_inline_reply",
+            action: {
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "inlineReply"
+                    )
+                )
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return replyAction
+    }
+    
+    private static func threadReplyAction<Factory: ViewFactory>(
+        factory: Factory,
+        for message: ChatMessage,
+        channel: ChatChannel
+    ) -> MessageAction {
+        var replyThread = MessageAction(
+            title: L10n.Message.Actions.threadReply,
+            iconName: "icn_thread_reply",
+            action: {},
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        let destination = factory.makeMessageThreadDestination()
+        replyThread.navigationDestination = AnyView(destination(channel, message))
+        return replyThread
+    }
+    
     private static func deleteMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
@@ -80,7 +124,12 @@ extension MessageAction {
                 if let error = error {
                     onError(error)
                 } else {
-                    onDismiss()
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "delete"
+                        )
+                    )
                 }
             }
         }
@@ -106,7 +155,7 @@ extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
@@ -119,7 +168,12 @@ extension MessageAction {
                 if let error = error {
                     onError(error)
                 } else {
-                    onDismiss()
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "flag"
+                        )
+                    )
                 }
             }
         }

@@ -13,6 +13,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     var currentSnapshot: UIImage
     var messageDisplayInfo: MessageDisplayInfo
     var onBackgroundTap: () -> Void
+    var onActionExecuted: (MessageActionInfo) -> Void
     
     private var messageActionsCount: Int
     private let padding: CGFloat = 16
@@ -24,7 +25,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping () -> Void
+        onBackgroundTap: @escaping () -> Void,
+        onActionExecuted: @escaping (MessageActionInfo) -> Void
     ) {
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory.makeReactionsOverlayViewModel(
@@ -36,10 +38,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.currentSnapshot = currentSnapshot
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
+        self.onActionExecuted = onActionExecuted
         messageActionsCount = factory.supportedMessageActions(
             for: messageDisplayInfo.message,
             channel: channel,
-            onDismiss: {},
+            onFinish: { _ in },
             onError: { _ in }
         ).count
     }
@@ -91,7 +94,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 factory.makeMessageActionsView(
                     for: messageDisplayInfo.message,
                     channel: channel,
-                    onDismiss: onBackgroundTap,
+                    onFinish: { actionInfo in
+                        onActionExecuted(actionInfo)
+                    },
                     onError: { _ in
                         viewModel.errorShown = true
                     }

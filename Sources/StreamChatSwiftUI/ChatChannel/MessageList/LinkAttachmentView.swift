@@ -26,7 +26,7 @@ public struct LinkAttachmentContainer: View {
             if let quotedMessage = message.quotedMessage {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
-                    message: message
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty
                 )
             }
             

@@ -86,6 +86,7 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
 
     @Published var reactionsShown = false
+    @Published var quotedMessage: ChatMessage?
     
     var channel: ChatChannel {
         channelController.channel!
@@ -186,6 +187,13 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         view.layer.render(in: UIGraphicsGetCurrentContext()!)
         currentSnapshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+    }
+    
+    func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
+        utils.messageActionsResolver.resolveMessageAction(
+            info: messageActionInfo,
+            viewModel: self
+        )
     }
     
     func onViewAppear() {

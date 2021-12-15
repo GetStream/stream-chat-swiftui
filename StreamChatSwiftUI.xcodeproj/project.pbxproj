@@ -137,6 +137,7 @@
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
+		849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */; };
 		84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */; };
 		84AD8425274E2C380098C3C4 /* ChatChannelScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AD8424274E2C380098C3C4 /* ChatChannelScreen.swift */; };
 		84B288CD274C544B00DD090B /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B288CC274C544B00DD090B /* CreateGroupView.swift */; };
@@ -407,6 +408,7 @@
 		8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComposerAttachmentView.swift; sourceTree = "<group>"; };
 		848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListView_Tests.swift; sourceTree = "<group>"; };
 		848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsOverlayView_Tests.swift; sourceTree = "<group>"; };
+		849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionsResolver.swift; sourceTree = "<group>"; };
 		84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyAttachmentView.swift; sourceTree = "<group>"; };
 		84AD8424274E2C380098C3C4 /* ChatChannelScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelScreen.swift; sourceTree = "<group>"; };
 		84B288CC274C544B00DD090B /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
@@ -761,6 +763,7 @@
 			children = (
 				8465FD282746A95600AF091E /* MessageActionsView.swift */,
 				8465FD292746A95600AF091E /* MessageActionsViewModel.swift */,
+				849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */,
 				8465FD272746A95600AF091E /* DefaultMessageActions.swift */,
 			);
 			path = MessageActions;
@@ -1253,6 +1256,7 @@
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
 				8465FDBE2746A95700AF091E /* MoreChannelActionsView.swift in Sources */,
 				8465FD902746A95700AF091E /* ComposerHelperViews.swift in Sources */,
+				849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */,
 				8465FD7B2746A95700AF091E /* GiphyBadgeView.swift in Sources */,
 				8465FDBD2746A95700AF091E /* ChatChannelHelperViews.swift in Sources */,
 				8465FD8D2746A95700AF091E /* AddedImageAttachmentsView.swift in Sources */,

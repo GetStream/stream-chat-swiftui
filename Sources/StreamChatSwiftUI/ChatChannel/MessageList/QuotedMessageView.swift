@@ -12,11 +12,12 @@ struct QuotedMessageViewContainer: View {
     private let avatarSize: CGFloat = 24
     
     var quotedMessage: ChatMessage
-    var message: ChatMessage
+    var fillAvailableSpace: Bool
+    var forceLeftToRight = false
     
     var body: some View {
         HStack(alignment: .bottom) {
-            if !quotedMessage.isSentByCurrentUser {
+            if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
                 MessageAvatarView(
                     author: quotedMessage.author,
                     size: .init(width: avatarSize, height: avatarSize)
@@ -24,12 +25,14 @@ struct QuotedMessageViewContainer: View {
                 
                 QuotedMessageView(
                     quotedMessage: quotedMessage,
-                    message: message
+                    fillAvailableSpace: fillAvailableSpace,
+                    forceLeftToRight: forceLeftToRight
                 )
             } else {
                 QuotedMessageView(
                     quotedMessage: quotedMessage,
-                    message: message
+                    fillAvailableSpace: fillAvailableSpace,
+                    forceLeftToRight: forceLeftToRight
                 )
                 
                 MessageAvatarView(
@@ -38,7 +41,7 @@ struct QuotedMessageViewContainer: View {
                 )
             }
         }
-        .padding()
+        .padding(.all, 8)
     }
 }
 
@@ -51,7 +54,8 @@ struct QuotedMessageView: View {
     private let attachmentWidth: CGFloat = 36
     
     var quotedMessage: ChatMessage
-    var message: ChatMessage
+    var fillAvailableSpace: Bool
+    var forceLeftToRight: Bool
     
     var body: some View {
         HStack(alignment: .top) {
@@ -94,7 +98,7 @@ struct QuotedMessageView: View {
                 .lineLimit(3)
                 .font(fonts.footnote)
             
-            if !message.attachmentCounts.isEmpty {
+            if fillAvailableSpace {
                 Spacer()
             }
         }
@@ -103,7 +107,8 @@ struct QuotedMessageView: View {
             for: quotedMessage,
             isFirst: true,
             backgroundColor: bubbleBackground,
-            cornerRadius: 12
+            cornerRadius: 12,
+            forceLeftToRight: forceLeftToRight
         )
     }
     

@@ -213,11 +213,14 @@ public protocol ViewFactory: AnyObject {
     /// Creates the message composer view.
     /// - Parameters:
     ///  - channelController: The `ChatChannelController` for the channel.
+    ///  - messageController: Optional `ChatMessageController`, if used in a thread.
+    ///  - quotedMessage: Optional quoted message, shown in the composer input.
     ///  - onMessageSent: Called when a message is sent.
     /// - Returns: view displayed in the message composer slot.
     func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,
+        quotedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerViewType
     
@@ -235,6 +238,7 @@ public protocol ViewFactory: AnyObject {
     ///  - addedAssets: list of the added assets (in case they need to be displayed in the input view).
     ///  - addedFileURLs: list of the added file URLs (in case they need to be displayed in the input view).
     ///  - addedCustomAttachments: list of added custom attachments.
+    ///  - quotedMessage: Optional quoted message, shown in the composer input.
     ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
     ///  - shouldScroll: whether the input field is scrollable.
     ///  - removeAttachmentWithId: called when the attachment is removed from the input view.
@@ -245,6 +249,7 @@ public protocol ViewFactory: AnyObject {
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
+        quotedMessage: Binding<ChatMessage?>,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
@@ -376,13 +381,13 @@ public protocol ViewFactory: AnyObject {
     /// - Parameters:
     ///  - message: the message where the actions are applied.
     ///  - channel: the channel of the message.
-    ///  - onDismiss: handler when the more actions view is dismissed.
+    ///  - onFinish: handler when the action is executed.
     ///  - onError: handler when an error happened.
     /// - Returns: list of `MessageAction` items.
     func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction]
     
@@ -407,7 +412,7 @@ public protocol ViewFactory: AnyObject {
     func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageActionsViewType
     
@@ -426,11 +431,13 @@ public protocol ViewFactory: AnyObject {
     ///  - currentSnapshot: current snapshot of the screen (in case blur effect is needed).
     ///  - messageDisplayInfo: information about the displayed message.
     ///  - onBackgroundTap: called when the background is tapped (to dismiss the view).
+    ///  - onActionExecuted: called when a message action is executed.
     /// - Returns: view displayed in the reactions overlay slot.
     func makeReactionsOverlayView(
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping () -> Void
+        onBackgroundTap: @escaping () -> Void,
+        onActionExecuted: @escaping (MessageActionInfo) -> Void
     ) -> ReactionsOverlayViewType
 }

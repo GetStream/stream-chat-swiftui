@@ -68,6 +68,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
             factory.makeMessageComposerViewType(
                 with: viewModel.channelController,
                 messageController: viewModel.messageController,
+                quotedMessage: $viewModel.quotedMessage,
                 onMessageSent: viewModel.scrollToLastMessage
             )
         }
@@ -80,6 +81,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                     messageDisplayInfo: messageDisplayInfo!,
                     onBackgroundTap: {
                         viewModel.reactionsShown = false
+                    }, onActionExecuted: { actionInfo in
+                        viewModel.messageActionExecuted(actionInfo)
                     }
                 )
                 .transition(.identity)

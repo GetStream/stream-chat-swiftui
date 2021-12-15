@@ -107,7 +107,7 @@ public struct MessageTextView: View {
             if let quotedMessage = message.quotedMessage {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
-                    message: message
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty
                 )
             }
             

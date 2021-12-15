@@ -16,7 +16,7 @@ public struct VideoAttachmentsContainer: View {
                 VStack {
                     QuotedMessageViewContainer(
                         quotedMessage: quotedMessage,
-                        message: message
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty
                     )
                     
                     VideoAttachmentsList(

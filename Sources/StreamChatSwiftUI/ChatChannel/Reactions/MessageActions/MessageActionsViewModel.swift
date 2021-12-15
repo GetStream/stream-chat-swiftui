@@ -2,6 +2,7 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 /// View model for the `MessageActionsView`.
@@ -49,4 +50,10 @@ public struct MessageAction: Identifiable, Equatable {
     public static func == (lhs: MessageAction, rhs: MessageAction) -> Bool {
         lhs.id == rhs.id
     }
+}
+
+/// Provides information about a performed `MessageAction`.
+public struct MessageActionInfo {
+    let message: ChatMessage
+    let identifier: String
 }

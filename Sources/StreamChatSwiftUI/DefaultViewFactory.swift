@@ -228,12 +228,14 @@ extension ViewFactory {
     public func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,
+        quotedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerView<Self> {
         MessageComposerView(
             viewFactory: self,
             channelController: channelController,
             messageController: messageController,
+            quotedMessage: quotedMessage,
             onMessageSent: onMessageSent
         )
     }
@@ -251,6 +253,7 @@ extension ViewFactory {
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
+        quotedMessage: Binding<ChatMessage?>,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
@@ -263,6 +266,7 @@ extension ViewFactory {
                     addedAssets: addedAssets,
                     addedFileURLs: addedFileURLs,
                     addedCustomAttachments: addedCustomAttachments,
+                    quotedMessage: quotedMessage,
                     onCustomAttachmentTap: onCustomAttachmentTap,
                     removeAttachmentWithId: removeAttachmentWithId
                 )
@@ -275,6 +279,7 @@ extension ViewFactory {
                 addedAssets: addedAssets,
                 addedFileURLs: addedFileURLs,
                 addedCustomAttachments: addedCustomAttachments,
+                quotedMessage: quotedMessage,
                 onCustomAttachmentTap: onCustomAttachmentTap,
                 removeAttachmentWithId: removeAttachmentWithId
             )
@@ -407,7 +412,7 @@ extension ViewFactory {
     public func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         MessageAction.defaultActions(
@@ -415,7 +420,7 @@ extension ViewFactory {
             for: message,
             channel: channel,
             chatClient: chatClient,
-            onDismiss: onDismiss,
+            onFinish: onFinish,
             onError: onError
         )
     }
@@ -423,13 +428,13 @@ extension ViewFactory {
     public func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
+        onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> some View {
         let messageActions = supportedMessageActions(
             for: message,
             channel: channel,
-            onDismiss: onDismiss,
+            onFinish: onFinish,
             onError: onError
         )
         
@@ -446,14 +451,16 @@ extension ViewFactory {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping () -> Void
+        onBackgroundTap: @escaping () -> Void,
+        onActionExecuted: @escaping (MessageActionInfo) -> Void
     ) -> some View {
         ReactionsOverlayView(
             factory: self,
             channel: channel,
             currentSnapshot: currentSnapshot,
             messageDisplayInfo: messageDisplayInfo,
-            onBackgroundTap: onBackgroundTap
+            onBackgroundTap: onBackgroundTap,
+            onActionExecuted: onActionExecuted
         )
     }
 }

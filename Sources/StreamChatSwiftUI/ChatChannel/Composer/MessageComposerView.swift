@@ -8,16 +8,19 @@ import SwiftUI
 /// Main view for the message composer.
 public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
     
     private var factory: Factory
+    @Binding var quotedMessage: ChatMessage?
     
     public init(
         viewFactory: Factory,
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
+        quotedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
@@ -27,6 +30,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 messageController: messageController
             )
         )
+        _quotedMessage = quotedMessage
         self.onMessageSent = onMessageSent
     }
     
@@ -36,6 +40,25 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     
     public var body: some View {
         VStack(spacing: 0) {
+            if quotedMessage != nil {
+                ZStack {
+                    Text("Reply to Message")
+                        .font(fonts.bodyBold)
+                    
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation {
+                                quotedMessage = nil
+                            }
+                        }, label: {
+                            DiscardButtonView()
+                        })
+                    }
+                }
+                .frame(height: 32)
+            }
+            
             HStack(alignment: .bottom) {
                 factory.makeLeadingComposerView(state: $viewModel.pickerTypeState)
 
@@ -44,13 +67,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
+                    quotedMessage: $quotedMessage,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
                                 
                 factory.makeTrailingComposerView(enabled: viewModel.sendButtonEnabled) {
-                    viewModel.sendMessage {
+                    viewModel.sendMessage(quotedMessage: quotedMessage) {
+                        quotedMessage = nil
                         onMessageSent()
                     }
                 }
@@ -109,8 +134,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
+    var quotedMessage: Binding<ChatMessage?>
     var onCustomAttachmentTap: (CustomAttachment) -> Void
-    
     var removeAttachmentWithId: (String) -> Void
     
     @State var textHeight: CGFloat = 34
@@ -132,6 +157,14 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     
     public var body: some View {
         VStack {
+            if let quotedMessage = quotedMessage.wrappedValue {
+                QuotedMessageViewContainer(
+                    quotedMessage: quotedMessage,
+                    fillAvailableSpace: true,
+                    forceLeftToRight: true
+                )
+            }
+            
             if !addedAssets.isEmpty {
                 AddedImageAttachmentsView(
                     images: addedAssets,

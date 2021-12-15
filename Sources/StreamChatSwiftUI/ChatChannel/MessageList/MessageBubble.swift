@@ -13,6 +13,7 @@ public struct MessageBubbleModifier: ViewModifier {
     var isFirst: Bool
     var injectedBackgroundColor: UIColor?
     var cornerRadius: CGFloat = 18
+    var forceLeftToRight = false
     
     public func body(content: Content) -> some View {
         content
@@ -30,7 +31,7 @@ public struct MessageBubbleModifier: ViewModifier {
             return [.topLeft, .topRight, .bottomLeft, .bottomRight]
         }
         
-        if message.isSentByCurrentUser {
+        if message.isSentByCurrentUser && !forceLeftToRight {
             return [.topLeft, .topRight, .bottomLeft]
         } else {
             return [.topLeft, .topRight, .bottomRight]
@@ -110,14 +111,16 @@ extension View {
         for message: ChatMessage,
         isFirst: Bool,
         backgroundColor: UIColor? = nil,
-        cornerRadius: CGFloat = 18
+        cornerRadius: CGFloat = 18,
+        forceLeftToRight: Bool = false
     ) -> some View {
         modifier(
             MessageBubbleModifier(
                 message: message,
                 isFirst: isFirst,
                 injectedBackgroundColor: backgroundColor,
-                cornerRadius: cornerRadius
+                cornerRadius: cornerRadius,
+                forceLeftToRight: forceLeftToRight
             )
         )
     }
