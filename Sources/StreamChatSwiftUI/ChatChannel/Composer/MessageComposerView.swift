@@ -41,22 +41,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     public var body: some View {
         VStack(spacing: 0) {
             if quotedMessage != nil {
-                ZStack {
-                    Text("Reply to Message")
-                        .font(fonts.bodyBold)
-                    
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            withAnimation {
-                                quotedMessage = nil
-                            }
-                        }, label: {
-                            DiscardButtonView()
-                        })
-                    }
-                }
-                .frame(height: 32)
+                QuotedMessageHeaderView(
+                    quotedMessage: $quotedMessage
+                )
             }
             
             HStack(alignment: .bottom) {
@@ -215,5 +202,32 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     
     private var shouldAddVerticalPadding: Bool {
         !addedFileURLs.isEmpty || !addedAssets.isEmpty
+    }
+}
+
+/// View for the quoted message header.
+struct QuotedMessageHeaderView: View {
+    
+    @Injected(\.fonts) var fonts
+    
+    @Binding var quotedMessage: ChatMessage?
+    
+    var body: some View {
+        ZStack {
+            Text(L10n.Composer.Title.reply)
+                .font(fonts.bodyBold)
+            
+            HStack {
+                Spacer()
+                Button(action: {
+                    withAnimation {
+                        quotedMessage = nil
+                    }
+                }, label: {
+                    DiscardButtonView()
+                })
+            }
+        }
+        .frame(height: 32)
     }
 }

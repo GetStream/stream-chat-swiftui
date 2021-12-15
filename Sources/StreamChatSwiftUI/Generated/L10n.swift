@@ -119,6 +119,14 @@ internal enum L10n {
       /// Send a message
       internal static var message: String { L10n.tr("Localizable", "composer.placeholder.message") }
     }
+    internal enum Quoted {
+      /// Giphy
+      internal static var giphy: String { L10n.tr("Localizable", "composer.quoted.giphy") }
+      /// Photo
+      internal static var photo: String { L10n.tr("Localizable", "composer.quoted.photo") }
+      /// Video
+      internal static var video: String { L10n.tr("Localizable", "composer.quoted.video") }
+    }
     internal enum Suggestions {
       internal enum Commands {
         /// Instant Commands

@@ -136,17 +136,15 @@ struct QuotedMessageView: View {
         }
         
         if !quotedMessage.imageAttachments.isEmpty {
-            return "Photo"
+            return L10n.Composer.Quoted.photo
         } else if !quotedMessage.giphyAttachments.isEmpty {
-            return "Giphy"
+            return L10n.Composer.Quoted.giphy
         } else if !quotedMessage.fileAttachments.isEmpty {
-            return quotedMessage.fileAttachments[0].title ?? "File"
+            return quotedMessage.fileAttachments[0].title ?? ""
         } else if !quotedMessage.videoAttachments.isEmpty {
-            return "Video"
-        } else if !quotedMessage.linkAttachments.isEmpty {
-            return "Link"
+            return L10n.Composer.Quoted.video
         }
         
-        return "Unknown"
+        return ""
     }
 }

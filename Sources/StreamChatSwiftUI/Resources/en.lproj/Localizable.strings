@@ -70,6 +70,9 @@
 "composer.files.add-more" = "Add more files";
 "composer.images.no-access-library" = "You have not granted access to the photo library.";
 "composer.images.access-settings" = "Change in Settings";
+"composer.quoted.photo" = "Photo";
+"composer.quoted.video" = "Video";
+"composer.quoted.giphy" = "Giphy";
 
 "composer.suggestions.commands.header" = "Instant Commands";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
