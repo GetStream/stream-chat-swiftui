@@ -253,7 +253,8 @@ class ViewFactory_Tests: XCTestCase {
         let view = viewFactory.makeCustomAttachmentViewType(
             for: message,
             isFirst: true,
-            availableWidth: 300
+            availableWidth: 300,
+            scrolledId: .constant(nil)
         )
         
         // Then

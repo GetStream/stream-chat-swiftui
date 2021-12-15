@@ -228,7 +228,8 @@ extension ViewFactory {
     public func makeCustomAttachmentViewType(
         for message: ChatMessage,
         isFirst: Bool,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
     ) -> some View {
         EmptyView()
     }

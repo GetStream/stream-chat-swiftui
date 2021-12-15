@@ -24,7 +24,8 @@ struct MessageView<Factory: ViewFactory>: View {
                 factory.makeCustomAttachmentViewType(
                     for: message,
                     isFirst: isFirst,
-                    availableWidth: contentWidth
+                    availableWidth: contentWidth,
+                    scrolledId: $scrolledId
                 )
             } else if messageTypeResolver.isDeleted(message: message) {
                 factory.makeDeletedMessageView(
