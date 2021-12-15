@@ -478,6 +478,12 @@ extension ViewFactory {
             onActionExecuted: onActionExecuted
         )
     }
+    
+    public func makeQuotedMessageHeaderView(
+        quotedMessage: Binding<ChatMessage?>
+    ) -> some View {
+        QuotedMessageHeaderView(quotedMessage: quotedMessage)
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

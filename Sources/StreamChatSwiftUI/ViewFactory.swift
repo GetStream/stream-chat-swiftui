@@ -436,7 +436,7 @@ public protocol ViewFactory: AnyObject {
         message: ChatMessage
     ) -> MessageReactionViewType
     
-    associatedtype ReactionsOverlayViewType
+    associatedtype ReactionsOverlayViewType: View
     /// Creates the reactions overlay view.
     /// - Parameters:
     ///  - channel: the channel of the message.
@@ -452,4 +452,13 @@ public protocol ViewFactory: AnyObject {
         onBackgroundTap: @escaping () -> Void,
         onActionExecuted: @escaping (MessageActionInfo) -> Void
     ) -> ReactionsOverlayViewType
+    
+    associatedtype QuotedMessageHeaderViewType: View
+    /// Creates the quoted message header view in the composer.
+    /// - Parameters:
+    ///   - quotedMessage: the optional quoted message.
+    /// - Returns: view displayed in the slot for quoted message in the composer.
+    func makeQuotedMessageHeaderView(
+        quotedMessage: Binding<ChatMessage?>
+    ) -> QuotedMessageHeaderViewType
 }

@@ -41,7 +41,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     public var body: some View {
         VStack(spacing: 0) {
             if quotedMessage != nil {
-                QuotedMessageHeaderView(
+                factory.makeQuotedMessageHeaderView(
                     quotedMessage: $quotedMessage
                 )
             }
