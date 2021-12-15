@@ -462,4 +462,11 @@ public protocol ViewFactory: AnyObject {
     func makeQuotedMessageHeaderView(
         quotedMessage: Binding<ChatMessage?>
     ) -> QuotedMessageHeaderViewType
+    
+    associatedtype QuotedMessageComposerViewType: View
+    /// Creates the quoted message shown in a composer view.
+    /// - Parameter quotedMessage: the quoted message shown in the composer input.
+    func makeQuotedMessageComposerView(
+        quotedMessage: ChatMessage
+    ) -> QuotedMessageComposerViewType
 }

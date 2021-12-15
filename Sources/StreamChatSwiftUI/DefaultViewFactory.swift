@@ -485,6 +485,17 @@ extension ViewFactory {
     ) -> some View {
         QuotedMessageHeaderView(quotedMessage: quotedMessage)
     }
+    
+    public func makeQuotedMessageComposerView(
+        quotedMessage: ChatMessage
+    ) -> some View {
+        QuotedMessageViewContainer(
+            quotedMessage: quotedMessage,
+            fillAvailableSpace: true,
+            forceLeftToRight: true,
+            scrolledId: .constant(nil)
+        )
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

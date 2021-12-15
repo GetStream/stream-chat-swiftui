@@ -145,11 +145,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack {
             if let quotedMessage = quotedMessage.wrappedValue {
-                QuotedMessageViewContainer(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: true,
-                    forceLeftToRight: true,
-                    scrolledId: .constant(nil)
+                factory.makeQuotedMessageComposerView(
+                    quotedMessage: quotedMessage
                 )
             }
             
