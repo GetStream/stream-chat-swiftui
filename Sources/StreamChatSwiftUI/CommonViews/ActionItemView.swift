@@ -21,7 +21,7 @@ public struct ActionItemView: View {
                 .resizable()
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
-                .frame(maxHeight: 16)
+                .frame(maxHeight: 20)
                 .foregroundColor(
                     isDestructive ? Color(colors.alert) : Color(colors.textLowEmphasis)
                 )
