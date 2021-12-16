@@ -181,6 +181,23 @@ class ChatChannelViewModel_Tests: XCTestCase {
         XCTAssert(isMessageThread == true)
     }
     
+    func test_chatChannelVM_messageActionExecuted() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let messageActionInfo = MessageActionInfo(
+            message: viewModel.messages[0],
+            identifier: "inlineReply"
+        )
+        
+        // When
+        viewModel.messageActionExecuted(messageActionInfo)
+        
+        // Then
+        XCTAssert(viewModel.quotedMessage != nil)
+        XCTAssert(viewModel.quotedMessage == viewModel.messages[0])
+    }
+    
     // MARK: - private
     
     private func makeChannelController(

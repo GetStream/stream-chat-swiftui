@@ -7,6 +7,7 @@ import NukeUI
 import StreamChat
 import SwiftUI
 
+/// Container showing the quoted message view with the user avatar.
 struct QuotedMessageViewContainer: View {
     
     private let avatarSize: CGFloat = 24
@@ -49,6 +50,7 @@ struct QuotedMessageViewContainer: View {
     }
 }
 
+/// View for the quoted message.
 struct QuotedMessageView: View {
     
     @Injected(\.images) private var images
