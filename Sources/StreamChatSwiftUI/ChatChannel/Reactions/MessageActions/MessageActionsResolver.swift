@@ -30,6 +30,12 @@ public class MessageActionsResolver: MessageActionsResolving {
         if info.identifier == "inlineReply" {
             withAnimation {
                 viewModel.quotedMessage = info.message
+                viewModel.editedMessage = nil
+            }
+        } else if info.identifier == "edit" {
+            withAnimation {
+                viewModel.editedMessage = info.message
+                viewModel.quotedMessage = nil
             }
         }
         

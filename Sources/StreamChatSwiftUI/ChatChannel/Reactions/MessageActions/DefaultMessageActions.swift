@@ -38,8 +38,15 @@ extension MessageAction {
             )
             messageActions.append(replyThread)
         }
-
+        
         if message.isSentByCurrentUser {
+            let editAction = editMessageAction(
+                for: message,
+                channel: channel,
+                onFinish: onFinish
+            )
+            messageActions.append(editAction)
+
             let deleteAction = deleteMessageAction(
                 for: message,
                 channel: channel,
@@ -65,6 +72,29 @@ extension MessageAction {
     }
     
     // MARK: - private
+    
+    private static func editMessageAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        onFinish: @escaping (MessageActionInfo) -> Void
+    ) -> MessageAction {
+        let editAction = MessageAction(
+            title: L10n.Message.Actions.edit,
+            iconName: "icn_edit",
+            action: {
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "edit"
+                    )
+                )
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return editAction
+    }
     
     private static func replyAction(
         for message: ChatMessage,

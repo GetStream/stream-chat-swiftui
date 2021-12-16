@@ -89,8 +89,14 @@ public class MessageComposerViewModel: ObservableObject {
     
     public func sendMessage(
         quotedMessage: ChatMessage?,
+        editedMessage: ChatMessage?,
         completion: @escaping () -> Void
     ) {
+        if let editedMessage = editedMessage {
+            edit(message: editedMessage, completion: completion)
+            return
+        }
+        
         do {
             var attachments = try addedAssets.map { added in
                 try AnyAttachmentPayload(
@@ -137,10 +143,7 @@ public class MessageComposerViewModel: ObservableObject {
                 }
             }
             
-            text = ""
-            addedAssets = []
-            addedFileURLs = []
-            addedCustomAttachments = []
+            clearInputData()
         } catch {
             errorShown = true
         }
@@ -285,6 +288,36 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     // MARK: - private
+    
+    private func edit(
+        message: ChatMessage,
+        completion: @escaping () -> Void
+    ) {
+        guard let channelId = channelController.channel?.cid else {
+            return
+        }
+        let messageController = chatClient.messageController(
+            cid: channelId,
+            messageId: message.id
+        )
+        
+        messageController.editMessage(text: text) { [weak self] error in
+            if error != nil {
+                self?.errorShown = true
+            } else {
+                completion()
+            }
+        }
+        
+        clearInputData()
+    }
+    
+    private func clearInputData() {
+        text = ""
+        addedAssets = []
+        addedFileURLs = []
+        addedCustomAttachments = []
+    }
     
     private func checkPickerSelectionState() {
         if (!addedAssets.isEmpty || !addedFileURLs.isEmpty) {
