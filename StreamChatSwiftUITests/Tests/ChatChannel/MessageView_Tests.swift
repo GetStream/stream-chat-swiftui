@@ -112,7 +112,7 @@ class MessageView_Tests: XCTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .frame(width: defaultScreenSize.width, height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image)
