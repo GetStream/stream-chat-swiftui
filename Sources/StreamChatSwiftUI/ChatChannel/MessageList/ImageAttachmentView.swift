@@ -14,6 +14,8 @@ public struct ImageAttachmentContainer: View {
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
+    
+    @State private var galleryShown = false
                 
     public var body: some View {
         VStack(
@@ -32,10 +34,14 @@ public struct ImageAttachmentContainer: View {
                 alignment: message.alignmentInBubble,
                 spacing: 0
             ) {
-                ImageAttachmentView(
-                    message: message,
-                    width: width
-                )
+                Button {
+                    self.galleryShown = true
+                } label: {
+                    ImageAttachmentView(
+                        message: message,
+                        width: width
+                    )
+                }
                 
                 if !message.text.isEmpty {
                     HStack {
@@ -49,6 +55,12 @@ public struct ImageAttachmentContainer: View {
             .clipped()
         }
         .messageBubble(for: message, isFirst: isFirst)
+        .fullScreenCover(isPresented: $galleryShown) {
+            GalleryView(
+                message: message,
+                isShown: $galleryShown
+            )
+        }
     }
     
     private var backgroundColor: UIColor {

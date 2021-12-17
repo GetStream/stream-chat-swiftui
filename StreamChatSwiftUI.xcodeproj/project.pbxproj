@@ -237,6 +237,9 @@
 		84DEC8EA2761089A00172876 /* MessageThreadHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8E92761089A00172876 /* MessageThreadHeaderViewModifier.swift */; };
 		84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8EB27611CAE00172876 /* SendInChannelView.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
+		84F2908A276B90610045472D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F29089276B90610045472D /* GalleryView.swift */; };
+		84F2908C276B91700045472D /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908B276B91700045472D /* ZoomableScrollView.swift */; };
+		84F2908E276B92A40045472D /* GalleryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908D276B92A40045472D /* GalleryHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -510,6 +513,9 @@
 		84DEC8E92761089A00172876 /* MessageThreadHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadHeaderViewModifier.swift; sourceTree = "<group>"; };
 		84DEC8EB27611CAE00172876 /* SendInChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendInChannelView.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		84F29089276B90610045472D /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		84F2908B276B91700045472D /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
+		84F2908D276B92A40045472D /* GalleryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -676,6 +682,7 @@
 			isa = PBXGroup;
 			children = (
 				8465FCFA2746A95600AF091E /* ActionItemView.swift */,
+				84F2908D276B92A40045472D /* GalleryHeaderView.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -691,6 +698,7 @@
 				8465FCFD2746A95600AF091E /* MessageList */,
 				8465FD0F2746A95600AF091E /* Composer */,
 				8465FD1F2746A95600AF091E /* Reactions */,
+				84F29088276B90410045472D /* Gallery */,
 				8465FD2A2746A95600AF091E /* Utils */,
 			);
 			path = ChatChannel;
@@ -711,7 +719,6 @@
 				8465FD0B2746A95600AF091E /* LinkTextView.swift */,
 				8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */,
 				8465FD022746A95600AF091E /* DeletedMessageView.swift */,
-				8465FD032746A95600AF091E /* VideoPlayerView.swift */,
 				8465FD042746A95600AF091E /* GiphyBadgeView.swift */,
 				8465FD062746A95600AF091E /* MessageBubble.swift */,
 				8465FD072746A95600AF091E /* VideoAttachmentView.swift */,
@@ -1053,6 +1060,16 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		84F29088276B90410045472D /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				84F29089276B90610045472D /* GalleryView.swift */,
+				8465FD032746A95600AF091E /* VideoPlayerView.swift */,
+				84F2908B276B91700045472D /* ZoomableScrollView.swift */,
+			);
+			path = Gallery;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1260,6 +1277,7 @@
 				8465FDBE2746A95700AF091E /* MoreChannelActionsView.swift in Sources */,
 				8465FD902746A95700AF091E /* ComposerHelperViews.swift in Sources */,
 				849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */,
+				84F2908E276B92A40045472D /* GalleryHeaderView.swift in Sources */,
 				8465FD7B2746A95700AF091E /* GiphyBadgeView.swift in Sources */,
 				8465FDBD2746A95700AF091E /* ChatChannelHelperViews.swift in Sources */,
 				8465FD8D2746A95700AF091E /* AddedImageAttachmentsView.swift in Sources */,
@@ -1280,6 +1298,7 @@
 				8465FDB52746A95700AF091E /* Cache.swift in Sources */,
 				84DEC8EA2761089A00172876 /* MessageThreadHeaderViewModifier.swift in Sources */,
 				8465FD9B2746A95700AF091E /* DefaultMessageActions.swift in Sources */,
+				84F2908C276B91700045472D /* ZoomableScrollView.swift in Sources */,
 				842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */,
 				8465FD932746A95700AF091E /* PhotoAttachmentPickerView.swift in Sources */,
 				8465FDC42746A95700AF091E /* ChatChannelListScreen.swift in Sources */,
@@ -1323,6 +1342,7 @@
 				8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */,
 				8465FDD22746A95800AF091E /* Utils.swift in Sources */,
 				8465FDA12746A95700AF091E /* ChatChannelHeaderViewModifier.swift in Sources */,
+				84F2908A276B90610045472D /* GalleryView.swift in Sources */,
 				8465FDA02746A95700AF091E /* ChatChannelView.swift in Sources */,
 				84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */,
 				8465FD802746A95700AF091E /* WebView.swift in Sources */,

@@ -18,7 +18,11 @@ public struct VideoPlayerView: View {
     
     private let avPlayer: AVPlayer
     
-    init(attachment: ChatMessageVideoAttachment, author: ChatUser, isShown: Binding<Bool>) {
+    init(
+        attachment: ChatMessageVideoAttachment,
+        author: ChatUser,
+        isShown: Binding<Bool>
+    ) {
         self.attachment = attachment
         self.author = author
         avPlayer = AVPlayer(url: attachment.payload.videoURL)
@@ -27,27 +31,11 @@ public struct VideoPlayerView: View {
     
     public var body: some View {
         VStack {
-            ZStack {
-                HStack {
-                    Button {
-                        isShown = false
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
-                    .padding()
-                    .foregroundColor(Color(colors.text))
-                    
-                    Spacer()
-                }
-                
-                VStack {
-                    Text(author.name ?? "")
-                        .font(fonts.bodyBold)
-                    Text(onlineInfoText)
-                        .font(fonts.footnote)
-                        .foregroundColor(Color(colors.textLowEmphasis))
-                }
-            }
+            GalleryHeaderView(
+                title: author.name ?? "",
+                subtitle: author.onlineText,
+                isShown: $isShown
+            )
             VideoPlayer(player: avPlayer)
             Spacer()
         }
@@ -55,9 +43,12 @@ public struct VideoPlayerView: View {
             avPlayer.play()
         }
     }
+}
+
+extension ChatUser {
     
-    private var onlineInfoText: String {
-        if author.isOnline {
+    var onlineText: String {
+        if isOnline {
             return L10n.Message.Title.online
         } else {
             return L10n.Message.Title.offline
