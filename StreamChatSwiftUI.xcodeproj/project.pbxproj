@@ -1863,8 +1863,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = exactVersion;
+				version = 4.5.2;
 			};
 		};
 		8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */ = {

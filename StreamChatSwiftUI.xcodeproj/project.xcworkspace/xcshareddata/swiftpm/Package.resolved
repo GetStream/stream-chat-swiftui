@@ -29,12 +29,21 @@
         }
       },
       {
+        "package": "Starscream",
+        "repositoryURL": "https://github.com/daltoniam/Starscream.git",
+        "state": {
+          "branch": null,
+          "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
+          "version": "4.0.4"
+        }
+      },
+      {
         "package": "StreamChat",
         "repositoryURL": "https://github.com/GetStream/stream-chat-swift.git",
         "state": {
-          "branch": "main",
-          "revision": "eb8e9cda5baac8db24ca3a3705d803072bb2cd32",
-          "version": null
+          "branch": null,
+          "revision": "0c91b57ef417f646b4f9aec3dd9b053e049859f9",
+          "version": "4.5.2"
         }
       },
       {
@@ -44,6 +53,15 @@
           "branch": null,
           "revision": "f8a9c997c3c1dab4e216a8ec9014e23144cbab37",
           "version": "1.9.0"
+        }
+      },
+      {
+        "package": "SwiftyGif",
+        "repositoryURL": "https://github.com/kirualex/SwiftyGif.git",
+        "state": {
+          "branch": null,
+          "revision": "8d576b09553aea8e345e1b35c3b71cb6a84ac999",
+          "version": "5.4.2"
         }
       }
     ]
