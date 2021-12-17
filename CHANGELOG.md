@@ -3,11 +3,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
-
-# [4.6.3](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.6.3)
-_December 17, 2021_
-
 ### ✅ Added
 - Inline replies to messages
 - Message threads
