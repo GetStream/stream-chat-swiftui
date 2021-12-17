@@ -16,6 +16,7 @@ public struct ImageAttachmentContainer: View {
     @Binding var scrolledId: String?
     
     @State private var galleryShown = false
+    @State private var selectedIndex = 0
                 
     public var body: some View {
         VStack(
@@ -34,13 +35,12 @@ public struct ImageAttachmentContainer: View {
                 alignment: message.alignmentInBubble,
                 spacing: 0
             ) {
-                Button {
-                    self.galleryShown = true
-                } label: {
-                    ImageAttachmentView(
-                        message: message,
-                        width: width
-                    )
+                ImageAttachmentView(
+                    message: message,
+                    width: width
+                ) { index in
+                    selectedIndex = index
+                    galleryShown = true
                 }
                 
                 if !message.text.isEmpty {
@@ -55,10 +55,13 @@ public struct ImageAttachmentContainer: View {
             .clipped()
         }
         .messageBubble(for: message, isFirst: isFirst)
-        .fullScreenCover(isPresented: $galleryShown) {
+        .fullScreenCover(isPresented: $galleryShown, onDismiss: {
+            self.selectedIndex = 0
+        }) {
             GalleryView(
                 message: message,
-                isShown: $galleryShown
+                isShown: $galleryShown,
+                selected: selectedIndex
             )
         }
     }
@@ -83,6 +86,7 @@ struct ImageAttachmentView: View {
     
     let message: ChatMessage
     let width: CGFloat
+    var imageTapped: ((Int) -> Void)? = nil
     
     private let spacing: CGFloat = 2
     private let maxDisplayedImages = 4
@@ -106,7 +110,9 @@ struct ImageAttachmentView: View {
             if sources.count == 1 {
                 SingleImageView(
                     source: sources[0],
-                    width: width
+                    width: width,
+                    imageTapped: imageTapped,
+                    index: 0
                 )
                 .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
             } else if sources.count == 2 {
@@ -114,14 +120,18 @@ struct ImageAttachmentView: View {
                     MultiImageView(
                         source: sources[0],
                         width: width / 2,
-                        height: width
+                        height: width,
+                        imageTapped: imageTapped,
+                        index: 0
                     )
                     .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
                     
                     MultiImageView(
                         source: sources[1],
                         width: width / 2,
-                        height: width
+                        height: width,
+                        imageTapped: imageTapped,
+                        index: 1
                     )
                     .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
                 }
@@ -131,7 +141,9 @@ struct ImageAttachmentView: View {
                     MultiImageView(
                         source: sources[0],
                         width: width / 2,
-                        height: width
+                        height: width,
+                        imageTapped: imageTapped,
+                        index: 0
                     )
                     .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
                     
@@ -139,14 +151,18 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[1],
                             width: width / 2,
-                            height: width / 2
+                            height: width / 2,
+                            imageTapped: imageTapped,
+                            index: 1
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
                         
                         MultiImageView(
                             source: sources[2],
                             width: width / 2,
-                            height: width / 2
+                            height: width / 2,
+                            imageTapped: imageTapped,
+                            index: 2
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
                     }
@@ -158,14 +174,18 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[0],
                             width: width / 2,
-                            height: width / 2
+                            height: width / 2,
+                            imageTapped: imageTapped,
+                            index: 0
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
                         
                         MultiImageView(
                             source: sources[1],
                             width: width / 2,
-                            height: width / 2
+                            height: width / 2,
+                            imageTapped: imageTapped,
+                            index: 2
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
                     }
@@ -174,7 +194,9 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[2],
                             width: width / 2,
-                            height: width / 2
+                            height: width / 2,
+                            imageTapped: imageTapped,
+                            index: 1
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
                         
@@ -182,7 +204,9 @@ struct ImageAttachmentView: View {
                             MultiImageView(
                                 source: sources[3],
                                 width: width / 2,
-                                height: width / 2
+                                height: width / 2,
+                                imageTapped: imageTapped,
+                                index: 3
                             )
                             .withUploadingStateIndicator(for: uploadState(for: 3), url: sources[3])
                             
@@ -215,10 +239,17 @@ struct ImageAttachmentView: View {
 struct SingleImageView: View {
     let source: URL
     let width: CGFloat
+    var imageTapped: ((Int) -> Void)? = nil
+    var index: Int?
     
     var body: some View {
-        LazyLoadingImage(source: source, width: width)
-            .frame(width: width, height: 3 * width / 4)
+        LazyLoadingImage(
+            source: source,
+            width: width,
+            imageTapped: imageTapped,
+            index: index
+        )
+        .frame(width: width, height: 3 * width / 4)
     }
 }
 
@@ -226,11 +257,18 @@ struct MultiImageView: View {
     let source: URL
     let width: CGFloat
     let height: CGFloat
+    var imageTapped: ((Int) -> Void)? = nil
+    var index: Int?
     
     var body: some View {
-        LazyLoadingImage(source: source, width: width)
-            .frame(width: width, height: height)
-            .clipped()
+        LazyLoadingImage(
+            source: source,
+            width: width,
+            imageTapped: imageTapped,
+            index: index
+        )
+        .frame(width: width, height: height)
+        .clipped()
     }
 }
 
@@ -244,16 +282,31 @@ struct LazyLoadingImage: View {
     let width: CGFloat
     
     var resize: Bool = true
+    var imageTapped: ((Int) -> Void)? = nil
+    var index: Int?
     
     var body: some View {
         ZStack {
             if let image = image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .aspectRatio(contentMode: .fill)
-                    .clipped()
-                    .allowsHitTesting(false)
+                if let imageTapped = imageTapped {
+                    Button {
+                        imageTapped(index ?? 0)
+                    } label: {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .aspectRatio(contentMode: .fill)
+                            .clipped()
+                            .allowsHitTesting(false)
+                    }
+                } else {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                        .allowsHitTesting(false)
+                }
             } else if error != nil {
                 Color(.secondarySystemBackground)
             } else {
