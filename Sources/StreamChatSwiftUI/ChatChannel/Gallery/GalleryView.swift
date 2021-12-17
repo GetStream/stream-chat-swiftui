@@ -12,6 +12,7 @@ struct GalleryView: View {
     var message: ChatMessage
     @Binding var isShown: Bool
     @State private var selected: Int
+    @State private var loadedImages = [Int: UIImage]()
     
     init(
         message: ChatMessage,
@@ -41,19 +42,33 @@ struct GalleryView: View {
                                 LazyLoadingImage(
                                     source: url,
                                     width: reader.size.width,
-                                    resize: true
+                                    resize: true,
+                                    onImageLoaded: { image in
+                                        loadedImages[index] = image
+                                    }
                                 )
                                 .frame(width: reader.size.width)
                                 .aspectRatio(contentMode: .fit)
                                 Spacer()
                             }
                         }
-                        .background(Color(colors.background1))
                         .tag(index)
                     }
                 }
-                .tabViewStyle(.page)
-                .indexViewStyle(.page(backgroundDisplayMode: .never))
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                
+                if let image = loadedImages[selected] {
+                    HStack {
+                        ShareButtonView(content: [image])
+                            .standardPadding()
+                        
+                        Spacer()
+                        
+                        Text("\(selected + 1) of \(sources.count)")
+                        
+                        Spacer()
+                    }
+                }
             }
         }
     }

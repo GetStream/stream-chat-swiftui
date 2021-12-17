@@ -44,6 +44,8 @@ private struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresenta
     // MARK: - ZoomableScrollViewController
 
     class ZoomableScrollViewController: UIViewController, UIScrollViewDelegate {
+        @Injected(\.colors) var colors
+        
         let coordinator: Coordinator
         let scrollView = UIScrollView()
         
@@ -74,6 +76,7 @@ private struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresenta
             
             let hostedView = coordinator.hostingController.view!
             hostedView.translatesAutoresizingMaskIntoConstraints = false
+            hostedView.backgroundColor = colors.background1
             scrollView.addSubview(hostedView)
             NSLayoutConstraint.activate([
                 hostedView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),

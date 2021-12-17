@@ -284,6 +284,7 @@ struct LazyLoadingImage: View {
     var resize: Bool = true
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
+    var onImageLoaded: (UIImage) -> Void = { _ in }
     
     var body: some View {
         ZStack {
@@ -292,20 +293,10 @@ struct LazyLoadingImage: View {
                     Button {
                         imageTapped(index ?? 0)
                     } label: {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                            .allowsHitTesting(false)
+                        imageView(for: image)
                     }
                 } else {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: .fill)
-                        .clipped()
-                        .allowsHitTesting(false)
+                    imageView(for: image)
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
@@ -330,6 +321,7 @@ struct LazyLoadingImage: View {
                     switch result {
                     case let .success(image):
                         self.image = image
+                        onImageLoaded(image)
                     case let .failure(error):
                         self.error = error
                     }
@@ -337,6 +329,15 @@ struct LazyLoadingImage: View {
             )
         }
         .clipped()
+    }
+    
+    func imageView(for image: UIImage) -> some View {
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .aspectRatio(contentMode: .fill)
+            .clipped()
+            .allowsHitTesting(false)
     }
 }
 
