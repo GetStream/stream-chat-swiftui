@@ -83,7 +83,10 @@ struct GalleryView: View {
                 }
             }
             .sheet(isPresented: $gridShown) {
-                GridPhotosView(loadedImages: loadedImages)
+                GridPhotosView(
+                    imageURLs: sources,
+                    isShown: $gridShown
+                )
             }
         }
     }

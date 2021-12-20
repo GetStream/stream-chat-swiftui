@@ -280,7 +280,6 @@ struct LazyLoadingImage: View {
     
     let source: URL
     let width: CGFloat
-    
     var resize: Bool = true
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
@@ -290,13 +289,15 @@ struct LazyLoadingImage: View {
         ZStack {
             if let image = image {
                 if let imageTapped = imageTapped {
-                    Button {
-                        imageTapped(index ?? 0)
-                    } label: {
-                        imageView(for: image)
-                    }
+                    imageView(for: image, allowsHitTesting: true)
+                        .highPriorityGesture(
+                            TapGesture()
+                                .onEnded { _ in
+                                    imageTapped(index ?? 0)
+                                }
+                        )
                 } else {
-                    imageView(for: image)
+                    imageView(for: image, allowsHitTesting: false)
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
@@ -331,13 +332,16 @@ struct LazyLoadingImage: View {
         .clipped()
     }
     
-    func imageView(for image: UIImage) -> some View {
+    func imageView(
+        for image: UIImage,
+        allowsHitTesting: Bool
+    ) -> some View {
         Image(uiImage: image)
             .resizable()
             .scaledToFill()
             .aspectRatio(contentMode: .fill)
             .clipped()
-            .allowsHitTesting(false)
+            .allowsHitTesting(allowsHitTesting)
     }
 }
 

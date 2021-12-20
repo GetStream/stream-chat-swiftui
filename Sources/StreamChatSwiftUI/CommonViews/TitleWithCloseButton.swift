@@ -25,5 +25,6 @@ struct TitleWithCloseButton: View {
             Text(title)
                 .font(fonts.bodyBold)
         }
+        .padding()
     }
 }

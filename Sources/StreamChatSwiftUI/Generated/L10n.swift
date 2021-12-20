@@ -225,6 +225,10 @@ internal enum L10n {
       /// Error occured while previewing the file.
       internal static var errorPreview: String { L10n.tr("Localizable", "message.file-attachment.error-preview") }
     }
+    internal enum Gallery {
+      /// Photos
+      internal static var photos: String { L10n.tr("Localizable", "message.gallery.photos") }
+    }
     internal enum GiphyAttachment {
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }

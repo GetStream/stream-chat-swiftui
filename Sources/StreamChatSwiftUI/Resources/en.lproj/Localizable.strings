@@ -41,6 +41,8 @@
 "message.threads.replyWith" = "with %@";
 "message.threads.subtitle" = "with messages";
 
+"message.gallery.photos" = "Photos";
+
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
 "alert.actions.ok" = "Ok";

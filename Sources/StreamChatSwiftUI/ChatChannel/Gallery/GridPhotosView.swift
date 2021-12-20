@@ -7,29 +7,45 @@ import SwiftUI
 
 struct GridPhotosView: View {
     
-    var loadedImages: [Int: UIImage]
+    var imageURLs: [URL]
+    @Binding var isShown: Bool
     
-    let columns = [GridItem(.adaptive(minimum: 120), spacing: 2)]
+    private static let spacing: CGFloat = 2
     
-    private var sorted: [UIImage] {
-        let keys = loadedImages.keys.sorted()
-        return keys.compactMap { index in
-            loadedImages[index]
+    private static var itemWidth: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return (UIScreen.main.bounds.size.width / 3) - spacing * 3
+        } else {
+            return 120
         }
     }
     
+    private let columns = [GridItem(.adaptive(minimum: itemWidth), spacing: spacing)]
+    
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(sorted, id: \.self) { image in
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(1, contentMode: .fill)
+        VStack {
+            TitleWithCloseButton(
+                title: L10n.Message.Gallery.photos,
+                isShown: $isShown
+            )
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 2) {
+                    ForEach(imageURLs, id: \.self) { url in
+                        LazyLoadingImage(
+                            source: url,
+                            width: Self.itemWidth
+                        )
+                        .frame(
+                            width: Self.itemWidth,
+                            height: Self.itemWidth
+                        )
                         .clipped()
+                    }
                 }
+                .padding(.horizontal, 2)
+                .animation(nil)
             }
-            .padding(.horizontal, 2)
-            .animation(nil)
+            Spacer()
         }
     }
 }
