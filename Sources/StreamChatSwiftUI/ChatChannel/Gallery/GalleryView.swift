@@ -8,11 +8,13 @@ import SwiftUI
 struct GalleryView: View {
 
     @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     var message: ChatMessage
     @Binding var isShown: Bool
     @State private var selected: Int
     @State private var loadedImages = [Int: UIImage]()
+    @State private var gridShown = false
     
     init(
         message: ChatMessage,
@@ -56,6 +58,7 @@ struct GalleryView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
+                .background(Color(colors.background1))
                 
                 if let image = loadedImages[selected] {
                     HStack {
@@ -65,10 +68,22 @@ struct GalleryView: View {
                         Spacer()
                         
                         Text("\(selected + 1) of \(sources.count)")
+                            .font(fonts.bodyBold)
                         
                         Spacer()
+                        
+                        Button {
+                            gridShown = true
+                        } label: {
+                            Image(systemName: "square.grid.3x3.fill")
+                        }
+                        .standardPadding()
                     }
+                    .foregroundColor(Color(colors.text))
                 }
+            }
+            .sheet(isPresented: $gridShown) {
+                GridPhotosView(loadedImages: loadedImages)
             }
         }
     }

@@ -7,6 +7,7 @@ import SwiftUI
 /// View for presenting a button which has a share action.
 struct ShareButtonView: View {
     @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
     
     var content: [Any]
     @State var isSharePresented = false
@@ -16,6 +17,7 @@ struct ShareButtonView: View {
             self.isSharePresented = true
         }, label: {
             Image(systemName: "square.and.arrow.up")
+                .font(fonts.bodyBold)
         })
             .foregroundColor(Color(colors.text))
             .sheet(isPresented: $isSharePresented) {
