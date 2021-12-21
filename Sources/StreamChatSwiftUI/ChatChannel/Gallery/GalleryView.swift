@@ -45,6 +45,7 @@ struct GalleryView: View {
                                 LazyLoadingImage(
                                     source: url,
                                     width: reader.size.width,
+                                    height: reader.size.height,
                                     resize: true,
                                     onImageLoaded: { image in
                                         loadedImages[index] = image

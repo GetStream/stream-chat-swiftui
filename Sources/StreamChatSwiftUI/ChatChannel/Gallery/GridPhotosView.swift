@@ -34,7 +34,8 @@ struct GridPhotosView: View {
                     ForEach(imageURLs, id: \.self) { url in
                         LazyLoadingImage(
                             source: url,
-                            width: Self.itemWidth
+                            width: Self.itemWidth,
+                            height: Self.itemWidth
                         )
                         .frame(
                             width: Self.itemWidth,

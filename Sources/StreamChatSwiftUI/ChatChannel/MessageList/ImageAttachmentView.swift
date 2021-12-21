@@ -246,6 +246,7 @@ struct SingleImageView: View {
         LazyLoadingImage(
             source: source,
             width: width,
+            height: 3 * width / 4,
             imageTapped: imageTapped,
             index: index
         )
@@ -264,6 +265,7 @@ struct MultiImageView: View {
         LazyLoadingImage(
             source: source,
             width: width,
+            height: height,
             imageTapped: imageTapped,
             index: index
         )
@@ -280,6 +282,7 @@ struct LazyLoadingImage: View {
     
     let source: URL
     let width: CGFloat
+    let height: CGFloat
     var resize: Bool = true
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
@@ -294,7 +297,7 @@ struct LazyLoadingImage: View {
                     // The click area expands outside the image view (although not visible).
                     Rectangle()
                         .opacity(0.000001)
-                        .frame(width: width)
+                        .frame(width: width, height: height)
                         .clipped()
                         .allowsHitTesting(true)
                         .highPriorityGesture(

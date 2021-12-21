@@ -71,6 +71,7 @@ struct QuotedMessageView: View {
                         LazyLoadingImage(
                             source: quotedMessage.imageAttachments[0].imagePreviewURL,
                             width: attachmentWidth,
+                            height: attachmentWidth,
                             resize: false
                         )
                     } else if !quotedMessage.giphyAttachments.isEmpty {
