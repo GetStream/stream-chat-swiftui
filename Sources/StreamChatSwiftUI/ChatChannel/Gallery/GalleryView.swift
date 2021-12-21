@@ -61,27 +61,25 @@ struct GalleryView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .background(Color(colors.background1))
                 
-                if let image = loadedImages[selected] {
-                    HStack {
-                        ShareButtonView(content: [image])
-                            .standardPadding()
-                        
-                        Spacer()
-                        
-                        Text("\(selected + 1) of \(sources.count)")
-                            .font(fonts.bodyBold)
-                        
-                        Spacer()
-                        
-                        Button {
-                            gridShown = true
-                        } label: {
-                            Image(systemName: "square.grid.3x3.fill")
-                        }
+                HStack {
+                    ShareButtonView(content: sharingContent)
                         .standardPadding()
+
+                    Spacer()
+                    
+                    Text("\(selected + 1) of \(sources.count)")
+                        .font(fonts.bodyBold)
+
+                    Spacer()
+
+                    Button {
+                        gridShown = true
+                    } label: {
+                        Image(systemName: "square.grid.3x3.fill")
                     }
-                    .foregroundColor(Color(colors.text))
+                    .standardPadding()
                 }
+                .foregroundColor(Color(colors.text))
             }
             .sheet(isPresented: $gridShown) {
                 GridPhotosView(
@@ -89,6 +87,14 @@ struct GalleryView: View {
                     isShown: $gridShown
                 )
             }
+        }
+    }
+    
+    private var sharingContent: [UIImage] {
+        if let image = loadedImages[selected] {
+            return [image]
+        } else {
+            return []
         }
     }
     
