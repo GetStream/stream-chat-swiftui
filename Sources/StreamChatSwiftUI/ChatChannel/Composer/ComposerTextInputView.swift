@@ -24,8 +24,10 @@ struct ComposerTextInputView: UIViewRepresentable {
     
     func updateUIView(_ uiView: InputTextView, context: Context) {
         DispatchQueue.main.async {
-            uiView.text = text
-            uiView.handleTextChange()
+            if uiView.markedTextRange == nil {
+                uiView.text = text
+                uiView.handleTextChange()
+            }
         }
     }
     
