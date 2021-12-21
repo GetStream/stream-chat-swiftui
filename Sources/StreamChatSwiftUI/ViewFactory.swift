@@ -228,12 +228,14 @@ public protocol ViewFactory: AnyObject {
     ///  - channelController: The `ChatChannelController` for the channel.
     ///  - messageController: Optional `ChatMessageController`, if used in a thread.
     ///  - quotedMessage: Optional quoted message, shown in the composer input.
+    ///  - editedMessage: Optional message that's being edited.
     ///  - onMessageSent: Called when a message is sent.
     /// - Returns: view displayed in the message composer slot.
     func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerViewType
     
@@ -469,4 +471,13 @@ public protocol ViewFactory: AnyObject {
     func makeQuotedMessageComposerView(
         quotedMessage: ChatMessage
     ) -> QuotedMessageComposerViewType
+    
+    associatedtype EditedMessageHeaderViewType: View
+    /// Creates the edited message header view in the composer.
+    /// - Parameters:
+    ///   - editedMessage: the optional edited message.
+    /// - Returns: view displayed in the slot for edited message in the composer.
+    func makeEditedMessageHeaderView(
+        editedMessage: Binding<ChatMessage?>
+    ) -> EditedMessageHeaderViewType
 }

@@ -15,12 +15,14 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     
     private var factory: Factory
     @Binding var quotedMessage: ChatMessage?
+    @Binding var editedMessage: ChatMessage?
     
     public init(
         viewFactory: Factory,
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
@@ -31,6 +33,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             )
         )
         _quotedMessage = quotedMessage
+        _editedMessage = editedMessage
         self.onMessageSent = onMessageSent
     }
     
@@ -43,6 +46,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             if quotedMessage != nil {
                 factory.makeQuotedMessageHeaderView(
                     quotedMessage: $quotedMessage
+                )
+            } else if editedMessage != nil {
+                factory.makeEditedMessageHeaderView(
+                    editedMessage: $editedMessage
                 )
             }
             
@@ -61,8 +68,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
                                 
                 factory.makeTrailingComposerView(enabled: viewModel.sendButtonEnabled) {
-                    viewModel.sendMessage(quotedMessage: quotedMessage) {
+                    viewModel.sendMessage(
+                        quotedMessage: quotedMessage,
+                        editedMessage: editedMessage
+                    ) {
                         quotedMessage = nil
+                        editedMessage = nil
                         onMessageSent()
                     }
                 }
@@ -108,6 +119,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
+        }
+        .onChange(of: editedMessage) { _ in
+            viewModel.text = editedMessage?.text ?? ""
         }
     }
 }
@@ -199,32 +213,5 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     
     private var shouldAddVerticalPadding: Bool {
         !addedFileURLs.isEmpty || !addedAssets.isEmpty
-    }
-}
-
-/// View for the quoted message header.
-struct QuotedMessageHeaderView: View {
-    
-    @Injected(\.fonts) var fonts
-    
-    @Binding var quotedMessage: ChatMessage?
-    
-    var body: some View {
-        ZStack {
-            Text(L10n.Composer.Title.reply)
-                .font(fonts.bodyBold)
-            
-            HStack {
-                Spacer()
-                Button(action: {
-                    withAnimation {
-                        quotedMessage = nil
-                    }
-                }, label: {
-                    DiscardButtonView()
-                })
-            }
-        }
-        .frame(height: 32)
     }
 }

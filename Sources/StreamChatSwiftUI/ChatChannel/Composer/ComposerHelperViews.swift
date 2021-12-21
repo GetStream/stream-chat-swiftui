@@ -2,6 +2,7 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 /// View used to indicate that an asset is a video.
@@ -131,5 +132,59 @@ struct AssetsAccessPermissionView: View {
         }
 
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+}
+
+/// View for the quoted message header.
+struct QuotedMessageHeaderView: View {
+    
+    @Injected(\.fonts) var fonts
+    
+    @Binding var quotedMessage: ChatMessage?
+    
+    var body: some View {
+        ZStack {
+            Text(L10n.Composer.Title.reply)
+                .font(fonts.bodyBold)
+            
+            HStack {
+                Spacer()
+                Button(action: {
+                    withAnimation {
+                        quotedMessage = nil
+                    }
+                }, label: {
+                    DiscardButtonView()
+                })
+            }
+        }
+        .frame(height: 32)
+    }
+}
+
+/// View for the edit message header.
+struct EditMessageHeaderView: View {
+    
+    @Injected(\.fonts) var fonts
+    
+    @Binding var editedMessage: ChatMessage?
+    
+    var body: some View {
+        ZStack {
+            Text(L10n.Composer.Title.edit)
+                .font(fonts.bodyBold)
+            
+            HStack {
+                Spacer()
+                Button(action: {
+                    withAnimation {
+                        editedMessage = nil
+                    }
+                }, label: {
+                    DiscardButtonView()
+                })
+            }
+        }
+        .frame(height: 32)
     }
 }

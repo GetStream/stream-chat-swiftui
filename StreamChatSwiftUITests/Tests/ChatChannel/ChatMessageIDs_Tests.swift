@@ -67,7 +67,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         let messageId = message.messageId
         
         // Then
-        XCTAssert(messageId == expectedId)
+        XCTAssert(messageId.contains(expectedId))
         XCTAssert(uploadingStatesId == state)
     }
 
@@ -91,6 +91,6 @@ class ChatMessageIDs_Tests: XCTestCase {
         let messageId = message.messageId
         
         // Then
-        XCTAssert(messageId == expectedId)
+        XCTAssert(messageId.contains(expectedId))
     }
 }

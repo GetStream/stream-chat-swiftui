@@ -245,6 +245,7 @@ extension ViewFactory {
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerView<Self> {
         MessageComposerView(
@@ -252,6 +253,7 @@ extension ViewFactory {
             channelController: channelController,
             messageController: messageController,
             quotedMessage: quotedMessage,
+            editedMessage: editedMessage,
             onMessageSent: onMessageSent
         )
     }
@@ -495,6 +497,12 @@ extension ViewFactory {
             forceLeftToRight: true,
             scrolledId: .constant(nil)
         )
+    }
+    
+    public func makeEditedMessageHeaderView(
+        editedMessage: Binding<ChatMessage?>
+    ) -> some View {
+        EditMessageHeaderView(editedMessage: editedMessage)
     }
 }
 

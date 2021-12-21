@@ -437,6 +437,45 @@ class ViewFactory_Tests: XCTestCase {
         // Then
         XCTAssert(view is SendInChannelView)
     }
+    
+    func test_viewFactory_makeQuotedMessageHeaderView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeQuotedMessageHeaderView(
+            quotedMessage: .constant(message)
+        )
+        
+        // Then
+        XCTAssert(view is QuotedMessageHeaderView)
+    }
+    
+    func test_viewFactory_makeQuotedMessageComposerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeQuotedMessageComposerView(
+            quotedMessage: message
+        )
+        
+        // Then
+        XCTAssert(view is QuotedMessageViewContainer)
+    }
+    
+    func test_viewFactory_makeEditedMessageHeaderView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeEditedMessageHeaderView(
+            editedMessage: .constant(message)
+        )
+        
+        // Then
+        XCTAssert(view is EditMessageHeaderView)
+    }
 }
 
 extension ChannelAction: Equatable {

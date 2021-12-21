@@ -302,7 +302,10 @@ class MessageComposerViewModel_Tests: XCTestCase {
         viewModel.text = "test"
         viewModel.imageTapped(defaultAsset)
         viewModel.addedFileURLs = [testURL]
-        viewModel.sendMessage(quotedMessage: nil) {
+        viewModel.sendMessage(
+            quotedMessage: nil,
+            editedMessage: nil
+        ) {
             // Then
             XCTAssert(viewModel.errorShown == false)
             XCTAssert(viewModel.text == "")

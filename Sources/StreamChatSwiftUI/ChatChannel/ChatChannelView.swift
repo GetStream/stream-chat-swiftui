@@ -70,6 +70,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 with: viewModel.channelController,
                 messageController: viewModel.messageController,
                 quotedMessage: $viewModel.quotedMessage,
+                editedMessage: $viewModel.editedMessage,
                 onMessageSent: viewModel.scrollToLastMessage
             )
         }

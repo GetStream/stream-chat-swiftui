@@ -87,6 +87,7 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     @Published var reactionsShown = false
     @Published var quotedMessage: ChatMessage?
+    @Published var editedMessage: ChatMessage?
     
     var channel: ChatChannel {
         channelController.channel!
@@ -262,7 +263,7 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 extension ChatMessage: Identifiable {
     var messageId: String {
         let statesId = uploadingStatesId
-        
+
         if statesId.isEmpty {
             if !reactionScores.isEmpty {
                 return baseId + reactionScoresId
@@ -270,8 +271,8 @@ extension ChatMessage: Identifiable {
                 return baseId
             }
         }
-        
-        return baseId + statesId + reactionScoresId + repliesCountId
+
+        return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)"
     }
     
     private var baseId: String {

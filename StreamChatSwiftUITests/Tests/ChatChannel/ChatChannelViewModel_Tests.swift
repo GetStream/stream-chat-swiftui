@@ -82,7 +82,7 @@ class ChatChannelViewModel_Tests: XCTestCase {
         viewModel.scrollToLastMessage()
         
         // Then
-        XCTAssert(viewModel.scrolledId == messageId)
+        XCTAssert(viewModel.scrolledId!.contains(messageId))
     }
     
     func test_chatChannelVM_currentDateString() {
@@ -181,7 +181,7 @@ class ChatChannelViewModel_Tests: XCTestCase {
         XCTAssert(isMessageThread == true)
     }
     
-    func test_chatChannelVM_messageActionExecuted() {
+    func test_chatChannelVM_messageActionInlineReplyExecuted() {
         // Given
         let channelController = makeChannelController()
         let viewModel = ChatChannelViewModel(channelController: channelController)
@@ -196,6 +196,23 @@ class ChatChannelViewModel_Tests: XCTestCase {
         // Then
         XCTAssert(viewModel.quotedMessage != nil)
         XCTAssert(viewModel.quotedMessage == viewModel.messages[0])
+    }
+    
+    func test_chatChannelVM_messageActionEditExecuted() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let messageActionInfo = MessageActionInfo(
+            message: viewModel.messages[0],
+            identifier: "edit"
+        )
+        
+        // When
+        viewModel.messageActionExecuted(messageActionInfo)
+        
+        // Then
+        XCTAssert(viewModel.editedMessage != nil)
+        XCTAssert(viewModel.editedMessage == viewModel.messages[0])
     }
     
     // MARK: - private
