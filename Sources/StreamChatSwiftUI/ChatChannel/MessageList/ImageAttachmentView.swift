@@ -288,16 +288,21 @@ struct LazyLoadingImage: View {
     var body: some View {
         ZStack {
             if let image = image {
+                imageView(for: image)
                 if let imageTapped = imageTapped {
-                    imageView(for: image, allowsHitTesting: true)
+                    // NOTE: needed because of bug with SwiftUI.
+                    // The click area expands outside the image view (although not visible).
+                    Rectangle()
+                        .opacity(0.000001)
+                        .frame(width: width)
+                        .clipped()
+                        .allowsHitTesting(true)
                         .highPriorityGesture(
                             TapGesture()
                                 .onEnded { _ in
                                     imageTapped(index ?? 0)
                                 }
                         )
-                } else {
-                    imageView(for: image, allowsHitTesting: false)
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
@@ -332,16 +337,13 @@ struct LazyLoadingImage: View {
         .clipped()
     }
     
-    func imageView(
-        for image: UIImage,
-        allowsHitTesting: Bool
-    ) -> some View {
+    func imageView(for image: UIImage) -> some View {
         Image(uiImage: image)
             .resizable()
             .scaledToFill()
             .aspectRatio(contentMode: .fill)
             .clipped()
-            .allowsHitTesting(allowsHitTesting)
+            .allowsHitTesting(false)
     }
 }
 

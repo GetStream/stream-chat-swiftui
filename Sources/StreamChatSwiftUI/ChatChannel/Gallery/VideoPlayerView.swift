@@ -39,6 +39,13 @@ public struct VideoPlayerView: View {
             )
             VideoPlayer(player: avPlayer)
             Spacer()
+            HStack {
+                ShareButtonView(content: [attachment.payload.videoURL])
+                    .standardPadding()
+                
+                Spacer()
+            }
+            .foregroundColor(Color(colors.text))
         }
         .onAppear {
             avPlayer.play()
