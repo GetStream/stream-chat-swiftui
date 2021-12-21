@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View used for displaying image attachments in a gallery.
 struct GalleryView: View {
 
     @Injected(\.colors) private var colors

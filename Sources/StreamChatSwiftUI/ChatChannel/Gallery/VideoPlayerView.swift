@@ -6,6 +6,7 @@ import AVKit
 import StreamChat
 import SwiftUI
 
+/// View used for displaying videos.
 public struct VideoPlayerView: View {
     @Environment(\.presentationMode) var presentationMode
     

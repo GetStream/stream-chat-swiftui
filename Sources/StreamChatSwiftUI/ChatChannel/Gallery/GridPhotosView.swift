@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View used for displaying photos in a grid.
 struct GridPhotosView: View {
     
     var imageURLs: [URL]

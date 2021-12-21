@@ -5,6 +5,7 @@
 import Combine
 import SwiftUI
 
+/// View used for displaying zoomable content.
 struct ZoomableScrollView<Content: View>: View {
     let content: Content
     
