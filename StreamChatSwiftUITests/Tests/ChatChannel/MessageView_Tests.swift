@@ -94,30 +94,6 @@ class MessageView_Tests: XCTestCase {
         assertSnapshot(matching: view, as: .image)
     }
     
-    func test_messageViewLink_snapshot() {
-        // Given
-        let linkMessage = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.linkAttachments
-        )
-        
-        // When
-        let view = MessageView(
-            factory: DefaultViewFactory.shared,
-            message: linkMessage,
-            contentWidth: defaultScreenSize.width,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: defaultScreenSize.width, height: 300)
-
-        // Then
-        assertSnapshot(matching: view, as: .image)
-    }
-    
     func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(
