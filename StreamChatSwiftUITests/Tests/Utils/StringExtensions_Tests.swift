@@ -51,4 +51,14 @@ class String_Extensions_Tests: XCTestCase {
         XCTAssertEqual("".levenshtein("a"), 1)
         XCTAssertEqual("tommaso".levenshtein("ToMmAsO"), 4)
     }
+    
+    func testValidURL() {
+        XCTAssert("https://example.com".isURL == true)
+    }
+    
+    func testInvalidURLs() {
+        XCTAssert("https:/example".isURL == false)
+        XCTAssert("example".isURL == false)
+        XCTAssert("invalid_url".isURL == false)
+    }
 }

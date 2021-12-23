@@ -268,6 +268,7 @@ extension ViewFactory {
     @ViewBuilder
     public func makeComposerInputView(
         text: Binding<String>,
+        selectedRangeLocation: Binding<Int>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
@@ -281,6 +282,7 @@ extension ViewFactory {
                 ComposerInputView(
                     factory: self,
                     text: text,
+                    selectedRangeLocation: selectedRangeLocation,
                     addedAssets: addedAssets,
                     addedFileURLs: addedFileURLs,
                     addedCustomAttachments: addedCustomAttachments,
@@ -294,6 +296,7 @@ extension ViewFactory {
             ComposerInputView(
                 factory: self,
                 text: text,
+                selectedRangeLocation: selectedRangeLocation,
                 addedAssets: addedAssets,
                 addedFileURLs: addedFileURLs,
                 addedCustomAttachments: addedCustomAttachments,

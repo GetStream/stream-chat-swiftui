@@ -2,6 +2,7 @@
 // Copyright © 2021 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Photos
 import StreamChat
 import SwiftUI
@@ -36,9 +37,15 @@ public class MessageComposerViewModel: ObservableObject {
             if text != "" {
                 pickerTypeState = .collapsed
                 channelController.sendKeystrokeEvent()
+                checkTypingSuggestions()
+            } else {
+                typingSuggestion = nil
+                selectedRangeLocation = 0
             }
         }
     }
+
+    @Published var selectedRangeLocation: Int = 0
     
     @Published var addedFileURLs = [URL]() {
         didSet {
@@ -70,14 +77,21 @@ public class MessageComposerViewModel: ObservableObject {
             }
         }
     }
+
+    @Published private(set) var typingSuggestion: TypingSuggestion?
     
     @Published var filePickerShown = false
     @Published var cameraPickerShown = false
     @Published var errorShown = false
     @Published var showReplyInChannel = false
+    @Published var suggestedUsers = [ChatUser]()
     
     private let channelController: ChatChannelController
     private var messageController: ChatMessageController?
+    
+    private let typingSuggester = TypingSuggester(options: .init(symbol: "@"))
+    private let mentionsSuggester: MentionsSuggester
+    private var cancellables = Set<AnyCancellable>()
     
     public init(
         channelController: ChatChannelController,
@@ -85,6 +99,7 @@ public class MessageComposerViewModel: ObservableObject {
     ) {
         self.channelController = channelController
         self.messageController = messageController
+        mentionsSuggester = MentionsSuggester(channelController: channelController)
     }
     
     public func sendMessage(
@@ -205,7 +220,7 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     func removeAttachment(with id: String) {
-        if isURL(string: id), let url = URL(string: id) {
+        if id.isURL, let url = URL(string: id) {
             var urls = [URL]()
             for added in addedFileURLs {
                 if url != added {
@@ -287,7 +302,30 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
+    func mentionedUserSelected(_ chatUser: ChatUser) {
+        guard let typingSuggestion = typingSuggestion else { return }
+        let mentionText = self.mentionText(for: chatUser)
+        let newText = (text as NSString).replacingCharacters(
+            in: typingSuggestion.locationRange,
+            with: mentionText
+        )
+        text = newText
+
+        let newCaretLocation =
+            selectedRangeLocation + (mentionText.count - typingSuggestion.text.count)
+        selectedRangeLocation = newCaretLocation
+        self.typingSuggestion = nil
+    }
+    
     // MARK: - private
+    
+    private func mentionText(for user: ChatUser) -> String {
+        if let name = user.name, !name.isEmpty {
+            return name
+        } else {
+            return user.id
+        }
+    }
     
     private func edit(
         message: ChatMessage,
@@ -325,60 +363,20 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    private func isURL(string: String) -> Bool {
-        let types: NSTextCheckingResult.CheckingType = [.link]
-        let detector = try? NSDataDetector(types: types.rawValue)
+    private func checkTypingSuggestions() {
+        typingSuggestion = typingSuggester.typingSuggestion(
+            in: text,
+            caretLocation: selectedRangeLocation
+        )
         
-        guard (detector != nil && !string.isEmpty) else {
-            return false
+        if let typingSuggestion = typingSuggestion {
+            mentionsSuggester.showMentionSuggestions(for: typingSuggestion.text, mentionRange: typingSuggestion.locationRange)
+                .sink { [weak self] users in
+                    withAnimation {
+                        self?.suggestedUsers = users
+                    }
+                }
+                .store(in: &cancellables)
         }
-        
-        if detector!.numberOfMatches(
-            in: string,
-            options: NSRegularExpression.MatchingOptions(rawValue: 0),
-            range: NSMakeRange(0, string.count)
-        ) > 0 {
-            return true
-        }
-        
-        return false
-    }
-}
-
-/// Enum describing the attachment picker's state.
-public enum AttachmentPickerState {
-    case files
-    case photos
-    case camera
-    case custom
-}
-
-/// Struct representing an asset added to the composer.
-public struct AddedAsset: Identifiable {
-    public let image: UIImage
-    public let id: String
-    public let url: URL
-    public let type: AssetType
-    public var extraData: [String: Any] = [:]
-}
-
-/// Type of asset added to the composer.
-public enum AssetType {
-    case image
-    case video
-}
-
-public struct CustomAttachment: Identifiable, Equatable {
-    
-    public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
-        lhs.id == rhs.id
-    }
-    
-    public let id: String
-    public let content: AnyAttachmentPayload
-    
-    public init(id: String, content: AnyAttachmentPayload) {
-        self.id = id
-        self.content = content
     }
 }

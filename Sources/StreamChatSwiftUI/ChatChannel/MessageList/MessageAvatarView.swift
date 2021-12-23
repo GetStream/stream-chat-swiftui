@@ -16,10 +16,16 @@ public struct MessageAvatarView: View {
     
     var author: ChatUser
     var size: CGSize
+    var showOnlineIndicator: Bool = false
     
-    public init(author: ChatUser, size: CGSize = CGSize.messageAvatarSize) {
+    public init(
+        author: ChatUser,
+        size: CGSize = CGSize.messageAvatarSize,
+        showOnlineIndicator: Bool = false
+    ) {
         self.author = author
         self.size = size
+        self.showOnlineIndicator = showOnlineIndicator
     }
     
     public var body: some View {
@@ -37,7 +43,14 @@ public struct MessageAvatarView: View {
                     width: size.width,
                     height: size.height
                 )
-            
+                .overlay(
+                    showOnlineIndicator ?
+                        TopRightView {
+                            OnlineIndicatorView(indicatorSize: size.width * 0.3)
+                        }
+                        .offset(x: 3, y: -1)
+                        : nil
+                )
         } else {
             Image(systemName: "person.circle")
                 .renderingMode(.template)

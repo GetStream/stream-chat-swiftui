@@ -9,6 +9,7 @@ import UIKit
 struct ComposerTextInputView: UIViewRepresentable {
     @Binding var text: String
     @Binding var height: CGFloat
+    @Binding var selectedRangeLocation: Int
     
     var placeholder: String
     
@@ -25,6 +26,7 @@ struct ComposerTextInputView: UIViewRepresentable {
     func updateUIView(_ uiView: InputTextView, context: Context) {
         DispatchQueue.main.async {
             if uiView.markedTextRange == nil {
+                uiView.selectedRange.location = selectedRangeLocation
                 uiView.text = text
                 uiView.handleTextChange()
             }
@@ -45,6 +47,7 @@ struct ComposerTextInputView: UIViewRepresentable {
         }
 
         func textViewDidChange(_ textView: UITextView) {
+            textInput.selectedRangeLocation = textView.selectedRange.location
             textInput.text = textView.text
         }
 

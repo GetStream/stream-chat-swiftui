@@ -250,6 +250,7 @@ public protocol ViewFactory: AnyObject {
     /// Creates the composer input view.
     /// - Parameters:
     ///  - text: the text displayed in the input view.
+    ///  - selectedRangeLocation: the selected range location of a text.
     ///  - addedAssets: list of the added assets (in case they need to be displayed in the input view).
     ///  - addedFileURLs: list of the added file URLs (in case they need to be displayed in the input view).
     ///  - addedCustomAttachments: list of added custom attachments.
@@ -261,6 +262,7 @@ public protocol ViewFactory: AnyObject {
     associatedtype ComposerInputViewType: View
     func makeComposerInputView(
         text: Binding<String>,
+        selectedRangeLocation: Binding<Int>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],

@@ -87,3 +87,26 @@ extension String {
         self[self.index(startIndex, offsetBy: index)]
     }
 }
+
+extension String {
+    
+    /// Checks whether the string is a URL.
+    var isURL: Bool {
+        let types: NSTextCheckingResult.CheckingType = [.link]
+        let detector = try? NSDataDetector(types: types.rawValue)
+        
+        guard (detector != nil && !isEmpty) else {
+            return false
+        }
+        
+        if detector!.numberOfMatches(
+            in: self,
+            options: NSRegularExpression.MatchingOptions(rawValue: 0),
+            range: NSMakeRange(0, count)
+        ) > 0 {
+            return true
+        }
+        
+        return false
+    }
+}

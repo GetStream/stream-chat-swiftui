@@ -12,6 +12,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
+    @State private var composerHeight: CGFloat = 0
     
     private var factory: Factory
     @Binding var quotedMessage: ChatMessage?
@@ -58,6 +59,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
                 factory.makeComposerInputView(
                     text: $viewModel.text,
+                    selectedRangeLocation: $viewModel.selectedRangeLocation,
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
@@ -105,6 +107,18 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 popupHeight: popupSize
             )
         }
+        .background(
+            GeometryReader { proxy in
+                let frame = proxy.frame(in: .local)
+                let height = frame.height
+                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
+            }
+        )
+        .onPreferenceChange(HeightPreferenceKey.self) { value in
+            if let value = value, value != composerHeight {
+                self.composerHeight = value
+            }
+        }
         .onReceive(keyboardPublisher) { visible in
             if visible {
                 withAnimation(.easeInOut(duration: 0.02)) {
@@ -117,6 +131,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 self.popupSize = height - bottomSafeArea
             }
         }
+        .overlay(
+            viewModel.typingSuggestion != nil ? CommandsContainerView(
+                suggestedUsers: viewModel.suggestedUsers,
+                userSelected: viewModel.mentionedUserSelected
+            )
+            .offset(y: -composerHeight)
+            .animation(nil) : nil,
+            alignment: .bottom
+        )
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
         }
@@ -132,6 +155,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     
     var factory: Factory
     @Binding var text: String
+    @Binding var selectedRangeLocation: Int
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
@@ -195,6 +219,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
             ComposerTextInputView(
                 text: $text,
                 height: $textHeight,
+                selectedRangeLocation: $selectedRangeLocation,
                 placeholder: L10n.Composer.Placeholder.message
             )
             .frame(height: textFieldHeight)
