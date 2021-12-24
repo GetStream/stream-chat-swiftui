@@ -8,6 +8,8 @@ import SwiftUI
 
 public struct MentionsSuggester: CommandHandler {
     
+    let id: String = "mentions"
+    
     // TODO: read from config
     private var mentionAllAppUsers = false
     private let typingSuggester = TypingSuggester(options: .init(symbol: "@"))
@@ -20,18 +22,25 @@ public struct MentionsSuggester: CommandHandler {
         userSearchController = channelController.client.userSearchController()
     }
     
-    func canHandleCommand(in text: String, caretLocation: Int) -> TypingSuggestion? {
-        typingSuggester.typingSuggestion(in: text, caretLocation: caretLocation)
+    func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
+        if let suggestion = typingSuggester.typingSuggestion(
+            in: text,
+            caretLocation: caretLocation
+        ) {
+            return ComposerCommand(id: id, typingSuggestion: suggestion)
+        } else {
+            return nil
+        }
     }
     
     func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
-        typingSuggestion: Binding<TypingSuggestion?>,
+        command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
         guard let chatUser = extraData["chatUser"] as? ChatUser,
-              let typingSuggestionValue = typingSuggestion.wrappedValue else {
+              let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
             return
         }
         
@@ -45,15 +54,15 @@ public struct MentionsSuggester: CommandHandler {
         let newCaretLocation =
             selectedRangeLocation.wrappedValue + (mentionText.count - typingSuggestionValue.text.count)
         selectedRangeLocation.wrappedValue = newCaretLocation
-        typingSuggestion.wrappedValue = nil
+        command.wrappedValue = nil
     }
     
     func showSuggestions(
-        for typingSuggestion: TypingSuggestion
+        for command: ComposerCommand
     ) -> Future<SuggestionInfo, Never> {
         showMentionSuggestions(
-            for: typingSuggestion.text,
-            mentionRange: typingSuggestion.locationRange
+            for: command.typingSuggestion.text,
+            mentionRange: command.typingSuggestion.locationRange
         )
     }
     
@@ -76,7 +85,7 @@ public struct MentionsSuggester: CommandHandler {
                 by: typingMention,
                 excludingId: currentUserId
             )
-            let suggestionInfo = SuggestionInfo(key: "mentions", value: users)
+            let suggestionInfo = SuggestionInfo(key: id, value: users)
             return resolve(with: suggestionInfo)
         }
     }
@@ -138,7 +147,7 @@ public struct MentionsSuggester: CommandHandler {
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
             userSearchController.search(query: query) { _ in
                 let users = Array(userSearchController.users)
-                let suggestionInfo = SuggestionInfo(key: "mentions", value: users)
+                let suggestionInfo = SuggestionInfo(key: id, value: users)
                 promise(.success(suggestionInfo))
             }
         }

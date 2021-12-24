@@ -8,21 +8,28 @@ import SwiftUI
 
 protocol CommandHandler {
     
+    var id: String { get }
+    
     func canHandleCommand(
         in text: String,
         caretLocation: Int
-    ) -> TypingSuggestion?
+    ) -> ComposerCommand?
     
     func showSuggestions(
-        for typingSuggestion: TypingSuggestion
+        for command: ComposerCommand
     ) -> Future<SuggestionInfo, Never>
     
     func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
-        typingSuggestion: Binding<TypingSuggestion?>,
+        command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     )
+}
+
+struct ComposerCommand {
+    let id: String
+    let typingSuggestion: TypingSuggestion
 }
 
 struct SuggestionInfo {
@@ -33,18 +40,19 @@ struct SuggestionInfo {
 class CommandsHandler: CommandHandler {
     
     private let commands: [CommandHandler]
+    let id: String = "main"
     
     init(commands: [CommandHandler]) {
         self.commands = commands
     }
     
-    func canHandleCommand(in text: String, caretLocation: Int) -> TypingSuggestion? {
+    func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         for command in commands {
-            if let suggestion = command.canHandleCommand(
+            if let composerCommand = command.canHandleCommand(
                 in: text,
                 caretLocation: caretLocation
             ) {
-                return suggestion
+                return composerCommand
             }
         }
         
@@ -52,24 +60,34 @@ class CommandsHandler: CommandHandler {
     }
     
     func showSuggestions(
-        for typingSuggestion: TypingSuggestion
+        for command: ComposerCommand
     ) -> Future<SuggestionInfo, Never> {
-        // TODO: picking of command
-        commands.first!.showSuggestions(for: typingSuggestion)
+        for handler in commands {
+            if handler.id == command.id {
+                return handler.showSuggestions(for: command)
+            }
+        }
+        
+        // TODO: gracefully
+        fatalError("misconfiguration of commands")
     }
     
     func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
-        typingSuggestion: Binding<TypingSuggestion?>,
+        command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
-        // TODO: picking of command
-        commands.first?.handleCommand(
-            for: text,
-            selectedRangeLocation: selectedRangeLocation,
-            typingSuggestion: typingSuggestion,
-            extraData: extraData
-        )
+        for handler in commands {
+            let commandValue = command.wrappedValue
+            if handler.id == commandValue?.id {
+                handler.handleCommand(
+                    for: text,
+                    selectedRangeLocation: selectedRangeLocation,
+                    command: command,
+                    extraData: extraData
+                )
+            }
+        }
     }
 }

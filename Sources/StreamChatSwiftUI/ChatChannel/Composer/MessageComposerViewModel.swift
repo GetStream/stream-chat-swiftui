@@ -39,7 +39,7 @@ public class MessageComposerViewModel: ObservableObject {
                 channelController.sendKeystrokeEvent()
                 checkTypingSuggestions()
             } else {
-                typingSuggestion = nil
+                composerCommand = nil
                 selectedRangeLocation = 0
             }
         }
@@ -78,7 +78,7 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    @Published var typingSuggestion: TypingSuggestion?
+    @Published var composerCommand: ComposerCommand?
     
     @Published var filePickerShown = false
     @Published var cameraPickerShown = false
@@ -307,30 +307,15 @@ public class MessageComposerViewModel: ObservableObject {
     func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
-        typingSuggestion: Binding<TypingSuggestion?>,
+        command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
         commandsHandler.handleCommand(
             for: text,
             selectedRangeLocation: selectedRangeLocation,
-            typingSuggestion: typingSuggestion,
+            command: command,
             extraData: extraData
         )
-    }
-    
-    func mentionedUserSelected(_ chatUser: ChatUser) {
-        guard let typingSuggestion = typingSuggestion else { return }
-        let mentionText = self.mentionText(for: chatUser)
-        let newText = (text as NSString).replacingCharacters(
-            in: typingSuggestion.locationRange,
-            with: mentionText
-        )
-        text = newText
-
-        let newCaretLocation =
-            selectedRangeLocation + (mentionText.count - typingSuggestion.text.count)
-        selectedRangeLocation = newCaretLocation
-        self.typingSuggestion = nil
     }
     
     // MARK: - private
@@ -380,13 +365,13 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     private func checkTypingSuggestions() {
-        typingSuggestion = commandsHandler.canHandleCommand(
+        composerCommand = commandsHandler.canHandleCommand(
             in: text,
             caretLocation: selectedRangeLocation
         )
         
-        if let typingSuggestion = typingSuggestion {
-            commandsHandler.showSuggestions(for: typingSuggestion)
+        if let composerCommand = composerCommand {
+            commandsHandler.showSuggestions(for: composerCommand)
                 .sink { [weak self] suggestionInfo in
                     withAnimation {
                         self?.suggestions[suggestionInfo.key] = suggestionInfo.value

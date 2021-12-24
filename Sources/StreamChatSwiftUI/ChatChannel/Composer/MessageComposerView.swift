@@ -132,13 +132,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .overlay(
-            viewModel.typingSuggestion != nil ? CommandsContainerView(
+            viewModel.composerCommand != nil ? CommandsContainerView(
                 suggestions: viewModel.suggestions,
                 handleCommand: { commandInfo in
                     viewModel.handleCommand(
                         for: $viewModel.text,
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
-                        typingSuggestion: $viewModel.typingSuggestion,
+                        command: $viewModel.composerCommand,
                         extraData: commandInfo
                     )
                 }
