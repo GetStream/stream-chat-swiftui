@@ -372,7 +372,9 @@ public class MessageComposerViewModel: ObservableObject {
         
         if let composerCommand = composerCommand {
             commandsHandler.showSuggestions(for: composerCommand)
-                .sink { [weak self] suggestionInfo in
+                .sink { _ in
+                    log.debug("Finished showing suggestions")
+                } receiveValue: { [weak self] suggestionInfo in
                     withAnimation {
                         self?.suggestions[suggestionInfo.key] = suggestionInfo.value
                     }

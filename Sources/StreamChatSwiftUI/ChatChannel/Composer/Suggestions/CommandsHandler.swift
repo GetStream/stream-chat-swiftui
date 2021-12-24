@@ -17,7 +17,7 @@ protocol CommandHandler {
     
     func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Never>
+    ) -> Future<SuggestionInfo, Error>
     
     func handleCommand(
         for text: Binding<String>,
@@ -61,15 +61,14 @@ class CommandsHandler: CommandHandler {
     
     func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Never> {
+    ) -> Future<SuggestionInfo, Error> {
         for handler in commands {
             if handler.id == command.id {
                 return handler.showSuggestions(for: command)
             }
         }
         
-        // TODO: gracefully
-        fatalError("misconfiguration of commands")
+        return StreamChatError.wrongConfig.asFailedPromise()
     }
     
     func handleCommand(

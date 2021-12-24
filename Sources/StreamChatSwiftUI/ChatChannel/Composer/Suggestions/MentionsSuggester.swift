@@ -59,7 +59,7 @@ public struct MentionsSuggester: CommandHandler {
     
     func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Never> {
+    ) -> Future<SuggestionInfo, Error> {
         showMentionSuggestions(
             for: command.typingSuggestion.text,
             mentionRange: command.typingSuggestion.locationRange
@@ -71,10 +71,10 @@ public struct MentionsSuggester: CommandHandler {
     private func showMentionSuggestions(
         for typingMention: String,
         mentionRange: NSRange
-    ) -> Future<SuggestionInfo, Never> {
+    ) -> Future<SuggestionInfo, Error> {
         guard let channel = channelController.channel,
               let currentUserId = channelController.client.currentUserId else {
-            return resolve(with: SuggestionInfo(key: "", value: []))
+            return StreamChatError.missingData.asFailedPromise()
         }
 
         if mentionAllAppUsers {
@@ -136,16 +136,20 @@ public struct MentionsSuggester: CommandHandler {
         }
     }
     
-    private func resolve(with users: SuggestionInfo) -> Future<SuggestionInfo, Never> {
+    private func resolve(with users: SuggestionInfo) -> Future<SuggestionInfo, Error> {
         Future { promise in
             promise(.success(users))
         }
     }
-    
-    private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Never> {
+
+    private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
         Future { promise in
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
-            userSearchController.search(query: query) { _ in
+            userSearchController.search(query: query) { error in
+                if let error = error {
+                    promise(.failure(error))
+                    return
+                }
                 let users = Array(userSearchController.users)
                 let suggestionInfo = SuggestionInfo(key: id, value: users)
                 promise(.success(suggestionInfo))
