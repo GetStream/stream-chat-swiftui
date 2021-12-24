@@ -47,6 +47,7 @@ public struct MentionUsersView: View {
 public struct MentionUserView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
 
     var user: ChatUser
     var userSelected: (ChatUser) -> Void
@@ -61,7 +62,7 @@ public struct MentionUserView: View {
                 .lineLimit(1)
                 .font(fonts.bodyBold)
             Spacer()
-            Text("@")
+            Text(utils.commandsConfig.mentionsSymbol)
                 .font(fonts.title)
                 .foregroundColor(colors.tintColor)
         }

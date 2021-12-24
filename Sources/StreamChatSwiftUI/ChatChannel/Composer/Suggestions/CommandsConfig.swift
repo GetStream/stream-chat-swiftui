@@ -8,6 +8,12 @@ import StreamChat
 /// Configuration for the commands in the composer.
 public protocol CommandsConfig {
     
+    /// The symbol that invokes mentions command.
+    var mentionsSymbol: String { get }
+    
+    /// The symbol that invokes giphy command.
+    var giphySymbol: String { get }
+    
     /// Creates the main commands handler.
     /// - Parameter channelController: the controller of the channel.
     /// - Returns: `CommandsHandler`.
@@ -17,16 +23,19 @@ public protocol CommandsConfig {
 }
 
 /// Default commands configuration.
-public struct DefaultCommandsConfig: CommandsConfig {
+public class DefaultCommandsConfig: CommandsConfig {
     
     public init() {}
+    
+    public let mentionsSymbol: String = "@"
+    public let giphySymbol: String = "/"
     
     public func makeCommandsHandler(
         with channelController: ChatChannelController
     ) -> CommandsHandler {
         let mentionsCommand = MentionsCommandHandler(
             channelController: channelController,
-            commandSymbol: "@",
+            commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
         return CommandsHandler(commands: [mentionsCommand])
