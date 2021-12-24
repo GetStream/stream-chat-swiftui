@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		841B64C427744DB60016FF3B /* ComposerModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64C327744DB60016FF3B /* ComposerModels.swift */; };
+		841B64C82774BA770016FF3B /* CommandsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64C72774BA770016FF3B /* CommandsHandler.swift */; };
 		842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */; };
 		842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383E327678A4D00888CFC /* QuotedMessageView.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
@@ -293,6 +294,7 @@
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		841B64C327744DB60016FF3B /* ComposerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerModels.swift; sourceTree = "<group>"; };
+		841B64C72774BA770016FF3B /* CommandsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsHandler.swift; sourceTree = "<group>"; };
 		842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelDataSource_Tests.swift; sourceTree = "<group>"; };
 		842383E327678A4D00888CFC /* QuotedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
@@ -887,6 +889,7 @@
 			isa = PBXGroup;
 			children = (
 				84AB7B232773528200631A10 /* CommandsContainerView.swift */,
+				841B64C72774BA770016FF3B /* CommandsHandler.swift */,
 				84AB7B252773619F00631A10 /* MentionUsersView.swift */,
 				84AB7B292773D97E00631A10 /* MentionsSuggester.swift */,
 				84AB7B272773D4FD00631A10 /* TypingSuggester.swift */,
@@ -1344,6 +1347,7 @@
 				84F2908C276B91700045472D /* ZoomableScrollView.swift in Sources */,
 				842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */,
 				8465FD932746A95700AF091E /* PhotoAttachmentPickerView.swift in Sources */,
+				841B64C82774BA770016FF3B /* CommandsHandler.swift in Sources */,
 				8465FDC42746A95700AF091E /* ChatChannelListScreen.swift in Sources */,
 				8465FD7F2746A95700AF091E /* MessageTypeResolver.swift in Sources */,
 				8465FDA42746A95700AF091E /* NukeImageLoader.swift in Sources */,

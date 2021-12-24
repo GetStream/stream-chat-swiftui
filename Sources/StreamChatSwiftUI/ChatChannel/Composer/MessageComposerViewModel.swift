@@ -78,20 +78,22 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    @Published private(set) var typingSuggestion: TypingSuggestion?
+    @Published var typingSuggestion: TypingSuggestion?
     
     @Published var filePickerShown = false
     @Published var cameraPickerShown = false
     @Published var errorShown = false
     @Published var showReplyInChannel = false
-    @Published var suggestedUsers = [ChatUser]()
+    @Published var suggestions = [String: Any]()
     
     private let channelController: ChatChannelController
     private var messageController: ChatMessageController?
     
-    private let typingSuggester = TypingSuggester(options: .init(symbol: "@"))
     private let mentionsSuggester: MentionsSuggester
     private var cancellables = Set<AnyCancellable>()
+    private lazy var commandsHandler = CommandsHandler(commands: [
+        MentionsSuggester(channelController: channelController)
+    ])
     
     public init(
         channelController: ChatChannelController,
@@ -302,6 +304,20 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
+    func handleCommand(
+        for text: Binding<String>,
+        selectedRangeLocation: Binding<Int>,
+        typingSuggestion: Binding<TypingSuggestion?>,
+        extraData: [String: Any]
+    ) {
+        commandsHandler.handleCommand(
+            for: text,
+            selectedRangeLocation: selectedRangeLocation,
+            typingSuggestion: typingSuggestion,
+            extraData: extraData
+        )
+    }
+    
     func mentionedUserSelected(_ chatUser: ChatUser) {
         guard let typingSuggestion = typingSuggestion else { return }
         let mentionText = self.mentionText(for: chatUser)
@@ -364,16 +380,16 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     private func checkTypingSuggestions() {
-        typingSuggestion = typingSuggester.typingSuggestion(
+        typingSuggestion = commandsHandler.canHandleCommand(
             in: text,
             caretLocation: selectedRangeLocation
         )
         
         if let typingSuggestion = typingSuggestion {
-            mentionsSuggester.showMentionSuggestions(for: typingSuggestion.text, mentionRange: typingSuggestion.locationRange)
-                .sink { [weak self] users in
+            commandsHandler.showSuggestions(for: typingSuggestion)
+                .sink { [weak self] suggestionInfo in
                     withAnimation {
-                        self?.suggestedUsers = users
+                        self?.suggestions[suggestionInfo.key] = suggestionInfo.value
                     }
                 }
                 .store(in: &cancellables)

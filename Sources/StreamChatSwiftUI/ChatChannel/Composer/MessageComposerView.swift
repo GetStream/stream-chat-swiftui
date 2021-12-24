@@ -133,8 +133,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .overlay(
             viewModel.typingSuggestion != nil ? CommandsContainerView(
-                suggestedUsers: viewModel.suggestedUsers,
-                userSelected: viewModel.mentionedUserSelected
+                suggestions: viewModel.suggestions,
+                handleCommand: { commandInfo in
+                    viewModel.handleCommand(
+                        for: $viewModel.text,
+                        selectedRangeLocation: $viewModel.selectedRangeLocation,
+                        typingSuggestion: $viewModel.typingSuggestion,
+                        extraData: commandInfo
+                    )
+                }
             )
             .offset(y: -composerHeight)
             .animation(nil) : nil,

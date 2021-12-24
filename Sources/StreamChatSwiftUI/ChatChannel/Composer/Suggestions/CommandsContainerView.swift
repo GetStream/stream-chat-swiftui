@@ -7,15 +7,19 @@ import SwiftUI
 
 struct CommandsContainerView: View {
     
-    var suggestedUsers: [ChatUser]
-    var userSelected: (ChatUser) -> Void
+    var suggestions: [String: Any]
+    var handleCommand: ([String: Any]) -> Void
     
     var body: some View {
         ZStack {
-            MentionUsersView(
-                users: suggestedUsers,
-                userSelected: userSelected
-            )
+            if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
+                MentionUsersView(
+                    users: suggestedUsers,
+                    userSelected: { user in
+                        handleCommand(["chatUser": user])
+                    }
+                )
+            }
         }
     }
 }
