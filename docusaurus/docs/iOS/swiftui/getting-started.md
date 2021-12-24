@@ -132,4 +132,4 @@ let streamChat = StreamChat(chatClient: chatClient, appearance: appearance, util
 
 Please note that these are customizations for branding and utilities.
 
-Please refer to this [page] (../view-customisations) if you want to customize the views themselves and inject your views, please refer to this [page](../view-customizations).
+If you want to customize the views themselves and inject your views, please refer to this [page](../view-customizations).
