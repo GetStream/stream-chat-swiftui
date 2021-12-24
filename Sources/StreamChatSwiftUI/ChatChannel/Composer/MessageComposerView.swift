@@ -132,19 +132,20 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .overlay(
-            viewModel.composerCommand != nil ? CommandsContainerView(
-                suggestions: viewModel.suggestions,
-                handleCommand: { commandInfo in
-                    viewModel.handleCommand(
-                        for: $viewModel.text,
-                        selectedRangeLocation: $viewModel.selectedRangeLocation,
-                        command: $viewModel.composerCommand,
-                        extraData: commandInfo
-                    )
-                }
-            )
-            .offset(y: -composerHeight)
-            .animation(nil) : nil,
+            viewModel.composerCommand != nil ?
+                factory.makeCommandsContainerView(
+                    suggestions: viewModel.suggestions,
+                    handleCommand: { commandInfo in
+                        viewModel.handleCommand(
+                            for: $viewModel.text,
+                            selectedRangeLocation: $viewModel.selectedRangeLocation,
+                            command: $viewModel.composerCommand,
+                            extraData: commandInfo
+                        )
+                    }
+                )
+                .offset(y: -composerHeight)
+                .animation(nil) : nil,
             alignment: .bottom
         )
         .alert(isPresented: $viewModel.errorShown) {

@@ -10,6 +10,7 @@ import SwiftUI
 /// View model for the `MessageComposerView`.
 public class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
     
     @Published var pickerState: AttachmentPickerState = .photos {
         didSet {
@@ -89,11 +90,12 @@ public class MessageComposerViewModel: ObservableObject {
     private let channelController: ChatChannelController
     private var messageController: ChatMessageController?
     
-    private let mentionsSuggester: MentionsSuggester
     private var cancellables = Set<AnyCancellable>()
-    private lazy var commandsHandler = CommandsHandler(commands: [
-        MentionsSuggester(channelController: channelController)
-    ])
+    private lazy var commandsHandler = utils
+        .commandsConfig
+        .makeCommandsHandler(
+            with: channelController
+        )
     
     public init(
         channelController: ChatChannelController,
@@ -101,7 +103,6 @@ public class MessageComposerViewModel: ObservableObject {
     ) {
         self.channelController = channelController
         self.messageController = messageController
-        mentionsSuggester = MentionsSuggester(channelController: channelController)
     }
     
     public func sendMessage(

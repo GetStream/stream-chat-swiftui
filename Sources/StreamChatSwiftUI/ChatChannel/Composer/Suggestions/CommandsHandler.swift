@@ -6,19 +6,35 @@ import Combine
 import StreamChat
 import SwiftUI
 
-protocol CommandHandler {
+/// Defines methods for handling commands.
+public protocol CommandHandler {
     
+    /// Identifier of the command.
     var id: String { get }
     
+    /// Checks whether the command can be handled.
+    /// - Parameters:
+    ///  - text: the user entered text.
+    ///  - caretLocation: the end location of a selected text range.
+    /// - Returns: optional `ComposerCommand` (if the handler can handle the command).
     func canHandleCommand(
         in text: String,
         caretLocation: Int
     ) -> ComposerCommand?
     
+    /// Shows suggestions for the provided command.
+    /// - Parameter command: the command whose suggestions will be shown.
+    /// - Returns: `Future` with the suggestions, or an error.
     func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error>
     
+    /// Handles the provided command.
+    /// - Parameters:
+    ///  - text: the user entered text.
+    ///  - selectedRangeLocation: the end location of the selected text.
+    ///  - command: binding of the command.
+    ///  - extraData: additional data that can be passed from the command.
     func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -27,26 +43,34 @@ protocol CommandHandler {
     )
 }
 
-struct ComposerCommand {
+/// Model for the composer's commands.
+public struct ComposerCommand {
+    /// Identifier of the command.
     let id: String
+    /// Typing suggestion that invokes the command.
     let typingSuggestion: TypingSuggestion
 }
 
-struct SuggestionInfo {
+/// Provides information about the suggestion.
+public struct SuggestionInfo {
+    /// Identifies the suggestion.
     let key: String
+    /// Any value that can be passed to the suggestion.
     let value: Any
 }
 
-class CommandsHandler: CommandHandler {
+/// Main commands handler - decides which commands to invoke.
+/// Command is matched if there's an id matching.
+public class CommandsHandler: CommandHandler {
     
     private let commands: [CommandHandler]
-    let id: String = "main"
+    public let id: String = "main"
     
     init(commands: [CommandHandler]) {
         self.commands = commands
     }
     
-    func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
+    public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         for command in commands {
             if let composerCommand = command.canHandleCommand(
                 in: text,
@@ -59,7 +83,7 @@ class CommandsHandler: CommandHandler {
         return nil
     }
     
-    func showSuggestions(
+    public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
         for handler in commands {
@@ -71,7 +95,7 @@ class CommandsHandler: CommandHandler {
         return StreamChatError.wrongConfig.asFailedPromise()
     }
     
-    func handleCommand(
+    public func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,

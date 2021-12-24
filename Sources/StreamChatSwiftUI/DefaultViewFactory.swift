@@ -507,6 +507,16 @@ extension ViewFactory {
     ) -> some View {
         EditMessageHeaderView(editedMessage: editedMessage)
     }
+    
+    public func makeCommandsContainerView(
+        suggestions: [String: Any],
+        handleCommand: @escaping ([String: Any]) -> Void
+    ) -> some View {
+        CommandsContainerView(
+            suggestions: suggestions,
+            handleCommand: handleCommand
+        )
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

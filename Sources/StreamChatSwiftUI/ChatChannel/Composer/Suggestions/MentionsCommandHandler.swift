@@ -6,23 +6,31 @@ import Combine
 import StreamChat
 import SwiftUI
 
-public struct MentionsSuggester: CommandHandler {
+/// Handles the mention command and provides suggestions.
+public struct MentionsCommandHandler: CommandHandler {
     
-    let id: String = "mentions"
+    public let id: String
     
-    // TODO: read from config
-    private var mentionAllAppUsers = false
-    private let typingSuggester = TypingSuggester(options: .init(symbol: "@"))
+    private let mentionAllAppUsers: Bool
+    private let typingSuggester: TypingSuggester
     
     private let channelController: ChatChannelController
     private let userSearchController: ChatUserSearchController
         
-    init(channelController: ChatChannelController) {
+    init(
+        channelController: ChatChannelController,
+        commandSymbol: String,
+        mentionAllAppUsers: Bool,
+        id: String = "mentions"
+    ) {
+        self.id = id
         self.channelController = channelController
+        self.mentionAllAppUsers = mentionAllAppUsers
+        typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
         userSearchController = channelController.client.userSearchController()
     }
     
-    func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
+    public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if let suggestion = typingSuggester.typingSuggestion(
             in: text,
             caretLocation: caretLocation
@@ -33,7 +41,7 @@ public struct MentionsSuggester: CommandHandler {
         }
     }
     
-    func handleCommand(
+    public func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
@@ -57,7 +65,7 @@ public struct MentionsSuggester: CommandHandler {
         command.wrappedValue = nil
     }
     
-    func showSuggestions(
+    public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
         showMentionSuggestions(

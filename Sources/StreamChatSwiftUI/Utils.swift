@@ -17,6 +17,7 @@ public class Utils {
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
+    public var commandsConfig: CommandsConfig
     
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
@@ -28,6 +29,7 @@ public class Utils {
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
+        commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer()
     ) {
         self.dateFormatter = dateFormatter
@@ -40,5 +42,6 @@ public class Utils {
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
+        self.commandsConfig = commandsConfig
     }
 }

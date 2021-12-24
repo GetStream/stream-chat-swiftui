@@ -5,7 +5,8 @@
 import StreamChat
 import SwiftUI
 
-struct MentionUsersView: View {
+/// View for the mentioned users.
+public struct MentionUsersView: View {
     
     @Injected(\.colors) private var colors
     
@@ -14,7 +15,7 @@ struct MentionUsersView: View {
     var users: [ChatUser]
     var userSelected: (ChatUser) -> Void
     
-    var body: some View {
+    public var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach(users) { user in
@@ -42,14 +43,15 @@ struct MentionUsersView: View {
     }
 }
 
-struct MentionUserView: View {
+/// View for one user that can be mentioned.
+public struct MentionUserView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
     var user: ChatUser
     var userSelected: (ChatUser) -> Void
     
-    var body: some View {
+    public var body: some View {
         HStack {
             MessageAvatarView(
                 author: user,

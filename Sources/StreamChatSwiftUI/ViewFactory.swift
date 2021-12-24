@@ -482,4 +482,15 @@ public protocol ViewFactory: AnyObject {
     func makeEditedMessageHeaderView(
         editedMessage: Binding<ChatMessage?>
     ) -> EditedMessageHeaderViewType
+    
+    associatedtype CommandsContainerViewType: View
+    /// Creates the commands container view, above the composer.
+    /// - Parameters:
+    ///  - suggestions: key-value based suggestions, depending on the command type.
+    ///  - handleCommand: should be invoked by views when a command is executed.
+    /// - Returns: view displayed in the commands container slot.
+    func makeCommandsContainerView(
+        suggestions: [String: Any],
+        handleCommand: @escaping ([String: Any]) -> Void
+    ) -> CommandsContainerViewType
 }

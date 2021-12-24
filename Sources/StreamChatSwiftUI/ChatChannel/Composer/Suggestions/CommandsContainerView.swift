@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// Default implementation of the commands container.
 struct CommandsContainerView: View {
     
     var suggestions: [String: Any]
