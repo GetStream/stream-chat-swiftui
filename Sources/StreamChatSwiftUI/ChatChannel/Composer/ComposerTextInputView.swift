@@ -10,7 +10,6 @@ struct ComposerTextInputView: UIViewRepresentable {
     @Binding var text: String
     @Binding var height: CGFloat
     @Binding var selectedRangeLocation: Int
-    @Binding var isFirstResponder: Bool
     
     var placeholder: String
     
@@ -30,30 +29,21 @@ struct ComposerTextInputView: UIViewRepresentable {
                 uiView.selectedRange.location = selectedRangeLocation
                 uiView.text = text
                 uiView.handleTextChange()
-                switch isFirstResponder {
-                case true: uiView.becomeFirstResponder()
-                case false: uiView.resignFirstResponder()
-                }
             }
         }
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(textInput: self, isFirstResponder: $isFirstResponder)
+        Coordinator(textInput: self)
     }
     
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
         weak var textView: InputTextView?
 
         var textInput: ComposerTextInputView
-        var isFirstResponder: Binding<Bool>
         
-        init(
-            textInput: ComposerTextInputView,
-            isFirstResponder: Binding<Bool>
-        ) {
+        init(textInput: ComposerTextInputView) {
             self.textInput = textInput
-            self.isFirstResponder = isFirstResponder
         }
 
         func textViewDidChange(_ textView: UITextView) {
@@ -69,14 +59,6 @@ struct ComposerTextInputView: UIViewRepresentable {
             true
         }
         
-        func textViewDidBeginEditing(_ textView: UITextView) {
-            isFirstResponder.wrappedValue = true
-        }
-        
-        func textViewDidEndEditing(_ textView: UITextView) {
-            isFirstResponder.wrappedValue = false
-        }
-
         func layoutManager(
             _ layoutManager: NSLayoutManager,
             didCompleteLayoutFor textContainer: NSTextContainer?,

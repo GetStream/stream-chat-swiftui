@@ -50,7 +50,6 @@ public class MessageComposerViewModel: ObservableObject {
     }
 
     @Published var selectedRangeLocation: Int = 0
-    @Published var isFirstResponder = false
     
     @Published var addedFileURLs = [URL]() {
         didSet {
@@ -98,9 +97,6 @@ public class MessageComposerViewModel: ObservableObject {
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
                 text = ""
-                if isFirstResponder == false {
-                    isFirstResponder = true
-                }
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)

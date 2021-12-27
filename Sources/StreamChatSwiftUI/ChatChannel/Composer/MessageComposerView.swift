@@ -60,7 +60,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 factory.makeComposerInputView(
                     text: $viewModel.text,
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
-                    isFirstResponder: $viewModel.isFirstResponder,
                     command: $viewModel.composerCommand,
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
@@ -170,7 +169,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var factory: Factory
     @Binding var text: String
     @Binding var selectedRangeLocation: Int
-    @Binding var isFirstResponder: Bool
     @Binding var command: ComposerCommand?
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
@@ -232,10 +230,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                 )
             }
             
-            if let command = command,
-               let displayInfo = command.displayInfo,
-               displayInfo.isInstant == true {
-                HStack {
+            HStack {
+                if let command = command,
+                   let displayInfo = command.displayInfo,
+                   displayInfo.isInstant == true {
                     HStack(spacing: 0) {
                         Image(uiImage: images.smallBolt)
                         Text(displayInfo.displayName.uppercased())
@@ -246,16 +244,17 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(16)
-                    
-                    ComposerTextInputView(
-                        text: $text,
-                        height: $textHeight,
-                        selectedRangeLocation: $selectedRangeLocation,
-                        isFirstResponder: $isFirstResponder,
-                        placeholder: L10n.Composer.Placeholder.message
-                    )
-                    .frame(height: textFieldHeight)
-                    .overlay(
+                }
+                
+                ComposerTextInputView(
+                    text: $text,
+                    height: $textHeight,
+                    selectedRangeLocation: $selectedRangeLocation,
+                    placeholder: L10n.Composer.Placeholder.message
+                )
+                .frame(height: textFieldHeight)
+                .overlay(
+                    command?.displayInfo?.isInstant == true ?
                         HStack {
                             Spacer()
                             Button {
@@ -266,18 +265,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                                 )
                             }
                         }
-                    )
-                }
-            } else {
-                ComposerTextInputView(
-                    text: $text,
-                    height: $textHeight,
-                    selectedRangeLocation: $selectedRangeLocation,
-                    isFirstResponder: $isFirstResponder,
-                    placeholder: L10n.Composer.Placeholder.message
+                        : nil
                 )
-                .frame(height: textFieldHeight)
             }
+            .frame(height: textFieldHeight)
         }
         .padding(.vertical, shouldAddVerticalPadding ? 8 : 0)
         .padding(.leading, 8)

@@ -270,7 +270,6 @@ extension ViewFactory {
     public func makeComposerInputView(
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
-        isFirstResponder: Binding<Bool>,
         command: Binding<ComposerCommand?>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
@@ -286,7 +285,6 @@ extension ViewFactory {
                     factory: self,
                     text: text,
                     selectedRangeLocation: selectedRangeLocation,
-                    isFirstResponder: isFirstResponder,
                     command: command,
                     addedAssets: addedAssets,
                     addedFileURLs: addedFileURLs,
@@ -302,7 +300,6 @@ extension ViewFactory {
                 factory: self,
                 text: text,
                 selectedRangeLocation: selectedRangeLocation,
-                isFirstResponder: isFirstResponder,
                 command: command,
                 addedAssets: addedAssets,
                 addedFileURLs: addedFileURLs,
