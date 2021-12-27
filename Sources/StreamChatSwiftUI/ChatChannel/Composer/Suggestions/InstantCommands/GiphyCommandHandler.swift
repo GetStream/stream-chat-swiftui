@@ -1,0 +1,74 @@
+//
+// Copyright © 2021 Stream.io Inc. All rights reserved.
+//
+
+import Combine
+import StreamChat
+import SwiftUI
+
+/// Handles the giphy command and provides suggestions.
+public struct GiphyCommandHandler: CommandHandler {
+        
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
+    
+    public let id: String
+    public var displayInfo: CommandDisplayInfo?
+    
+    private let typingSuggester: TypingSuggester
+    
+    private let channelController: ChatChannelController
+        
+    init(
+        channelController: ChatChannelController,
+        commandSymbol: String,
+        id: String = "/giphy"
+    ) {
+        self.id = id
+        self.channelController = channelController
+        typingSuggester = TypingSuggester(
+            options:
+            TypingSuggestionOptions(
+                symbol: commandSymbol,
+                shouldTriggerOnlyAtStart: true
+            )
+        )
+        displayInfo = CommandDisplayInfo(
+            displayName: "Giphy",
+            icon: images.commandGiphy,
+            format: "\(id) [text]",
+            isInstant: true
+        )
+    }
+    
+    public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
+        if text == id {
+            return ComposerCommand(
+                id: id,
+                typingSuggestion: TypingSuggestion(
+                    text: text,
+                    locationRange: NSRange(
+                        location: 0,
+                        length: caretLocation
+                    )
+                ),
+                displayInfo: displayInfo
+            )
+        } else {
+            return nil
+        }
+    }
+    
+    public func handleCommand(
+        for text: Binding<String>,
+        selectedRangeLocation: Binding<Int>,
+        command: Binding<ComposerCommand?>,
+        extraData: [String: Any]
+    ) {}
+    
+    public func showSuggestions(
+        for command: ComposerCommand
+    ) -> Future<SuggestionInfo, Error> {
+        StreamChatError.unknown.asFailedPromise()
+    }
+}

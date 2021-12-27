@@ -50,6 +50,17 @@ public struct TypingSuggestion {
     }
 }
 
+extension TypingSuggestion {
+    
+    static let empty = TypingSuggestion(
+        text: "",
+        locationRange: NSRange(
+            location: 0,
+            length: 0
+        )
+    )
+}
+
 /// A component responsible for finding typing suggestions in a `UITextView`.
 public struct TypingSuggester {
     /// The structure that contains the suggestion configuration.

@@ -10,6 +10,7 @@ import SwiftUI
 public struct MentionsCommandHandler: CommandHandler {
     
     public let id: String
+    public var displayInfo: CommandDisplayInfo?
     
     private let mentionAllAppUsers: Bool
     private let typingSuggester: TypingSuggester
@@ -35,7 +36,11 @@ public struct MentionsCommandHandler: CommandHandler {
             in: text,
             caretLocation: caretLocation
         ) {
-            return ComposerCommand(id: id, typingSuggestion: suggestion)
+            return ComposerCommand(
+                id: id,
+                typingSuggestion: suggestion,
+                displayInfo: nil
+            )
         } else {
             return nil
         }
@@ -143,12 +148,6 @@ public struct MentionsCommandHandler: CommandHandler {
             return user.id
         }
     }
-    
-    private func resolve(with users: SuggestionInfo) -> Future<SuggestionInfo, Error> {
-        Future { promise in
-            promise(.success(users))
-        }
-    }
 
     private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
         Future { promise in
@@ -163,5 +162,11 @@ public struct MentionsCommandHandler: CommandHandler {
                 promise(.success(suggestionInfo))
             }
         }
+    }
+}
+
+func resolve<Content>(with content: Content) -> Future<Content, Error> {
+    Future { promise in
+        promise(.success(content))
     }
 }

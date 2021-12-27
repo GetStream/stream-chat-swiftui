@@ -263,6 +263,8 @@ public protocol ViewFactory: AnyObject {
     func makeComposerInputView(
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
+        isFirstResponder: Binding<Bool>,
+        command: Binding<ComposerCommand?>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],

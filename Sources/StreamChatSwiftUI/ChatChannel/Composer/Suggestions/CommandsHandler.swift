@@ -12,6 +12,8 @@ public protocol CommandHandler {
     /// Identifier of the command.
     var id: String { get }
     
+    var displayInfo: CommandDisplayInfo? { get }
+    
     /// Checks whether the command can be handled.
     /// - Parameters:
     ///  - text: the user entered text.
@@ -49,6 +51,7 @@ public struct ComposerCommand {
     let id: String
     /// Typing suggestion that invokes the command.
     let typingSuggestion: TypingSuggestion
+    let displayInfo: CommandDisplayInfo?
 }
 
 /// Provides information about the suggestion.
@@ -59,12 +62,20 @@ public struct SuggestionInfo {
     let value: Any
 }
 
+public struct CommandDisplayInfo {
+    let displayName: String
+    let icon: UIImage
+    let format: String
+    let isInstant: Bool
+}
+
 /// Main commands handler - decides which commands to invoke.
 /// Command is matched if there's an id matching.
 public class CommandsHandler: CommandHandler {
     
     private let commands: [CommandHandler]
     public let id: String = "main"
+    public var displayInfo: CommandDisplayInfo?
     
     init(commands: [CommandHandler]) {
         self.commands = commands

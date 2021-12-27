@@ -21,6 +21,15 @@ struct CommandsContainerView: View {
                     }
                 )
             }
+            
+            if let instantCommands = suggestions["instantCommands"] as? [CommandHandler] {
+                InstantCommandsView(
+                    instantCommands: instantCommands,
+                    commandSelected: { command in
+                        handleCommand(["instantCommand": command])
+                    }
+                )
+            }
         }
     }
 }

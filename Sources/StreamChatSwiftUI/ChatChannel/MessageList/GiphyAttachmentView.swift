@@ -8,7 +8,13 @@ import StreamChat
 import SwiftUI
 
 /// View for the giphy attachments.
-public struct GiphyAttachmentView: View {
+public struct GiphyAttachmentView<Factory: ViewFactory>: View {
+    
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    
+    let factory: Factory
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
@@ -31,17 +37,55 @@ public struct GiphyAttachmentView: View {
                 source: message.giphyAttachments[0].previewURL,
                 width: width
             )
-
-            if !message.text.isEmpty {
+            .overlay(
+                factory.makeGiphyBadgeViewType(
+                    for: message,
+                    availableWidth: width
+                )
+            )
+            
+            if !giphyActions.isEmpty {
                 HStack {
-                    Text(message.text)
-                        .standardPadding()
-                    Spacer()
+                    ForEach(0..<giphyActions.count) { index in
+                        let action = giphyActions[index]
+                        Button {
+                            execute(action: action)
+                        } label: {
+                            Text(action.value.firstUppercased)
+                                .padding(.horizontal, 4)
+                                .padding(.vertical)
+                        }
+                        .foregroundColor(
+                            action.style == .primary ?
+                                colors.tintColor :
+                                Color(colors.textLowEmphasis)
+                        )
+                        .font(fonts.bodyBold)
+                        .frame(maxWidth: .infinity)
+                    }
                 }
             }
         }
         .messageBubble(for: message, isFirst: isFirst)
         .frame(maxWidth: width)
+    }
+    
+    private var giphyActions: [AttachmentAction] {
+        message.giphyAttachments[0].actions
+    }
+    
+    private func execute(action: AttachmentAction) {
+        guard let cid = message.cid else {
+            log.error("Failed to take the tap on attachment action \(action)")
+            return
+        }
+
+        chatClient
+            .messageController(
+                cid: cid,
+                messageId: message.id
+            )
+            .dispatchEphemeralMessageAction(action)
     }
 }
 

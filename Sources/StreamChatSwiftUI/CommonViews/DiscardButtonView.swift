@@ -7,6 +7,8 @@ import SwiftUI
 /// View for the discard button.
 struct DiscardButtonView: View {
     
+    var color = Color.black.opacity(0.8)
+    
     var body: some View {
         ZStack {
             Circle()
@@ -14,7 +16,7 @@ struct DiscardButtonView: View {
                 .frame(width: 16, height: 16)
             
             Image(systemName: "xmark.circle.fill")
-                .foregroundColor(Color.black.opacity(0.8))
+                .foregroundColor(color)
         }
         .padding(.all, 4)
     }

@@ -38,6 +38,11 @@ public class DefaultCommandsConfig: CommandsConfig {
             commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
-        return CommandsHandler(commands: [mentionsCommand])
+        let giphyCommand = GiphyCommandHandler(
+            channelController: channelController,
+            commandSymbol: "/giphy"
+        )
+        let instantCommands = InstantCommandsHandler(commands: [giphyCommand])
+        return CommandsHandler(commands: [mentionsCommand, instantCommands])
     }
 }

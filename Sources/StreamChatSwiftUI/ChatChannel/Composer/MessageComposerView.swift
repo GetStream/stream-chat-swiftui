@@ -60,6 +60,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 factory.makeComposerInputView(
                     text: $viewModel.text,
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
+                    isFirstResponder: $viewModel.isFirstResponder,
+                    command: $viewModel.composerCommand,
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
@@ -122,7 +124,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .onReceive(keyboardPublisher) { visible in
             if visible {
                 withAnimation(.easeInOut(duration: 0.02)) {
-                    viewModel.pickerTypeState = .expanded(.none)
+                    if viewModel.composerCommand == nil {
+                        viewModel.pickerTypeState = .expanded(.none)
+                    }
                 }
             }
         }
@@ -160,10 +164,14 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
     
     var factory: Factory
     @Binding var text: String
     @Binding var selectedRangeLocation: Int
+    @Binding var isFirstResponder: Bool
+    @Binding var command: ComposerCommand?
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
@@ -224,13 +232,52 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                 )
             }
             
-            ComposerTextInputView(
-                text: $text,
-                height: $textHeight,
-                selectedRangeLocation: $selectedRangeLocation,
-                placeholder: L10n.Composer.Placeholder.message
-            )
-            .frame(height: textFieldHeight)
+            if let command = command,
+               let displayInfo = command.displayInfo,
+               displayInfo.isInstant == true {
+                HStack {
+                    HStack(spacing: 0) {
+                        Image(uiImage: images.smallBolt)
+                        Text(displayInfo.displayName.uppercased())
+                    }
+                    .padding(.horizontal, 8)
+                    .font(fonts.footnoteBold)
+                    .frame(height: 24)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(16)
+                    
+                    ComposerTextInputView(
+                        text: $text,
+                        height: $textHeight,
+                        selectedRangeLocation: $selectedRangeLocation,
+                        isFirstResponder: $isFirstResponder,
+                        placeholder: L10n.Composer.Placeholder.message
+                    )
+                    .frame(height: textFieldHeight)
+                    .overlay(
+                        HStack {
+                            Spacer()
+                            Button {
+                                self.command = nil
+                            } label: {
+                                DiscardButtonView(
+                                    color: Color(colors.background7)
+                                )
+                            }
+                        }
+                    )
+                }
+            } else {
+                ComposerTextInputView(
+                    text: $text,
+                    height: $textHeight,
+                    selectedRangeLocation: $selectedRangeLocation,
+                    isFirstResponder: $isFirstResponder,
+                    placeholder: L10n.Composer.Placeholder.message
+                )
+                .frame(height: textFieldHeight)
+            }
         }
         .padding(.vertical, shouldAddVerticalPadding ? 8 : 0)
         .padding(.leading, 8)

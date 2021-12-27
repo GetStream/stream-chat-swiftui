@@ -166,6 +166,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         GiphyAttachmentView(
+            factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
@@ -269,6 +270,8 @@ extension ViewFactory {
     public func makeComposerInputView(
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
+        isFirstResponder: Binding<Bool>,
+        command: Binding<ComposerCommand?>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
@@ -283,6 +286,8 @@ extension ViewFactory {
                     factory: self,
                     text: text,
                     selectedRangeLocation: selectedRangeLocation,
+                    isFirstResponder: isFirstResponder,
+                    command: command,
                     addedAssets: addedAssets,
                     addedFileURLs: addedFileURLs,
                     addedCustomAttachments: addedCustomAttachments,
@@ -297,6 +302,8 @@ extension ViewFactory {
                 factory: self,
                 text: text,
                 selectedRangeLocation: selectedRangeLocation,
+                isFirstResponder: isFirstResponder,
+                command: command,
                 addedAssets: addedAssets,
                 addedFileURLs: addedFileURLs,
                 addedCustomAttachments: addedCustomAttachments,

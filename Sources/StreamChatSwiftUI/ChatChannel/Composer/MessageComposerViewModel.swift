@@ -40,13 +40,17 @@ public class MessageComposerViewModel: ObservableObject {
                 channelController.sendKeystrokeEvent()
                 checkTypingSuggestions()
             } else {
-                composerCommand = nil
+                if composerCommand?.displayInfo?.isInstant == false {
+                    composerCommand = nil
+                }
                 selectedRangeLocation = 0
+                suggestions = [String: Any]()
             }
         }
     }
 
     @Published var selectedRangeLocation: Int = 0
+    @Published var isFirstResponder = false
     
     @Published var addedFileURLs = [URL]() {
         didSet {
@@ -64,7 +68,17 @@ public class MessageComposerViewModel: ObservableObject {
         didSet {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                overlayShown = attachmentPickerType != .none
+                overlayShown = attachmentPickerType == .media
+                if attachmentPickerType == .giphy {
+                    composerCommand = ComposerCommand(
+                        id: "instantCommands",
+                        typingSuggestion: TypingSuggestion.empty,
+                        displayInfo: nil
+                    )
+                    showTypingSuggestions()
+                } else {
+                    composerCommand = nil
+                }
             case .collapsed:
                 log.debug("Collapsed state shown, no changes to overlay.")
             }
@@ -79,7 +93,20 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    @Published var composerCommand: ComposerCommand?
+    @Published var composerCommand: ComposerCommand? {
+        didSet {
+            if oldValue?.id != composerCommand?.id &&
+                composerCommand?.displayInfo?.isInstant == true {
+                text = ""
+                if isFirstResponder == false {
+                    isFirstResponder = true
+                }
+            }
+            if oldValue != nil && composerCommand == nil {
+                pickerTypeState = .expanded(.none)
+            }
+        }
+    }
     
     @Published var filePickerShown = false
     @Published var cameraPickerShown = false
@@ -96,6 +123,16 @@ public class MessageComposerViewModel: ObservableObject {
         .makeCommandsHandler(
             with: channelController
         )
+    
+    private var messageText: String {
+        if let composerCommand = composerCommand,
+           let displayInfo = composerCommand.displayInfo,
+           displayInfo.isInstant == true {
+            return "\(composerCommand.id) \(text)"
+        } else {
+            return text
+        }
+    }
     
     public init(
         channelController: ChatChannelController,
@@ -134,7 +171,7 @@ public class MessageComposerViewModel: ObservableObject {
             
             if let messageController = messageController {
                 messageController.createNewReply(
-                    text: text,
+                    text: messageText,
                     attachments: attachments,
                     showReplyInChannel: showReplyInChannel,
                     quotedMessageId: quotedMessage?.id
@@ -148,7 +185,7 @@ public class MessageComposerViewModel: ObservableObject {
                 }
             } else {
                 channelController.createNewMessage(
-                    text: text,
+                    text: messageText,
                     attachments: attachments,
                     quotedMessageId: quotedMessage?.id
                 ) { [weak self] in
@@ -357,6 +394,7 @@ public class MessageComposerViewModel: ObservableObject {
         addedAssets = []
         addedFileURLs = []
         addedCustomAttachments = []
+        composerCommand = nil
     }
     
     private func checkPickerSelectionState() {
@@ -366,11 +404,19 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     private func checkTypingSuggestions() {
+        if composerCommand?.displayInfo?.isInstant == true {
+            // If an instant command is selected, don't check again.
+            return
+        }
         composerCommand = commandsHandler.canHandleCommand(
             in: text,
             caretLocation: selectedRangeLocation
         )
         
+        showTypingSuggestions()
+    }
+    
+    private func showTypingSuggestions() {
         if let composerCommand = composerCommand {
             commandsHandler.showSuggestions(for: composerCommand)
                 .sink { _ in
