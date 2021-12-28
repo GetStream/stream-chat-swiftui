@@ -96,7 +96,12 @@ public class MessageComposerViewModel: ObservableObject {
         didSet {
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
-                text = ""
+                // This is needed because of autocompleting text from the keyboard.
+                // The update of the text is done in the next cycle, so it overrides
+                // the setting of this value to empty string.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
+                    self?.text = ""
+                }
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
