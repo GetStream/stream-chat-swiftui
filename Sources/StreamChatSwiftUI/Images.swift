@@ -30,26 +30,14 @@ public class Images {
     // MARK: - General
 
     public var loadingIndicator: UIImage = loadImageSafely(with: "loading_indicator")
-    public var close: UIImage = {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "xmark")!
-        } else {
-            return loadImageSafely(with: "close")
-        }
-    }()
+    public var close: UIImage = UIImage(systemName: "xmark")!
 
     public var closeCircleTransparent: UIImage = loadImageSafely(with: "close_circle_transparent")
     public var discardAttachment: UIImage = loadImageSafely(with: "close_circle_filled")
     public var back: UIImage = loadImageSafely(with: "icn_back")
     public var onlyVisibleToCurrentUser = loadImageSafely(with: "eye")
     public var more = loadImageSafely(with: "icn_more")
-    public var share: UIImage = {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "square.and.arrow.up")!
-        } else {
-            return loadImageSafely(with: "share")
-        }
-    }()
+    public var share: UIImage = UIImage(systemName: "square.and.arrow.up")!
 
     public var commands: UIImage = loadImageSafely(with: "bolt")
     public var smallBolt: UIImage = loadImageSafely(with: "bolt_small")
@@ -64,13 +52,7 @@ public class Images {
     public var bigConfirmCheckmark: UIImage = loadImageSafely(with: "checkmark_confirm_big")
     public var folder: UIImage = loadImageSafely(with: "folder")
     public var restart: UIImage = loadImageSafely(with: "restart")
-    public var download: UIImage = {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "icloud.and.arrow.down")!
-        } else {
-            return loadImageSafely(with: "download")
-        }
-    }()
+    public var download: UIImage = UIImage(systemName: "icloud.and.arrow.down")!
 
     // MARK: - Reactions
 
