@@ -62,7 +62,7 @@ public struct GiphyCommandHandler: CommandHandler {
         extraData: [String: Any]
     ) {}
     
-    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+    public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         nil
     }
     

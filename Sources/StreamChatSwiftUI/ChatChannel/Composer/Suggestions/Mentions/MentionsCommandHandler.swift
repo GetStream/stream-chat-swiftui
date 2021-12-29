@@ -70,7 +70,7 @@ public struct MentionsCommandHandler: CommandHandler {
         command.wrappedValue = nil
     }
     
-    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+    public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         command.id == id ? self : nil
     }
     

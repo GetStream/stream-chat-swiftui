@@ -220,7 +220,7 @@ public class MessageComposerViewModel: ObservableObject {
     
     public var sendButtonEnabled: Bool {
         if let composerCommand = composerCommand,
-           let handler = commandsHandler.canShowSuggestions(for: composerCommand) {
+           let handler = commandsHandler.commandHandler(for: composerCommand) {
             return handler
                 .canBeExecuted(composerCommand: composerCommand)
         }

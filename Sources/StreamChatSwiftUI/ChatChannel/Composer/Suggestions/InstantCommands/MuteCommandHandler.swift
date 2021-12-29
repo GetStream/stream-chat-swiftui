@@ -98,7 +98,7 @@ public class MuteCommandHandler: CommandHandler {
         }
     }
     
-    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+    public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if let mutedUser = mutedUser,
            command.typingSuggestion.text != mentionText(for: mutedUser) {
             self.mutedUser = nil

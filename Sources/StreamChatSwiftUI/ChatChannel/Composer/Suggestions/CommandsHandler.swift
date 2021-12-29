@@ -12,6 +12,7 @@ public protocol CommandHandler {
     /// Identifier of the command.
     var id: String { get }
     
+    /// Display info for the command.
     var displayInfo: CommandDisplayInfo? { get }
     
     /// Checks whether the command can be handled.
@@ -24,7 +25,10 @@ public protocol CommandHandler {
         caretLocation: Int
     ) -> ComposerCommand?
     
-    func canShowSuggestions(for command: ComposerCommand) -> CommandHandler?
+    /// Returns a command handler for a command (if available).
+    /// - Parameter command: the command whose handler will be returned.
+    /// - Returns: Optional `CommandHandler`.
+    func commandHandler(for command: ComposerCommand) -> CommandHandler?
     
     /// Shows suggestions for the provided command.
     /// - Parameter command: the command whose suggestions will be shown.
@@ -46,14 +50,22 @@ public protocol CommandHandler {
         extraData: [String: Any]
     )
     
+    /// Checks whether the command can be executed on message sent.
+    /// - Parameter command: the command to be checked.
+    /// - Returns: `Bool` whether the command can be executed.
     func canBeExecuted(composerCommand: ComposerCommand) -> Bool
     
+    /// Needs to be implemented if you need some code executed before the message is sent.
+    /// - Parameters:
+    ///  - composerCommand: the command to be executed.
+    ///  - completion: called when the command is executed.
     func executeOnMessageSent(
         composerCommand: ComposerCommand,
         completion: @escaping (Error?) -> Void
     )
 }
 
+/// Default implementations.
 extension CommandHandler {
     
     public func executeOnMessageSent(
@@ -74,7 +86,9 @@ public struct ComposerCommand {
     let id: String
     /// Typing suggestion that invokes the command.
     var typingSuggestion: TypingSuggestion
+    /// Display info for the command.
     let displayInfo: CommandDisplayInfo?
+    /// Whether execution of the command replaces sending of a message.
     var replacesMessageSent: Bool = false
 }
 
@@ -86,6 +100,7 @@ public struct SuggestionInfo {
     let value: Any
 }
 
+/// Display information about a command.
 public struct CommandDisplayInfo {
     let displayName: String
     let icon: UIImage
@@ -118,9 +133,9 @@ public class CommandsHandler: CommandHandler {
         return nil
     }
     
-    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+    public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         for handler in commands {
-            if handler.canShowSuggestions(for: command) != nil {
+            if handler.commandHandler(for: command) != nil {
                 return handler
             }
         }
@@ -131,7 +146,7 @@ public class CommandsHandler: CommandHandler {
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
-        if let handler = canShowSuggestions(for: command) {
+        if let handler = commandHandler(for: command) {
             return handler.showSuggestions(for: command)
         }
         
@@ -148,7 +163,7 @@ public class CommandsHandler: CommandHandler {
             return
         }
 
-        if let handler = canShowSuggestions(for: commandValue), handler.id != id {
+        if let handler = commandHandler(for: commandValue), handler.id != id {
             handler.handleCommand(
                 for: text,
                 selectedRangeLocation: selectedRangeLocation,
@@ -162,7 +177,7 @@ public class CommandsHandler: CommandHandler {
         composerCommand: ComposerCommand,
         completion: @escaping (Error?) -> Void
     ) {
-        if let handler = canShowSuggestions(for: composerCommand) {
+        if let handler = commandHandler(for: composerCommand) {
             handler.executeOnMessageSent(
                 composerCommand: composerCommand,
                 completion: completion
@@ -171,7 +186,7 @@ public class CommandsHandler: CommandHandler {
     }
     
     public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
-        if let handler = canShowSuggestions(for: composerCommand), handler.id != id {
+        if let handler = commandHandler(for: composerCommand), handler.id != id {
             return handler.canBeExecuted(composerCommand: composerCommand)
         }
         
