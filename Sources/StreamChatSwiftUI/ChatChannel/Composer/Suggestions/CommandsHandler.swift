@@ -15,6 +15,9 @@ public protocol CommandHandler {
     /// Display info for the command.
     var displayInfo: CommandDisplayInfo? { get }
     
+    /// Whether execution of the command replaces sending of a message.
+    var replacesMessageSent: Bool { get }
+    
     /// Checks whether the command can be handled.
     /// - Parameters:
     ///  - text: the user entered text.
@@ -67,6 +70,10 @@ public protocol CommandHandler {
 
 /// Default implementations.
 extension CommandHandler {
+    
+    public var replacesMessageSent: Bool {
+        false
+    }
     
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,

@@ -131,6 +131,10 @@ public class TwoStepMentionCommand: CommandHandler {
         return mentionsCommandHandler.showSuggestions(for: updated)
     }
     
+    public var replacesMessageSent: Bool {
+        true
+    }
+    
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
         completion: @escaping (Error?) -> Void

@@ -44,14 +44,18 @@ struct InstantCommandsView: View {
                         Spacer()
                     }
                     .standardPadding()
-                    .onTapGesture {
-                        let instantCommand = ComposerCommand(
-                            id: command.id,
-                            typingSuggestion: TypingSuggestion.empty,
-                            displayInfo: command.displayInfo
-                        )
-                        commandSelected(instantCommand)
-                    }
+                    .highPriorityGesture(
+                        TapGesture()
+                            .onEnded { _ in
+                                let instantCommand = ComposerCommand(
+                                    id: command.id,
+                                    typingSuggestion: TypingSuggestion.empty,
+                                    displayInfo: command.displayInfo,
+                                    replacesMessageSent: command.replacesMessageSent
+                                )
+                                commandSelected(instantCommand)
+                            }
+                    )
                 }
             }
         }

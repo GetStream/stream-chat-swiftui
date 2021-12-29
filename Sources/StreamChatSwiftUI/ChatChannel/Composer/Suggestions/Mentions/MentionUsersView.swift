@@ -67,8 +67,11 @@ public struct MentionUserView: View {
                 .foregroundColor(colors.tintColor)
         }
         .standardPadding()
-        .onTapGesture {
-            userSelected(user)
-        }
+        .highPriorityGesture(
+            TapGesture()
+                .onEnded { _ in
+                    userSelected(user)
+                }
+        )
     }
 }
