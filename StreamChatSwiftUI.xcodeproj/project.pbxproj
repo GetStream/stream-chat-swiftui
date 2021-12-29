@@ -14,6 +14,7 @@
 		841B64D02775EDFE0016FF3B /* InstantCommandsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64CF2775EDFE0016FF3B /* InstantCommandsView.swift */; };
 		841B64D42775F5540016FF3B /* GiphyCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D32775F5540016FF3B /* GiphyCommandHandler.swift */; };
 		841B64D62775FDA00016FF3B /* InstantCommandsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */; };
+		841B64D8277B14440016FF3B /* MuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D7277B14430016FF3B /* MuteCommandHandler.swift */; };
 		842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */; };
 		842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383E327678A4D00888CFC /* QuotedMessageView.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
@@ -305,6 +306,7 @@
 		841B64CF2775EDFE0016FF3B /* InstantCommandsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantCommandsView.swift; sourceTree = "<group>"; };
 		841B64D32775F5540016FF3B /* GiphyCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyCommandHandler.swift; sourceTree = "<group>"; };
 		841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantCommandsHandler.swift; sourceTree = "<group>"; };
+		841B64D7277B14430016FF3B /* MuteCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteCommandHandler.swift; sourceTree = "<group>"; };
 		842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelDataSource_Tests.swift; sourceTree = "<group>"; };
 		842383E327678A4D00888CFC /* QuotedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
@@ -594,6 +596,7 @@
 			children = (
 				841B64CF2775EDFE0016FF3B /* InstantCommandsView.swift */,
 				841B64D32775F5540016FF3B /* GiphyCommandHandler.swift */,
+				841B64D7277B14430016FF3B /* MuteCommandHandler.swift */,
 				841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */,
 			);
 			path = InstantCommands;
@@ -1338,6 +1341,7 @@
 				8465FD772746A95700AF091E /* FileAttachmentPreview.swift in Sources */,
 				8465FD862746A95700AF091E /* MessageComposerViewModel.swift in Sources */,
 				8465FD7C2746A95700AF091E /* MessageContainerView.swift in Sources */,
+				841B64D8277B14440016FF3B /* MuteCommandHandler.swift in Sources */,
 				8465FDB42746A95700AF091E /* ChatMessage+Extensions.swift in Sources */,
 				8465FD8C2746A95700AF091E /* ImagePickerView.swift in Sources */,
 				8465FDB22746A95700AF091E /* InputTextView.swift in Sources */,

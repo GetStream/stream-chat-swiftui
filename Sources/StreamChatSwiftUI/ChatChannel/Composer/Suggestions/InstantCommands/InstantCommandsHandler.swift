@@ -54,7 +54,20 @@ public class InstantCommandsHandler: CommandHandler {
         }
     }
     
+    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+        for instant in commands {
+            if instant.canShowSuggestions(for: command) != nil {
+                return instant
+            }
+        }
+        
+        return command.id == id ? self : nil
+    }
+    
     public func showSuggestions(for command: ComposerCommand) -> Future<SuggestionInfo, Error> {
+        if let handler = canShowSuggestions(for: command), handler.id != id {
+            return handler.showSuggestions(for: command)
+        }
         let suggestionInfo = SuggestionInfo(key: id, value: commands)
         return resolve(with: suggestionInfo)
     }
@@ -65,9 +78,40 @@ public class InstantCommandsHandler: CommandHandler {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
+        if let commandValue = command.wrappedValue,
+           let handler = canShowSuggestions(for: commandValue), handler.id != id {
+            handler.handleCommand(
+                for: text,
+                selectedRangeLocation: selectedRangeLocation,
+                command: command,
+                extraData: extraData
+            )
+            return
+        }
+        
         guard let instantCommand = extraData["instantCommand"] as? ComposerCommand else {
             return
         }
         command.wrappedValue = instantCommand
+    }
+    
+    public func executeOnMessageSent(
+        composerCommand: ComposerCommand,
+        completion: @escaping (Error?) -> Void
+    ) {
+        if let handler = canShowSuggestions(for: composerCommand) {
+            handler.executeOnMessageSent(
+                composerCommand: composerCommand,
+                completion: completion
+            )
+        }
+    }
+    
+    public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
+        if let handler = canShowSuggestions(for: composerCommand), handler.id != id {
+            return handler.canBeExecuted(composerCommand: composerCommand)
+        }
+        
+        return !composerCommand.typingSuggestion.text.isEmpty
     }
 }

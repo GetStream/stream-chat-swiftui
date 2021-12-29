@@ -148,6 +148,19 @@ public class MessageComposerViewModel: ObservableObject {
         editedMessage: ChatMessage?,
         completion: @escaping () -> Void
     ) {
+        if let composerCommand = composerCommand {
+            commandsHandler.executeOnMessageSent(
+                composerCommand: composerCommand
+            ) { [weak self] _ in
+                self?.clearInputData()
+                completion()
+            }
+            
+            if composerCommand.replacesMessageSent {
+                return
+            }
+        }
+        
         if let editedMessage = editedMessage {
             edit(message: editedMessage, completion: completion)
             return
@@ -206,7 +219,13 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     public var sendButtonEnabled: Bool {
-        !addedAssets.isEmpty ||
+        if let composerCommand = composerCommand,
+           let handler = commandsHandler.canShowSuggestions(for: composerCommand) {
+            return handler
+                .canBeExecuted(composerCommand: composerCommand)
+        }
+        
+        return !addedAssets.isEmpty ||
             !text.isEmpty ||
             !addedFileURLs.isEmpty ||
             !addedCustomAttachments.isEmpty
@@ -406,7 +425,15 @@ public class MessageComposerViewModel: ObservableObject {
     
     private func checkTypingSuggestions() {
         if composerCommand?.displayInfo?.isInstant == true {
-            // If an instant command is selected, don't check again.
+            let typingSuggestion = TypingSuggestion(
+                text: text,
+                locationRange: NSRange(
+                    location: 0,
+                    length: selectedRangeLocation
+                )
+            )
+            composerCommand?.typingSuggestion = typingSuggestion
+            showTypingSuggestions()
             return
         }
         composerCommand = commandsHandler.canHandleCommand(

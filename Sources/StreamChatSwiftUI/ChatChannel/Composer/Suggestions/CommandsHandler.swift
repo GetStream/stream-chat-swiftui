@@ -24,6 +24,8 @@ public protocol CommandHandler {
         caretLocation: Int
     ) -> ComposerCommand?
     
+    func canShowSuggestions(for command: ComposerCommand) -> CommandHandler?
+    
     /// Shows suggestions for the provided command.
     /// - Parameter command: the command whose suggestions will be shown.
     /// - Returns: `Future` with the suggestions, or an error.
@@ -43,6 +45,27 @@ public protocol CommandHandler {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     )
+    
+    func canBeExecuted(composerCommand: ComposerCommand) -> Bool
+    
+    func executeOnMessageSent(
+        composerCommand: ComposerCommand,
+        completion: @escaping (Error?) -> Void
+    )
+}
+
+extension CommandHandler {
+    
+    public func executeOnMessageSent(
+        composerCommand: ComposerCommand,
+        completion: @escaping (Error?) -> Void
+    ) {
+        // optional method.
+    }
+    
+    public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
+        !composerCommand.typingSuggestion.text.isEmpty
+    }
 }
 
 /// Model for the composer's commands.
@@ -50,8 +73,9 @@ public struct ComposerCommand {
     /// Identifier of the command.
     let id: String
     /// Typing suggestion that invokes the command.
-    let typingSuggestion: TypingSuggestion
+    var typingSuggestion: TypingSuggestion
     let displayInfo: CommandDisplayInfo?
+    var replacesMessageSent: Bool = false
 }
 
 /// Provides information about the suggestion.
@@ -94,13 +118,21 @@ public class CommandsHandler: CommandHandler {
         return nil
     }
     
+    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+        for handler in commands {
+            if handler.canShowSuggestions(for: command) != nil {
+                return handler
+            }
+        }
+        
+        return nil
+    }
+    
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
-        for handler in commands {
-            if handler.id == command.id {
-                return handler.showSuggestions(for: command)
-            }
+        if let handler = canShowSuggestions(for: command) {
+            return handler.showSuggestions(for: command)
         }
         
         return StreamChatError.wrongConfig.asFailedPromise()
@@ -112,16 +144,37 @@ public class CommandsHandler: CommandHandler {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
-        for handler in commands {
-            let commandValue = command.wrappedValue
-            if handler.id == commandValue?.id {
-                handler.handleCommand(
-                    for: text,
-                    selectedRangeLocation: selectedRangeLocation,
-                    command: command,
-                    extraData: extraData
-                )
-            }
+        guard let commandValue = command.wrappedValue else {
+            return
         }
+
+        if let handler = canShowSuggestions(for: commandValue), handler.id != id {
+            handler.handleCommand(
+                for: text,
+                selectedRangeLocation: selectedRangeLocation,
+                command: command,
+                extraData: extraData
+            )
+        }
+    }
+    
+    public func executeOnMessageSent(
+        composerCommand: ComposerCommand,
+        completion: @escaping (Error?) -> Void
+    ) {
+        if let handler = canShowSuggestions(for: composerCommand) {
+            handler.executeOnMessageSent(
+                composerCommand: composerCommand,
+                completion: completion
+            )
+        }
+    }
+    
+    public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
+        if let handler = canShowSuggestions(for: composerCommand), handler.id != id {
+            return handler.canBeExecuted(composerCommand: composerCommand)
+        }
+        
+        return !composerCommand.typingSuggestion.text.isEmpty
     }
 }

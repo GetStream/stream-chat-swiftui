@@ -70,6 +70,10 @@ public struct MentionsCommandHandler: CommandHandler {
         command.wrappedValue = nil
     }
     
+    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+        command.id == id ? self : nil
+    }
+    
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {

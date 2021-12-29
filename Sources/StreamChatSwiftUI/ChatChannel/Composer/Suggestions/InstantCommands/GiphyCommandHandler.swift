@@ -16,16 +16,12 @@ public struct GiphyCommandHandler: CommandHandler {
     public var displayInfo: CommandDisplayInfo?
     
     private let typingSuggester: TypingSuggester
-    
-    private let channelController: ChatChannelController
-        
+            
     init(
-        channelController: ChatChannelController,
         commandSymbol: String,
         id: String = "/giphy"
     ) {
         self.id = id
-        self.channelController = channelController
         typingSuggester = TypingSuggester(
             options:
             TypingSuggestionOptions(
@@ -65,6 +61,10 @@ public struct GiphyCommandHandler: CommandHandler {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {}
+    
+    public func canShowSuggestions(for command: ComposerCommand) -> CommandHandler? {
+        nil
+    }
     
     public func showSuggestions(
         for command: ComposerCommand

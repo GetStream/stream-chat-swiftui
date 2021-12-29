@@ -38,11 +38,14 @@ public class DefaultCommandsConfig: CommandsConfig {
             commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
-        let giphyCommand = GiphyCommandHandler(
+        let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
+        let muteCommand = MuteCommandHandler(
             channelController: channelController,
-            commandSymbol: "/giphy"
+            commandSymbol: "/mute"
         )
-        let instantCommands = InstantCommandsHandler(commands: [giphyCommand])
+        let instantCommands = InstantCommandsHandler(
+            commands: [giphyCommand, muteCommand]
+        )
         return CommandsHandler(commands: [mentionsCommand, instantCommands])
     }
 }
