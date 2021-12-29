@@ -93,6 +93,20 @@ internal enum L10n {
       /// Also send as direct message
       internal static var directMessageReply: String { L10n.tr("Localizable", "composer.checkmark.direct-message-reply") }
     }
+    internal enum Commands {
+      /// Giphy
+      internal static var giphy: String { L10n.tr("Localizable", "composer.commands.giphy") }
+      /// Mute
+      internal static var mute: String { L10n.tr("Localizable", "composer.commands.mute") }
+      /// Unmute
+      internal static var unmute: String { L10n.tr("Localizable", "composer.commands.unmute") }
+      internal enum Format {
+        /// text
+        internal static var text: String { L10n.tr("Localizable", "composer.commands.format.text") }
+        /// @username
+        internal static var username: String { L10n.tr("Localizable", "composer.commands.format.username") }
+      }
+    }
     internal enum Files {
       /// Add more files
       internal static var addMore: String { L10n.tr("Localizable", "composer.files.add-more") }

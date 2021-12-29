@@ -76,6 +76,13 @@
 "composer.quoted.video" = "Video";
 "composer.quoted.giphy" = "Giphy";
 
+"composer.commands.giphy" = "Giphy";
+"composer.commands.mute" = "Mute";
+"composer.commands.unmute" = "Unmute";
+"composer.commands.format.text" = "text";
+"composer.commands.format.username" = "@username";
+
+
 "composer.suggestions.commands.header" = "Instant Commands";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 

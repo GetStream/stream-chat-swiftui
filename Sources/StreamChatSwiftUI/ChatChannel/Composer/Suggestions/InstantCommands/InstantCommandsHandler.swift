@@ -6,26 +6,29 @@ import Combine
 import StreamChat
 import SwiftUI
 
+/// Handler for istant commands.
 public class InstantCommandsHandler: CommandHandler {
     
     public let id: String
     public var displayInfo: CommandDisplayInfo?
     
-    private let typingSuggester = TypingSuggester(
-        options:
-        TypingSuggestionOptions(
-            symbol: "/",
-            shouldTriggerOnlyAtStart: true
-        )
-    )
+    private let typingSuggester: TypingSuggester
     private let commands: [CommandHandler]
     
     public init(
         commands: [CommandHandler],
+        symbol: String = "/",
         id: String = "instantCommands"
     ) {
         self.commands = commands
         self.id = id
+        typingSuggester = TypingSuggester(
+            options:
+            TypingSuggestionOptions(
+                symbol: symbol,
+                shouldTriggerOnlyAtStart: true
+            )
+        )
     }
     
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {

@@ -23,9 +23,9 @@ public class MuteCommandHandler: TwoStepMentionCommand {
             id: id
         )
         let displayInfo = CommandDisplayInfo(
-            displayName: "Mute",
+            displayName: L10n.Composer.Commands.mute,
             icon: images.commandMute,
-            format: "\(id) [@username]",
+            format: "\(id) [\(L10n.Composer.Commands.Format.username)]",
             isInstant: true
         )
         self.displayInfo = displayInfo
