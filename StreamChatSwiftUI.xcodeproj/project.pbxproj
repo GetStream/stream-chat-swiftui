@@ -17,6 +17,8 @@
 		841B64D8277B14440016FF3B /* MuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D7277B14430016FF3B /* MuteCommandHandler.swift */; };
 		842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */; };
 		842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383E327678A4D00888CFC /* QuotedMessageView.swift */; };
+		8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */; };
+		8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
 		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
@@ -309,6 +311,8 @@
 		841B64D7277B14430016FF3B /* MuteCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteCommandHandler.swift; sourceTree = "<group>"; };
 		842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelDataSource_Tests.swift; sourceTree = "<group>"; };
 		842383E327678A4D00888CFC /* QuotedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView.swift; sourceTree = "<group>"; };
+		8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoStepMentionCommand.swift; sourceTree = "<group>"; };
+		8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnmuteCommandHandler.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView_Tests.swift; sourceTree = "<group>"; };
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
@@ -594,10 +598,12 @@
 		841B64CE2775ED520016FF3B /* InstantCommands */ = {
 			isa = PBXGroup;
 			children = (
+				841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */,
 				841B64CF2775EDFE0016FF3B /* InstantCommandsView.swift */,
 				841B64D32775F5540016FF3B /* GiphyCommandHandler.swift */,
 				841B64D7277B14430016FF3B /* MuteCommandHandler.swift */,
-				841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */,
+				8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */,
+				8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */,
 			);
 			path = InstantCommands;
 			sourceTree = "<group>";
@@ -1433,6 +1439,7 @@
 				84F2908A276B90610045472D /* GalleryView.swift in Sources */,
 				8465FDA02746A95700AF091E /* ChatChannelView.swift in Sources */,
 				84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */,
+				8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */,
 				8465FD802746A95700AF091E /* WebView.swift in Sources */,
 				8465FD942746A95700AF091E /* AddedFileAttachmentsView.swift in Sources */,
 				84F29090276CC1280045472D /* ShareButtonView.swift in Sources */,
@@ -1443,6 +1450,7 @@
 				8465FD992746A95700AF091E /* ReactionsBubbleView.swift in Sources */,
 				8465FDB02746A95700AF091E /* DateUtils.swift in Sources */,
 				84DEC8E12760D24100172876 /* MessageRepliesView.swift in Sources */,
+				8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */,
 				841B64CA2775BBC10016FF3B /* Errors.swift in Sources */,
 				8465FD7A2746A95700AF091E /* VideoPlayerView.swift in Sources */,
 				8465FD8B2746A95700AF091E /* FilePickerView.swift in Sources */,

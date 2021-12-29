@@ -43,8 +43,12 @@ public class DefaultCommandsConfig: CommandsConfig {
             channelController: channelController,
             commandSymbol: "/mute"
         )
+        let unmuteCommand = UnmuteCommandHandler(
+            channelController: channelController,
+            commandSymbol: "/unmute"
+        )
         let instantCommands = InstantCommandsHandler(
-            commands: [giphyCommand, muteCommand]
+            commands: [giphyCommand, muteCommand, unmuteCommand]
         )
         return CommandsHandler(commands: [mentionsCommand, instantCommands])
     }

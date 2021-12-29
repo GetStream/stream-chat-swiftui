@@ -6,8 +6,8 @@ import Combine
 import StreamChat
 import SwiftUI
 
-/// Handles the mute command.
-public class MuteCommandHandler: TwoStepMentionCommand {
+/// Handles the unmute command.
+public class UnmuteCommandHandler: TwoStepMentionCommand {
     
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
@@ -15,7 +15,7 @@ public class MuteCommandHandler: TwoStepMentionCommand {
     init(
         channelController: ChatChannelController,
         commandSymbol: String,
-        id: String = "/mute"
+        id: String = "/unmute"
     ) {
         super.init(
             channelController: channelController,
@@ -23,8 +23,8 @@ public class MuteCommandHandler: TwoStepMentionCommand {
             id: id
         )
         let displayInfo = CommandDisplayInfo(
-            displayName: "Mute",
-            icon: images.commandMute,
+            displayName: "Unmute",
+            icon: images.commandUnmute,
             format: "\(id) [@username]",
             isInstant: true
         )
@@ -38,7 +38,7 @@ public class MuteCommandHandler: TwoStepMentionCommand {
         if let mutedUser = selectedUser {
             chatClient
                 .userController(userId: mutedUser.id)
-                .mute { [weak self] error in
+                .unmute { [weak self] error in
                     self?.selectedUser = nil
                     completion(error)
                 }
