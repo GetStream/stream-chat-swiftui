@@ -19,6 +19,7 @@
 		842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383E327678A4D00888CFC /* QuotedMessageView.swift */; };
 		8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */; };
 		8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */; };
+		8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
 		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
@@ -313,6 +314,7 @@
 		842383E327678A4D00888CFC /* QuotedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView.swift; sourceTree = "<group>"; };
 		8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoStepMentionCommand.swift; sourceTree = "<group>"; };
 		8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnmuteCommandHandler.swift; sourceTree = "<group>"; };
+		8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingSuggester_Tests.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView_Tests.swift; sourceTree = "<group>"; };
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
@@ -606,6 +608,14 @@
 				8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */,
 			);
 			path = InstantCommands;
+			sourceTree = "<group>";
+		};
+		8423C340277CB5C70092DCF1 /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */,
+			);
+			path = Suggestions;
 			sourceTree = "<group>";
 		};
 		8465FBAB2746873A00AF091E = {
@@ -1111,6 +1121,7 @@
 		84C94D472758BDB2007FE2B9 /* ChatChannel */ = {
 			isa = PBXGroup;
 			children = (
+				8423C340277CB5C70092DCF1 /* Suggestions */,
 				84C94D482758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift */,
 				84C94D4C2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift */,
 				84C94D5027591DE2007FE2B9 /* ChatMessageIDs_Tests.swift */,
@@ -1558,6 +1569,7 @@
 				84C94CCE27578B92007FE2B9 /* ChatChannel_Mock.swift in Sources */,
 				84C94D3B27579BB0007FE2B9 /* AssertResult.swift in Sources */,
 				84C94CD027578B92007FE2B9 /* ChatMessage_Mock.swift in Sources */,
+				8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */,
 				84C94D0627578BF2007FE2B9 /* UnwrapAsync.swift in Sources */,
 				84C94D0427578BF2007FE2B9 /* TestError.swift in Sources */,
 				84C94D0A27578BF2007FE2B9 /* TestDataModel.xcdatamodeld in Sources */,

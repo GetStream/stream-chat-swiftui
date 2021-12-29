@@ -179,7 +179,7 @@ class ViewFactory_Tests: XCTestCase {
         )
         
         // Then
-        XCTAssert(view is GiphyAttachmentView)
+        XCTAssert(view is GiphyAttachmentView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeLinkAttachmentView() {
