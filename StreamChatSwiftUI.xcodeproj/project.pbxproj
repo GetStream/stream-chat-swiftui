@@ -23,6 +23,7 @@
 		8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C343277CC5020092DCF1 /* CommandsHandler_Tests.swift */; };
 		8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C345277D9BFF0092DCF1 /* TestCommandsConfig.swift */; };
 		8423C348277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C347277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift */; };
+		8423C34C277DDD250092DCF1 /* MuteCommandHandler_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C34B277DDD250092DCF1 /* MuteCommandHandler_Tests.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
 		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
@@ -321,6 +322,7 @@
 		8423C343277CC5020092DCF1 /* CommandsHandler_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsHandler_Tests.swift; sourceTree = "<group>"; };
 		8423C345277D9BFF0092DCF1 /* TestCommandsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCommandsConfig.swift; sourceTree = "<group>"; };
 		8423C347277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantCommandsHandler_Tests.swift; sourceTree = "<group>"; };
+		8423C34B277DDD250092DCF1 /* MuteCommandHandler_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteCommandHandler_Tests.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView_Tests.swift; sourceTree = "<group>"; };
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
@@ -622,6 +624,7 @@
 				8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */,
 				8423C343277CC5020092DCF1 /* CommandsHandler_Tests.swift */,
 				8423C347277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift */,
+				8423C34B277DDD250092DCF1 /* MuteCommandHandler_Tests.swift */,
 				8423C345277D9BFF0092DCF1 /* TestCommandsConfig.swift */,
 			);
 			path = Suggestions;
@@ -1543,6 +1546,7 @@
 				84C94D2227579359007FE2B9 /* AnyEndpoint.swift in Sources */,
 				84C94D5C275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift in Sources */,
 				84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */,
+				8423C34C277DDD250092DCF1 /* MuteCommandHandler_Tests.swift in Sources */,
 				84C94D24275794D3007FE2B9 /* InternetConnectionMock.swift in Sources */,
 				84C94CDD27578B92007FE2B9 /* MemberPayload.swift in Sources */,
 				84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */,
