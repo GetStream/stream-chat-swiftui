@@ -18,8 +18,8 @@ public enum AttachmentPickerType {
     case none
     /// Media (images, files, videos) is selected.
     case media
-    /// Giphy commands are selected.
-    case giphy
+    /// Instant commands are selected.
+    case instantCommands
     /// Custom attachment picker type.
     case custom
 }
@@ -43,7 +43,7 @@ public struct AttachmentPickerTypeView: View {
                 
                 PickerTypeButton(
                     pickerTypeState: $pickerTypeState,
-                    pickerType: .giphy,
+                    pickerType: .instantCommands,
                     selected: attachmentPickerType
                 )
             case .collapsed:

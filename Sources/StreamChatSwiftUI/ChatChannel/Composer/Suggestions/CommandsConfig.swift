@@ -11,8 +11,8 @@ public protocol CommandsConfig {
     /// The symbol that invokes mentions command.
     var mentionsSymbol: String { get }
     
-    /// The symbol that invokes giphy command.
-    var giphySymbol: String { get }
+    /// The symbol that invokes instant commands.
+    var instantCommandsSymbol: String { get }
     
     /// Creates the main commands handler.
     /// - Parameter channelController: the controller of the channel.
@@ -28,7 +28,7 @@ public class DefaultCommandsConfig: CommandsConfig {
     public init() {}
     
     public let mentionsSymbol: String = "@"
-    public let giphySymbol: String = "/"
+    public let instantCommandsSymbol: String = "/"
     
     public func makeCommandsHandler(
         with channelController: ChatChannelController

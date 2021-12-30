@@ -68,7 +68,7 @@ public class MessageComposerViewModel: ObservableObject {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
                 overlayShown = attachmentPickerType == .media
-                if attachmentPickerType == .giphy {
+                if attachmentPickerType == .instantCommands {
                     composerCommand = ComposerCommand(
                         id: "instantCommands",
                         typingSuggestion: TypingSuggestion.empty,

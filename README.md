@@ -2,7 +2,7 @@
   <img src="ReadmeAssets/iOS_Chat_Messaging.png"/>
 </p>
 
-## SwiftUI - Currently in Development 🏗
+## SwiftUI StreamChat SDK
 
 The SwiftUI SDK is built on top of the [StreamChat](https://getstream.io/chat/docs/ios-swift/?language=swift) framework and it's a SwiftUI alternative to the [StreamChatUI](https://getstream.io/chat/docs/sdk/ios/) SDK. It's built completely in SwiftUI, using declarative patterns, that will be familiar to developers working with SwiftUI. The SDK includes an extensive set of performant and customizable UI components which allow you to get started quickly with little to no plumbing required.
 

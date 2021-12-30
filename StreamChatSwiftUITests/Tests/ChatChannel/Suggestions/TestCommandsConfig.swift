@@ -16,7 +16,7 @@ public class TestCommandsConfig: CommandsConfig {
     }
     
     public let mentionsSymbol: String = "@"
-    public let giphySymbol: String = "/"
+    public let instantCommandsSymbol: String = "/"
     
     private let chatClient: ChatClient
     

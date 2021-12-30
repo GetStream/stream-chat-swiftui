@@ -366,7 +366,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         let viewModel = makeComposerViewModel()
         
         // When
-        viewModel.pickerTypeState = .expanded(.giphy)
+        viewModel.pickerTypeState = .expanded(.instantCommands)
         
         // Then
         XCTAssert(viewModel.composerCommand != nil)
@@ -406,7 +406,7 @@ class MessageComposerViewModel_Tests: XCTestCase {
         let viewModel = makeComposerViewModel()
         
         // When
-        viewModel.pickerTypeState = .expanded(.giphy)
+        viewModel.pickerTypeState = .expanded(.instantCommands)
         
         // Then
         XCTAssert(!viewModel.suggestions.isEmpty)
