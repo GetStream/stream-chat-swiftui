@@ -22,7 +22,7 @@ open class TwoStepMentionCommand: CommandHandler {
     public var displayInfo: CommandDisplayInfo?
     public let replacesMessageSending: Bool = true
                 
-    init(
+    public init(
         channelController: ChatChannelController,
         commandSymbol: String,
         id: String,

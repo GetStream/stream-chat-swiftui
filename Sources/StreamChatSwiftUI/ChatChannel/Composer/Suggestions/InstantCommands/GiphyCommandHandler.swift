@@ -17,7 +17,7 @@ public struct GiphyCommandHandler: CommandHandler {
     
     private let typingSuggester: TypingSuggester
             
-    init(
+    public init(
         commandSymbol: String,
         id: String = "/giphy"
     ) {

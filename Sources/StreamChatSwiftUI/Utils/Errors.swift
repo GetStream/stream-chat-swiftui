@@ -33,6 +33,12 @@ public struct StreamChatError: Error {
         description: nil,
         additionalInfo: nil
     )
+    
+    static let noSuggestionsAvailable = StreamChatError(
+        errorCode: StreamChatErrorCode.noSuggestions,
+        description: nil,
+        additionalInfo: nil
+    )
 }
 
 extension StreamChatError: Equatable {
@@ -56,4 +62,5 @@ public enum StreamChatErrorCode: Int {
     case unknown = 101_000
     case missingData = 101_001
     case wrongConfig = 101_002
+    case noSuggestions = 101_003
 }

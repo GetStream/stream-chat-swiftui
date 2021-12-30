@@ -18,8 +18,9 @@ public struct MentionsCommandHandler: CommandHandler {
     private let channelController: ChatChannelController
     private let userSearchController: ChatUserSearchController
         
-    init(
+    public init(
         channelController: ChatChannelController,
+        userSearchController: ChatUserSearchController? = nil,
         commandSymbol: String,
         mentionAllAppUsers: Bool,
         id: String = "mentions"
@@ -28,7 +29,11 @@ public struct MentionsCommandHandler: CommandHandler {
         self.channelController = channelController
         self.mentionAllAppUsers = mentionAllAppUsers
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        userSearchController = channelController.client.userSearchController()
+        if let userSearchController = userSearchController {
+            self.userSearchController = userSearchController
+        } else {
+            self.userSearchController = channelController.client.userSearchController()
+        }
     }
     
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {

@@ -12,7 +12,7 @@ public class MuteCommandHandler: TwoStepMentionCommand {
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
                         
-    init(
+    public init(
         channelController: ChatChannelController,
         commandSymbol: String,
         id: String = "/mute"

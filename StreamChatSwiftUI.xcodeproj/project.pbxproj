@@ -20,6 +20,9 @@
 		8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */; };
 		8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */; };
 		8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */; };
+		8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C343277CC5020092DCF1 /* CommandsHandler_Tests.swift */; };
+		8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C345277D9BFF0092DCF1 /* TestCommandsConfig.swift */; };
+		8423C348277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C347277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
 		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
@@ -315,6 +318,9 @@
 		8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoStepMentionCommand.swift; sourceTree = "<group>"; };
 		8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnmuteCommandHandler.swift; sourceTree = "<group>"; };
 		8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingSuggester_Tests.swift; sourceTree = "<group>"; };
+		8423C343277CC5020092DCF1 /* CommandsHandler_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsHandler_Tests.swift; sourceTree = "<group>"; };
+		8423C345277D9BFF0092DCF1 /* TestCommandsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCommandsConfig.swift; sourceTree = "<group>"; };
+		8423C347277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantCommandsHandler_Tests.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView_Tests.swift; sourceTree = "<group>"; };
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
@@ -614,6 +620,9 @@
 			isa = PBXGroup;
 			children = (
 				8423C341277CBA280092DCF1 /* TypingSuggester_Tests.swift */,
+				8423C343277CC5020092DCF1 /* CommandsHandler_Tests.swift */,
+				8423C347277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift */,
+				8423C345277D9BFF0092DCF1 /* TestCommandsConfig.swift */,
 			);
 			path = Suggestions;
 			sourceTree = "<group>";
@@ -1538,6 +1547,7 @@
 				84C94CDD27578B92007FE2B9 /* MemberPayload.swift in Sources */,
 				84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */,
 				84AB7B21277203EF00631A10 /* GalleryView_Tests.swift in Sources */,
+				8423C348277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift in Sources */,
 				84C94CD927578B92007FE2B9 /* ChatChannelMember_Mock.swift in Sources */,
 				842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */,
 				84DEC8DF2760A1D100172876 /* MessageView_Tests.swift in Sources */,
@@ -1548,6 +1558,7 @@
 				84C94CE227578B92007FE2B9 /* UserPayload.swift in Sources */,
 				84C94D3D27579BB0007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */,
 				84C94CD327578B92007FE2B9 /* ChatMessageFileAttachment_Mock.swift in Sources */,
+				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84C94CE827578B92007FE2B9 /* ChatMessageController_Mock.swift in Sources */,
 				84C94CD127578B92007FE2B9 /* CurrentChatUser_Mock.swift in Sources */,
 				84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */,
@@ -1556,6 +1567,7 @@
 				84C94CDF27578B92007FE2B9 /* MessagePayload.swift in Sources */,
 				84C94CD527578B92007FE2B9 /* ChatMessageImageAttachment_Mock.swift in Sources */,
 				84C94C8027567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift in Sources */,
+				8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */,
 				84C94CE727578B92007FE2B9 /* ChatChannelListController_Mock.swift in Sources */,
 				84C94D1027578BF2007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */,
 				84C94CE627578B92007FE2B9 /* CurrentChatUserController_Mock.swift in Sources */,
