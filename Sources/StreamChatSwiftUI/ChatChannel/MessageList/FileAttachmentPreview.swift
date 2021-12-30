@@ -9,6 +9,7 @@ public struct FileAttachmentPreview: View {
     @Environment(\.presentationMode) var presentationMode
     
     @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
     
     var url: URL
     
@@ -48,7 +49,7 @@ public struct FileAttachmentPreview: View {
                     Button {
                         presentationMode.wrappedValue.dismiss()
                     } label: {
-                        Image(systemName: "xmark")
+                        Image(uiImage: images.close)
                     }
                 }
             }

@@ -58,7 +58,9 @@ public struct VideoAttachmentsList: View {
 }
 
 public struct VideoAttachmentView: View {
+    
     @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
     
     private var videoPreviewLoader: VideoPreviewLoader {
         utils.videoPreviewLoader
@@ -86,7 +88,7 @@ public struct VideoAttachmentView: View {
                 Button {
                     fullScreenShown = true
                 } label: {
-                    Image(systemName: "play.fill")
+                    Image(uiImage: images.playFilled)
                         .font(.system(size: 30))
                         .foregroundColor(.white)
                         .padding(.all, 32)

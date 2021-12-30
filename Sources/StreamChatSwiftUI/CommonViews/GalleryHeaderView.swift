@@ -10,6 +10,7 @@ struct GalleryHeaderView: View {
     
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
     
     var title: String
     var subtitle: String
@@ -22,7 +23,7 @@ struct GalleryHeaderView: View {
                 Button {
                     isShown = false
                 } label: {
-                    Image(systemName: "xmark")
+                    Image(uiImage: images.close)
                 }
                 .padding()
                 .foregroundColor(Color(colors.text))

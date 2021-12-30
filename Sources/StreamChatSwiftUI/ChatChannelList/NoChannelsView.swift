@@ -8,15 +8,17 @@ import SwiftUI
 ///
 /// Different view can be injected in its place.
 public struct NoChannelsView: View {
+    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
     
     public var body: some View {
         VStack(spacing: 8) {
             Spacer()
             
             VStack(spacing: 8) {
-                Image(systemName: "message")
+                Image(uiImage: images.message)
                     .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
                     .aspectRatio(contentMode: .fit)
                     .font(.system(size: 100))

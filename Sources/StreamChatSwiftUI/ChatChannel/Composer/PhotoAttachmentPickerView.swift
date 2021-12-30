@@ -91,7 +91,7 @@ public struct PhotoAttachmentCell: View {
             ZStack {
                 if imageSelected(asset.localIdentifier) {
                     TopRightView {
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(uiImage: images.checkmarkFilled)
                             .renderingMode(.template)
                             .applyDefaultIconOverlayStyle()
                     }

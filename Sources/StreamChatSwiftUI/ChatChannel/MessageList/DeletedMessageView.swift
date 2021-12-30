@@ -7,6 +7,7 @@ import SwiftUI
 
 /// View displayed when a message is deleted.
 public struct DeletedMessageView: View {
+    @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
@@ -30,7 +31,7 @@ public struct DeletedMessageView: View {
                 .messageBubble(for: message, isFirst: isFirst)
             HStack {
                 Spacer()
-                Image(systemName: "eye")
+                Image(uiImage: images.eye)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 12)

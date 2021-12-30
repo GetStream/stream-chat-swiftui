@@ -10,6 +10,7 @@ struct GalleryView: View {
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
     
     var message: ChatMessage
     @Binding var isShown: Bool
@@ -76,7 +77,7 @@ struct GalleryView: View {
                     Button {
                         gridShown = true
                     } label: {
-                        Image(systemName: "square.grid.3x3.fill")
+                        Image(uiImage: images.gallery)
                     }
                     .standardPadding()
                 }

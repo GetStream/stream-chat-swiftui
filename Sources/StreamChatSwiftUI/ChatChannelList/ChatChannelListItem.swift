@@ -7,9 +7,11 @@ import SwiftUI
 
 /// View for the channel list item.
 public struct ChatChannelListItem: View {
+    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
         
     var channel: ChatChannel
     var channelName: String
@@ -84,7 +86,7 @@ public struct ChatChannelListItem: View {
     
     private var image: UIImage? {
         if channel.isMuted {
-            return UIImage(systemName: "speaker.slash")
+            return images.muted
         }
         return nil
     }

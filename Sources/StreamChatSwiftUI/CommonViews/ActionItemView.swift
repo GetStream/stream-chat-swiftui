@@ -54,6 +54,6 @@ public struct ActionItemView: View {
         }
         
         // Default image.
-        return UIImage(systemName: "photo")!
+        return images.photoDefault
     }
 }

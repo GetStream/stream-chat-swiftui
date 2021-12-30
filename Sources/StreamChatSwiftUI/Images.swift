@@ -31,6 +31,7 @@ public class Images {
 
     public var loadingIndicator: UIImage = loadImageSafely(with: "loading_indicator")
     public var close: UIImage = UIImage(systemName: "xmark")!
+    public var closeFilled: UIImage = UIImage(systemName: "xmark.circle.fill")!
 
     public var closeCircleTransparent: UIImage = loadImageSafely(with: "close_circle_transparent")
     public var discardAttachment: UIImage = loadImageSafely(with: "close_circle_filled")
@@ -53,6 +54,13 @@ public class Images {
     public var folder: UIImage = loadImageSafely(with: "folder")
     public var restart: UIImage = loadImageSafely(with: "restart")
     public var download: UIImage = UIImage(systemName: "icloud.and.arrow.down")!
+    public var muted: UIImage = UIImage(systemName: "speaker.slash")!
+    public var message: UIImage = UIImage(systemName: "message")!
+    public var snapshot: UIImage = UIImage(systemName: "photo")!
+    public var eye: UIImage = UIImage(systemName: "eye")!
+    public var videoIndicator: UIImage = UIImage(systemName: "video.fill")!
+    public var gallery: UIImage = UIImage(systemName: "square.grid.3x3.fill")!
+    public var photoDefault: UIImage = UIImage(systemName: "photo")!
 
     // MARK: - Reactions
 
@@ -194,6 +202,7 @@ public class Images {
     }
     
     public var imagePlaceholder: UIImage = UIImage(systemName: "photo")!
+    public var personPlaceholder: UIImage = UIImage(systemName: "person.circle")!
 
     // MARK: - FileAttachmentIcons
 
@@ -213,7 +222,10 @@ public class Images {
     public var bigPlay: UIImage = loadImageSafely(with: "play_big")
     
     public var play: UIImage = loadImageSafely(with: "play")
+    public var playFilled: UIImage = UIImage(systemName: "play.fill")!
     public var pause: UIImage = loadImageSafely(with: "pause")
+    
+    public var checkmarkFilled: UIImage = UIImage(systemName: "checkmark.circle.fill")!
 
     // MARK: - CommandIcons
 

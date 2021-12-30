@@ -7,6 +7,8 @@ import SwiftUI
 /// View for the discard button.
 struct DiscardButtonView: View {
     
+    @Injected(\.images) private var images
+    
     var color = Color.black.opacity(0.8)
     
     var body: some View {
@@ -15,7 +17,7 @@ struct DiscardButtonView: View {
                 .fill(Color.white)
                 .frame(width: 16, height: 16)
             
-            Image(systemName: "xmark.circle.fill")
+            Image(uiImage: images.closeFilled)
                 .foregroundColor(color)
         }
         .padding(.all, 4)
