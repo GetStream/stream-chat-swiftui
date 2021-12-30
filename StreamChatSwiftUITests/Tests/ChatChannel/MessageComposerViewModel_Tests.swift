@@ -349,6 +349,69 @@ class MessageComposerViewModel_Tests: XCTestCase {
         XCTAssert(isDMChannel == true)
     }
     
+    func test_messageComposerVM_settingComposerCommand() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        viewModel.text = "/giphy"
+        
+        // Then
+        XCTAssert(viewModel.composerCommand != nil)
+        XCTAssert(viewModel.composerCommand?.id == "/giphy")
+    }
+    
+    func test_messageComposerVM_instantCommandsShown() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        viewModel.pickerTypeState = .expanded(.giphy)
+        
+        // Then
+        XCTAssert(viewModel.composerCommand != nil)
+        XCTAssert(viewModel.composerCommand?.id == "instantCommands")
+    }
+    
+    func test_messageComposerVM_giphySendButtonEnabled() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let command = ComposerCommand(
+            id: "/giphy",
+            typingSuggestion: TypingSuggestion(
+                text: "/giphy",
+                locationRange: NSRange(location: 1, length: 5)
+            ),
+            displayInfo: CommandDisplayInfo(
+                displayName: "Giphy",
+                icon: UIImage(systemName: "xmark")!,
+                format: "/giphy [text]",
+                isInstant: true
+            )
+        )
+        
+        // When
+        viewModel.composerCommand = command
+        let initialSendButtonState = viewModel.sendButtonEnabled
+        viewModel.text = "hey"
+        let finalSendButtonState = viewModel.sendButtonEnabled
+        
+        // Then
+        XCTAssert(initialSendButtonState == false)
+        XCTAssert(finalSendButtonState == true)
+    }
+    
+    func test_messageComposerVM_suggestionsShown() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        viewModel.pickerTypeState = .expanded(.giphy)
+        
+        // Then
+        XCTAssert(!viewModel.suggestions.isEmpty)
+    }
+    
     // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {
