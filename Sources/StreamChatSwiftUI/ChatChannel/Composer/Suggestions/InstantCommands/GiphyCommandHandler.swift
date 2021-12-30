@@ -69,6 +69,6 @@ public struct GiphyCommandHandler: CommandHandler {
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
-        StreamChatError.unknown.asFailedPromise()
+        StreamChatError.noSuggestionsAvailable.asFailedPromise()
     }
 }

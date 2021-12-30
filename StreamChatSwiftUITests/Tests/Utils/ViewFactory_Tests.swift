@@ -476,6 +476,17 @@ class ViewFactory_Tests: XCTestCase {
         // Then
         XCTAssert(view is EditMessageHeaderView)
     }
+    
+    func test_viewFactory_() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeCommandsContainerView(suggestions: [:]) { _ in }
+        
+        // Then
+        XCTAssert(view is CommandsContainerView)
+    }
 }
 
 extension ChannelAction: Equatable {
