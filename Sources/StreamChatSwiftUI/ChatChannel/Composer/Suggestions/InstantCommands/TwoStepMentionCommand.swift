@@ -72,7 +72,7 @@ open class TwoStepMentionCommand: CommandHandler {
         
         selectedUser = chatUser
 
-        let mentionText = self.mentionText(for: chatUser)
+        let mentionText = "\(mentionSymbol)\(chatUser.mentionText)"
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
             with: mentionText
@@ -98,7 +98,7 @@ open class TwoStepMentionCommand: CommandHandler {
     
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if let selectedUser = selectedUser,
-           command.typingSuggestion.text != mentionText(for: selectedUser) {
+           command.typingSuggestion.text != "\(mentionSymbol)\(selectedUser.mentionText)" {
             self.selectedUser = nil
         }
         return command.id == id ? self : nil

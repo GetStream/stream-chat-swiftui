@@ -62,7 +62,7 @@ public struct MentionsCommandHandler: CommandHandler {
             return
         }
         
-        let mentionText = self.mentionText(for: chatUser)
+        let mentionText = chatUser.mentionText
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
             with: mentionText
@@ -149,15 +149,7 @@ public struct MentionsCommandHandler: CommandHandler {
             sort: [.init(key: .name, isAscending: true)]
         )
     }
-        
-    private func mentionText(for user: ChatUser) -> String {
-        if let name = user.name, !name.isEmpty {
-            return name
-        } else {
-            return user.id
-        }
-    }
-
+    
     private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
         Future { promise in
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)

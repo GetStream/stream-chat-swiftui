@@ -378,14 +378,6 @@ public class MessageComposerViewModel: ObservableObject {
     
     // MARK: - private
     
-    private func mentionText(for user: ChatUser) -> String {
-        if let name = user.name, !name.isEmpty {
-            return name
-        } else {
-            return user.id
-        }
-    }
-    
     private func edit(
         message: ChatMessage,
         completion: @escaping () -> Void

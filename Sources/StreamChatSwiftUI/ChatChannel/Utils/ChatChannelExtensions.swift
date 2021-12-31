@@ -31,3 +31,14 @@ extension ChatChannel {
         DateUtils.timeAgo
     }
 }
+
+extension ChatUser {
+    
+    var mentionText: String {
+        if let name = self.name, !name.isEmpty {
+            return name
+        } else {
+            return id
+        }
+    }
+}
