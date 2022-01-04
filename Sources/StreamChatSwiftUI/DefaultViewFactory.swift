@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -58,20 +58,22 @@ extension ViewFactory {
     }
     
     public func makeChannelListItem(
-        currentChannelId: Binding<String?>,
         channel: ChatChannel,
         channelName: String,
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool,
         selectedChannel: Binding<ChatChannel?>,
+        swipedChannelId: Binding<String?>,
         channelDestination: @escaping (ChatChannel) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void,
-        onDelete: @escaping (ChatChannel) -> Void,
-        onMoreTapped: @escaping (ChatChannel) -> Void
-    ) -> ChatChannelSwipeableListItem<ChannelDestination> {
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
+    ) -> ChatChannelSwipeableListItem<Self> {
         ChatChannelSwipeableListItem(
-            currentChannelId: currentChannelId,
+            factory: self,
+            currentChannelId: swipedChannelId,
             channel: channel,
             channelName: channelName,
             avatar: avatar,
@@ -80,9 +82,35 @@ extension ViewFactory {
             selectedChannel: selectedChannel,
             channelDestination: channelDestination,
             onItemTap: onItemTap,
-            onDelete: onDelete,
-            onMoreTapped: onMoreTapped
+            trailingRightButtonTapped: trailingSwipeRightButtonTapped,
+            trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
+            leadingSwipeButtonTapped: leadingSwipeButtonTapped
         )
+    }
+    
+    public func makeTrailingSwipeActionsView(
+        channel: ChatChannel,
+        offsetX: CGFloat,
+        buttonWidth: CGFloat,
+        leftButtonTapped: @escaping (ChatChannel) -> Void,
+        rightButtonTapped: @escaping (ChatChannel) -> Void
+    ) -> some View {
+        TrailingSwipeActionsView(
+            channel: channel,
+            offsetX: offsetX,
+            buttonWidth: buttonWidth,
+            leftButtonTapped: leftButtonTapped,
+            rightButtonTapped: rightButtonTapped
+        )
+    }
+    
+    public func makeLeadingSwipeActionsView(
+        channel: ChatChannel,
+        offsetX: CGFloat,
+        buttonWidth: CGFloat,
+        buttonTapped: (ChatChannel) -> Void
+    ) -> some View {
+        EmptyView()
     }
     
     // MARK: messages

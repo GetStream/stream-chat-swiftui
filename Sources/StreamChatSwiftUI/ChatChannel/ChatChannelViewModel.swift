@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `ChatChannelView`.
-public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
+open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
@@ -42,15 +42,15 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Atomic private var loadingPreviousMessages: Bool = false
     @Atomic private var lastMessageRead: String?
     
-    var channelController: ChatChannelController
-    var messageController: ChatMessageController?
+    public var channelController: ChatChannelController
+    public var messageController: ChatMessageController?
     
-    @Published var scrolledId: String?
-    @Published var listId = UUID().uuidString
+    @Published public var scrolledId: String?
+    @Published public var listId = UUID().uuidString
 
-    @Published var showScrollToLatestButton = false
-    @Published var currentDateString: String?
-    @Published var messages = LazyCachedMapCollection<ChatMessage>() {
+    @Published public var showScrollToLatestButton = false
+    @Published public var currentDateString: String?
+    @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
             var temp = [String: [String]]()
             for (index, message) in messages.enumerated() {
@@ -76,8 +76,8 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    @Published var messagesGroupingInfo = [String: [String]]()
-    @Published var currentSnapshot: UIImage? {
+    @Published public var messagesGroupingInfo = [String: [String]]()
+    @Published public var currentSnapshot: UIImage? {
         didSet {
             withAnimation {
                 reactionsShown = currentSnapshot != nil
@@ -85,15 +85,15 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    @Published var reactionsShown = false
-    @Published var quotedMessage: ChatMessage?
-    @Published var editedMessage: ChatMessage?
+    @Published public var reactionsShown = false
+    @Published public var quotedMessage: ChatMessage?
+    @Published public var editedMessage: ChatMessage?
     
-    var channel: ChatChannel {
+    public var channel: ChatChannel {
         channelController.channel!
     }
     
-    var isMessageThread: Bool {
+    public var isMessageThread: Bool {
         messageController != nil
     }
             
@@ -129,13 +129,13 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         Nuke.ImageCache.shared.removeAll()
     }
     
-    func scrollToLastMessage() {
+    public func scrollToLastMessage() {
         if scrolledId != messages.first?.messageId {
             scrolledId = messages.first?.messageId
         }
     }
     
-    func handleMessageAppear(index: Int) {
+    public func handleMessageAppear(index: Int) {
         let message = messages[index]
         checkForNewMessages(index: index)
         save(lastDate: message.createdAt)
@@ -179,7 +179,7 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelController.messages
     }
 
-    func showReactionOverlay() {
+    public func showReactionOverlay() {
         guard let view: UIView = topVC()?.view else {
             currentSnapshot = UIImage(systemName: "photo")
             return
@@ -190,20 +190,20 @@ public class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         UIGraphicsEndImageContext()
     }
     
-    func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
+    public func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
         utils.messageActionsResolver.resolveMessageAction(
             info: messageActionInfo,
             viewModel: self
         )
     }
     
-    func onViewAppear() {
+    public func onViewAppear() {
         reactionsShown = false
         isActive = true
         messages = channelDataSource.messages
     }
     
-    func onViewDissappear() {
+    public func onViewDissappear() {
         isActive = false
     }
     

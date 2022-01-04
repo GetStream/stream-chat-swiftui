@@ -1,16 +1,16 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
 import StreamChat
 import SwiftUI
 
-public class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
+open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Injected(\.chatClient) private var chatClient
     
-    @Published var message: ChatMessage
-    @Published var errorShown = false
+    @Published public var message: ChatMessage
+    @Published public var errorShown = false
     
     private var messageController: ChatMessageController?
     
@@ -19,7 +19,7 @@ public class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerD
         makeMessageController()
     }
     
-    func reactionTapped(_ reaction: MessageReactionType) {
+    public func reactionTapped(_ reaction: MessageReactionType) {
         if userReactionIDs.contains(reaction) {
             // reaction should be removed
             messageController?.deleteReaction(reaction)

@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -30,18 +30,33 @@ public protocol ViewFactory: AnyObject {
     func makeLoadingView() -> LoadingContent
     
     associatedtype ChannelListItemType: View
+    /// Creates the channel list item.
+    /// - Parameters:
+    ///  - channel: the channel being displayed.
+    ///  - channelName: the display name of the channel.
+    ///  - avatar: the avatar of the channel.
+    ///  - onlineIndicatorShown: whether the online indicator is shown on the avatar.
+    ///  - disabled: whether the user interactions with the channel are disabled.
+    ///  - selectedChannel: binding of the currently selected channel.
+    ///  - swipedChannelId: optional id of the swiped channel id.
+    ///  - channelDestination: closure that creates the channel destination.
+    ///  - onItemTap: called when an item is tapped.
+    ///  - trailingSwipeRightButtonTapped: called when the right button of the trailing swiped area is tapped.
+    ///  - trailingSwipeLeftButtonTapped: called when the left button of the trailing swiped area is tapped.
+    ///  - leadingSwipeButtonTapped: called when the button of the leading swiped area is tapped.
     func makeChannelListItem(
-        currentChannelId: Binding<String?>,
         channel: ChatChannel,
         channelName: String,
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool,
         selectedChannel: Binding<ChatChannel?>,
+        swipedChannelId: Binding<String?>,
         channelDestination: @escaping (ChatChannel) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void,
-        onDelete: @escaping (ChatChannel) -> Void,
-        onMoreTapped: @escaping (ChatChannel) -> Void
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> ChannelListItemType
     
     associatedtype MoreActionsView: View
@@ -67,6 +82,38 @@ public protocol ViewFactory: AnyObject {
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> [ChannelAction]
+    
+    associatedtype TrailingSwipeActionsViewType: View
+    /// Creates the trailing swipe actions view in the channel list.
+    /// - Parameters:
+    ///  - channel: the channel being swiped.
+    ///  - offsetX: the offset of the swipe area in the x-axis.
+    ///  - buttonWidth: the width of the button (use if you want dynamic width, based on swiping position).
+    ///  - leftButtonTapped: handler when the left button is tapped.
+    ///  - rightButtonTapped: handler when the right button is tapped.
+    /// - Returns: View displayed in the trailing swipe area of a channel item.
+    func makeTrailingSwipeActionsView(
+        channel: ChatChannel,
+        offsetX: CGFloat,
+        buttonWidth: CGFloat,
+        leftButtonTapped: @escaping (ChatChannel) -> Void,
+        rightButtonTapped: @escaping (ChatChannel) -> Void
+    ) -> TrailingSwipeActionsViewType
+    
+    associatedtype LeadingSwipeActionsViewType: View
+    /// Creates the leading swipe actions view in the channel list.
+    /// - Parameters:
+    ///  - channel: the channel being swiped.
+    ///  - offsetX: the offset of the swipe area in the x-axis.
+    ///  - buttonWidth: the width of the button (use if you want dynamic width, based on swiping position).
+    ///  - buttonTapped: handler when the button is tapped.
+    /// - Returns: View displayed in the leading swipe area of a channel item.
+    func makeLeadingSwipeActionsView(
+        channel: ChatChannel,
+        offsetX: CGFloat,
+        buttonWidth: CGFloat,
+        buttonTapped: @escaping (ChatChannel) -> Void
+    ) -> LeadingSwipeActionsViewType
     
     // MARK: - messages
     
