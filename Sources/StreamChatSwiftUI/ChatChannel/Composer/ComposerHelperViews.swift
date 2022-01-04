@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -14,7 +14,10 @@ struct VideoIndicatorView: View {
         BottomLeftView {
             Image(uiImage: images.videoIndicator)
                 .renderingMode(.template)
-                .font(.system(size: 17, weight: .bold))
+                .resizable()
+                .scaledToFit()
+                .frame(width: 22)
+                .padding(2)
                 .applyDefaultIconOverlayStyle()
         }
     }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -19,9 +19,12 @@ public struct NoChannelsView: View {
             
             VStack(spacing: 8) {
                 Image(uiImage: images.message)
+                    .renderingMode(.template)
+                    .resizable()
                     .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
                     .aspectRatio(contentMode: .fit)
-                    .font(.system(size: 100))
+                    .scaledToFit()
+                    .frame(width: 120)
                     .foregroundColor(Color(colors.textLowEmphasis))
                 Text(L10n.Channel.NoContent.title)
                     .font(fonts.bodyBold)

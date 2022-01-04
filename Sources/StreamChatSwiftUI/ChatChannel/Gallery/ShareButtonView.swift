@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -18,7 +18,10 @@ struct ShareButtonView: View {
             self.isSharePresented = true
         }, label: {
             Image(uiImage: images.share)
-                .font(fonts.bodyBold)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 22)
         })
             .foregroundColor(Color(colors.text))
             .sheet(isPresented: $isSharePresented) {

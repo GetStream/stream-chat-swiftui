@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -73,11 +73,14 @@ struct GalleryView: View {
                         .font(fonts.bodyBold)
 
                     Spacer()
-
+                    
                     Button {
                         gridShown = true
                     } label: {
                         Image(uiImage: images.gallery)
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 16, height: 16, alignment: .center)
                     }
                     .standardPadding()
                 }

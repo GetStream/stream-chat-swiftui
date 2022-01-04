@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -29,14 +29,18 @@ public struct DeletedMessageView: View {
                 .standardPadding()
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .messageBubble(for: message, isFirst: isFirst)
+            
             HStack {
                 Spacer()
+                
                 Image(uiImage: images.eye)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 12)
+            
                 Text(L10n.Message.onlyVisibleToYou)
                     .font(fonts.footnote)
+                
                 Text(dateFormatter.string(from: message.createdAt))
                     .font(fonts.footnote)
             }

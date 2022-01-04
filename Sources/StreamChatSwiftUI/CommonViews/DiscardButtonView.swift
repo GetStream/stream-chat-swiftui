@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -18,6 +18,7 @@ struct DiscardButtonView: View {
                 .frame(width: 16, height: 16)
             
             Image(uiImage: images.closeFilled)
+                .renderingMode(.template)
                 .foregroundColor(color)
         }
         .padding(.all, 4)

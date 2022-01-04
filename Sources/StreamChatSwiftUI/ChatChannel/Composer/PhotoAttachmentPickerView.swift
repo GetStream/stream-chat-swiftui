@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -93,6 +93,7 @@ public struct PhotoAttachmentCell: View {
                     TopRightView {
                         Image(uiImage: images.checkmarkFilled)
                             .renderingMode(.template)
+                            .scaledToFit()
                             .applyDefaultIconOverlayStyle()
                     }
                 }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import AVKit
@@ -10,7 +10,7 @@ public struct VideoAttachmentsContainer: View {
     let message: ChatMessage
     let width: CGFloat
     @Binding var scrolledId: String?
-        
+    
     public var body: some View {
         VStack {
             if let quotedMessage = message.quotedMessage {
@@ -75,7 +75,7 @@ public struct VideoAttachmentView: View {
     @State var previewImage: UIImage?
     @State var error: Error?
     @State var fullScreenShown = false
-                
+    
     public var body: some View {
         ZStack {
             if let previewImage = previewImage {
@@ -89,9 +89,11 @@ public struct VideoAttachmentView: View {
                     fullScreenShown = true
                 } label: {
                     Image(uiImage: images.playFilled)
-                        .font(.system(size: 30))
+                        .renderingMode(.template)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24)
                         .foregroundColor(.white)
-                        .padding(.all, 32)
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
