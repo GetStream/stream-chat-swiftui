@@ -13,7 +13,7 @@ struct VideoIndicatorView: View {
     var body: some View {
         BottomLeftView {
             Image(uiImage: images.videoIndicator)
-                .makeCustomizable()
+                .customizable()
                 .frame(width: 22)
                 .padding(2)
                 .applyDefaultIconOverlayStyle()

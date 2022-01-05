@@ -89,7 +89,7 @@ public struct VideoAttachmentView: View {
                     fullScreenShown = true
                 } label: {
                     Image(uiImage: images.playFilled)
-                        .makeCustomizable()
+                        .customizable()
                         .frame(width: 24)
                         .foregroundColor(.white)
                         .padding(.all, 32)
