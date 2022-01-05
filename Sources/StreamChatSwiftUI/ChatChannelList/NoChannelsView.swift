@@ -11,20 +11,16 @@ public struct NoChannelsView: View {
     
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
     
     public var body: some View {
         VStack(spacing: 8) {
             Spacer()
             
             VStack(spacing: 8) {
-                Image(uiImage: images.message)
-                    .renderingMode(.template)
-                    .resizable()
+                Image(systemName: "message")
                     .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
                     .aspectRatio(contentMode: .fit)
-                    .scaledToFit()
-                    .frame(width: 120)
+                    .font(.system(size: 100))
                     .foregroundColor(Color(colors.textLowEmphasis))
                 Text(L10n.Channel.NoContent.title)
                     .font(fonts.bodyBold)

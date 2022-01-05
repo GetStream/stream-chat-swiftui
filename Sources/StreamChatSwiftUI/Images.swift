@@ -55,7 +55,6 @@ public class Images {
     public var restart: UIImage = loadImageSafely(with: "restart")
     public var download: UIImage = UIImage(systemName: "icloud.and.arrow.down")!
     public var muted: UIImage = UIImage(systemName: "speaker.slash")!
-    public var message: UIImage = UIImage(systemName: "message")!
     public var snapshot: UIImage = UIImage(systemName: "photo")!
     public var eye: UIImage = UIImage(systemName: "eye")!
     public var videoIndicator: UIImage = UIImage(systemName: "video.fill")!
