@@ -89,9 +89,7 @@ public struct VideoAttachmentView: View {
                     fullScreenShown = true
                 } label: {
                     Image(uiImage: images.playFilled)
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
+                        .makeCustomizable()
                         .frame(width: 24)
                         .foregroundColor(.white)
                 }

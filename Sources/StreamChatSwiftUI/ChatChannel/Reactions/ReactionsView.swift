@@ -69,9 +69,7 @@ struct ReactionsView: View {
                         onReactionTap(reaction)
                     } label: {
                         Image(uiImage: image)
-                            .resizable()
-                            .renderingMode(.template)
-                            .aspectRatio(contentMode: .fit)
+                            .makeCustomizable()
                             .foregroundColor(color(for: reaction))
                             .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
                     }

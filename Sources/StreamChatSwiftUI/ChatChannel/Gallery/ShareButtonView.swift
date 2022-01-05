@@ -18,9 +18,7 @@ struct ShareButtonView: View {
             self.isSharePresented = true
         }, label: {
             Image(uiImage: images.share)
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
+                .makeCustomizable()
                 .frame(width: 18, height: 22)
         })
             .foregroundColor(Color(colors.text))

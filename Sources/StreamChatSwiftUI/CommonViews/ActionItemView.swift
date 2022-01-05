@@ -18,9 +18,7 @@ public struct ActionItemView: View {
     public var body: some View {
         HStack(spacing: 16) {
             Image(uiImage: image)
-                .resizable()
-                .renderingMode(.template)
-                .aspectRatio(contentMode: .fit)
+                .makeCustomizable()
                 .frame(maxHeight: 20)
                 .foregroundColor(
                     isDestructive ? Color(colors.alert) : Color(colors.textLowEmphasis)

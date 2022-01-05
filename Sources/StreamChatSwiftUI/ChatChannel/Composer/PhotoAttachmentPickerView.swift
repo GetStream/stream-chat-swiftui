@@ -79,9 +79,7 @@ public struct PhotoAttachmentCell: View {
                     .aspectRatio(1, contentMode: .fill)
                 
                 Image(uiImage: images.imagePlaceholder)
-                    .renderingMode(.template)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .makeCustomizable()
                     .frame(height: 56)
                     .foregroundColor(Color(colors.background2))
             }

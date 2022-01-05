@@ -79,3 +79,11 @@ extension View {
         modifier(IconOverImageModifier())
     }
 }
+
+extension Image {
+    func makeCustomizable() -> some View {
+        renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+    }
+}

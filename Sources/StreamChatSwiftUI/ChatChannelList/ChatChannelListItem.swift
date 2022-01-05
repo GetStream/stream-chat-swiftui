@@ -39,9 +39,7 @@ public struct ChatChannelListItem: View {
                         if let image = image {
                             HStack(spacing: 4) {
                                 Image(uiImage: image)
-                                    .resizable()
-                                    .renderingMode(.template)
-                                    .aspectRatio(contentMode: .fit)
+                                    .makeCustomizable()
                                     .frame(maxHeight: 12)
                                     .foregroundColor(Color(colors.subtitleText))
                                 SubtitleText(text: subtitleText)

@@ -34,8 +34,7 @@ public struct DeletedMessageView: View {
                 Spacer()
                 
                 Image(uiImage: images.eye)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .makeCustomizable()
                     .frame(maxWidth: 12)
             
                 Text(L10n.Message.onlyVisibleToYou)
