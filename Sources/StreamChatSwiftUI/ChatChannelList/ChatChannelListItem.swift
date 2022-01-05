@@ -75,6 +75,8 @@ public struct ChatChannelListItem: View {
     private var subtitleText: String {
         if channel.isMuted {
             return L10n.Channel.Item.muted
+        } else if !channel.currentlyTypingUsers.isEmpty {
+            return typingIndicatorString(for: Array(channel.currentlyTypingUsers))
         } else if let latestMessage = channel.latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {
@@ -94,6 +96,15 @@ public struct ChatChannelListItem: View {
             return utils.dateFormatter.string(from: lastMessageAt)
         } else {
             return ""
+        }
+    }
+    
+    private func typingIndicatorString(for typingUsers: [ChatUser]) -> String {
+        if let user = typingUsers.first(where: { user in user.name != nil }), let name = user.name {
+            return L10n.MessageList.TypingIndicator.users(name, typingUsers.count - 1)
+        } else {
+            // If we somehow cannot fetch any user name, we simply show that `Someone is typing`
+            return L10n.MessageList.TypingIndicator.typingUnknown
         }
     }
 }
