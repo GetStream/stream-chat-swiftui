@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Chat channel cell that is swipeable.
-public struct ChatChannelSwipeableListItem<Factory: ViewFactory>: View {
+public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem: View>: View {
     @Injected(\.colors) private var colors
     
     @State private var offsetX: CGFloat = 0
@@ -33,46 +33,28 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory>: View {
     private let addWidthMargin: CGFloat = 5
     
     private var factory: Factory
+    private var channelListItem: ChannelListItem
     private var channel: ChatChannel
-    private var channelName: String
-    private var avatar: UIImage
-    private var onlineIndicatorShown: Bool
-    @Binding private var selectedChannel: ChatChannel?
-    private var channelDestination: (ChatChannel) -> Factory.ChannelDestination
-    private var disabled = false
-    private var onItemTap: (ChatChannel) -> Void
     private var trailingRightButtonTapped: (ChatChannel) -> Void
     private var trailingLeftButtonTapped: (ChatChannel) -> Void
     private var leadingButtonTapped: (ChatChannel) -> Void
     
     internal init(
         factory: Factory,
+        channelListItem: ChannelListItem,
         currentChannelId: Binding<String?>,
         channel: ChatChannel,
-        channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
-        disabled: Bool = false,
-        selectedChannel: Binding<ChatChannel?>,
-        channelDestination: @escaping (ChatChannel) -> Factory.ChannelDestination,
-        onItemTap: @escaping (ChatChannel) -> Void,
         trailingRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) {
         self.factory = factory
+        self.channelListItem = channelListItem
         self.channel = channel
-        self.channelName = channelName
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
-        self.channelDestination = channelDestination
-        self.disabled = disabled
-        self.onItemTap = onItemTap
         self.trailingRightButtonTapped = trailingRightButtonTapped
         self.trailingLeftButtonTapped = trailingLeftButtonTapped
         leadingButtonTapped = leadingSwipeButtonTapped
         _currentChannelId = currentChannelId
-        _selectedChannel = selectedChannel
     }
     
     public var body: some View {
@@ -83,36 +65,27 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory>: View {
                 leadingSwipeActions
             }
             
-            ChatChannelNavigatableListItem(
-                channel: channel,
-                channelName: channelName,
-                avatar: avatar,
-                onlineIndicatorShown: onlineIndicatorShown,
-                disabled: disabled,
-                selectedChannel: $selectedChannel,
-                channelDestination: channelDestination,
-                onItemTap: onItemTap
-            )
-            .offset(x: self.offsetX)
-            .simultaneousGesture(
-                DragGesture(
-                    minimumDistance: 10,
-                    coordinateSpace: .local
-                )
-                .updating($offset) { (value, gestureState, _) in
-                    // Using updating since onEnded is not called if the gesture is canceled.
-                    let diff = CGSize(
-                        width: value.location.x - value.startLocation.x,
-                        height: value.location.y - value.startLocation.y
+            channelListItem
+                .offset(x: self.offsetX)
+                .simultaneousGesture(
+                    DragGesture(
+                        minimumDistance: 10,
+                        coordinateSpace: .local
                     )
+                    .updating($offset) { (value, gestureState, _) in
+                        // Using updating since onEnded is not called if the gesture is canceled.
+                        let diff = CGSize(
+                            width: value.location.x - value.startLocation.x,
+                            height: value.location.y - value.startLocation.y
+                        )
                     
-                    if diff == .zero {
-                        gestureState = .zero
-                    } else {
-                        gestureState = value.translation
+                        if diff == .zero {
+                            gestureState = .zero
+                        } else {
+                            gestureState = value.translation
+                        }
                     }
-                }
-            )
+                )
         }
         .onChange(of: offset, perform: { _ in
             if offset == .zero {
