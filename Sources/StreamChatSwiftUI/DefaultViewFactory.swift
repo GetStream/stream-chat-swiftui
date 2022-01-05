@@ -70,10 +70,8 @@ extension ViewFactory {
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
-    ) -> ChatChannelSwipeableListItem<Self> {
-        ChatChannelSwipeableListItem(
-            factory: self,
-            currentChannelId: swipedChannelId,
+    ) -> some View {
+        let listItem = ChatChannelNavigatableListItem(
             channel: channel,
             channelName: channelName,
             avatar: avatar,
@@ -81,7 +79,13 @@ extension ViewFactory {
             disabled: disabled,
             selectedChannel: selectedChannel,
             channelDestination: channelDestination,
-            onItemTap: onItemTap,
+            onItemTap: onItemTap
+        )
+        return ChatChannelSwipeableListItem(
+            factory: self,
+            channelListItem: listItem,
+            currentChannelId: swipedChannelId,
+            channel: channel,
             trailingRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
