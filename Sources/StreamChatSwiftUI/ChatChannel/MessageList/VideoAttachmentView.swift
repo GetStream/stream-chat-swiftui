@@ -92,6 +92,7 @@ public struct VideoAttachmentView: View {
                         .makeCustomizable()
                         .frame(width: 24)
                         .foregroundColor(.white)
+                        .padding(.all, 32)
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
