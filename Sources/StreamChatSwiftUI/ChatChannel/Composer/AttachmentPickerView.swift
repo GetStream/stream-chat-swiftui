@@ -106,6 +106,8 @@ struct AttachmentSourcePickerView: View {
                 isSelected: selected == .camera,
                 onTap: onTap
             )
+            
+            Spacer()
         }
         .padding(.horizontal, 16)
         .frame(height: 56)
