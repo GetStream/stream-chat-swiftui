@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -17,7 +17,7 @@ public struct GiphyCommandHandler: CommandHandler {
     
     private let typingSuggester: TypingSuggester
             
-    init(
+    public init(
         commandSymbol: String,
         id: String = "/giphy"
     ) {
@@ -32,7 +32,7 @@ public struct GiphyCommandHandler: CommandHandler {
         displayInfo = CommandDisplayInfo(
             displayName: "Giphy",
             icon: images.commandGiphy,
-            format: "\(id) [text]",
+            format: "\(id) [\(L10n.Composer.Commands.Format.text)]",
             isInstant: true
         )
     }
@@ -69,6 +69,6 @@ public struct GiphyCommandHandler: CommandHandler {
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
-        StreamChatError.unknown.asFailedPromise()
+        StreamChatError.noSuggestionsAvailable.asFailedPromise()
     }
 }

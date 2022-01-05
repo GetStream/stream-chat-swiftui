@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -179,7 +179,7 @@ class ViewFactory_Tests: XCTestCase {
         )
         
         // Then
-        XCTAssert(view is GiphyAttachmentView)
+        XCTAssert(view is GiphyAttachmentView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeLinkAttachmentView() {
@@ -475,6 +475,50 @@ class ViewFactory_Tests: XCTestCase {
         
         // Then
         XCTAssert(view is EditMessageHeaderView)
+    }
+    
+    func test_viewFactory_makeCommandsContainerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeCommandsContainerView(suggestions: [:]) { _ in }
+        
+        // Then
+        XCTAssert(view is CommandsContainerView)
+    }
+    
+    func test_viewFactory_makeLeadingSwipeActionsView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeLeadingSwipeActionsView(
+            channel: .mockDMChannel(),
+            offsetX: 80,
+            buttonWidth: 40,
+            buttonTapped: { _ in }
+        )
+        
+        // Then
+        XCTAssert(view is EmptyView)
+    }
+    
+    func test_viewFactory_makeTrailingSwipeActionsView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeTrailingSwipeActionsView(
+            channel: .mockDMChannel(),
+            offsetX: 80,
+            buttonWidth: 40,
+            leftButtonTapped: { _ in },
+            rightButtonTapped: { _ in }
+        )
+        
+        // Then
+        XCTAssert(view is TrailingSwipeActionsView)
     }
 }
 

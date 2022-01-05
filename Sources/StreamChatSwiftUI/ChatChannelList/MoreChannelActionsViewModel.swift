@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -7,7 +7,7 @@ import StreamChat
 import UIKit
 
 /// View model for the more channel actions.
-public class MoreChannelActionsViewModel: ObservableObject {
+open class MoreChannelActionsViewModel: ObservableObject {
     /// Context provided values.
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
@@ -61,7 +61,7 @@ public class MoreChannelActionsViewModel: ObservableObject {
     ///
     /// - Parameter member: the chat channel member.
     /// - Returns: downloaded image or a placeholder.
-    func image(for member: ChatChannelMember) -> UIImage {
+    public func image(for member: ChatChannelMember) -> UIImage {
         if let image = memberAvatars[member.id] {
             return image
         }

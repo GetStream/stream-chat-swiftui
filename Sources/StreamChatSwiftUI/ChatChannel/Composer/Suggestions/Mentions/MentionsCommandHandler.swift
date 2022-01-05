@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -18,8 +18,9 @@ public struct MentionsCommandHandler: CommandHandler {
     private let channelController: ChatChannelController
     private let userSearchController: ChatUserSearchController
         
-    init(
+    public init(
         channelController: ChatChannelController,
+        userSearchController: ChatUserSearchController? = nil,
         commandSymbol: String,
         mentionAllAppUsers: Bool,
         id: String = "mentions"
@@ -28,7 +29,11 @@ public struct MentionsCommandHandler: CommandHandler {
         self.channelController = channelController
         self.mentionAllAppUsers = mentionAllAppUsers
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        userSearchController = channelController.client.userSearchController()
+        if let userSearchController = userSearchController {
+            self.userSearchController = userSearchController
+        } else {
+            self.userSearchController = channelController.client.userSearchController()
+        }
     }
     
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
@@ -57,7 +62,7 @@ public struct MentionsCommandHandler: CommandHandler {
             return
         }
         
-        let mentionText = self.mentionText(for: chatUser)
+        let mentionText = chatUser.mentionText
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
             with: mentionText
@@ -144,15 +149,7 @@ public struct MentionsCommandHandler: CommandHandler {
             sort: [.init(key: .name, isAscending: true)]
         )
     }
-        
-    private func mentionText(for user: ChatUser) -> String {
-        if let name = user.name, !name.isEmpty {
-            return name
-        } else {
-            return user.id
-        }
-    }
-
+    
     private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
         Future { promise in
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)

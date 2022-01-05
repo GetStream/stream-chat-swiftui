@@ -3,8 +3,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.7.0)
+_January 04, 2022_
+
 ### ✅ Added
 - Image gallery
+- Editing messages
+- Mentions
+- Composer commands
+- Configuration of channel item swipe area
+
+### 🔄 Changed
+- Creation of channel items
 
 # [4.6.3](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.6.3)
 _December 21, 2021_

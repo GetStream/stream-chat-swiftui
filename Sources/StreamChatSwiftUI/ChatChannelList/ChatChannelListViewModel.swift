@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -8,7 +8,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-public class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate {
+open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate {
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
     @Injected(\.images) private var images: Images
@@ -32,13 +32,13 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
     @Atomic private var loadingNextChannels: Bool = false
     
     /// Published variables.
-    @Published var channels = LazyCachedMapCollection<ChatChannel>() {
+    @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
         didSet {
             queuedChannelsChanges = []
         }
     }
 
-    @Published var selectedChannel: ChatChannel? {
+    @Published public var selectedChannel: ChatChannel? {
         didSet {
             if oldValue != nil && selectedChannel == nil {
                 // pop happened, apply the queued changes.
@@ -49,9 +49,9 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
         }
     }
 
-    @Published var deeplinkChannel: ChatChannel?
-    @Published var currentChannelId: String?
-    @Published var channelAlertType: ChannelAlertType? {
+    @Published public var deeplinkChannel: ChatChannel?
+    @Published public var currentChannelId: String?
+    @Published public var channelAlertType: ChannelAlertType? {
         didSet {
             if channelAlertType != nil {
                 alertShown = true
@@ -59,7 +59,7 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
         }
     }
 
-    @Published var customChannelPopupType: ChannelPopupType? {
+    @Published public var customChannelPopupType: ChannelPopupType? {
         didSet {
             if customChannelPopupType != nil {
                 customAlertShown = true
@@ -69,9 +69,9 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
         }
     }
 
-    @Published var alertShown = false
-    @Published var loading = false
-    @Published var customAlertShown = false
+    @Published public var alertShown = false
+    @Published public var loading = false
+    @Published public var customAlertShown = false
     
     public init(
         channelListController: ChatChannelListController? = nil,
@@ -143,7 +143,7 @@ public class ChatChannelListViewModel: ObservableObject, ChatChannelListControll
         }
     }
     
-    func showErrorPopup(_ error: Error?) {
+    public func showErrorPopup(_ error: Error?) {
         channelAlertType = .error
     }
     

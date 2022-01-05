@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -90,29 +90,58 @@ extension CommandHandler {
 /// Model for the composer's commands.
 public struct ComposerCommand {
     /// Identifier of the command.
-    let id: String
+    public let id: String
     /// Typing suggestion that invokes the command.
-    var typingSuggestion: TypingSuggestion
+    public var typingSuggestion: TypingSuggestion
     /// Display info for the command.
-    let displayInfo: CommandDisplayInfo?
+    public let displayInfo: CommandDisplayInfo?
     /// Whether execution of the command replaces sending of a message.
-    var replacesMessageSent: Bool = false
+    public var replacesMessageSent: Bool = false
+    
+    public init(
+        id: String,
+        typingSuggestion: TypingSuggestion,
+        displayInfo: CommandDisplayInfo?,
+        replacesMessageSent: Bool = false
+    ) {
+        self.id = id
+        self.typingSuggestion = typingSuggestion
+        self.displayInfo = displayInfo
+        self.replacesMessageSent = replacesMessageSent
+    }
 }
 
 /// Provides information about the suggestion.
 public struct SuggestionInfo {
     /// Identifies the suggestion.
-    let key: String
+    public let key: String
     /// Any value that can be passed to the suggestion.
-    let value: Any
+    public let value: Any
+    
+    public init(key: String, value: Any) {
+        self.key = key
+        self.value = value
+    }
 }
 
 /// Display information about a command.
 public struct CommandDisplayInfo {
-    let displayName: String
-    let icon: UIImage
-    let format: String
-    let isInstant: Bool
+    public let displayName: String
+    public let icon: UIImage
+    public let format: String
+    public let isInstant: Bool
+    
+    public init(
+        displayName: String,
+        icon: UIImage,
+        format: String,
+        isInstant: Bool
+    ) {
+        self.displayName = displayName
+        self.icon = icon
+        self.format = format
+        self.isInstant = isInstant
+    }
 }
 
 /// Main commands handler - decides which commands to invoke.
@@ -123,7 +152,7 @@ public class CommandsHandler: CommandHandler {
     public let id: String = "main"
     public var displayInfo: CommandDisplayInfo?
     
-    init(commands: [CommandHandler]) {
+    public init(commands: [CommandHandler]) {
         self.commands = commands
     }
     
@@ -157,7 +186,7 @@ public class CommandsHandler: CommandHandler {
             return handler.showSuggestions(for: command)
         }
         
-        return StreamChatError.wrongConfig.asFailedPromise()
+        return StreamChatError.noSuggestionsAvailable.asFailedPromise()
     }
     
     public func handleCommand(

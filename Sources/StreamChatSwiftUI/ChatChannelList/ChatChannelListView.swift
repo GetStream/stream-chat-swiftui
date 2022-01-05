@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -70,8 +70,9 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                             onItemAppear: viewModel.checkForChannels(index:),
                             channelNaming: viewModel.name(forChannel:),
                             channelDestination: channelDestination,
-                            onDelete: viewModel.onDeleteTapped(channel:),
-                            onMoreTapped: viewModel.onMoreTapped(channel:)
+                            trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                            trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
+                            leadingSwipeButtonTapped: { _ in }
                         )
                     }
                 }

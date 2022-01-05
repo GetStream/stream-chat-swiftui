@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -12,7 +12,7 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
                         
-    init(
+    public init(
         channelController: ChatChannelController,
         commandSymbol: String,
         id: String = "/unmute"
@@ -23,9 +23,9 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
             id: id
         )
         let displayInfo = CommandDisplayInfo(
-            displayName: "Unmute",
+            displayName: L10n.Composer.Commands.unmute,
             icon: images.commandUnmute,
-            format: "\(id) [@username]",
+            format: "\(id) [\(L10n.Composer.Commands.Format.username)]",
             isInstant: true
         )
         self.displayInfo = displayInfo

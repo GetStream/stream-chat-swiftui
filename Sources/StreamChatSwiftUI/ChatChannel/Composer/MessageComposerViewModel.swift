@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,11 +8,11 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageComposerView`.
-public class MessageComposerViewModel: ObservableObject {
+open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     
-    @Published var pickerState: AttachmentPickerState = .photos {
+    @Published public var pickerState: AttachmentPickerState = .photos {
         didSet {
             if pickerState == .camera {
                 withAnimation {
@@ -33,7 +33,7 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    @Published var text = "" {
+    @Published public var text = "" {
         didSet {
             if text != "" {
                 pickerTypeState = .collapsed
@@ -49,26 +49,26 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    @Published var selectedRangeLocation: Int = 0
+    @Published public var selectedRangeLocation: Int = 0
     
-    @Published var addedFileURLs = [URL]() {
+    @Published public var addedFileURLs = [URL]() {
         didSet {
             checkPickerSelectionState()
         }
     }
 
-    @Published var addedCustomAttachments = [CustomAttachment]() {
+    @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
             checkPickerSelectionState()
         }
     }
     
-    @Published var pickerTypeState: PickerTypeState = .expanded(.none) {
+    @Published public var pickerTypeState: PickerTypeState = .expanded(.none) {
         didSet {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
                 overlayShown = attachmentPickerType == .media
-                if attachmentPickerType == .giphy {
+                if attachmentPickerType == .instantCommands {
                     composerCommand = ComposerCommand(
                         id: "instantCommands",
                         typingSuggestion: TypingSuggestion.empty,
@@ -92,7 +92,7 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    @Published var composerCommand: ComposerCommand? {
+    @Published public var composerCommand: ComposerCommand? {
         didSet {
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
@@ -109,11 +109,11 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    @Published var filePickerShown = false
-    @Published var cameraPickerShown = false
-    @Published var errorShown = false
-    @Published var showReplyInChannel = false
-    @Published var suggestions = [String: Any]()
+    @Published public var filePickerShown = false
+    @Published public var cameraPickerShown = false
+    @Published public var errorShown = false
+    @Published public var showReplyInChannel = false
+    @Published public var suggestions = [String: Any]()
     
     private let channelController: ChatChannelController
     private var messageController: ChatMessageController?
@@ -261,7 +261,7 @@ public class MessageComposerViewModel: ObservableObject {
         return false
     }
     
-    func imageTapped(_ addedAsset: AddedAsset) {
+    public func imageTapped(_ addedAsset: AddedAsset) {
         var images = [AddedAsset]()
         var imageRemoved = false
         for image in addedAssets {
@@ -279,7 +279,7 @@ public class MessageComposerViewModel: ObservableObject {
         addedAssets = images
     }
     
-    func removeAttachment(with id: String) {
+    public func removeAttachment(with id: String) {
         if id.isURL, let url = URL(string: id) {
             var urls = [URL]()
             for added in addedFileURLs {
@@ -299,12 +299,12 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    func cameraImageAdded(_ image: AddedAsset) {
+    public func cameraImageAdded(_ image: AddedAsset) {
         addedAssets.append(image)
         pickerState = .photos
     }
     
-    func isImageSelected(with id: String) -> Bool {
+    public func isImageSelected(with id: String) -> Bool {
         for image in addedAssets {
             if image.id == id {
                 return true
@@ -314,7 +314,7 @@ public class MessageComposerViewModel: ObservableObject {
         return false
     }
     
-    func customAttachmentTapped(_ attachment: CustomAttachment) {
+    public func customAttachmentTapped(_ attachment: CustomAttachment) {
         var temp = [CustomAttachment]()
         var attachmentRemoved = false
         for existing in addedCustomAttachments {
@@ -332,7 +332,7 @@ public class MessageComposerViewModel: ObservableObject {
         addedCustomAttachments = temp
     }
     
-    func isCustomAttachmentSelected(_ attachment: CustomAttachment) -> Bool {
+    public func isCustomAttachmentSelected(_ attachment: CustomAttachment) -> Bool {
         for existing in addedCustomAttachments {
             if existing.id == attachment.id {
                 return true
@@ -342,7 +342,7 @@ public class MessageComposerViewModel: ObservableObject {
         return false
     }
     
-    func askForPhotosPermission() {
+    public func askForPhotosPermission() {
         PHPhotoLibrary.requestAuthorization { (status) in
             switch status {
             case .authorized, .limited:
@@ -362,7 +362,7 @@ public class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    func handleCommand(
+    public func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
@@ -377,14 +377,6 @@ public class MessageComposerViewModel: ObservableObject {
     }
     
     // MARK: - private
-    
-    private func mentionText(for user: ChatUser) -> String {
-        if let name = user.name, !name.isEmpty {
-            return name
-        } else {
-            return user.id
-        }
-    }
     
     private func edit(
         message: ChatMessage,

@@ -1,15 +1,15 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
 import SwiftUI
 
 /// View model for the `MessageActionsView`.
-public class MessageActionsViewModel: ObservableObject {
-    @Published var messageActions: [MessageAction]
-    @Published var alertShown = false
-    @Published var alertAction: MessageAction? {
+open class MessageActionsViewModel: ObservableObject {
+    @Published public var messageActions: [MessageAction]
+    @Published public var alertShown = false
+    @Published public var alertAction: MessageAction? {
         didSet {
             alertShown = alertAction != nil
         }

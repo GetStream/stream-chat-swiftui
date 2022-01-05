@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -7,13 +7,14 @@ import StreamChat
 import SwiftUI
 
 /// Base class that supports two step commands, where the second one is mentioning users.
-public class TwoStepMentionCommand: CommandHandler {
+open class TwoStepMentionCommand: CommandHandler {
         
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     
     private let channelController: ChatChannelController
     private let mentionsCommandHandler: MentionsCommandHandler
+    private let mentionSymbol: String
     
     internal var selectedUser: ChatUser?
     
@@ -21,17 +22,19 @@ public class TwoStepMentionCommand: CommandHandler {
     public var displayInfo: CommandDisplayInfo?
     public let replacesMessageSending: Bool = true
                 
-    init(
+    public init(
         channelController: ChatChannelController,
         commandSymbol: String,
         id: String,
-        displayInfo: CommandDisplayInfo? = nil
+        displayInfo: CommandDisplayInfo? = nil,
+        mentionSymbol: String = "@"
     ) {
         self.channelController = channelController
         self.id = id
+        self.mentionSymbol = mentionSymbol
         mentionsCommandHandler = MentionsCommandHandler(
             channelController: channelController,
-            commandSymbol: "@",
+            commandSymbol: mentionSymbol,
             mentionAllAppUsers: false
         )
         self.displayInfo = displayInfo
@@ -69,7 +72,7 @@ public class TwoStepMentionCommand: CommandHandler {
         
         selectedUser = chatUser
 
-        let mentionText = self.mentionText(for: chatUser)
+        let mentionText = "\(mentionSymbol)\(chatUser.mentionText)"
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
             with: mentionText
@@ -87,15 +90,15 @@ public class TwoStepMentionCommand: CommandHandler {
     
     private func mentionText(for user: ChatUser) -> String {
         if let name = user.name, !name.isEmpty {
-            return "@\(name)"
+            return "\(mentionSymbol)\(name)"
         } else {
-            return "@\(user.id)"
+            return "\(mentionSymbol)\(user.id)"
         }
     }
     
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if let selectedUser = selectedUser,
-           command.typingSuggestion.text != mentionText(for: selectedUser) {
+           command.typingSuggestion.text != "\(mentionSymbol)\(selectedUser.mentionText)" {
             self.selectedUser = nil
         }
         return command.id == id ? self : nil
@@ -114,7 +117,7 @@ public class TwoStepMentionCommand: CommandHandler {
         }
         let oldText = command.typingSuggestion.text
         let text = oldText.replacingOccurrences(
-            of: "@", with: ""
+            of: mentionSymbol, with: ""
         ).trimmingCharacters(in: .whitespaces)
         let oldRange = command.typingSuggestion.locationRange
         let offset = oldText.count - text.count

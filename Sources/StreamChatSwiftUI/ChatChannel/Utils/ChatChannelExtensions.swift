@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -29,5 +29,16 @@ extension ChatChannel {
     
     private var lastSeenDateFormatter: (Date) -> String? {
         DateUtils.timeAgo
+    }
+}
+
+extension ChatUser {
+    
+    var mentionText: String {
+        if let name = self.name, !name.isEmpty {
+            return name
+        } else {
+            return id
+        }
     }
 }

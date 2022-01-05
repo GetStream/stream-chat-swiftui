@@ -32,9 +32,9 @@
         "package": "StreamChat",
         "repositoryURL": "https://github.com/GetStream/stream-chat-swift.git",
         "state": {
-          "branch": "main",
-          "revision": "48f13c13684d9e31b4a2863a69f8defd15f009fc",
-          "version": null
+          "branch": null,
+          "revision": "1edabbeef14668b2211737f211e23dece695d6e3",
+          "version": "4.8.0"
         }
       },
       {

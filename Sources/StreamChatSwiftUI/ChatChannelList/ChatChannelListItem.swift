@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -102,9 +102,20 @@ public struct ChatChannelListItem: View {
 
 /// View for the avatar used in channels (includes online indicator overlay).
 public struct ChannelAvatarView: View {
+        
     var avatar: UIImage
     var showOnlineIndicator: Bool
     var size: CGSize = .defaultAvatarSize
+    
+    public init(
+        avatar: UIImage,
+        showOnlineIndicator: Bool,
+        size: CGSize = .defaultAvatarSize
+    ) {
+        self.avatar = avatar
+        self.showOnlineIndicator = showOnlineIndicator
+        self.size = size
+    }
     
     public var body: some View {
         LazyView(

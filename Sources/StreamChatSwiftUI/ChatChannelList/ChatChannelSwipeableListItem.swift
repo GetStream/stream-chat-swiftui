@@ -1,12 +1,12 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
 import SwiftUI
 
 /// Chat channel cell that is swipeable.
-public struct ChatChannelSwipeableListItem<ChannelDestination: View>: View {
+public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem: View>: View {
     @Injected(\.colors) private var colors
     
     @State private var offsetX: CGFloat = 0
@@ -22,7 +22,8 @@ public struct ChatChannelSwipeableListItem<ChannelDestination: View>: View {
     }
 
     private var buttonWidth: CGFloat {
-        let width = (offsetX.magnitude + addWidthMargin) * (itemWidth / menuWidth)
+        let totalWidth = width(for: openSideLock ?? .trailing)
+        let width = (offsetX.magnitude + addWidthMargin) * (itemWidth / totalWidth)
         return width
     }
     
@@ -31,79 +32,60 @@ public struct ChatChannelSwipeableListItem<ChannelDestination: View>: View {
     /// An additional value to add to the open menu width. This is useful if the cell has rounded corners.
     private let addWidthMargin: CGFloat = 5
     
+    private var factory: Factory
+    private var channelListItem: ChannelListItem
     private var channel: ChatChannel
-    private var channelName: String
-    private var avatar: UIImage
-    private var onlineIndicatorShown: Bool
-    @Binding private var selectedChannel: ChatChannel?
-    private var channelDestination: (ChatChannel) -> ChannelDestination
-    private var disabled = false
-    private var onItemTap: (ChatChannel) -> Void
-    private var onDelete: (ChatChannel) -> Void
-    private var onMoreTapped: (ChatChannel) -> Void
+    private var trailingRightButtonTapped: (ChatChannel) -> Void
+    private var trailingLeftButtonTapped: (ChatChannel) -> Void
+    private var leadingButtonTapped: (ChatChannel) -> Void
     
     internal init(
+        factory: Factory,
+        channelListItem: ChannelListItem,
         currentChannelId: Binding<String?>,
         channel: ChatChannel,
-        channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
-        disabled: Bool = false,
-        selectedChannel: Binding<ChatChannel?>,
-        channelDestination: @escaping (ChatChannel) -> ChannelDestination,
-        onItemTap: @escaping (ChatChannel) -> Void,
-        onDelete: @escaping (ChatChannel) -> Void,
-        onMoreTapped: @escaping (ChatChannel) -> Void
+        trailingRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) {
+        self.factory = factory
+        self.channelListItem = channelListItem
         self.channel = channel
-        self.channelName = channelName
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
-        self.channelDestination = channelDestination
-        self.disabled = disabled
-        self.onItemTap = onItemTap
-        self.onDelete = onDelete
-        self.onMoreTapped = onMoreTapped
+        self.trailingRightButtonTapped = trailingRightButtonTapped
+        self.trailingLeftButtonTapped = trailingLeftButtonTapped
+        leadingButtonTapped = leadingSwipeButtonTapped
         _currentChannelId = currentChannelId
-        _selectedChannel = selectedChannel
     }
     
     public var body: some View {
         ZStack {
-            if self.offsetX != 0 {
-                swipeActionsView
+            if self.offsetX < 0, showTrailingSwipeActions {
+                trailingSwipeActions
+            } else if self.offsetX > 0, showLeadingSwipeActions {
+                leadingSwipeActions
             }
             
-            ChatChannelNavigatableListItem(
-                channel: channel,
-                channelName: channelName,
-                avatar: avatar,
-                onlineIndicatorShown: onlineIndicatorShown,
-                disabled: disabled,
-                selectedChannel: $selectedChannel,
-                channelDestination: channelDestination,
-                onItemTap: onItemTap
-            )
-            .offset(x: self.offsetX)
-            .simultaneousGesture(
-                DragGesture(
-                    minimumDistance: 10,
-                    coordinateSpace: .local
-                )
-                .updating($offset) { (value, gestureState, _) in
-                    // Using updating since onEnded is not called if the gesture is canceled.
-                    let diff = CGSize(
-                        width: value.location.x - value.startLocation.x,
-                        height: value.location.y - value.startLocation.y
+            channelListItem
+                .offset(x: self.offsetX)
+                .simultaneousGesture(
+                    DragGesture(
+                        minimumDistance: 10,
+                        coordinateSpace: .local
                     )
+                    .updating($offset) { (value, gestureState, _) in
+                        // Using updating since onEnded is not called if the gesture is canceled.
+                        let diff = CGSize(
+                            width: value.location.x - value.startLocation.x,
+                            height: value.location.y - value.startLocation.y
+                        )
                     
-                    if diff == .zero {
-                        gestureState = .zero
-                    } else {
-                        gestureState = value.translation
+                        if diff == .zero {
+                            gestureState = .zero
+                        } else {
+                            gestureState = value.translation
+                        }
                     }
-                }
-            )
+                )
         }
         .onChange(of: offset, perform: { _ in
             if offset == .zero {
@@ -116,20 +98,52 @@ public struct ChatChannelSwipeableListItem<ChannelDestination: View>: View {
         .id("\(channel.id)-swipeable")
     }
     
+    private var trailingSwipeActions: some View {
+        factory.makeTrailingSwipeActionsView(
+            channel: channel,
+            offsetX: offsetX,
+            buttonWidth: buttonWidth,
+            leftButtonTapped: trailingLeftButtonTapped,
+            rightButtonTapped: trailingRightButtonTapped
+        )
+    }
+    
+    private var showTrailingSwipeActions: Bool {
+        !(trailingSwipeActions is EmptyView)
+    }
+    
+    private var leadingSwipeActions: some View {
+        factory.makeLeadingSwipeActionsView(
+            channel: channel,
+            offsetX: offsetX,
+            buttonWidth: buttonWidth,
+            buttonTapped: leadingButtonTapped
+        )
+    }
+    
+    private var showLeadingSwipeActions: Bool {
+        !(leadingSwipeActions is EmptyView)
+    }
+    
     private func dragChanged(to value: CGFloat) {
         let horizontalTranslation = value
          
-        if horizontalTranslation > 0 && openSideLock == nil {
-            // prevent swiping to left.
+        if horizontalTranslation > 0 && openSideLock == nil && !showLeadingSwipeActions {
+            // prevent swiping to left, if not configured.
+            return
+        }
+        
+        if horizontalTranslation < 0 && openSideLock == nil && !showTrailingSwipeActions {
+            // prevent swiping to right, if not configured.
             return
         }
 
         if let openSideLock = self.openSideLock {
-            offsetX = menuWidth * openSideLock.sideFactor + horizontalTranslation
+            offsetX = width(for: openSideLock) * openSideLock.sideFactor + horizontalTranslation
             return
         }
                  
-        if horizontalTranslation < 0 {
+        if horizontalTranslation != 0 {
             currentChannelId = channel.id
             offsetX = horizontalTranslation
         } else {
@@ -151,49 +165,32 @@ public struct ChatChannelSwipeableListItem<ChannelDestination: View>: View {
         if offsetX == 0 {
             currentChannelId = nil
             openSideLock = nil
-        } else if offsetX > 0 {
-            setOffsetX(value: 0)
-        } else {
+        } else if offsetX > 0 && showLeadingSwipeActions {
+            if offsetX.magnitude < openTriggerValue ||
+                offsetX < menuWidth * 0.8 {
+                setOffsetX(value: 0)
+            } else {
+                lockSideMenu(side: .leading)
+            }
+        } else if offsetX < 0 && showTrailingSwipeActions {
             if offsetX.magnitude < openTriggerValue ||
                 offsetX > -menuWidth * 0.8 {
                 setOffsetX(value: 0)
             } else {
                 lockSideMenu(side: .trailing)
             }
+        } else {
+            setOffsetX(value: 0)
         }
     }
     
     private func lockSideMenu(side: SwipeDirection) {
-        setOffsetX(value: side.sideFactor * menuWidth)
+        setOffsetX(value: side.sideFactor * width(for: side))
         openSideLock = side
     }
     
-    private var swipeActionsView: some View {
-        HStack {
-            Spacer()
-            ZStack {
-                HStack(spacing: 0) {
-                    ActionItemButton(imageName: "ellipsis", action: {
-                        withAnimation {
-                            onMoreTapped(channel)
-                        }
-                    })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.text))
-                        .background(Color(colors.background1))
-                        
-                    ActionItemButton(imageName: "trash", action: {
-                        withAnimation {
-                            onDelete(channel)
-                        }
-                    })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.textInverted))
-                        .background(Color(colors.alert))
-                }
-            }
-            .opacity(self.offsetX < -5 ? 1 : 0)
-        }
+    private func width(for direction: SwipeDirection) -> CGFloat {
+        direction == .leading ? itemWidth : menuWidth
     }
 }
 
@@ -208,6 +205,45 @@ public enum SwipeDirection {
             return 1
         case .trailing:
             return -1
+        }
+    }
+}
+
+public struct TrailingSwipeActionsView: View {
+    
+    @Injected(\.colors) private var colors
+    
+    var channel: ChatChannel
+    var offsetX: CGFloat
+    var buttonWidth: CGFloat
+    var leftButtonTapped: (ChatChannel) -> Void
+    var rightButtonTapped: (ChatChannel) -> Void
+    
+    public var body: some View {
+        HStack {
+            Spacer()
+            ZStack {
+                HStack(spacing: 0) {
+                    ActionItemButton(imageName: "ellipsis", action: {
+                        withAnimation {
+                            leftButtonTapped(channel)
+                        }
+                    })
+                        .frame(width: buttonWidth)
+                        .foregroundColor(Color(colors.text))
+                        .background(Color(colors.background1))
+                        
+                    ActionItemButton(imageName: "trash", action: {
+                        withAnimation {
+                            rightButtonTapped(channel)
+                        }
+                    })
+                        .frame(width: buttonWidth)
+                        .foregroundColor(Color(colors.textInverted))
+                        .background(Color(colors.alert))
+                }
+            }
+            .opacity(self.offsetX < -5 ? 1 : 0)
         }
     }
 }

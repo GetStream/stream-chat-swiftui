@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 Stream.io Inc. All rights reserved.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -18,8 +18,9 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var onItemAppear: (Int) -> Void
     private var channelNaming: (ChatChannel) -> String
     private var channelDestination: (ChatChannel) -> Factory.ChannelDestination
-    private var onDelete: (ChatChannel) -> Void
-    private var onMoreTapped: (ChatChannel) -> Void
+    private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
+    private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
+    private var leadingSwipeButtonTapped: (ChatChannel) -> Void
     
     public init(
         factory: Factory,
@@ -32,8 +33,9 @@ public struct ChannelList<Factory: ViewFactory>: View {
         onItemAppear: @escaping (Int) -> Void,
         channelNaming: @escaping (ChatChannel) -> String,
         channelDestination: @escaping (ChatChannel) -> Factory.ChannelDestination,
-        onDelete: @escaping (ChatChannel) -> Void,
-        onMoreTapped: @escaping (ChatChannel) -> Void
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) {
         self.factory = factory
         self.channels = channels
@@ -43,8 +45,9 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.channelDestination = channelDestination
         self.imageLoader = imageLoader
         self.onlineIndicatorShown = onlineIndicatorShown
-        self.onDelete = onDelete
-        self.onMoreTapped = onMoreTapped
+        self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
+        self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
+        self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
         _selectedChannel = selectedChannel
         _currentChannelId = currentChannelId
     }
@@ -54,17 +57,18 @@ public struct ChannelList<Factory: ViewFactory>: View {
             LazyVStack {
                 ForEach(channels) { channel in
                     factory.makeChannelListItem(
-                        currentChannelId: $currentChannelId,
                         channel: channel,
                         channelName: channelNaming(channel),
                         avatar: imageLoader(channel),
                         onlineIndicatorShown: onlineIndicatorShown(channel),
                         disabled: currentChannelId == channel.id,
                         selectedChannel: $selectedChannel,
+                        swipedChannelId: $currentChannelId,
                         channelDestination: channelDestination,
                         onItemTap: onItemTap,
-                        onDelete: onDelete,
-                        onMoreTapped: onMoreTapped
+                        trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+                        trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+                        leadingSwipeButtonTapped: leadingSwipeButtonTapped
                     )
                     .frame(height: 48)
                     .onAppear {
