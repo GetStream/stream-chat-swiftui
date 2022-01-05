@@ -218,6 +218,10 @@ public class Images {
         set { _fileAttachmentActionIcons = newValue }
     }
     
+    public var attachmentPickerPhotos: UIImage = UIImage(systemName: "photo")!
+    public var attachmentPickerFolder: UIImage = UIImage(systemName: "folder")!
+    public var attachmentPickerCamera: UIImage = UIImage(systemName: "camera")!
+    
     public var camera: UIImage = loadImageSafely(with: "camera")
     public var bigPlay: UIImage = loadImageSafely(with: "play_big")
     

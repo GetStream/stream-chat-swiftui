@@ -120,6 +120,7 @@ class CustomMessageTypeResolver: MessageTypeResolving {
 struct CustomAttachmentSourcePickerView: View {
     
     @Injected(\.colors) var colors
+    @Injected(\.images) var images
     
     var selected: AttachmentPickerState
     var onTap: (AttachmentPickerState) -> Void
@@ -127,28 +128,28 @@ struct CustomAttachmentSourcePickerView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 24) {
             AttachmentPickerButton(
-                iconName: "photo",
+                icon: images.attachmentPickerPhotos,
                 pickerType: .photos,
                 isSelected: selected == .photos,
                 onTap: onTap
             )
             
             AttachmentPickerButton(
-                iconName: "folder",
+                icon: images.attachmentPickerFolder,
                 pickerType: .files,
                 isSelected: selected == .files,
                 onTap: onTap
             )
             
             AttachmentPickerButton(
-                iconName: "camera",
+                icon: images.attachmentPickerCamera,
                 pickerType: .camera,
                 isSelected: selected == .camera,
                 onTap: onTap
             )
             
             AttachmentPickerButton(
-                iconName: "person.crop.circle",
+                icon: UIImage(systemName: "person.crop.circle")!,
                 pickerType: .custom,
                 isSelected: selected == .custom,
                 onTap: onTap
