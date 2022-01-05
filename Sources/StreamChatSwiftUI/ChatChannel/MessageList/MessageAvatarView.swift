@@ -7,8 +7,10 @@ import StreamChat
 import SwiftUI
 
 public struct MessageAvatarView: View {
+
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
     
     private var imageCDN: ImageCDN {
         utils.imageCDN
@@ -52,7 +54,7 @@ public struct MessageAvatarView: View {
                         : nil
                 )
         } else {
-            Image(systemName: "person.circle")
+            Image(uiImage: images.personPlaceholder)
                 .renderingMode(.template)
                 .resizable()
                 .foregroundColor(Color(colors.textLowEmphasis))

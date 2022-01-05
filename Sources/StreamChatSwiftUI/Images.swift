@@ -30,26 +30,15 @@ public class Images {
     // MARK: - General
 
     public var loadingIndicator: UIImage = loadImageSafely(with: "loading_indicator")
-    public var close: UIImage = {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "xmark")!
-        } else {
-            return loadImageSafely(with: "close")
-        }
-    }()
+    public var close: UIImage = UIImage(systemName: "xmark")!
+    public var closeFilled: UIImage = UIImage(systemName: "xmark.circle.fill")!
 
     public var closeCircleTransparent: UIImage = loadImageSafely(with: "close_circle_transparent")
     public var discardAttachment: UIImage = loadImageSafely(with: "close_circle_filled")
     public var back: UIImage = loadImageSafely(with: "icn_back")
     public var onlyVisibleToCurrentUser = loadImageSafely(with: "eye")
     public var more = loadImageSafely(with: "icn_more")
-    public var share: UIImage = {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "square.and.arrow.up")!
-        } else {
-            return loadImageSafely(with: "share")
-        }
-    }()
+    public var share: UIImage = UIImage(systemName: "square.and.arrow.up")!
 
     public var commands: UIImage = loadImageSafely(with: "bolt")
     public var smallBolt: UIImage = loadImageSafely(with: "bolt_small")
@@ -64,13 +53,13 @@ public class Images {
     public var bigConfirmCheckmark: UIImage = loadImageSafely(with: "checkmark_confirm_big")
     public var folder: UIImage = loadImageSafely(with: "folder")
     public var restart: UIImage = loadImageSafely(with: "restart")
-    public var download: UIImage = {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "icloud.and.arrow.down")!
-        } else {
-            return loadImageSafely(with: "download")
-        }
-    }()
+    public var download: UIImage = UIImage(systemName: "icloud.and.arrow.down")!
+    public var muted: UIImage = UIImage(systemName: "speaker.slash")!
+    public var snapshot: UIImage = UIImage(systemName: "photo")!
+    public var eye: UIImage = UIImage(systemName: "eye")!
+    public var videoIndicator: UIImage = UIImage(systemName: "video.fill")!
+    public var gallery: UIImage = UIImage(systemName: "square.grid.3x3.fill")!
+    public var photoDefault: UIImage = UIImage(systemName: "photo")!
 
     // MARK: - Reactions
 
@@ -212,6 +201,7 @@ public class Images {
     }
     
     public var imagePlaceholder: UIImage = UIImage(systemName: "photo")!
+    public var personPlaceholder: UIImage = UIImage(systemName: "person.circle")!
 
     // MARK: - FileAttachmentIcons
 
@@ -227,11 +217,18 @@ public class Images {
         set { _fileAttachmentActionIcons = newValue }
     }
     
+    public var attachmentPickerPhotos: UIImage = UIImage(systemName: "photo")!
+    public var attachmentPickerFolder: UIImage = UIImage(systemName: "folder")!
+    public var attachmentPickerCamera: UIImage = UIImage(systemName: "camera")!
+    
     public var camera: UIImage = loadImageSafely(with: "camera")
     public var bigPlay: UIImage = loadImageSafely(with: "play_big")
     
     public var play: UIImage = loadImageSafely(with: "play")
+    public var playFilled: UIImage = UIImage(systemName: "play.fill")!
     public var pause: UIImage = loadImageSafely(with: "pause")
+    
+    public var checkmarkFilled: UIImage = UIImage(systemName: "checkmark.circle.fill")!
 
     // MARK: - CommandIcons
 

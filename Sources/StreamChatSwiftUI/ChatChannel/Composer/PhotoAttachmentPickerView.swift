@@ -79,9 +79,7 @@ public struct PhotoAttachmentCell: View {
                     .aspectRatio(1, contentMode: .fill)
                 
                 Image(uiImage: images.imagePlaceholder)
-                    .renderingMode(.template)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .customizable()
                     .frame(height: 56)
                     .foregroundColor(Color(colors.background2))
             }
@@ -91,8 +89,9 @@ public struct PhotoAttachmentCell: View {
             ZStack {
                 if imageSelected(asset.localIdentifier) {
                     TopRightView {
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(uiImage: images.checkmarkFilled)
                             .renderingMode(.template)
+                            .scaledToFit()
                             .applyDefaultIconOverlayStyle()
                     }
                 }

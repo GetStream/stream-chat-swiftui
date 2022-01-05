@@ -7,11 +7,15 @@ import SwiftUI
 
 /// View used to indicate that an asset is a video.
 struct VideoIndicatorView: View {
+    
+    @Injected(\.images) private var images
+    
     var body: some View {
         BottomLeftView {
-            Image(systemName: "video.fill")
-                .renderingMode(.template)
-                .font(.system(size: 17, weight: .bold))
+            Image(uiImage: images.videoIndicator)
+                .customizable()
+                .frame(width: 22)
+                .padding(2)
                 .applyDefaultIconOverlayStyle()
         }
     }

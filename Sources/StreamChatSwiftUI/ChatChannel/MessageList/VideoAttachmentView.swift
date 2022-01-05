@@ -10,7 +10,7 @@ public struct VideoAttachmentsContainer: View {
     let message: ChatMessage
     let width: CGFloat
     @Binding var scrolledId: String?
-        
+    
     public var body: some View {
         VStack {
             if let quotedMessage = message.quotedMessage {
@@ -58,7 +58,9 @@ public struct VideoAttachmentsList: View {
 }
 
 public struct VideoAttachmentView: View {
+    
     @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
     
     private var videoPreviewLoader: VideoPreviewLoader {
         utils.videoPreviewLoader
@@ -73,7 +75,7 @@ public struct VideoAttachmentView: View {
     @State var previewImage: UIImage?
     @State var error: Error?
     @State var fullScreenShown = false
-                
+    
     public var body: some View {
         ZStack {
             if let previewImage = previewImage {
@@ -86,8 +88,9 @@ public struct VideoAttachmentView: View {
                 Button {
                     fullScreenShown = true
                 } label: {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 30))
+                    Image(uiImage: images.playFilled)
+                        .customizable()
+                        .frame(width: 24)
                         .foregroundColor(.white)
                         .padding(.all, 32)
                 }
