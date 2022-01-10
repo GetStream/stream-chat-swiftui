@@ -39,7 +39,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     private var trailingLeftButtonTapped: (ChatChannel) -> Void
     private var leadingButtonTapped: (ChatChannel) -> Void
     
-    internal init(
+    public init(
         factory: Factory,
         channelListItem: ChannelListItem,
         currentChannelId: Binding<String?>,
