@@ -30,12 +30,20 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
-            VStack {
+            VStack(spacing: 2) {
                 Text(channelNamer(channel, currentUserId) ?? "")
                     .font(fonts.bodyBold)
-                Text(channel.onlineInfoText(currentUserId: currentUserId))
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                if !channel.currentlyTypingUsers.isEmpty
+                    && utils.typingIndicatorPlacement == .navigationBar {
+                    HStack {
+                        TypingIndicatorView()
+                        SubtitleText(text: channel.typingIndicatorString)
+                    }
+                } else {
+                    Text(channel.onlineInfoText(currentUserId: currentUserId))
+                        .font(fonts.footnote)
+                        .foregroundColor(Color(colors.textLowEmphasis))
+                }
             }
         }
         

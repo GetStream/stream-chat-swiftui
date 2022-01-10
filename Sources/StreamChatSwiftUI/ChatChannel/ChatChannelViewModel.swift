@@ -86,9 +86,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    @Published public var reactionsShown = false
+    @Published public var reactionsShown = false {
+        didSet {
+            checkHeaderType()
+        }
+    }
+
     @Published public var quotedMessage: ChatMessage?
     @Published public var editedMessage: ChatMessage?
+    @Published public var channelHeaderType: ChannelHeaderType = .regular
     
     public var channel: ChatChannel {
         channelController.channel!
@@ -123,6 +129,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             name: UIApplication.didReceiveMemoryWarningNotification,
             object: nil
         )
+        
+        checkHeaderType()
     }
     
     @objc
@@ -178,6 +186,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelController: ChatChannelController
     ) {
         messages = channelController.messages
+        checkHeaderType()
     }
 
     public func showReactionOverlay() {
@@ -259,6 +268,21 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             channelController.markRead()
         }
     }
+    
+    private func checkHeaderType() {
+        let type: ChannelHeaderType
+        if !reactionsShown && isMessageThread {
+            type = .messageThread
+        } else if !channel.currentlyTypingUsers.isEmpty {
+            type = .typingIndicator
+        } else {
+            type = .regular
+        }
+        
+        if type != channelHeaderType {
+            channelHeaderType = type
+        }
+    }
 }
 
 extension ChatMessage: Identifiable {
@@ -315,4 +339,14 @@ extension ChatMessage: Identifiable {
         }
         return output
     }
+}
+
+/// The type of header shown in the chat channel screen.
+public enum ChannelHeaderType {
+    /// The regular header showing the channel name and members.
+    case regular
+    /// The header shown in message threads.
+    case messageThread
+    /// The header shown when someone is typing.
+    case typingIndicator
 }
