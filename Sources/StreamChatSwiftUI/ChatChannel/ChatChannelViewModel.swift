@@ -12,6 +12,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
     
     private var channelDataSource: ChannelDataSource
     private var cancellables = Set<AnyCancellable>()
@@ -181,7 +182,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     public func showReactionOverlay() {
         guard let view: UIView = topVC()?.view else {
-            currentSnapshot = UIImage(systemName: "photo")
+            currentSnapshot = images.snapshot
             return
         }
         UIGraphicsBeginImageContext(view.frame.size)

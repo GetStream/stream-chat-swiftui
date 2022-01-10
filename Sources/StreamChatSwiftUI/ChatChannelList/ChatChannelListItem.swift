@@ -7,9 +7,11 @@ import SwiftUI
 
 /// View for the channel list item.
 public struct ChatChannelListItem: View {
+    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
         
     var channel: ChatChannel
     var channelName: String
@@ -37,9 +39,7 @@ public struct ChatChannelListItem: View {
                         if let image = image {
                             HStack(spacing: 4) {
                                 Image(uiImage: image)
-                                    .resizable()
-                                    .renderingMode(.template)
-                                    .aspectRatio(contentMode: .fit)
+                                    .customizable()
                                     .frame(maxHeight: 12)
                                     .foregroundColor(Color(colors.subtitleText))
                                 SubtitleText(text: subtitleText)
@@ -86,7 +86,7 @@ public struct ChatChannelListItem: View {
     
     private var image: UIImage? {
         if channel.isMuted {
-            return UIImage(systemName: "speaker.slash")
+            return images.muted
         }
         return nil
     }

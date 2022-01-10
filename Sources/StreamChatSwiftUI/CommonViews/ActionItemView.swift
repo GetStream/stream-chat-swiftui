@@ -18,9 +18,7 @@ public struct ActionItemView: View {
     public var body: some View {
         HStack(spacing: 16) {
             Image(uiImage: image)
-                .resizable()
-                .renderingMode(.template)
-                .aspectRatio(contentMode: .fit)
+                .customizable()
                 .frame(maxHeight: 20)
                 .foregroundColor(
                     isDestructive ? Color(colors.alert) : Color(colors.textLowEmphasis)
@@ -54,6 +52,6 @@ public struct ActionItemView: View {
         }
         
         // Default image.
-        return UIImage(systemName: "photo")!
+        return images.photoDefault
     }
 }

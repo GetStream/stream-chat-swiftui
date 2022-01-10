@@ -8,6 +8,7 @@ import SwiftUI
 ///
 /// Different view can be injected in its place.
 public struct NoChannelsView: View {
+    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
