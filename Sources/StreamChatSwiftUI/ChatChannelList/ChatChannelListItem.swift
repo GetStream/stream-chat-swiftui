@@ -46,7 +46,13 @@ public struct ChatChannelListItem: View {
                                 Spacer()
                             }
                         } else {
-                            SubtitleText(text: subtitleText)
+                            HStack(spacing: 4) {
+                                if !channel.currentlyTypingUsers.isEmpty {
+                                    TypingIndicatorView()
+                                }
+                                SubtitleText(text: subtitleText)
+                                Spacer()
+                            }
                         }
                     }
                     
