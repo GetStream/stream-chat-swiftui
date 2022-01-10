@@ -215,6 +215,37 @@ class ChatChannelViewModel_Tests: XCTestCase {
         XCTAssert(viewModel.editedMessage == viewModel.messages[0])
     }
     
+    func test_chatChannelVM_regularMessageHeader() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let headerType = viewModel.channelHeaderType
+        
+        // Then
+        XCTAssert(headerType == .regular)
+    }
+    
+    func test_chatChannelVM_typingIndicatorMessageHeader() {
+        // Given
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+        let headerType = viewModel.channelHeaderType
+        
+        // Then
+        XCTAssert(headerType == .typingIndicator)
+    }
+    
     // MARK: - private
     
     private func makeChannelController(
