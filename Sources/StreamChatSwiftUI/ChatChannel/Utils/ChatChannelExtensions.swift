@@ -34,8 +34,8 @@ extension ChatChannel {
         }
     }
     
-    var typingIndicatorString: String {
-        let typingUsers = Array(currentlyTypingUsers)
+    func typingIndicatorString(currentUserId: UserId?) -> String {
+        let typingUsers = currentlyTypingUsersFiltered(currentUserId: currentUserId)
         if let user = typingUsers.first(where: { user in user.name != nil }), let name = user.name {
             return L10n.MessageList.TypingIndicator.users(name, typingUsers.count - 1)
         } else {

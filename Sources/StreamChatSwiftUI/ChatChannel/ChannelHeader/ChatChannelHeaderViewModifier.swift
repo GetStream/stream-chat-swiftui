@@ -33,11 +33,11 @@ public struct DefaultChatChannelHeader: ToolbarContent {
             VStack(spacing: 2) {
                 Text(channelNamer(channel, currentUserId) ?? "")
                     .font(fonts.bodyBold)
-                if !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
+                if !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
                     && utils.typingIndicatorPlacement == .navigationBar {
                     HStack {
                         TypingIndicatorView()
-                        SubtitleText(text: channel.typingIndicatorString)
+                        SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
                     }
                 } else {
                     Text(channel.onlineInfoText(currentUserId: currentUserId))

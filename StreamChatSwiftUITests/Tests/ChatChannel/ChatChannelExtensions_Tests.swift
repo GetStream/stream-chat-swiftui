@@ -26,7 +26,7 @@ class ChatChannelExtensions_Tests: XCTestCase {
         let channel = ChatChannel.mockDMChannel()
         
         // When
-        let typingIndicatorString = channel.typingIndicatorString
+        let typingIndicatorString = channel.typingIndicatorString(currentUserId: nil)
         
         // Then
         XCTAssert(typingIndicatorString == "Someone is typing")
@@ -42,7 +42,7 @@ class ChatChannelExtensions_Tests: XCTestCase {
         )
         
         // When
-        let typingIndicatorString = channel.typingIndicatorString
+        let typingIndicatorString = channel.typingIndicatorString(currentUserId: nil)
         
         // Then
         XCTAssert(typingIndicatorString == "Martin is typing")
@@ -61,7 +61,7 @@ class ChatChannelExtensions_Tests: XCTestCase {
         )
         
         // When
-        let typingIndicatorString = channel.typingIndicatorString
+        let typingIndicatorString = channel.typingIndicatorString(currentUserId: nil)
         
         // Then
         XCTAssert(

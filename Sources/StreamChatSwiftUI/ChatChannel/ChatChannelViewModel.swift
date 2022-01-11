@@ -283,6 +283,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if type != channelHeaderType {
             channelHeaderType = type
+        } else if type == .typingIndicator {
+            // Toolbar is not updated when new user starts typing.
+            // Therefore, we shortly update the state to regular to trigger an update.
+            channelHeaderType = .regular
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.channelHeaderType = .typingIndicator
+            }
         }
     }
 }

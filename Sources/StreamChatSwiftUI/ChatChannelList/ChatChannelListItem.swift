@@ -87,7 +87,7 @@ public struct ChatChannelListItem: View {
         } else if !channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId
         ).isEmpty {
-            return channel.typingIndicatorString
+            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         } else if let latestMessage = channel.latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {

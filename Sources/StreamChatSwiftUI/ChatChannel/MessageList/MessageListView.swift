@@ -149,7 +149,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             if !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
                 && utils.typingIndicatorPlacement == .bottomOverlay {
                 TypingIndicatorBottomView(
-                    typingIndicatorString: channel.typingIndicatorString
+                    typingIndicatorString: channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
                 )
             }
         }
