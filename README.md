@@ -6,6 +6,8 @@
 
 The SwiftUI SDK is built on top of the [StreamChat](https://getstream.io/chat/docs/ios-swift/?language=swift) framework and it's a SwiftUI alternative to the [StreamChatUI](https://getstream.io/chat/docs/sdk/ios/) SDK. It's built completely in SwiftUI, using declarative patterns, that will be familiar to developers working with SwiftUI. The SDK includes an extensive set of performant and customizable UI components which allow you to get started quickly with little to no plumbing required.
 
+The complete documentation and capabilities of the SwiftUI SDK can be found [here](https://getstream.io/chat/docs/sdk/ios/swiftui/).
+
 ## Main Features
 
 - **Channel list:** Browse channels and perform actions on them.
