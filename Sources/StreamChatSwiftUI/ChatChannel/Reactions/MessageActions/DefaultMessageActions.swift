@@ -66,6 +66,31 @@ extension MessageAction {
             )
             
             messageActions.append(flagAction)
+            
+            let author = message.author
+            let currentUser = chatClient.currentUserController().currentUser
+            let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
+            if isMuted {
+                let unmuteAction = unmuteAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    unmutedUser: author,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                messageActions.append(unmuteAction)
+            } else {
+                let muteAction = muteAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    mutedUser: author,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                messageActions.append(muteAction)
+            }
         }
         
         return messageActions
@@ -223,5 +248,75 @@ extension MessageAction {
         )
         
         return flagMessage
+    }
+    
+    private static func muteAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        mutedUser: ChatUser,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let muteController = chatClient.userController(userId: mutedUser.id)
+        let muteAction = {
+            muteController.mute { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "mute"
+                        )
+                    )
+                }
+            }
+        }
+        
+        let muteUser = MessageAction(
+            title: L10n.Message.Actions.userMute,
+            iconName: "speaker.slash",
+            action: muteAction,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return muteUser
+    }
+    
+    private static func unmuteAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        unmutedUser: ChatUser,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let unmuteController = chatClient.userController(userId: unmutedUser.id)
+        let unmuteAction = {
+            unmuteController.unmute { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "unmute"
+                        )
+                    )
+                }
+            }
+        }
+        
+        let unmuteUser = MessageAction(
+            title: L10n.Message.Actions.userUnmute,
+            iconName: "speaker.wave.1",
+            action: unmuteAction,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return unmuteUser
     }
 }
