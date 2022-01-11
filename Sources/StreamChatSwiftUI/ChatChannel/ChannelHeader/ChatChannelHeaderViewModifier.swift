@@ -33,7 +33,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
             VStack(spacing: 2) {
                 Text(channelNamer(channel, currentUserId) ?? "")
                     .font(fonts.bodyBold)
-                if !channel.currentlyTypingUsers.isEmpty
+                if !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
                     && utils.typingIndicatorPlacement == .navigationBar {
                     HStack {
                         TypingIndicatorView()

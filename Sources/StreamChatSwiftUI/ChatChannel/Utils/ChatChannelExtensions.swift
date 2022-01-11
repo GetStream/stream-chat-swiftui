@@ -6,6 +6,7 @@ import Foundation
 import StreamChat
 
 extension ChatChannel {
+    
     func onlineInfoText(currentUserId: String) -> String {
         if isDirectMessageChannel {
             guard let member = lastActiveMembers
@@ -25,6 +26,12 @@ extension ChatChannel {
         }
 
         return L10n.Message.Title.group(memberCount, watcherCount)
+    }
+    
+    func currentlyTypingUsersFiltered(currentUserId: UserId?) -> [ChatUser] {
+        currentlyTypingUsers.filter { user in
+            user.id != currentUserId
+        }
     }
     
     var typingIndicatorString: String {

@@ -7,6 +7,7 @@ import SwiftUI
 
 struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
     
     var factory: Factory
     var channel: ChatChannel
@@ -145,7 +146,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 DateIndicatorView(date: date)
             }
                 
-            if !channel.currentlyTypingUsers.isEmpty
+            if !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
                 && utils.typingIndicatorPlacement == .bottomOverlay {
                 TypingIndicatorBottomView(
                     typingIndicatorString: channel.typingIndicatorString

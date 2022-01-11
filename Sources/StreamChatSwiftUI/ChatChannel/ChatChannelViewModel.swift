@@ -273,7 +273,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         let type: ChannelHeaderType
         if !reactionsShown && isMessageThread {
             type = .messageThread
-        } else if !channel.currentlyTypingUsers.isEmpty {
+        } else if !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty {
             type = .typingIndicator
         } else {
             type = .regular
