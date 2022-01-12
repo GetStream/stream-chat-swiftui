@@ -7,6 +7,7 @@ import SwiftUI
 
 struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
     
     var factory: Factory
     var channel: ChatChannel
@@ -144,6 +145,13 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             if let date = currentDateString {
                 DateIndicatorView(date: date)
             }
+                
+            if !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
+                && utils.typingIndicatorPlacement == .bottomOverlay {
+                TypingIndicatorBottomView(
+                    typingIndicatorString: channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+                )
+            }
         }
         .onReceive(keyboardPublisher) { visible in
             if currentDateString != nil {
@@ -238,6 +246,31 @@ public struct DateIndicatorView: View {
                 .cornerRadius(16)
                 .padding(.all, 8)
             Spacer()
+        }
+    }
+}
+
+struct TypingIndicatorBottomView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    
+    var typingIndicatorString: String
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            HStack {
+                TypingIndicatorView()
+                Text(typingIndicatorString)
+                    .font(.footnote)
+                    .foregroundColor(Color(colors.textLowEmphasis))
+                Spacer()
+            }
+            .standardPadding()
+            .background(
+                Color(colors.background)
+                    .opacity(0.9)
+            )
         }
     }
 }

@@ -86,9 +86,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    @Published public var reactionsShown = false
+    @Published public var reactionsShown = false {
+        didSet {
+            // When reactions are shown, the navigation bar is hidden.
+            // Check the header type and trigger an update.
+            checkHeaderType()
+        }
+    }
+
     @Published public var quotedMessage: ChatMessage?
     @Published public var editedMessage: ChatMessage?
+    @Published public var channelHeaderType: ChannelHeaderType = .regular
     
     public var channel: ChatChannel {
         channelController.channel!
@@ -123,6 +131,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             name: UIApplication.didReceiveMemoryWarningNotification,
             object: nil
         )
+        
+        checkHeaderType()
     }
     
     @objc
@@ -178,6 +188,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelController: ChatChannelController
     ) {
         messages = channelController.messages
+        checkHeaderType()
     }
 
     public func showReactionOverlay() {
@@ -259,6 +270,32 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             channelController.markRead()
         }
     }
+    
+    private func checkHeaderType() {
+        let type: ChannelHeaderType
+        let typingUsers = channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        )
+        
+        if !reactionsShown && isMessageThread {
+            type = .messageThread
+        } else if !typingUsers.isEmpty {
+            type = .typingIndicator
+        } else {
+            type = .regular
+        }
+        
+        if type != channelHeaderType {
+            channelHeaderType = type
+        } else if type == .typingIndicator {
+            // Toolbar is not updated when new user starts typing.
+            // Therefore, we shortly update the state to regular to trigger an update.
+            channelHeaderType = .regular
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.channelHeaderType = .typingIndicator
+            }
+        }
+    }
 }
 
 extension ChatMessage: Identifiable {
@@ -315,4 +352,14 @@ extension ChatMessage: Identifiable {
         }
         return output
     }
+}
+
+/// The type of header shown in the chat channel screen.
+public enum ChannelHeaderType {
+    /// The regular header showing the channel name and members.
+    case regular
+    /// The header shown in message threads.
+    case messageThread
+    /// The header shown when someone is typing.
+    case typingIndicator
 }

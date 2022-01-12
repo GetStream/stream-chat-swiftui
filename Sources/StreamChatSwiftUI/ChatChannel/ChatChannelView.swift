@@ -59,10 +59,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 .if(viewModel.reactionsShown, transform: { view in
                     view.navigationBarHidden(true)
                 })
-                .if(!viewModel.reactionsShown && !viewModel.isMessageThread) { view in
+                .if(viewModel.channelHeaderType == .regular) { view in
                     view.modifier(factory.makeChannelHeaderViewModifier(for: viewModel.channel))
                 }
-                .if(!viewModel.reactionsShown && viewModel.isMessageThread) { view in
+                .if(viewModel.channelHeaderType == .typingIndicator) { view in
+                    view.modifier(factory.makeChannelHeaderViewModifier(for: viewModel.channel))
+                }
+                .if(viewModel.channelHeaderType == .messageThread) { view in
                     view.modifier(factory.makeMessageThreadHeaderViewModifier())
                 }
             

@@ -93,13 +93,20 @@ extension ChatChannel: Identifiable {
     }
 
     public var id: String {
-        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(unreadCount.messages)"
+        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(unreadCount.messages)-\(typingUsersString)"
     }
     
-    public var lastActiveMembersCount: Int {
+    private var lastActiveMembersCount: Int {
         lastActiveMembers.filter { member in
             member.isOnline
         }
         .count
+    }
+    
+    private var typingUsersString: String {
+        currentlyTypingUsers.map { user in
+            user.id
+        }
+        .joined(separator: "-")
     }
 }
