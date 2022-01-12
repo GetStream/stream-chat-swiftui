@@ -75,7 +75,7 @@ extension MessageAction {
                     for: message,
                     channel: channel,
                     chatClient: chatClient,
-                    unmutedUser: author,
+                    userToUnmute: author,
                     onFinish: onFinish,
                     onError: onError
                 )
@@ -85,7 +85,7 @@ extension MessageAction {
                     for: message,
                     channel: channel,
                     chatClient: chatClient,
-                    mutedUser: author,
+                    userToMute: author,
                     onFinish: onFinish,
                     onError: onError
                 )
@@ -254,11 +254,11 @@ extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        mutedUser: ChatUser,
+        userToMute: ChatUser,
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let muteController = chatClient.userController(userId: mutedUser.id)
+        let muteController = chatClient.userController(userId: userToMute.id)
         let muteAction = {
             muteController.mute { error in
                 if let error = error {
@@ -289,11 +289,11 @@ extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        unmutedUser: ChatUser,
+        userToUnmute: ChatUser,
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let unmuteController = chatClient.userController(userId: unmutedUser.id)
+        let unmuteController = chatClient.userController(userId: userToUnmute.id)
         let unmuteAction = {
             unmuteController.unmute { error in
                 if let error = error {
