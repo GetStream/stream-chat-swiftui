@@ -15,7 +15,7 @@
 			<key>zero</key>
 			<string> is typing</string>
 			<key>one</key>
-			<string> and %2$d more is typing</string>
+			<string> and %2$d more are typing</string>
 			<key>other</key>
 			<string> and %2$d more are typing</string>
 		</dict>

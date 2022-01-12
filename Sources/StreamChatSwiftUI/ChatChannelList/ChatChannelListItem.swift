@@ -12,6 +12,7 @@ public struct ChatChannelListItem: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
+    @Injected(\.chatClient) private var chatClient
         
     var channel: ChatChannel
     var channelName: String
@@ -47,7 +48,9 @@ public struct ChatChannelListItem: View {
                             }
                         } else {
                             HStack(spacing: 4) {
-                                if !channel.currentlyTypingUsers.isEmpty {
+                                if !channel.currentlyTypingUsersFiltered(
+                                    currentUserId: chatClient.currentUserId
+                                ).isEmpty {
                                     TypingIndicatorView()
                                 }
                                 SubtitleText(text: subtitleText)
@@ -81,8 +84,10 @@ public struct ChatChannelListItem: View {
     private var subtitleText: String {
         if channel.isMuted {
             return L10n.Channel.Item.muted
-        } else if !channel.currentlyTypingUsers.isEmpty {
-            return channel.typingIndicatorString
+        } else if !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty {
+            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         } else if let latestMessage = channel.latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {
