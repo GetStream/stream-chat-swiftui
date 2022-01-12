@@ -177,7 +177,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var reactionsShown: Bool {
-        !message.reactionScores.isEmpty && !message.isDeleted
+        !message.reactionScores.isEmpty
+            && !message.isDeleted
+            && channel.config.reactionsEnabled
     }
     
     private func dragChanged(to value: CGFloat) {
