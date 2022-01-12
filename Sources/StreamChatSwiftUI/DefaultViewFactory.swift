@@ -553,6 +553,16 @@ extension ViewFactory {
             handleCommand: handleCommand
         )
     }
+    
+    public func makeMessageReadIndicatorView(
+        readUsers: [ChatUser],
+        showReadCount: Bool
+    ) -> some View {
+        MessageReadIndicatorView(
+            readUsers: readUsers,
+            showReadCount: showReadCount
+        )
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

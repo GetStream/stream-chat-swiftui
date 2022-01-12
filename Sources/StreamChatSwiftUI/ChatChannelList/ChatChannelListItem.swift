@@ -71,7 +71,9 @@ public struct ChatChannelListItem: View {
                         }
                         
                         HStack(spacing: 4) {
-                            if let message = channel.latestMessages.first, message.isSentByCurrentUser {
+                            if let message = channel.latestMessages.first,
+                               message.isSentByCurrentUser,
+                               !message.isDeleted {
                                 MessageReadIndicatorView(
                                     readUsers: channel.readUsers(
                                         currentUserId: chatClient.currentUserId
