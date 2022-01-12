@@ -11,7 +11,7 @@ The second place, where a typing indicator is shown, is in the chat channel view
 
 The configuration for placing the typing indicator can be found in the `TypingIndicatorPlacement` enum, which is part of the `Utils` class. By default, the placement of the typing indicator is above the composer, which is represented by the enum value `.bottomOverlay`.
 
-Here's an example how to change the configuration, so that the typing indicator is shown in the navigation bar.
+Here's an example of how to change the configuration, so that the typing indicator is shown in the navigation bar (represented by the `TypingIndicatorPlacement` enum value `.navigationBar`).
 
 ```swift
 let utils = Utils(typingIndicatorPlacement: .navigationBar)        
