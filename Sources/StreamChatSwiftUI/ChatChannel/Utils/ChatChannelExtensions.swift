@@ -7,6 +7,10 @@ import StreamChat
 
 extension ChatChannel {
     
+    /// Returns the online info text for a channel.
+    /// - Parameters:
+    ///  - currentUserId: the id of the current user.
+    /// - Returns: the online info text string.
     func onlineInfoText(currentUserId: String) -> String {
         if isDirectMessageChannel {
             guard let member = lastActiveMembers
@@ -28,12 +32,20 @@ extension ChatChannel {
         return L10n.Message.Title.group(memberCount, watcherCount)
     }
     
+    /// Returns the currently typing users, without the current user.
+    /// - Parameters:
+    ///  - currentUserId: the id of the current user.
+    /// - Returns: Array of users that are currently typing.
     func currentlyTypingUsersFiltered(currentUserId: UserId?) -> [ChatUser] {
         currentlyTypingUsers.filter { user in
             user.id != currentUserId
         }
     }
     
+    /// Returns the typing indicator string.
+    /// - Parameters:
+    ///  - currentUserId: the id of the current user.
+    /// - Returns: the typing indicator string.
     func typingIndicatorString(currentUserId: UserId?) -> String {
         let typingUsers = currentlyTypingUsersFiltered(currentUserId: currentUserId)
         if let user = typingUsers.first(where: { user in user.name != nil }), let name = user.name {
@@ -44,7 +56,11 @@ extension ChatChannel {
         }
     }
     
-    func readUsers(currentUserId: UserId?) -> [ChatUser] {
+    /// Returns users that have read the channel's latest message.
+    /// - Parameters:
+    ///  - currentUserId: the id of the current user.
+    /// - Returns: The list of users that read the channel.
+    public func readUsers(currentUserId: UserId?) -> [ChatUser] {
         guard let message = latestMessages.first else {
             return []
         }

@@ -143,9 +143,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         } else if message.isSentByCurrentUser {
                             HStack(spacing: 4) {
                                 factory.makeMessageReadIndicatorView(
-                                    readUsers: channel.readUsers(
-                                        currentUserId: chatClient.currentUserId
-                                    ),
+                                    channel: channel,
+                                    message: message,
                                     showReadCount: isInGroup
                                 )
                                 MessageDateView(message: message)
