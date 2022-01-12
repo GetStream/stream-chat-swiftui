@@ -65,8 +65,8 @@ class ChatChannelExtensions_Tests: XCTestCase {
         
         // Then
         XCTAssert(
-            typingIndicatorString == "Stefan and 1 more is typing"
-                || typingIndicatorString == "Martin and 1 more is typing"
+            typingIndicatorString == "Stefan and 1 more are typing"
+                || typingIndicatorString == "Martin and 1 more are typing"
         ) // Any of the names can appear first.
     }
 }

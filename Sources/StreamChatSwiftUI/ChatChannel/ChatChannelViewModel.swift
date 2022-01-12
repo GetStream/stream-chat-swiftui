@@ -88,6 +88,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     @Published public var reactionsShown = false {
         didSet {
+            // When reactions are shown, the navigation bar is hidden.
+            // Check the header type and trigger an update.
             checkHeaderType()
         }
     }
@@ -271,11 +273,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func checkHeaderType() {
         let type: ChannelHeaderType
+        let typingUsers = channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        )
+        
         if !reactionsShown && isMessageThread {
             type = .messageThread
-        } else if !channel.currentlyTypingUsersFiltered(
-            currentUserId: chatClient.currentUserId
-        ).isEmpty {
+        } else if !typingUsers.isEmpty {
             type = .typingIndicator
         } else {
             type = .regular
