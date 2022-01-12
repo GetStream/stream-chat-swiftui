@@ -69,9 +69,7 @@ public struct ChatChannelListItem: View {
                         }
                         
                         HStack(spacing: 4) {
-                            if let message = channel.latestMessages.first,
-                               message.isSentByCurrentUser,
-                               !message.isDeleted {
+                            if shouldShowReadEvents {
                                 MessageReadIndicatorView(
                                     readUsers: channel.readUsers(
                                         currentUserId: chatClient.currentUserId
@@ -89,6 +87,16 @@ public struct ChatChannelListItem: View {
             .disabled(disabled)
         }
         .id("\(channel.id)-base")
+    }
+    
+    private var shouldShowReadEvents: Bool {
+        if let message = channel.latestMessages.first,
+           message.isSentByCurrentUser,
+           !message.isDeleted {
+            return channel.config.readEventsEnabled
+        }
+
+        return false
     }
     
     private var shouldShowTypingIndicator: Bool {
