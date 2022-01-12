@@ -143,8 +143,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         } else if message.isSentByCurrentUser {
                             HStack(spacing: 4) {
                                 MessageReadIndicatorView(
-                                    readUsers: readUsers,
-                                    isGroup: isInGroup
+                                    readUsers: channel.readUsers(
+                                        currentUserId: chatClient.currentUserId
+                                    ),
+                                    showReadCount: isInGroup
                                 )
                                 MessageDateView(message: message)
                             }
@@ -160,14 +162,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             }
         }
         .padding(.top, reactionsShown ? 24 : 0)
-    }
-    
-    private var readUsers: [ChatUser] {
-        let readUsers = channel.reads.filter {
-            $0.lastReadAt > message.createdAt &&
-                $0.user.id != chatClient.currentUserId
-        }.map(\.user)
-        return readUsers
     }
     
     private var contentWidth: CGFloat {

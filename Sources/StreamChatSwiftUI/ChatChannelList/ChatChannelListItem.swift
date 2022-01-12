@@ -70,7 +70,17 @@ public struct ChatChannelListItem: View {
                             )
                         }
                         
-                        SubtitleText(text: timestampText)
+                        HStack(spacing: 4) {
+                            if let message = channel.latestMessages.first, message.isSentByCurrentUser {
+                                MessageReadIndicatorView(
+                                    readUsers: channel.readUsers(
+                                        currentUserId: chatClient.currentUserId
+                                    ),
+                                    showReadCount: false
+                                )
+                            }
+                            SubtitleText(text: timestampText)
+                        }
                     }
                 }
                 .padding(.all, 8)

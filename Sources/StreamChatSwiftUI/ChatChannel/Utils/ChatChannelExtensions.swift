@@ -44,6 +44,17 @@ extension ChatChannel {
         }
     }
     
+    func readUsers(currentUserId: UserId?) -> [ChatUser] {
+        guard let message = latestMessages.first else {
+            return []
+        }
+        let readUsers = reads.filter {
+            $0.lastReadAt > message.createdAt &&
+                $0.user.id != currentUserId
+        }.map(\.user)
+        return readUsers
+    }
+    
     private var lastSeenDateFormatter: (Date) -> String? {
         DateUtils.timeAgo
     }

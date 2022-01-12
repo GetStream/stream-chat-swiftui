@@ -93,7 +93,7 @@ extension ChatChannel: Identifiable {
     }
 
     public var id: String {
-        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(unreadCount.messages)-\(typingUsersString)"
+        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(unreadCount.messages)-\(typingUsersString)-\(readUsers(currentUserId: nil).count)"
     }
     
     private var lastActiveMembersCount: Int {

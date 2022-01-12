@@ -46,11 +46,11 @@ struct MessageReadIndicatorView: View {
     @Injected(\.colors) private var colors
     
     var readUsers: [ChatUser]
-    var isGroup: Bool
+    var showReadCount: Bool
     
     var body: some View {
         HStack(spacing: 2) {
-            if isGroup && !readUsers.isEmpty {
+            if showReadCount && !readUsers.isEmpty {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
                     .foregroundColor(colors.tintColor)
@@ -59,7 +59,7 @@ struct MessageReadIndicatorView: View {
                 uiImage: !readUsers.isEmpty ? images.readByAll : images.messageSent
             )
             .customizable()
-            .foregroundColor(!readUsers.isEmpty ? colors.tintColor : nil)
+            .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
         }
     }
