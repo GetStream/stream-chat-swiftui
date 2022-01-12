@@ -520,6 +520,20 @@ class ViewFactory_Tests: XCTestCase {
         // Then
         XCTAssert(view is TrailingSwipeActionsView)
     }
+    
+    func test_viewFactory_makeMessageReadIndicatorView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageReadIndicatorView(
+            readUsers: [],
+            showReadCount: false
+        )
+        
+        // Then
+        XCTAssert(view is MessageReadIndicatorView)
+    }
 }
 
 extension ChannelAction: Equatable {
