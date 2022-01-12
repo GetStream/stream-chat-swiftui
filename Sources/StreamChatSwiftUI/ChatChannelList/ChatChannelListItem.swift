@@ -48,9 +48,7 @@ public struct ChatChannelListItem: View {
                             }
                         } else {
                             HStack(spacing: 4) {
-                                if !channel.currentlyTypingUsersFiltered(
-                                    currentUserId: chatClient.currentUserId
-                                ).isEmpty {
+                                if shouldShowTypingIndicator {
                                     TypingIndicatorView()
                                 }
                                 SubtitleText(text: subtitleText)
@@ -93,12 +91,16 @@ public struct ChatChannelListItem: View {
         .id("\(channel.id)-base")
     }
     
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty && channel.config.typingEventsEnabled
+    }
+    
     private var subtitleText: String {
         if channel.isMuted {
             return L10n.Channel.Item.muted
-        } else if !channel.currentlyTypingUsersFiltered(
-            currentUserId: chatClient.currentUserId
-        ).isEmpty {
+        } else if shouldShowTypingIndicator {
             return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         } else if let latestMessage = channel.latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"

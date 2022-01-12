@@ -33,8 +33,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
             VStack(spacing: 2) {
                 Text(channelNamer(channel, currentUserId) ?? "")
                     .font(fonts.bodyBold)
-                if !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
-                    && utils.typingIndicatorPlacement == .navigationBar {
+                if shouldShowTypingIndicator {
                     HStack {
                         TypingIndicatorView()
                         SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
@@ -55,6 +54,12 @@ public struct DefaultChatChannelHeader: ToolbarContent {
             )
             .offset(x: 8)
         }
+    }
+    
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
+            && utils.typingIndicatorPlacement == .navigationBar
+            && channel.config.typingEventsEnabled
     }
     
     private var onlineIndicatorShown: Bool {
