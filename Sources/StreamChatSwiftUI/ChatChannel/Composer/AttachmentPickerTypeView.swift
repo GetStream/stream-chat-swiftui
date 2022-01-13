@@ -45,11 +45,13 @@ public struct AttachmentPickerTypeView: View {
                     )
                 }
                 
-                PickerTypeButton(
-                    pickerTypeState: $pickerTypeState,
-                    pickerType: .instantCommands,
-                    selected: attachmentPickerType
-                )
+                if channelConfig?.commands.count ?? 0 > 0 {
+                    PickerTypeButton(
+                        pickerTypeState: $pickerTypeState,
+                        pickerType: .instantCommands,
+                        selected: attachmentPickerType
+                    )
+                }
             case .collapsed:
                 Button {
                     withAnimation {

@@ -140,7 +140,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .overlay(
-            viewModel.composerCommand != nil ?
+            viewModel.showCommandsOverlay ?
                 factory.makeCommandsContainerView(
                     suggestions: viewModel.suggestions,
                     handleCommand: { commandInfo in

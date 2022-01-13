@@ -41,10 +41,18 @@ public class DefaultCommandsConfig: CommandsConfig {
         
         var instantCommands = [CommandHandler]()
         
-        let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
-        instantCommands.append(giphyCommand)
+        let channelConfig = channelController.channel?.config
         
-        if channelController.channel?.config.mutesEnabled == true {
+        let giphyEnabled = channelConfig?.commands.first(where: { command in
+            command.name == "giphy"
+        }) != nil
+        
+        if giphyEnabled {
+            let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
+            instantCommands.append(giphyCommand)
+        }
+        
+        if channelConfig?.mutesEnabled == true {
             let muteCommand = MuteCommandHandler(
                 channelController: channelController,
                 commandSymbol: "/mute"
