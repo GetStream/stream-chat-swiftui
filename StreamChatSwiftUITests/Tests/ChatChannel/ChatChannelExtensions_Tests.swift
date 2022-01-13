@@ -78,7 +78,7 @@ class ChatChannelExtensions_Tests: XCTestCase {
         let channel = ChatChannel.mockDMChannel(reads: [read], latestMessages: messages)
         
         // When
-        let readUsers = channel.readUsers(currentUserId: nil)
+        let readUsers = channel.readUsers(currentUserId: nil, message: messages[0])
         
         // Then
         XCTAssert(readUsers.count == 1)
@@ -90,7 +90,7 @@ class ChatChannelExtensions_Tests: XCTestCase {
         let channel = ChatChannel.mockDMChannel(reads: [])
         
         // When
-        let readUsers = channel.readUsers(currentUserId: nil)
+        let readUsers = channel.readUsers(currentUserId: nil, message: nil)
         
         // Then
         XCTAssert(readUsers.isEmpty)

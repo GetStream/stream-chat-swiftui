@@ -15,8 +15,7 @@ In order to implement your own version of the read indicator, you will need to i
 ```swift
 public func makeMessageReadIndicatorView(
     channel: ChatChannel,
-    message: ChatMessage,
-    showReadCount: Bool
+    message: ChatMessage
 ) -> some View {
 	CustomMessageReadIndicatorView(
 		channel: ChatChannel,
@@ -25,6 +24,4 @@ public func makeMessageReadIndicatorView(
 }
 ```
 
-In this method, you receive the channel and the message as parameters. Additionally, you receive the `showReadCount`, which you can ignore in case you don't want to support conditional display of the number of users that read a message.
-
-You can use the channel to extract the users who have read the message. In order to do this, call the `readUsers(currentUserId:)` method of the channel. If you need more information about the reads (e.g. last read date), you can access the `reads` property of the channel.
+In this method, you receive the channel and the message as parameters. You can use the channel to extract the users who have read the message. In order to do this, call the `readUsers(currentUserId:message:)` method of the channel. If you need more information about the reads (e.g. last read date), you can access the `reads` property of the channel.

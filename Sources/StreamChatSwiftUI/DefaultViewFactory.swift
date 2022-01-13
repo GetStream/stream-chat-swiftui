@@ -556,12 +556,13 @@ extension ViewFactory {
     
     public func makeMessageReadIndicatorView(
         channel: ChatChannel,
-        message: ChatMessage,
-        showReadCount: Bool
+        message: ChatMessage
     ) -> some View {
         let readUsers = channel.readUsers(
-            currentUserId: chatClient.currentUserId
+            currentUserId: chatClient.currentUserId,
+            message: message
         )
+        let showReadCount = channel.memberCount > 2
         return MessageReadIndicatorView(
             readUsers: readUsers,
             showReadCount: showReadCount

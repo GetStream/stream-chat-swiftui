@@ -528,8 +528,7 @@ class ViewFactory_Tests: XCTestCase {
         // When
         let view = viewFactory.makeMessageReadIndicatorView(
             channel: .mockDMChannel(),
-            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique)),
-            showReadCount: false
+            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique))
         )
         
         // Then

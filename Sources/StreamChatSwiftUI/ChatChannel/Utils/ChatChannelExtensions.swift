@@ -59,9 +59,10 @@ extension ChatChannel {
     /// Returns users that have read the channel's latest message.
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
+    ///  - message: the current message.
     /// - Returns: The list of users that read the channel.
-    public func readUsers(currentUserId: UserId?) -> [ChatUser] {
-        guard let message = latestMessages.first else {
+    public func readUsers(currentUserId: UserId?, message: ChatMessage?) -> [ChatUser] {
+        guard let message = message else {
             return []
         }
         let readUsers = reads.filter {
