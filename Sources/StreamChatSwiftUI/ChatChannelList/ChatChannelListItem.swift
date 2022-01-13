@@ -33,44 +33,38 @@ public struct ChatChannelListItem: View {
                     )
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(channelName)
-                            .lineLimit(1)
-                            .font(fonts.bodyBold)
-                            .foregroundColor(Color(colors.text))
-                        if let image = image {
-                            HStack(spacing: 4) {
-                                Image(uiImage: image)
-                                    .customizable()
-                                    .frame(maxHeight: 12)
-                                    .foregroundColor(Color(colors.subtitleText))
-                                SubtitleText(text: subtitleText)
-                                Spacer()
-                            }
-                        } else {
-                            HStack(spacing: 4) {
-                                if !channel.currentlyTypingUsersFiltered(
-                                    currentUserId: chatClient.currentUserId
-                                ).isEmpty {
-                                    TypingIndicatorView()
-                                }
-                                SubtitleText(text: subtitleText)
-                                Spacer()
-                            }
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing, spacing: 4) {
-                        if channel.unreadCount == .noUnread {
+                        HStack {
+                            titleView
+                            
                             Spacer()
-                        } else {
-                            UnreadIndicatorView(
-                                unreadCount: channel.unreadCount.messages
-                            )
+                            
+                            if channel.unreadCount != .noUnread {
+                                UnreadIndicatorView(
+                                    unreadCount: channel.unreadCount.messages
+                                )
+                            }
                         }
                         
-                        SubtitleText(text: timestampText)
+                        HStack {
+                            subtitleView
+                            
+                            Spacer()
+                            
+                            HStack(spacing: 4) {
+                                if let message = channel.latestMessages.first,
+                                   message.isSentByCurrentUser,
+                                   !message.isDeleted {
+                                    MessageReadIndicatorView(
+                                        readUsers: channel.readUsers(
+                                            currentUserId: chatClient.currentUserId,
+                                            message: channel.latestMessages.first
+                                        ),
+                                        showReadCount: false
+                                    )
+                                }
+                                SubtitleText(text: timestampText)
+                            }
+                        }
                     }
                 }
                 .padding(.all, 8)
@@ -79,6 +73,32 @@ public struct ChatChannelListItem: View {
             .disabled(disabled)
         }
         .id("\(channel.id)-base")
+    }
+    
+    private var titleView: some View {
+        Text(channelName)
+            .lineLimit(1)
+            .font(fonts.bodyBold)
+            .foregroundColor(Color(colors.text))
+    }
+    
+    private var subtitleView: some View {
+        HStack(spacing: 4) {
+            if let image = image {
+                Image(uiImage: image)
+                    .customizable()
+                    .frame(maxHeight: 12)
+                    .foregroundColor(Color(colors.subtitleText))
+            } else {
+                if !channel.currentlyTypingUsersFiltered(
+                    currentUserId: chatClient.currentUserId
+                ).isEmpty {
+                    TypingIndicatorView()
+                }
+            }
+            SubtitleText(text: subtitleText)
+            Spacer()
+        }
     }
     
     private var subtitleText: String {

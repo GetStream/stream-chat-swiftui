@@ -541,4 +541,15 @@ public protocol ViewFactory: AnyObject {
         suggestions: [String: Any],
         handleCommand: @escaping ([String: Any]) -> Void
     ) -> CommandsContainerViewType
+    
+    associatedtype MessageReadIndicatorViewType: View
+    /// Creates the message read indicator view.
+    /// - Parameters:
+    ///  - channel: the channel where the message was sent.
+    ///  - message: the sent message.
+    /// - Returns: view shown in the message read indicator slot.
+    func makeMessageReadIndicatorView(
+        channel: ChatChannel,
+        message: ChatMessage
+    ) -> MessageReadIndicatorViewType
 }
