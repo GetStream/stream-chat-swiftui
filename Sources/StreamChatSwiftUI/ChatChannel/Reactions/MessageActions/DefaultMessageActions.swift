@@ -23,20 +23,22 @@ extension MessageAction {
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
         
-        let replyAction = replyAction(
-            for: message,
-            channel: channel,
-            onFinish: onFinish
-        )
-        messageActions.append(replyAction)
-        
-        if !message.isPartOfThread {
-            let replyThread = threadReplyAction(
-                factory: factory,
+        if channel.config.repliesEnabled {
+            let replyAction = replyAction(
                 for: message,
-                channel: channel
+                channel: channel,
+                onFinish: onFinish
             )
-            messageActions.append(replyThread)
+            messageActions.append(replyAction)
+            
+            if !message.isPartOfThread {
+                let replyThread = threadReplyAction(
+                    factory: factory,
+                    for: message,
+                    channel: channel
+                )
+                messageActions.append(replyThread)
+            }
         }
         
         if message.isSentByCurrentUser {
