@@ -292,10 +292,14 @@ extension ViewFactory {
     }
     
     public func makeLeadingComposerView(
-        state: Binding<PickerTypeState>
+        state: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?
     ) -> some View {
-        AttachmentPickerTypeView(pickerTypeState: state)
-            .padding(.bottom, 8)
+        AttachmentPickerTypeView(
+            pickerTypeState: state,
+            channelConfig: channelConfig
+        )
+        .padding(.bottom, 8)
     }
     
     @ViewBuilder

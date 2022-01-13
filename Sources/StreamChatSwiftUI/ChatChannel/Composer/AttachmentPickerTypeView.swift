@@ -2,6 +2,7 @@
 // Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 /// Enum for the picker type state.
@@ -30,16 +31,19 @@ public struct AttachmentPickerTypeView: View {
     @Injected(\.colors) private var colors
     
     @Binding var pickerTypeState: PickerTypeState
+    var channelConfig: ChannelConfig?
     
     public var body: some View {
         HStack(spacing: 16) {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                PickerTypeButton(
-                    pickerTypeState: $pickerTypeState,
-                    pickerType: .media,
-                    selected: attachmentPickerType
-                )
+                if channelConfig?.uploadsEnabled == true {
+                    PickerTypeButton(
+                        pickerTypeState: $pickerTypeState,
+                        pickerType: .media,
+                        selected: attachmentPickerType
+                    )
+                }
                 
                 PickerTypeButton(
                     pickerTypeState: $pickerTypeState,

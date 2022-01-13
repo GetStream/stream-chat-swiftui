@@ -15,6 +15,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @State private var composerHeight: CGFloat = 0
     
     private var factory: Factory
+    private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
     
@@ -27,6 +28,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
+        channelConfig = channelController.channel?.config
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory.makeMessageComposerViewModel(
                 with: channelController,
@@ -55,7 +57,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
             
             HStack(alignment: .bottom) {
-                factory.makeLeadingComposerView(state: $viewModel.pickerTypeState)
+                factory.makeLeadingComposerView(
+                    state: $viewModel.pickerTypeState,
+                    channelConfig: channelConfig
+                )
 
                 factory.makeComposerInputView(
                     text: $viewModel.text,

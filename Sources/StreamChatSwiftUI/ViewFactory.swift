@@ -288,10 +288,13 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype LeadingComposerViewType: View
     /// Creates the leading part of the composer view.
-    /// - Parameter state: Indicator what's the current picker state (can be ignored for different types of views).
+    /// - Parameters:
+    ///  - state: Indicator what's the current picker state (can be ignored for different types of views).
+    ///  - channelConfig: The configuration of a channel.
     /// - Returns: view displayed in the leading part of the message composer view.
     func makeLeadingComposerView(
-        state: Binding<PickerTypeState>
+        state: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?
     ) -> LeadingComposerViewType
     
     /// Creates the composer input view.
