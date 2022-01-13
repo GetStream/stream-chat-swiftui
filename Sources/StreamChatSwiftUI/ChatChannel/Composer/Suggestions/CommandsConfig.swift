@@ -33,23 +33,33 @@ public class DefaultCommandsConfig: CommandsConfig {
     public func makeCommandsHandler(
         with channelController: ChatChannelController
     ) -> CommandsHandler {
-        let mentionsCommand = MentionsCommandHandler(
+        let mentionsCommandHandler = MentionsCommandHandler(
             channelController: channelController,
             commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
+        
+        var instantCommands = [CommandHandler]()
+        
         let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
-        let muteCommand = MuteCommandHandler(
-            channelController: channelController,
-            commandSymbol: "/mute"
+        instantCommands.append(giphyCommand)
+        
+        if channelController.channel?.config.mutesEnabled == true {
+            let muteCommand = MuteCommandHandler(
+                channelController: channelController,
+                commandSymbol: "/mute"
+            )
+            let unmuteCommand = UnmuteCommandHandler(
+                channelController: channelController,
+                commandSymbol: "/unmute"
+            )
+            instantCommands.append(muteCommand)
+            instantCommands.append(unmuteCommand)
+        }
+
+        let instantCommandsHandler = InstantCommandsHandler(
+            commands: instantCommands
         )
-        let unmuteCommand = UnmuteCommandHandler(
-            channelController: channelController,
-            commandSymbol: "/unmute"
-        )
-        let instantCommands = InstantCommandsHandler(
-            commands: [giphyCommand, muteCommand, unmuteCommand]
-        )
-        return CommandsHandler(commands: [mentionsCommand, instantCommands])
+        return CommandsHandler(commands: [mentionsCommandHandler, instantCommandsHandler])
     }
 }

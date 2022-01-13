@@ -32,22 +32,24 @@ extension ChannelAction {
             actions.append(leaveGroup)
         }
         
-        if channel.isMuted {
-            let unmuteUser = unmuteAction(
-                for: channel,
-                chatClient: chatClient,
-                onDismiss: onDismiss,
-                onError: onError
-            )
-            actions.append(unmuteUser)
-        } else {
-            let muteUser = muteAction(
-                for: channel,
-                chatClient: chatClient,
-                onDismiss: onDismiss,
-                onError: onError
-            )
-            actions.append(muteUser)
+        if channel.config.mutesEnabled {
+            if channel.isMuted {
+                let unmuteUser = unmuteAction(
+                    for: channel,
+                    chatClient: chatClient,
+                    onDismiss: onDismiss,
+                    onError: onError
+                )
+                actions.append(unmuteUser)
+            } else {
+                let muteUser = muteAction(
+                    for: channel,
+                    chatClient: chatClient,
+                    onDismiss: onDismiss,
+                    onError: onError
+                )
+                actions.append(muteUser)
+            }
         }
 
         let deleteConversation = deleteAction(

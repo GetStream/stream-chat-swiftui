@@ -69,29 +69,31 @@ extension MessageAction {
             
             messageActions.append(flagAction)
             
-            let author = message.author
-            let currentUser = chatClient.currentUserController().currentUser
-            let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
-            if isMuted {
-                let unmuteAction = unmuteAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToUnmute: author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(unmuteAction)
-            } else {
-                let muteAction = muteAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToMute: author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(muteAction)
+            if channel.config.mutesEnabled {
+                let author = message.author
+                let currentUser = chatClient.currentUserController().currentUser
+                let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
+                if isMuted {
+                    let unmuteAction = unmuteAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToUnmute: author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(unmuteAction)
+                } else {
+                    let muteAction = muteAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToMute: author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(muteAction)
+                }
             }
         }
         
