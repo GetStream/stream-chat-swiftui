@@ -547,11 +547,9 @@ public protocol ViewFactory: AnyObject {
     /// - Parameters:
     ///  - channel: the channel where the message was sent.
     ///  - message: the sent message.
-    ///  - showReadCount: whether read count should be shown.
     /// - Returns: view shown in the message read indicator slot.
     func makeMessageReadIndicatorView(
         channel: ChatChannel,
-        message: ChatMessage,
-        showReadCount: Bool
+        message: ChatMessage
     ) -> MessageReadIndicatorViewType
 }

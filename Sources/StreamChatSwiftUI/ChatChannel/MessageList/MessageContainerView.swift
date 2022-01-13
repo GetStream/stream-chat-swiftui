@@ -138,17 +138,16 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                                         
                     if showsAllInfo && !message.isDeleted {
-                        if isInGroup && !message.isSentByCurrentUser {
-                            MessageAuthorAndDateView(message: message)
-                        } else if message.isSentByCurrentUser && channel.config.readEventsEnabled {
+                        if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
                                 factory.makeMessageReadIndicatorView(
                                     channel: channel,
-                                    message: message,
-                                    showReadCount: isInGroup
+                                    message: message
                                 )
                                 MessageDateView(message: message)
                             }
+                        } else if isInGroup {
+                            MessageAuthorAndDateView(message: message)
                         } else {
                             MessageDateView(message: message)
                         }
