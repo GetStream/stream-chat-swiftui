@@ -146,7 +146,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                 )
                                 MessageDateView(message: message)
                             }
-                        } else if isInGroup {
+                        } else if !message.isSentByCurrentUser && isInGroup {
                             MessageAuthorAndDateView(message: message)
                         } else {
                             MessageDateView(message: message)

@@ -311,6 +311,7 @@ extension ViewFactory {
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
         quotedMessage: Binding<ChatMessage?>,
+        maxMessageLength: Int?,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
@@ -326,6 +327,7 @@ extension ViewFactory {
                     addedFileURLs: addedFileURLs,
                     addedCustomAttachments: addedCustomAttachments,
                     quotedMessage: quotedMessage,
+                    maxMessageLength: maxMessageLength,
                     onCustomAttachmentTap: onCustomAttachmentTap,
                     removeAttachmentWithId: removeAttachmentWithId
                 )
@@ -341,6 +343,7 @@ extension ViewFactory {
                 addedFileURLs: addedFileURLs,
                 addedCustomAttachments: addedCustomAttachments,
                 quotedMessage: quotedMessage,
+                maxMessageLength: maxMessageLength,
                 onCustomAttachmentTap: onCustomAttachmentTap,
                 removeAttachmentWithId: removeAttachmentWithId
             )

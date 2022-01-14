@@ -70,6 +70,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     quotedMessage: $quotedMessage,
+                    maxMessageLength: channelConfig?.maxMessageLength,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
@@ -179,6 +180,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
     var quotedMessage: Binding<ChatMessage?>
+    var maxMessageLength: Int?
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     
@@ -255,7 +257,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     text: $text,
                     height: $textHeight,
                     selectedRangeLocation: $selectedRangeLocation,
-                    placeholder: L10n.Composer.Placeholder.message
+                    placeholder: L10n.Composer.Placeholder.message,
+                    maxMessageLength: maxMessageLength
                 )
                 .frame(height: textFieldHeight)
                 .overlay(
