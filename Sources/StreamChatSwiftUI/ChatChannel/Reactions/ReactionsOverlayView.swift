@@ -74,18 +74,20 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     x: messageDisplayInfo.frame.origin.x
                 )
                 .overlay(
-                    ReactionsOverlayContainer(
-                        message: viewModel.message,
-                        contentRect: messageDisplayInfo.frame,
-                        onReactionTap: { reaction in
-                            viewModel.reactionTapped(reaction)
-                            onBackgroundTap()
-                        }
-                    )
-                    .offset(
-                        x: messageDisplayInfo.frame.origin.x,
-                        y: -24
-                    )
+                    channel.config.reactionsEnabled ?
+                        ReactionsOverlayContainer(
+                            message: viewModel.message,
+                            contentRect: messageDisplayInfo.frame,
+                            onReactionTap: { reaction in
+                                viewModel.reactionTapped(reaction)
+                                onBackgroundTap()
+                            }
+                        )
+                        .offset(
+                            x: messageDisplayInfo.frame.origin.x,
+                            y: -24
+                        )
+                        : nil
                 )
                 .frame(
                     width: messageDisplayInfo.frame.width,

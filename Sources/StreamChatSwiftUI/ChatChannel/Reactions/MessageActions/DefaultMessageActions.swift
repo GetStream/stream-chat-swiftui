@@ -23,20 +23,22 @@ extension MessageAction {
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
         
-        let replyAction = replyAction(
-            for: message,
-            channel: channel,
-            onFinish: onFinish
-        )
-        messageActions.append(replyAction)
-        
-        if !message.isPartOfThread {
-            let replyThread = threadReplyAction(
-                factory: factory,
+        if channel.config.repliesEnabled {
+            let replyAction = replyAction(
                 for: message,
-                channel: channel
+                channel: channel,
+                onFinish: onFinish
             )
-            messageActions.append(replyThread)
+            messageActions.append(replyAction)
+            
+            if !message.isPartOfThread {
+                let replyThread = threadReplyAction(
+                    factory: factory,
+                    for: message,
+                    channel: channel
+                )
+                messageActions.append(replyThread)
+            }
         }
         
         if message.isSentByCurrentUser {
@@ -67,29 +69,31 @@ extension MessageAction {
             
             messageActions.append(flagAction)
             
-            let author = message.author
-            let currentUser = chatClient.currentUserController().currentUser
-            let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
-            if isMuted {
-                let unmuteAction = unmuteAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToUnmute: author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(unmuteAction)
-            } else {
-                let muteAction = muteAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToMute: author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(muteAction)
+            if channel.config.mutesEnabled {
+                let author = message.author
+                let currentUser = chatClient.currentUserController().currentUser
+                let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
+                if isMuted {
+                    let unmuteAction = unmuteAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToUnmute: author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(unmuteAction)
+                } else {
+                    let muteAction = muteAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToMute: author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(muteAction)
+                }
             }
         }
         

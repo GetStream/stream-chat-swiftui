@@ -292,10 +292,14 @@ extension ViewFactory {
     }
     
     public func makeLeadingComposerView(
-        state: Binding<PickerTypeState>
+        state: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?
     ) -> some View {
-        AttachmentPickerTypeView(pickerTypeState: state)
-            .padding(.bottom, 8)
+        AttachmentPickerTypeView(
+            pickerTypeState: state,
+            channelConfig: channelConfig
+        )
+        .padding(.bottom, 8)
     }
     
     @ViewBuilder
@@ -307,6 +311,7 @@ extension ViewFactory {
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
         quotedMessage: Binding<ChatMessage?>,
+        maxMessageLength: Int?,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
@@ -322,6 +327,7 @@ extension ViewFactory {
                     addedFileURLs: addedFileURLs,
                     addedCustomAttachments: addedCustomAttachments,
                     quotedMessage: quotedMessage,
+                    maxMessageLength: maxMessageLength,
                     onCustomAttachmentTap: onCustomAttachmentTap,
                     removeAttachmentWithId: removeAttachmentWithId
                 )
@@ -337,6 +343,7 @@ extension ViewFactory {
                 addedFileURLs: addedFileURLs,
                 addedCustomAttachments: addedCustomAttachments,
                 quotedMessage: quotedMessage,
+                maxMessageLength: maxMessageLength,
                 onCustomAttachmentTap: onCustomAttachmentTap,
                 removeAttachmentWithId: removeAttachmentWithId
             )

@@ -288,10 +288,13 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype LeadingComposerViewType: View
     /// Creates the leading part of the composer view.
-    /// - Parameter state: Indicator what's the current picker state (can be ignored for different types of views).
+    /// - Parameters:
+    ///  - state: Indicator what's the current picker state (can be ignored for different types of views).
+    ///  - channelConfig: The configuration of a channel.
     /// - Returns: view displayed in the leading part of the message composer view.
     func makeLeadingComposerView(
-        state: Binding<PickerTypeState>
+        state: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?
     ) -> LeadingComposerViewType
     
     /// Creates the composer input view.
@@ -302,6 +305,7 @@ public protocol ViewFactory: AnyObject {
     ///  - addedFileURLs: list of the added file URLs (in case they need to be displayed in the input view).
     ///  - addedCustomAttachments: list of added custom attachments.
     ///  - quotedMessage: Optional quoted message, shown in the composer input.
+    ///  - maxMessageLength: the maximum allowed message length.
     ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
     ///  - shouldScroll: whether the input field is scrollable.
     ///  - removeAttachmentWithId: called when the attachment is removed from the input view.
@@ -315,6 +319,7 @@ public protocol ViewFactory: AnyObject {
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
         quotedMessage: Binding<ChatMessage?>,
+        maxMessageLength: Int?,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void

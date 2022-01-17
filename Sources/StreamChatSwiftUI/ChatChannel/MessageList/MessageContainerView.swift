@@ -103,7 +103,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
-                            if message.isDeleted {
+                            if message.isDeleted || !channel.config.repliesEnabled {
                                 return
                             }
                             // Using updating since onEnded is not called if the gesture is canceled.
@@ -138,7 +138,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                                         
                     if showsAllInfo && !message.isDeleted {
-                        if message.isSentByCurrentUser {
+                        if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
                                 factory.makeMessageReadIndicatorView(
                                     channel: channel,
@@ -146,7 +146,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                 )
                                 MessageDateView(message: message)
                             }
-                        } else if isInGroup {
+                        } else if !message.isSentByCurrentUser && isInGroup {
                             MessageAuthorAndDateView(message: message)
                         } else {
                             MessageDateView(message: message)
@@ -176,7 +176,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var reactionsShown: Bool {
-        !message.reactionScores.isEmpty && !message.isDeleted
+        !message.reactionScores.isEmpty
+            && !message.isDeleted
+            && channel.config.reactionsEnabled
     }
     
     private func dragChanged(to value: CGFloat) {

@@ -239,6 +239,12 @@ open class MessageComposerViewModel: ObservableObject {
         channelController.channel?.isDirectMessageChannel ?? false
     }
     
+    public var showCommandsOverlay: Bool {
+        let commandAvailable = composerCommand != nil
+        let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
+        return commandAvailable && configuredCommandsAvailable
+    }
+    
     public func change(pickerState: AttachmentPickerState) {
         if pickerState != self.pickerState {
             self.pickerState = pickerState

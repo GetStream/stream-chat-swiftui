@@ -51,9 +51,7 @@ public struct ChatChannelListItem: View {
                             Spacer()
                             
                             HStack(spacing: 4) {
-                                if let message = channel.latestMessages.first,
-                                   message.isSentByCurrentUser,
-                                   !message.isDeleted {
+                                if shouldShowReadEvents {
                                     MessageReadIndicatorView(
                                         readUsers: channel.readUsers(
                                             currentUserId: chatClient.currentUserId,
@@ -90,9 +88,7 @@ public struct ChatChannelListItem: View {
                     .frame(maxHeight: 12)
                     .foregroundColor(Color(colors.subtitleText))
             } else {
-                if !channel.currentlyTypingUsersFiltered(
-                    currentUserId: chatClient.currentUserId
-                ).isEmpty {
+                if shouldShowTypingIndicator {
                     TypingIndicatorView()
                 }
             }
@@ -104,15 +100,29 @@ public struct ChatChannelListItem: View {
     private var subtitleText: String {
         if channel.isMuted {
             return L10n.Channel.Item.muted
-        } else if !channel.currentlyTypingUsersFiltered(
-            currentUserId: chatClient.currentUserId
-        ).isEmpty {
+        } else if shouldShowTypingIndicator {
             return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         } else if let latestMessage = channel.latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {
             return L10n.Channel.Item.emptyMessages
         }
+    }
+    
+    private var shouldShowReadEvents: Bool {
+        if let message = channel.latestMessages.first,
+           message.isSentByCurrentUser,
+           !message.isDeleted {
+            return channel.config.readEventsEnabled
+        }
+
+        return false
+    }
+    
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty && channel.config.typingEventsEnabled
     }
     
     private var image: UIImage? {

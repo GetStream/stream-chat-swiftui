@@ -33,23 +33,41 @@ public class DefaultCommandsConfig: CommandsConfig {
     public func makeCommandsHandler(
         with channelController: ChatChannelController
     ) -> CommandsHandler {
-        let mentionsCommand = MentionsCommandHandler(
+        let mentionsCommandHandler = MentionsCommandHandler(
             channelController: channelController,
             commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
-        let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
-        let muteCommand = MuteCommandHandler(
-            channelController: channelController,
-            commandSymbol: "/mute"
+        
+        var instantCommands = [CommandHandler]()
+        
+        let channelConfig = channelController.channel?.config
+        
+        let giphyEnabled = channelConfig?.commands.first(where: { command in
+            command.name == "giphy"
+        }) != nil
+        
+        if giphyEnabled {
+            let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
+            instantCommands.append(giphyCommand)
+        }
+        
+        if channelConfig?.mutesEnabled == true {
+            let muteCommand = MuteCommandHandler(
+                channelController: channelController,
+                commandSymbol: "/mute"
+            )
+            let unmuteCommand = UnmuteCommandHandler(
+                channelController: channelController,
+                commandSymbol: "/unmute"
+            )
+            instantCommands.append(muteCommand)
+            instantCommands.append(unmuteCommand)
+        }
+
+        let instantCommandsHandler = InstantCommandsHandler(
+            commands: instantCommands
         )
-        let unmuteCommand = UnmuteCommandHandler(
-            channelController: channelController,
-            commandSymbol: "/unmute"
-        )
-        let instantCommands = InstantCommandsHandler(
-            commands: [giphyCommand, muteCommand, unmuteCommand]
-        )
-        return CommandsHandler(commands: [mentionsCommand, instantCommands])
+        return CommandsHandler(commands: [mentionsCommandHandler, instantCommandsHandler])
     }
 }

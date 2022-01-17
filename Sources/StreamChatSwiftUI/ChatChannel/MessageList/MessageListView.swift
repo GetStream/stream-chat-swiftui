@@ -35,6 +35,12 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         utils.dateFormatter
     }
     
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
+            && utils.typingIndicatorPlacement == .bottomOverlay
+            && channel.config.typingEventsEnabled
+    }
+    
     private let scrollAreaId = "scrollArea"
     
     var body: some View {
@@ -146,8 +152,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 DateIndicatorView(date: date)
             }
                 
-            if !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
-                && utils.typingIndicatorPlacement == .bottomOverlay {
+            if shouldShowTypingIndicator {
                 TypingIndicatorBottomView(
                     typingIndicatorString: channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
                 )

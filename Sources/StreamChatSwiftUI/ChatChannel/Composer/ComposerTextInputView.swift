@@ -12,6 +12,7 @@ struct ComposerTextInputView: UIViewRepresentable {
     @Binding var selectedRangeLocation: Int
     
     var placeholder: String
+    var maxMessageLength: Int?
     
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView = InputTextView()
@@ -34,16 +35,21 @@ struct ComposerTextInputView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(textInput: self)
+        Coordinator(textInput: self, maxMessageLength: maxMessageLength)
     }
     
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
         weak var textView: InputTextView?
 
         var textInput: ComposerTextInputView
+        var maxMessageLength: Int?
         
-        init(textInput: ComposerTextInputView) {
+        init(
+            textInput: ComposerTextInputView,
+            maxMessageLength: Int?
+        ) {
             self.textInput = textInput
+            self.maxMessageLength = maxMessageLength
         }
 
         func textViewDidChange(_ textView: UITextView) {
@@ -56,7 +62,9 @@ struct ComposerTextInputView: UIViewRepresentable {
             shouldChangeTextIn range: NSRange,
             replacementText text: String
         ) -> Bool {
-            true
+            guard let maxMessageLength = maxMessageLength else { return true }
+            let newMessageLength = textView.text.count + (text.count - range.length)
+            return newMessageLength <= maxMessageLength
         }
         
         func layoutManager(

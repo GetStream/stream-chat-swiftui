@@ -52,6 +52,31 @@ class ReactionsOverlayView_Tests: XCTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_reactionsOverlayView_noReactions() {
+        // Given
+        let config = ChannelConfig(reactionsEnabled: false)
+        let channel = ChatChannel.mockDMChannel(config: config)
+        let view = VerticallyCenteredView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: channel,
+                currentSnapshot: UIImage(systemName: "checkmark")!,
+                messageDisplayInfo: MessageDisplayInfo(
+                    message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
+                    frame: CGRect(x: 20, y: 20, width: 200, height: 100),
+                    contentWidth: 200,
+                    isFirst: true
+                ),
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        }
+                
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
 
 struct VerticallyCenteredView<Content: View>: View {

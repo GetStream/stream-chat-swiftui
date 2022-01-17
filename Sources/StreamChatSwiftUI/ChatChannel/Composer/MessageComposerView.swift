@@ -15,6 +15,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @State private var composerHeight: CGFloat = 0
     
     private var factory: Factory
+    private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
     
@@ -27,6 +28,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
+        channelConfig = channelController.channel?.config
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory.makeMessageComposerViewModel(
                 with: channelController,
@@ -55,7 +57,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
             
             HStack(alignment: .bottom) {
-                factory.makeLeadingComposerView(state: $viewModel.pickerTypeState)
+                factory.makeLeadingComposerView(
+                    state: $viewModel.pickerTypeState,
+                    channelConfig: channelConfig
+                )
 
                 factory.makeComposerInputView(
                     text: $viewModel.text,
@@ -65,6 +70,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     quotedMessage: $quotedMessage,
+                    maxMessageLength: channelConfig?.maxMessageLength,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
@@ -135,7 +141,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .overlay(
-            viewModel.composerCommand != nil ?
+            viewModel.showCommandsOverlay ?
                 factory.makeCommandsContainerView(
                     suggestions: viewModel.suggestions,
                     handleCommand: { commandInfo in
@@ -174,6 +180,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
     var quotedMessage: Binding<ChatMessage?>
+    var maxMessageLength: Int?
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     
@@ -250,7 +257,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     text: $text,
                     height: $textHeight,
                     selectedRangeLocation: $selectedRangeLocation,
-                    placeholder: L10n.Composer.Placeholder.message
+                    placeholder: L10n.Composer.Placeholder.message,
+                    maxMessageLength: maxMessageLength
                 )
                 .frame(height: textFieldHeight)
                 .overlay(
