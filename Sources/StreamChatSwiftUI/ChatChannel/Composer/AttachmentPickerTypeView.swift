@@ -33,6 +33,10 @@ public struct AttachmentPickerTypeView: View {
     @Binding var pickerTypeState: PickerTypeState
     var channelConfig: ChannelConfig?
     
+    private var commandsAvailable: Bool {
+        channelConfig?.commands.count ?? 0 > 0
+    }
+    
     public var body: some View {
         HStack(spacing: 16) {
             switch pickerTypeState {
@@ -45,7 +49,7 @@ public struct AttachmentPickerTypeView: View {
                     )
                 }
                 
-                if channelConfig?.commands.count ?? 0 > 0 {
+                if commandsAvailable {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .instantCommands,

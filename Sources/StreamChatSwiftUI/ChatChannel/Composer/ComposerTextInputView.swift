@@ -63,7 +63,8 @@ struct ComposerTextInputView: UIViewRepresentable {
             replacementText text: String
         ) -> Bool {
             guard let maxMessageLength = maxMessageLength else { return true }
-            return textView.text.count + (text.count - range.length) <= maxMessageLength
+            let newMessageLength = textView.text.count + (text.count - range.length)
+            return newMessageLength <= maxMessageLength
         }
         
         func layoutManager(

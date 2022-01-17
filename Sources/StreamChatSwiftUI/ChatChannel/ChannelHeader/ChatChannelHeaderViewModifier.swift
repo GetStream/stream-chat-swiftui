@@ -25,6 +25,19 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         chatClient.currentUserId ?? ""
     }
     
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
+            && utils.typingIndicatorPlacement == .navigationBar
+            && channel.config.typingEventsEnabled
+    }
+    
+    private var onlineIndicatorShown: Bool {
+        !channel.lastActiveMembers.filter { member in
+            member.id != chatClient.currentUserId && member.isOnline
+        }
+        .isEmpty
+    }
+    
     public var channel: ChatChannel
     public var headerImage: UIImage
     
@@ -54,19 +67,6 @@ public struct DefaultChatChannelHeader: ToolbarContent {
             )
             .offset(x: 8)
         }
-    }
-    
-    private var shouldShowTypingIndicator: Bool {
-        !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
-            && utils.typingIndicatorPlacement == .navigationBar
-            && channel.config.typingEventsEnabled
-    }
-    
-    private var onlineIndicatorShown: Bool {
-        !channel.lastActiveMembers.filter { member in
-            member.id != chatClient.currentUserId && member.isOnline
-        }
-        .isEmpty
     }
 }
 

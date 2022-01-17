@@ -240,7 +240,9 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public var showCommandsOverlay: Bool {
-        composerCommand != nil && channelController.channel?.config.commands.count ?? 0 > 0
+        let commandAvailable = composerCommand != nil
+        let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
+        return commandAvailable && configuredCommandsAvailable
     }
     
     public func change(pickerState: AttachmentPickerState) {
