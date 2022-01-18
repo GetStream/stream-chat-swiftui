@@ -3,7 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Read indicators
+- Typing indicators
+- Muting users
+- Channel config
+
 ### 🔄 Changed
+- Leading composer view creation
 
 # [4.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.7.0)
 _January 04, 2022_
