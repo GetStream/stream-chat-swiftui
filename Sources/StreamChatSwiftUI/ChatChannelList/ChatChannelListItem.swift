@@ -22,54 +22,52 @@ public struct ChatChannelListItem: View {
     var onItemTap: (ChatChannel) -> Void
     
     public var body: some View {
-        ZStack {
-            Button {
-                onItemTap(channel)
-            } label: {
-                HStack {
-                    ChannelAvatarView(
-                        avatar: avatar,
-                        showOnlineIndicator: onlineIndicatorShown
-                    )
+        Button {
+            onItemTap(channel)
+        } label: {
+            HStack {
+                ChannelAvatarView(
+                    avatar: avatar,
+                    showOnlineIndicator: onlineIndicatorShown
+                )
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        titleView
+                        
+                        Spacer()
+                        
+                        if channel.unreadCount != .noUnread {
+                            UnreadIndicatorView(
+                                unreadCount: channel.unreadCount.messages
+                            )
+                        }
+                    }
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            titleView
-                            
-                            Spacer()
-                            
-                            if channel.unreadCount != .noUnread {
-                                UnreadIndicatorView(
-                                    unreadCount: channel.unreadCount.messages
+                    HStack {
+                        subtitleView
+                        
+                        Spacer()
+                        
+                        HStack(spacing: 4) {
+                            if shouldShowReadEvents {
+                                MessageReadIndicatorView(
+                                    readUsers: channel.readUsers(
+                                        currentUserId: chatClient.currentUserId,
+                                        message: channel.latestMessages.first
+                                    ),
+                                    showReadCount: false
                                 )
                             }
-                        }
-                        
-                        HStack {
-                            subtitleView
-                            
-                            Spacer()
-                            
-                            HStack(spacing: 4) {
-                                if shouldShowReadEvents {
-                                    MessageReadIndicatorView(
-                                        readUsers: channel.readUsers(
-                                            currentUserId: chatClient.currentUserId,
-                                            message: channel.latestMessages.first
-                                        ),
-                                        showReadCount: false
-                                    )
-                                }
-                                SubtitleText(text: timestampText)
-                            }
+                            SubtitleText(text: timestampText)
                         }
                     }
                 }
-                .padding(.all, 8)
             }
-            .foregroundColor(.black)
-            .disabled(disabled)
+            .padding(.all, 8)
         }
+        .foregroundColor(.black)
+        .disabled(disabled)
         .id("\(channel.id)-base")
     }
     

@@ -25,6 +25,7 @@ class NoChannelsView_Tests: XCTestCase {
     func test_noChannelsView_snapshot() {
         // Given
         let view = NoChannelsView()
+            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
         
         // Then
         assertSnapshot(matching: view, as: .image)

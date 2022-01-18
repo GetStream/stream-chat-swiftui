@@ -54,7 +54,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     
     public var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 0) {
                 ForEach(channels) { channel in
                     factory.makeChannelListItem(
                         channel: channel,
@@ -70,7 +70,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
                         trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
                         leadingSwipeButtonTapped: leadingSwipeButtonTapped
                     )
-                    .frame(height: 48)
                     .onAppear {
                         if let index = channels.firstIndex(where: { chatChannel in
                             chatChannel.id == channel.id
