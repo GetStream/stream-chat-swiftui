@@ -55,7 +55,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of channels matching provided query </td>
-    <th rowspan="8"><img src="ReadmeAssets/Channel_List_Bezel.png?raw=true" width="80%" /></th>
+    <th rowspan="9"><img src="ReadmeAssets/Channel_List_Bezel.png?raw=true" width="80%" /></th>
   </tr>
    <tr> <td> Channel name and image based on the channel members or custom data</td> </tr>
   <tr> <td> Unread messages indicator </td> </tr>
@@ -63,6 +63,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   <tr> <td> Online indicator for avatars </td> </tr>
   <tr> <td> Create new channel and start right away </td> </tr>
   <tr> <td> Customizable channel actions on swipe </td> </tr>
+  <tr> <td> Typing and read indicators </td> </tr>
   <tr><td> </td> </tr>
   </tr>
 </table>
@@ -76,7 +77,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of messages in a channel </td>
-    <th rowspan="10"><img src="ReadmeAssets/Message_List_Bezel.png?raw=true" width="80%" /></th>
+    <th rowspan="12"><img src="ReadmeAssets/Message_List_Bezel.png?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Photo attachments </td> </tr>
   <tr> <td> Giphy attachments </td> </tr>
@@ -86,6 +87,8 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   <tr> <td> Custom attachments </td> </tr>
   <tr> <td> Message reactions </td> </tr>
   <tr> <td> Message grouping based on the send time </td> </tr>
+  <tr> <td> Thread and inline replies </td> </tr>
+  <tr> <td> Typing and read indicators </td> </tr>
   <tr><td> </td> </tr>
   </tr>
 </table>
@@ -101,11 +104,14 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> Support for multiline text, expands and shrinks as needed </td>
-    <th rowspan="5"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
+    <th rowspan="8"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Image, video and file attachments </td> </tr>
   <tr> <td> Camera integration </td> </tr>
   <tr> <td> Custom attachments </td> </tr>
+  <tr> <td> Mentions </td> </tr>
+  <tr> <td> Instant commands (e.g. giphy) </td> </tr>
+  <tr> <td> Custom commands </td> </tr>
   <tr><td> </td> </tr>
   </tr>
 </table>
