@@ -222,7 +222,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForNewMessages(index: Int) {
-        if index < channelDataSource.messages.count - 25 {
+        if index < channelDataSource.messages.count - 20 {
             return
         }
 

@@ -14,6 +14,9 @@ open class ChannelHeaderLoader: ObservableObject {
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
     
+    /// Prevents image requests to be executed if they failed previously.
+    private var failedImageLoads = Set<String>()
+    
     /// Context provided utils.
     internal lazy var imageLoader = utils.imageLoader
     internal lazy var imageCDN = utils.imageCDN
@@ -96,6 +99,10 @@ open class ChannelHeaderLoader: ObservableObject {
         for channel: ChatChannel,
         from url: URL
     ) {
+        if failedImageLoads.contains(channel.cid.id) {
+            return
+        }
+        
         imageLoader.loadImage(
             url: url,
             imageCDN: imageCDN,
@@ -109,6 +116,7 @@ open class ChannelHeaderLoader: ObservableObject {
                     self.loadedImages[channel.cid.id] = image
                 }
             case let .failure(error):
+                self.failedImageLoads.insert(channel.cid.id)
                 log.error("error loading image: \(error.localizedDescription)")
             }
         }
