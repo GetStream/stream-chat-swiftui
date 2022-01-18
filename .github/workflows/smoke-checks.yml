@@ -73,10 +73,10 @@ jobs:
       uses: ./.github/actions/prepare-ios-simulator
       with:
         device: "iPhone 12"
-        ios: "15.0"
-        xcode: "13.0"
+        ios: "15.2"
+        xcode: "13.2.1"
     - name: Run Tests (Debug)
-      run: bundle exec fastlane test_ui device:"iPhone 12 (15.0)"
+      run: bundle exec fastlane test_ui device:"iPhone 12 (15.2)"
     - uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
