@@ -139,6 +139,31 @@ public protocol ViewFactory: AnyObject {
     /// Creates the message thread header view modifier.
     func makeMessageThreadHeaderViewModifier() -> ThreadHeaderViewModifier
     
+    associatedtype MessageContainerViewType: View
+    /// Creates the message container view.
+    /// - Parameters:
+    ///  - channel: the chat channel where the message was sent.
+    ///  - message: the chat message.
+    ///  - width: the available width for the message.
+    ///  - showsAllInfo: whether all info is shown for the message (i.e. whether is part of a group or leading message).
+    ///  - isInThread: whether the message is part of a message thread.
+    ///  - scrolledId: binding of the currently scrolled id. Use it to force scrolling to the particular message.
+    ///  - quotedMessage: binding of an optional quoted message.
+    ///  - onLongPress: called when the message is long pressed.
+    ///  - isLast: whether it is the last message (e.g. to apply extra padding).
+    /// - Returns: view shown in the message container slot.
+    func makeMessageContainerView(
+        channel: ChatChannel,
+        message: ChatMessage,
+        width: CGFloat?,
+        showsAllInfo: Bool,
+        isInThread: Bool,
+        scrolledId: Binding<String?>,
+        quotedMessage: Binding<ChatMessage?>,
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        isLast: Bool
+    ) -> MessageContainerViewType
+    
     associatedtype MessageTextViewType: View
     /// Creates the message text view.
     /// - Parameters:
@@ -241,6 +266,12 @@ public protocol ViewFactory: AnyObject {
         isFirst: Bool,
         availableWidth: CGFloat
     ) -> DeletedMessageViewType
+    
+    associatedtype SystemMessageViewType: View
+    /// Creates the view for displaying system messages.
+    /// - Parameter message: the system message.
+    /// - Returns: view displayed when a system message appears.
+    func makeSystemMessageView(message: ChatMessage) -> SystemMessageViewType
     
     associatedtype CustomAttachmentViewType: View
     /// Creates custom attachment view.

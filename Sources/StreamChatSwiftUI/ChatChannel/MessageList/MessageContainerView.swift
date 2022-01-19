@@ -17,7 +17,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     var factory: Factory
     let channel: ChatChannel
     let message: ChatMessage
-    let isInGroup: Bool
     var width: CGFloat?
     var showsAllInfo: Bool
     var isInThread: Bool
@@ -35,7 +34,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     var body: some View {
         HStack(alignment: .bottom) {
             if message.type == .system {
-                SystemMessageView(message: message.text)
+                factory.makeSystemMessageView(message: message)
             } else {
                 if message.isSentByCurrentUser {
                     MessageSpacer(spacerWidth: spacerWidth)
@@ -146,7 +145,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                 )
                                 MessageDateView(message: message)
                             }
-                        } else if !message.isSentByCurrentUser && isInGroup {
+                        } else if !message.isSentByCurrentUser && !channel.isDirectMessageChannel {
                             MessageAuthorAndDateView(message: message)
                         } else {
                             MessageDateView(message: message)

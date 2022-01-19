@@ -64,8 +64,6 @@ class MessageListView_Tests: XCTestCase {
             showScrollToLatestButton: .constant(false),
             quotedMessage: .constant(nil),
             currentDateString: nil,
-            isGroup: false,
-            unreadCount: 0,
             listId: "listId",
             isMessageThread: false,
             onMessageAppear: { _ in },

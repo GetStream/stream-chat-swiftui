@@ -40,8 +40,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 showScrollToLatestButton: $viewModel.showScrollToLatestButton,
                 quotedMessage: $viewModel.quotedMessage,
                 currentDateString: viewModel.currentDateString,
-                isGroup: !viewModel.channel.isDirectMessageChannel,
-                unreadCount: viewModel.channel.unreadCount.messages,
                 listId: viewModel.listId,
                 isMessageThread: viewModel.isMessageThread,
                 onMessageAppear: viewModel.handleMessageAppear(index:),

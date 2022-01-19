@@ -534,6 +534,19 @@ class ViewFactory_Tests: XCTestCase {
         // Then
         XCTAssert(view is MessageReadIndicatorView)
     }
+    
+    func test_viewFactory_makeSystemMessageView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeSystemMessageView(
+            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique))
+        )
+        
+        // Then
+        XCTAssert(view is SystemMessageView)
+    }
 }
 
 extension ChannelAction: Equatable {

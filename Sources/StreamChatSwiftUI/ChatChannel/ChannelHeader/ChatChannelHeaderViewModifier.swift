@@ -27,7 +27,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     
     private var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
-            && utils.typingIndicatorPlacement == .navigationBar
+            && utils.messageListConfig.typingIndicatorPlacement == .navigationBar
             && channel.config.typingEventsEnabled
     }
     

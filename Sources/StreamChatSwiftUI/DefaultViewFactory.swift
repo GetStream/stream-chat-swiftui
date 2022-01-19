@@ -164,6 +164,33 @@ extension ViewFactory {
         DefaultMessageThreadHeaderModifier()
     }
     
+    public func makeMessageContainerView(
+        channel: ChatChannel,
+        message: ChatMessage,
+        width: CGFloat?,
+        showsAllInfo: Bool,
+        isInThread: Bool,
+        scrolledId: Binding<String?>,
+        quotedMessage: Binding<ChatMessage?>,
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        isLast: Bool
+    ) -> some View {
+        MessageContainerView(
+            factory: self,
+            channel: channel,
+            message: message,
+            width: width,
+            showsAllInfo: showsAllInfo,
+            isInThread: isInThread,
+            scrolledId: scrolledId,
+            quotedMessage: quotedMessage,
+            onLongPress: onLongPress
+        )
+        .padding(.horizontal, 8)
+        .padding(.bottom, showsAllInfo ? 8 : 2)
+        .padding(.top, isLast ? 8 : 0)
+    }
+    
     public func makeMessageTextView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -256,6 +283,12 @@ extension ViewFactory {
             message: message,
             isFirst: isFirst
         )
+    }
+    
+    public func makeSystemMessageView(
+        message: ChatMessage
+    ) -> some View {
+        SystemMessageView(message: message.text)
     }
     
     public func makeCustomAttachmentViewType(

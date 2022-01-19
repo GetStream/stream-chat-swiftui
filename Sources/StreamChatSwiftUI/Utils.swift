@@ -18,7 +18,7 @@ public class Utils {
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
     public var commandsConfig: CommandsConfig
-    public var typingIndicatorPlacement: TypingIndicatorPlacement
+    public var messageListConfig: MessageListConfig
     
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
@@ -31,7 +31,7 @@ public class Utils {
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
-        typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
+        messageListConfig: MessageListConfig = MessageListConfig(),
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer()
     ) {
         self.dateFormatter = dateFormatter
@@ -45,6 +45,6 @@ public class Utils {
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
         self.commandsConfig = commandsConfig
-        self.typingIndicatorPlacement = typingIndicatorPlacement
+        self.messageListConfig = messageListConfig
     }
 }

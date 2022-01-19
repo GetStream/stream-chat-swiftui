@@ -17,8 +17,6 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var showScrollToLatestButton: Bool
     @Binding var quotedMessage: ChatMessage?
     var currentDateString: String?
-    var isGroup: Bool
-    var unreadCount: Int
     var listId: String
     var isMessageThread: Bool
     
@@ -35,9 +33,13 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         utils.dateFormatter
     }
     
+    private var messageListConfig: MessageListConfig {
+        utils.messageListConfig
+    }
+    
     private var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
-            && utils.typingIndicatorPlacement == .bottomOverlay
+            && messageListConfig.typingIndicatorPlacement == .bottomOverlay
             && channel.config.typingEventsEnabled
     }
     
@@ -59,42 +61,17 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     
                     LazyVStack(spacing: 0) {
                         ForEach(messages, id: \.messageId) { message in
-                            MessageContainerView(
-                                factory: factory,
+                            factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
-                                isInGroup: isGroup,
                                 width: width,
                                 showsAllInfo: showsAllData(for: message),
                                 isInThread: isMessageThread,
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
-                                onLongPress: { messageDisplayInfo in
-                                    if keyboardShown {
-                                        resignFirstResponder()
-                                        let updatedFrame = CGRect(
-                                            x: messageDisplayInfo.frame.origin.x,
-                                            y: messageDisplayInfo.frame.origin.y,
-                                            width: messageDisplayInfo.frame.width,
-                                            height: messageDisplayInfo.frame.height
-                                        )
-                                        
-                                        let updatedDisplayInfo = MessageDisplayInfo(
-                                            message: messageDisplayInfo.message,
-                                            frame: updatedFrame,
-                                            contentWidth: messageDisplayInfo.contentWidth,
-                                            isFirst: messageDisplayInfo.isFirst
-                                        )
-                                        
-                                        onLongPress(updatedDisplayInfo)
-                                    } else {
-                                        onLongPress(messageDisplayInfo)
-                                    }
-                                }
+                                onLongPress: handleLongPress(messageDisplayInfo:),
+                                isLast: message == messages.last
                             )
-                            .padding(.horizontal, 8)
-                            .padding(.bottom, showsAllData(for: message) ? 8 : 2)
-                            .padding(.top, message == messages.last ? 8 : 0)
                             .flippedUpsideDown()
                             .onAppear {
                                 let index = messages.firstIndex { msg in
@@ -143,7 +120,7 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             
             if showScrollToLatestButton {
                 ScrollToBottomButton(
-                    unreadCount: unreadCount,
+                    unreadCount: channel.unreadCount.messages,
                     onScrollToBottom: onScrollToBottom
                 )
             }
@@ -175,11 +152,37 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
     
     private func showsAllData(for message: ChatMessage) -> Bool {
+        if !messageListConfig.groupMessages {
+            return true
+        }
         let dateString = dateFormatter.string(from: message.createdAt)
         let prefix = message.author.id
         let key = "\(prefix)-\(dateString)"
         let inMessagingGroup = messagesGroupingInfo[key]?.contains(message.id) ?? false
         return inMessagingGroup
+    }
+    
+    private func handleLongPress(messageDisplayInfo: MessageDisplayInfo) {
+        if keyboardShown {
+            resignFirstResponder()
+            let updatedFrame = CGRect(
+                x: messageDisplayInfo.frame.origin.x,
+                y: messageDisplayInfo.frame.origin.y,
+                width: messageDisplayInfo.frame.width,
+                height: messageDisplayInfo.frame.height
+            )
+            
+            let updatedDisplayInfo = MessageDisplayInfo(
+                message: messageDisplayInfo.message,
+                frame: updatedFrame,
+                contentWidth: messageDisplayInfo.contentWidth,
+                isFirst: messageDisplayInfo.isFirst
+            )
+            
+            onLongPress(updatedDisplayInfo)
+        } else {
+            onLongPress(messageDisplayInfo)
+        }
     }
 }
 
