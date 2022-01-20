@@ -51,7 +51,7 @@ public struct MessageActionsView: View {
                     
                     Divider()
                 }
-                .padding(.horizontal)
+                .padding(.leading)
             }
         }
         .background(Color(colors.background8))

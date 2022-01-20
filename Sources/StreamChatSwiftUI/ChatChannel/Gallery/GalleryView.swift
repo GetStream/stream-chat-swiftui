@@ -48,6 +48,7 @@ struct GalleryView: View {
                                     width: reader.size.width,
                                     height: reader.size.height,
                                     resize: true,
+                                    shouldSetFrame: false,
                                     onImageLoaded: { image in
                                         loadedImages[index] = image
                                     }

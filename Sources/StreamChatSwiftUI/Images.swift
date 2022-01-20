@@ -60,6 +60,7 @@ public class Images {
     public var videoIndicator: UIImage = UIImage(systemName: "video.fill")!
     public var gallery: UIImage = UIImage(systemName: "square.grid.3x3.fill")!
     public var photoDefault: UIImage = UIImage(systemName: "photo")!
+    public var pin: UIImage = loadImageSafely(with: "icn_pin")
 
     // MARK: - Reactions
 

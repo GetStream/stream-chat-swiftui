@@ -37,7 +37,7 @@ class MessageActionsViewModel_Tests: XCTestCase {
             onError: { _ in }
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
-        let action = actions[2]
+        let action = actions[3]
         
         // When
         viewModel.alertAction = action

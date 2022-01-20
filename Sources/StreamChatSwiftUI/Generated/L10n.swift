@@ -210,10 +210,14 @@ internal enum L10n {
       internal static var flag: String { L10n.tr("Localizable", "message.actions.flag") }
       /// Reply
       internal static var inlineReply: String { L10n.tr("Localizable", "message.actions.inline-reply") }
+      /// Pin to conversation
+      internal static var pin: String { L10n.tr("Localizable", "message.actions.pin") }
       /// Resend
       internal static var resend: String { L10n.tr("Localizable", "message.actions.resend") }
       /// Thread Reply
       internal static var threadReply: String { L10n.tr("Localizable", "message.actions.thread-reply") }
+      /// Unpin from conversation
+      internal static var unpin: String { L10n.tr("Localizable", "message.actions.unpin") }
       /// Block User
       internal static var userBlock: String { L10n.tr("Localizable", "message.actions.user-block") }
       /// Mute User
@@ -234,6 +238,12 @@ internal enum L10n {
         /// Flag Message
         internal static var confirmationTitle: String { L10n.tr("Localizable", "message.actions.flag.confirmation-title") }
       }
+    }
+    internal enum Cell {
+      /// Pinned by
+      internal static var pinnedBy: String { L10n.tr("Localizable", "message.cell.pinnedBy") }
+      /// unknown
+      internal static var unknownPin: String { L10n.tr("Localizable", "message.cell.unknownPin") }
     }
     internal enum FileAttachment {
       /// Error occured while previewing the file.

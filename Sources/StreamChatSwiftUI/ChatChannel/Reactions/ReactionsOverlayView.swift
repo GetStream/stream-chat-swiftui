@@ -62,6 +62,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     Alert.defaultErrorAlert
                 }
             
+            if !messageDisplayInfo.message.isSentByCurrentUser {
+                factory.makeMessageAvatarView(for: messageDisplayInfo.message.author)
+                    .offset(
+                        x: padding / 2,
+                        y: originY + messageDisplayInfo.frame.height - padding
+                    )
+            }
+            
             VStack(alignment: .leading) {
                 MessageView(
                     factory: factory,
@@ -108,7 +116,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 .offset(
                     x: messageActionsOriginX
                 )
-                .padding(.top, 16)
+                .padding(.top, padding)
             }
             .offset(y: originY)
         }
@@ -143,7 +151,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
     
     private var messageActionsWidth: CGFloat {
-        var width = messageDisplayInfo.contentWidth
+        var width = messageDisplayInfo.contentWidth + 2 * padding
         if messageDisplayInfo.message.isSentByCurrentUser {
             width -= 2 * padding
         }

@@ -52,7 +52,6 @@ public struct ImageAttachmentContainer: View {
                     .background(Color(backgroundColor))
                 }
             }
-            .clipped()
         }
         .messageBubble(for: message, isFirst: isFirst)
         .fullScreenCover(isPresented: $galleryShown, onDismiss: {
@@ -181,24 +180,24 @@ struct ImageAttachmentView: View {
                         .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
                         
                         MultiImageView(
-                            source: sources[1],
+                            source: sources[2],
                             width: width / 2,
                             height: width / 2,
                             imageTapped: imageTapped,
                             index: 2
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
+                        .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
                     }
                     
                     VStack(spacing: spacing) {
                         MultiImageView(
-                            source: sources[2],
+                            source: sources[1],
                             width: width / 2,
                             height: width / 2,
                             imageTapped: imageTapped,
                             index: 1
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
+                        .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
                         
                         ZStack {
                             MultiImageView(
@@ -270,7 +269,6 @@ struct MultiImageView: View {
             index: index
         )
         .frame(width: width, height: height)
-        .clipped()
     }
 }
 
@@ -284,6 +282,7 @@ struct LazyLoadingImage: View {
     let width: CGFloat
     let height: CGFloat
     var resize: Bool = true
+    var shouldSetFrame: Bool = true
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
     var onImageLoaded: (UIImage) -> Void = { _ in }
@@ -337,16 +336,15 @@ struct LazyLoadingImage: View {
                 }
             )
         }
-        .clipped()
     }
     
     func imageView(for image: UIImage) -> some View {
         Image(uiImage: image)
             .resizable()
-            .scaledToFill()
+            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
             .aspectRatio(contentMode: .fill)
-            .clipped()
             .allowsHitTesting(false)
+            .clipped()
     }
 }
 

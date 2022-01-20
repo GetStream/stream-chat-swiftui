@@ -23,7 +23,19 @@ class ReactionsOverlayView_Tests: XCTestCase {
         author: .mock(id: "test", name: "martin")
     )
     
+    private let messageDisplayInfo = MessageDisplayInfo(
+        message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
+        frame: CGRect(x: 44, y: 20, width: 80, height: 50),
+        contentWidth: 200,
+        isFirst: true
+    )
+    
     private var streamChat: StreamChat?
+    
+    private let overlayImage = UIColor
+        .black
+        .withAlphaComponent(0.2)
+        .image(defaultScreenSize)
     
     override func setUp() {
         super.setUp()
@@ -36,13 +48,8 @@ class ReactionsOverlayView_Tests: XCTestCase {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: .mockDMChannel(),
-                currentSnapshot: UIImage(systemName: "checkmark")!,
-                messageDisplayInfo: MessageDisplayInfo(
-                    message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
-                    frame: CGRect(x: 20, y: 20, width: 200, height: 100),
-                    contentWidth: 200,
-                    isFirst: true
-                ),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: self.messageDisplayInfo,
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
@@ -61,13 +68,8 @@ class ReactionsOverlayView_Tests: XCTestCase {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: channel,
-                currentSnapshot: UIImage(systemName: "checkmark")!,
-                messageDisplayInfo: MessageDisplayInfo(
-                    message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
-                    frame: CGRect(x: 20, y: 20, width: 200, height: 100),
-                    contentWidth: 200,
-                    isFirst: true
-                ),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: self.messageDisplayInfo,
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )

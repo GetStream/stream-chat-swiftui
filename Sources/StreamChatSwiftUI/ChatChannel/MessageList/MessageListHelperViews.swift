@@ -74,3 +74,28 @@ struct MessageSpacer: View {
             .layoutPriority(-1)
     }
 }
+
+struct MessagePinDetailsView: View {
+    
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
+    
+    var message: ChatMessage
+    var reactionsShown: Bool
+    
+    var body: some View {
+        HStack {
+            Image(uiImage: images.pin)
+                .customizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxHeight: 12)
+            Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
+                .font(fonts.footnote)
+        }
+        .foregroundColor(Color(colors.textLowEmphasis))
+        .frame(height: 16)
+        .padding(.bottom, reactionsShown ? 16 : 0)
+        .padding(.top, 4)
+    }
+}
