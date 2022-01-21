@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View that displays the message author and the date of sending.
 struct MessageAuthorAndDateView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -22,6 +23,7 @@ struct MessageAuthorAndDateView: View {
     }
 }
 
+/// View that displays the sending date of a message.
 struct MessageDateView: View {
     @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
@@ -40,6 +42,7 @@ struct MessageDateView: View {
     }
 }
 
+/// View that displays the read indicator for a message.
 struct MessageReadIndicatorView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
@@ -65,6 +68,7 @@ struct MessageReadIndicatorView: View {
     }
 }
 
+/// Message spacer view, used for adding space depending on who sent the message..
 struct MessageSpacer: View {
     var spacerWidth: CGFloat?
     
@@ -75,6 +79,7 @@ struct MessageSpacer: View {
     }
 }
 
+/// View that's displayed when a message is pinned.
 struct MessagePinDetailsView: View {
     
     @Injected(\.colors) private var colors

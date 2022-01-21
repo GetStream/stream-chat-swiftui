@@ -8,13 +8,7 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-class ReactionsOverlayView_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
+class ReactionsOverlayView_Tests: StreamChatTestCase {
     
     private let testMessage = ChatMessage.mock(
         id: "test",
@@ -29,19 +23,12 @@ class ReactionsOverlayView_Tests: XCTestCase {
         contentWidth: 200,
         isFirst: true
     )
-    
-    private var streamChat: StreamChat?
-    
+        
     private let overlayImage = UIColor
         .black
         .withAlphaComponent(0.2)
         .image(defaultScreenSize)
     
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-
     func test_reactionsOverlayView_snapshot() {
         // Given
         let view = VerticallyCenteredView {

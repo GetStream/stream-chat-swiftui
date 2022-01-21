@@ -6,16 +6,8 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class InstantCommandsHandler_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
+class InstantCommandsHandler_Tests: StreamChatTestCase {
+        
     private var muteCommandHandler: MuteCommandHandler {
         MuteCommandHandler(
             channelController: ChatChannelTestHelpers.makeChannelController(chatClient: chatClient),
@@ -23,11 +15,6 @@ class InstantCommandsHandler_Tests: XCTestCase {
         )
     }
     
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-
     func test_instantCommandsHandler_canHandleCommand() {
         // Given
         let symbol = "/giphy"

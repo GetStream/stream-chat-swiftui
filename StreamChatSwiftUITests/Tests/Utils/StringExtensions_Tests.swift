@@ -7,6 +7,7 @@ import Foundation
 import XCTest
 
 class String_Extensions_Tests: XCTestCase {
+    
     func test_onlyEmoji() {
         XCTAssertTrue("🍺".isSingleEmoji)
     }

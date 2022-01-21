@@ -8,13 +8,7 @@ import Foundation
 import SwiftUI
 import XCTest
 
-class ViewFactory_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
+class ViewFactory_Tests: StreamChatTestCase {
     
     private let message = ChatMessage.mock(
         id: .unique,
@@ -22,13 +16,6 @@ class ViewFactory_Tests: XCTestCase {
         text: "test",
         author: .mock(id: .unique)
     )
-    
-    private var streamChat: StreamChat?
-    
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
     
     func test_viewFactory_makeNoChannelsView() {
         // Given

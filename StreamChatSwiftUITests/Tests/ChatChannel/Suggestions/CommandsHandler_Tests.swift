@@ -6,21 +6,8 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class CommandsHandler_Tests: XCTestCase {
+class CommandsHandler_Tests: StreamChatTestCase {
     
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-        
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-
     func test_commandsHandler_commandCanBeExecuted() {
         // Given
         let commandsHandler = makeCommandsHandler()

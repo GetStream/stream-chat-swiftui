@@ -7,19 +7,11 @@ import Foundation
 @testable import StreamChatSwiftUI
 import XCTest
 
-class StreamChat_Utils_Tests: XCTestCase {
+class StreamChat_Utils_Tests: StreamChatTestCase {
     
     private let testURL = URL(string: "https://example.com")!
     
-    var streamChat: StreamChat!
-    
     @Injected(\.utils) var utils
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
     
     override func setUp() {
         let utils = Utils(
