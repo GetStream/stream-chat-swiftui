@@ -537,9 +537,15 @@ extension ViewFactory {
     }
     
     public func makeMessageReactionView(
-        message: ChatMessage
+        message: ChatMessage,
+        onTapGesture: @escaping () -> Void,
+        onLongPressGesture: @escaping () -> Void
     ) -> some View {
-        ReactionsContainer(message: message)
+        ReactionsContainer(
+            message: message,
+            onTapGesture: onTapGesture,
+            onLongPressGesture: onLongPressGesture
+        )
     }
     
     public func makeReactionsOverlayView(

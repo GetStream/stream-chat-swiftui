@@ -257,6 +257,12 @@ internal enum L10n {
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
+    internal enum Reactions {
+      /// You
+      internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
+      /// Message Reactions
+      internal static var title: String { L10n.tr("Localizable", "message.reactions.title") }
+    }
     internal enum Sending {
       /// UPLOADING FAILED
       internal static var attachmentUploadingFailed: String { L10n.tr("Localizable", "message.sending.attachment-uploading-failed") }

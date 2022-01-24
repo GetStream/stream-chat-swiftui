@@ -47,6 +47,9 @@
 "message.cell.pinnedBy" = "Pinned by";
 "message.cell.unknownPin" = "unknown";
 
+"message.reactions.title" = "Message Reactions";
+"message.reactions.currentUser" = "You";
+
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
 "alert.actions.ok" = "Ok";

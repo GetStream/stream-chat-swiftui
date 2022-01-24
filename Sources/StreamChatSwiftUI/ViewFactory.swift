@@ -522,7 +522,9 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter message: the message for which reactions are shown.
     /// - Returns: view shown in the message reactions slot.
     func makeMessageReactionView(
-        message: ChatMessage
+        message: ChatMessage,
+        onTapGesture: @escaping () -> Void,
+        onLongPressGesture: @escaping () -> Void
     ) -> MessageReactionViewType
     
     associatedtype ReactionsOverlayViewType: View
