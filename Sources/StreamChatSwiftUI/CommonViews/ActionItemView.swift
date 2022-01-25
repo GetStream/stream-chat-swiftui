@@ -19,7 +19,7 @@ public struct ActionItemView: View {
         HStack(spacing: 16) {
             Image(uiImage: image)
                 .customizable()
-                .frame(maxHeight: 20)
+                .frame(maxHeight: 18)
                 .foregroundColor(
                     isDestructive ? Color(colors.alert) : Color(colors.textLowEmphasis)
                 )

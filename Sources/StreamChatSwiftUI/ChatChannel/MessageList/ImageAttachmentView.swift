@@ -119,7 +119,7 @@ struct ImageAttachmentView: View {
                     MultiImageView(
                         source: sources[0],
                         width: width / 2,
-                        height: width,
+                        height: fullHeight,
                         imageTapped: imageTapped,
                         index: 0
                     )
@@ -128,19 +128,18 @@ struct ImageAttachmentView: View {
                     MultiImageView(
                         source: sources[1],
                         width: width / 2,
-                        height: width,
+                        height: fullHeight,
                         imageTapped: imageTapped,
                         index: 1
                     )
                     .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
                 }
-                .aspectRatio(1, contentMode: .fill)
             } else if sources.count == 3 {
                 HStack(spacing: spacing) {
                     MultiImageView(
                         source: sources[0],
                         width: width / 2,
-                        height: width,
+                        height: fullHeight,
                         imageTapped: imageTapped,
                         index: 0
                     )
@@ -150,7 +149,7 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[1],
                             width: width / 2,
-                            height: width / 2,
+                            height: fullHeight / 2,
                             imageTapped: imageTapped,
                             index: 1
                         )
@@ -159,21 +158,20 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[2],
                             width: width / 2,
-                            height: width / 2,
+                            height: fullHeight / 2,
                             imageTapped: imageTapped,
                             index: 2
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
                     }
                 }
-                .aspectRatio(1, contentMode: .fill)
             } else if sources.count > 3 {
                 HStack(spacing: spacing) {
                     VStack(spacing: spacing) {
                         MultiImageView(
                             source: sources[0],
                             width: width / 2,
-                            height: width / 2,
+                            height: fullHeight / 2,
                             imageTapped: imageTapped,
                             index: 0
                         )
@@ -182,7 +180,7 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[2],
                             width: width / 2,
-                            height: width / 2,
+                            height: fullHeight / 2,
                             imageTapped: imageTapped,
                             index: 2
                         )
@@ -193,7 +191,7 @@ struct ImageAttachmentView: View {
                         MultiImageView(
                             source: sources[1],
                             width: width / 2,
-                            height: width / 2,
+                            height: fullHeight / 2,
                             imageTapped: imageTapped,
                             index: 1
                         )
@@ -203,7 +201,7 @@ struct ImageAttachmentView: View {
                             MultiImageView(
                                 source: sources[3],
                                 width: width / 2,
-                                height: width / 2,
+                                height: fullHeight / 2,
                                 imageTapped: imageTapped,
                                 index: 3
                             )
@@ -217,13 +215,16 @@ struct ImageAttachmentView: View {
                                     .font(fonts.title)
                             }
                         }
-                        .frame(width: width / 2, height: width / 2)
+                        .frame(width: width / 2, height: fullHeight / 2)
                     }
                 }
-                .aspectRatio(1, contentMode: .fill)
             }
         }
-        .frame(maxWidth: width)
+        .frame(width: width, height: fullHeight)
+    }
+    
+    private var fullHeight: CGFloat {
+        3 * width / 4
     }
     
     private var notDisplayedImages: Int {
@@ -241,15 +242,19 @@ struct SingleImageView: View {
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
     
+    private var height: CGFloat {
+        3 * width / 4
+    }
+    
     var body: some View {
         LazyLoadingImage(
             source: source,
             width: width,
-            height: 3 * width / 4,
+            height: height,
             imageTapped: imageTapped,
             index: index
         )
-        .frame(width: width, height: 3 * width / 4)
+        .frame(width: width, height: height)
     }
 }
 
@@ -324,7 +329,7 @@ struct LazyLoadingImage: View {
                 url: source,
                 imageCDN: utils.imageCDN,
                 resize: resize,
-                preferredSize: CGSize(width: width, height: 3 * width / 4),
+                preferredSize: CGSize(width: width, height: height),
                 completion: { result in
                     switch result {
                     case let .success(image):
@@ -341,9 +346,11 @@ struct LazyLoadingImage: View {
     func imageView(for image: UIImage) -> some View {
         Image(uiImage: image)
             .resizable()
-            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
+            .scaledToFill()
             .aspectRatio(contentMode: .fill)
+            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
             .allowsHitTesting(false)
+            .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
             .clipped()
     }
 }

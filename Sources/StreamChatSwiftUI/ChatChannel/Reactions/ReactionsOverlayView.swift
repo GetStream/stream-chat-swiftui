@@ -16,7 +16,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     var onActionExecuted: (MessageActionInfo) -> Void
     
     private var messageActionsCount: Int
-    private let padding: CGFloat = 16
+    private let paddingValue: CGFloat = 16
     private let messageItemSize: CGFloat = 40
     private let maxMessageActionsSize: CGFloat = UIScreen.main.bounds.size.height / 3
     
@@ -66,8 +66,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             if !messageDisplayInfo.message.isSentByCurrentUser {
                 factory.makeMessageAvatarView(for: messageDisplayInfo.message.author)
                     .offset(
-                        x: padding / 2,
-                        y: originY + messageDisplayInfo.frame.height - padding
+                        x: paddingValue / 2,
+                        y: originY + messageDisplayInfo.frame.height - paddingValue
                     )
             }
             
@@ -119,7 +119,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .offset(
                             x: messageActionsOriginX(availableWidth: reader.size.width)
                         )
-                        .padding(.top, padding)
+                        .padding(.top, paddingValue)
                     } else {
                         ReactionsUsersView(
                             message: messageDisplayInfo.message,
@@ -129,8 +129,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .offset(
                             x: userReactionsOriginX(availableWidth: reader.size.width)
                         )
-                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? padding : 2 * padding)
-                        .padding(.trailing, padding)
+                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
+                        .padding(.trailing, paddingValue)
                     }
                 }
                 .offset(y: originY)
@@ -173,33 +173,33 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
     
     private var userReactionsPopupHeight: CGFloat {
-        userReactionsHeight + 3 * padding
+        userReactionsHeight + 3 * paddingValue
     }
     
     private func maxUserReactionsWidth(availableWidth: CGFloat) -> CGFloat {
-        availableWidth - 2 * padding
+        availableWidth - 2 * paddingValue
     }
     
     private func messageActionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isSentByCurrentUser {
-            return availableWidth - messageActionsWidth - padding / 2
+            return availableWidth - messageActionsWidth - paddingValue / 2
         } else {
-            return CGSize.messageAvatarSize.width + padding
+            return CGSize.messageAvatarSize.width + paddingValue
         }
     }
     
     private func userReactionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isSentByCurrentUser {
-            return availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - padding / 2
+            return availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
         } else {
-            return padding
+            return paddingValue
         }
     }
     
     private var messageActionsWidth: CGFloat {
-        var width = messageDisplayInfo.contentWidth + 2 * padding
+        var width = messageDisplayInfo.contentWidth + 2 * paddingValue
         if messageDisplayInfo.message.isSentByCurrentUser {
-            width -= 2 * padding
+            width -= 2 * paddingValue
         }
         
         return width
