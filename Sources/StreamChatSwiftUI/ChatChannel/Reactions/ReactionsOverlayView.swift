@@ -66,7 +66,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 factory.makeMessageAvatarView(for: messageDisplayInfo.message.author)
                     .offset(
                         x: padding / 2,
-                        y: originY + messageDisplayInfo.frame.height - padding
+                        y: originY + messageDisplayInfo.frame.height - padding + 2
                     )
             }
             
