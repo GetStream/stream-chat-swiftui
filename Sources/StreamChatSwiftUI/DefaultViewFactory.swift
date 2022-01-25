@@ -182,13 +182,11 @@ extension ViewFactory {
             width: width,
             showsAllInfo: showsAllInfo,
             isInThread: isInThread,
+            isLast: isLast,
             scrolledId: scrolledId,
             quotedMessage: quotedMessage,
             onLongPress: onLongPress
         )
-        .padding(.horizontal, 8)
-        .padding(.bottom, showsAllInfo ? 8 : 2)
-        .padding(.top, isLast ? 8 : 0)
     }
     
     public func makeMessageTextView(

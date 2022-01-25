@@ -8,13 +8,7 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-class ChatChannelDataSource_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
+class ChatChannelDataSource_Tests: StreamChatTestCase {
     
     private let message = ChatMessage.mock(
         id: .unique,
@@ -30,13 +24,6 @@ class ChatChannelDataSource_Tests: XCTestCase {
         author: ChatUser.mock(id: .unique)
     )
     
-    private var streamChat: StreamChat?
-        
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-
     func test_channelDataSource_messages() {
         // Given
         let expected: [ChatMessage] = [message]

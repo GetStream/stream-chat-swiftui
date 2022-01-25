@@ -7,25 +7,12 @@ import SnapshotTesting
 @testable import StreamChatSwiftUI
 import XCTest
 
-class NoChannelsView_Tests: XCTestCase {
-
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
+class NoChannelsView_Tests: StreamChatTestCase {
     
     func test_noChannelsView_snapshot() {
         // Given
         let view = NoChannelsView()
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .frame(width: 375, height: 600)
         
         // Then
         assertSnapshot(matching: view, as: .image)

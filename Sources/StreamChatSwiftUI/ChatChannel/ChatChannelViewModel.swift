@@ -310,11 +310,15 @@ extension ChatMessage: Identifiable {
             }
         }
 
-        return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)"
+        return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)" + pinStateId
     }
     
     private var baseId: String {
         isDeleted ? "\(id)-deleted" : id
+    }
+    
+    private var pinStateId: String {
+        pinDetails != nil ? "pinned" : "notPinned"
     }
     
     var repliesCountId: String {

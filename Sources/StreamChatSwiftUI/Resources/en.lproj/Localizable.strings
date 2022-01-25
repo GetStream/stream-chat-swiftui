@@ -23,6 +23,8 @@
 "message.actions.edit" = "Edit Message";
 "message.actions.copy" = "Copy Message";
 "message.actions.delete" = "Delete Message";
+"message.actions.pin" = "Pin to conversation";
+"message.actions.unpin" = "Unpin from conversation";
 "message.actions.delete.confirmation-title" = "Delete Message";
 "message.actions.delete.confirmation-message" = "Are you sure you want to permanently delete this message?";
 "message.actions.user-unblock" = "Unblock User";
@@ -42,6 +44,8 @@
 "message.threads.subtitle" = "with messages";
 
 "message.gallery.photos" = "Photos";
+"message.cell.pinnedBy" = "Pinned by";
+"message.cell.unknownPin" = "unknown";
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";

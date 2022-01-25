@@ -13,6 +13,11 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "MessageContainerView_Tests",
+        "NoChannelsView_Tests",
+        "NoChannelsView_Tests\/test_noChannelsView_snapshot()"
+      ],
       "target" : {
         "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
         "identifier" : "8465FBBC2746873A00AF091E",

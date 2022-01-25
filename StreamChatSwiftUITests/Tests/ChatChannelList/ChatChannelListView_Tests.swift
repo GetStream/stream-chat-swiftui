@@ -7,21 +7,8 @@ import SnapshotTesting
 @testable import StreamChatSwiftUI
 import XCTest
 
-class ChatChannelListView_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-    
+class ChatChannelListView_Tests: StreamChatTestCase {
+        
     func test_chatChannelScreen_snapshot() {
         // Given
         let controller = makeChannelListController()

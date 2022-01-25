@@ -20,6 +20,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     var width: CGFloat?
     var showsAllInfo: Bool
     var isInThread: Bool
+    var isLast: Bool
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
@@ -30,6 +31,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     @GestureState private var offset: CGSize = .zero
     
     private let replyThreshold: CGFloat = 60
+    private let paddingValue: CGFloat = 8
     
     var body: some View {
         HStack(alignment: .bottom) {
@@ -56,6 +58,13 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 }
                 
                 VStack(alignment: message.isSentByCurrentUser ? .trailing : .leading) {
+                    if isMessagePinned {
+                        MessagePinDetailsView(
+                            message: message,
+                            reactionsShown: reactionsShown
+                        )
+                    }
+                    
                     MessageView(
                         factory: factory,
                         message: message,
@@ -158,7 +167,16 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .padding(.top, reactionsShown ? 24 : 0)
+        .padding(.top, reactionsShown && !isMessagePinned ? 3 * paddingValue : 0)
+        .padding(.horizontal, paddingValue)
+        .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
+        .padding(.top, isLast ? paddingValue : 0)
+        .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
+        .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
+    }
+    
+    private var isMessagePinned: Bool {
+        message.pinDetails != nil
     }
     
     private var contentWidth: CGFloat {

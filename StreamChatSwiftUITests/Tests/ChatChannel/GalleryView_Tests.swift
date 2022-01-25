@@ -8,21 +8,8 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-class GalleryView_Tests: XCTestCase {
+class GalleryView_Tests: StreamChatTestCase {
 
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-        
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-    
     func test_galleryView_snapshotLoading() {
         // Given
         let imageMessage = ChatMessage.mock(

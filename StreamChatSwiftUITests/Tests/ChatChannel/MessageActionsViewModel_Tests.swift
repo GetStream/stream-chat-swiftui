@@ -6,21 +6,8 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MessageActionsViewModel_Tests: XCTestCase {
+class MessageActionsViewModel_Tests: StreamChatTestCase {
     
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-        
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-
     func test_messageActionsViewModel_confirmationAlertShown() {
         // Given
         let actions = MessageAction.defaultActions(
@@ -37,7 +24,7 @@ class MessageActionsViewModel_Tests: XCTestCase {
             onError: { _ in }
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
-        let action = actions[2]
+        let action = actions[3]
         
         // When
         viewModel.alertAction = action

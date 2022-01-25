@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MessageComposerViewModel_Tests: XCTestCase {
+class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     private let testImage = UIImage(systemName: "checkmark")!
     private let testURL = URL(string: "https://example.com")!
@@ -16,19 +16,6 @@ class MessageComposerViewModel_Tests: XCTestCase {
         url: testURL,
         type: .image
     )
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
     
     func test_messageComposerVM_sendButtonDisabled() {
         // Given

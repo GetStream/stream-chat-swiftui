@@ -7,6 +7,7 @@
 import XCTest
 
 class DateUtils_Tests: XCTestCase {
+    
     func test_timeAgoNow() throws {
         // Given
         let expected = "last seen just one second ago"

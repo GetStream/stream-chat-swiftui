@@ -7,21 +7,8 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MessageListView_Tests: XCTestCase {
+class MessageListView_Tests: StreamChatTestCase {
 
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-        
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-    
     func test_messageListView_withReactions() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)

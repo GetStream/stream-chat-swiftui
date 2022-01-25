@@ -6,20 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class ChatChannelListViewModel_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
+class ChatChannelListViewModel_Tests: StreamChatTestCase {
     
     func test_channelListVMCreation_channelsLoaded() {
         // Given

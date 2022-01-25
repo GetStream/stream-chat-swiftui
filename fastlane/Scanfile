@@ -4,7 +4,7 @@
 # In general, you can use the options available
 # fastlane scan --help
 
-devices(["iPhone 11"])
+devices(["iPhone 12"])
 
 # Needed for codecov
 code_coverage(true)

@@ -8,13 +8,7 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-class ReactionsOverlayView_Tests: XCTestCase {
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
+class ReactionsOverlayView_Tests: StreamChatTestCase {
     
     private let testMessage = ChatMessage.mock(
         id: "test",
@@ -23,26 +17,26 @@ class ReactionsOverlayView_Tests: XCTestCase {
         author: .mock(id: "test", name: "martin")
     )
     
-    private var streamChat: StreamChat?
+    private let messageDisplayInfo = MessageDisplayInfo(
+        message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
+        frame: CGRect(x: 44, y: 20, width: 80, height: 50),
+        contentWidth: 200,
+        isFirst: true
+    )
+        
+    private let overlayImage = UIColor
+        .black
+        .withAlphaComponent(0.2)
+        .image(defaultScreenSize)
     
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
-
     func test_reactionsOverlayView_snapshot() {
         // Given
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: .mockDMChannel(),
-                currentSnapshot: UIImage(systemName: "checkmark")!,
-                messageDisplayInfo: MessageDisplayInfo(
-                    message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
-                    frame: CGRect(x: 20, y: 20, width: 200, height: 100),
-                    contentWidth: 200,
-                    isFirst: true
-                ),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: self.messageDisplayInfo,
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
@@ -61,13 +55,8 @@ class ReactionsOverlayView_Tests: XCTestCase {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: channel,
-                currentSnapshot: UIImage(systemName: "checkmark")!,
-                messageDisplayInfo: MessageDisplayInfo(
-                    message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
-                    frame: CGRect(x: 20, y: 20, width: 200, height: 100),
-                    contentWidth: 200,
-                    isFirst: true
-                ),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: self.messageDisplayInfo,
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )

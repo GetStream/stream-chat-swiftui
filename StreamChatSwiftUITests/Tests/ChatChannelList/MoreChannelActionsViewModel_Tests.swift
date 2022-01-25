@@ -6,18 +6,10 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MoreChannelActionsViewModel_Tests: XCTestCase {
+class MoreChannelActionsViewModel_Tests: StreamChatTestCase {
     
     @Injected(\.images) var images
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
+        
     override func setUp() {
         super.setUp()
         let imageLoader = ImageLoader_Mock()

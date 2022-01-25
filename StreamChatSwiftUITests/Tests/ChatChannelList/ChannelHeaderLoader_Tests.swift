@@ -6,19 +6,11 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class ChannelHeaderLoader_Tests: XCTestCase {
+class ChannelHeaderLoader_Tests: StreamChatTestCase {
     
     @Injected(\.images) var images
     
     private let testURL = URL(string: "https://example.com")!
-    
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
     
     override func setUp() {
         super.setUp()

@@ -41,6 +41,28 @@ extension MessageAction {
             }
         }
         
+        if message.pinDetails != nil {
+            let unpinAction = unpinMessageAction(
+                for: message,
+                channel: channel,
+                chatClient: chatClient,
+                onFinish: onFinish,
+                onError: onError
+            )
+            
+            messageActions.append(unpinAction)
+        } else {
+            let pinAction = pinMessageAction(
+                for: message,
+                channel: channel,
+                chatClient: chatClient,
+                onFinish: onFinish,
+                onError: onError
+            )
+            
+            messageActions.append(pinAction)
+        }
+        
         if message.isSentByCurrentUser {
             let editAction = editMessageAction(
                 for: message,
@@ -123,6 +145,82 @@ extension MessageAction {
         )
         
         return editAction
+    }
+    
+    private static func pinMessageAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let messageController = chatClient.messageController(
+            cid: channel.cid,
+            messageId: message.id
+        )
+        
+        let pinMessage = {
+            messageController.pin(MessagePinning.noExpiration) { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "pin"
+                        )
+                    )
+                }
+            }
+        }
+        
+        let pinAction = MessageAction(
+            title: L10n.Message.Actions.pin,
+            iconName: "icn_pin",
+            action: pinMessage,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return pinAction
+    }
+    
+    private static func unpinMessageAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let messageController = chatClient.messageController(
+            cid: channel.cid,
+            messageId: message.id
+        )
+        
+        let pinMessage = {
+            messageController.unpin { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "unpin"
+                        )
+                    )
+                }
+            }
+        }
+        
+        let pinAction = MessageAction(
+            title: L10n.Message.Actions.unpin,
+            iconName: "pin.slash",
+            action: pinMessage,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return pinAction
     }
     
     private static func replyAction(

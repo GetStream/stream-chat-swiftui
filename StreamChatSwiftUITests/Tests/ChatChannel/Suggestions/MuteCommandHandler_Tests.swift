@@ -6,20 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MuteCommandHandler_Tests: XCTestCase {
-
-    private var chatClient: ChatClient = {
-        let client = ChatClient.mock()
-        client.currentUserId = .unique
-        return client
-    }()
-    
-    private var streamChat: StreamChat?
-    
-    override func setUp() {
-        super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
-    }
+class MuteCommandHandler_Tests: StreamChatTestCase {
 
     func test_muteCommandHandler_selectingUserToMute() {
         // Given
