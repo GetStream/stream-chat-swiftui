@@ -176,7 +176,7 @@ extension MessageAction {
         
         let pinAction = MessageAction(
             title: L10n.Message.Actions.pin,
-            iconName: "flag",
+            iconName: "icn_pin",
             action: pinMessage,
             confirmationPopup: nil,
             isDestructive: false
