@@ -93,7 +93,6 @@ struct MessagePinDetailsView: View {
         HStack {
             Image(uiImage: images.pin)
                 .customizable()
-                .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: 12)
             Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
                 .font(fonts.footnote)
