@@ -16,7 +16,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     var onActionExecuted: (MessageActionInfo) -> Void
     
     private var messageActionsCount: Int
-    private let padding: CGFloat = 16
+    private let paddingValue: CGFloat = 16
     private let messageItemSize: CGFloat = 40
     private let maxMessageActionsSize: CGFloat = UIScreen.main.bounds.size.height / 3
     
@@ -65,8 +65,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             if !messageDisplayInfo.message.isSentByCurrentUser {
                 factory.makeMessageAvatarView(for: messageDisplayInfo.message.author)
                     .offset(
-                        x: padding / 2,
-                        y: originY + messageDisplayInfo.frame.height - padding + 2
+                        x: paddingValue / 2,
+                        y: originY + messageDisplayInfo.frame.height - paddingValue + 2
                     )
             }
             
@@ -116,7 +116,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 .offset(
                     x: messageActionsOriginX
                 )
-                .padding(.top, padding)
+                .padding(.top, paddingValue)
             }
             .offset(y: originY)
         }
@@ -144,16 +144,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     private var messageActionsOriginX: CGFloat {
         if messageDisplayInfo.message.isSentByCurrentUser {
             let screenWidth = UIScreen.main.bounds.size.width
-            return screenWidth - messageActionsWidth - padding / 2
+            return screenWidth - messageActionsWidth - paddingValue / 2
         } else {
-            return CGSize.messageAvatarSize.width + padding
+            return CGSize.messageAvatarSize.width + paddingValue
         }
     }
     
     private var messageActionsWidth: CGFloat {
-        var width = messageDisplayInfo.contentWidth + 2 * padding
+        var width = messageDisplayInfo.contentWidth + 2 * paddingValue
         if messageDisplayInfo.message.isSentByCurrentUser {
-            width -= 2 * padding
+            width -= 2 * paddingValue
         }
         
         return width

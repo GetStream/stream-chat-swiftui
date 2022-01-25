@@ -31,6 +31,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     @GestureState private var offset: CGSize = .zero
     
     private let replyThreshold: CGFloat = 60
+    private let paddingValue: CGFloat = 8
     
     var body: some View {
         HStack(alignment: .bottom) {
@@ -166,12 +167,12 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .padding(.top, reactionsShown && !isMessagePinned ? 24 : 0)
-        .padding(.horizontal, 8)
-        .padding(.bottom, showsAllInfo || isMessagePinned ? 8 : 2)
-        .padding(.top, isLast ? 8 : 0)
+        .padding(.top, reactionsShown && !isMessagePinned ? 3 * paddingValue : 0)
+        .padding(.horizontal, paddingValue)
+        .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
+        .padding(.top, isLast ? paddingValue : 0)
         .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
-        .padding(.bottom, isMessagePinned ? 4 : 0)
+        .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
     }
     
     private var isMessagePinned: Bool {
