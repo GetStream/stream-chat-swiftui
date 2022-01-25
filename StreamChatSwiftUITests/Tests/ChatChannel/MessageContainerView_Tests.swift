@@ -70,7 +70,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .frame(width: 375, height: 200)
         
         // Then
         assertSnapshot(matching: view, as: .image)
