@@ -43,6 +43,7 @@ extension ViewFactory {
     
     public func makeMoreChannelActionsView(
         for channel: ChatChannel,
+        swipedChannelId: Binding<String?>,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> some View {
@@ -53,6 +54,7 @@ extension ViewFactory {
                 onDismiss: onDismiss,
                 onError: onError
             ),
+            swipedChannelId: swipedChannelId,
             onDismiss: onDismiss
         )
     }
@@ -84,7 +86,7 @@ extension ViewFactory {
         return ChatChannelSwipeableListItem(
             factory: self,
             channelListItem: listItem,
-            currentChannelId: swipedChannelId,
+            swipedChannelId: swipedChannelId,
             channel: channel,
             trailingRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
@@ -100,6 +102,7 @@ extension ViewFactory {
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
+        swipedChannelId: Binding<String?>,
         leftButtonTapped: @escaping (ChatChannel) -> Void,
         rightButtonTapped: @escaping (ChatChannel) -> Void
     ) -> some View {
@@ -116,6 +119,7 @@ extension ViewFactory {
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
+        swipedChannelId: Binding<String?>,
         buttonTapped: (ChatChannel) -> Void
     ) -> some View {
         EmptyView()

@@ -71,7 +71,7 @@ public func makeChannelListItem(
 ) -> ChatChannelSwipeableListItem<Self> {
     ChatChannelSwipeableListItem(
         factory: self,
-        currentChannelId: swipedChannelId,
+        swipedChannelId: swipedChannelId,
         channel: channel,
         channelName: channelName,
         avatar: avatar,
@@ -137,6 +137,7 @@ public func makeTrailingSwipeActionsView(
     channel: ChatChannel,
     offsetX: CGFloat,
     buttonWidth: CGFloat,
+    swipedChannelId: Binding<String?>,
     leftButtonTapped: @escaping (ChatChannel) -> (),
     rightButtonTapped: @escaping (ChatChannel) -> ()
 ) -> some View {
@@ -159,6 +160,7 @@ func makeLeadingSwipeActionsView(
     channel: ChatChannel,
     offsetX: CGFloat,
     buttonWidth: CGFloat,
+    swipedChannelId: Binding<String?>,
     buttonTapped: @escaping (ChatChannel) -> ()
 ) -> some View {
     HStack {
@@ -173,6 +175,8 @@ func makeLeadingSwipeActionsView(
     }
 }
 ```
+
+In both methods, the `swipedChannelId` is provided. This parameter provides binding to the currently swiped channel. You can set this value to nil, in case you want to revert back the channel list item to its original state after performing an action.
 
 Finally, you need to inject your custom view factory in your view hierarchy.
 

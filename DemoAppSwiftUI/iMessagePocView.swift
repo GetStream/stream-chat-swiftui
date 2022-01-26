@@ -46,7 +46,7 @@ struct iMessagePocView: View {
                     factory: factory,
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,
-                    currentChannelId: $viewModel.currentChannelId,
+                    swipedChannelId: $viewModel.swipedChannelId,
                     onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                     imageLoader: channelHeaderLoader.image(for:),
                     onItemTap: { channel in
@@ -88,7 +88,10 @@ struct iMessagePocView: View {
     private func customViewOverlay() -> some View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
-            factory.makeMoreChannelActionsView(for: channel) {
+            factory.makeMoreChannelActionsView(
+                for: channel,
+                swipedChannelId: $viewModel.swipedChannelId
+            ) {
                 withAnimation {
                     viewModel.customChannelPopupType = nil
                 }

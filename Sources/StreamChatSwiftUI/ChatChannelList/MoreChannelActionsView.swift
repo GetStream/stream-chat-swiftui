@@ -12,11 +12,13 @@ public struct MoreChannelActionsView: View {
     @Injected(\.fonts) private var fonts
     
     @StateObject var viewModel: MoreChannelActionsViewModel
+    @Binding var swipedChannelId: String?
     var onDismiss: () -> Void
     
     public init(
         channel: ChatChannel,
         channelActions: [ChannelAction],
+        swipedChannelId: Binding<String?>,
         onDismiss: @escaping () -> Void
     ) {
         _viewModel = StateObject(
@@ -26,6 +28,7 @@ public struct MoreChannelActionsView: View {
             )
         )
         self.onDismiss = onDismiss
+        _swipedChannelId = swipedChannelId
     }
     
     public var body: some View {

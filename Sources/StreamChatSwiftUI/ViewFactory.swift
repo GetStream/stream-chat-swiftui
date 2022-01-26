@@ -67,10 +67,12 @@ public protocol ViewFactory: AnyObject {
     /// Creates the more channel actions view.
     /// - Parameters:
     ///  - channel: the channel where the actions are applied.
+    ///  - swipedChannelId: optional id of the channel being swiped.
     ///  - onDismiss: handler when the more actions view is dismissed.
     ///  - onError: handler when an error happened.
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
+        swipedChannelId: Binding<String?>,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
     ) -> MoreActionsView
@@ -93,6 +95,7 @@ public protocol ViewFactory: AnyObject {
     ///  - channel: the channel being swiped.
     ///  - offsetX: the offset of the swipe area in the x-axis.
     ///  - buttonWidth: the width of the button (use if you want dynamic width, based on swiping position).
+    ///  - swipedChannelId: optional id of the channel being swiped.
     ///  - leftButtonTapped: handler when the left button is tapped.
     ///  - rightButtonTapped: handler when the right button is tapped.
     /// - Returns: View displayed in the trailing swipe area of a channel item.
@@ -100,6 +103,7 @@ public protocol ViewFactory: AnyObject {
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
+        swipedChannelId: Binding<String?>,
         leftButtonTapped: @escaping (ChatChannel) -> Void,
         rightButtonTapped: @escaping (ChatChannel) -> Void
     ) -> TrailingSwipeActionsViewType
@@ -110,12 +114,14 @@ public protocol ViewFactory: AnyObject {
     ///  - channel: the channel being swiped.
     ///  - offsetX: the offset of the swipe area in the x-axis.
     ///  - buttonWidth: the width of the button (use if you want dynamic width, based on swiping position).
+    ///  - swipedChannelId: optional id of the channel being active swiped.
     ///  - buttonTapped: handler when the button is tapped.
     /// - Returns: View displayed in the leading swipe area of a channel item.
     func makeLeadingSwipeActionsView(
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
+        swipedChannelId: Binding<String?>,
         buttonTapped: @escaping (ChatChannel) -> Void
     ) -> LeadingSwipeActionsViewType
     
