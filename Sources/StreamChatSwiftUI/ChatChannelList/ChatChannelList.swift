@@ -158,7 +158,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     }
                 }
                 
-                Divider()
+                factory.makeChannelListDividerItem()
             }
         }
     }
