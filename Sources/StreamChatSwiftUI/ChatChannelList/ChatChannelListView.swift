@@ -111,9 +111,13 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private func customViewOverlay() -> some View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
-            viewFactory.makeMoreChannelActionsView(for: channel) {
+            viewFactory.makeMoreChannelActionsView(
+                for: channel,
+                currentChannelId: $viewModel.currentChannelId
+            ) {
                 withAnimation {
                     viewModel.customChannelPopupType = nil
+                    viewModel.currentChannelId = nil
                 }
             } onError: { error in
                 viewModel.showErrorPopup(error)

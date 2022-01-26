@@ -20,8 +20,13 @@ class MoreChannelActionsView_Tests: StreamChatTestCase {
         )
         
         // When
-        let view = MoreChannelActionsView(channel: channel, channelActions: actions, onDismiss: {})
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        let view = MoreChannelActionsView(
+            channel: channel,
+            channelActions: actions,
+            currentChannelId: .constant(nil),
+            onDismiss: {}
+        )
+        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
         
         // Then
         assertSnapshot(matching: view, as: .image)

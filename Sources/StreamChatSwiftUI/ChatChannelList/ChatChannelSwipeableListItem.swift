@@ -95,6 +95,11 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                 dragChanged(to: offset.width)
             }
         })
+        .onChange(of: currentChannelId, perform: { _ in
+            if currentChannelId != channel.id && offsetX != 0 {
+                setOffsetX(value: 0)
+            }
+        })
         .id("\(channel.id)-swipeable")
     }
     
@@ -103,6 +108,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             channel: channel,
             offsetX: offsetX,
             buttonWidth: buttonWidth,
+            currentChannelId: $currentChannelId,
             leftButtonTapped: trailingLeftButtonTapped,
             rightButtonTapped: trailingRightButtonTapped
         )
@@ -117,6 +123,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             channel: channel,
             offsetX: offsetX,
             buttonWidth: buttonWidth,
+            currentChannelId: $currentChannelId,
             buttonTapped: leadingButtonTapped
         )
     }

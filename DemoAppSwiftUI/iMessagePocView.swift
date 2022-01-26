@@ -88,7 +88,10 @@ struct iMessagePocView: View {
     private func customViewOverlay() -> some View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
-            factory.makeMoreChannelActionsView(for: channel) {
+            factory.makeMoreChannelActionsView(
+                for: channel,
+                currentChannelId: $viewModel.currentChannelId
+            ) {
                 withAnimation {
                     viewModel.customChannelPopupType = nil
                 }
