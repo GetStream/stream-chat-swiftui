@@ -95,6 +95,13 @@ struct ReactionUserView: View {
                 size: CGSize(width: 64, height: 64),
                 showOnlineIndicator: false
             )
+            .overlay(
+                VStack {
+                    Spacer()
+                    SingleReactionView(reaction: reaction)
+                        .frame(height: 32)
+                }
+            )
             
             Text(authorName)
                 .multilineTextAlignment(.center)
