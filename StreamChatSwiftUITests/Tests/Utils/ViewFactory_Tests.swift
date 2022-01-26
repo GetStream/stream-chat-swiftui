@@ -91,7 +91,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         // When
         let view = viewFactory.makeMoreChannelActionsView(
             for: channel,
-            currentChannelId: .constant(nil),
+            swipedChannelId: .constant(nil),
             onDismiss: {},
             onError: { _ in }
         )
@@ -485,7 +485,7 @@ class ViewFactory_Tests: StreamChatTestCase {
             channel: .mockDMChannel(),
             offsetX: 80,
             buttonWidth: 40,
-            currentChannelId: .constant(nil),
+            swipedChannelId: .constant(nil),
             buttonTapped: { _ in }
         )
         
@@ -502,7 +502,7 @@ class ViewFactory_Tests: StreamChatTestCase {
             channel: .mockDMChannel(),
             offsetX: 80,
             buttonWidth: 40,
-            currentChannelId: .constant(nil),
+            swipedChannelId: .constant(nil),
             leftButtonTapped: { _ in },
             rightButtonTapped: { _ in }
         )

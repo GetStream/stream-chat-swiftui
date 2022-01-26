@@ -11,7 +11,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChatChannel?
-    @Binding var currentChannelId: String?
+    @Binding var swipedChannelId: String?
     private var scrollable: Bool
     private var onlineIndicatorShown: (ChatChannel) -> Bool
     private var imageLoader: (ChatChannel) -> UIImage
@@ -27,7 +27,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChatChannel?>,
-        currentChannelId: Binding<String?>,
+        swipedChannelId: Binding<String?>,
         scrollable: Bool = true,
         onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
         imageLoader: @escaping (ChatChannel) -> UIImage,
@@ -52,7 +52,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
         self.scrollable = scrollable
         _selectedChannel = selectedChannel
-        _currentChannelId = currentChannelId
+        _swipedChannelId = swipedChannelId
     }
     
     public var body: some View {
@@ -72,7 +72,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
             factory: factory,
             channels: channels,
             selectedChannel: $selectedChannel,
-            currentChannelId: $currentChannelId,
+            swipedChannelId: $swipedChannelId,
             onlineIndicatorShown: onlineIndicatorShown,
             imageLoader: imageLoader,
             onItemTap: onItemTap,
@@ -92,7 +92,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChatChannel?
-    @Binding var currentChannelId: String?
+    @Binding var swipedChannelId: String?
     private var onlineIndicatorShown: (ChatChannel) -> Bool
     private var imageLoader: (ChatChannel) -> UIImage
     private var onItemTap: (ChatChannel) -> Void
@@ -107,7 +107,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChatChannel?>,
-        currentChannelId: Binding<String?>,
+        swipedChannelId: Binding<String?>,
         onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
         imageLoader: @escaping (ChatChannel) -> UIImage,
         onItemTap: @escaping (ChatChannel) -> Void,
@@ -130,7 +130,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
         _selectedChannel = selectedChannel
-        _currentChannelId = currentChannelId
+        _swipedChannelId = swipedChannelId
     }
     
     public var body: some View {
@@ -141,9 +141,9 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     channelName: channelNaming(channel),
                     avatar: imageLoader(channel),
                     onlineIndicatorShown: onlineIndicatorShown(channel),
-                    disabled: currentChannelId == channel.id,
+                    disabled: swipedChannelId == channel.id,
                     selectedChannel: $selectedChannel,
-                    swipedChannelId: $currentChannelId,
+                    swipedChannelId: $swipedChannelId,
                     channelDestination: channelDestination,
                     onItemTap: onItemTap,
                     trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,

@@ -23,7 +23,7 @@ class MoreChannelActionsView_Tests: StreamChatTestCase {
         let view = MoreChannelActionsView(
             channel: channel,
             channelActions: actions,
-            currentChannelId: .constant(nil),
+            swipedChannelId: .constant(nil),
             onDismiss: {}
         )
         .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)

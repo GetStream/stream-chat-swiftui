@@ -50,7 +50,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     @Published public var deeplinkChannel: ChatChannel?
-    @Published public var currentChannelId: String?
+    @Published public var swipedChannelId: String?
     @Published public var channelAlertType: ChannelAlertType? {
         didSet {
             if channelAlertType != nil {
