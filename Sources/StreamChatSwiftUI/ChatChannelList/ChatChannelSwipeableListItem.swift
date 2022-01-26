@@ -14,7 +14,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     
     @GestureState private var offset: CGSize = .zero
     
-    @Binding var currentChannelId: String?
+    @Binding var swipedChannelId: String?
     
     private let itemWidth: CGFloat = 60
     private var menuWidth: CGFloat {
@@ -42,7 +42,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     public init(
         factory: Factory,
         channelListItem: ChannelListItem,
-        currentChannelId: Binding<String?>,
+        swipedChannelId: Binding<String?>,
         channel: ChatChannel,
         trailingRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingLeftButtonTapped: @escaping (ChatChannel) -> Void,
@@ -54,7 +54,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         self.trailingRightButtonTapped = trailingRightButtonTapped
         self.trailingLeftButtonTapped = trailingLeftButtonTapped
         leadingButtonTapped = leadingSwipeButtonTapped
-        _currentChannelId = currentChannelId
+        _swipedChannelId = swipedChannelId
     }
     
     public var body: some View {
@@ -95,6 +95,11 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                 dragChanged(to: offset.width)
             }
         })
+        .onChange(of: swipedChannelId, perform: { _ in
+            if swipedChannelId != channel.id && offsetX != 0 {
+                setOffsetX(value: 0)
+            }
+        })
         .id("\(channel.id)-swipeable")
     }
     
@@ -103,6 +108,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             channel: channel,
             offsetX: offsetX,
             buttonWidth: buttonWidth,
+            swipedChannelId: $swipedChannelId,
             leftButtonTapped: trailingLeftButtonTapped,
             rightButtonTapped: trailingRightButtonTapped
         )
@@ -117,6 +123,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             channel: channel,
             offsetX: offsetX,
             buttonWidth: buttonWidth,
+            swipedChannelId: $swipedChannelId,
             buttonTapped: leadingButtonTapped
         )
     }
@@ -144,7 +151,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         }
                  
         if horizontalTranslation != 0 {
-            currentChannelId = channel.id
+            swipedChannelId = channel.id
             offsetX = horizontalTranslation
         } else {
             offsetX = 0
@@ -157,13 +164,13 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         }
         if offsetX == 0 {
             openSideLock = nil
-            currentChannelId = nil
+            swipedChannelId = nil
         }
     }
 
     private func dragEnded() {
         if offsetX == 0 {
-            currentChannelId = nil
+            swipedChannelId = nil
             openSideLock = nil
         } else if offsetX > 0 && showLeadingSwipeActions {
             if offsetX.magnitude < openTriggerValue ||

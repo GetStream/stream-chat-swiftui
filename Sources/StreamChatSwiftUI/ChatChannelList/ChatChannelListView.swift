@@ -63,7 +63,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                             factory: viewFactory,
                             channels: viewModel.channels,
                             selectedChannel: $viewModel.selectedChannel,
-                            currentChannelId: $viewModel.currentChannelId,
+                            swipedChannelId: $viewModel.swipedChannelId,
                             onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                             imageLoader: channelHeaderLoader.image(for:),
                             onItemTap: onItemTap,
@@ -111,9 +111,13 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private func customViewOverlay() -> some View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
-            viewFactory.makeMoreChannelActionsView(for: channel) {
+            viewFactory.makeMoreChannelActionsView(
+                for: channel,
+                swipedChannelId: $viewModel.swipedChannelId
+            ) {
                 withAnimation {
                     viewModel.customChannelPopupType = nil
+                    viewModel.swipedChannelId = nil
                 }
             } onError: { error in
                 viewModel.showErrorPopup(error)
