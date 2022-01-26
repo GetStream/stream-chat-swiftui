@@ -59,6 +59,10 @@ public protocol ViewFactory: AnyObject {
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> ChannelListItemType
     
+    associatedtype ChannelListDividerItem: View
+    /// Creates the channel list divider item.
+    func makeChannelListDividerItem() -> ChannelListDividerItem
+    
     associatedtype MoreActionsView: View
     /// Creates the more channel actions view.
     /// - Parameters:
