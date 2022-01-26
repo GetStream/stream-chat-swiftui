@@ -94,6 +94,10 @@ extension ViewFactory {
         )
     }
     
+    public func makeChannelListDividerItem() -> some View {
+        Divider()
+    }
+    
     public func makeTrailingSwipeActionsView(
         channel: ChatChannel,
         offsetX: CGFloat,
