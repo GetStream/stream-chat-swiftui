@@ -16,6 +16,14 @@ struct SingleReactionView: View {
     private var isSentByCurrentUser: Bool {
         reaction.author.id == chatClient.currentUserId
     }
+    
+    private var reactionColor: Color {
+        isSentByCurrentUser ? colors.tintColor : Color(colors.textLowEmphasis)
+    }
+    
+    private var backgroundColor: Color {
+        isSentByCurrentUser ? Color(colors.background) : Color(colors.background6)
+    }
         
     var body: some View {
         VStack {
@@ -29,15 +37,24 @@ struct SingleReactionView: View {
                     VStack(spacing: 0) {
                         Image(uiImage: image)
                             .resizable()
-                            .frame(width: 24, height: 24)
-                            .padding(.all, 4)
-                            .background(Color(colors.background6))
+                            .foregroundColor(reactionColor)
+                            .frame(width: 16, height: 16)
+                            .padding(.all, 8)
+                            .background(backgroundColor)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(
+                                        Color(colors.innerBorder),
+                                        lineWidth: 1
+                                    )
+                            )
                             .clipShape(Circle())
   
-                        // TODO: implement the bubbles.
-//                        ReactionBubbles(
-//                            isSentByCurrentUser: isSentByCurrentUser
-//                        )
+                        ReactionBubbles(
+                            isSentByCurrentUser: isSentByCurrentUser,
+                            backgroundColor: backgroundColor
+                        )
+                        .offset(x: isSentByCurrentUser ? 8 : -8, y: -14)
                     }
                 }
                 
@@ -51,17 +68,20 @@ struct SingleReactionView: View {
 
 struct ReactionBubbles: View {
     
+    @Injected(\.colors) private var colors
+    
     var isSentByCurrentUser: Bool
+    var backgroundColor: Color
     
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
             Circle()
-                .fill(Color.gray)
-                .frame(width: 12, height: 12)
-            Circle()
-                .fill(Color.gray)
+                .fill(backgroundColor)
                 .frame(width: 8, height: 8)
+            Circle()
+                .fill(backgroundColor)
+                .frame(width: 4, height: 4)
         }
         .rotationEffect(.degrees(isSentByCurrentUser ? -45 : 45))
     }

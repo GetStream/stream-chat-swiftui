@@ -35,7 +35,7 @@ struct ReactionsUsersView: View {
             }
             
             VStack(alignment: .center) {
-                Text(L10n.Message.Reactions.title)
+                Text(L10n.Reaction.Authors.numberOfReactions(reactions.count))
                     .foregroundColor(Color(colors.text))
                     .font(fonts.title3)
                     .fontWeight(.bold)
