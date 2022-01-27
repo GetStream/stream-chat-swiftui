@@ -67,7 +67,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 factory.makeMessageAvatarView(for: messageDisplayInfo.message.author)
                     .offset(
                         x: paddingValue / 2,
-                        y: originY + messageDisplayInfo.frame.height - paddingValue
+                        y: originY + messageDisplayInfo.frame.height - paddingValue + 2
                     )
             }
             
@@ -122,7 +122,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .padding(.top, paddingValue)
                     } else {
                         ReactionsUsersView(
-                            message: messageDisplayInfo.message,
+                            message: viewModel.message,
                             maxHeight: userReactionsHeight
                         )
                         .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
@@ -140,7 +140,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
     
     private var userReactionsHeight: CGFloat {
-        let reactionsCount = messageDisplayInfo.message.latestReactions.count
+        let reactionsCount = viewModel.message.latestReactions.count
         if reactionsCount > 4 {
             return 280
         } else {
