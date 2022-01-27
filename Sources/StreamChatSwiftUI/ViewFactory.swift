@@ -527,6 +527,17 @@ public protocol ViewFactory: AnyObject {
         onError: @escaping (Error) -> Void
     ) -> MessageActionsViewType
     
+    associatedtype ReactionsUsersViewType: View
+    /// Creates the view that displays users that reacted to a message.
+    /// - Parameters:
+    ///  - message: the message for which reactions will be shown.
+    ///  - maxHeight: the maxHeight of the view.
+    /// - Returns: view displayed in the users reactions slot.
+    func makeReactionsUsersView(
+        message: ChatMessage,
+        maxHeight: CGFloat
+    ) -> ReactionsUsersViewType
+    
     associatedtype MessageReactionViewType: View
     /// Creates the reactions view shown above the message.
     /// - Parameter message: the message for which reactions are shown.

@@ -121,7 +121,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                         .padding(.top, paddingValue)
                     } else {
-                        ReactionsUsersView(
+                        factory.makeReactionsUsersView(
                             message: viewModel.message,
                             maxHeight: userReactionsHeight
                         )

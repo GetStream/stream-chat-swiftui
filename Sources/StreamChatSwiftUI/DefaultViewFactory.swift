@@ -544,6 +544,16 @@ extension ViewFactory {
         return MessageActionsView(messageActions: messageActions)
     }
     
+    public func makeReactionsUsersView(
+        message: ChatMessage,
+        maxHeight: CGFloat
+    ) -> some View {
+        ReactionsUsersView(
+            message: message,
+            maxHeight: maxHeight
+        )
+    }
+    
     public func makeMessageReactionView(
         message: ChatMessage,
         onTapGesture: @escaping () -> Void,
