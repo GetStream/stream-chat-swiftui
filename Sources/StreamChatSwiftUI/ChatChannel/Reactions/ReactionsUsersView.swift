@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View displaying users who have reacted to a message.
 struct ReactionsUsersView: View {
     
     @Injected(\.fonts) private var fonts
@@ -14,11 +15,12 @@ struct ReactionsUsersView: View {
     var maxHeight: CGFloat
     
     private static let columnCount = 4
+    private static let itemSize: CGFloat = 64
     
     private let columns = Array(
         repeating:
         GridItem(
-            .adaptive(minimum: 64),
+            .adaptive(minimum: itemSize),
             alignment: .top
         ),
         count: columnCount
@@ -45,7 +47,10 @@ struct ReactionsUsersView: View {
                     ScrollView {
                         LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
                             ForEach(reactions) { reaction in
-                                ReactionUserView(reaction: reaction)
+                                ReactionUserView(
+                                    reaction: reaction,
+                                    imageSize: Self.itemSize
+                                )
                             }
                         }
                     }
@@ -53,7 +58,10 @@ struct ReactionsUsersView: View {
                 } else {
                     HStack(alignment: .top, spacing: 0) {
                         ForEach(reactions) { reaction in
-                            ReactionUserView(reaction: reaction)
+                            ReactionUserView(
+                                reaction: reaction,
+                                imageSize: Self.itemSize
+                            )
                         }
                     }
                     .padding(.horizontal, 8)
@@ -66,51 +74,6 @@ struct ReactionsUsersView: View {
                 Spacer()
             }
         }
-    }
-}
-
-struct ReactionUserView: View {
-    
-    @Injected(\.chatClient) private var chatClient
-    @Injected(\.fonts) private var fonts
-    
-    var reaction: ChatMessageReaction
-    
-    private var isCurrentUser: Bool {
-        chatClient.currentUserId == reaction.author.id
-    }
-    
-    private var authorName: String {
-        if isCurrentUser {
-            return L10n.Message.Reactions.currentUser
-        } else {
-            return reaction.author.name ?? reaction.author.id
-        }
-    }
-    
-    var body: some View {
-        VStack {
-            MessageAvatarView(
-                author: reaction.author,
-                size: CGSize(width: 64, height: 64),
-                showOnlineIndicator: false
-            )
-            .overlay(
-                VStack {
-                    Spacer()
-                    SingleReactionView(reaction: reaction)
-                        .frame(height: 32)
-                }
-            )
-            
-            Text(authorName)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .font(fonts.footnoteBold)
-                .frame(width: 64)
-        }
-        .padding(.vertical)
-        .padding(.horizontal, 8)
     }
 }
 

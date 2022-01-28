@@ -373,7 +373,11 @@ class ViewFactory_Tests: StreamChatTestCase {
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeMessageReactionView(message: message)
+        let view = viewFactory.makeMessageReactionView(
+            message: message,
+            onTapGesture: {},
+            onLongPressGesture: {}
+        )
         
         // Then
         XCTAssert(view is ReactionsContainer)
