@@ -28,6 +28,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Temporarly holding changes while message list is shown.
     private var queuedChannelsChanges = LazyCachedMapCollection<ChatChannel>()
     
+    private var messageSearchController: ChatMessageSearchController?
+    
     /// Controls loading the channels.
     @Atomic private var loadingNextChannels: Bool = false
     
@@ -72,6 +74,42 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var alertShown = false
     @Published public var loading = false
     @Published public var customAlertShown = false
+    @Published public var searchText = "" {
+        didSet {
+            if !searchText.isEmpty {
+                messageSearchController = chatClient.messageSearchController()
+                messageSearchController?.search(text: searchText) { [weak self] _ in
+                    guard let self = self, let messageSearchController = self.messageSearchController else { return }
+                    self.searchResults = messageSearchController.messages
+                        .sorted(by: { message1, message2 in
+                            message1.createdAt > message2.createdAt
+                        })
+                        .compactMap { message in
+                            if let channelId = message.cid,
+                               let channel = self.chatClient.channelController(for: channelId).channel {
+                                let searchResult = SearchResult(
+                                    channel: channel,
+                                    message: message
+                                )
+                                return searchResult
+                            } else {
+                                return nil
+                            }
+                        }
+                }
+            } else {
+                messageSearchController = nil
+                searchResults = []
+                channels = controller.channels
+            }
+        }
+    }
+
+    @Published public var searchResults = [SearchResult]()
+    
+    var isSearching: Bool {
+        !searchText.isEmpty
+    }
     
     public init(
         channelListController: ChatChannelListController? = nil,
@@ -177,7 +215,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     // MARK: - private
     
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
-        if selectedChannel != nil {
+        if selectedChannel != nil || !searchText.isEmpty {
             queuedChannelsChanges = controller.channels
         } else {
             channels = controller.channels

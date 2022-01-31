@@ -55,6 +55,21 @@ public struct AvatarView: View {
     }
 }
 
+struct ChatTitleView: View {
+    
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    
+    var name: String
+    
+    var body: some View {
+        Text(name)
+            .lineLimit(1)
+            .font(fonts.bodyBold)
+            .foregroundColor(Color(colors.text))
+    }
+}
+
 extension CGSize {
     /// Default size of the avatar used in the channel list.
     public static var defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)

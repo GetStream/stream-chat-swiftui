@@ -33,7 +33,7 @@ public struct ChatChannelListItem: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        titleView
+                        ChatTitleView(name: channelName)
                         
                         Spacer()
                         
@@ -70,14 +70,7 @@ public struct ChatChannelListItem: View {
         .disabled(disabled)
         .id("\(channel.id)-base")
     }
-    
-    private var titleView: some View {
-        Text(channelName)
-            .lineLimit(1)
-            .font(fonts.bodyBold)
-            .foregroundColor(Color(colors.text))
-    }
-    
+        
     private var subtitleView: some View {
         HStack(spacing: 4) {
             if let image = image {
@@ -100,8 +93,8 @@ public struct ChatChannelListItem: View {
             return L10n.Channel.Item.muted
         } else if shouldShowTypingIndicator {
             return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
-        } else if let latestMessage = channel.latestMessages.first {
-            return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
+        } else if let lastMessageText = channel.lastMessageText {
+            return lastMessageText
         } else {
             return L10n.Channel.Item.emptyMessages
         }
@@ -210,5 +203,16 @@ public struct UnreadIndicatorView: View {
             .padding(.horizontal, unreadCount < 10 ? 0 : 6)
             .background(Color(colors.alert))
             .cornerRadius(9)
+    }
+}
+
+extension ChatChannel {
+    
+    var lastMessageText: String? {
+        if let latestMessage = latestMessages.first {
+            return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
+        } else {
+            return nil
+        }
     }
 }

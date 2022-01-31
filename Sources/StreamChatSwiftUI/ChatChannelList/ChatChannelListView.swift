@@ -59,21 +59,35 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                             channelDestination: channelDestination
                         )
                         
-                        ChannelList(
-                            factory: viewFactory,
-                            channels: viewModel.channels,
-                            selectedChannel: $viewModel.selectedChannel,
-                            swipedChannelId: $viewModel.swipedChannelId,
-                            onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                            imageLoader: channelHeaderLoader.image(for:),
-                            onItemTap: onItemTap,
-                            onItemAppear: viewModel.checkForChannels(index:),
-                            channelNaming: viewModel.name(forChannel:),
-                            channelDestination: channelDestination,
-                            trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
-                            trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                            leadingSwipeButtonTapped: { _ in }
-                        )
+                        VStack {
+                            SearchBar(text: $viewModel.searchText)
+                            
+                            if viewModel.isSearching {
+                                SearchResultsView(
+                                    searchResults: viewModel.searchResults,
+                                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                                    channelNaming: viewModel.name(forChannel:),
+                                    imageLoader: channelHeaderLoader.image(for:),
+                                    onSearchResultTap: { _ in } // TODO:
+                                )
+                            } else {
+                                ChannelList(
+                                    factory: viewFactory,
+                                    channels: viewModel.channels,
+                                    selectedChannel: $viewModel.selectedChannel,
+                                    swipedChannelId: $viewModel.swipedChannelId,
+                                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                                    imageLoader: channelHeaderLoader.image(for:),
+                                    onItemTap: onItemTap,
+                                    onItemAppear: viewModel.checkForChannels(index:),
+                                    channelNaming: viewModel.name(forChannel:),
+                                    channelDestination: channelDestination,
+                                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                                    trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
+                                    leadingSwipeButtonTapped: { _ in }
+                                )
+                            }
+                        }
                     }
                 }
             }
