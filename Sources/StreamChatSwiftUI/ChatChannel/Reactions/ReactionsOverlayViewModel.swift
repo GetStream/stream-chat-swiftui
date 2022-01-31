@@ -36,7 +36,9 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
         if let message = controller.message {
-            self.message = message
+            withAnimation {
+                self.message = message
+            }
         }
     }
     

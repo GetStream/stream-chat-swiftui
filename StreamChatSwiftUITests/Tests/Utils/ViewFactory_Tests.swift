@@ -373,7 +373,11 @@ class ViewFactory_Tests: StreamChatTestCase {
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeMessageReactionView(message: message)
+        let view = viewFactory.makeMessageReactionView(
+            message: message,
+            onTapGesture: {},
+            onLongPressGesture: {}
+        )
         
         // Then
         XCTAssert(view is ReactionsContainer)
@@ -536,6 +540,20 @@ class ViewFactory_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(view is SystemMessageView)
+    }
+    
+    func test_viewFactory_makeReactionsUsersView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeReactionsUsersView(
+            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique)),
+            maxHeight: 280
+        )
+        
+        // Then
+        XCTAssert(view is ReactionsUsersView)
     }
 }
 

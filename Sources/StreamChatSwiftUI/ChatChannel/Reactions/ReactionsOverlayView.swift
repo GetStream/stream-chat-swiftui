@@ -50,7 +50,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     public var body: some View {
         ZStack(alignment: .topLeading) {
             Image(uiImage: currentSnapshot)
-                .blur(radius: 8)
+                .overlay(Color.black.opacity(0.1))
+                .blur(radius: 4)
                 .transition(.opacity)
                 .onTapGesture {
                     withAnimation {
@@ -70,68 +71,90 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     )
             }
             
-            VStack(alignment: .leading) {
-                MessageView(
-                    factory: factory,
-                    message: messageDisplayInfo.message,
-                    contentWidth: messageDisplayInfo.contentWidth,
-                    isFirst: messageDisplayInfo.isFirst,
-                    scrolledId: .constant(nil)
-                )
-                .offset(
-                    x: messageDisplayInfo.frame.origin.x
-                )
-                .overlay(
-                    channel.config.reactionsEnabled ?
-                        ReactionsOverlayContainer(
-                            message: viewModel.message,
-                            contentRect: messageDisplayInfo.frame,
-                            onReactionTap: { reaction in
-                                viewModel.reactionTapped(reaction)
-                                onBackgroundTap()
+            GeometryReader { reader in
+                VStack(alignment: .leading) {
+                    MessageView(
+                        factory: factory,
+                        message: messageDisplayInfo.message,
+                        contentWidth: messageDisplayInfo.contentWidth,
+                        isFirst: messageDisplayInfo.isFirst,
+                        scrolledId: .constant(nil)
+                    )
+                    .offset(
+                        x: messageDisplayInfo.frame.origin.x
+                    )
+                    .overlay(
+                        channel.config.reactionsEnabled ?
+                            ReactionsOverlayContainer(
+                                message: viewModel.message,
+                                contentRect: messageDisplayInfo.frame,
+                                onReactionTap: { reaction in
+                                    viewModel.reactionTapped(reaction)
+                                    onBackgroundTap()
+                                }
+                            )
+                            .offset(
+                                x: messageDisplayInfo.frame.origin.x,
+                                y: -24
+                            )
+                            : nil
+                    )
+                    .frame(
+                        width: messageDisplayInfo.frame.width,
+                        height: messageDisplayInfo.frame.height
+                    )
+                    
+                    if messageDisplayInfo.showsMessageActions {
+                        factory.makeMessageActionsView(
+                            for: messageDisplayInfo.message,
+                            channel: channel,
+                            onFinish: { actionInfo in
+                                onActionExecuted(actionInfo)
+                            },
+                            onError: { _ in
+                                viewModel.errorShown = true
                             }
                         )
+                        .frame(width: messageActionsWidth)
                         .offset(
-                            x: messageDisplayInfo.frame.origin.x,
-                            y: -24
+                            x: messageActionsOriginX(availableWidth: reader.size.width)
                         )
-                        : nil
-                )
-                .frame(
-                    width: messageDisplayInfo.frame.width,
-                    height: messageDisplayInfo.frame.height
-                )
-                
-                factory.makeMessageActionsView(
-                    for: messageDisplayInfo.message,
-                    channel: channel,
-                    onFinish: { actionInfo in
-                        onActionExecuted(actionInfo)
-                    },
-                    onError: { _ in
-                        viewModel.errorShown = true
+                        .padding(.top, paddingValue)
+                    } else {
+                        factory.makeReactionsUsersView(
+                            message: viewModel.message,
+                            maxHeight: userReactionsHeight
+                        )
+                        .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
+                        .offset(
+                            x: userReactionsOriginX(availableWidth: reader.size.width)
+                        )
+                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
+                        .padding(.trailing, paddingValue)
                     }
-                )
-                .frame(width: messageActionsWidth)
-                .offset(
-                    x: messageActionsOriginX
-                )
-                .padding(.top, paddingValue)
+                }
+                .offset(y: originY)
             }
-            .offset(y: originY)
         }
         .edgesIgnoringSafeArea(.all)
     }
     
-    private var originY: CGFloat {
-        var messageActionsSize = messageItemSize * CGFloat(messageActionsCount)
-        if messageActionsSize > maxMessageActionsSize {
-            messageActionsSize = maxMessageActionsSize
+    private var userReactionsHeight: CGFloat {
+        let reactionsCount = viewModel.message.latestReactions.count
+        if reactionsCount > 4 {
+            return 280
+        } else {
+            return 140
         }
+    }
+    
+    private var originY: CGFloat {
+        let bottomPopupOffset =
+            messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
         var originY = messageDisplayInfo.frame.origin.y
         let screenHeight = UIScreen.main.bounds.size.height
         let minOrigin: CGFloat = 100
-        let maxOrigin: CGFloat = screenHeight - messageDisplayInfo.frame.height - messageActionsSize - minOrigin
+        let maxOrigin: CGFloat = screenHeight - messageDisplayInfo.frame.height - bottomPopupOffset - minOrigin
         if originY < minOrigin {
             originY = minOrigin
         } else if originY > maxOrigin {
@@ -141,12 +164,35 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         return originY
     }
     
-    private var messageActionsOriginX: CGFloat {
+    private var messageActionsSize: CGFloat {
+        var messageActionsSize = messageItemSize * CGFloat(messageActionsCount)
+        if messageActionsSize > maxMessageActionsSize {
+            messageActionsSize = maxMessageActionsSize
+        }
+        return messageActionsSize
+    }
+    
+    private var userReactionsPopupHeight: CGFloat {
+        userReactionsHeight + 3 * paddingValue
+    }
+    
+    private func maxUserReactionsWidth(availableWidth: CGFloat) -> CGFloat {
+        availableWidth - 2 * paddingValue
+    }
+    
+    private func messageActionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isSentByCurrentUser {
-            let screenWidth = UIScreen.main.bounds.size.width
-            return screenWidth - messageActionsWidth - paddingValue / 2
+            return availableWidth - messageActionsWidth - paddingValue / 2
         } else {
             return CGSize.messageAvatarSize.width + paddingValue
+        }
+    }
+    
+    private func userReactionsOriginX(availableWidth: CGFloat) -> CGFloat {
+        if messageDisplayInfo.message.isSentByCurrentUser {
+            return availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
+        } else {
+            return paddingValue
         }
     }
     

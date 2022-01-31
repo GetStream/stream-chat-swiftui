@@ -74,7 +74,15 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                     .overlay(
                         reactionsShown ?
-                            factory.makeMessageReactionView(message: message)
+                            factory.makeMessageReactionView(
+                                message: message,
+                                onTapGesture: {
+                                    handleGestureForMessage(showsMessageActions: false)
+                                },
+                                onLongPressGesture: {
+                                    handleGestureForMessage(showsMessageActions: false)
+                                }
+                            )
                             : nil
                     )
                     .background(
@@ -89,20 +97,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                     .onTapGesture {}
                     .onLongPressGesture(perform: {
-                        computeFrame = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            computeFrame = false
-                            triggerHapticFeedback(style: .medium)
-                            onLongPress(
-                                MessageDisplayInfo(
-                                    message: message,
-                                    frame: frame,
-                                    contentWidth: contentWidth,
-                                    isFirst: showsAllInfo
-                                )
-                            )
-                        }
-
+                        handleGestureForMessage(showsMessageActions: true)
                     })
                     .offset(x: self.offsetX)
                     .simultaneousGesture(
@@ -225,6 +220,23 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             self.offsetX = value
         }
     }
+    
+    private func handleGestureForMessage(showsMessageActions: Bool) {
+        computeFrame = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            computeFrame = false
+            triggerHapticFeedback(style: .medium)
+            onLongPress(
+                MessageDisplayInfo(
+                    message: message,
+                    frame: frame,
+                    contentWidth: contentWidth,
+                    isFirst: showsAllInfo,
+                    showsMessageActions: showsMessageActions
+                )
+            )
+        }
+    }
 }
 
 public struct MessageDisplayInfo {
@@ -232,4 +244,5 @@ public struct MessageDisplayInfo {
     let frame: CGRect
     let contentWidth: CGFloat
     let isFirst: Bool
+    var showsMessageActions: Bool = true
 }

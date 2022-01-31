@@ -8,6 +8,8 @@ import SwiftUI
 struct ReactionsContainer: View {
     let message: ChatMessage
     var useLargeIcons = false
+    var onTapGesture: () -> Void
+    var onLongPressGesture: () -> Void
     
     var body: some View {
         VStack {
@@ -18,6 +20,12 @@ struct ReactionsContainer: View {
                     reactions: reactions
                 ) { _ in
                     log.debug("tapped on reaction")
+                }
+                .onTapGesture {
+                    onTapGesture()
+                }
+                .onLongPressGesture {
+                    onLongPressGesture()
                 }
             }
             
@@ -65,14 +73,16 @@ struct ReactionsView: View {
         HStack {
             ForEach(reactions) { reaction in
                 if let image = iconProvider(for: reaction) {
-                    Button {
-                        onReactionTap(reaction)
-                    } label: {
-                        Image(uiImage: image)
-                            .customizable()
-                            .foregroundColor(color(for: reaction))
-                            .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
-                    }
+                    Image(uiImage: image)
+                        .customizable()
+                        .foregroundColor(color(for: reaction))
+                        .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
+                        .gesture(
+                            useLargeIcons ?
+                                TapGesture().onEnded {
+                                    onReactionTap(reaction)
+                                } : nil
+                        )
                 }
             }
         }

@@ -66,6 +66,50 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_reactionsOverlayView_usersReactions() {
+        // Given
+        let author = ChatUser.mock(id: .unique, name: "Martin")
+        let reaction = ChatMessageReaction(
+            type: .init(rawValue: "love"),
+            score: 1,
+            createdAt: Date(),
+            updatedAt: Date(),
+            author: author,
+            extraData: [:]
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test",
+            author: .mock(id: .unique),
+            latestReactions: [reaction]
+        )
+        let messageDisplayInfo = MessageDisplayInfo(
+            message: message,
+            frame: CGRect(x: 44, y: 20, width: 80, height: 50),
+            contentWidth: 200,
+            isFirst: true,
+            showsMessageActions: false
+        )
+        
+        // When
+        let channel = ChatChannel.mockDMChannel()
+        let view = VerticallyCenteredView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: channel,
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: messageDisplayInfo,
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        }
+                
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
 
 struct VerticallyCenteredView<Content: View>: View {

@@ -257,6 +257,10 @@ internal enum L10n {
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
+    internal enum Reactions {
+      /// You
+      internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
+    }
     internal enum Sending {
       /// UPLOADING FAILED
       internal static var attachmentUploadingFailed: String { L10n.tr("Localizable", "message.sending.attachment-uploading-failed") }
@@ -296,6 +300,15 @@ internal enum L10n {
       /// Plural format key: "%1$@%2$#@typing@"
       internal static func users(_ p1: Any, _ p2: Int) -> String {
         return L10n.tr("Localizable", "messageList.typingIndicator.users", String(describing: p1), p2)
+      }
+    }
+  }
+
+  internal enum Reaction {
+    internal enum Authors {
+      /// Plural format key: "%#@reactions@"
+      internal static func numberOfReactions(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "reaction.authors.number-of-reactions", p1)
       }
     }
   }
