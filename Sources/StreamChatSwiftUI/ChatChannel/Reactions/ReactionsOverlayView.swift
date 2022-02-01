@@ -160,7 +160,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         } else if originY > maxOrigin {
             originY = maxOrigin
         }
-        
+                
         return originY
     }
     
