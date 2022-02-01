@@ -80,6 +80,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
+    @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
     
     var isSearching: Bool {
@@ -278,7 +279,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 channelFilter: .containMembers(userIds: [userId]),
                 messageFilter: .autocomplete(.text, text: searchText)
             )
+            loadingSearchResults = true
             messageSearchController?.search(query: query, completion: { [weak self] _ in
+                self?.loadingSearchResults = false
                 self?.updateSearchResults()
             })
         } else {

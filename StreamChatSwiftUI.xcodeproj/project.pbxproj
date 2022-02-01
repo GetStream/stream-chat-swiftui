@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */; };
 		841B2EF4278DB9E500ED619E /* MessageListHelperViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B2EF3278DB9E500ED619E /* MessageListHelperViews.swift */; };
 		841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */; };
 		841B64C427744DB60016FF3B /* ComposerModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64C327744DB60016FF3B /* ComposerModels.swift */; };
@@ -323,6 +324,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView_Tests.swift; sourceTree = "<group>"; };
 		841B2EF3278DB9E500ED619E /* MessageListHelperViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListHelperViews.swift; sourceTree = "<group>"; };
 		841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReadIndicatorView_Tests.swift; sourceTree = "<group>"; };
 		841B64C327744DB60016FF3B /* ComposerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerModels.swift; sourceTree = "<group>"; };
@@ -1012,6 +1014,7 @@
 				848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */,
 				84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */,
 				84DEC8DC2760A10500172876 /* NoChannelsView_Tests.swift */,
+				8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */,
 			);
 			path = ChatChannelList;
 			sourceTree = "<group>";
@@ -1638,6 +1641,7 @@
 				84C94C8027567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift in Sources */,
 				84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */,
 				8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */,
+				8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */,
 				84C94CE727578B92007FE2B9 /* ChatChannelListController_Mock.swift in Sources */,
 				84C94D1027578BF2007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */,
 				84C94CE627578B92007FE2B9 /* CurrentChatUserController_Mock.swift in Sources */,

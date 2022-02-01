@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View displaying the search results in the channel list.
 struct SearchResultsView<Factory: ViewFactory>: View {
     
     @Injected(\.colors) private var colors
@@ -12,6 +13,7 @@ struct SearchResultsView<Factory: ViewFactory>: View {
     var factory: Factory
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResults: [ChannelSelectionInfo]
+    var loadingSearchResults: Bool
     var onlineIndicatorShown: (ChatChannel) -> Bool
     var channelNaming: (ChatChannel) -> String
     var imageLoader: (ChatChannel) -> UIImage
@@ -52,9 +54,13 @@ struct SearchResultsView<Factory: ViewFactory>: View {
                 }
             }
         }
+        .overlay(
+            loadingSearchResults ? ProgressView() : nil
+        )
     }
 }
 
+/// View for one search result item with navigation support.
 struct SearchResultView<Factory: ViewFactory>: View {
     
     var factory: Factory
@@ -89,6 +95,7 @@ struct SearchResultView<Factory: ViewFactory>: View {
     }
 }
 
+/// The search result item user interface.
 struct SearchResultItem<ChannelDestination: View>: View {
     
     @Injected(\.utils) private var utils

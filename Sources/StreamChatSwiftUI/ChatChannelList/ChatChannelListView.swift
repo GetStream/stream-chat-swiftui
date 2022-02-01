@@ -69,6 +69,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                                     factory: viewFactory,
                                     selectedChannel: $viewModel.selectedChannel,
                                     searchResults: viewModel.searchResults,
+                                    loadingSearchResults: viewModel.loadingSearchResults,
                                     onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                                     channelNaming: viewModel.name(forChannel:),
                                     imageLoader: channelHeaderLoader.image(for:),
