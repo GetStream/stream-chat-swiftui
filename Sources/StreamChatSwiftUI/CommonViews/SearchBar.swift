@@ -25,7 +25,6 @@ struct SearchBar: View {
                     HStack {
                         Image(uiImage: images.searchIcon)
                             .customizable()
-                            .aspectRatio(contentMode: .fit)
                             .foregroundColor(Color(colors.textLowEmphasis))
                             .frame(maxHeight: 18)
                             .padding(.leading, 12)
