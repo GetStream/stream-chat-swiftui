@@ -261,6 +261,16 @@ internal enum L10n {
       /// You
       internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
     }
+    internal enum Search {
+      /// Cancel
+      internal static var cancel: String { L10n.tr("Localizable", "message.search.cancel") }
+      /// Plural format key: "%#@results@"
+      internal static func numberOfResults(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.search.number-of-results", p1)
+      }
+      /// Search
+      internal static var title: String { L10n.tr("Localizable", "message.search.title") }
+    }
     internal enum Sending {
       /// UPLOADING FAILED
       internal static var attachmentUploadingFailed: String { L10n.tr("Localizable", "message.sending.attachment-uploading-failed") }

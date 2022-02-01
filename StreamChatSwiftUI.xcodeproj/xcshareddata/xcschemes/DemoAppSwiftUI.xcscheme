@@ -38,6 +38,21 @@
                ReferencedContainer = "container:StreamChatSwiftUI.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8465FBBC2746873A00AF091E"
+               BuildableName = "StreamChatSwiftUITests.xctest"
+               BlueprintName = "StreamChatSwiftUITests"
+               ReferencedContainer = "container:StreamChatSwiftUI.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "MessageContainerView_Tests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

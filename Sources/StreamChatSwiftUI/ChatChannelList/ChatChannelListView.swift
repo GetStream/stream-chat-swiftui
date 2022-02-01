@@ -16,7 +16,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private let viewFactory: Factory
     private let title: String
     private var onItemTap: (ChatChannel) -> Void
-    private var channelDestination: (ChatChannel) -> Factory.ChannelDestination
+    private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     
     public init(
         viewFactory: Factory,
@@ -38,7 +38,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             self.onItemTap = onItemTap
         } else {
             self.onItemTap = { channel in
-                channelListVM.selectedChannel = channel
+                channelListVM.selectedChannel = channel.channelSelectionInfo
             }
         }
         
@@ -59,21 +59,43 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                             channelDestination: channelDestination
                         )
                         
-                        ChannelList(
-                            factory: viewFactory,
-                            channels: viewModel.channels,
-                            selectedChannel: $viewModel.selectedChannel,
-                            swipedChannelId: $viewModel.swipedChannelId,
-                            onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                            imageLoader: channelHeaderLoader.image(for:),
-                            onItemTap: onItemTap,
-                            onItemAppear: viewModel.checkForChannels(index:),
-                            channelNaming: viewModel.name(forChannel:),
-                            channelDestination: channelDestination,
-                            trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
-                            trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                            leadingSwipeButtonTapped: { _ in }
-                        )
+                        VStack {
+                            viewFactory.makeChannelListTopView(
+                                searchText: $viewModel.searchText
+                            )
+                            
+                            if viewModel.isSearching {
+                                SearchResultsView(
+                                    factory: viewFactory,
+                                    selectedChannel: $viewModel.selectedChannel,
+                                    searchResults: viewModel.searchResults,
+                                    loadingSearchResults: viewModel.loadingSearchResults,
+                                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                                    channelNaming: viewModel.name(forChannel:),
+                                    imageLoader: channelHeaderLoader.image(for:),
+                                    onSearchResultTap: { searchResult in
+                                        viewModel.selectedChannel = searchResult
+                                    },
+                                    onItemAppear: viewModel.loadAdditionalSearchResults(index:)
+                                )
+                            } else {
+                                ChannelList(
+                                    factory: viewFactory,
+                                    channels: viewModel.channels,
+                                    selectedChannel: $viewModel.selectedChannel,
+                                    swipedChannelId: $viewModel.swipedChannelId,
+                                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                                    imageLoader: channelHeaderLoader.image(for:),
+                                    onItemTap: onItemTap,
+                                    onItemAppear: viewModel.checkForChannels(index:),
+                                    channelNaming: viewModel.name(forChannel:),
+                                    channelDestination: channelDestination,
+                                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                                    trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
+                                    leadingSwipeButtonTapped: { _ in }
+                                )
+                            }
+                        }
                     }
                 }
             }

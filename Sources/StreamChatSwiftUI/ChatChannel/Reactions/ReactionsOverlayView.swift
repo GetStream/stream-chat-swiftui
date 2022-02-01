@@ -81,7 +81,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         scrolledId: .constant(nil)
                     )
                     .offset(
-                        x: messageDisplayInfo.frame.origin.x
+                        x: messageDisplayInfo.frame.origin.x - diffWidth
                     )
                     .overlay(
                         channel.config.reactionsEnabled ?
@@ -94,7 +94,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                                 }
                             )
                             .offset(
-                                x: messageDisplayInfo.frame.origin.x,
+                                x: messageDisplayInfo.frame.origin.x - diffWidth,
                                 y: -24
                             )
                             : nil
@@ -148,6 +148,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
     }
     
+    private var diffWidth: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let screenWidth = UIScreen.main.bounds.size.width
+            let viewWidth = topVC()?.view.frame.width ?? 0
+            return screenWidth - viewWidth
+        } else {
+            return 0
+        }
+    }
+    
     private var originY: CGFloat {
         let bottomPopupOffset =
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
@@ -160,7 +170,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         } else if originY > maxOrigin {
             originY = maxOrigin
         }
-        
+                
         return originY
     }
     

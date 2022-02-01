@@ -166,8 +166,12 @@ struct MessageContainerView<Factory: ViewFactory>: View {
         .padding(.horizontal, paddingValue)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
         .padding(.top, isLast ? paddingValue : 0)
-        .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
+        .background(isMessagePinned || shouldAnimateBackground ? Color(colors.pinnedBackground) : nil)
         .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
+    }
+    
+    private var shouldAnimateBackground: Bool {
+        scrolledId == message.messageId
     }
     
     private var isMessagePinned: Bool {

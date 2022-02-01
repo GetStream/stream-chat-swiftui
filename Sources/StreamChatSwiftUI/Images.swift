@@ -259,4 +259,9 @@ public class Images {
         }
         set { _commandIcons = newValue }
     }
+    
+    // MARK: - MessageSearch
+    
+    public var searchIcon: UIImage = loadImageSafely(with: "icn_search")
+    public var searchCloseIcon: UIImage = UIImage(systemName: "multiply.circle")!
 }

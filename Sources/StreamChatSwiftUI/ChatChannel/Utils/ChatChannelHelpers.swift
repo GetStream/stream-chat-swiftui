@@ -75,3 +75,30 @@ public struct BottomLeftView<Content: View>: View {
         }
     }
 }
+
+/// Returns the top most view controller.
+func topVC() -> UIViewController? {
+    let keyWindow = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+    
+    if var topController = keyWindow?.rootViewController {
+        while let presentedViewController = topController.presentedViewController {
+            topController = presentedViewController
+        }
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let children = topController.children
+            if !children.isEmpty {
+                let splitVC = children[0]
+                let sideVCs = splitVC.children
+                if sideVCs.count > 1 {
+                    topController = sideVCs[1]
+                    return topController
+                }
+            }
+        }
+        
+        return topController
+    }
+    
+    return nil
+}

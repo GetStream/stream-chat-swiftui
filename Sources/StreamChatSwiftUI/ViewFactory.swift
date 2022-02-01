@@ -37,7 +37,7 @@ public protocol ViewFactory: AnyObject {
     ///  - avatar: the avatar of the channel.
     ///  - onlineIndicatorShown: whether the online indicator is shown on the avatar.
     ///  - disabled: whether the user interactions with the channel are disabled.
-    ///  - selectedChannel: binding of the currently selected channel.
+    ///  - selectedChannel: binding of the currently selected channel selection info.
     ///  - swipedChannelId: optional id of the swiped channel id.
     ///  - channelDestination: closure that creates the channel destination.
     ///  - onItemTap: called when an item is tapped.
@@ -50,9 +50,9 @@ public protocol ViewFactory: AnyObject {
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool,
-        selectedChannel: Binding<ChatChannel?>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping (ChatChannel) -> ChannelDestination,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
@@ -125,11 +125,38 @@ public protocol ViewFactory: AnyObject {
         buttonTapped: @escaping (ChatChannel) -> Void
     ) -> LeadingSwipeActionsViewType
     
+    associatedtype ChannelListTopViewType: View
+    /// Creates the view shown at the top of the channel list. Suitable for search bar.
+    /// - Parameter searchText: binding of the search text.
+    /// - Returns: view shown above the channel list.
+    func makeChannelListTopView(
+        searchText: Binding<String>
+    ) -> ChannelListTopViewType
+    
+    associatedtype ChannelListSearchResultItem: View
+    /// Creates the search result item in the channel list.
+    /// - Parameters:
+    ///  - searchResult: the selected search result.
+    ///  - onlineIndicatorShown: whether the online indicator is shown.
+    ///  - channelName: the name of the channel.
+    ///  - avatar: the channel avatar.
+    ///  - onSearchResultTap: call when a search result is tapped.
+    ///  - channelDestination: provides the channel destination.
+    /// - Returns: view shown in the search results.
+    func makeChannelListSearchResultItem(
+        searchResult: ChannelSelectionInfo,
+        onlineIndicatorShown: Bool,
+        channelName: String,
+        avatar: UIImage,
+        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
+    ) -> ChannelListSearchResultItem
+    
     // MARK: - messages
     
     associatedtype ChannelDestination: View
     /// Returns a function that creates the channel destination.
-    func makeChannelDestination() -> (ChatChannel) -> ChannelDestination
+    func makeChannelDestination() -> (ChannelSelectionInfo) -> ChannelDestination
     
     associatedtype MessageThreadDestination: View
     /// Returns a function that creats the message thread destination.

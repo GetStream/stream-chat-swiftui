@@ -31,11 +31,13 @@ public class ViewModelsFactory {
     ///    - messageController: optional message controller (used in threads).
     public static func makeChannelViewModel(
         with channelController: ChatChannelController,
-        messageController: ChatMessageController?
+        messageController: ChatMessageController?,
+        scrollToMessage: ChatMessage?
     ) -> ChatChannelViewModel {
         let viewModel = ChatChannelViewModel(
             channelController: channelController,
-            messageController: messageController
+            messageController: messageController,
+            scrollToMessage: scrollToMessage
         )
         return viewModel
     }

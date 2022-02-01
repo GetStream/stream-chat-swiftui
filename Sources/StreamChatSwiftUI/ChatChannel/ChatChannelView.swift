@@ -18,12 +18,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
     public init(
         viewFactory: Factory,
         channelController: ChatChannelController,
-        messageController: ChatMessageController? = nil
+        messageController: ChatMessageController? = nil,
+        scrollToMessage: ChatMessage? = nil
     ) {
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory.makeChannelViewModel(
                 with: channelController,
-                messageController: messageController
+                messageController: messageController,
+                scrollToMessage: scrollToMessage
             )
         )
         factory = viewFactory

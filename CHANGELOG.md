@@ -3,7 +3,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Pinning of a message
+- Display users who reacted to a message
+- Message Search
+- Customization of channel list separators
+
+### 🐞 Fixed
+- Bug with image attachments selection and display
+- Reactions issues on iPad
+
 ### 🔄 Changed
+- Creation method of channel destination
 
 # [4.8.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.8.0)
 _January 18, 2022_
