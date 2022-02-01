@@ -125,6 +125,30 @@ extension ViewFactory {
         EmptyView()
     }
     
+    public func makeChannelListTopView(
+        searchText: Binding<String>
+    ) -> some View {
+        SearchBar(text: searchText)
+    }
+    
+    public func makeChannelListSearchResultItem(
+        searchResult: ChannelSelectionInfo,
+        onlineIndicatorShown: Bool,
+        channelName: String,
+        avatar: UIImage,
+        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
+    ) -> some View {
+        SearchResultItem(
+            searchResult: searchResult,
+            onlineIndicatorShown: onlineIndicatorShown,
+            channelName: channelName,
+            avatar: avatar,
+            onSearchResultTap: onSearchResultTap,
+            channelDestination: channelDestination
+        )
+    }
+    
     // MARK: messages
     
     public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {

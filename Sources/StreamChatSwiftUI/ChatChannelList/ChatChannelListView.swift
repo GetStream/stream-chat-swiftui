@@ -60,7 +60,9 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                         )
                         
                         VStack {
-                            SearchBar(text: $viewModel.searchText)
+                            viewFactory.makeChannelListTopView(
+                                searchText: $viewModel.searchText
+                            )
                             
                             if viewModel.isSearching {
                                 SearchResultsView(

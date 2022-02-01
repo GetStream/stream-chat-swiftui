@@ -264,6 +264,10 @@ internal enum L10n {
     internal enum Search {
       /// Cancel
       internal static var cancel: String { L10n.tr("Localizable", "message.search.cancel") }
+      /// Plural format key: "%#@results@"
+      internal static func numberOfResults(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.search.number-of-results", p1)
+      }
       /// Search
       internal static var title: String { L10n.tr("Localizable", "message.search.title") }
     }

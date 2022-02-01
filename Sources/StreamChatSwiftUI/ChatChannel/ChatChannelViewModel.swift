@@ -109,7 +109,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
-        scrollToMessage: ChatMessage?
+        scrollToMessage: ChatMessage? = nil
     ) {
         self.channelController = channelController
         channelController.synchronize()

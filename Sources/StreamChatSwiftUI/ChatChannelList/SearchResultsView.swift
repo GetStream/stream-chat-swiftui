@@ -21,7 +21,7 @@ struct SearchResultsView<Factory: ViewFactory>: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("\(searchResults.count) results")
+                Text(L10n.Message.Search.numberOfResults(searchResults.count))
                     .foregroundColor(Color(colors.textLowEmphasis))
                     .standardPadding()
                 Spacer()
@@ -32,6 +32,7 @@ struct SearchResultsView<Factory: ViewFactory>: View {
                 LazyVStack(spacing: 0) {
                     ForEach(searchResults) { searchResult in
                         SearchResultView(
+                            factory: factory,
                             selectedChannel: $selectedChannel,
                             searchResult: searchResult,
                             onlineIndicatorShown: onlineIndicatorShown(searchResult.channel),
@@ -54,41 +55,27 @@ struct SearchResultsView<Factory: ViewFactory>: View {
     }
 }
 
-struct SearchResultView<ChannelDestination: View>: View {
+struct SearchResultView<Factory: ViewFactory>: View {
     
-    @Injected(\.utils) private var utils
-    
+    var factory: Factory
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResult: ChannelSelectionInfo
     var onlineIndicatorShown: Bool
     var channelName: String
     var avatar: UIImage
     var onSearchResultTap: (ChannelSelectionInfo) -> Void
-    var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
+    var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     
     var body: some View {
         ZStack {
-            Button {
-                onSearchResultTap(searchResult)
-            } label: {
-                HStack {
-                    ChannelAvatarView(
-                        avatar: avatar,
-                        showOnlineIndicator: onlineIndicatorShown
-                    )
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        ChatTitleView(name: channelName)
-                        
-                        HStack {
-                            SubtitleText(text: searchResult.message?.text ?? "")
-                            Spacer()
-                            SubtitleText(text: timestampText)
-                        }
-                    }
-                }
-                .padding(.all, 8)
-            }
+            factory.makeChannelListSearchResultItem(
+                searchResult: searchResult,
+                onlineIndicatorShown: onlineIndicatorShown,
+                channelName: channelName,
+                avatar: avatar,
+                onSearchResultTap: onSearchResultTap,
+                channelDestination: channelDestination
+            )
             
             NavigationLink(
                 tag: searchResult,
@@ -98,6 +85,42 @@ struct SearchResultView<ChannelDestination: View>: View {
             } label: {
                 EmptyView()
             }
+        }
+    }
+}
+
+struct SearchResultItem<ChannelDestination: View>: View {
+    
+    @Injected(\.utils) private var utils
+    
+    var searchResult: ChannelSelectionInfo
+    var onlineIndicatorShown: Bool
+    var channelName: String
+    var avatar: UIImage
+    var onSearchResultTap: (ChannelSelectionInfo) -> Void
+    var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
+    
+    var body: some View {
+        Button {
+            onSearchResultTap(searchResult)
+        } label: {
+            HStack {
+                ChannelAvatarView(
+                    avatar: avatar,
+                    showOnlineIndicator: onlineIndicatorShown
+                )
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    ChatTitleView(name: channelName)
+                    
+                    HStack {
+                        SubtitleText(text: searchResult.message?.text ?? "")
+                        Spacer()
+                        SubtitleText(text: timestampText)
+                    }
+                }
+            }
+            .padding(.all, 8)
         }
     }
     

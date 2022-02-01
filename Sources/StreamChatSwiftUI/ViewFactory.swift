@@ -125,6 +125,33 @@ public protocol ViewFactory: AnyObject {
         buttonTapped: @escaping (ChatChannel) -> Void
     ) -> LeadingSwipeActionsViewType
     
+    associatedtype ChannelListTopViewType: View
+    /// Creates the view shown at the top of the channel list. Suitable for search bar.
+    /// - Parameter searchText: binding of the search text.
+    /// - Returns: view shown above the channel list.
+    func makeChannelListTopView(
+        searchText: Binding<String>
+    ) -> ChannelListTopViewType
+    
+    associatedtype ChannelListSearchResultItem: View
+    /// Creates the search result item in the channel list.
+    /// - Parameters:
+    ///  - searchResult: the selected search result.
+    ///  - onlineIndicatorShown: whether the online indicator is shown.
+    ///  - channelName: the name of the channel.
+    ///  - avatar: the channel avatar.
+    ///  - onSearchResultTap: call when a search result is tapped.
+    ///  - channelDestination: provides the channel destination.
+    /// - Returns: view shown in the search results.
+    func makeChannelListSearchResultItem(
+        searchResult: ChannelSelectionInfo,
+        onlineIndicatorShown: Bool,
+        channelName: String,
+        avatar: UIImage,
+        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
+    ) -> ChannelListSearchResultItem
+    
     // MARK: - messages
     
     associatedtype ChannelDestination: View
