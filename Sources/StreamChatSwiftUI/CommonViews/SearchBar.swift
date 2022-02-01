@@ -31,7 +31,7 @@ struct SearchBar: View {
                         
                         Spacer()
                         
-                        if isEditing {
+                        if !self.text.isEmpty {
                             Button(action: {
                                 self.text = ""
                             }) {

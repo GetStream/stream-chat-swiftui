@@ -38,7 +38,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             self.onItemTap = onItemTap
         } else {
             self.onItemTap = { channel in
-                channelListVM.selectedChannel = channel.toChannelSelectionInfo()
+                channelListVM.selectedChannel = channel.channelSelectionInfo
             }
         }
         

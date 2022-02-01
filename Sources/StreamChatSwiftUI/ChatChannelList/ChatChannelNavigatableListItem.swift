@@ -49,10 +49,10 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
             )
                                     
             NavigationLink(
-                tag: channel.toChannelSelectionInfo(),
+                tag: channel.channelSelectionInfo,
                 selection: $selectedChannel
             ) {
-                LazyView(channelDestination(channel.toChannelSelectionInfo()))
+                LazyView(channelDestination(channel.channelSelectionInfo))
             } label: {
                 EmptyView()
             }
@@ -82,7 +82,23 @@ public struct ChannelSelectionInfo: Identifiable, Hashable {
 
 extension ChatChannel {
     
-    func toChannelSelectionInfo() -> ChannelSelectionInfo {
+    public var channelSelectionInfo: ChannelSelectionInfo {
         ChannelSelectionInfo(channel: self, message: nil)
+    }
+}
+
+extension ChatMessage {
+    
+    func makeChannelSelectionInfo(with chatClient: ChatClient) -> ChannelSelectionInfo? {
+        if let channelId = cid,
+           let channel = chatClient.channelController(for: channelId).channel {
+            let searchResult = ChannelSelectionInfo(
+                channel: channel,
+                message: self
+            )
+            return searchResult
+        } else {
+            return nil
+        }
     }
 }

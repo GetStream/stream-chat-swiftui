@@ -76,22 +76,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var customAlertShown = false
     @Published public var searchText = "" {
         didSet {
-            if !searchText.isEmpty {
-                guard let userId = chatClient.currentUserId else { return }
-                messageSearchController = chatClient.messageSearchController()
-                let query = MessageSearchQuery(
-                    channelFilter: .containMembers(userIds: [userId]),
-                    messageFilter: .autocomplete(.text, text: searchText)
-                )
-                messageSearchController?.search(query: query, completion: { [weak self] _ in
-                    guard let self = self else { return }
-                    self.updateSearchResults()
-                })
-            } else {
-                messageSearchController = nil
-                searchResults = []
-                channels = controller.channels
-            }
+            handleSearchTextChange()
         }
     }
 
@@ -237,7 +222,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 for: channelId,
                 messageOrdering: .topToBottom
             )
-            deeplinkChannel = chatController.channel?.toChannelSelectionInfo()
+            deeplinkChannel = chatController.channel?.channelSelectionInfo
             self.selectedChannelId = nil
         }
     }
@@ -281,17 +266,26 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
         searchResults = messageSearchController.messages
             .compactMap { message in
-                if let channelId = message.cid,
-                   let channel = self.chatClient.channelController(for: channelId).channel {
-                    let searchResult = ChannelSelectionInfo(
-                        channel: channel,
-                        message: message
-                    )
-                    return searchResult
-                } else {
-                    return nil
-                }
+                message.makeChannelSelectionInfo(with: chatClient)
             }
+    }
+    
+    private func handleSearchTextChange() {
+        if !searchText.isEmpty {
+            guard let userId = chatClient.currentUserId else { return }
+            messageSearchController = chatClient.messageSearchController()
+            let query = MessageSearchQuery(
+                channelFilter: .containMembers(userIds: [userId]),
+                messageFilter: .autocomplete(.text, text: searchText)
+            )
+            messageSearchController?.search(query: query, completion: { [weak self] _ in
+                self?.updateSearchResults()
+            })
+        } else {
+            messageSearchController = nil
+            searchResults = []
+            channels = controller.channels
+        }
     }
 }
 
