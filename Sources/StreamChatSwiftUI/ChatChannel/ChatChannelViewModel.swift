@@ -182,7 +182,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             listId = UUID().uuidString
         }
         
-        if !showScrollToLatestButton && scrolledId != nil {
+        if !showScrollToLatestButton && scrolledId == nil {
             scrollToLastMessage()
         }
     }

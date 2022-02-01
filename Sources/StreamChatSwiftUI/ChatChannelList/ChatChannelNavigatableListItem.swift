@@ -61,6 +61,8 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
     }
 }
 
+/// Used for representing selection of an item in the channel list.
+/// The optional message is used in case we need to scroll to a particular one in the message list.
 public struct ChannelSelectionInfo: Identifiable, Hashable {
     
     public var id: String {

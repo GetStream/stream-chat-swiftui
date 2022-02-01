@@ -4,6 +4,7 @@
 
 import SwiftUI
 
+/// Search bar used in the message search.
 struct SearchBar: View {
     
     @Injected(\.colors) private var colors
