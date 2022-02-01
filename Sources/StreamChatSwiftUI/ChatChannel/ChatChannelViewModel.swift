@@ -108,7 +108,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             
     public init(
         channelController: ChatChannelController,
-        messageController: ChatMessageController? = nil
+        messageController: ChatMessageController? = nil,
+        scrollToMessage: ChatMessage?
     ) {
         self.channelController = channelController
         channelController.synchronize()
@@ -125,6 +126,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelDataSource.delegate = self
         messages = channelDataSource.messages
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.scrolledId = scrollToMessage?.messageId
+        }
+              
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didReceiveMemoryWarning),
@@ -177,7 +182,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             listId = UUID().uuidString
         }
         
-        if !showScrollToLatestButton {
+        if !showScrollToLatestButton && scrolledId != nil {
             scrollToLastMessage()
         }
     }

@@ -40,7 +40,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    @Published public var selectedChannel: ChatChannel? {
+    @Published public var selectedChannel: ChannelSelectionInfo? {
         didSet {
             if oldValue != nil && selectedChannel == nil {
                 // pop happened, apply the queued changes.
@@ -51,7 +51,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    @Published public var deeplinkChannel: ChatChannel?
+    @Published public var deeplinkChannel: ChannelSelectionInfo?
     @Published public var swipedChannelId: String?
     @Published public var channelAlertType: ChannelAlertType? {
         didSet {
@@ -77,26 +77,16 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var searchText = "" {
         didSet {
             if !searchText.isEmpty {
+                guard let userId = chatClient.currentUserId else { return }
                 messageSearchController = chatClient.messageSearchController()
-                messageSearchController?.search(text: searchText) { [weak self] _ in
-                    guard let self = self, let messageSearchController = self.messageSearchController else { return }
-                    self.searchResults = messageSearchController.messages
-                        .sorted(by: { message1, message2 in
-                            message1.createdAt > message2.createdAt
-                        })
-                        .compactMap { message in
-                            if let channelId = message.cid,
-                               let channel = self.chatClient.channelController(for: channelId).channel {
-                                let searchResult = SearchResult(
-                                    channel: channel,
-                                    message: message
-                                )
-                                return searchResult
-                            } else {
-                                return nil
-                            }
-                        }
-                }
+                let query = MessageSearchQuery(
+                    channelFilter: .containMembers(userIds: [userId]),
+                    messageFilter: .autocomplete(.text, text: searchText)
+                )
+                messageSearchController?.search(query: query, completion: { [weak self] _ in
+                    guard let self = self else { return }
+                    self.updateSearchResults()
+                })
             } else {
                 messageSearchController = nil
                 searchResults = []
@@ -105,7 +95,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    @Published public var searchResults = [SearchResult]()
+    @Published public var searchResults = [ChannelSelectionInfo]()
     
     var isSearching: Bool {
         !searchText.isEmpty
@@ -145,6 +135,24 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 guard let self = self else { return }
                 self.loadingNextChannels = false
                 self.channels = self.controller.channels
+            }
+        }
+    }
+    
+    public func loadAdditionalSearchResults(index: Int) {
+        guard let messageSearchController = messageSearchController else {
+            return
+        }
+        
+        if index < messageSearchController.messages.count - 10 {
+            return
+        }
+        
+        if _loadingNextChannels.compareAndSwap(old: false, new: true) {
+            messageSearchController.loadNextMessages { [weak self] _ in
+                guard let self = self else { return }
+                self.loadingNextChannels = false
+                self.updateSearchResults()
             }
         }
     }
@@ -229,7 +237,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 for: channelId,
                 messageOrdering: .topToBottom
             )
-            deeplinkChannel = chatController.channel
+            deeplinkChannel = chatController.channel?.toChannelSelectionInfo()
             self.selectedChannelId = nil
         }
     }
@@ -264,6 +272,26 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         channel.lastActiveMembers
             .sorted { $0.memberCreatedAt < $1.memberCreatedAt }
             .filter { $0.id != chatClient.currentUserId }
+    }
+    
+    private func updateSearchResults() {
+        guard let messageSearchController = messageSearchController else {
+            return
+        }
+
+        searchResults = messageSearchController.messages
+            .compactMap { message in
+                if let channelId = message.cid,
+                   let channel = self.chatClient.channelController(for: channelId).channel {
+                    let searchResult = ChannelSelectionInfo(
+                        channel: channel,
+                        message: message
+                    )
+                    return searchResult
+                } else {
+                    return nil
+                }
+            }
     }
 }
 

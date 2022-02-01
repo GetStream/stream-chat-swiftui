@@ -10,7 +10,7 @@ import SwiftUI
 public struct ChannelList<Factory: ViewFactory>: View {
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
-    @Binding var selectedChannel: ChatChannel?
+    @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
     private var scrollable: Bool
     private var onlineIndicatorShown: (ChatChannel) -> Bool
@@ -18,7 +18,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var onItemTap: (ChatChannel) -> Void
     private var onItemAppear: (Int) -> Void
     private var channelNaming: (ChatChannel) -> String
-    private var channelDestination: (ChatChannel) -> Factory.ChannelDestination
+    private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
@@ -26,7 +26,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
-        selectedChannel: Binding<ChatChannel?>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         scrollable: Bool = true,
         onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
@@ -34,7 +34,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         onItemTap: @escaping (ChatChannel) -> Void,
         onItemAppear: @escaping (Int) -> Void,
         channelNaming: @escaping (ChatChannel) -> String,
-        channelDestination: @escaping (ChatChannel) -> Factory.ChannelDestination,
+        channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
@@ -91,14 +91,14 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
-    @Binding var selectedChannel: ChatChannel?
+    @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
     private var onlineIndicatorShown: (ChatChannel) -> Bool
     private var imageLoader: (ChatChannel) -> UIImage
     private var onItemTap: (ChatChannel) -> Void
     private var onItemAppear: (Int) -> Void
     private var channelNaming: (ChatChannel) -> String
-    private var channelDestination: (ChatChannel) -> Factory.ChannelDestination
+    private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
@@ -106,14 +106,14 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     init(
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
-        selectedChannel: Binding<ChatChannel?>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
         imageLoader: @escaping (ChatChannel) -> UIImage,
         onItemTap: @escaping (ChatChannel) -> Void,
         onItemAppear: @escaping (Int) -> Void,
         channelNaming: @escaping (ChatChannel) -> String,
-        channelDestination: @escaping (ChatChannel) -> Factory.ChannelDestination,
+        channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void

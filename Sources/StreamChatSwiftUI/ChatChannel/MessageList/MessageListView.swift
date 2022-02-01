@@ -110,7 +110,13 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .frame(minWidth: self.width, minHeight: height)
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId = scrolledId {
-                        self.scrolledId = nil
+                        if scrolledId == messages.first?.messageId {
+                            self.scrolledId = nil
+                        } else {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                self.scrolledId = nil
+                            }
+                        }
                         withAnimation {
                             scrollView.scrollTo(scrolledId, anchor: .bottom)
                         }

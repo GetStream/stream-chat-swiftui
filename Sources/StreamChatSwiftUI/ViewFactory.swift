@@ -37,7 +37,7 @@ public protocol ViewFactory: AnyObject {
     ///  - avatar: the avatar of the channel.
     ///  - onlineIndicatorShown: whether the online indicator is shown on the avatar.
     ///  - disabled: whether the user interactions with the channel are disabled.
-    ///  - selectedChannel: binding of the currently selected channel.
+    ///  - selectedChannel: binding of the currently selected channel selection info.
     ///  - swipedChannelId: optional id of the swiped channel id.
     ///  - channelDestination: closure that creates the channel destination.
     ///  - onItemTap: called when an item is tapped.
@@ -50,9 +50,9 @@ public protocol ViewFactory: AnyObject {
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool,
-        selectedChannel: Binding<ChatChannel?>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping (ChatChannel) -> ChannelDestination,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
@@ -129,7 +129,7 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype ChannelDestination: View
     /// Returns a function that creates the channel destination.
-    func makeChannelDestination() -> (ChatChannel) -> ChannelDestination
+    func makeChannelDestination() -> (ChannelSelectionInfo) -> ChannelDestination
     
     associatedtype MessageThreadDestination: View
     /// Returns a function that creats the message thread destination.

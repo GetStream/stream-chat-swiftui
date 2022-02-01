@@ -16,7 +16,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private let viewFactory: Factory
     private let title: String
     private var onItemTap: (ChatChannel) -> Void
-    private var channelDestination: (ChatChannel) -> Factory.ChannelDestination
+    private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     
     public init(
         viewFactory: Factory,
@@ -38,7 +38,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             self.onItemTap = onItemTap
         } else {
             self.onItemTap = { channel in
-                channelListVM.selectedChannel = channel
+                channelListVM.selectedChannel = channel.toChannelSelectionInfo()
             }
         }
         
@@ -64,11 +64,16 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                             
                             if viewModel.isSearching {
                                 SearchResultsView(
+                                    factory: viewFactory,
+                                    selectedChannel: $viewModel.selectedChannel,
                                     searchResults: viewModel.searchResults,
                                     onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                                     channelNaming: viewModel.name(forChannel:),
                                     imageLoader: channelHeaderLoader.image(for:),
-                                    onSearchResultTap: { _ in } // TODO:
+                                    onSearchResultTap: { searchResult in
+                                        viewModel.selectedChannel = searchResult
+                                    },
+                                    onItemAppear: viewModel.loadAdditionalSearchResults(index:)
                                 )
                             } else {
                                 ChannelList(

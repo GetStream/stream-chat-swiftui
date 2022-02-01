@@ -65,9 +65,9 @@ extension ViewFactory {
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool,
-        selectedChannel: Binding<ChatChannel?>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping (ChatChannel) -> ChannelDestination,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
@@ -127,15 +127,16 @@ extension ViewFactory {
     
     // MARK: messages
     
-    public func makeChannelDestination() -> (ChatChannel) -> ChatChannelView<Self> {
-        { [unowned self] channel in
+    public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {
+        { [unowned self] selectionInfo in
             let controller = chatClient.channelController(
-                for: channel.cid,
+                for: selectionInfo.channel.cid,
                 messageOrdering: .topToBottom
             )
             return ChatChannelView(
                 viewFactory: self,
-                channelController: controller
+                channelController: controller,
+                scrollToMessage: selectionInfo.message
             )
         }
     }

@@ -98,6 +98,9 @@
 "message.file-attachment.error-preview" = "Error occured while previewing the file.";
 "message.giphy-attachment.title" = "GIPHY";
 
+"message.search.title" = "Search";
+"message.search.cancel" = "Cancel";
+
 "current-selection" = "%d of %d";
 
 "attachment.max-size-exceeded" = "Attachment size exceed the limit.";

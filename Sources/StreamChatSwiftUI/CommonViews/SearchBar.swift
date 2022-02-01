@@ -5,56 +5,69 @@
 import SwiftUI
 
 struct SearchBar: View {
+    
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
+    
     @Binding var text: String
-
     @State private var isEditing = false
         
     var body: some View {
         HStack {
-            
-            TextField("Search ...", text: $text)
-                .padding(7)
-                .padding(.horizontal, 25)
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
+            TextField(L10n.Message.Search.title, text: $text)
+                .padding(8)
+                .padding(.leading, 8)
+                .padding(.horizontal, 24)
+                .background(Color(colors.background1))
+                .cornerRadius(18)
                 .overlay(
                     HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 8)
+                        Image(uiImage: images.searchIcon)
+                            .customizable()
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(Color(colors.textLowEmphasis))
+                            .frame(maxHeight: 18)
+                            .padding(.leading, 12)
+                        
+                        Spacer()
                         
                         if isEditing {
                             Button(action: {
                                 self.text = ""
-                                
                             }) {
-                                Image(systemName: "multiply.circle.fill")
-                                    .foregroundColor(.gray)
+                                Image(uiImage: images.searchCloseIcon)
+                                    .customizable()
+                                    .frame(width: 18, height: 18)
+                                    .foregroundColor(Color(colors.textLowEmphasis))
                                     .padding(.trailing, 8)
                             }
                         }
                     }
                 )
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 8)
                 .onTapGesture {
                     self.isEditing = true
                 }
+                .transition(.identity)
+                .animation(.easeInOut)
             
             if isEditing {
                 Button(action: {
                     self.isEditing = false
                     self.text = ""
-                    
                     // Dismiss the keyboard
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    resignFirstResponder()
                 }) {
-                    Text("Cancel")
+                    Text(L10n.Message.Search.cancel)
+                        .foregroundColor(colors.tintColor)
                 }
-                .padding(.trailing, 10)
+                .frame(height: 20)
+                .padding(.trailing, 8)
                 .transition(.move(edge: .trailing))
-                .animation(.default)
+                .animation(.easeInOut)
             }
         }
+        .padding(.top, 8)
     }
 }

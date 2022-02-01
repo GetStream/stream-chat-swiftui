@@ -50,7 +50,7 @@ struct iMessagePocView: View {
                     onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                     imageLoader: channelHeaderLoader.image(for:),
                     onItemTap: { channel in
-                        viewModel.selectedChannel = channel
+                        viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
                     },
                     onItemAppear: viewModel.checkForChannels(index:),
                     channelNaming: viewModel.name(forChannel:),

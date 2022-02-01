@@ -261,6 +261,12 @@ internal enum L10n {
       /// You
       internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
     }
+    internal enum Search {
+      /// Cancel
+      internal static var cancel: String { L10n.tr("Localizable", "message.search.cancel") }
+      /// Search
+      internal static var title: String { L10n.tr("Localizable", "message.search.title") }
+    }
     internal enum Sending {
       /// UPLOADING FAILED
       internal static var attachmentUploadingFailed: String { L10n.tr("Localizable", "message.sending.attachment-uploading-failed") }

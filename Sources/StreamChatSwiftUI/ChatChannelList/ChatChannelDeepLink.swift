@@ -7,12 +7,12 @@ import SwiftUI
 
 /// View providing support for deeplinking.
 public struct ChannelDeepLink<ChannelDestination: View>: View {
-    private var channelDestination: (ChatChannel) -> ChannelDestination
-    @Binding var deeplinkChannel: ChatChannel?
+    private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
+    @Binding var deeplinkChannel: ChannelSelectionInfo?
     
     public init(
-        deeplinkChannel: Binding<ChatChannel?>,
-        channelDestination: @escaping (ChatChannel) -> ChannelDestination
+        deeplinkChannel: Binding<ChannelSelectionInfo?>,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
     ) {
         self.channelDestination = channelDestination
         _deeplinkChannel = deeplinkChannel

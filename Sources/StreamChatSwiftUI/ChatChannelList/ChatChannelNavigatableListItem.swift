@@ -13,8 +13,8 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
     private var avatar: UIImage
     private var disabled: Bool
     private var onlineIndicatorShown: Bool
-    @Binding private var selectedChannel: ChatChannel?
-    private var channelDestination: (ChatChannel) -> ChannelDestination
+    @Binding private var selectedChannel: ChannelSelectionInfo?
+    private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
     private var onItemTap: (ChatChannel) -> Void
     
     public init(
@@ -23,8 +23,8 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool = false,
-        selectedChannel: Binding<ChatChannel?>,
-        channelDestination: @escaping (ChatChannel) -> ChannelDestination,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
         self.channel = channel
@@ -48,12 +48,41 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 onItemTap: onItemTap
             )
                                     
-            NavigationLink(tag: channel, selection: $selectedChannel) {
-                LazyView(channelDestination(channel))
+            NavigationLink(
+                tag: channel.toChannelSelectionInfo(),
+                selection: $selectedChannel
+            ) {
+                LazyView(channelDestination(channel.toChannelSelectionInfo()))
             } label: {
                 EmptyView()
             }
         }
         .id("\(channel.id)-navigatable")
+    }
+}
+
+public struct ChannelSelectionInfo: Identifiable, Hashable {
+    
+    public var id: String {
+        if let message = message {
+            return "\(channel.id)-\(message.id)"
+        } else {
+            return channel.id
+        }
+    }
+
+    public let channel: ChatChannel
+    public let message: ChatMessage?
+    
+    public init(channel: ChatChannel, message: ChatMessage?) {
+        self.channel = channel
+        self.message = message
+    }
+}
+
+extension ChatChannel {
+    
+    func toChannelSelectionInfo() -> ChannelSelectionInfo {
+        ChannelSelectionInfo(channel: self, message: nil)
     }
 }
