@@ -20,7 +20,7 @@ struct SearchBar: View {
                 .padding(.leading, 8)
                 .padding(.horizontal, 24)
                 .background(Color(colors.background1))
-                .cornerRadius(18)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .overlay(
                     HStack {
                         Image(uiImage: images.searchIcon)
