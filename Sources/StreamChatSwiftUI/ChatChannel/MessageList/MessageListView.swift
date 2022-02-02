@@ -109,6 +109,10 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .flippedUpsideDown()
                 .frame(minWidth: self.width, minHeight: height)
                 .onChange(of: scrolledId) { scrolledId in
+                    if !self.scrolledIdAvailableInMessages {
+                        self.scrolledId = nil
+                        return
+                    }
                     if let scrolledId = scrolledId {
                         if scrolledId == messages.first?.messageId {
                             self.scrolledId = nil
@@ -155,6 +159,10 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
+    }
+    
+    private var scrolledIdAvailableInMessages: Bool {
+        messages.map(\.messageId).contains(scrolledId)
     }
     
     private func showsAllData(for message: ChatMessage) -> Bool {
