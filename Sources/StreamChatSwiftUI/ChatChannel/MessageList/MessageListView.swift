@@ -162,7 +162,11 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
     
     private var scrolledIdAvailableInMessages: Bool {
-        messages.map(\.messageId).contains(scrolledId)
+        if let scrolledId = scrolledId {
+            return messages.map(\.messageId).contains(scrolledId)
+        } else {
+            return false
+        }
     }
     
     private func showsAllData(for message: ChatMessage) -> Bool {
