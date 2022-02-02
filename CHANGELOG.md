@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.9.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.9.0)
+_February 02, 2022_
+
 ### ✅ Added
 - Pinning of a message
 - Display users who reacted to a message
