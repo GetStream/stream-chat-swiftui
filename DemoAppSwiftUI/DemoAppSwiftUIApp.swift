@@ -25,6 +25,11 @@ struct DemoAppSwiftUIApp: App {
                 ChatChannelListView(viewFactory: DemoAppFactory.shared)
             }
         }
+        .onChange(of: appState.userState) { newValue in
+            if newValue == .loggedIn {
+                appDelegate.notificationsHandler.setupRemoteNotifications()
+            }
+        }
     }
 }
 

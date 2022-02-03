@@ -20,6 +20,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return client
     }()
     
+    let notificationsHandler = NotificationsHandler()
+    
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -61,6 +63,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             }
         }
         
+        UNUserNotificationCenter.current().delegate = notificationsHandler
+        
         return true
     }
     
@@ -72,6 +76,24 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let sceneConfig = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         sceneConfig.delegateClass = SceneDelegate.self
         return sceneConfig
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        guard let currentUserId = chatClient.currentUserId else {
+            log.warning("cannot add the device without connecting as user first, did you call connectUser")
+            return
+        }
+
+        chatClient.currentUserController().addDevice(token: deviceToken) { error in
+            if let error = error {
+                log.error("adding a device failed with an error \(error)")
+                return
+            }
+            UserDefaults(suiteName: applicationGroupIdentifier)?.set(currentUserId, forKey: currentUserIdRegisteredForPush)
+        }
     }
 }
 
