@@ -7,6 +7,9 @@ import StreamChatSwiftUI
 import SwiftUI
 import UIKit
 
+/// Handles push notifications in the demo app.
+/// When a notification is received, the channel id is extracted from the notification object.
+/// The code below shows an example how to use it to navigate directly to the corresponding screen.
 class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
     
     @Injected(\.chatClient) private var chatClient
