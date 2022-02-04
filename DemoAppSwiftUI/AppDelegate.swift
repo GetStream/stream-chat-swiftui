@@ -19,9 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let client = ChatClient(config: config)
         return client
     }()
-    
-    let notificationsHandler = NotificationsHandler()
-    
+        
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -63,7 +61,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             }
         }
         
-        UNUserNotificationCenter.current().delegate = notificationsHandler
+        UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
         
         return true
     }

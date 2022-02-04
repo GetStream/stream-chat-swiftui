@@ -7,7 +7,13 @@ import StreamChatSwiftUI
 import SwiftUI
 import UIKit
 
-class NotificationsHandler: NSObject, UNUserNotificationCenterDelegate {
+class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
+    
+    @Published var notificationChannelId: String?
+    
+    static let shared = NotificationsHandler()
+    
+    override private init() {}
     
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
@@ -30,10 +36,12 @@ class NotificationsHandler: NSObject, UNUserNotificationCenterDelegate {
             return
         }
         
-        if let userId = UserDefaults(suiteName: applicationGroupIdentifier)?.string(forKey: currentUserIdRegisteredForPush),
-           let userCredentials = UserCredentials.builtInUsersByID(id: userId) {
-            // presentChat(userCredentials: userCredentials, channelID: cid)
-        }
+//        if let userId = UserDefaults(suiteName: applicationGroupIdentifier)?.string(forKey: currentUserIdRegisteredForPush),
+//           let userCredentials = UserCredentials.builtInUsersByID(id: userId) {
+//            // presentChat(userCredentials: userCredentials, channelID: cid)
+//        }
+        
+        notificationChannelId = cid.description
     }
     
     func setupRemoteNotifications() {
