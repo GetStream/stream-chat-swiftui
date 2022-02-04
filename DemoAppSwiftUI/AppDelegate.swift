@@ -57,7 +57,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             withAnimation {
-                AppState.shared.userState = .notLoggedIn
+                if AppState.shared.userState == .launchAnimation {
+                    AppState.shared.userState = .notLoggedIn
+                }
             }
         }
         
