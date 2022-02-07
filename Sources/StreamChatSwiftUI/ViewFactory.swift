@@ -374,6 +374,7 @@ public protocol ViewFactory: AnyObject {
     ///  - addedCustomAttachments: list of added custom attachments.
     ///  - quotedMessage: Optional quoted message, shown in the composer input.
     ///  - maxMessageLength: the maximum allowed message length.
+    ///  - cooldownDuration: Duration of cooldown for sending messages, in case slow mode is enabled.
     ///  - onCustomAttachmentTap: called when a custom attachment is tapped.
     ///  - shouldScroll: whether the input field is scrollable.
     ///  - removeAttachmentWithId: called when the attachment is removed from the input view.
@@ -388,6 +389,7 @@ public protocol ViewFactory: AnyObject {
         addedCustomAttachments: [CustomAttachment],
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
+        cooldownDuration: Int,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
@@ -397,10 +399,12 @@ public protocol ViewFactory: AnyObject {
     /// Creates the trailing composer view.
     /// - Parameters:
     ///  - enabled: whether the view is enabled (e.g. button).
+    ///  - cooldownDuration: Duration of cooldown for sending messages, in case slow mode is enabled.
     ///  - onTap: called when the view is tapped.
     /// - Returns: view displayed in the trailing area of the message composer view.
     func makeTrailingComposerView(
         enabled: Bool,
+        cooldownDuration: Int,
         onTap: @escaping () -> Void
     ) -> TrailingComposerViewType
     

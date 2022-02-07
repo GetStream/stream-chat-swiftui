@@ -114,9 +114,13 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var errorShown = false
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
+    @Published public var cooldownDuration: Int = 0
     
     private let channelController: ChatChannelController
     private var messageController: ChatMessageController?
+    
+    private var timer: Timer?
+    private var cooldownPeriod = 0
     
     private var cancellables = Set<AnyCancellable>()
     private lazy var commandsHandler = utils
@@ -141,6 +145,7 @@ open class MessageComposerViewModel: ObservableObject {
     ) {
         self.channelController = channelController
         self.messageController = messageController
+        listenToCooldownUpdates()
     }
     
     public func sendMessage(
@@ -148,6 +153,10 @@ open class MessageComposerViewModel: ObservableObject {
         editedMessage: ChatMessage?,
         completion: @escaping () -> Void
     ) {
+        defer {
+            checkChannelCooldown()
+        }
+        
         if let composerCommand = composerCommand {
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
@@ -453,6 +462,37 @@ open class MessageComposerViewModel: ObservableObject {
                     }
                 }
                 .store(in: &cancellables)
+        }
+    }
+    
+    private func listenToCooldownUpdates() {
+        channelController.channelChangePublisher.sink { [weak self] _ in
+            let cooldownDuration = self?.channelController.channel?.cooldownDuration ?? 0
+            if self?.cooldownPeriod == cooldownDuration {
+                return
+            }
+            self?.cooldownPeriod = cooldownDuration
+            self?.checkChannelCooldown()
+        }
+        .store(in: &cancellables)
+    }
+    
+    private func checkChannelCooldown() {
+        let duration = channelController.channel?.cooldownDuration ?? 0
+        if duration > 0 && timer == nil {
+            cooldownDuration = duration
+            timer = Timer.scheduledTimer(
+                withTimeInterval: 1,
+                repeats: true,
+                block: { [weak self] _ in
+                    self?.cooldownDuration -= 1
+                    if self?.cooldownDuration == 0 {
+                        self?.timer?.invalidate()
+                        self?.timer = nil
+                    }
+                }
+            )
+            timer?.fire()
         }
     }
 }

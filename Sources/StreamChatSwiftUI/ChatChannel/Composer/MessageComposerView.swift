@@ -71,12 +71,16 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     quotedMessage: $quotedMessage,
                     maxMessageLength: channelConfig?.maxMessageLength,
+                    cooldownDuration: viewModel.cooldownDuration,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
                                 
-                factory.makeTrailingComposerView(enabled: viewModel.sendButtonEnabled) {
+                factory.makeTrailingComposerView(
+                    enabled: viewModel.sendButtonEnabled,
+                    cooldownDuration: viewModel.cooldownDuration
+                ) {
                     viewModel.sendMessage(
                         quotedMessage: quotedMessage,
                         editedMessage: editedMessage
@@ -181,6 +185,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var addedCustomAttachments: [CustomAttachment]
     var quotedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
+    var cooldownDuration: Int
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     
@@ -257,7 +262,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     text: $text,
                     height: $textHeight,
                     selectedRangeLocation: $selectedRangeLocation,
-                    placeholder: L10n.Composer.Placeholder.message,
+                    placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : L10n.Composer.Placeholder.message,
+                    editable: !isInCooldown,
                     maxMessageLength: maxMessageLength
                 )
                 .frame(height: textFieldHeight)
@@ -292,5 +298,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     
     private var shouldAddVerticalPadding: Bool {
         !addedFileURLs.isEmpty || !addedAssets.isEmpty
+    }
+    
+    private var isInCooldown: Bool {
+        cooldownDuration > 0
     }
 }

@@ -12,12 +12,14 @@ struct ComposerTextInputView: UIViewRepresentable {
     @Binding var selectedRangeLocation: Int
     
     var placeholder: String
+    var editable: Bool
     var maxMessageLength: Int?
     
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView = InputTextView()
         context.coordinator.textView = inputTextView
         inputTextView.delegate = context.coordinator
+        inputTextView.isEditable = editable
         inputTextView.layoutManager.delegate = context.coordinator
         inputTextView.placeholderLabel.text = placeholder
         
@@ -29,6 +31,8 @@ struct ComposerTextInputView: UIViewRepresentable {
             if uiView.markedTextRange == nil {
                 uiView.selectedRange.location = selectedRangeLocation
                 uiView.text = text
+                uiView.isEditable = editable
+                uiView.placeholderLabel.text = placeholder
                 uiView.handleTextChange()
             }
         }
