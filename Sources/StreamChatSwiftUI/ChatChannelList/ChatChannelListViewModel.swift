@@ -217,13 +217,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func checkForDeeplinks() {
-        if let selectedChannelId = selectedChannelId {
-            for channel in channels {
-                if channel.cid.description == selectedChannelId {
-                    deeplinkChannel = channel.channelSelectionInfo
-                    break
-                }
-            }
+        if let selectedChannelId = selectedChannelId,
+           let channelId = try? ChannelId(cid: selectedChannelId) {
+            let chatController = chatClient.channelController(
+                for: channelId,
+                messageOrdering: .topToBottom
+            )
+            deeplinkChannel = chatController.channel?.channelSelectionInfo
             self.selectedChannelId = nil
         }
     }
