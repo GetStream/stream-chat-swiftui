@@ -168,6 +168,7 @@
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
 		8492974B27ABDDCB00A8EEB0 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
 		8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492975127B156D000A8EEB0 /* SlowModeView.swift */; };
+		8492975427B1725B00A8EEB0 /* MessageComposerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492975327B1725B00A8EEB0 /* MessageComposerView_Tests.swift */; };
 		849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */; };
 		84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */; };
 		84AB7B1D2771F4AA00631A10 /* DiscardButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */; };
@@ -488,6 +489,7 @@
 		8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DemoAppSwiftUI.entitlements; sourceTree = "<group>"; };
 		8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsHandler.swift; sourceTree = "<group>"; };
 		8492975127B156D000A8EEB0 /* SlowModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowModeView.swift; sourceTree = "<group>"; };
+		8492975327B1725B00A8EEB0 /* MessageComposerView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposerView_Tests.swift; sourceTree = "<group>"; };
 		849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionsResolver.swift; sourceTree = "<group>"; };
 		84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyAttachmentView.swift; sourceTree = "<group>"; };
 		84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardButtonView.swift; sourceTree = "<group>"; };
@@ -1207,6 +1209,7 @@
 				846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */,
 				841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */,
 				84C94D4E2758FE59007FE2B9 /* ChatChannelTestHelpers.swift */,
+				8492975327B1725B00A8EEB0 /* MessageComposerView_Tests.swift */,
 			);
 			path = ChatChannel;
 			sourceTree = "<group>";
@@ -1612,6 +1615,7 @@
 				84C94CE927578B93007FE2B9 /* ChatClient_Mock.swift in Sources */,
 				84C94D2627579511007FE2B9 /* CDNClient_Mock.swift in Sources */,
 				84C94D462757D1CA007FE2B9 /* ImageLoader_Mock.swift in Sources */,
+				8492975427B1725B00A8EEB0 /* MessageComposerView_Tests.swift in Sources */,
 				84C94D2A275796D0007FE2B9 /* MockNetworkURLProtocol.swift in Sources */,
 				84C94CCF27578B92007FE2B9 /* ChatMessageReaction_Mock.swift in Sources */,
 				84C94D0327578BF2007FE2B9 /* WaitFor.swift in Sources */,
