@@ -5,7 +5,8 @@
 import StreamChat
 import SwiftUI
 
-struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
+public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
+     
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     
@@ -45,7 +46,37 @@ struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     
     private let scrollAreaId = "scrollArea"
     
-    var body: some View {
+    public init(
+        factory: Factory,
+        channel: ChatChannel,
+        messages: LazyCachedMapCollection<ChatMessage>,
+        messagesGroupingInfo: [String: [String]],
+        scrolledId: Binding<String?>,
+        showScrollToLatestButton: Binding<Bool>,
+        quotedMessage: Binding<ChatMessage?>,
+        currentDateString: String? = nil,
+        listId: String,
+        isMessageThread: Bool,
+        onMessageAppear: @escaping (Int) -> Void,
+        onScrollToBottom: @escaping () -> Void,
+        onLongPress: @escaping (MessageDisplayInfo) -> Void
+    ) {
+        self.factory = factory
+        self.channel = channel
+        self.messages = messages
+        self.messagesGroupingInfo = messagesGroupingInfo
+        self.currentDateString = currentDateString
+        self.listId = listId
+        self.isMessageThread = isMessageThread
+        self.onMessageAppear = onMessageAppear
+        self.onScrollToBottom = onScrollToBottom
+        self.onLongPress = onLongPress
+        _scrolledId = scrolledId
+        _showScrollToLatestButton = showScrollToLatestButton
+        _quotedMessage = quotedMessage
+    }
+    
+    public var body: some View {
         ZStack {
             ScrollViewReader { scrollView in
                 ScrollView {
