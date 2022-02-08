@@ -188,7 +188,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     
     var textFieldHeight: CGFloat {
         let minHeight: CGFloat = 34
-        let maxHeight: CGFloat = 70
+        let maxHeight: CGFloat = 76
             
         if textHeight < minHeight {
             return minHeight
