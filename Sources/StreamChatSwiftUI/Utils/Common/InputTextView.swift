@@ -24,7 +24,7 @@ class InputTextView: UITextView {
     /// The maximum height of the text view.
     /// When the content in the text view is greater than this height, scrolling will be enabled and the text view's height will be restricted to this value
     open var maximumHeight: CGFloat {
-        70.0
+        76.0
     }
         
     override open func didMoveToSuperview() {
@@ -71,7 +71,7 @@ class InputTextView: UITextView {
         
         heightConstraint = heightAnchor.constraint(equalToConstant: minimumHeight)
         heightConstraint?.isActive = true
-        isScrollEnabled = true
+        isScrollEnabled = false
     }
 
     /// Sets the given text in the current caret position.
@@ -109,13 +109,7 @@ class InputTextView: UITextView {
         }
 
         heightConstraint?.constant = heightToSet
+        isScrollEnabled = heightToSet > minimumHeight
         layoutIfNeeded()
-
-        // This is due to bug in UITextView where the scroll sometimes disables
-        // when a very long text is pasted in it.
-        // Doing this ensures that it doesn't happen
-        // Reference: https://stackoverflow.com/a/33194525/3825788
-        isScrollEnabled = false
-        isScrollEnabled = true
     }
 }
