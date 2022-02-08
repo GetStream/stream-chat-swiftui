@@ -166,6 +166,7 @@
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
+		8492974B27ABDDCB00A8EEB0 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
 		849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */; };
 		84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */; };
 		84AB7B1D2771F4AA00631A10 /* DiscardButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */; };
@@ -483,6 +484,8 @@
 		846D6563279FF0800094B36E /* ReactionUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionUserView.swift; sourceTree = "<group>"; };
 		848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListView_Tests.swift; sourceTree = "<group>"; };
 		848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsOverlayView_Tests.swift; sourceTree = "<group>"; };
+		8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DemoAppSwiftUI.entitlements; sourceTree = "<group>"; };
+		8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsHandler.swift; sourceTree = "<group>"; };
 		849CDD932768E0E1003C7A51 /* MessageActionsResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionsResolver.swift; sourceTree = "<group>"; };
 		84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyAttachmentView.swift; sourceTree = "<group>"; };
 		84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardButtonView.swift; sourceTree = "<group>"; };
@@ -709,10 +712,12 @@
 		8465FCBD27468B6900AF091E /* DemoAppSwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */,
 				8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */,
 				8465FCD3274694D200AF091E /* AppDelegate.swift */,
 				8465FCD6274694D200AF091E /* CustomAttachment.swift */,
 				8465FCD7274694D200AF091E /* CustomChannelHeader.swift */,
+				8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */,
 				8465FCD4274694D200AF091E /* DemoUser.swift */,
 				8465FCD2274694D200AF091E /* LaunchAnimationState.swift */,
 				8465FCD1274694D200AF091E /* LaunchScreen.swift */,
@@ -1683,6 +1688,7 @@
 				8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */,
 				8465FCDB274694D200AF091E /* DemoUser.swift in Sources */,
 				8465FCDD274694D200AF091E /* CustomAttachment.swift in Sources */,
+				8492974B27ABDDCB00A8EEB0 /* NotificationsHandler.swift in Sources */,
 				8465FCDA274694D200AF091E /* AppDelegate.swift in Sources */,
 				8465FCD8274694D200AF091E /* LaunchScreen.swift in Sources */,
 				84B288CF274C545900DD090B /* CreateGroupViewModel.swift in Sources */,
@@ -1977,6 +1983,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DemoAppSwiftUI/DemoAppSwiftUI.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 9;
@@ -2010,6 +2017,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DemoAppSwiftUI/DemoAppSwiftUI.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 9;

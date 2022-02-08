@@ -13,6 +13,7 @@ struct DemoAppSwiftUIApp: App {
     @Injected(\.chatClient) public var chatClient: ChatClient
     
     @ObservedObject var appState = AppState.shared
+    @ObservedObject var notificationsHandler = NotificationsHandler.shared
     
     var body: some Scene {
         WindowGroup {
@@ -22,7 +23,21 @@ struct DemoAppSwiftUIApp: App {
             case .notLoggedIn:
                 LoginView()
             case .loggedIn:
-                ChatChannelListView(viewFactory: DemoAppFactory.shared)
+                if notificationsHandler.notificationChannelId != nil {
+                    ChatChannelListView(
+                        viewFactory: DemoAppFactory.shared,
+                        selectedChannelId: notificationsHandler.notificationChannelId
+                    )
+                } else {
+                    ChatChannelListView(
+                        viewFactory: DemoAppFactory.shared
+                    )
+                }
+            }
+        }
+        .onChange(of: appState.userState) { newValue in
+            if newValue == .loggedIn {
+                notificationsHandler.setupRemoteNotifications()
             }
         }
     }

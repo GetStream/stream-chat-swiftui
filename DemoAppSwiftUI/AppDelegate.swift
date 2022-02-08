@@ -19,7 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let client = ChatClient(config: config)
         return client
     }()
-    
+        
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -57,9 +57,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             withAnimation {
-                AppState.shared.userState = .notLoggedIn
+                if AppState.shared.userState == .launchAnimation {
+                    AppState.shared.userState = .notLoggedIn
+                }
             }
         }
+        
+        UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
         
         return true
     }
@@ -72,6 +76,24 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let sceneConfig = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         sceneConfig.delegateClass = SceneDelegate.self
         return sceneConfig
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        guard let currentUserId = chatClient.currentUserId else {
+            log.warning("cannot add the device without connecting as user first, did you call connectUser")
+            return
+        }
+
+        chatClient.currentUserController().addDevice(token: deviceToken) { error in
+            if let error = error {
+                log.error("adding a device failed with an error \(error)")
+                return
+            }
+            UserDefaults(suiteName: applicationGroupIdentifier)?.set(currentUserId, forKey: currentUserIdRegisteredForPush)
+        }
     }
 }
 
