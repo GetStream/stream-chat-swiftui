@@ -331,6 +331,20 @@ extension ViewFactory {
         EmptyView()
     }
     
+    public func makeScrollToBottomButton(
+        unreadCount: Int,
+        onScrollToBottom: @escaping () -> Void
+    ) -> some View {
+        ScrollToBottomButton(
+            unreadCount: unreadCount,
+            onScrollToBottom: onScrollToBottom
+        )
+    }
+    
+    public func makeDateIndicatorView(dateString: String) -> some View {
+        DateIndicatorView(date: dateString)
+    }
+    
     public func makeGiphyBadgeViewType(
         for message: ChatMessage,
         availableWidth: CGFloat

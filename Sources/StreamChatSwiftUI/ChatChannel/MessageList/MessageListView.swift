@@ -160,14 +160,14 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
             
             if showScrollToLatestButton {
-                ScrollToBottomButton(
+                factory.makeScrollToBottomButton(
                     unreadCount: channel.unreadCount.messages,
                     onScrollToBottom: onScrollToBottom
                 )
             }
             
             if let date = currentDateString {
-                DateIndicatorView(date: date)
+                factory.makeDateIndicatorView(dateString: date)
             }
                 
             if shouldShowTypingIndicator {
