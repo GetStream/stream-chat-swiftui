@@ -358,6 +358,9 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public func askForPhotosPermission() {
+        if pickerState != .photos {
+            return
+        }
         PHPhotoLibrary.requestAuthorization { (status) in
             switch status {
             case .authorized, .limited:
