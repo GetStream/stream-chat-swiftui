@@ -358,24 +358,23 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public func askForPhotosPermission() {
-        if pickerState != .photos {
-            return
-        }
-        PHPhotoLibrary.requestAuthorization { (status) in
-            switch status {
-            case .authorized, .limited:
-                log.debug("Access to photos granted.")
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                DispatchQueue.main.async { [unowned self] in
-                    self.imageAssets = PHAsset.fetchAssets(with: fetchOptions)
+        if case .expanded(.media) = pickerTypeState, pickerState == .photos {
+            PHPhotoLibrary.requestAuthorization { (status) in
+                switch status {
+                case .authorized, .limited:
+                    log.debug("Access to photos granted.")
+                    let fetchOptions = PHFetchOptions()
+                    fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+                    DispatchQueue.main.async { [unowned self] in
+                        self.imageAssets = PHAsset.fetchAssets(with: fetchOptions)
+                    }
+                case .denied, .restricted:
+                    log.debug("Access to photos is denied, showing the no permissions screen.")
+                case .notDetermined:
+                    log.debug("Access to photos is still not determined.")
+                @unknown default:
+                    log.debug("Unknown authorization status.")
                 }
-            case .denied, .restricted:
-                log.debug("Access to photos is denied, showing the no permissions screen.")
-            case .notDetermined:
-                log.debug("Access to photos is still not determined.")
-            @unknown default:
-                log.debug("Unknown authorization status.")
             }
         }
     }
