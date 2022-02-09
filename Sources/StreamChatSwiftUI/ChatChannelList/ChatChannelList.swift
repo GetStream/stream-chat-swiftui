@@ -8,6 +8,9 @@ import SwiftUI
 /// Stateless component for the channel list.
 /// If used directly, you should provide the channel list.
 public struct ChannelList<Factory: ViewFactory>: View {
+    
+    @Injected(\.colors) private var colors
+    
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
@@ -65,6 +68,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
                 channelsVStack
             }
         }
+        .background(Color(colors.background))
     }
     
     private var channelsVStack: some View {

@@ -9,6 +9,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
      
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.colors) private var colors
     
     var factory: Factory
     var channel: ChatChannel
@@ -117,6 +118,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         .id(listId)
                     }
                 }
+                .background(Color(colors.background))
                 .coordinateSpace(name: scrollAreaId)
                 .onPreferenceChange(WidthPreferenceKey.self) { value in
                     if let value = value, value != width {

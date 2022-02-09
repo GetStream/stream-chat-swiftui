@@ -96,6 +96,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                                 )
                             }
                         }
+                        .background(Color(colors.background))
                     }
                 }
             }
