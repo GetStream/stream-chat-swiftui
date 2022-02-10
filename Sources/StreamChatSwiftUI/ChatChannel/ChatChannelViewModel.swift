@@ -239,7 +239,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForNewMessages(index: Int) {
-        if index < channelDataSource.messages.count - 20 {
+        if index < messages.count - 20 {
             return
         }
 
@@ -250,6 +250,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 completion: { [weak self] _ in
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
+                    self.messages = self.channelDataSource.messages
                 }
             )
         }
