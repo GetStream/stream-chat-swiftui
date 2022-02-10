@@ -187,11 +187,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             self.messages = messages
         }
         
-        let count = messages.count
-        if count > lastRefreshThreshold {
-            lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
-            listId = UUID().uuidString
-        }
+        maybeRefreshMessageList()
         
         if !showScrollToLatestButton && scrolledId == nil {
             scrollToLastMessage()
@@ -251,6 +247,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
                     self.messages = self.channelDataSource.messages
+                    self.maybeRefreshMessageList()
                 }
             )
         }
@@ -272,6 +269,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if message.id != lastMessageRead {
             lastMessageRead = message.id
             channelController.markRead()
+        }
+    }
+    
+    private func maybeRefreshMessageList() {
+        let count = messages.count
+        if count > lastRefreshThreshold {
+            lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
+            listId = UUID().uuidString
         }
     }
     
