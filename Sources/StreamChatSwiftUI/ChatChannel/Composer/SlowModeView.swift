@@ -17,7 +17,7 @@ public struct SlowModeView: View {
     
     public var body: some View {
         Text("\(cooldownDuration)")
-            .padding(.all, 8)
+            .padding(.horizontal, 8)
             .font(fonts.bodyBold)
             .frame(width: cooldownDuration < 10 ? size : nil, height: size)
             .background(
@@ -26,7 +26,7 @@ public struct SlowModeView: View {
                 )
             )
             .foregroundColor(Color(colors.textInverted))
-            .cornerRadius(16)
+            .clipShape(Capsule())
             .padding(.bottom, 2)
     }
 }
