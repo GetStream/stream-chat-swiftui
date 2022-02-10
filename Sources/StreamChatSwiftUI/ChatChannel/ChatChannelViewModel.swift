@@ -203,7 +203,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
-        messages = channelController.messages
+        if isActive {
+            messages = channelController.messages
+        }
         checkHeaderType()
     }
 
