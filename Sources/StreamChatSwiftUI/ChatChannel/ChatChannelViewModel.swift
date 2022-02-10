@@ -29,7 +29,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    private var isActive = true
+    private var isActive = true {
+        didSet {
+            if oldValue == false && isActive == true {
+                messages = channelDataSource.messages
+            }
+        }
+    }
     
     private let messageListDateOverlay: DateFormatter = {
         let df = DateFormatter()
@@ -49,7 +55,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var scrolledId: String?
     @Published public var listId = UUID().uuidString
 
-    @Published public var showScrollToLatestButton = false
+    @Published public var showScrollToLatestButton = false {
+        didSet {
+            isActive = !showScrollToLatestButton
+        }
+    }
+
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
@@ -217,7 +228,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func onViewAppear() {
         reactionsShown = false
         isActive = true
-        messages = channelDataSource.messages
     }
     
     public func onViewDissappear() {
