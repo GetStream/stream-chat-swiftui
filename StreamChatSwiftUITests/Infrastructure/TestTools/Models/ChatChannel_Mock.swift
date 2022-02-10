@@ -129,6 +129,7 @@ public extension ChatChannel {
         watcherCount: Int = 0,
         memberCount: Int = 0,
         reads: [ChatChannelRead] = [],
+        cooldownDuration: Int = 0,
         extraData: [String: RawJSON] = [:],
         latestMessages: [ChatMessage] = [],
         muteDetails: MuteDetails? = nil
@@ -152,6 +153,7 @@ public extension ChatChannel {
             watcherCount: watcherCount,
             memberCount: memberCount,
             reads: reads,
+            cooldownDuration: cooldownDuration,
             extraData: extraData,
             latestMessages: { latestMessages },
             muteDetails: { muteDetails },

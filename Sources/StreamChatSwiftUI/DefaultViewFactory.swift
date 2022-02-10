@@ -376,6 +376,7 @@ extension ViewFactory {
         addedCustomAttachments: [CustomAttachment],
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
+        cooldownDuration: Int,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
@@ -392,6 +393,7 @@ extension ViewFactory {
                     addedCustomAttachments: addedCustomAttachments,
                     quotedMessage: quotedMessage,
                     maxMessageLength: maxMessageLength,
+                    cooldownDuration: cooldownDuration,
                     onCustomAttachmentTap: onCustomAttachmentTap,
                     removeAttachmentWithId: removeAttachmentWithId
                 )
@@ -408,6 +410,7 @@ extension ViewFactory {
                 addedCustomAttachments: addedCustomAttachments,
                 quotedMessage: quotedMessage,
                 maxMessageLength: maxMessageLength,
+                cooldownDuration: cooldownDuration,
                 onCustomAttachmentTap: onCustomAttachmentTap,
                 removeAttachmentWithId: removeAttachmentWithId
             )
@@ -416,13 +419,22 @@ extension ViewFactory {
     
     public func makeTrailingComposerView(
         enabled: Bool,
+        cooldownDuration: Int,
         onTap: @escaping () -> Void
     ) -> some View {
-        SendMessageButton(
-            enabled: enabled,
-            onTap: onTap
-        )
-        .padding(.bottom, 8)
+        Group {
+            if cooldownDuration == 0 {
+                SendMessageButton(
+                    enabled: enabled,
+                    onTap: onTap
+                )
+                .padding(.bottom, 8)
+            } else {
+                SlowModeView(
+                    cooldownDuration: cooldownDuration
+                )
+            }
+        }
     }
     
     public func makeAttachmentPickerView(
