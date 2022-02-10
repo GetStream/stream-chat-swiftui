@@ -27,7 +27,7 @@ public struct SlowModeView: View {
                 )
             )
             .foregroundColor(Color(colors.textInverted))
-            .cornerRadius(16)
+            .clipShape(Capsule())
             .padding(.bottom, 2)
     }
 }
