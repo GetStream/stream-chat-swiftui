@@ -63,6 +63,15 @@ extension MessageAction {
             messageActions.append(pinAction)
         }
         
+        if !message.text.isEmpty {
+            let copyAction = copyMessageAction(
+                for: message,
+                onFinish: onFinish
+            )
+            
+            messageActions.append(copyAction)
+        }
+        
         if message.isSentByCurrentUser {
             let editAction = editMessageAction(
                 for: message,
@@ -123,6 +132,29 @@ extension MessageAction {
     }
     
     // MARK: - private
+    
+    private static func copyMessageAction(
+        for message: ChatMessage,
+        onFinish: @escaping (MessageActionInfo) -> Void
+    ) -> MessageAction {
+        let copyAction = MessageAction(
+            title: L10n.Message.Actions.copy,
+            iconName: "icn_copy",
+            action: {
+                UIPasteboard.general.string = message.text
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "copy"
+                    )
+                )
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return copyAction
+    }
     
     private static func editMessageAction(
         for message: ChatMessage,
