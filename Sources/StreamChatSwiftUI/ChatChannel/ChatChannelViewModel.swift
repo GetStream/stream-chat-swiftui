@@ -55,11 +55,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var scrolledId: String?
     @Published public var listId = UUID().uuidString
 
-    @Published public var showScrollToLatestButton = false {
-        didSet {
-            isActive = !showScrollToLatestButton
-        }
-    }
+    @Published public var showScrollToLatestButton = false
 
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
