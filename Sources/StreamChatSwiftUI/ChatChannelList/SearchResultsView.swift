@@ -52,7 +52,6 @@ struct SearchResultsView<Factory: ViewFactory>: View {
                     }
                 }
             }
-            .background(Color(colors.background))
         }
         .overlay(
             loadingSearchResults ? ProgressView() : nil
