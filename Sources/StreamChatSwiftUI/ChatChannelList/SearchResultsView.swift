@@ -28,7 +28,6 @@ struct SearchResultsView<Factory: ViewFactory>: View {
                     .standardPadding()
                 Spacer()
             }
-            .background(Color(colors.background1))
             
             ScrollView {
                 LazyVStack(spacing: 0) {
@@ -53,11 +52,11 @@ struct SearchResultsView<Factory: ViewFactory>: View {
                     }
                 }
             }
-            .background(Color(colors.background))
         }
         .overlay(
             loadingSearchResults ? ProgressView() : nil
         )
+        .background(Color(colors.background))
     }
 }
 
