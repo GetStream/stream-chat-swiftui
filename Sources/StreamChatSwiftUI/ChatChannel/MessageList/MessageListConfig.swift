@@ -11,7 +11,6 @@ public struct MessageListConfig {
         messageListType: MessageListType = .messaging,
         typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
         groupMessages: Bool = true,
-        showAvatars: Bool = false,
         messageDisplayOptions: MessageDisplayOptions = MessageDisplayOptions(),
         messagePaddings: MessagePaddings = MessagePaddings()
     ) {
