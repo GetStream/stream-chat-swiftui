@@ -13,6 +13,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
     
     var factory: Factory
     let channel: ChatChannel
@@ -41,11 +42,13 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 if message.isSentByCurrentUser {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
-                    if showsAllInfo {
-                        factory.makeMessageAvatarView(for: message.author)
-                    } else {
-                        Color.clear
-                            .frame(width: CGSize.messageAvatarSize.width)
+                    if messageListConfig.messageDisplayOptions.showAvatars {
+                        if showsAllInfo {
+                            factory.makeMessageAvatarView(for: message.author)
+                        } else {
+                            Color.clear
+                                .frame(width: CGSize.messageAvatarSize.width)
+                        }
                     }
                 }
                 
@@ -147,11 +150,14 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                     channel: channel,
                                     message: message
                                 )
-                                MessageDateView(message: message)
+                                
+                                if messageListConfig.messageDisplayOptions.showMessageDate {
+                                    MessageDateView(message: message)
+                                }
                             }
                         } else if !message.isSentByCurrentUser && !channel.isDirectMessageChannel {
                             MessageAuthorAndDateView(message: message)
-                        } else {
+                        } else if messageListConfig.messageDisplayOptions.showMessageDate {
                             MessageDateView(message: message)
                         }
                     }
@@ -163,7 +169,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             }
         }
         .padding(.top, reactionsShown && !isMessagePinned ? 3 * paddingValue : 0)
-        .padding(.horizontal, paddingValue)
+        .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
         .padding(.top, isLast ? paddingValue : 0)
         .background(isMessagePinned || shouldAnimateBackground ? Color(colors.pinnedBackground) : nil)
@@ -195,6 +201,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
         !message.reactionScores.isEmpty
             && !message.isDeleted
             && channel.config.reactionsEnabled
+    }
+    
+    private var messageListConfig: MessageListConfig {
+        utils.messageListConfig
     }
     
     private func dragChanged(to value: CGFloat) {

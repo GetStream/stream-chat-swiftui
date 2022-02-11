@@ -7,6 +7,8 @@ import SwiftUI
 
 /// View that displays the message author and the date of sending.
 struct MessageAuthorAndDateView: View {
+    
+    @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -17,7 +19,9 @@ struct MessageAuthorAndDateView: View {
             Text(message.author.name ?? "")
                 .font(fonts.footnoteBold)
                 .foregroundColor(Color(colors.textLowEmphasis))
-            MessageDateView(message: message)
+            if utils.messageListConfig.messageDisplayOptions.showMessageDate {
+                MessageDateView(message: message)
+            }
             Spacer()
         }
     }

@@ -29,7 +29,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    private var isActive = true
+    private var isActive = true {
+        didSet {
+            if oldValue == false && isActive == true {
+                messages = channelDataSource.messages
+            }
+        }
+    }
     
     private let messageListDateOverlay: DateFormatter = {
         let df = DateFormatter()
@@ -49,7 +55,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var scrolledId: String?
     @Published public var listId = UUID().uuidString
 
-    @Published public var showScrollToLatestButton = false
+    @Published public var showScrollToLatestButton = false {
+        didSet {
+            isActive = !showScrollToLatestButton
+        }
+    }
+
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
@@ -176,11 +187,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             self.messages = messages
         }
         
-        let count = messages.count
-        if count > lastRefreshThreshold {
-            lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
-            listId = UUID().uuidString
-        }
+        maybeRefreshMessageList()
         
         if !showScrollToLatestButton && scrolledId == nil {
             scrollToLastMessage()
@@ -192,7 +199,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
-        messages = channelController.messages
+        if isActive {
+            messages = channelController.messages
+        }
         checkHeaderType()
     }
 
@@ -217,7 +226,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func onViewAppear() {
         reactionsShown = false
         isActive = true
-        messages = channelDataSource.messages
     }
     
     public func onViewDissappear() {
@@ -227,7 +235,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForNewMessages(index: Int) {
-        if index < channelDataSource.messages.count - 20 {
+        if index < messages.count - 20 {
             return
         }
 
@@ -238,6 +246,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 completion: { [weak self] _ in
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
+                    self.messages = self.channelDataSource.messages
+                    self.maybeRefreshMessageList()
                 }
             )
         }
@@ -259,6 +269,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if message.id != lastMessageRead {
             lastMessageRead = message.id
             channelController.markRead()
+        }
+    }
+    
+    private func maybeRefreshMessageList() {
+        let count = messages.count
+        if count > lastRefreshThreshold {
+            lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
+            listId = UUID().uuidString
         }
     }
     
