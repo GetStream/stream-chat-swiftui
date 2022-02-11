@@ -325,6 +325,23 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>
     ) -> CustomAttachmentViewType
     
+    associatedtype ScrollToBottomButtonType: View
+    /// Creates the scroll to bottom button.
+    /// - Parameters:
+    ///  - unreadCount: how many messages are unread.
+    ///  - onScrollToBottom: called when the button is pressed.
+    /// - Returns: view displayed in the scroll to bottom slot.
+    func makeScrollToBottomButton(
+        unreadCount: Int,
+        onScrollToBottom: @escaping () -> Void
+    ) -> ScrollToBottomButtonType
+    
+    associatedtype DateIndicatorViewType: View
+    /// Creates the date indicator view.
+    /// - Parameter dateString: the displayed date string.
+    /// - Returns: view in the date indicator slot.
+    func makeDateIndicatorView(dateString: String) -> DateIndicatorViewType
+    
     associatedtype GiphyBadgeViewType: View
     /// Creates giphy badge view.
     /// If support for more than one custom view is needed, just do if-else check inside the view.

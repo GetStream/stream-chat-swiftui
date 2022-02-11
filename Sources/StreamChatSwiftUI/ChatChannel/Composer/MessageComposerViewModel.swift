@@ -67,7 +67,7 @@ open class MessageComposerViewModel: ObservableObject {
         didSet {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                overlayShown = attachmentPickerType == .media
+                overlayShown = attachmentPickerType == .media || attachmentPickerType == .custom
                 if attachmentPickerType == .instantCommands {
                     composerCommand = ComposerCommand(
                         id: "instantCommands",
