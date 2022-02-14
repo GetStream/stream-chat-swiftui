@@ -130,6 +130,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         let offsetValue = value ?? 0
                         showScrollToLatestButton = offsetValue < -20
                         if keyboardShown {
+                            keyboardShown = false
                             resignFirstResponder()
                         }
                     }
@@ -178,11 +179,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
             }
         }
-        .onReceive(keyboardPublisher) { visible in
+        .onReceive(keyboardDidChangePublisher) { visible in
             if currentDateString != nil {
                 pendingKeyboardUpdate = visible
             } else {
-                keyboardShown = visible
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    keyboardShown = visible
+                }
             }
         }
         .onChange(of: currentDateString, perform: { dateString in

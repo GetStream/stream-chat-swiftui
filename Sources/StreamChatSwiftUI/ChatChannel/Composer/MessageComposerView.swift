@@ -130,7 +130,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 self.composerHeight = value
             }
         }
-        .onReceive(keyboardPublisher) { visible in
+        .onReceive(keyboardWillChangePublisher) { visible in
             if visible {
                 withAnimation(.easeInOut(duration: 0.02)) {
                     if viewModel.composerCommand == nil {

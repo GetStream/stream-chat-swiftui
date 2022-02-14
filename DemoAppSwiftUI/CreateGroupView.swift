@@ -68,7 +68,7 @@ struct CreateGroupView: View, KeyboardReadable {
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
         }
-        .onReceive(keyboardPublisher) { visible in
+        .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))

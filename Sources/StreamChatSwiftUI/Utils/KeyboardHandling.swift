@@ -8,13 +8,14 @@ import UIKit
 
 /// Publisher to read keyboard changes.
 public protocol KeyboardReadable {
-    var keyboardPublisher: AnyPublisher<Bool, Never> { get }
+    var keyboardWillChangePublisher: AnyPublisher<Bool, Never> { get }
+    var keyboardDidChangePublisher: AnyPublisher<Bool, Never> { get }
     var keyboardHeight: AnyPublisher<CGFloat, Never> { get }
 }
 
 /// Default implementation.
 extension KeyboardReadable {
-    public var keyboardPublisher: AnyPublisher<Bool, Never> {
+    public var keyboardWillChangePublisher: AnyPublisher<Bool, Never> {
         Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
@@ -22,6 +23,19 @@ extension KeyboardReadable {
             
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillHideNotification)
+                .map { _ in false }
+        )
+        .eraseToAnyPublisher()
+    }
+    
+    public var keyboardDidChangePublisher: AnyPublisher<Bool, Never> {
+        Publishers.Merge(
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardDidShowNotification)
+                .map { _ in true },
+            
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardDidHideNotification)
                 .map { _ in false }
         )
         .eraseToAnyPublisher()
