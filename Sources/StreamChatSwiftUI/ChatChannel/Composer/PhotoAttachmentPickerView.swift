@@ -53,26 +53,36 @@ public struct PhotoAttachmentCell: View {
         ZStack {
             if let image = assetLoader.loadedImages[asset.localIdentifier] {
                 GeometryReader { reader in
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: reader.size.width, height: reader.size.height)
-                        .clipped()
-                        .onTapGesture {
-                            withAnimation {
-                                if let assetURL = assetURL {
-                                    onImageTap(
-                                        AddedAsset(
-                                            image: image,
-                                            id: asset.localIdentifier,
-                                            url: assetURL,
-                                            type: asset.mediaType == .video ? .video : .image,
-                                            extraData: asset.mediaType == .video ? ["duration": asset.durationString] : [:]
+                    ZStack {
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: reader.size.width, height: reader.size.height)
+                            .allowsHitTesting(false)
+                            .clipped()
+                        
+                        // Needed because of SwiftUI bug with tap area of Image.
+                        Rectangle()
+                            .opacity(0.000001)
+                            .frame(width: reader.size.width, height: reader.size.height)
+                            .clipped()
+                            .allowsHitTesting(true)
+                            .onTapGesture {
+                                withAnimation {
+                                    if let assetURL = assetURL {
+                                        onImageTap(
+                                            AddedAsset(
+                                                image: image,
+                                                id: asset.localIdentifier,
+                                                url: assetURL,
+                                                type: asset.mediaType == .video ? .video : .image,
+                                                extraData: asset.mediaType == .video ? ["duration": asset.durationString] : [:]
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
-                        }
+                    }
                 }
             } else {
                 Color(colors.background1)
