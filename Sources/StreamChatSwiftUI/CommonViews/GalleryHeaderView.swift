@@ -24,6 +24,8 @@ struct GalleryHeaderView: View {
                     isShown = false
                 } label: {
                     Image(uiImage: images.close)
+                        .customizable()
+                        .frame(height: 16)
                 }
                 .padding()
                 .foregroundColor(Color(colors.text))
