@@ -53,8 +53,8 @@ struct GalleryView: View {
                                         loadedImages[index] = image
                                     }
                                 )
-                                .frame(width: reader.size.width)
                                 .aspectRatio(contentMode: .fit)
+                                .frame(width: reader.size.width)
                                 Spacer()
                             }
                         }
