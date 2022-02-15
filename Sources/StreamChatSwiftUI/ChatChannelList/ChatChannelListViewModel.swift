@@ -41,6 +41,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     @Published public var selectedChannel: ChannelSelectionInfo? {
+        willSet {
+            hideTabBar = newValue != nil
+        }
         didSet {
             if oldValue != nil && selectedChannel == nil {
                 // pop happened, apply the queued changes.
@@ -73,7 +76,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     @Published public var alertShown = false
     @Published public var loading = false
-    @Published public var customAlertShown = false
+    @Published public var customAlertShown = false {
+        didSet {
+            hideTabBar = customAlertShown
+        }
+    }
+
     @Published public var searchText = "" {
         didSet {
             handleSearchTextChange()
@@ -82,6 +90,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
+    @Published var hideTabBar = false
     
     var isSearching: Bool {
         !searchText.isEmpty

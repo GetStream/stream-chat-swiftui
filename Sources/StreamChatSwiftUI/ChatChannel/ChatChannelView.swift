@@ -6,12 +6,14 @@ import StreamChat
 import SwiftUI
 
 /// View for the chat channel.
-public struct ChatChannelView<Factory: ViewFactory>: View {
+public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     
     @StateObject private var viewModel: ChatChannelViewModel
     
     @State private var messageDisplayInfo: MessageDisplayInfo?
+    @State private var keyboardShown = false
+    @State private var tabBarAvailable: Bool = false
     
     private var factory: Factory
             
@@ -94,11 +96,29 @@ public struct ChatChannelView<Factory: ViewFactory>: View {
                 .edgesIgnoringSafeArea(.all)
                 : nil
         )
+        .onReceive(keyboardWillChangePublisher, perform: { visible in
+            keyboardShown = visible
+        })
         .onAppear {
             viewModel.onViewAppear()
         }
         .onDisappear {
             viewModel.onViewDissappear()
         }
+        .background(
+            Color.clear.background(
+                TabBarAccessor { _ in
+                    self.tabBarAvailable = true
+                }
+            )
+            .allowsHitTesting(false)
+        )
+        .padding(.bottom, keyboardShown || !tabBarAvailable ? 0 : bottomPadding)
+        .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
+    }
+    
+    private var bottomPadding: CGFloat {
+        let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
+        return bottomPadding
     }
 }

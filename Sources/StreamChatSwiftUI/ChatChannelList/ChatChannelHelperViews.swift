@@ -74,3 +74,33 @@ extension CGSize {
     /// Default size of the avatar used in the channel list.
     public static var defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
 }
+
+/// Provides access to the the app's tab bar (if present).
+struct TabBarAccessor: UIViewControllerRepresentable {
+    var callback: (UITabBar) -> Void
+    private let proxyController = ViewController()
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<TabBarAccessor>) ->
+        UIViewController {
+        proxyController.callback = callback
+        return proxyController
+    }
+
+    func updateUIViewController(
+        _ uiViewController: UIViewController,
+        context: UIViewControllerRepresentableContext<TabBarAccessor>
+    ) {}
+
+    typealias UIViewControllerType = UIViewController
+
+    private class ViewController: UIViewController {
+        var callback: (UITabBar) -> Void = { _ in }
+
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            if let tabBar = tabBarController {
+                callback(tabBar.tabBar)
+            }
+        }
+    }
+}

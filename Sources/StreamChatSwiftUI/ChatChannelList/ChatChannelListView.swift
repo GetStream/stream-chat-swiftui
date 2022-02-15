@@ -12,6 +12,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     
     @StateObject private var viewModel: ChatChannelListViewModel
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
+    @State private var tabBar: UITabBar?
     
     private let viewFactory: Factory
     private let title: String
@@ -124,10 +125,31 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         .if(isIphone, transform: { view in
             view.navigationViewStyle(.stack)
         })
+        .background(
+            Color.clear.background(
+                TabBarAccessor { tabBar in
+                    self.tabBar = tabBar
+                }
+            )
+            .allowsHitTesting(false)
+        )
+        .onReceive(viewModel.$hideTabBar) { newValue in
+            self.setupTabBarAppeareance()
+            self.tabBar?.isHidden = newValue
+        }
     }
     
     private var isIphone: Bool {
         UIDevice.current.userInterfaceIdiom == .phone
+    }
+    
+    private func setupTabBarAppeareance() {
+        if #available(iOS 15.0, *) {
+            let tabBarAppearance: UITabBarAppearance = UITabBarAppearance()
+            tabBarAppearance.configureWithDefaultBackground()
+            UITabBar.appearance().standardAppearance = tabBarAppearance
+            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        }
     }
     
     @ViewBuilder
