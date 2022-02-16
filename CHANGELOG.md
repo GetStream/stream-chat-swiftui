@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.10.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.10.0)
+_February 16, 2022_
+
 ### ✅ Added
 - Slow mode
 - Copying of a message
