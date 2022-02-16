@@ -3,6 +3,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Slow mode
+- Copying of a message
+- Push notifications 
+- Message list config options
+
+### 🐞 Fixed
+- Keyboard not shown while bounce in progress
+- Image picker tap target
+- Gallery images (screenshots) resize when swiping
+
 # [4.9.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.9.0)
 _February 02, 2022_
 
