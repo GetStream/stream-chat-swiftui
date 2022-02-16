@@ -29,13 +29,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    private var isActive = true {
-        didSet {
-            if oldValue == false && isActive == true {
-                messages = channelDataSource.messages
-            }
-        }
-    }
+    private var isActive = true
     
     private let messageListDateOverlay: DateFormatter = {
         let df = DateFormatter()
@@ -195,9 +189,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
-        if isActive {
-            messages = channelController.messages
-        }
+        messages = channelController.messages
         checkHeaderType()
     }
 
@@ -222,6 +214,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func onViewAppear() {
         reactionsShown = false
         isActive = true
+        messages = channelDataSource.messages
     }
     
     public func onViewDissappear() {
@@ -231,7 +224,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForNewMessages(index: Int) {
-        if index < messages.count - 20 {
+        if index < channelDataSource.messages.count - 20 {
             return
         }
 
@@ -242,8 +235,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 completion: { [weak self] _ in
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
-                    self.messages = self.channelDataSource.messages
-                    self.maybeRefreshMessageList()
                 }
             )
         }
