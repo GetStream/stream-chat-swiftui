@@ -104,3 +104,7 @@ struct TabBarAccessor: UIViewControllerRepresentable {
         }
     }
 }
+
+var isIphone: Bool {
+    UIDevice.current.userInterfaceIdiom == .phone
+}

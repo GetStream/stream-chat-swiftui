@@ -106,12 +106,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             viewModel.onViewDissappear()
         }
         .background(
-            Color.clear.background(
-                TabBarAccessor { _ in
-                    self.tabBarAvailable = true
-                }
-            )
-            .allowsHitTesting(false)
+            isIphone ?
+                Color.clear.background(
+                    TabBarAccessor { _ in
+                        self.tabBarAvailable = true
+                    }
+                )
+                .allowsHitTesting(false)
+                : nil
         )
         .padding(.bottom, keyboardShown || !tabBarAvailable ? 0 : bottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])

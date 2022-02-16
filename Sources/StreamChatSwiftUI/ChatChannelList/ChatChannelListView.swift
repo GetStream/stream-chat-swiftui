@@ -126,21 +126,21 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             view.navigationViewStyle(.stack)
         })
         .background(
-            Color.clear.background(
-                TabBarAccessor { tabBar in
-                    self.tabBar = tabBar
-                }
-            )
-            .allowsHitTesting(false)
+            isIphone ?
+                Color.clear.background(
+                    TabBarAccessor { tabBar in
+                        self.tabBar = tabBar
+                    }
+                )
+                .allowsHitTesting(false)
+                : nil
         )
         .onReceive(viewModel.$hideTabBar) { newValue in
-            self.setupTabBarAppeareance()
-            self.tabBar?.isHidden = newValue
+            if isIphone {
+                self.setupTabBarAppeareance()
+                self.tabBar?.isHidden = newValue
+            }
         }
-    }
-    
-    private var isIphone: Bool {
-        UIDevice.current.userInterfaceIdiom == .phone
     }
     
     private func setupTabBarAppeareance() {
