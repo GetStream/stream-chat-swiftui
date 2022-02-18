@@ -48,6 +48,19 @@ func makeNoChannelsView() -> some View {
 }
 ```
 
+## Changing the Background of the Channel List
+
+You can change the background of the channel list to be any SwiftUI `View` (`Color`, `LinearGradient`, `Image` etc.). In order to do this, you will need to implement the `makeChannelListBackground` in the `ViewFactory`.
+
+```swift
+func makeChannelListBackground(colors: ColorPalette) -> some View {
+    Color(colors.background)
+        .edgesIgnoringSafeArea(.bottom)
+}
+```
+
+In this method, you receive the `colors` used in the SDK, but you can ignore them if you want to use custom colors that are not setup via the SDK. 
+
 ## Changing the Chat Channel List Item
 
 You can swap the channel list item that is displayed in the channel list with your own implementation. In order to do that, you should implement the `makeChannelListItem` in the `ViewFactory` protocol.

@@ -12,5 +12,6 @@ public struct LoadingView: View {
             ProgressView()
             Spacer()
         }
+        .frame(maxWidth: .infinity)
     }
 }

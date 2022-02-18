@@ -68,7 +68,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
                 channelsVStack
             }
         }
-        .background(Color(colors.background))
     }
     
     private var channelsVStack: some View {

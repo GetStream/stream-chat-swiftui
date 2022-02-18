@@ -59,6 +59,12 @@ public protocol ViewFactory: AnyObject {
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> ChannelListItemType
     
+    associatedtype ChannelListBackground: View
+    /// Creates the background for the channel list.
+    /// - Parameter colors: the colors used in the SDK.
+    /// - Returns: view shown as a background of the channel list.
+    func makeChannelListBackground(colors: ColorPalette) -> ChannelListBackground
+    
     associatedtype ChannelListDividerItem: View
     /// Creates the channel list divider item.
     func makeChannelListDividerItem() -> ChannelListDividerItem
@@ -175,6 +181,17 @@ public protocol ViewFactory: AnyObject {
     associatedtype ThreadHeaderViewModifier: MessageThreadHeaderViewModifier
     /// Creates the message thread header view modifier.
     func makeMessageThreadHeaderViewModifier() -> ThreadHeaderViewModifier
+    
+    associatedtype MessageListBackground: View
+    /// Creates the background for the message list.
+    /// - Parameters:
+    ///  - colors: the color palette used in the SDK.
+    ///  - isInThread: whether the message list is part of a message thread.
+    /// - Returns: view shown as a background for the message list.
+    func makeMessageListBackground(
+        colors: ColorPalette,
+        isInThread: Bool
+    ) -> MessageListBackground
     
     associatedtype MessageContainerViewType: View
     /// Creates the message container view.

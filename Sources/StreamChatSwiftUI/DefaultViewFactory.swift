@@ -94,6 +94,11 @@ extension ViewFactory {
         )
     }
     
+    public func makeChannelListBackground(colors: ColorPalette) -> some View {
+        Color(colors.background)
+            .edgesIgnoringSafeArea(.bottom)
+    }
+    
     public func makeChannelListDividerItem() -> some View {
         Divider()
     }
@@ -195,6 +200,13 @@ extension ViewFactory {
     
     public func makeMessageThreadHeaderViewModifier() -> some MessageThreadHeaderViewModifier {
         DefaultMessageThreadHeaderModifier()
+    }
+    
+    public func makeMessageListBackground(
+        colors: ColorPalette,
+        isInThread: Bool
+    ) -> some View {
+        Color(colors.background)
     }
     
     public func makeMessageContainerView(

@@ -97,10 +97,12 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                                 )
                             }
                         }
-                        .background(Color(colors.background))
                     }
                 }
             }
+            .background(
+                viewFactory.makeChannelListBackground(colors: colors)
+            )
             .alert(isPresented: $viewModel.alertShown) {
                 switch viewModel.channelAlertType {
                 case let .deleteChannel(channel):

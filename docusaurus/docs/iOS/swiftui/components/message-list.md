@@ -24,6 +24,23 @@ let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
+You can also modify the background of the message list to any SwiftUI `View` (`Color`, `LinearGradient`, `Image` etc.). In order to do this, you would need to implement the `makeMessageListBackground` method in the `ViewFactory`.
+
+```swift
+func makeMessageListBackground(
+    colors: ColorPalette,
+    isInThread: Bool
+) -> some View {
+    LinearGradient(gradient: Gradient(
+        colors: [.white, .red, .black]), 
+        startPoint: .top, 
+        endPoint: .bottom
+    )
+}
+```
+
+In this method, you receive the `colors` used in the SDK, but you can also use your own colors like in the example above. If you want to have a different background for message threads, use the `isInThread` value to distinguish between a regular message list and a thread.
+
 However, if you are building a livestream app similar to Twitch, you will need a different type of user interface for the message views. The SwiftUI SDK allows swapping the message container view with your own implementation, without needing to implement the whole message list, the composer or the reactions. In order to do this, you need to implement the method `makeMessageContainerView` in the `ViewFactory` protocol.
 
 For example, if you need a simple text message view, alligned on the left, you can do it like this:
