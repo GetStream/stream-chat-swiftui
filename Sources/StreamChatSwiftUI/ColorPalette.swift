@@ -64,6 +64,12 @@ public struct ColorPalette {
     public var alternativeActiveTint: UIColor = .streamAccentGreen
     public var inactiveTint: UIColor = .streamGray
     public var alternativeInactiveTint: UIColor = .streamGrayGainsboro
+    
+    // MARK: - Messages
+    
+    public lazy var messageCurrentUserBackground: [UIColor] = [background6]
+    public lazy var messageCurrentUserEmphemeralBackground: [UIColor] = [background8]
+    public lazy var messageOtherUserBackground: [UIColor] = [background8]
 }
 
 // Those colors are default defined stream constants, which are fallback values if you don't implement your color theme.

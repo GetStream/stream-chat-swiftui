@@ -20,7 +20,7 @@ public struct MessageBubbleModifier: ViewModifier {
             .modifier(
                 BubbleModifier(
                     corners: corners,
-                    backgroundColor: Color(backgroundColor),
+                    backgroundColors: background,
                     cornerRadius: cornerRadius
                 )
             )
@@ -38,19 +38,19 @@ public struct MessageBubbleModifier: ViewModifier {
         }
     }
     
-    private var backgroundColor: UIColor {
+    private var background: [Color] {
         if let injectedBackgroundColor = injectedBackgroundColor {
-            return injectedBackgroundColor
+            return [Color(injectedBackgroundColor)]
         }
-        
+        var colors = colors
         if message.isSentByCurrentUser {
             if message.type == .ephemeral {
-                return colors.background8
+                return colors.messageCurrentUserEmphemeralBackground.map { Color($0) }
             } else {
-                return colors.background6
+                return colors.messageCurrentUserBackground.map { Color($0) }
             }
         } else {
-            return colors.background8
+            return colors.messageOtherUserBackground.map { Color($0) }
         }
     }
 }
@@ -60,13 +60,13 @@ public struct BubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
     
     var corners: UIRectCorner
-    var backgroundColor: Color
+    var backgroundColors: [Color]
     var borderColor: Color? = nil
     var cornerRadius: CGFloat = 18
     
     public func body(content: Content) -> some View {
         content
-            .background(backgroundColor)
+            .background(background)
             .overlay(
                 BubbleBackgroundShape(
                     cornerRadius: cornerRadius, corners: corners
@@ -82,6 +82,21 @@ public struct BubbleModifier: ViewModifier {
                     corners: corners
                 )
             )
+    }
+    
+    @ViewBuilder
+    private var background: some View {
+        if backgroundColors.count == 1 {
+            backgroundColors[0]
+        } else if backgroundColors.count > 1 {
+            LinearGradient(
+                gradient: Gradient(colors: backgroundColors),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        } else {
+            Color.clear
+        }
     }
 }
 
@@ -138,7 +153,7 @@ extension View {
         modifier(
             BubbleModifier(
                 corners: corners,
-                backgroundColor: background,
+                backgroundColors: [background],
                 borderColor: borderColor
             )
         )

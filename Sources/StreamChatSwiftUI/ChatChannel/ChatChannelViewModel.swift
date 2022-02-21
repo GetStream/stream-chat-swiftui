@@ -172,9 +172,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let message = messageController?.message {
             var array = Array(messages)
             array.append(message)
-            self.messages = LazyCachedMapCollection(source: array, map: { $0 })
+            withAnimation {
+                self.messages = LazyCachedMapCollection(source: array, map: { $0 })
+            }
         } else {
-            self.messages = messages
+            withAnimation {
+                self.messages = messages
+            }
         }
         
         maybeRefreshMessageList()
