@@ -9,6 +9,7 @@ import SwiftUI
 
 public struct ImageAttachmentContainer: View {
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
     
     let message: ChatMessage
     let width: CGFloat
@@ -23,7 +24,7 @@ public struct ImageAttachmentContainer: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = message.quotedMessage {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,

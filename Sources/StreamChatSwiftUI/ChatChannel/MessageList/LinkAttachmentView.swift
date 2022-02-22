@@ -11,6 +11,7 @@ import SwiftUI
 /// In case of more than one link, only the first link is previewed.
 public struct LinkAttachmentContainer: View {
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
     
     var message: ChatMessage
     var width: CGFloat
@@ -24,7 +25,7 @@ public struct LinkAttachmentContainer: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = message.quotedMessage {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
@@ -75,7 +76,7 @@ public struct LinkAttachmentView: View {
             if !imageHidden {
                 ZStack {
                     LazyImage(source: linkAttachment.previewURL!)
-                        .onDisappear(.reset)
+                        .onDisappear(.cancel)
                         .processors([ImageProcessors.Resize(width: width)])
                         .priority(.high)
                         .frame(width: width - 2 * padding, height: (width - 2 * padding) / 2)

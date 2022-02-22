@@ -7,13 +7,16 @@ import StreamChat
 import SwiftUI
 
 public struct VideoAttachmentsContainer: View {
+    
+    @Injected(\.utils) private var utils
+    
     let message: ChatMessage
     let width: CGFloat
     @Binding var scrolledId: String?
     
     public var body: some View {
         VStack {
-            if let quotedMessage = message.quotedMessage {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 VStack {
                     QuotedMessageViewContainer(
                         quotedMessage: quotedMessage,

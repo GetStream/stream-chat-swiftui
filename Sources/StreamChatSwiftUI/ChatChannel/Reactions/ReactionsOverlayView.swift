@@ -64,7 +64,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 }
             
             if !messageDisplayInfo.message.isSentByCurrentUser {
-                factory.makeMessageAvatarView(for: messageDisplayInfo.message.author)
+                factory.makeMessageAvatarView(for: messageDisplayInfo.message.author.imageURL)
                     .offset(
                         x: paddingValue / 2,
                         y: originY + messageDisplayInfo.frame.height - paddingValue + 2

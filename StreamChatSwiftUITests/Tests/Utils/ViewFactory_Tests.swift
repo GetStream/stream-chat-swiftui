@@ -105,7 +105,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeMessageAvatarView(for: .mock(id: .unique))
+        let view = viewFactory.makeMessageAvatarView(for: URL(string: "https://example.com"))
         
         // Then
         XCTAssert(view is MessageAvatarView)

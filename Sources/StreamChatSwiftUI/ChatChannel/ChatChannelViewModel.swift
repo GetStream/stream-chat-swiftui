@@ -18,14 +18,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private var timer: Timer?
+    private var timer: DispatchSourceTimer?
+    private let queue = DispatchQueue(label: "io.getstream.background.timer")
     private var currentDate: Date? {
         didSet {
-            guard showScrollToLatestButton == true, let currentDate = currentDate else {
-                currentDateString = nil
-                return
-            }
-            currentDateString = messageListDateOverlay.string(from: currentDate)
+            handleDateChange()
         }
     }
 
@@ -39,9 +36,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }()
     
     private lazy var messagesDateFormatter = utils.dateFormatter
+    private lazy var messageCachingUtils = utils.messageCachingUtils
     
-    @Atomic private var loadingPreviousMessages: Bool = false
-    @Atomic private var lastMessageRead: String?
+    private var loadingPreviousMessages: Bool = false
+    private var lastMessageRead: String?
+    private var messageChanges = [ListChange<ChatMessage>]()
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -54,27 +53,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
-            var temp = [String: [String]]()
-            for (index, message) in messages.enumerated() {
-                let dateString = messagesDateFormatter.string(from: message.createdAt)
-                let prefix = message.author.id
-                let key = "\(prefix)-\(dateString)"
-                if temp[key] == nil {
-                    temp[key] = [message.id]
-                } else {
-                    // check if the previous message is not sent by the same user.
-                    let previousIndex = index - 1
-                    if previousIndex >= 0 {
-                        let previous = messages[previousIndex]
-                        
-                        let shouldAddKey = message.author.id != previous.author.id
-                        if shouldAddKey {
-                            temp[key]?.append(message.id)
-                        }
-                    }
-                }
-            }
-            messagesGroupingInfo = temp
+            groupMessages()
         }
     }
 
@@ -155,7 +134,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func handleMessageAppear(index: Int) {
         let message = messages[index]
         checkForNewMessages(index: index)
-        save(lastDate: message.createdAt)
+//        if utils.messageListConfig.dateIndicatorPlacement == .overlay {
+//            save(lastDate: message.createdAt)
+//        }
         if index == 0 {
             maybeSendReadEvent(for: message)
         }
@@ -163,7 +144,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
+        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+        changes: [ListChange<ChatMessage>]
     ) {
         if !isActive {
             return
@@ -193,7 +175,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
-        messages = channelController.messages
         checkHeaderType()
     }
 
@@ -228,14 +209,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForNewMessages(index: Int) {
-        if index < channelDataSource.messages.count - 20 {
+        if index < channelDataSource.messages.count - 25 {
             return
         }
 
-        if _loadingPreviousMessages.compareAndSwap(old: false, new: true) {
+        if !loadingPreviousMessages {
+            loadingPreviousMessages = true
             channelDataSource.loadPreviousMessages(
                 before: nil,
-                limit: refreshThreshold,
+                limit: 50,
                 completion: { [weak self] _ in
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
@@ -246,14 +228,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func save(lastDate: Date) {
         currentDate = lastDate
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(
-            withTimeInterval: 0.5,
-            repeats: false,
-            block: { [weak self] _ in
-                self?.currentDate = nil
-            }
-        )
+        timer?.cancel()
+        timer = DispatchSource.makeTimerSource(queue: queue)
+        timer?.schedule(deadline: .now() + 0.5, repeating: .never)
+        timer?.setEventHandler(handler: { [weak self] in
+            self?.currentDate = nil
+        })
+        timer?.resume()
     }
     
     private func maybeSendReadEvent(for message: ChatMessage) {
@@ -296,20 +277,57 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
+    
+    private func groupMessages() {
+        var temp = [String: [String]]()
+        for (index, message) in messages.enumerated() {
+            let dateString = messagesDateFormatter.string(from: message.createdAt)
+            let prefix = messageCachingUtils.authorId(for: message)
+            let key = "\(prefix)-\(dateString)"
+            if temp[key] == nil {
+                temp[key] = [message.id]
+            } else {
+                // check if the previous message is not sent by the same user.
+                let previousIndex = index - 1
+                if previousIndex >= 0 {
+                    let previous = messages[previousIndex]
+                    let previousAuthorId = messageCachingUtils.authorId(for: previous)
+                    let shouldAddKey = prefix != previousAuthorId
+                    if shouldAddKey {
+                        temp[key]?.append(message.id)
+                    }
+                }
+            }
+        }
+        
+        messagesGroupingInfo = temp
+    }
+    
+    private func handleDateChange() {
+        guard showScrollToLatestButton == true, let currentDate = currentDate else {
+            DispatchQueue.main.async { [weak self] in
+                self?.currentDateString = nil
+            }
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+            let dateString = messageListDateOverlay.string(from: currentDate)
+            DispatchQueue.main.async { [unowned self] in
+                if currentDateString != dateString {
+                    currentDateString = dateString
+                }
+            }
+        }
+    }
 }
 
 extension ChatMessage: Identifiable {
     var messageId: String {
-        let statesId = uploadingStatesId
-
-        if statesId.isEmpty {
-            if !reactionScores.isEmpty {
-                return baseId + reactionScoresId
-            } else {
-                return baseId
-            }
+        var statesId = "empty"
+        if localState != nil {
+            statesId = uploadingStatesId
         }
-
         return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)" + pinStateId
     }
     
@@ -347,6 +365,9 @@ extension ChatMessage: Identifiable {
     
     var reactionScoresId: String {
         var output = ""
+        if reactionScores.isEmpty {
+            return output
+        }
         let sorted = reactionScores.keys.sorted { type1, type2 in
             type1.id > type2.id
         }

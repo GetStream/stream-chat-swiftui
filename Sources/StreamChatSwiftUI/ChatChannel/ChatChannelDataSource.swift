@@ -14,7 +14,8 @@ protocol MessagesDataSource: AnyObject {
     ///  - messages, the collection of updated messages.
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
+        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+        changes: [ListChange<ChatMessage>]
     )
     
     /// Called when the channel is updated.
@@ -70,7 +71,8 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     ) {
         delegate?.dataSource(
             channelDataSource: self,
-            didUpdateMessages: channelController.messages
+            didUpdateMessages: channelController.messages,
+            changes: changes
         )
     }
     
@@ -117,7 +119,11 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         self.messageController.delegate = self
         self.messageController.loadPreviousReplies { [weak self] _ in
             guard let self = self else { return }
-            self.delegate?.dataSource(channelDataSource: self, didUpdateMessages: self.messages)
+            self.delegate?.dataSource(
+                channelDataSource: self,
+                didUpdateMessages: self.messages,
+                changes: []
+            )
         }
     }
     
@@ -125,14 +131,22 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         _ controller: ChatMessageController,
         didChangeReplies changes: [ListChange<ChatMessage>]
     ) {
-        delegate?.dataSource(channelDataSource: self, didUpdateMessages: controller.replies)
+        delegate?.dataSource(
+            channelDataSource: self,
+            didUpdateMessages: controller.replies,
+            changes: changes
+        )
     }
     
     func messageController(
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
-        delegate?.dataSource(channelDataSource: self, didUpdateMessages: controller.replies)
+        delegate?.dataSource(
+            channelDataSource: self,
+            didUpdateMessages: controller.replies,
+            changes: []
+        )
     }
     
     func loadPreviousMessages(

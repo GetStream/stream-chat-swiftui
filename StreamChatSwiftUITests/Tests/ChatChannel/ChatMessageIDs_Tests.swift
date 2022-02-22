@@ -12,7 +12,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Given
         let id: String = .unique
         let reaction = "like"
-        let expectedId = id + "\(reaction)\(3)"
+        let expectedId = id + "empty" + "\(reaction)\(3)"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -27,7 +27,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         let messageId = message.messageId
         
         // Then
-        XCTAssert(messageId == expectedId)
+        XCTAssert(messageId.starts(with: expectedId))
     }
     
     func test_chatMessage_DeletedId() {
@@ -46,7 +46,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         let messageId = message.messageId
         
         // Then
-        XCTAssert(messageId == expectedId)
+        XCTAssert(messageId.starts(with: expectedId))
     }
     
     func test_chatMessage_uploadingStatesId() {

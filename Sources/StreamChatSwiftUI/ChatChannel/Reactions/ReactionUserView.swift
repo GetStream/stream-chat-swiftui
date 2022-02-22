@@ -29,7 +29,7 @@ struct ReactionUserView: View {
     var body: some View {
         VStack {
             MessageAvatarView(
-                author: reaction.author,
+                avatarURL: reaction.author.imageURL,
                 size: CGSize(width: imageSize, height: imageSize),
                 showOnlineIndicator: false
             )

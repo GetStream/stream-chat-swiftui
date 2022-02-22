@@ -55,7 +55,7 @@ public struct MentionUserView: View {
     public var body: some View {
         HStack {
             MessageAvatarView(
-                author: user,
+                avatarURL: user.imageURL,
                 showOnlineIndicator: true
             )
             Text(user.name ?? user.id)

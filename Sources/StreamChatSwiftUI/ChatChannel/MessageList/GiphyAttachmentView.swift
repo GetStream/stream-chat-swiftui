@@ -13,6 +13,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
     
     let factory: Factory
     let message: ChatMessage
@@ -25,7 +26,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = message.quotedMessage {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
@@ -106,7 +107,7 @@ struct LazyGiphyView: View {
                 }
             }
         }
-        .onDisappear(.reset)
+        .onDisappear(.cancel)
         .processors([ImageProcessors.Resize(width: width)])
         .priority(.high)
         .aspectRatio(contentMode: .fit)

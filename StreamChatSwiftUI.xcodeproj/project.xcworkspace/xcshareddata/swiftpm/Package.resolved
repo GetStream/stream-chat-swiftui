@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "FPSCounter",
+        "repositoryURL": "https://github.com/konoma/fps-counter.git",
+        "state": {
+          "branch": "master",
+          "revision": "ce58ec45cae81990faabfce4d646138b37b4d9d0",
+          "version": null
+        }
+      },
+      {
         "package": "Gifu",
         "repositoryURL": "https://github.com/kaishin/Gifu",
         "state": {
@@ -15,8 +24,8 @@
         "repositoryURL": "https://github.com/kean/Nuke.git",
         "state": {
           "branch": null,
-          "revision": "472a03c15f39592007d94f25abe554350bc8aa2b",
-          "version": "10.5.1"
+          "revision": "78fa963b8491fc520791d8c2a509f1b8593d8aae",
+          "version": "10.7.1"
         }
       },
       {
@@ -24,8 +33,8 @@
         "repositoryURL": "https://github.com/kean/NukeUI.git",
         "state": {
           "branch": null,
-          "revision": "08e953d8d80b409bebcd95ba0635fdd748934ce0",
-          "version": "0.7.0"
+          "revision": "71398392943f2538fd0f2ebc6f282920f6775b0c",
+          "version": "0.8.0"
         }
       },
       {

@@ -109,7 +109,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 let index = messages.firstIndex { msg in
                                     msg.id == message.id
                                 }
-                                
+
                                 if let index = index {
                                     onMessageAppear(index)
                                 }
@@ -133,7 +133,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
-                        showScrollToLatestButton = offsetValue < -20
+                        let scrollButtonShown = offsetValue < -20
+                        if scrollButtonShown != showScrollToLatestButton {
+                            showScrollToLatestButton = scrollButtonShown
+                        }
                         if keyboardShown {
                             keyboardShown = false
                             resignFirstResponder()
@@ -215,7 +218,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             return true
         }
         let dateString = dateFormatter.string(from: message.createdAt)
-        let prefix = message.author.id
+        let prefix = utils.messageCachingUtils.authorId(for: message)
         let key = "\(prefix)-\(dateString)"
         let inMessagingGroup = messagesGroupingInfo[key]?.contains(message.id) ?? false
         return inMessagingGroup

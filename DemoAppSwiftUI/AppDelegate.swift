@@ -2,14 +2,17 @@
 // Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
+import FPSCounter
 import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 import UIKit
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, FPSCounterDelegate {
     
     var streamChat: StreamChat?
+    
+    var fpsCounter = FPSCounter()
     
     var chatClient: ChatClient = {
         var config = ChatClientConfig(apiKey: .init(apiKeyString))
@@ -63,6 +66,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             }
         }
         
+        fpsCounter.delegate = self
+        fpsCounter.startTracking()
         UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
         
         return true
@@ -94,6 +99,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             }
             UserDefaults(suiteName: applicationGroupIdentifier)?.set(currentUserId, forKey: currentUserIdRegisteredForPush)
         }
+    }
+    
+    func fpsCounter(_ counter: FPSCounter, didUpdateFramesPerSecond fps: Int) {
+        print("======== current fps = \(fps) =========")
     }
 }
 

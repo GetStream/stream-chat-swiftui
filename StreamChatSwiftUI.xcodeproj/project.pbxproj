@@ -37,7 +37,6 @@
 		8434E58127707F19001E1B83 /* GridPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E58027707F19001E1B83 /* GridPhotosView.swift */; };
 		8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
-		8465FCB427468A8D00AF091E /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB327468A8D00AF091E /* StreamChat */; };
 		8465FCB727468B0600AF091E /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB627468B0600AF091E /* NukeUI */; };
 		8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */; };
 		8465FCC327468B6A00AF091E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCC227468B6A00AF091E /* Assets.xcassets */; };
@@ -163,6 +162,9 @@
 		846608E7278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */; };
 		846608E9278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */; };
 		846D6564279FF0800094B36E /* ReactionUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846D6563279FF0800094B36E /* ReactionUserView.swift */; };
+		847CEFEC27BFAB6400606257 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 847CEFEB27BFAB6400606257 /* StreamChat */; };
+		847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */; };
+		847CEFF527C3E88B00606257 /* FPSCounter in Frameworks */ = {isa = PBXBuildFile; productRef = 847CEFF427C3E88B00606257 /* FPSCounter */; };
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
@@ -484,6 +486,7 @@
 		846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelExtensions_Tests.swift; sourceTree = "<group>"; };
 		846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorView_Tests.swift; sourceTree = "<group>"; };
 		846D6563279FF0800094B36E /* ReactionUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionUserView.swift; sourceTree = "<group>"; };
+		847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCachingUtils.swift; sourceTree = "<group>"; };
 		848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListView_Tests.swift; sourceTree = "<group>"; };
 		848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsOverlayView_Tests.swift; sourceTree = "<group>"; };
 		8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DemoAppSwiftUI.entitlements; sourceTree = "<group>"; };
@@ -614,7 +617,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8465FCB427468A8D00AF091E /* StreamChat in Frameworks */,
+				847CEFF527C3E88B00606257 /* FPSCounter in Frameworks */,
+				847CEFEC27BFAB6400606257 /* StreamChat in Frameworks */,
 				8465FCB727468B0600AF091E /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -949,6 +953,7 @@
 				8465FD4A2746A95600AF091E /* BundleExtensions.swift */,
 				8465FD3B2746A95600AF091E /* StringExtensions.swift */,
 				841B64C92775BBC10016FF3B /* Errors.swift */,
+				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
 				8465FD382746A95600AF091E /* Common */,
 			);
 			path = Utils;
@@ -1270,8 +1275,9 @@
 			);
 			name = StreamChatSwiftUI;
 			packageProductDependencies = (
-				8465FCB327468A8D00AF091E /* StreamChat */,
 				8465FCB627468B0600AF091E /* NukeUI */,
+				847CEFEB27BFAB6400606257 /* StreamChat */,
+				847CEFF427C3E88B00606257 /* FPSCounter */,
 			);
 			productName = StreamChatSwiftUI;
 			productReference = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */;
@@ -1351,9 +1357,10 @@
 			);
 			mainGroup = 8465FBAB2746873A00AF091E;
 			packageReferences = (
-				8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
 				8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */,
 				848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				847CEFEA27BFAB6400606257 /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
+				847CEFF327C3E88B00606257 /* XCRemoteSwiftPackageReference "fps-counter" */,
 			);
 			productRefGroup = 8465FBB62746873A00AF091E /* Products */;
 			projectDirPath = "";
@@ -1427,6 +1434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8465FD962746A95700AF091E /* ReactionsOverlayViewModel.swift in Sources */,
+				847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */,
 				8465FD792746A95700AF091E /* DeletedMessageView.swift in Sources */,
 				8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */,
 				84AB7B242773528300631A10 /* CommandsContainerView.swift in Sources */,
@@ -2111,6 +2119,22 @@
 				minimumVersion = 0.7.0;
 			};
 		};
+		847CEFEA27BFAB6400606257 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.10.1;
+			};
+		};
+		847CEFF327C3E88B00606257 /* XCRemoteSwiftPackageReference "fps-counter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/konoma/fps-counter.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
@@ -2122,11 +2146,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		8465FCB327468A8D00AF091E /* StreamChat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
-			productName = StreamChat;
-		};
 		8465FCB627468B0600AF091E /* NukeUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */;
@@ -2136,6 +2155,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
 			productName = StreamChat;
+		};
+		847CEFEB27BFAB6400606257 /* StreamChat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 847CEFEA27BFAB6400606257 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
+			productName = StreamChat;
+		};
+		847CEFF427C3E88B00606257 /* FPSCounter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 847CEFF327C3E88B00606257 /* XCRemoteSwiftPackageReference "fps-counter" */;
+			productName = FPSCounter;
 		};
 		848399E9275FB3E9003075E4 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;

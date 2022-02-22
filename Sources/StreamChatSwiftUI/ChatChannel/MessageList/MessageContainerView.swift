@@ -44,7 +44,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 } else {
                     if messageListConfig.messageDisplayOptions.showAvatars {
                         if showsAllInfo {
-                            factory.makeMessageAvatarView(for: message.author)
+                            factory.makeMessageAvatarView(
+                                for: utils.messageCachingUtils.authorImageURL(for: message)
+                            )
                         } else {
                             Color.clear
                                 .frame(width: CGSize.messageAvatarSize.width)

@@ -28,7 +28,7 @@ struct MessageRepliesView<Factory: ViewFactory>: View {
             HStack {
                 if !message.isSentByCurrentUser {
                     MessageAvatarView(
-                        author: message.threadParticipants[0],
+                        avatarURL: message.threadParticipants[0].imageURL,
                         size: .init(width: 16, height: 16)
                     )
                 }
@@ -36,7 +36,7 @@ struct MessageRepliesView<Factory: ViewFactory>: View {
                     .font(fonts.footnoteBold)
                 if message.isSentByCurrentUser {
                     MessageAvatarView(
-                        author: message.threadParticipants[0],
+                        avatarURL: message.threadParticipants[0].imageURL,
                         size: .init(width: 16, height: 16)
                     )
                 }
