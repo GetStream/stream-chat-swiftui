@@ -176,10 +176,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     onScrollToBottom: onScrollToBottom
                 )
             }
-            
-            if let date = currentDateString {
-                factory.makeDateIndicatorView(dateString: date)
-            }
                 
             if shouldShowTypingIndicator {
                 TypingIndicatorBottomView(

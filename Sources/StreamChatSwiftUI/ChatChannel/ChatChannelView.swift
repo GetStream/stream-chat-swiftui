@@ -55,6 +55,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 }
             )
+            .overlay(
+                viewModel.currentDateString != nil ?
+                    factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
+                    : nil
+            )
             
             Divider()
                 .navigationBarBackButtonHidden(viewModel.reactionsShown)
