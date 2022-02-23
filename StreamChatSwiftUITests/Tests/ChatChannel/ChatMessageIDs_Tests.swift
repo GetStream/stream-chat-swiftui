@@ -59,7 +59,8 @@ class ChatMessageIDs_Tests: XCTestCase {
             cid: .unique,
             text: "test",
             author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.imageAttachments
+            attachments: ChatChannelTestHelpers.imageAttachments,
+            localState: .pendingSend
         )
         
         // When
@@ -84,7 +85,8 @@ class ChatMessageIDs_Tests: XCTestCase {
             reactionScores: [
                 MessageReactionType(rawValue: reaction): 3
             ],
-            attachments: ChatChannelTestHelpers.imageAttachments
+            attachments: ChatChannelTestHelpers.imageAttachments,
+            localState: .pendingSend
         )
         
         // When

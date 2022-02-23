@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "FPSCounter",
-        "repositoryURL": "https://github.com/konoma/fps-counter.git",
-        "state": {
-          "branch": "master",
-          "revision": "ce58ec45cae81990faabfce4d646138b37b4d9d0",
-          "version": null
-        }
-      },
-      {
         "package": "Gifu",
         "repositoryURL": "https://github.com/kaishin/Gifu",
         "state": {

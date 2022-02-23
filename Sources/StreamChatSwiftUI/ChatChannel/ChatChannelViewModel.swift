@@ -308,19 +308,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func handleDateChange() {
         guard showScrollToLatestButton == true, let currentDate = currentDate else {
-            DispatchQueue.main.async { [weak self] in
-                self?.currentDateString = nil
-            }
+            currentDateString = nil
             return
         }
         
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            let dateString = messageListDateOverlay.string(from: currentDate)
-            DispatchQueue.main.async { [unowned self] in
-                if currentDateString != dateString {
-                    currentDateString = dateString
-                }
-            }
+        let dateString = messageListDateOverlay.string(from: currentDate)
+        if currentDateString != dateString {
+            currentDateString = dateString
         }
     }
     
