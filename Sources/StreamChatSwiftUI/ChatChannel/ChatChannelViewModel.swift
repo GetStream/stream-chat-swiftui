@@ -52,7 +52,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
-            groupMessages()
+            if utils.messageListConfig.groupMessages {
+                groupMessages()
+            }
         }
     }
 
