@@ -39,7 +39,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private var loadingPreviousMessages: Bool = false
     private var lastMessageRead: String?
-    private var messageChanges = [ListChange<ChatMessage>]()
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
