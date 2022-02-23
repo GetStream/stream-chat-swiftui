@@ -5,15 +5,18 @@
 import Foundation
 import StreamChat
 
+/// Caches messages related data to avoid accessing the database.
+/// Cleared on chat channel view dismiss or memory warning.
 class MessageCachingUtils {
     
-    private var messageAuthorMapping = [String: UserDisplayInfo]()
+    private var messageAuthorMapping = [String: String]()
+    private var messageAuthors = [String: UserDisplayInfo]()
     private var messageAttachments = [String: Bool]()
     private var checkedMessageIds = Set<String>()
     private var quotedMessageMapping = [String: ChatMessage]()
     
     func authorId(for message: ChatMessage) -> String {
-        if let userDisplayInfo = messageAuthorMapping[message.id] {
+        if let userDisplayInfo = userDisplayInfo(for: message) {
             return userDisplayInfo.id
         }
         
@@ -22,7 +25,7 @@ class MessageCachingUtils {
     }
     
     func authorName(for message: ChatMessage) -> String {
-        if let userDisplayInfo = messageAuthorMapping[message.id] {
+        if let userDisplayInfo = userDisplayInfo(for: message) {
             return userDisplayInfo.name
         }
         
@@ -31,7 +34,7 @@ class MessageCachingUtils {
     }
     
     func authorImageURL(for message: ChatMessage) -> URL? {
-        if let userDisplayInfo = messageAuthorMapping[message.id] {
+        if let userDisplayInfo = userDisplayInfo(for: message) {
             return userDisplayInfo.imageURL
         }
         
@@ -58,6 +61,26 @@ class MessageCachingUtils {
         return quoted
     }
     
+    func clearCache() {
+        log.debug("Clearing cached message data")
+        messageAuthorMapping = [String: String]()
+        messageAuthors = [String: UserDisplayInfo]()
+        messageAttachments = [String: Bool]()
+        checkedMessageIds = Set<String>()
+        quotedMessageMapping = [String: ChatMessage]()
+    }
+    
+    // MARK: - private
+    
+    private func userDisplayInfo(for message: ChatMessage) -> UserDisplayInfo? {
+        if let userId = messageAuthorMapping[message.id],
+           let userDisplayInfo = messageAuthors[userId] {
+            return userDisplayInfo
+        } else {
+            return nil
+        }
+    }
+    
     private func saveUserDisplayInfo(for message: ChatMessage) -> UserDisplayInfo {
         let user = message.author
         let userDisplayInfo = UserDisplayInfo(
@@ -65,7 +88,8 @@ class MessageCachingUtils {
             name: user.name ?? user.id,
             imageURL: user.imageURL
         )
-        messageAuthorMapping[message.id] = userDisplayInfo
+        messageAuthorMapping[message.id] = user.id
+        messageAuthors[user.id] = userDisplayInfo
         
         return userDisplayInfo
     }

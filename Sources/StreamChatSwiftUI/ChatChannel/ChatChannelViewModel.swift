@@ -124,6 +124,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @objc
     private func didReceiveMemoryWarning() {
         Nuke.ImageCache.shared.removeAll()
+        messageCachingUtils.clearCache()
     }
     
     public func scrollToLastMessage() {
@@ -321,6 +322,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 }
             }
         }
+    }
+    
+    deinit {
+        messageCachingUtils.clearCache()
     }
 }
 
