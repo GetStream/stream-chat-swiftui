@@ -78,7 +78,7 @@ public extension ChatMessage {
     ///
     /// Note that for messages sent with attachments, large emojis aren's rendered
     var shouldRenderAsJumbomoji: Bool {
-        guard attachmentCounts.isEmpty, let textContent = textContent, !textContent.isEmpty else { return false }
+        guard let textContent = textContent, !textContent.isEmpty else { return false }
         return textContent.count <= 3 && textContent.containsOnlyEmoji
     }
 }

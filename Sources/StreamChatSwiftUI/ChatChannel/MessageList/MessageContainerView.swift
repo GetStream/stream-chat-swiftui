@@ -136,7 +136,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     })
                     
-                    if message.replyCount > 0 && !message.threadParticipants.isEmpty && !isInThread {
+                    if message.replyCount > 0 && !isInThread {
                         MessageRepliesView(
                             factory: factory,
                             channel: channel,

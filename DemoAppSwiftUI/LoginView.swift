@@ -58,7 +58,7 @@ struct DemoUserView: View {
     var body: some View {
         HStack {
             LazyImage(source: user.avatarURL)
-                .onDisappear(.reset)
+                .onDisappear(.cancel)
                 .clipShape(Circle())
                 .frame(
                     width: imageSize,

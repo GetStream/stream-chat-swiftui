@@ -18,8 +18,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private var timer: DispatchSourceTimer?
-    private let queue = DispatchQueue(label: "io.getstream.background.timer")
+    private var timer: Timer?
     private var currentDate: Date? {
         didSet {
             handleDateChange()
@@ -217,7 +216,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             loadingPreviousMessages = true
             channelDataSource.loadPreviousMessages(
                 before: nil,
-                limit: 50,
+                limit: utils.messageListConfig.pageSize,
                 completion: { [weak self] _ in
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
@@ -228,13 +227,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func save(lastDate: Date) {
         currentDate = lastDate
-        timer?.cancel()
-        timer = DispatchSource.makeTimerSource(queue: queue)
-        timer?.schedule(deadline: .now() + 0.5, repeating: .never)
-        timer?.setEventHandler(handler: { [weak self] in
-            self?.currentDate = nil
-        })
-        timer?.resume()
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(
+            withTimeInterval: 0.5,
+            repeats: false,
+            block: { [weak self] _ in
+                self?.currentDate = nil
+            }
+        )
     }
     
     private func maybeSendReadEvent(for message: ChatMessage) {

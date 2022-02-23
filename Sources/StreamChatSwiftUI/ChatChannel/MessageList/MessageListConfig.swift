@@ -13,7 +13,8 @@ public struct MessageListConfig {
         groupMessages: Bool = true,
         messageDisplayOptions: MessageDisplayOptions = MessageDisplayOptions(),
         messagePaddings: MessagePaddings = MessagePaddings(),
-        dateIndicatorPlacement: DateIndicatorPlacement = .overlay
+        dateIndicatorPlacement: DateIndicatorPlacement = .overlay,
+        pageSize: Int = 50
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -21,6 +22,7 @@ public struct MessageListConfig {
         self.messageDisplayOptions = messageDisplayOptions
         self.messagePaddings = messagePaddings
         self.dateIndicatorPlacement = dateIndicatorPlacement
+        self.pageSize = pageSize
     }
     
     let messageListType: MessageListType
@@ -29,6 +31,7 @@ public struct MessageListConfig {
     let messageDisplayOptions: MessageDisplayOptions
     let messagePaddings: MessagePaddings
     let dateIndicatorPlacement: DateIndicatorPlacement
+    let pageSize: Int
 }
 
 /// Contains information about the message paddings.
