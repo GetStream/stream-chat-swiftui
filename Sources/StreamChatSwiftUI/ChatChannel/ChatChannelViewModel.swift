@@ -155,11 +155,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let message = messageController?.message {
             var array = Array(messages)
             array.append(message)
-            withAnimation {
-                self.messages = LazyCachedMapCollection(source: array, map: { $0 })
-            }
+            self.messages = LazyCachedMapCollection(source: array, map: { $0 })
         } else {
-            withAnimation {
+            if shouldAnimate(changes: changes) {
+                withAnimation {
+                    self.messages = messages
+                }
+            } else {
                 self.messages = messages
             }
         }
@@ -317,6 +319,20 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
+    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+        for change in changes {
+            switch change {
+            case .insert(_, index: _),
+                 .remove(_, index: _):
+                return true
+            default:
+                log.debug("detected non-animatable change")
+            }
+        }
+        
+        return false
+    }
+    
     deinit {
         messageCachingUtils.clearCache()
     }
@@ -355,7 +371,7 @@ extension ChatMessage: Identifiable {
         states += fileAttachments.compactMap { $0.uploadingState?.state }
         
         if states.isEmpty {
-            return ""
+            return "empty"
         }
         
         let strings = states.map { "\($0)" }

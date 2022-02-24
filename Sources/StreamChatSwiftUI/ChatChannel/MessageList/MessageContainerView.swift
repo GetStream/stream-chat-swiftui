@@ -77,6 +77,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId
                     )
+                    .animation(nil)
                     .overlay(
                         reactionsShown ?
                             factory.makeMessageReactionView(
@@ -174,14 +175,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
         .padding(.top, isLast ? paddingValue : 0)
-        .background(isMessagePinned || shouldAnimateBackground ? Color(colors.pinnedBackground) : nil)
+        .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
         .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
     }
-    
-    private var shouldAnimateBackground: Bool {
-        scrolledId == message.messageId
-    }
-    
+        
     private var isMessagePinned: Bool {
         message.pinDetails != nil
     }

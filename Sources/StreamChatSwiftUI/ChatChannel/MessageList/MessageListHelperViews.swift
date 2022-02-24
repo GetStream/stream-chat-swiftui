@@ -43,6 +43,7 @@ struct MessageDateView: View {
         Text(dateFormatter.string(from: message.createdAt))
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
+            .animation(nil)
     }
 }
 
