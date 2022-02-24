@@ -112,6 +112,7 @@ struct QuotedMessageView: View {
                 Spacer()
             }
         }
+        .id(quotedMessage.messageId)
         .padding(.all, 8)
         .messageBubble(
             for: quotedMessage,

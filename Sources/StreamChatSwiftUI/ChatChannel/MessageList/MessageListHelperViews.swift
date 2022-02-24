@@ -108,3 +108,18 @@ struct MessagePinDetailsView: View {
         .padding(.top, 4)
     }
 }
+
+struct TopLeftView<Content: View>: View {
+    
+    var content: () -> Content
+    
+    var body: some View {
+        VStack {
+            HStack {
+                content()
+                Spacer()
+            }
+            Spacer()
+        }
+    }
+}

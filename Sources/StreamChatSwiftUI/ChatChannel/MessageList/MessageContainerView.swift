@@ -54,14 +54,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                 }
                 
-                if offsetX > 0 {
-                    VStack {
-                        Image(uiImage: images.messageActionInlineReply)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                }
-                
                 VStack(alignment: message.isSentByCurrentUser ? .trailing : .leading) {
                     if isMessagePinned {
                         MessagePinDetailsView(
@@ -165,6 +157,14 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
                 }
+                .overlay(
+                    offsetX > 0 ?
+                        TopLeftView {
+                            Image(uiImage: images.messageActionInlineReply)
+                        }
+                        .offset(x: -32)
+                        : nil
+                )
                 
                 if !message.isSentByCurrentUser {
                     MessageSpacer(spacerWidth: spacerWidth)
