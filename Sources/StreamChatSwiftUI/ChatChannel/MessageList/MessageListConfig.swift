@@ -12,13 +12,17 @@ public struct MessageListConfig {
         typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
         groupMessages: Bool = true,
         messageDisplayOptions: MessageDisplayOptions = MessageDisplayOptions(),
-        messagePaddings: MessagePaddings = MessagePaddings()
+        messagePaddings: MessagePaddings = MessagePaddings(),
+        dateIndicatorPlacement: DateIndicatorPlacement = .overlay,
+        pageSize: Int = 50
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
         self.groupMessages = groupMessages
         self.messageDisplayOptions = messageDisplayOptions
         self.messagePaddings = messagePaddings
+        self.dateIndicatorPlacement = dateIndicatorPlacement
+        self.pageSize = pageSize
     }
     
     let messageListType: MessageListType
@@ -26,6 +30,8 @@ public struct MessageListConfig {
     let groupMessages: Bool
     let messageDisplayOptions: MessageDisplayOptions
     let messagePaddings: MessagePaddings
+    let dateIndicatorPlacement: DateIndicatorPlacement
+    let pageSize: Int
 }
 
 /// Contains information about the message paddings.
@@ -37,6 +43,13 @@ public struct MessagePaddings {
     public init(horizontal: CGFloat = 8) {
         self.horizontal = horizontal
     }
+}
+
+/// Defines where the date indicator in the message list is placed.
+public enum DateIndicatorPlacement {
+    case none
+    case overlay
+    case messageList // Not supported yet.
 }
 
 /// Used to show and hide different helper views around the message.

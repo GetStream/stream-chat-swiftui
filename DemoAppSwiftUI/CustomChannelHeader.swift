@@ -35,7 +35,7 @@ public struct CustomChannelHeader: ToolbarContent {
                 logoutAlertShown = true
             } label: {
                 LazyImage(source: currentUserController.currentUser?.imageURL)
-                    .onDisappear(.reset)
+                    .onDisappear(.cancel)
                     .clipShape(Circle())
                     .frame(
                         width: 30,

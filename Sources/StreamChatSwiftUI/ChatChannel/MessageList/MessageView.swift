@@ -97,6 +97,7 @@ struct MessageView<Factory: ViewFactory>: View {
 public struct MessageTextView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
     
     var message: ChatMessage
     var isFirst: Bool
@@ -107,7 +108,7 @@ public struct MessageTextView: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = message.quotedMessage {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,

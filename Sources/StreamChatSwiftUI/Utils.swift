@@ -20,6 +20,8 @@ public class Utils {
     public var commandsConfig: CommandsConfig
     public var messageListConfig: MessageListConfig
     
+    var messageCachingUtils = MessageCachingUtils()
+    
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),

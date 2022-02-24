@@ -12,7 +12,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Given
         let id: String = .unique
         let reaction = "like"
-        let expectedId = id + "\(reaction)\(3)"
+        let expectedId = id + "empty" + "\(reaction)\(3)"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -27,7 +27,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         let messageId = message.messageId
         
         // Then
-        XCTAssert(messageId == expectedId)
+        XCTAssert(messageId.starts(with: expectedId))
     }
     
     func test_chatMessage_DeletedId() {
@@ -46,7 +46,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         let messageId = message.messageId
         
         // Then
-        XCTAssert(messageId == expectedId)
+        XCTAssert(messageId.starts(with: expectedId))
     }
     
     func test_chatMessage_uploadingStatesId() {
@@ -59,7 +59,8 @@ class ChatMessageIDs_Tests: XCTestCase {
             cid: .unique,
             text: "test",
             author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.imageAttachments
+            attachments: ChatChannelTestHelpers.imageAttachments,
+            localState: .pendingSend
         )
         
         // When
@@ -84,7 +85,8 @@ class ChatMessageIDs_Tests: XCTestCase {
             reactionScores: [
                 MessageReactionType(rawValue: reaction): 3
             ],
-            attachments: ChatChannelTestHelpers.imageAttachments
+            attachments: ChatChannelTestHelpers.imageAttachments,
+            localState: .pendingSend
         )
         
         // When

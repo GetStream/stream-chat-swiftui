@@ -10,6 +10,8 @@ import SwiftUI
 /// Container showing the quoted message view with the user avatar.
 struct QuotedMessageViewContainer: View {
     
+    @Injected(\.utils) private var utils
+    
     private let avatarSize: CGFloat = 24
     
     var quotedMessage: ChatMessage
@@ -21,7 +23,7 @@ struct QuotedMessageViewContainer: View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
                 MessageAvatarView(
-                    author: quotedMessage.author,
+                    avatarURL: utils.messageCachingUtils.authorImageURL(for: quotedMessage),
                     size: .init(width: avatarSize, height: avatarSize)
                 )
                 
@@ -38,7 +40,7 @@ struct QuotedMessageViewContainer: View {
                 )
                 
                 MessageAvatarView(
-                    author: quotedMessage.author,
+                    avatarURL: utils.messageCachingUtils.authorImageURL(for: quotedMessage),
                     size: .init(width: avatarSize, height: avatarSize)
                 )
             }
@@ -91,7 +93,7 @@ struct QuotedMessageView: View {
                         )
                     } else if !quotedMessage.linkAttachments.isEmpty {
                         LazyImage(source: quotedMessage.linkAttachments[0].previewURL!)
-                            .onDisappear(.reset)
+                            .onDisappear(.cancel)
                             .processors([ImageProcessors.Resize(width: attachmentWidth)])
                             .priority(.high)
                     }

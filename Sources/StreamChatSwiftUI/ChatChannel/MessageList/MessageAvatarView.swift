@@ -16,29 +16,29 @@ public struct MessageAvatarView: View {
         utils.imageCDN
     }
     
-    var author: ChatUser
+    var avatarURL: URL?
     var size: CGSize
     var showOnlineIndicator: Bool = false
     
     public init(
-        author: ChatUser,
+        avatarURL: URL?,
         size: CGSize = CGSize.messageAvatarSize,
         showOnlineIndicator: Bool = false
     ) {
-        self.author = author
+        self.avatarURL = avatarURL
         self.size = size
         self.showOnlineIndicator = showOnlineIndicator
     }
     
     public var body: some View {
-        if let urlString = author.imageURL?.absoluteString, let url = URL(string: urlString) {
+        if let urlString = avatarURL?.absoluteString, let url = URL(string: urlString) {
             let adjustedURL = imageCDN.thumbnailURL(
                 originalURL: url,
                 preferredSize: size
             )
             
             LazyImage(source: adjustedURL)
-                .onDisappear(.reset)
+                .onDisappear(.cancel)
                 .priority(.normal)
                 .clipShape(Circle())
                 .frame(

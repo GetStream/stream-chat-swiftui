@@ -21,11 +21,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
-            guard showScrollToLatestButton == true, let currentDate = currentDate else {
-                currentDateString = nil
-                return
-            }
-            currentDateString = messageListDateOverlay.string(from: currentDate)
+            handleDateChange()
         }
     }
 
@@ -39,9 +35,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }()
     
     private lazy var messagesDateFormatter = utils.dateFormatter
+    private lazy var messageCachingUtils = utils.messageCachingUtils
     
-    @Atomic private var loadingPreviousMessages: Bool = false
-    @Atomic private var lastMessageRead: String?
+    private var loadingPreviousMessages: Bool = false
+    private var lastMessageRead: String?
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -54,27 +51,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
-            var temp = [String: [String]]()
-            for (index, message) in messages.enumerated() {
-                let dateString = messagesDateFormatter.string(from: message.createdAt)
-                let prefix = message.author.id
-                let key = "\(prefix)-\(dateString)"
-                if temp[key] == nil {
-                    temp[key] = [message.id]
-                } else {
-                    // check if the previous message is not sent by the same user.
-                    let previousIndex = index - 1
-                    if previousIndex >= 0 {
-                        let previous = messages[previousIndex]
-                        
-                        let shouldAddKey = message.author.id != previous.author.id
-                        if shouldAddKey {
-                            temp[key]?.append(message.id)
-                        }
-                    }
-                }
+            if utils.messageListConfig.groupMessages {
+                groupMessages()
             }
-            messagesGroupingInfo = temp
         }
     }
 
@@ -144,6 +123,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @objc
     private func didReceiveMemoryWarning() {
         Nuke.ImageCache.shared.removeAll()
+        messageCachingUtils.clearCache()
     }
     
     public func scrollToLastMessage() {
@@ -155,7 +135,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func handleMessageAppear(index: Int) {
         let message = messages[index]
         checkForNewMessages(index: index)
-        save(lastDate: message.createdAt)
+        if utils.messageListConfig.dateIndicatorPlacement == .overlay {
+            save(lastDate: message.createdAt)
+        }
         if index == 0 {
             maybeSendReadEvent(for: message)
         }
@@ -163,7 +145,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>
+        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+        changes: [ListChange<ChatMessage>]
     ) {
         if !isActive {
             return
@@ -172,11 +155,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let message = messageController?.message {
             var array = Array(messages)
             array.append(message)
-            withAnimation {
-                self.messages = LazyCachedMapCollection(source: array, map: { $0 })
-            }
+            self.messages = LazyCachedMapCollection(source: array, map: { $0 })
         } else {
-            withAnimation {
+            if shouldAnimate(changes: changes) {
+                withAnimation {
+                    self.messages = messages
+                }
+            } else {
                 self.messages = messages
             }
         }
@@ -193,7 +178,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
-        messages = channelController.messages
         checkHeaderType()
     }
 
@@ -228,14 +212,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForNewMessages(index: Int) {
-        if index < channelDataSource.messages.count - 20 {
+        if index < channelDataSource.messages.count - 25 {
             return
         }
 
-        if _loadingPreviousMessages.compareAndSwap(old: false, new: true) {
+        if !loadingPreviousMessages {
+            loadingPreviousMessages = true
             channelDataSource.loadPreviousMessages(
                 before: nil,
-                limit: refreshThreshold,
+                limit: utils.messageListConfig.pageSize,
                 completion: { [weak self] _ in
                     guard let self = self else { return }
                     self.loadingPreviousMessages = false
@@ -296,20 +281,69 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
+    
+    private func groupMessages() {
+        var temp = [String: [String]]()
+        for (index, message) in messages.enumerated() {
+            let dateString = messagesDateFormatter.string(from: message.createdAt)
+            let prefix = messageCachingUtils.authorId(for: message)
+            let key = "\(prefix)-\(dateString)"
+            if temp[key] == nil {
+                temp[key] = [message.id]
+            } else {
+                // check if the previous message is not sent by the same user.
+                let previousIndex = index - 1
+                if previousIndex >= 0 {
+                    let previous = messages[previousIndex]
+                    let previousAuthorId = messageCachingUtils.authorId(for: previous)
+                    let shouldAddKey = prefix != previousAuthorId
+                    if shouldAddKey {
+                        temp[key]?.append(message.id)
+                    }
+                }
+            }
+        }
+        
+        messagesGroupingInfo = temp
+    }
+    
+    private func handleDateChange() {
+        guard showScrollToLatestButton == true, let currentDate = currentDate else {
+            currentDateString = nil
+            return
+        }
+        
+        let dateString = messageListDateOverlay.string(from: currentDate)
+        if currentDateString != dateString {
+            currentDateString = dateString
+        }
+    }
+    
+    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+        for change in changes {
+            switch change {
+            case .insert(_, index: _),
+                 .remove(_, index: _):
+                return true
+            default:
+                log.debug("detected non-animatable change")
+            }
+        }
+        
+        return false
+    }
+    
+    deinit {
+        messageCachingUtils.clearCache()
+    }
 }
 
 extension ChatMessage: Identifiable {
     var messageId: String {
-        let statesId = uploadingStatesId
-
-        if statesId.isEmpty {
-            if !reactionScores.isEmpty {
-                return baseId + reactionScoresId
-            } else {
-                return baseId
-            }
+        var statesId = "empty"
+        if localState != nil {
+            statesId = uploadingStatesId
         }
-
         return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)" + pinStateId
     }
     
@@ -337,7 +371,7 @@ extension ChatMessage: Identifiable {
         states += fileAttachments.compactMap { $0.uploadingState?.state }
         
         if states.isEmpty {
-            return ""
+            return "empty"
         }
         
         let strings = states.map { "\($0)" }
@@ -347,6 +381,9 @@ extension ChatMessage: Identifiable {
     
     var reactionScoresId: String {
         var output = ""
+        if reactionScores.isEmpty {
+            return output
+        }
         let sorted = reactionScores.keys.sorted { type1, type2 in
             type1.id > type2.id
         }

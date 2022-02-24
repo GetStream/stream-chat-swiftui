@@ -142,7 +142,11 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         var updateMessagesCalled = false
         var updateChannelCalled = false
         
-        func dataSource(channelDataSource: ChannelDataSource, didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>) {
+        func dataSource(
+            channelDataSource: ChannelDataSource,
+            didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+            changes: [ListChange<ChatMessage>]
+        ) {
             updateMessagesCalled = true
         }
         
