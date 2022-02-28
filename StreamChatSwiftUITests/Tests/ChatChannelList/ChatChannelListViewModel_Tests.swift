@@ -51,7 +51,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         
         // When
-        viewModel.checkForChannels(index: 0)
+        viewModel.checkForChannels(index: 5)
         
         // Then
         XCTAssert(channelListController.loadNextChannelsIsCalled == true)
