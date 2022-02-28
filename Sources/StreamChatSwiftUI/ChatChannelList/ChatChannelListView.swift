@@ -21,12 +21,13 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     
     public init(
         viewFactory: Factory,
+        viewModel: ChatChannelListViewModel? = nil,
         channelListController: ChatChannelListController? = nil,
         title: String = "Stream Chat",
         onItemTap: ((ChatChannel) -> Void)? = nil,
         selectedChannelId: String? = nil
     ) {
-        let channelListVM = ViewModelsFactory.makeChannelListViewModel(
+        let channelListVM = viewModel ?? ViewModelsFactory.makeChannelListViewModel(
             channelListController: channelListController,
             selectedChannelId: selectedChannelId
         )

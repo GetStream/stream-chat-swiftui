@@ -19,12 +19,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             
     public init(
         viewFactory: Factory,
+        viewModel: ChatChannelViewModel? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
         scrollToMessage: ChatMessage? = nil
     ) {
         _viewModel = StateObject(
-            wrappedValue: ViewModelsFactory.makeChannelViewModel(
+            wrappedValue: viewModel ?? ViewModelsFactory.makeChannelViewModel(
                 with: channelController,
                 messageController: messageController,
                 scrollToMessage: scrollToMessage

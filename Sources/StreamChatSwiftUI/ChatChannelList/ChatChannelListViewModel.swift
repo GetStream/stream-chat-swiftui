@@ -20,7 +20,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
     
-    private var controller: ChatChannelListController!
+    private var controller: ChatChannelListController?
     
     /// Used when screen is shown from a deeplink.
     private var selectedChannelId: String?
@@ -29,6 +29,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private var queuedChannelsChanges = LazyCachedMapCollection<ChatChannel>()
     
     private var messageSearchController: ChatMessageSearchController?
+    
+    private var timer: Timer?
     
     /// Controls loading the channels.
     @Atomic private var loadingNextChannels: Bool = false
@@ -121,15 +123,15 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///
     /// - Parameter index: the currently displayed index.
     public func checkForChannels(index: Int) {
-        if index < controller.channels.count - 10 {
+        if index < controller?.channels.count ?? 0 - 10 {
             return
         }
 
         if _loadingNextChannels.compareAndSwap(old: false, new: true) {
-            controller.loadNextChannels { [weak self] _ in
+            controller?.loadNextChannels { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
-                self.channels = self.controller.channels
+                self.updateChannels()
             }
         }
     }
@@ -238,18 +240,22 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func makeDefaultChannelListController() {
+        guard let currentUserId = chatClient.currentUserId else {
+            observeClientIdChange()
+            return
+        }
         controller = chatClient.channelListController(
-            query: .init(filter: .containMembers(userIds: [chatClient.currentUserId!]))
+            query: .init(filter: .containMembers(userIds: [currentUserId]))
         )
     }
     
     private func setupChannelListController() {
-        controller.delegate = self
+        controller?.delegate = self
         
-        channels = controller.channels
+        updateChannels()
         
         loading = true
-        controller.synchronize { [weak self] error in
+        controller?.synchronize { [weak self] error in
             guard let self = self else { return }
             self.loading = false
             if error != nil {
@@ -257,7 +263,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 self.channelAlertType = .error
             } else {
                 // access channels
-                self.channels = self.controller.channels
+                self.updateChannels()
                 self.checkForDeeplinks()
             }
         }
@@ -296,8 +302,29 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         } else {
             messageSearchController = nil
             searchResults = []
-            channels = controller.channels
+            updateChannels()
         }
+    }
+    
+    private func observeClientIdChange() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
+            guard let self = self else { return }
+            if self.chatClient.currentUserId != nil {
+                self.stopTimer()
+                self.makeDefaultChannelListController()
+                self.setupChannelListController()
+            }
+        })
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    private func updateChannels() {
+        channels = controller?.channels ?? LazyCachedMapCollection<ChatChannel>()
     }
 }
 
