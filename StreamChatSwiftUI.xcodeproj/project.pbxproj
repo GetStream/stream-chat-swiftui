@@ -167,6 +167,13 @@
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
+		8490189F27C8D10E00A35353 /* EmojiSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490189827C8D10E00A35353 /* EmojiSource.swift */; };
+		849018A027C8D10E00A35353 /* NSAttributedString+Emojis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490189A27C8D10E00A35353 /* NSAttributedString+Emojis.swift */; };
+		849018A127C8D10E00A35353 /* UITextView+Emojis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490189B27C8D10E00A35353 /* UITextView+Emojis.swift */; };
+		849018A227C8D10E00A35353 /* String+CodeRanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490189C27C8D10E00A35353 /* String+CodeRanges.swift */; };
+		849018A327C8D10E00A35353 /* EmojiRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490189D27C8D10E00A35353 /* EmojiRendering.swift */; };
+		849018A427C8D10E00A35353 /* EmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490189E27C8D10E00A35353 /* EmojiView.swift */; };
+		849018A727C8D6E600A35353 /* SwiftyGif in Frameworks */ = {isa = PBXBuildFile; productRef = 849018A627C8D6E600A35353 /* SwiftyGif */; };
 		8492974B27ABDDCB00A8EEB0 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
 		8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492975127B156D000A8EEB0 /* SlowModeView.swift */; };
 		8492975427B1725B00A8EEB0 /* MessageComposerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492975327B1725B00A8EEB0 /* MessageComposerView_Tests.swift */; };
@@ -489,6 +496,12 @@
 		847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCachingUtils.swift; sourceTree = "<group>"; };
 		848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListView_Tests.swift; sourceTree = "<group>"; };
 		848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsOverlayView_Tests.swift; sourceTree = "<group>"; };
+		8490189827C8D10E00A35353 /* EmojiSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiSource.swift; sourceTree = "<group>"; };
+		8490189A27C8D10E00A35353 /* NSAttributedString+Emojis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Emojis.swift"; sourceTree = "<group>"; };
+		8490189B27C8D10E00A35353 /* UITextView+Emojis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextView+Emojis.swift"; sourceTree = "<group>"; };
+		8490189C27C8D10E00A35353 /* String+CodeRanges.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CodeRanges.swift"; sourceTree = "<group>"; };
+		8490189D27C8D10E00A35353 /* EmojiRendering.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiRendering.swift; sourceTree = "<group>"; };
+		8490189E27C8D10E00A35353 /* EmojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiView.swift; sourceTree = "<group>"; };
 		8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DemoAppSwiftUI.entitlements; sourceTree = "<group>"; };
 		8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsHandler.swift; sourceTree = "<group>"; };
 		8492975127B156D000A8EEB0 /* SlowModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowModeView.swift; sourceTree = "<group>"; };
@@ -620,6 +633,7 @@
 			files = (
 				847CEFEC27BFAB6400606257 /* StreamChat in Frameworks */,
 				8465FCB727468B0600AF091E /* NukeUI in Frameworks */,
+				849018A727C8D6E600A35353 /* SwiftyGif in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -873,6 +887,7 @@
 			isa = PBXGroup;
 			children = (
 				84AB7B222773526D00631A10 /* Suggestions */,
+				8490189727C8D0E600A35353 /* Emojis */,
 				8465FD1B2746A95600AF091E /* MessageComposerView.swift */,
 				8465FD102746A95600AF091E /* MessageComposerViewModel.swift */,
 				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
@@ -1004,6 +1019,27 @@
 				8421BCEF27A44EAE000F977D /* SearchResultsView.swift */,
 			);
 			path = ChatChannelList;
+			sourceTree = "<group>";
+		};
+		8490189727C8D0E600A35353 /* Emojis */ = {
+			isa = PBXGroup;
+			children = (
+				8490189D27C8D10E00A35353 /* EmojiRendering.swift */,
+				8490189827C8D10E00A35353 /* EmojiSource.swift */,
+				8490189E27C8D10E00A35353 /* EmojiView.swift */,
+				8490189927C8D10E00A35353 /* Extensions */,
+			);
+			path = Emojis;
+			sourceTree = "<group>";
+		};
+		8490189927C8D10E00A35353 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8490189A27C8D10E00A35353 /* NSAttributedString+Emojis.swift */,
+				8490189B27C8D10E00A35353 /* UITextView+Emojis.swift */,
+				8490189C27C8D10E00A35353 /* String+CodeRanges.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		84AB7B222773526D00631A10 /* Suggestions */ = {
@@ -1278,6 +1314,7 @@
 			packageProductDependencies = (
 				8465FCB627468B0600AF091E /* NukeUI */,
 				847CEFEB27BFAB6400606257 /* StreamChat */,
+				849018A627C8D6E600A35353 /* SwiftyGif */,
 			);
 			productName = StreamChatSwiftUI;
 			productReference = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */;
@@ -1360,6 +1397,7 @@
 				8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */,
 				848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				847CEFEA27BFAB6400606257 /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
+				849018A527C8D6E600A35353 /* XCRemoteSwiftPackageReference "SwiftyGif" */,
 			);
 			productRefGroup = 8465FBB62746873A00AF091E /* Products */;
 			projectDirPath = "";
@@ -1453,7 +1491,10 @@
 				8465FD922746A95700AF091E /* AttachmentPickerView.swift in Sources */,
 				8465FD952746A95700AF091E /* ReactionsOverlayContainer.swift in Sources */,
 				84AB7B262773619F00631A10 /* MentionUsersView.swift in Sources */,
+				8490189F27C8D10E00A35353 /* EmojiSource.swift in Sources */,
+				849018A127C8D10E00A35353 /* UITextView+Emojis.swift in Sources */,
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
+				849018A427C8D10E00A35353 /* EmojiView.swift in Sources */,
 				8465FDBE2746A95700AF091E /* MoreChannelActionsView.swift in Sources */,
 				8465FD902746A95700AF091E /* ComposerHelperViews.swift in Sources */,
 				849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */,
@@ -1471,9 +1512,11 @@
 				8465FD982746A95700AF091E /* ReactionsOverlayView.swift in Sources */,
 				8465FDCD2746A95700AF091E /* Fonts.swift in Sources */,
 				8465FD9A2746A95700AF091E /* ReactionsHelperViews.swift in Sources */,
+				849018A227C8D10E00A35353 /* String+CodeRanges.swift in Sources */,
 				8465FDC02746A95700AF091E /* ChatChannelList.swift in Sources */,
 				84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */,
 				8465FD9F2746A95700AF091E /* ChatChannelExtensions.swift in Sources */,
+				849018A027C8D10E00A35353 /* NSAttributedString+Emojis.swift in Sources */,
 				8465FD882746A95700AF091E /* SendMessageButton.swift in Sources */,
 				8465FDC82746A95700AF091E /* ChatChannelListItem.swift in Sources */,
 				8465FDA62746A95700AF091E /* LazyView.swift in Sources */,
@@ -1493,6 +1536,7 @@
 				8465FDC72746A95700AF091E /* ChatChannelListViewModel.swift in Sources */,
 				8465FDD02746A95700AF091E /* DefaultViewFactory.swift in Sources */,
 				8465FD822746A95700AF091E /* LinkTextView.swift in Sources */,
+				849018A327C8D10E00A35353 /* EmojiRendering.swift in Sources */,
 				84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */,
 				8421BCF027A44EAE000F977D /* SearchResultsView.swift in Sources */,
 				841B64CC2775C6300016FF3B /* CommandsConfig.swift in Sources */,
@@ -2135,6 +2179,14 @@
 				minimumVersion = 1.8.2;
 			};
 		};
+		849018A527C8D6E600A35353 /* XCRemoteSwiftPackageReference "SwiftyGif" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kirualex/SwiftyGif.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2157,6 +2209,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
+		};
+		849018A627C8D6E600A35353 /* SwiftyGif */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 849018A527C8D6E600A35353 /* XCRemoteSwiftPackageReference "SwiftyGif" */;
+			productName = SwiftyGif;
 		};
 /* End XCSwiftPackageProductDependency section */
 

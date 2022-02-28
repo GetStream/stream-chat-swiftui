@@ -415,7 +415,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed in the middle area of the message composer view.
     associatedtype ComposerInputViewType: View
     func makeComposerInputView(
-        text: Binding<String>,
+        text: Binding<NSAttributedString>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         addedAssets: [AddedAsset],

@@ -150,7 +150,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     suggestions: viewModel.suggestions,
                     handleCommand: { commandInfo in
                         viewModel.handleCommand(
-                            for: $viewModel.text,
+                            for: .constant(""),
                             selectedRangeLocation: $viewModel.selectedRangeLocation,
                             command: $viewModel.composerCommand,
                             extraData: commandInfo
@@ -164,9 +164,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
         }
-        .onChange(of: editedMessage) { _ in
-            viewModel.text = editedMessage?.text ?? ""
-        }
+//        .onChange(of: editedMessage) { _ in
+//            viewModel.text = editedMessage?.text ?? ""
+//        }
     }
 }
 
@@ -177,7 +177,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
     
     var factory: Factory
-    @Binding var text: String
+    @Binding var text: NSAttributedString
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
     var addedAssets: [AddedAsset]

@@ -7,7 +7,7 @@ import UIKit
 
 /// SwiftUI wrapper for a text field with multiple rows.
 struct ComposerTextInputView: UIViewRepresentable {
-    @Binding var text: String
+    @Binding var text: NSAttributedString
     @Binding var height: CGFloat
     @Binding var selectedRangeLocation: Int
     
@@ -30,7 +30,10 @@ struct ComposerTextInputView: UIViewRepresentable {
         DispatchQueue.main.async {
             if uiView.markedTextRange == nil {
                 uiView.selectedRange.location = selectedRangeLocation
-                uiView.text = text
+                if text.string == "" {
+                    uiView.attributedText = text
+                    uiView.clearEmojis()
+                }
                 uiView.isEditable = editable
                 uiView.placeholderLabel.text = placeholder
                 uiView.handleTextChange()
@@ -58,7 +61,7 @@ struct ComposerTextInputView: UIViewRepresentable {
 
         func textViewDidChange(_ textView: UITextView) {
             textInput.selectedRangeLocation = textView.selectedRange.location
-            textInput.text = textView.text
+            textInput.text = textView.attributedText
         }
 
         func textView(
@@ -66,9 +69,10 @@ struct ComposerTextInputView: UIViewRepresentable {
             shouldChangeTextIn range: NSRange,
             replacementText text: String
         ) -> Bool {
-            guard let maxMessageLength = maxMessageLength else { return true }
-            let newMessageLength = textView.text.count + (text.count - range.length)
-            return newMessageLength <= maxMessageLength
+//            guard let maxMessageLength = maxMessageLength else { return true }
+//            let newMessageLength = textView.text.count + (text.count - range.length)
+//            return newMessageLength <= maxMessageLength
+            true
         }
         
         func layoutManager(

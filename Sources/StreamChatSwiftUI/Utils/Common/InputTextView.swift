@@ -4,6 +4,76 @@
 
 import UIKit
 
+// TODO: move from here
+public let supportedEmojis: [String: EmojiSource] = [
+    "baldspin": .imageAsset("baldspin"),
+    "baldyappp": .imageAsset("baldyappp"),
+    "baldyikes": .imageAsset("baldyikes"),
+    "baners": .imageAsset("baners"),
+    "catjam": .imageAsset("catjam"),
+    "checkers": .imageAsset("checkers"),
+    "click": .imageAsset("click"),
+    "coomtime": .imageAsset("coomtime"),
+    "crawlers": .imageAsset("crawlers"),
+    "deadlole": .imageAsset("deadlole"),
+    "deskchan": .imageAsset("deskchan"),
+    "eato": .imageAsset("eato"),
+    "eddiebaldmansmash": .imageAsset("eddiebaldmansmash"),
+    "eddieknead": .imageAsset("eddieknead"),
+    "eekum": .imageAsset("eekum"),
+    "fubaldi": .imageAsset("fubaldi"),
+    "gamba": .imageAsset("gamba"),
+    "gawkgawk": .imageAsset("gawkgawk"),
+    "guitartime": .imageAsset("guitartime"),
+    "humpers": .imageAsset("humpers"),
+    "hypernodders": .imageAsset("hypernodders"),
+    "hypernopers": .imageAsset("hypernopers"),
+    "hyperpeepod": .imageAsset("hyperpeepod"),
+    "johnsouls": .imageAsset("johnsouls"),
+    "kissabrother": .imageAsset("kissabrother"),
+    "kissapregomie": .imageAsset("kissapregomie"),
+    "komodochomp": .imageAsset("komodochomp"),
+    "lgiggle": .imageAsset("lgiggle"),
+    "mariorun": .imageAsset("mariorun"),
+    "moon2bass": .imageAsset("moon2bass"),
+    "noted": .imageAsset("noted"),
+    "peepeegachat": .imageAsset("peepeegachat"),
+    "peepees": .imageAsset("peepees"),
+    "peepersd": .imageAsset("peepersd"),
+    "peepocheering": .imageAsset("peepocheering"),
+    "peepogolfclap": .imageAsset("peepogolfclap"),
+    "peeponarusprint": .imageAsset("peeponarusprint"),
+    "peeposhy": .imageAsset("peeposhy"),
+    "peeposteer": .imageAsset("peeposteer"),
+    "pepelepsy": .imageAsset("pepelepsy"),
+    "pepemetal": .imageAsset("pepemetal"),
+    "petthebaldie": .imageAsset("petthebaldie"),
+    "pettheeddie": .imageAsset("pettheeddie"),
+    "pettheqynoa": .imageAsset("pettheqynoa"),
+    "parrot": .imageAsset("parrot"),
+    "pukers": .imageAsset("pukers"),
+    "raremoon": .imageAsset("raremoon"),
+    "refracting": .imageAsset("refracting"),
+    "robpls": .imageAsset("robpls"),
+    "shruggers": .imageAsset("shruggers"),
+    "shushers": .imageAsset("shushers"),
+    "slap": .imageAsset("slap"),
+    "solarflare": .imageAsset("solarflare"),
+    "soulshroom": .imageAsset("soulshroom"),
+    "speeders": .imageAsset("speeders"),
+    "tanties": .imageAsset("tanties"),
+    "teatime": .imageAsset("teatime"),
+    "teatime2": .imageAsset("teatime2"),
+    "tinyteeth": .imageAsset("tinyteeth"),
+    "twerkers": .imageAsset("twerkers"),
+    "vanish": .imageAsset("vanish"),
+    "vibers": .imageAsset("vibers"),
+    "wowers": .imageAsset("wowers"),
+    "yappp": .imageAsset("yappp"),
+    "bropls": .imageAsset("bropls"),
+    "feelsbadman": .imageAsset("feelsbadman.png")
+]
+
 class InputTextView: UITextView {
     @Injected(\.colors) private var colors
     
@@ -43,6 +113,8 @@ class InputTextView: UITextView {
             name: UITextView.textDidChangeNotification,
             object: self
         )
+        
+        configureEmojis(supportedEmojis, rendering: .lowQuality)
     }
     
     open func setUpAppearance() {
@@ -72,19 +144,6 @@ class InputTextView: UITextView {
         heightConstraint = heightAnchor.constraint(equalToConstant: minimumHeight)
         heightConstraint?.isActive = true
         isScrollEnabled = false
-    }
-
-    /// Sets the given text in the current caret position.
-    /// In case the caret is selecting a range of text, it replaces that text.
-    ///
-    /// - Parameter text: A string to replace the text in the caret position.
-    open func replaceSelectedText(_ text: String) {
-        guard let selectedRange = selectedTextRange else {
-            self.text.append(text)
-            return
-        }
-
-        replace(selectedRange, withText: text)
     }
 
     open func textDidChangeProgrammatically() {
