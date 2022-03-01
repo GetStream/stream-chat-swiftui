@@ -96,12 +96,7 @@ open class MessageComposerViewModel: ObservableObject {
         didSet {
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
-                // This is needed because of autocompleting text from the keyboard.
-                // The update of the text is done in the next cycle, so it overrides
-                // the setting of this value to empty string.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
-                    self?.text = ""
-                }
+                clearText()
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
@@ -422,6 +417,7 @@ open class MessageComposerViewModel: ObservableObject {
         addedFileURLs = []
         addedCustomAttachments = []
         composerCommand = nil
+        clearText()
     }
     
     private func checkPickerSelectionState() {
@@ -493,6 +489,15 @@ open class MessageComposerViewModel: ObservableObject {
                 }
             )
             timer?.fire()
+        }
+    }
+    
+    private func clearText() {
+        // This is needed because of autocompleting text from the keyboard.
+        // The update of the text is done in the next cycle, so it overrides
+        // the setting of this value to empty string.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.text = ""
         }
     }
 }
