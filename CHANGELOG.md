@@ -3,7 +3,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Support for custom backgrounds (image, gradient)
+- Animation when sending message
+- Possibility to inject view model from the outside
+
+### 🐞 Fixed
+- Performance improvements
+- Autocomplete keyboard bug
+- Swipe gesture resizing message view
+
 ### 🔄 Changed
+- Method for creating custom avatar
 
 # [4.10.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.10.0)
 _February 16, 2022_
