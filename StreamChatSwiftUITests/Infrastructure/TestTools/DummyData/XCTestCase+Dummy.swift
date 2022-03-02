@@ -164,6 +164,7 @@ extension XCTestCase {
                     createdAt: XCTestCase.channelCreatedDate,
                     deletedAt: nil,
                     updatedAt: .unique,
+                    truncatedAt: nil,
                     createdBy: dummyUser,
                     config: channelConfig,
                     isFrozen: true,
@@ -247,6 +248,7 @@ extension XCTestCase {
                     createdAt: .unique,
                     deletedAt: .unique,
                     updatedAt: .unique,
+                    truncatedAt: nil,
                     createdBy: dummyUser,
                     config: .init(
                         reactionsEnabled: true,

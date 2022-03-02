@@ -2124,7 +2124,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.10.1;
+				minimumVersion = 4.11.0;
 			};
 		};
 		848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
