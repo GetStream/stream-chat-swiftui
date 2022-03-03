@@ -61,7 +61,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentSnapshot: UIImage? {
         didSet {
             withAnimation {
-                reactionsShown = currentSnapshot != nil
+                reactionsShown = currentSnapshot != nil && utils.messageListConfig.messagePopoverEnabled
             }
         }
     }

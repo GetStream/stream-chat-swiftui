@@ -14,7 +14,8 @@ public struct MessageListConfig {
         messageDisplayOptions: MessageDisplayOptions = MessageDisplayOptions(),
         messagePaddings: MessagePaddings = MessagePaddings(),
         dateIndicatorPlacement: DateIndicatorPlacement = .overlay,
-        pageSize: Int = 50
+        pageSize: Int = 50,
+        messagePopoverEnabled: Bool = true
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -23,6 +24,7 @@ public struct MessageListConfig {
         self.messagePaddings = messagePaddings
         self.dateIndicatorPlacement = dateIndicatorPlacement
         self.pageSize = pageSize
+        self.messagePopoverEnabled = messagePopoverEnabled
     }
     
     let messageListType: MessageListType
@@ -32,6 +34,7 @@ public struct MessageListConfig {
     let messagePaddings: MessagePaddings
     let dateIndicatorPlacement: DateIndicatorPlacement
     let pageSize: Int
+    let messagePopoverEnabled: Bool
 }
 
 /// Contains information about the message paddings.
