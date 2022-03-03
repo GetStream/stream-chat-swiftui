@@ -36,7 +36,11 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var text = "" {
         didSet {
             if text != "" {
-                pickerTypeState = .collapsed
+                if pickerTypeState != .collapsed {
+                    withAnimation {
+                        pickerTypeState = .collapsed
+                    }
+                }
                 channelController.sendKeystrokeEvent()
                 checkTypingSuggestions()
             } else {
