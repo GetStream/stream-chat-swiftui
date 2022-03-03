@@ -88,6 +88,12 @@ class InputTextView: UITextView {
         34.0
     }
     
+    override open var attributedText: NSAttributedString! {
+        didSet {
+            textDidChangeProgrammatically()
+        }
+    }
+    
     /// The constraint responsible for setting the height of the text view.
     open var heightConstraint: NSLayoutConstraint?
     

@@ -177,7 +177,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
     
     var factory: Factory
-    @Binding var text: NSAttributedString
+    @Binding var text: String
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
     var addedAssets: [AddedAsset]

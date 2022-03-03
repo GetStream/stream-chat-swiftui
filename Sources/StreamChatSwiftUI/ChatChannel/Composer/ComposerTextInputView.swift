@@ -7,10 +7,10 @@ import UIKit
 
 /// SwiftUI wrapper for a text field with multiple rows.
 struct ComposerTextInputView: UIViewRepresentable {
-    @Binding var text: NSAttributedString
+    @Binding var text: String
     @Binding var height: CGFloat
     @Binding var selectedRangeLocation: Int
-    
+        
     var placeholder: String
     var editable: Bool
     var maxMessageLength: Int?
@@ -30,9 +30,10 @@ struct ComposerTextInputView: UIViewRepresentable {
         DispatchQueue.main.async {
             if uiView.markedTextRange == nil {
                 uiView.selectedRange.location = selectedRangeLocation
-                if text.string == "" {
-                    uiView.attributedText = text
+                if text == "" && !uiView.attributedText.string.isEmpty {
+                    uiView.attributedText.clearMapping()
                     uiView.clearEmojis()
+                    uiView.attributedText = NSAttributedString(string: "")
                 }
                 uiView.isEditable = editable
                 uiView.placeholderLabel.text = placeholder
@@ -61,7 +62,7 @@ struct ComposerTextInputView: UIViewRepresentable {
 
         func textViewDidChange(_ textView: UITextView) {
             textInput.selectedRangeLocation = textView.selectedRange.location
-            textInput.text = textView.attributedText
+            textInput.text = textView.attributedText.textWithoutEmojis()
         }
 
         func textView(

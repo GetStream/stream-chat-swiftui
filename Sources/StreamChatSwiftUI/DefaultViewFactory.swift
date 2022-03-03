@@ -394,7 +394,7 @@ extension ViewFactory {
     
     @ViewBuilder
     public func makeComposerInputView(
-        text: Binding<NSAttributedString>,
+        text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         addedAssets: [AddedAsset],

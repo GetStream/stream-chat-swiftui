@@ -4,6 +4,8 @@
 
 import UIKit
 
+var rangesMapping = [NSRange: NSAttributedString]()
+
 extension NSAttributedString {
     internal func insertingEmojis(
         _ emojis: [String: EmojiSource],
@@ -42,6 +44,25 @@ extension NSAttributedString {
         let matchRanges = ranges
             .map { range in regex?.matches(in: string, options: [], range: range).map { $0.range(at: 0) } ?? [] }
         return matchRanges.reduce(into: [NSRange]()) { $0.append(contentsOf: $1) }
+    }
+    
+    func textWithoutEmojis() -> String {
+        let attributedString = NSMutableAttributedString(attributedString: self)
+        var offset = 0
+        for (range, value) in rangesMapping {
+            let updated = NSRange(location: range.location + offset, length: 1)
+            let string = attributedString.string[updated.location]
+            if string != ":" {
+                attributedString.replaceCharacters(in: updated, with: value)
+            }
+            offset += value.length - 1
+        }
+        
+        return attributedString.string
+    }
+    
+    func clearMapping() {
+        rangesMapping = [:]
     }
 }
 
@@ -84,7 +105,7 @@ extension NSMutableAttributedString {
                     in: transformedRange,
                     with: emojiAttributedString
                 )
-
+                rangesMapping[transformedRange] = replacementString
                 offset += replacementString.length - 1
             } else {
                 notMatched.append(transformedRange)

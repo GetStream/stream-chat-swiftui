@@ -33,9 +33,9 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    @Published public var text: NSAttributedString = NSAttributedString(string: "") {
+    @Published public var text = "" {
         didSet {
-            if text.string != "" {
+            if text != "" {
                 pickerTypeState = .collapsed
                 channelController.sendKeystrokeEvent()
                 checkTypingSuggestions()
@@ -100,7 +100,7 @@ open class MessageComposerViewModel: ObservableObject {
                 // The update of the text is done in the next cycle, so it overrides
                 // the setting of this value to empty string.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
-                    self?.text = NSAttributedString(string: "")
+                    self?.text = ""
                 }
             }
             if oldValue != nil && composerCommand == nil {
@@ -135,7 +135,7 @@ open class MessageComposerViewModel: ObservableObject {
            displayInfo.isInstant == true {
             return "\(composerCommand.id) \(text)"
         } else {
-            return text.string
+            return text
         }
     }
     
@@ -235,7 +235,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         
         return !addedAssets.isEmpty ||
-            !text.string.isEmpty ||
+            !text.isEmpty ||
             !addedFileURLs.isEmpty ||
             !addedCustomAttachments.isEmpty
     }
@@ -405,7 +405,7 @@ open class MessageComposerViewModel: ObservableObject {
             messageId: message.id
         )
         
-        messageController.editMessage(text: text.string) { [weak self] error in
+        messageController.editMessage(text: text) { [weak self] error in
             if error != nil {
                 self?.errorShown = true
             } else {
@@ -417,7 +417,7 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private func clearInputData() {
-        text = NSAttributedString(string: "")
+        text = ""
         addedAssets = []
         addedFileURLs = []
         addedCustomAttachments = []
@@ -433,7 +433,7 @@ open class MessageComposerViewModel: ObservableObject {
     private func checkTypingSuggestions() {
         if composerCommand?.displayInfo?.isInstant == true {
             let typingSuggestion = TypingSuggestion(
-                text: text.string,
+                text: text,
                 locationRange: NSRange(
                     location: 0,
                     length: selectedRangeLocation
@@ -444,7 +444,7 @@ open class MessageComposerViewModel: ObservableObject {
             return
         }
         composerCommand = commandsHandler.canHandleCommand(
-            in: text.string,
+            in: text,
             caretLocation: selectedRangeLocation
         )
         
