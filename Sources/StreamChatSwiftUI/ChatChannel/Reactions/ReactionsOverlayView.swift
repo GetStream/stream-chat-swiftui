@@ -6,6 +6,8 @@ import StreamChat
 import SwiftUI
 
 public struct ReactionsOverlayView<Factory: ViewFactory>: View {
+    @Injected(\.utils) private var utils
+    
     @StateObject var viewModel: ReactionsOverlayViewModel
     
     var factory: Factory
@@ -64,11 +66,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 }
             
             if !messageDisplayInfo.message.isSentByCurrentUser {
-                factory.makeMessageAvatarView(for: messageDisplayInfo.message.author.imageURL)
-                    .offset(
-                        x: paddingValue / 2,
-                        y: originY + messageDisplayInfo.frame.height - paddingValue + 2
-                    )
+                factory.makeMessageAvatarView(
+                    for: utils.messageCachingUtils.authorInfo(from: messageDisplayInfo.message)
+                )
+                .offset(
+                    x: paddingValue / 2,
+                    y: originY + messageDisplayInfo.frame.height - paddingValue + 2
+                )
             }
             
             GeometryReader { reader in

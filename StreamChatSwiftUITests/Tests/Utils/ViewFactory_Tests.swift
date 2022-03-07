@@ -103,9 +103,10 @@ class ViewFactory_Tests: StreamChatTestCase {
     func test_viewFactory_makeMessageAvatarView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
+        let userInfo = UserDisplayInfo(id: .unique, name: .unique, imageURL: URL(string: "https://example.com"))
         
         // When
-        let view = viewFactory.makeMessageAvatarView(for: URL(string: "https://example.com"))
+        let view = viewFactory.makeMessageAvatarView(for: userInfo)
         
         // Then
         XCTAssert(view is MessageAvatarView)

@@ -188,8 +188,8 @@ extension ViewFactory {
         }
     }
     
-    public func makeMessageAvatarView(for avatarURL: URL?) -> some View {
-        MessageAvatarView(avatarURL: avatarURL)
+    public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
+        MessageAvatarView(avatarURL: userDisplayInfo.imageURL)
     }
     
     public func makeChannelHeaderViewModifier(

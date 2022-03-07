@@ -170,8 +170,8 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
-    /// - Parameter avatarURL: the author's avatar URL..
-    func makeMessageAvatarView(for avatarURL: URL?) -> UserAvatar
+    /// - Parameter userDisplayInfo: the author's display info.
+    func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> UserAvatar
     
     associatedtype ChatHeaderViewModifier: ChatChannelHeaderViewModifier
     /// Creates the channel header view modifier.

@@ -42,6 +42,15 @@ class MessageCachingUtils {
         return userDisplayInfo.imageURL
     }
     
+    func authorInfo(from message: ChatMessage) -> UserDisplayInfo {
+        if let userDisplayInfo = userDisplayInfo(for: message) {
+            return userDisplayInfo
+        }
+        
+        let userDisplayInfo = saveUserDisplayInfo(for: message)
+        return userDisplayInfo
+    }
+    
     func quotedMessage(for message: ChatMessage) -> ChatMessage? {
         if checkedMessageIds.contains(message.id) {
             return nil
@@ -101,7 +110,8 @@ class MessageCachingUtils {
     }
 }
 
-struct UserDisplayInfo {
+/// Contains display information for the user.
+public struct UserDisplayInfo {
     let id: String
     let name: String
     let imageURL: URL?
