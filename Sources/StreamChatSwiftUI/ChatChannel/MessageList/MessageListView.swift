@@ -31,6 +31,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
     
+    private var messageRenderingUtil = MessageRenderingUtil.shared
+    private var skipRenderingMessageIds = [String]()
+    
     private var dateFormatter: DateFormatter {
         utils.dateFormatter
     }
@@ -75,6 +78,19 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         _scrolledId = scrolledId
         _showScrollToLatestButton = showScrollToLatestButton
         _quotedMessage = quotedMessage
+        if !messageRenderingUtil.hasPreviousMessageSet
+            || self.showScrollToLatestButton == false
+            || self.scrolledId != nil
+            || messages.first?.isSentByCurrentUser == true {
+            messageRenderingUtil.update(previousTopMessage: messages.first)
+        }
+        skipRenderingMessageIds = messageRenderingUtil.messagesToSkipRendering(newMessages: messages)
+        if !skipRenderingMessageIds.isEmpty {
+            self.messages = LazyCachedMapCollection(
+                source: messages.filter { !skipRenderingMessageIds.contains($0.id) },
+                map: { $0 }
+            )
+        }
     }
     
     public var body: some View {
@@ -151,10 +167,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .flippedUpsideDown()
                 .frame(minWidth: self.width, minHeight: height)
                 .onChange(of: scrolledId) { scrolledId in
-                    if !self.scrolledIdAvailableInMessages {
-                        self.scrolledId = nil
-                        return
-                    }
                     if let scrolledId = scrolledId {
                         if scrolledId == messages.first?.messageId {
                             self.scrolledId = nil
@@ -199,13 +211,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
-    }
-    
-    private var scrolledIdAvailableInMessages: Bool {
-        if let scrolledId = scrolledId {
-            return messages.map(\.messageId).contains(scrolledId)
-        } else {
-            return false
+        .onDisappear {
+            messageRenderingUtil.update(previousTopMessage: nil)
         }
     }
     
@@ -338,5 +345,43 @@ struct TypingIndicatorBottomView: View {
                     .opacity(0.9)
             )
         }
+    }
+}
+
+private class MessageRenderingUtil {
+    
+    private var previousTopMessage: ChatMessage?
+    
+    static let shared = MessageRenderingUtil()
+    
+    var hasPreviousMessageSet: Bool {
+        previousTopMessage != nil
+    }
+    
+    func update(previousTopMessage: ChatMessage?) {
+        self.previousTopMessage = previousTopMessage
+    }
+    
+    func messagesToSkipRendering(newMessages: LazyCachedMapCollection<ChatMessage>) -> [String] {
+        let newTopMessage = newMessages.first
+        if newTopMessage?.id == previousTopMessage?.id {
+            return []
+        }
+        
+        if newTopMessage?.cid != previousTopMessage?.cid {
+            previousTopMessage = newTopMessage
+            return []
+        }
+        
+        var skipRendering = [String]()
+        for message in newMessages {
+            if previousTopMessage?.id == message.id {
+                break
+            } else {
+                skipRendering.append(message.id)
+            }
+        }
+        
+        return skipRendering
     }
 }
