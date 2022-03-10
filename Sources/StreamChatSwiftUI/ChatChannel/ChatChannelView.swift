@@ -14,8 +14,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var messageDisplayInfo: MessageDisplayInfo?
     @State private var keyboardShown = false
     @State private var tabBarAvailable: Bool = false
+    @State private var orientation = UIDevice.current.orientation
     
     private var factory: Factory
+    
+    private let orientationChanged = NotificationCenter.default
+        .publisher(for: UIDevice.orientationDidChangeNotification)
+        .makeConnectable()
+        .autoconnect()
             
     public init(
         viewFactory: Factory,
@@ -61,6 +67,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
                     : nil
             )
+            .if(multipleOrientationsSupported) { view in
+                view.id(orientation.rawValue)
+            }
             
             Divider()
                 .navigationBarBackButtonHidden(viewModel.reactionsShown)
@@ -105,6 +114,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible
         })
+        .onReceive(orientationChanged) { _ in
+            if multipleOrientationsSupported {
+                self.orientation = UIDevice.current.orientation
+            }
+        }
         .onAppear {
             viewModel.onViewAppear()
         }
@@ -128,5 +142,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     private var bottomPadding: CGFloat {
         let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
         return bottomPadding
+    }
+    
+    private var multipleOrientationsSupported: Bool {
+        let orientationsKey = "UISupportedInterfaceOrientations"
+        let orientations = Bundle.main.infoDictionary?[orientationsKey] as? [String] ?? []
+        return orientations.count > 1
     }
 }

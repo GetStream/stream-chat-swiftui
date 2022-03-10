@@ -193,7 +193,12 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var spacerWidth: CGFloat {
-        (width ?? 0) / 4
+        let width = width ?? 0
+        if isIPad {
+            return 2 * width / 3
+        } else {
+            return width / 4
+        }
     }
     
     private var reactionsShown: Bool {

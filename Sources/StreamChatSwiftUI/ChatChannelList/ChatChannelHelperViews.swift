@@ -108,3 +108,7 @@ struct TabBarAccessor: UIViewControllerRepresentable {
 var isIphone: Bool {
     UIDevice.current.userInterfaceIdiom == .phone
 }
+
+var isIPad: Bool {
+    UIDevice.current.userInterfaceIdiom == .pad
+}
