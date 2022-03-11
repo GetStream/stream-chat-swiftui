@@ -265,6 +265,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 // access channels
                 self.updateChannels()
                 self.checkForDeeplinks()
+                self.setInitialChannelIfSplitView()
             }
         }
     }
@@ -325,6 +326,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     
     private func updateChannels() {
         channels = controller?.channels ?? LazyCachedMapCollection<ChatChannel>()
+    }
+    
+    private func setInitialChannelIfSplitView() {
+        if isIPad && deeplinkChannel == nil {
+            selectedChannel = channels.first?.channelSelectionInfo
+        }
     }
 }
 

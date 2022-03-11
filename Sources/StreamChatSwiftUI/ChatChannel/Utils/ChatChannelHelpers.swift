@@ -30,7 +30,7 @@ struct WidthPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat? = nil
     
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
-        value = value ?? nextValue()
+        value = nextValue() ?? value
     }
 }
 
