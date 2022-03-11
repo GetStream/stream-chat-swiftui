@@ -123,7 +123,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///
     /// - Parameter index: the currently displayed index.
     public func checkForChannels(index: Int) {
-        if index < controller?.channels.count ?? 0 - 10 {
+        if index < (controller?.channels.count ?? 0) - 10 {
             return
         }
 

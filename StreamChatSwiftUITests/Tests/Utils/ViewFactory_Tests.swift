@@ -556,6 +556,28 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is ReactionsUsersView)
     }
+    
+    func test_viewFactory_makeChannelListFooterView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeChannelListFooterView()
+        
+        // Then
+        XCTAssert(view is EmptyView)
+    }
+    
+    func test_viewFactory_makeChannelListStickyFooterView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeChannelListStickyFooterView()
+        
+        // Then
+        XCTAssert(view is EmptyView)
+    }
 }
 
 extension ChannelAction: Equatable {

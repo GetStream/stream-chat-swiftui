@@ -136,6 +136,14 @@ extension ViewFactory {
         SearchBar(text: searchText)
     }
     
+    public func makeChannelListFooterView() -> some View {
+        EmptyView()
+    }
+    
+    public func makeChannelListStickyFooterView() -> some View {
+        EmptyView()
+    }
+    
     public func makeChannelListSearchResultItem(
         searchResult: ChannelSelectionInfo,
         onlineIndicatorShown: Bool,
