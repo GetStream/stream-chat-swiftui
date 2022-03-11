@@ -139,6 +139,16 @@ public protocol ViewFactory: AnyObject {
         searchText: Binding<String>
     ) -> ChannelListTopViewType
     
+    associatedtype ChannelListFooterViewType: View
+    /// Creates the view shown at the bottom of the channel list.
+    /// - Returns: view shown at the bottom of the channel list.
+    func makeChannelListFooterView() -> ChannelListFooterViewType
+    
+    associatedtype ChannelListStickyFooterViewType: View
+    /// Creates the view always visible at the bottom of the channel list.
+    /// - Returns: view shown at the bottom of the channel list.
+    func makeChannelListStickyFooterView() -> ChannelListStickyFooterViewType
+    
     associatedtype ChannelListSearchResultItem: View
     /// Creates the search result item in the channel list.
     /// - Parameters:

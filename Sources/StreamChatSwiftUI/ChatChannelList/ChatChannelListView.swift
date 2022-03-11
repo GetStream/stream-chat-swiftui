@@ -97,6 +97,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                                     leadingSwipeButtonTapped: { _ in }
                                 )
                             }
+                            
+                            viewFactory.makeChannelListStickyFooterView()
                         }
                     }
                 }
