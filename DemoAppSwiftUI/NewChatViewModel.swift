@@ -21,7 +21,8 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     @Published var state: NewChatState = .initial
     @Published var selectedUsers = [ChatUser]() {
         didSet {
-            if _updatingSelectedUsers.compareAndSwap(old: false, new: true) {
+            if !updatingSelectedUsers {
+                updatingSelectedUsers = true
                 if !selectedUsers.isEmpty {
                     do {
                         try makeChannelController()
@@ -40,8 +41,8 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         }
     }
     
-    @Atomic private var loadingNextUsers: Bool = false
-    @Atomic private var updatingSelectedUsers: Bool = false
+    private var loadingNextUsers: Bool = false
+    private var updatingSelectedUsers: Bool = false
     
     var channelController: ChatChannelController?
     
@@ -95,7 +96,8 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             return
         }
         
-        if _loadingNextUsers.compareAndSwap(old: false, new: true) {
+        if !loadingNextUsers {
+            loadingNextUsers = true
             searchController.loadNextUsers(limit: 50) { [weak self] _ in
                 guard let self = self else { return }
                 self.chatUsers = self.searchController.users
