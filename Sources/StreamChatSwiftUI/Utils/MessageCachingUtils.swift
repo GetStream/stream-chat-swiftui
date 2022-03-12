@@ -112,7 +112,7 @@ class MessageCachingUtils {
 
 /// Contains display information for the user.
 public struct UserDisplayInfo {
-    let id: String
-    let name: String
-    let imageURL: URL?
+    public let id: String
+    public let name: String
+    public let imageURL: URL?
 }
