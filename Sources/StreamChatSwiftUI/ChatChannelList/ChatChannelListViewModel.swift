@@ -33,7 +33,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private var timer: Timer?
     
     /// Controls loading the channels.
-    @Atomic private var loadingNextChannels: Bool = false
+    private var loadingNextChannels: Bool = false
     
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
@@ -127,7 +127,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
 
-        if _loadingNextChannels.compareAndSwap(old: false, new: true) {
+        if !loadingNextChannels {
+            loadingNextChannels = true
             controller?.loadNextChannels { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
@@ -145,7 +146,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
         
-        if _loadingNextChannels.compareAndSwap(old: false, new: true) {
+        if !loadingNextChannels {
+            loadingNextChannels = true
             messageSearchController.loadNextMessages { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
