@@ -15,7 +15,7 @@ extension ViewFactory {
     }
     
     public func makeLoadingView() -> some View {
-        LoadingView()
+        RedactedLoadingView(factory: self)
     }
     
     public func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode {

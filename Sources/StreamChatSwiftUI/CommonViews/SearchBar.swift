@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Search bar used in the message search.
-struct SearchBar: View {
+struct SearchBar: View, KeyboardReadable {
     
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -50,7 +50,7 @@ struct SearchBar: View {
                     self.isEditing = true
                 }
                 .transition(.identity)
-                .animation(.easeInOut)
+                .animation(.easeInOut, value: isEditing)
             
             if isEditing {
                 Button(action: {
@@ -69,5 +69,10 @@ struct SearchBar: View {
             }
         }
         .padding(.top, 8)
+        .onReceive(keyboardWillChangePublisher) { shown in
+            if !shown && isEditing {
+                self.isEditing = false
+            }
+        }
     }
 }

@@ -36,7 +36,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         let view = viewFactory.makeLoadingView()
         
         // Then
-        XCTAssert(view is LoadingView)
+        XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
     }
     
     func test_viewFactory_navigationBarDisplayMode() {
