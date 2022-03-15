@@ -32,9 +32,9 @@
         "package": "StreamChat",
         "repositoryURL": "https://github.com/GetStream/stream-chat-swift.git",
         "state": {
-          "branch": null,
-          "revision": "b4a6f425f1ef5bceb2f81eedb04a7a47e9a2ddd0",
-          "version": "4.11.0"
+          "branch": "feature/CIS-1275-offline-support",
+          "revision": "f71dc12d5cc78be5ea0ba32958978d8c8fccd308",
+          "version": null
         }
       },
       {

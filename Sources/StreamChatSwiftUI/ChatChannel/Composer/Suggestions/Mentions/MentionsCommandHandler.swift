@@ -158,7 +158,7 @@ public struct MentionsCommandHandler: CommandHandler {
                     promise(.failure(error))
                     return
                 }
-                let users = Array(userSearchController.users)
+                let users = userSearchController.userArray
                 let suggestionInfo = SuggestionInfo(key: id, value: users)
                 promise(.success(suggestionInfo))
             }

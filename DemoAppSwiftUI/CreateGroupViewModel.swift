@@ -19,7 +19,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
 
     @Published var state: NewChatState = .initial
-    @Published var chatUsers = LazyCachedMapCollection<ChatUser>()
+    @Published var chatUsers = [ChatUser]()
     @Published var selectedUsers = [ChatUser]()
     @Published var groupName = ""
     @Published var showGroupConversation = false
@@ -29,7 +29,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private let lastSeenDateFormatter = DateUtils.timeAgo
     
     init() {
-        chatUsers = searchController.users
+        chatUsers = searchController.userArray
         searchController.delegate = self
         // Empty initial search to get all users
         searchUsers(with: nil)
@@ -93,7 +93,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         _ controller: ChatUserSearchController,
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
-        chatUsers = controller.users
+        chatUsers = controller.userArray
     }
     
     // MARK: - private
