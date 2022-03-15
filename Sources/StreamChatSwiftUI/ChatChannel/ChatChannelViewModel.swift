@@ -320,6 +320,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+        if !utils.messageListConfig.messageDisplayOptions.animateChanges {
+            return false
+        }
+        
         for change in changes {
             switch change {
             case .insert(_, index: _),

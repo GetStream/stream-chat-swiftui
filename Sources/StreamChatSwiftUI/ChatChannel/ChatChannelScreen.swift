@@ -6,10 +6,10 @@ import StreamChat
 import SwiftUI
 
 /// Screen component for the chat channel view.
-struct ChatChannelScreen: View {
-    var chatChannelController: ChatChannelController
+public struct ChatChannelScreen: View {
+    public var chatChannelController: ChatChannelController
     
-    var body: some View {
+    public var body: some View {
         ChatChannelView(
             viewFactory: DefaultViewFactory.shared,
             channelController: chatChannelController

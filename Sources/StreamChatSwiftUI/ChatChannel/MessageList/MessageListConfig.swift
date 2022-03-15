@@ -60,10 +60,16 @@ public struct MessageDisplayOptions {
     
     let showAvatars: Bool
     let showMessageDate: Bool
+    let animateChanges: Bool
     
-    public init(showAvatars: Bool = true, showMessageDate: Bool = true) {
+    public init(
+        showAvatars: Bool = true,
+        showMessageDate: Bool = true,
+        animateChanges: Bool = true
+    ) {
         self.showAvatars = showAvatars
         self.showMessageDate = showMessageDate
+        self.animateChanges = animateChanges
     }
 }
 
