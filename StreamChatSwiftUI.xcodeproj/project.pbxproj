@@ -162,6 +162,11 @@
 		846608E7278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */; };
 		846608E9278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */; };
 		846D6564279FF0800094B36E /* ReactionUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846D6563279FF0800094B36E /* ReactionUserView.swift */; };
+		847BA08127E0B76400ED20C7 /* Spy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08027E0B76400ED20C7 /* Spy.swift */; };
+		847BA08327E0B9C600ED20C7 /* EventBatcherMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */; };
+		847BA08527E0BA2500ED20C7 /* EventNotificationCenterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08427E0BA2500ED20C7 /* EventNotificationCenterMock.swift */; };
+		847BA08727E0BACB00ED20C7 /* WebSocketPingControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */; };
+		847BA08927E0BAEE00ED20C7 /* WebSocketEngineMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08827E0BAEE00ED20C7 /* WebSocketEngineMock.swift */; };
 		847CEFEC27BFAB6400606257 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 847CEFEB27BFAB6400606257 /* StreamChat */; };
 		847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */; };
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
@@ -486,6 +491,11 @@
 		846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelExtensions_Tests.swift; sourceTree = "<group>"; };
 		846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorView_Tests.swift; sourceTree = "<group>"; };
 		846D6563279FF0800094B36E /* ReactionUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionUserView.swift; sourceTree = "<group>"; };
+		847BA08027E0B76400ED20C7 /* Spy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spy.swift; sourceTree = "<group>"; };
+		847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatcherMock.swift; sourceTree = "<group>"; };
+		847BA08427E0BA2500ED20C7 /* EventNotificationCenterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotificationCenterMock.swift; sourceTree = "<group>"; };
+		847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketPingControllerMock.swift; sourceTree = "<group>"; };
+		847BA08827E0BAEE00ED20C7 /* WebSocketEngineMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketEngineMock.swift; sourceTree = "<group>"; };
 		847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCachingUtils.swift; sourceTree = "<group>"; };
 		848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListView_Tests.swift; sourceTree = "<group>"; };
 		848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsOverlayView_Tests.swift; sourceTree = "<group>"; };
@@ -1044,6 +1054,7 @@
 				84C94CBB27578B92007FE2B9 /* NSManagedObject+ContextChange.swift */,
 				84C94CBC27578B92007FE2B9 /* DatabaseContainer_Mock.swift */,
 				84C94CCB27578B92007FE2B9 /* ChatClient_Mock.swift */,
+				847BA08027E0B76400ED20C7 /* Spy.swift */,
 			);
 			path = TestTools;
 			sourceTree = "<group>";
@@ -1157,6 +1168,10 @@
 				84C94D2B275796F7007FE2B9 /* RequestRecorderURLProtocol.swift */,
 				84C94D452757D1CA007FE2B9 /* ImageLoader_Mock.swift */,
 				84C94D5B275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift */,
+				847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */,
+				847BA08427E0BA2500ED20C7 /* EventNotificationCenterMock.swift */,
+				847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */,
+				847BA08827E0BAEE00ED20C7 /* WebSocketEngineMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1597,6 +1612,8 @@
 				84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */,
 				84C94D5127591DE2007FE2B9 /* ChatMessageIDs_Tests.swift in Sources */,
 				84C94CD727578B92007FE2B9 /* ChatMessageLinkAttachment_Mock.swift in Sources */,
+				847BA08327E0B9C600ED20C7 /* EventBatcherMock.swift in Sources */,
+				847BA08527E0BA2500ED20C7 /* EventNotificationCenterMock.swift in Sources */,
 				84C94D0527578BF2007FE2B9 /* TestRunnerEnvironment.swift in Sources */,
 				84E6EC23279AEE6B0017207B /* MessageContainerView_Tests.swift in Sources */,
 				84C94D68275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift in Sources */,
@@ -1609,11 +1626,13 @@
 				84C94CDB27578B92007FE2B9 /* NSManagedObject+ContextChange.swift in Sources */,
 				84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
+				847BA08927E0BAEE00ED20C7 /* WebSocketEngineMock.swift in Sources */,
 				84C94D492758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift in Sources */,
 				84C94CE027578B92007FE2B9 /* CurrentUserPayload.swift in Sources */,
 				84C94CCD27578B92007FE2B9 /* ChannelUnreadCount_Mock.swift in Sources */,
 				84C94CDC27578B92007FE2B9 /* DatabaseContainer_Mock.swift in Sources */,
 				84C94D1727578BF3007FE2B9 /* XCTAssertEqual+Difference.swift in Sources */,
+				847BA08127E0B76400ED20C7 /* Spy.swift in Sources */,
 				84C94CE327578B92007FE2B9 /* XCTestCase+Dummy.swift in Sources */,
 				84C94D0D27578BF2007FE2B9 /* AssertResult.swift in Sources */,
 				84E6EC25279AEE9F0017207B /* StreamChatTestCase.swift in Sources */,
@@ -1655,6 +1674,7 @@
 				84C94CD127578B92007FE2B9 /* CurrentChatUser_Mock.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */,
+				847BA08727E0BACB00ED20C7 /* WebSocketPingControllerMock.swift in Sources */,
 				84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */,
 				84C94D5E275A3AA9007FE2B9 /* ImageCDN_Tests.swift in Sources */,
 				84C94CDF27578B92007FE2B9 /* MessagePayload.swift in Sources */,
@@ -2123,7 +2143,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "feature/CIS-1275-offline-support";
+				branch = develop;
 				kind = branch;
 			};
 		};

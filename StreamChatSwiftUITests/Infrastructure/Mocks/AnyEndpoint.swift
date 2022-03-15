@@ -6,7 +6,7 @@ import Foundation
 @testable import StreamChat
 
 struct AnyEndpoint: Equatable {
-    let path: String
+    let path: EndpointPath
     let method: EndpointMethod
     let queryItems: AnyEncodable?
     let requiresConnectionId: Bool
@@ -23,7 +23,7 @@ struct AnyEndpoint: Equatable {
     }
     
     static func == (lhs: AnyEndpoint, rhs: AnyEndpoint) -> Bool {
-        lhs.path == rhs.path
+        lhs.path.value == rhs.path.value
             && lhs.method == rhs.method
             && lhs.queryItems == rhs.queryItems
             && lhs.requiresConnectionId == rhs.requiresConnectionId
