@@ -36,13 +36,17 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var text = "" {
         didSet {
             if text != "" {
+                checkTypingSuggestions()
                 if pickerTypeState != .collapsed {
-                    withAnimation {
+                    if composerCommand == nil {
+                        withAnimation {
+                            pickerTypeState = .collapsed
+                        }
+                    } else {
                         pickerTypeState = .collapsed
                     }
                 }
                 channelController.sendKeystrokeEvent()
-                checkTypingSuggestions()
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
                     composerCommand = nil
