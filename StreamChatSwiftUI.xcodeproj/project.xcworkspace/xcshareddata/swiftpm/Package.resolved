@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/GetStream/stream-chat-swift.git",
         "state": {
           "branch": null,
-          "revision": "b4a6f425f1ef5bceb2f81eedb04a7a47e9a2ddd0",
-          "version": "4.11.0"
+          "revision": "c5a6d7b7b9f61e1ad9cc76137e5a39cc24de39c8",
+          "version": "4.12.0"
         }
       },
       {

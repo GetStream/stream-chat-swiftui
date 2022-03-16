@@ -5,7 +5,15 @@
 import Foundation
 @testable import StreamChat
 
-class MockBackgroundTaskScheduler: BackgroundTaskScheduler {
+/// Mock implementation of `BackgroundTaskScheduler`.
+final class MockBackgroundTaskScheduler: BackgroundTaskScheduler {
+    var isAppActive_called: Bool = false
+    var isAppActive_returns: Bool = true
+    var isAppActive: Bool {
+        isAppActive_called = true
+        return isAppActive_returns
+    }
+    
     var beginBackgroundTask_called: Bool = false
     var beginBackgroundTask_expirationHandler: (() -> Void)?
     var beginBackgroundTask_returns: Bool = true
@@ -35,5 +43,17 @@ class MockBackgroundTaskScheduler: BackgroundTaskScheduler {
     var stopListeningForAppStateUpdates_called: Bool = false
     func stopListeningForAppStateUpdates() {
         stopListeningForAppStateUpdates_called = true
+    }
+}
+
+extension MockBackgroundTaskScheduler {
+    func simulateAppGoingToBackground() {
+        isAppActive_returns = false
+        startListeningForAppStateUpdates_onBackground?()
+    }
+    
+    func simulateAppGoingToForeground() {
+        isAppActive_returns = true
+        startListeningForAppStateUpdates_onForeground?()
     }
 }

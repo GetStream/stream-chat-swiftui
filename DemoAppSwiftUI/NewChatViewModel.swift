@@ -17,7 +17,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
 
     @Published var messageText: String = ""
-    @Published var chatUsers = LazyCachedMapCollection<ChatUser>()
+    @Published var chatUsers = [ChatUser]()
     @Published var state: NewChatState = .initial
     @Published var selectedUsers = [ChatUser]() {
         didSet {
@@ -50,7 +50,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private let lastSeenDateFormatter = DateUtils.timeAgo
     
     init() {
-        chatUsers = searchController.users
+        chatUsers = searchController.userArray
         searchController.delegate = self
         // Empty initial search to get all users
         searchUsers(with: nil)
@@ -100,7 +100,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             loadingNextUsers = true
             searchController.loadNextUsers(limit: 50) { [weak self] _ in
                 guard let self = self else { return }
-                self.chatUsers = self.searchController.users
+                self.chatUsers = self.searchController.userArray
                 self.loadingNextUsers = false
             }
         }
@@ -112,7 +112,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         _ controller: ChatUserSearchController,
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
-        chatUsers = controller.users
+        chatUsers = controller.userArray
     }
     
     // MARK: - private
