@@ -3,10 +3,14 @@
 //
 
 import Photos
+import StreamChat
 import SwiftUI
 
 /// Helper class that loads assets from the photo library.
 public class PhotoAssetLoader: NSObject, ObservableObject {
+    
+    @Injected(\.chatClient) private var chatClient
+
     @Published var loadedImages = [String: UIImage]()
     
     /// Loads an image from the provided asset.
@@ -27,6 +31,57 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
         ) { [weak self] image, _ in
             guard let self = self, let image = image else { return }
             self.loadedImages[asset.localIdentifier] = image
+        }
+    }
+    
+    func compressAsset(at url: URL, type: AssetType, completion: @escaping (URL?) -> Void) {
+        if type == .video {
+            let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + ".mp4")
+            compressVideo(inputURL: url, outputURL: compressedURL) { exportSession in
+                guard let session = exportSession else {
+                    return
+                }
+
+                switch session.status {
+                case .completed:
+                    completion(compressedURL)
+                default:
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
+    func assetExceedsAllowedSize(url: URL?) -> Bool {
+        _ = url?.startAccessingSecurityScopedResource()
+        if let assetURL = url,
+           let file = try? AttachmentFile(url: assetURL),
+           file.size >= chatClient.config.maxAttachmentSize {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func compressVideo(
+        inputURL: URL,
+        outputURL: URL,
+        handler: @escaping (_ exportSession: AVAssetExportSession?) -> Void
+    ) {
+        let urlAsset = AVURLAsset(url: inputURL, options: nil)
+        
+        guard let exportSession = AVAssetExportSession(
+            asset: urlAsset,
+            presetName: AVAssetExportPresetMediumQuality
+        ) else {
+            handler(nil)
+            return
+        }
+
+        exportSession.outputURL = outputURL
+        exportSession.outputFileType = .mp4
+        exportSession.exportAsynchronously {
+            handler(exportSession)
         }
     }
     

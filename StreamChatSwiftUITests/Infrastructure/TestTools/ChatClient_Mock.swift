@@ -7,8 +7,12 @@ import Foundation
 
 public extension ChatClient {
     /// Create a new instance of mock `ChatClient`
-    static func mock(isLocalStorageEnabled: Bool = false) -> ChatClient {
+    static func mock(
+        isLocalStorageEnabled: Bool = false,
+        customCDNClient: CDNClient? = nil
+    ) -> ChatClient {
         var config = ChatClientConfig(apiKey: .init("--== Mock ChatClient ==--"))
+        config.customCDNClient = customCDNClient
         config.isLocalStorageEnabled = isLocalStorageEnabled
         
         return .init(

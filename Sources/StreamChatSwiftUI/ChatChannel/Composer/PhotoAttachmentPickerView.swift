@@ -43,11 +43,16 @@ public struct PhotoAttachmentCell: View {
     
     @StateObject var assetLoader: PhotoAssetLoader
     
-    @State var assetURL: URL?
+    @State private var assetURL: URL?
+    @State private var compressing = false
     
     var asset: PHAsset
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
+    
+    private var assetType: AssetType {
+        asset.mediaType == .video ? .video : .image
+    }
     
     public var body: some View {
         ZStack {
@@ -75,7 +80,7 @@ public struct PhotoAttachmentCell: View {
                                                 image: image,
                                                 id: asset.localIdentifier,
                                                 url: assetURL,
-                                                type: asset.mediaType == .video ? .video : .image,
+                                                type: assetType,
                                                 extraData: asset.mediaType == .video ? ["duration": asset.durationString] : [:]
                                             )
                                         )
@@ -83,6 +88,9 @@ public struct PhotoAttachmentCell: View {
                                 }
                             }
                     }
+                    .overlay(
+                        compressing ? ProgressView() : nil
+                    )
                 }
             } else {
                 Color(colors.background1)
@@ -117,11 +125,25 @@ public struct PhotoAttachmentCell: View {
         )
         .onAppear {
             assetLoader.loadImage(from: asset)
+            
+            if self.assetURL != nil {
+                return
+            }
+            
             asset.requestContentEditingInput(with: nil) { input, _ in
                 if asset.mediaType == .image {
                     self.assetURL = input?.fullSizeImageURL
                 } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
                     self.assetURL = url
+                }
+                
+                // Check file size.
+                if let assetURL = assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
+                    compressing = true
+                    assetLoader.compressAsset(at: assetURL, type: assetType) { url in
+                        self.assetURL = url
+                        self.compressing = false
+                    }
                 }
             }
         }

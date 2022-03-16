@@ -133,6 +133,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func handleMessageAppear(index: Int) {
+        if index >= messages.count {
+            return
+        }
         let message = messages[index]
         checkForNewMessages(index: index)
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
@@ -200,7 +203,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func onViewAppear() {
-        reactionsShown = false
         isActive = true
         messages = channelDataSource.messages
     }

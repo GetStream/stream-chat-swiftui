@@ -9,13 +9,29 @@ import XCTest
 class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     private let testImage = UIImage(systemName: "checkmark")!
-    private let testURL = URL(string: "https://example.com")!
-    private lazy var defaultAsset = AddedAsset(
-        image: testImage,
-        id: .unique,
-        url: testURL,
-        type: .image
-    )
+    private var mockURL: URL!
+    
+    private var defaultAsset: AddedAsset {
+        AddedAsset(
+            image: testImage,
+            id: .unique,
+            url: mockURL,
+            type: .image
+        )
+    }
+    
+    override func setUp() {
+        super.setUp()
+        mockURL = generateURL()
+        writeMockData(for: mockURL)
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        if let mockURL = mockURL {
+            try? FileManager.default.removeItem(at: mockURL)
+        }
+    }
     
     func test_messageComposerVM_sendButtonDisabled() {
         // Given
@@ -59,7 +75,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         let viewModel = makeComposerViewModel()
         
         // When
-        viewModel.addedFileURLs.append(testURL)
+        viewModel.addedFileURLs.append(mockURL)
         let buttonEnabled = viewModel.sendButtonEnabled
         
         // Then
@@ -125,7 +141,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_inputComposerScrollableFiles() {
         // Given
         let viewModel = makeComposerViewModel()
-        let attachments = [testURL, testURL, testURL]
+        let attachments: [URL] = [mockURL, mockURL, mockURL]
         
         // When
         viewModel.addedFileURLs = attachments
@@ -138,10 +154,11 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_imageRemovalByTappingTwice() {
         // Given
         let viewModel = makeComposerViewModel()
+        let asset = defaultAsset
         
         // When
-        viewModel.imageTapped(defaultAsset) // added to the attachments list
-        viewModel.imageTapped(defaultAsset) // removed from the attachments list
+        viewModel.imageTapped(asset) // added to the attachments list
+        viewModel.imageTapped(asset) // removed from the attachments list
         
         // Then
         XCTAssert(viewModel.addedAssets.isEmpty)
@@ -152,8 +169,8 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         let viewModel = makeComposerViewModel()
         
         // When
-        viewModel.addedFileURLs = [testURL]
-        viewModel.removeAttachment(with: testURL.absoluteString)
+        viewModel.addedFileURLs = [mockURL]
+        viewModel.removeAttachment(with: mockURL.absoluteString)
         
         // Then
         XCTAssert(viewModel.addedFileURLs.isEmpty)
@@ -162,10 +179,11 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_removeImageAttachment() {
         // Given
         let viewModel = makeComposerViewModel()
+        let asset = defaultAsset
         
         // When
-        viewModel.imageTapped(defaultAsset)
-        viewModel.removeAttachment(with: defaultAsset.id)
+        viewModel.imageTapped(asset)
+        viewModel.removeAttachment(with: asset.id)
         
         // Then
         XCTAssert(viewModel.addedAssets.isEmpty)
@@ -186,10 +204,11 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_imageIsSelected() {
         // Given
         let viewModel = makeComposerViewModel()
+        let asset = defaultAsset
         
         // When
-        viewModel.imageTapped(defaultAsset)
-        let imageIsSelected = viewModel.isImageSelected(with: defaultAsset.id)
+        viewModel.imageTapped(asset)
+        let imageIsSelected = viewModel.isImageSelected(with: asset.id)
         
         // Then
         XCTAssert(imageIsSelected == true)
@@ -288,7 +307,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         // When
         viewModel.text = "test"
         viewModel.imageTapped(defaultAsset)
-        viewModel.addedFileURLs = [testURL]
+        viewModel.addedFileURLs = [mockURL]
         viewModel.sendMessage(
             quotedMessage: nil,
             editedMessage: nil
@@ -399,6 +418,67 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(!viewModel.suggestions.isEmpty)
     }
     
+    func test_messageComposerVM_maxAttachmentsAssets() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        for _ in 0..<10 {
+            let newAsset = defaultAsset
+            viewModel.imageTapped(newAsset)
+        }
+        let newAsset = defaultAsset
+        viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
+
+        // Then
+        XCTAssert(viewModel.addedAssets.count == 10)
+    }
+    
+    func test_messageComposerVM_maxAttachmentsCombined() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        var urls = [URL]()
+        
+        // When
+        for _ in 0..<5 {
+            let newAsset = defaultAsset
+            viewModel.imageTapped(newAsset)
+        }
+        for _ in 0..<5 {
+            let newURL = generateURL()
+            writeMockData(for: newURL)
+            urls.append(newURL)
+            viewModel.addedFileURLs.append(newURL)
+        }
+        let newAsset = defaultAsset
+        viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
+        let newURL = generateURL()
+        viewModel.addedFileURLs.append(newURL)
+        
+        // Then
+        let total = viewModel.addedAssets.count + viewModel.addedFileURLs.count
+        XCTAssert(total == 10)
+        for url in urls {
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+    
+    func test_messageComposerVM_maxSizeExceeded() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let cdnClient = CDNClient_Mock()
+        CDNClient_Mock.maxAttachmentSize = 5
+        let client = ChatClient.mock(customCDNClient: cdnClient)
+        streamChat = StreamChat(chatClient: client)
+        
+        // When
+        let newAsset = defaultAsset
+        viewModel.imageTapped(newAsset) // will not be added because of small max attachment size.
+        
+        // Then
+        XCTAssert(viewModel.addedAssets.isEmpty)
+    }
+    
     // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {
@@ -418,20 +498,15 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             messages: messages
         )
     }
-}
-
-extension PickerTypeState: Equatable {
     
-    public static func == (lhs: PickerTypeState, rhs: PickerTypeState) -> Bool {
-        if case let .expanded(type1) = lhs,
-           case let .expanded(type2) = rhs {
-            return type1 == type2
-        }
-        
-        if case .collapsed = lhs, case .collapsed = rhs {
-            return true
-        }
-        
-        return false
+    private func generateURL() -> URL {
+        NSURL.fileURL(
+            withPath: NSTemporaryDirectory() + UUID().uuidString + ".png"
+        )
+    }
+    
+    private func writeMockData(for url: URL) {
+        let data = UIImage(systemName: "checkmark")?.pngData()
+        try? data?.write(to: url)
     }
 }
