@@ -38,13 +38,17 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             if selectedPickerState == .photos {
                 if let assets = photoLibraryAssets,
                    let collection = PHFetchResultCollection(fetchResult: assets) {
-                    viewFactory.makePhotoAttachmentPickerView(
-                        assets: collection,
-                        onAssetTap: onAssetTap,
-                        isAssetSelected: isAssetSelected
-                    )
+                    if !collection.isEmpty {
+                        viewFactory.makePhotoAttachmentPickerView(
+                            assets: collection,
+                            onAssetTap: onAssetTap,
+                            isAssetSelected: isAssetSelected
+                        )
+                    } else {
+                        viewFactory.makeAssetsAccessPermissionView()
+                    }
                 } else {
-                    viewFactory.makeAssetsAccessPermissionView()
+                    LoadingView()
                 }
                 
             } else if selectedPickerState == .files {

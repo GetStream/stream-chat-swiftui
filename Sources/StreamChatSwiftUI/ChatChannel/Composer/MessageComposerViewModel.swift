@@ -36,13 +36,17 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var text = "" {
         didSet {
             if text != "" {
+                checkTypingSuggestions()
                 if pickerTypeState != .collapsed {
-                    withAnimation {
+                    if composerCommand == nil {
+                        withAnimation {
+                            pickerTypeState = .collapsed
+                        }
+                    } else {
                         pickerTypeState = .collapsed
                     }
                 }
                 channelController.sendKeystrokeEvent()
-                checkTypingSuggestions()
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
                     composerCommand = nil
@@ -57,6 +61,10 @@ open class MessageComposerViewModel: ObservableObject {
     
     @Published public var addedFileURLs = [URL]() {
         didSet {
+            if totalAttachmentsCount > chatClient.config.maxAttachmentCountPerMessage
+                || !checkAttachmentSize(with: addedFileURLs.last) {
+                addedFileURLs.removeLast()
+            }
             checkPickerSelectionState()
         }
     }
@@ -136,6 +144,16 @@ open class MessageComposerViewModel: ObservableObject {
         } else {
             return text
         }
+    }
+    
+    private var totalAttachmentsCount: Int {
+        addedAssets.count +
+            addedCustomAttachments.count +
+            addedFileURLs.count
+    }
+    
+    private var canAddAdditionalAttachments: Bool {
+        totalAttachmentsCount < chatClient.config.maxAttachmentCountPerMessage
     }
     
     public init(
@@ -286,7 +304,7 @@ open class MessageComposerViewModel: ObservableObject {
             }
         }
         
-        if !imageRemoved {
+        if !imageRemoved && canAddAttachment(with: addedAsset.url) {
             images.append(addedAsset)
         }
         
@@ -314,7 +332,9 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public func cameraImageAdded(_ image: AddedAsset) {
-        addedAssets.append(image)
+        if canAddAttachment(with: image.url) {
+            addedAssets.append(image)
+        }
         pickerState = .photos
     }
     
@@ -339,7 +359,7 @@ open class MessageComposerViewModel: ObservableObject {
             }
         }
         
-        if !attachmentRemoved {
+        if !attachmentRemoved && canAddAdditionalAttachments {
             temp.append(attachment)
         }
         
@@ -363,12 +383,15 @@ open class MessageComposerViewModel: ObservableObject {
                 log.debug("Access to photos granted.")
                 let fetchOptions = PHFetchOptions()
                 fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                DispatchQueue.main.async { [unowned self] in
-                    self.imageAssets = PHAsset.fetchAssets(with: fetchOptions)
+                let assets = PHAsset.fetchAssets(with: fetchOptions)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                    self?.imageAssets = assets
                 }
             case .denied, .restricted:
+                self.imageAssets = PHFetchResult<PHAsset>()
                 log.debug("Access to photos is denied, showing the no permissions screen.")
             case .notDetermined:
+                self.imageAssets = PHFetchResult<PHAsset>()
                 log.debug("Access to photos is still not determined.")
             @unknown default:
                 log.debug("Unknown authorization status.")
@@ -502,6 +525,27 @@ open class MessageComposerViewModel: ObservableObject {
         // the setting of this value to empty string.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.text = ""
+        }
+    }
+    
+    private func canAddAttachment(with url: URL) -> Bool {
+        if !canAddAdditionalAttachments {
+            return false
+        }
+        
+        return checkAttachmentSize(with: url)
+    }
+    
+    private func checkAttachmentSize(with url: URL?) -> Bool {
+        guard let url = url else { return true }
+        
+        _ = url.startAccessingSecurityScopedResource()
+        
+        do {
+            let fileSize = try AttachmentFile(url: url).size
+            return fileSize < chatClient.config.maxAttachmentSize
+        } catch {
+            return false
         }
     }
 }

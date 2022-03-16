@@ -26,7 +26,7 @@ public struct ColorPalette {
     // MARK: - Text interactions
 
     public var highlightedColorForColor: (UIColor) -> UIColor = { $0.withAlphaComponent(0.5) }
-    public var disabledColorForColor: (UIColor) -> UIColor = { _ in .lightGray }
+    public var disabledColorForColor: (UIColor) -> UIColor = { _ in .streamDisabled }
     public var unselectedColorForColor: (UIColor) -> UIColor = { _ in .lightGray }
 
     // MARK: - Background
@@ -94,6 +94,7 @@ private extension UIColor {
     static let streamGrayDisabledText = mode(0x72767e, 0x72767e)
     static let streamInnerBorder = mode(0xdbdde1, 0x272a30)
     static let streamHighlight = mode(0xfbf4dd, 0x333024)
+    static let streamDisabled = mode(0xb4b7bb, 0x4c525c)
     
     // Currently we are not using the correct shadow color from figma's color palette. This is to avoid
     // an issue with snapshots inconsistency between Intel vs M1. We can't use shadows with transparency.
