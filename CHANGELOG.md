@@ -3,7 +3,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Redacted loading view
+- Max file size checks
+- Inject custom footer view in Channel List
+- Config for disabling message overlay
+
+### 🐞 Fixed
+- Prevent jumps when new messages are received
+- Orientation changes layout
+
 ### 🔄 Changed
+- Method for creating custom avatar
 
 # [4.11.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.11.0)
 _March 02, 2022_
