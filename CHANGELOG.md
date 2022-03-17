@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.12.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.12.0)
+_March 17, 2022_
+
 ### ✅ Added
 - Redacted loading view
 - Max file size checks
