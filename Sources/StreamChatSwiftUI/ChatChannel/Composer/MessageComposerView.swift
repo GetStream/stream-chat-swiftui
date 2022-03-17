@@ -132,15 +132,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .onReceive(keyboardWillChangePublisher) { visible in
             if visible {
-                withAnimation(.easeInOut(duration: 0.02)) {
-                    if viewModel.composerCommand == nil {
+                if viewModel.composerCommand == nil {
+                    withAnimation(.easeInOut(duration: 0.02)) {
                         viewModel.pickerTypeState = .expanded(.none)
                     }
                 }
             }
         }
         .onReceive(keyboardHeight) { height in
-            if height > 0 {
+            if height > 0 && height != popupSize {
                 self.popupSize = height - bottomSafeArea
             }
         }
@@ -189,11 +189,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     
-    @State var textHeight: CGFloat = 34
+    @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
     
     var textFieldHeight: CGFloat {
-        let minHeight: CGFloat = 34
-        let maxHeight: CGFloat = 76
+        let minHeight: CGFloat = TextSizeConstants.minimumHeight
+        let maxHeight: CGFloat = TextSizeConstants.maximumHeight
             
         if textHeight < minHeight {
             return minHeight

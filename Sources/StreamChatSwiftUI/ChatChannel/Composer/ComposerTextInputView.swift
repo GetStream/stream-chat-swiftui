@@ -59,6 +59,13 @@ struct ComposerTextInputView: UIViewRepresentable {
         func textViewDidChange(_ textView: UITextView) {
             textInput.selectedRangeLocation = textView.selectedRange.location
             textInput.text = textView.text
+            var height = textView.sizeThatFits(textView.bounds.size).height
+            if height < TextSizeConstants.minThreshold {
+                height = TextSizeConstants.minimumHeight
+            }
+            if textInput.height != height {
+                textInput.height = height
+            }
         }
 
         func textView(
@@ -69,22 +76,6 @@ struct ComposerTextInputView: UIViewRepresentable {
             guard let maxMessageLength = maxMessageLength else { return true }
             let newMessageLength = textView.text.count + (text.count - range.length)
             return newMessageLength <= maxMessageLength
-        }
-        
-        func layoutManager(
-            _ layoutManager: NSLayoutManager,
-            didCompleteLayoutFor textContainer: NSTextContainer?,
-            atEnd layoutFinishedFlag: Bool
-        ) {
-            DispatchQueue.main.async { [weak self] in
-                guard let view = self?.textView else {
-                    return
-                }
-                let size = view.sizeThatFits(view.bounds.size)
-                if self?.textInput.height != size.height {
-                    self?.textInput.height = size.height
-                }
-            }
         }
     }
 }

@@ -4,6 +4,12 @@
 
 import UIKit
 
+struct TextSizeConstants {
+    static let minimumHeight = 34.0
+    static let maximumHeight = 76.0
+    static let minThreshold = 40.0
+}
+
 class InputTextView: UITextView {
     @Injected(\.colors) private var colors
     
@@ -15,7 +21,7 @@ class InputTextView: UITextView {
     /// When there is no content in the text view OR the height of the content is less than this value,
     /// the text view will be of this height
     open var minimumHeight: CGFloat {
-        34.0
+        TextSizeConstants.minimumHeight
     }
     
     /// The constraint responsible for setting the height of the text view.
@@ -24,7 +30,7 @@ class InputTextView: UITextView {
     /// The maximum height of the text view.
     /// When the content in the text view is greater than this height, scrolling will be enabled and the text view's height will be restricted to this value
     open var maximumHeight: CGFloat {
-        76.0
+        TextSizeConstants.maximumHeight
     }
         
     override open func didMoveToSuperview() {
@@ -99,17 +105,25 @@ class InputTextView: UITextView {
 
     open func setTextViewHeight() {
         var heightToSet = minimumHeight
-
-        if contentSize.height <= minimumHeight {
-            heightToSet = minimumHeight
-        } else if contentSize.height >= maximumHeight {
-            heightToSet = maximumHeight
-        } else {
-            heightToSet = contentSize.height
+        var contentHeight = contentSize.height
+        if contentHeight < TextSizeConstants.minThreshold
+            && contentHeight != minimumHeight {
+            contentSize.height = minimumHeight
+            contentHeight = minimumHeight
         }
 
-        heightConstraint?.constant = heightToSet
-        isScrollEnabled = heightToSet > minimumHeight
-        layoutIfNeeded()
+        if contentHeight <= minimumHeight {
+            heightToSet = minimumHeight
+        } else if contentHeight >= maximumHeight {
+            heightToSet = maximumHeight
+        } else {
+            heightToSet = contentHeight
+        }
+
+        if heightConstraint?.constant != heightToSet {
+            heightConstraint?.constant = heightToSet
+            isScrollEnabled = heightToSet > minimumHeight
+            layoutIfNeeded()
+        }
     }
 }
