@@ -39,6 +39,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private var loadingPreviousMessages: Bool = false
     private var lastMessageRead: String?
+    private var disableDateIndicator = false
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -74,7 +75,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    @Published public var quotedMessage: ChatMessage?
+    @Published public var quotedMessage: ChatMessage? {
+        didSet {
+            if oldValue != nil && quotedMessage == nil {
+                disableDateIndicator = true
+            }
+        }
+    }
+
     @Published public var editedMessage: ChatMessage?
     @Published public var channelHeaderType: ChannelHeaderType = .regular
     
@@ -232,6 +240,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func save(lastDate: Date) {
+        if disableDateIndicator {
+            enableDateIndicator()
+            return
+        }
+        
         currentDate = lastDate
         timer?.invalidate()
         timer = Timer.scheduledTimer(
@@ -339,6 +352,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         return false
     }
     
+    private func enableDateIndicator() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.disableDateIndicator = false
+        }
+    }
+    
     deinit {
         messageCachingUtils.clearCache()
     }
@@ -377,7 +396,11 @@ extension ChatMessage: Identifiable {
         states += fileAttachments.compactMap { $0.uploadingState?.state }
         
         if states.isEmpty {
-            return "empty"
+            if localState == .sendingFailed {
+                return "failed"
+            } else {
+                return "empty"
+            }
         }
         
         let strings = states.map { "\($0)" }

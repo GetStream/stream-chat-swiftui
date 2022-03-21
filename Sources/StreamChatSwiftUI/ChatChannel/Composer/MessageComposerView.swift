@@ -50,10 +50,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 factory.makeQuotedMessageHeaderView(
                     quotedMessage: $quotedMessage
                 )
+                .transition(.identity)
             } else if editedMessage != nil {
                 factory.makeEditedMessageHeaderView(
                     editedMessage: $editedMessage
                 )
+                .transition(.identity)
             }
             
             HStack(alignment: .bottom) {
