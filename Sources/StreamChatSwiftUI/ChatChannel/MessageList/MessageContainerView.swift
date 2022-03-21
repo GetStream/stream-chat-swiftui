@@ -71,17 +71,21 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                     .animation(nil)
                     .overlay(
-                        reactionsShown ?
-                            factory.makeMessageReactionView(
-                                message: message,
-                                onTapGesture: {
-                                    handleGestureForMessage(showsMessageActions: false)
-                                },
-                                onLongPressGesture: {
-                                    handleGestureForMessage(showsMessageActions: false)
-                                }
-                            )
-                            : nil
+                        ZStack {
+                            reactionsShown ?
+                                factory.makeMessageReactionView(
+                                    message: message,
+                                    onTapGesture: {
+                                        handleGestureForMessage(showsMessageActions: false)
+                                    },
+                                    onLongPressGesture: {
+                                        handleGestureForMessage(showsMessageActions: false)
+                                    }
+                                )
+                                : nil
+                            
+                            message.localState == .sendingFailed ? SendFailureIndicator() : nil
+                        }
                     )
                     .background(
                         GeometryReader { proxy in
@@ -253,6 +257,22 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     showsMessageActions: showsMessageActions
                 )
             )
+        }
+    }
+}
+
+struct SendFailureIndicator: View {
+    
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    
+    var body: some View {
+        BottomRightView {
+            Image(uiImage: images.messageListErrorIndicator)
+                .customizable()
+                .frame(width: 16, height: 16)
+                .foregroundColor(Color(colors.alert))
+                .offset(y: 4)
         }
     }
 }

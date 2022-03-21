@@ -37,8 +37,13 @@ struct AttachmentUploadingStateView: View {
                 }
                 
             case .uploadingFailed:
-                Image(uiImage: images.messageListErrorIndicator)
-                    .foregroundColor(Color(colors.alert))
+                BottomRightView {
+                    Image(uiImage: images.messageListErrorIndicator)
+                        .foregroundColor(Color(colors.alert))
+                        .background(Color.white)
+                        .clipShape(Circle())
+                        .offset(x: -4, y: -4)
+                }
             case .uploaded:
                 TopRightView {
                     Image(uiImage: images.confirmCheckmark)

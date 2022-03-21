@@ -23,6 +23,27 @@ extension MessageAction {
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
         
+        if message.localState == .sendingFailed {
+            messageActions = messageNotSentActions(
+                for: message,
+                channel: channel,
+                chatClient: chatClient,
+                onFinish: onFinish,
+                onError: onError
+            )
+            return messageActions
+        } else if message.localState == .pendingSend
+            && message.messageId.contains("\(LocalAttachmentState.uploadingFailed)") {
+            messageActions = editAndDeleteActions(
+                for: message,
+                channel: channel,
+                chatClient: chatClient,
+                onFinish: onFinish,
+                onError: onError
+            )
+            return messageActions
+        }
+        
         if channel.config.repliesEnabled {
             let replyAction = replyAction(
                 for: message,
@@ -452,5 +473,102 @@ extension MessageAction {
         )
         
         return unmuteUser
+    }
+    
+    private static func resendMessageAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let messageController = chatClient.messageController(
+            cid: channel.cid,
+            messageId: message.id
+        )
+        
+        let resendAction = {
+            messageController.resendMessage { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "resend"
+                        )
+                    )
+                }
+            }
+        }
+        
+        let messageAction = MessageAction(
+            title: L10n.Message.Actions.resend,
+            iconName: "icn_resend",
+            action: resendAction,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+
+        return messageAction
+    }
+    
+    private static func messageNotSentActions(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> [MessageAction] {
+        var messageActions = [MessageAction]()
+        
+        let resendAction = resendMessageAction(
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: onFinish,
+            onError: onError
+        )
+        messageActions.append(resendAction)
+        
+        let editAndDeleteActions = editAndDeleteActions(
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: onFinish,
+            onError: onError
+        )
+        messageActions.append(contentsOf: editAndDeleteActions)
+        
+        return messageActions
+    }
+    
+    private static func editAndDeleteActions(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> [MessageAction] {
+        var messageActions = [MessageAction]()
+        
+        let editAction = editMessageAction(
+            for: message,
+            channel: channel,
+            onFinish: onFinish
+        )
+        messageActions.append(editAction)
+
+        let deleteAction = deleteMessageAction(
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: onFinish,
+            onError: onError
+        )
+        
+        messageActions.append(deleteAction)
+        
+        return messageActions
     }
 }

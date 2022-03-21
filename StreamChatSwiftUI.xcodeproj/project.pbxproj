@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		840008BB27E8D64A00282D88 /* MessageActions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */; };
 		8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */; };
 		841B2EF4278DB9E500ED619E /* MessageListHelperViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B2EF3278DB9E500ED619E /* MessageListHelperViews.swift */; };
 		841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */; };
@@ -335,6 +336,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView_Tests.swift; sourceTree = "<group>"; };
 		841B2EF3278DB9E500ED619E /* MessageListHelperViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListHelperViews.swift; sourceTree = "<group>"; };
 		841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReadIndicatorView_Tests.swift; sourceTree = "<group>"; };
@@ -1221,6 +1223,7 @@
 				84C94D5027591DE2007FE2B9 /* ChatMessageIDs_Tests.swift */,
 				84C94D57275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift */,
 				84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */,
+				840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */,
 				84E6EC22279AEE6B0017207B /* MessageContainerView_Tests.swift */,
 				84DEC8DE2760A1D100172876 /* MessageView_Tests.swift */,
 				848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */,
@@ -1705,6 +1708,7 @@
 				84D6B55A27DF6EC7009C6D07 /* LoadingView_Tests.swift in Sources */,
 				84C94D0427578BF2007FE2B9 /* TestError.swift in Sources */,
 				84C94D0A27578BF2007FE2B9 /* TestDataModel.xcdatamodeld in Sources */,
+				840008BB27E8D64A00282D88 /* MessageActions_Tests.swift in Sources */,
 				84C94D422757C16D007FE2B9 /* ChatChannelListTestHelpers.swift in Sources */,
 				84C94D5A275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift in Sources */,
 			);
