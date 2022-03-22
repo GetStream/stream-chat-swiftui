@@ -128,4 +128,27 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_messageViewJumboEmoji_snapshot() {
+        // Given
+        let emojiMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "😀",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: emojiMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

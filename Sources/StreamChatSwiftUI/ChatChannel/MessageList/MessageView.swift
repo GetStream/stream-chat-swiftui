@@ -80,7 +80,12 @@ struct MessageView<Factory: ViewFactory>: View {
                 }
             } else {
                 if message.shouldRenderAsJumbomoji {
-                    EmojiTextView(message: message)
+                    EmojiTextView(
+                        factory: factory,
+                        message: message,
+                        scrolledId: $scrolledId,
+                        isFirst: isFirst
+                    )
                 } else if !message.text.isEmpty {
                     factory.makeMessageTextView(
                         for: message,
@@ -127,13 +132,34 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     }
 }
 
-public struct EmojiTextView: View {
+public struct EmojiTextView<Factory: ViewFactory>: View {
+    var factory: Factory
     var message: ChatMessage
+    @Binding var scrolledId: String?
+    var isFirst: Bool
     
     @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
     
     public var body: some View {
-        Text(message.text)
-            .font(fonts.emoji)
+        ZStack {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+                VStack(spacing: 0) {
+                    QuotedMessageViewContainer(
+                        factory: factory,
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        scrolledId: $scrolledId
+                    )
+                    
+                    Text(message.text)
+                        .font(fonts.emoji)
+                }
+                .messageBubble(for: message, isFirst: isFirst)
+            } else {
+                Text(message.text)
+                    .font(fonts.emoji)
+            }
+        }
     }
 }
