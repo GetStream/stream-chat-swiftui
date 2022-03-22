@@ -8,12 +8,13 @@ import StreamChat
 import SwiftUI
 
 /// Container showing the quoted message view with the user avatar.
-struct QuotedMessageViewContainer: View {
+struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
     
     @Injected(\.utils) private var utils
     
     private let avatarSize: CGFloat = 24
     
+    var factory: Factory
     var quotedMessage: ChatMessage
     var fillAvailableSpace: Bool
     var forceLeftToRight = false
@@ -22,9 +23,9 @@ struct QuotedMessageViewContainer: View {
     var body: some View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
-                MessageAvatarView(
-                    avatarURL: utils.messageCachingUtils.authorImageURL(for: quotedMessage),
-                    size: .init(width: avatarSize, height: avatarSize)
+                factory.makeQuotedMessageAvatarView(
+                    for: utils.messageCachingUtils.authorInfo(from: quotedMessage),
+                    size: CGSize(width: avatarSize, height: avatarSize)
                 )
                 
                 QuotedMessageView(
@@ -39,9 +40,9 @@ struct QuotedMessageViewContainer: View {
                     forceLeftToRight: forceLeftToRight
                 )
                 
-                MessageAvatarView(
-                    avatarURL: utils.messageCachingUtils.authorImageURL(for: quotedMessage),
-                    size: .init(width: avatarSize, height: avatarSize)
+                factory.makeQuotedMessageAvatarView(
+                    for: utils.messageCachingUtils.authorInfo(from: quotedMessage),
+                    size: CGSize(width: avatarSize, height: avatarSize)
                 )
             }
         }

@@ -200,6 +200,13 @@ extension ViewFactory {
         MessageAvatarView(avatarURL: userDisplayInfo.imageURL)
     }
     
+    public func makeQuotedMessageAvatarView(
+        for userDisplayInfo: UserDisplayInfo,
+        size: CGSize
+    ) -> some View {
+        MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: size)
+    }
+    
     public func makeChannelHeaderViewModifier(
         for channel: ChatChannel
     ) -> some ChatChannelHeaderViewModifier {
@@ -249,6 +256,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         MessageTextView(
+            factory: self,
             message: message,
             isFirst: isFirst,
             scrolledId: scrolledId
@@ -262,6 +270,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         ImageAttachmentContainer(
+            factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
@@ -291,6 +300,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         LinkAttachmentContainer(
+            factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
@@ -305,6 +315,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         FileAttachmentsContainer(
+            factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
@@ -319,6 +330,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         VideoAttachmentsContainer(
+            factory: self,
             message: message,
             width: availableWidth,
             scrolledId: scrolledId
@@ -664,6 +676,7 @@ extension ViewFactory {
         quotedMessage: ChatMessage
     ) -> some View {
         QuotedMessageViewContainer(
+            factory: self,
             quotedMessage: quotedMessage,
             fillAvailableSpace: true,
             forceLeftToRight: true,

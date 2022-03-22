@@ -6,10 +6,11 @@ import AVKit
 import StreamChat
 import SwiftUI
 
-public struct VideoAttachmentsContainer: View {
+public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     
     @Injected(\.utils) private var utils
-    
+
+    var factory: Factory
     let message: ChatMessage
     let width: CGFloat
     @Binding var scrolledId: String?
@@ -19,6 +20,7 @@ public struct VideoAttachmentsContainer: View {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 VStack {
                     QuotedMessageViewContainer(
+                        factory: factory,
                         quotedMessage: quotedMessage,
                         fillAvailableSpace: !message.attachmentCounts.isEmpty,
                         scrolledId: $scrolledId

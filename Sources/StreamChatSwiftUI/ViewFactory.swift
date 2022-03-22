@@ -183,6 +183,16 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter userDisplayInfo: the author's display info.
     func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> UserAvatar
     
+    associatedtype QuotedUserAvatar: View
+    /// Creates the user avatar shown in quoted messages.
+    /// - Parameters:
+    ///  - userDisplayInfo: the author's display info.
+    ///  - size: the required size of the view.
+    func makeQuotedMessageAvatarView(
+        for userDisplayInfo: UserDisplayInfo,
+        size: CGSize
+    ) -> QuotedUserAvatar
+    
     associatedtype ChatHeaderViewModifier: ChatChannelHeaderViewModifier
     /// Creates the channel header view modifier.
     /// - Parameter channel: the displayed channel.

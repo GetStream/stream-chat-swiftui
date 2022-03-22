@@ -20,6 +20,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
     func test_quotedMessageViewContainer_snapshot() {
         // Given
         let view = QuotedMessageViewContainer(
+            factory: DefaultViewFactory.shared,
             quotedMessage: testMessage,
             fillAvailableSpace: true,
             scrolledId: .constant(nil)

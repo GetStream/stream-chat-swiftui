@@ -94,11 +94,12 @@ struct MessageView<Factory: ViewFactory>: View {
     }
 }
 
-public struct MessageTextView: View {
+public struct MessageTextView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     
+    var factory: Factory
     var message: ChatMessage
     var isFirst: Bool
     @Binding var scrolledId: String?
@@ -110,6 +111,7 @@ public struct MessageTextView: View {
         ) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
+                    factory: factory,
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
                     scrolledId: $scrolledId

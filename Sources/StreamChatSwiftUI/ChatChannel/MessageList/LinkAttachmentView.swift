@@ -9,10 +9,11 @@ import SwiftUI
 
 /// Container for presenting link attachments.
 /// In case of more than one link, only the first link is previewed.
-public struct LinkAttachmentContainer: View {
+public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     
+    var factory: Factory
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
@@ -27,6 +28,7 @@ public struct LinkAttachmentContainer: View {
         ) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
+                    factory: factory,
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
                     scrolledId: $scrolledId

@@ -7,10 +7,11 @@ import NukeUI
 import StreamChat
 import SwiftUI
 
-public struct ImageAttachmentContainer: View {
+public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     
+    var factory: Factory
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
@@ -26,6 +27,7 @@ public struct ImageAttachmentContainer: View {
         ) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 QuotedMessageViewContainer(
+                    factory: factory,
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
                     scrolledId: $scrolledId

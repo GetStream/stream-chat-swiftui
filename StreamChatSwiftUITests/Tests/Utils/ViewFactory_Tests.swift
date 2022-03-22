@@ -112,6 +112,21 @@ class ViewFactory_Tests: StreamChatTestCase {
         XCTAssert(view is MessageAvatarView)
     }
     
+    func test_viewFactory_makeQuotedMessageAvatarView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let userInfo = UserDisplayInfo(id: .unique, name: .unique, imageURL: URL(string: "https://example.com"))
+        
+        // When
+        let view = viewFactory.makeQuotedMessageAvatarView(
+            for: userInfo,
+            size: CGSize(width: 16, height: 16)
+        )
+        
+        // Then
+        XCTAssert(view is MessageAvatarView)
+    }
+    
     func test_viewFactory_makeChannelHeaderViewModifier() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -136,7 +151,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(view is MessageTextView)
+        XCTAssert(view is MessageTextView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeImageAttachmentView() {
@@ -152,7 +167,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(view is ImageAttachmentContainer)
+        XCTAssert(view is ImageAttachmentContainer<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeGiphyAttachmentView() {
@@ -184,7 +199,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(view is LinkAttachmentContainer)
+        XCTAssert(view is LinkAttachmentContainer<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeFileAttachmentView() {
@@ -200,7 +215,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(view is FileAttachmentsContainer)
+        XCTAssert(view is FileAttachmentsContainer<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeVideoAttachmentView() {
@@ -216,7 +231,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(view is VideoAttachmentsContainer)
+        XCTAssert(view is VideoAttachmentsContainer<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeDeletedMessageView() {
@@ -454,7 +469,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(view is QuotedMessageViewContainer)
+        XCTAssert(view is QuotedMessageViewContainer<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeEditedMessageHeaderView() {
