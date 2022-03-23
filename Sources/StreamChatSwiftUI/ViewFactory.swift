@@ -168,6 +168,10 @@ public protocol ViewFactory: AnyObject {
         channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
     ) -> ChannelListSearchResultItem
     
+    associatedtype ChannelListModifier: ViewModifier
+    /// Returns a view modifier applied to the channel list.
+    func makeChannelListModifier() -> ChannelListModifier
+    
     // MARK: - messages
     
     associatedtype ChannelDestination: View
@@ -177,6 +181,10 @@ public protocol ViewFactory: AnyObject {
     associatedtype MessageThreadDestination: View
     /// Returns a function that creats the message thread destination.
     func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> MessageThreadDestination
+    
+    associatedtype MessageListModifier: ViewModifier
+    /// Returns a view modifier applied to the message list.
+    func makeMessageListModifier() -> MessageListModifier
     
     associatedtype UserAvatar: View
     /// Creates the message avatar view.

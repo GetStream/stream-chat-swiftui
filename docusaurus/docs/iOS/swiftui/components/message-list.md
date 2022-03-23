@@ -55,6 +55,25 @@ let appearance = Appearance(colors: colors)
 streamChat = StreamChat(chatClient: chatClient, appearance: appearance)
 ```
 
+## Applying Custom Modifier
+
+You can customize the message list further, by applying your own custom view modifier. In order to do this, you need to implement the method `makeMessageListModifier`, which by default doesn't apply anything additional to the view. Here's an example how to add vertical padding to the message list:
+
+```swift
+func makeMessageListModifier() -> some ViewModifier {
+    VerticalPaddingViewModifier()
+}
+
+struct VerticalPaddingViewModifier: ViewModifier {
+    
+    public func body(content: Content) -> some View {
+        content
+            .padding(.vertical, 8)
+    }
+    
+}
+```
+
 ## Custom Message Container View
 
 However, if you are building a livestream app similar to Twitch, you will need a different type of user interface for the message views. The SwiftUI SDK allows swapping the message container view with your own implementation, without needing to implement the whole message list, the composer or the reactions. In order to do this, you need to implement the method `makeMessageContainerView` in the `ViewFactory` protocol.

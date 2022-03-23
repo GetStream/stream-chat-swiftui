@@ -133,6 +133,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         .id(listId)
                     }
+                    .modifier(factory.makeMessageListModifier())
                 }
                 .background(
                     factory.makeMessageListBackground(

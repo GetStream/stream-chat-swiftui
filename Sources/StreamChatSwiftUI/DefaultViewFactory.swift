@@ -162,6 +162,10 @@ extension ViewFactory {
         )
     }
     
+    public func makeChannelListModifier() -> some ViewModifier {
+        EmptyViewModifier()
+    }
+    
     // MARK: messages
     
     public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {
@@ -194,6 +198,10 @@ extension ViewFactory {
                 messageController: messageController
             )
         }
+    }
+    
+    public func makeMessageListModifier() -> some ViewModifier {
+        EmptyViewModifier()
     }
     
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {

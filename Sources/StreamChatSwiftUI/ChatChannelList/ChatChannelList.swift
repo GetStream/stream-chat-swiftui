@@ -166,6 +166,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
             
             factory.makeChannelListFooterView()
         }
+        .modifier(factory.makeChannelListModifier())
     }
 }
 

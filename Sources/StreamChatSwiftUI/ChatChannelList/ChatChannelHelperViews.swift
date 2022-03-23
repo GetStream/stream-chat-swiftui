@@ -70,6 +70,13 @@ struct ChatTitleView: View {
     }
 }
 
+struct EmptyViewModifier: ViewModifier {
+    
+    public func body(content: Content) -> some View {
+        content
+    }
+}
+
 extension CGSize {
     /// Default size of the avatar used in the channel list.
     public static var defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
