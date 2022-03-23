@@ -123,16 +123,15 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///
     /// - Parameter index: the currently displayed index.
     public func checkForChannels(index: Int) {
-        if index < (controller?.channels.count ?? 0) - 10 {
+        if index < (controller?.channels.count ?? 0) - 15 {
             return
         }
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            controller?.loadNextChannels { [weak self] _ in
+            controller?.loadNextChannels(limit: 30) { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
-                self.updateChannels()
             }
         }
     }
@@ -193,10 +192,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     // MARK: - ChatChannelListControllerDelegate
-    
-    public func controllerWillChangeChannels(_ controller: ChatChannelListController) {
-        handleChannelListChanges(controller)
-    }
     
     public func controller(
         _ controller: ChatChannelListController,

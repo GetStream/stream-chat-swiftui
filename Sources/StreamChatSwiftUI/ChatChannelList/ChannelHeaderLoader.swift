@@ -17,6 +17,9 @@ open class ChannelHeaderLoader: ObservableObject {
     /// Prevents image requests to be executed if they failed previously.
     private var failedImageLoads = Set<String>()
     
+    /// Batches loaded images for update, to improve performance.
+    private var scheduledUpdate = false
+
     /// Context provided utils.
     internal lazy var imageLoader = utils.imageLoader
     internal lazy var imageCDN = utils.imageCDN
@@ -29,7 +32,17 @@ open class ChannelHeaderLoader: ObservableObject {
     internal lazy var placeholder3 = images.userAvatarPlaceholder3
     internal lazy var placeholder4 = images.userAvatarPlaceholder4
     
-    @Published var loadedImages = [String: UIImage]()
+    var loadedImages = [String: UIImage]() {
+        willSet {
+            if !scheduledUpdate {
+                scheduledUpdate = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                    self?.objectWillChange.send()
+                    self?.scheduledUpdate = false
+                }
+            }
+        }
+    }
     
     public init() {}
     
@@ -38,7 +51,7 @@ open class ChannelHeaderLoader: ObservableObject {
     /// - Parameter channel: the provided channel.
     /// - Returns: the available image.
     public func image(for channel: ChatChannel) -> UIImage {
-        if let image = loadedImages[channel.cid.id] {
+        if let image = loadedImages[channel.cid.rawValue] {
             return image
         }
         
@@ -78,6 +91,10 @@ open class ChannelHeaderLoader: ObservableObject {
     // MARK: - private
     
     private func loadMergedAvatar(from channel: ChatChannel, urls: [URL]) {
+        if failedImageLoads.contains(channel.cid.rawValue) {
+            return
+        }
+        
         imageLoader.loadImages(
             from: urls,
             placeholders: [],
@@ -87,9 +104,13 @@ open class ChannelHeaderLoader: ObservableObject {
         ) { [weak self] images in
             guard let self = self else { return }
             DispatchQueue.global(qos: .userInteractive).async {
-                let image = self.channelAvatarsMerger.createMergedAvatar(from: images) ?? self.placeholder2
+                let image = self.channelAvatarsMerger.createMergedAvatar(from: images)
                 DispatchQueue.main.async {
-                    self.loadedImages[channel.cid.id] = image
+                    if let image = image {
+                        self.loadedImages[channel.cid.rawValue] = image
+                    } else {
+                        self.failedImageLoads.insert(channel.cid.rawValue)
+                    }
                 }
             }
         }
@@ -99,7 +120,7 @@ open class ChannelHeaderLoader: ObservableObject {
         for channel: ChatChannel,
         from url: URL
     ) {
-        if failedImageLoads.contains(channel.cid.id) {
+        if failedImageLoads.contains(channel.cid.rawValue) {
             return
         }
         
@@ -113,10 +134,10 @@ open class ChannelHeaderLoader: ObservableObject {
             switch result {
             case let .success(image):
                 DispatchQueue.main.async {
-                    self.loadedImages[channel.cid.id] = image
+                    self.loadedImages[channel.cid.rawValue] = image
                 }
             case let .failure(error):
-                self.failedImageLoads.insert(channel.cid.id)
+                self.failedImageLoads.insert(channel.cid.rawValue)
                 log.error("error loading image: \(error.localizedDescription)")
             }
         }

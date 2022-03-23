@@ -151,7 +151,9 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         }
                  
         if horizontalTranslation != 0 {
-            swipedChannelId = channel.id
+            if swipedChannelId != channel.id {
+                swipedChannelId = channel.id
+            }
             offsetX = horizontalTranslation
         } else {
             offsetX = 0

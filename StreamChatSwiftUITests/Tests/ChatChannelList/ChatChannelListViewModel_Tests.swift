@@ -60,7 +60,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
     func test_channelListVM_onChannelAppear_loadNextChannelsNotCalled() {
         // Given
         var channels = [ChatChannel]()
-        for _ in 0..<15 {
+        for _ in 0..<20 {
             channels.append(ChatChannel.mockDMChannel())
         }
         let channelListController = makeChannelListController(channels: channels)
