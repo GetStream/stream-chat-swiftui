@@ -70,6 +70,8 @@ public struct ColorPalette {
     public lazy var messageCurrentUserBackground: [UIColor] = [background6]
     public lazy var messageCurrentUserEmphemeralBackground: [UIColor] = [background8]
     public lazy var messageOtherUserBackground: [UIColor] = [background8]
+    public lazy var messageCurrentUserTextColor: UIColor = text
+    public lazy var messageOtherUserTextColor: UIColor = text
 }
 
 // Those colors are default defined stream constants, which are fallback values if you don't implement your color theme.

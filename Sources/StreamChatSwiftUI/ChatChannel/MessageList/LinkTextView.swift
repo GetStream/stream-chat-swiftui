@@ -9,6 +9,7 @@ import UIKit
 struct LinkTextView: UIViewRepresentable {
     var text: String
     var width: CGFloat
+    var textColor: UIColor
     
     func makeUIView(context: Context) -> UITextView {
         let textView = OnlyLinkTappableTextView()
@@ -23,6 +24,7 @@ struct LinkTextView: UIViewRepresentable {
         textView.font = UIFont.preferredFont(forTextStyle: .body)
         textView.adjustsFontForContentSizeCategory = true
         textView.text = text
+        textView.textColor = textColor
         return textView
     }
     

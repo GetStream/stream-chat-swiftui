@@ -125,7 +125,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             
             Text(message.text)
                 .standardPadding()
-                .foregroundColor(Color(colors.text))
+                .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }
         .messageBubble(for: message, isFirst: isFirst)

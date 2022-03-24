@@ -123,3 +123,16 @@ struct TopLeftView<Content: View>: View {
         }
     }
 }
+
+extension View {
+    
+    func textColor(for message: ChatMessage) -> Color {
+        @Injected(\.colors) var colors
+        
+        if message.isSentByCurrentUser {
+            return Color(colors.messageCurrentUserTextColor)
+        } else {
+            return Color(colors.messageOtherUserTextColor)
+        }
+    }
+}

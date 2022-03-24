@@ -44,6 +44,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
 
                             HStack {
                                 Text(message.text)
+                                    .foregroundColor(textColor(for: message))
                                     .standardPadding()
                                 Spacer()
                             }

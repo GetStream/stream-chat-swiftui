@@ -50,6 +50,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                     HStack {
                         Text(message.text)
                             .standardPadding()
+                            .foregroundColor(textColor(for: message))
                         Spacer()
                     }
                     .background(Color(backgroundColor))

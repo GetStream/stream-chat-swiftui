@@ -106,6 +106,7 @@ struct QuotedMessageView: View {
             }
             
             Text(textForMessage)
+                .foregroundColor(textColor(for: quotedMessage))
                 .lineLimit(3)
                 .font(fonts.footnote)
             

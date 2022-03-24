@@ -38,7 +38,8 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             let size = message.text.frameSize(maxWidth: width - 2 * padding)
             LinkTextView(
                 text: message.text,
-                width: width - 2 * padding
+                width: width - 2 * padding,
+                textColor: UIColor(textColor(for: message))
             )
             .standardPadding()
             .frame(width: width, height: size.height + 2 * padding)
