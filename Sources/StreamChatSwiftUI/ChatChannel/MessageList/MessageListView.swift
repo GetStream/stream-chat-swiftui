@@ -167,6 +167,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
                 .flippedUpsideDown()
                 .frame(minWidth: self.width, minHeight: height)
+                .clipped()
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId = scrolledId {
                         if scrolledId == messages.first?.messageId {
