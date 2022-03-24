@@ -41,6 +41,11 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     public var channel: ChatChannel
     public var headerImage: UIImage
     
+    public init(channel: ChatChannel, headerImage: UIImage) {
+        self.channel = channel
+        self.headerImage = headerImage
+    }
+    
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             VStack(spacing: 2) {

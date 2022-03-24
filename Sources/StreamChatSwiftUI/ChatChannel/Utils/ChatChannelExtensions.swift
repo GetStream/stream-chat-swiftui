@@ -11,7 +11,7 @@ extension ChatChannel {
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
     /// - Returns: the online info text string.
-    func onlineInfoText(currentUserId: String) -> String {
+    public func onlineInfoText(currentUserId: String) -> String {
         if isDirectMessageChannel {
             guard let member = lastActiveMembers
                 .first(where: { $0.id != currentUserId })
@@ -36,7 +36,7 @@ extension ChatChannel {
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
     /// - Returns: Array of users that are currently typing.
-    func currentlyTypingUsersFiltered(currentUserId: UserId?) -> [ChatUser] {
+    public func currentlyTypingUsersFiltered(currentUserId: UserId?) -> [ChatUser] {
         currentlyTypingUsers.filter { user in
             user.id != currentUserId
         }
@@ -46,7 +46,7 @@ extension ChatChannel {
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
     /// - Returns: the typing indicator string.
-    func typingIndicatorString(currentUserId: UserId?) -> String {
+    public func typingIndicatorString(currentUserId: UserId?) -> String {
         let typingUsers = currentlyTypingUsersFiltered(currentUserId: currentUserId)
         if let user = typingUsers.first(where: { user in user.name != nil }), let name = user.name {
             return L10n.MessageList.TypingIndicator.users(name, typingUsers.count - 1)
