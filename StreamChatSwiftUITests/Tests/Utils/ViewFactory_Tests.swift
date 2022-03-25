@@ -618,6 +618,17 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(modifier is EmptyViewModifier)
     }
+    
+    func test_viewFactory_makeMessageViewModifier() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let modifier = viewFactory.makeMessageViewModifier()
+        
+        // Then
+        XCTAssert(modifier is EmptyViewModifier)
+    }
 }
 
 extension ChannelAction: Equatable {

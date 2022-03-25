@@ -57,6 +57,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 }
             }
         }
+        .modifier(factory.makeMessageViewModifier())
         .messageBubble(for: message, isFirst: isFirst)
         .fullScreenCover(isPresented: $galleryShown, onDismiss: {
             self.selectedIndex = 0

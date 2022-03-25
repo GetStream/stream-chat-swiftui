@@ -29,12 +29,14 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                 )
                 
                 QuotedMessageView(
+                    factory: factory,
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: fillAvailableSpace,
                     forceLeftToRight: forceLeftToRight
                 )
             } else {
                 QuotedMessageView(
+                    factory: factory,
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: fillAvailableSpace,
                     forceLeftToRight: forceLeftToRight
@@ -54,7 +56,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
 }
 
 /// View for the quoted message.
-public struct QuotedMessageView: View {
+public struct QuotedMessageView<Factory: ViewFactory>: View {
 
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
@@ -62,15 +64,18 @@ public struct QuotedMessageView: View {
     
     private let attachmentWidth: CGFloat = 36
     
+    public var factory: Factory
     public var quotedMessage: ChatMessage
     public var fillAvailableSpace: Bool
     public var forceLeftToRight: Bool
     
     public init(
+        factory: Factory,
         quotedMessage: ChatMessage,
         fillAvailableSpace: Bool,
         forceLeftToRight: Bool
     ) {
+        self.factory = factory
         self.quotedMessage = quotedMessage
         self.fillAvailableSpace = fillAvailableSpace
         self.forceLeftToRight = forceLeftToRight
@@ -126,6 +131,7 @@ public struct QuotedMessageView: View {
         }
         .id(quotedMessage.messageId)
         .padding(.all, 8)
+        .modifier(factory.makeMessageViewModifier())
         .messageBubble(
             for: quotedMessage,
             isFirst: true,

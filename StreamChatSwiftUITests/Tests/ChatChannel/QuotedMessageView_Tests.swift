@@ -34,6 +34,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
     func test_quotedMessageView_snapshot() {
         // Given
         let view = QuotedMessageView(
+            factory: DefaultViewFactory.shared,
             quotedMessage: testMessage,
             fillAvailableSpace: true,
             forceLeftToRight: true

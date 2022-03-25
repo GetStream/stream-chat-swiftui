@@ -204,6 +204,10 @@ extension ViewFactory {
         EmptyViewModifier()
     }
     
+    public func makeMessageViewModifier() -> some ViewModifier {
+        EmptyViewModifier()
+    }
+    
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
         MessageAvatarView(avatarURL: userDisplayInfo.imageURL)
     }

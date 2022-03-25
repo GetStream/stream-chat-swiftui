@@ -128,6 +128,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }
+        .modifier(factory.makeMessageViewModifier())
         .messageBubble(for: message, isFirst: isFirst)
     }
 }
@@ -155,6 +156,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                     Text(message.text)
                         .font(fonts.emoji)
                 }
+                .modifier(factory.makeMessageViewModifier())
                 .messageBubble(for: message, isFirst: isFirst)
             } else {
                 Text(message.text)

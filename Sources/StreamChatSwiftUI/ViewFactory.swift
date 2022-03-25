@@ -186,6 +186,10 @@ public protocol ViewFactory: AnyObject {
     /// Returns a view modifier applied to the message list.
     func makeMessageListModifier() -> MessageListModifier
     
+    associatedtype MessageViewModifier: ViewModifier
+    /// Returns a view modifier applied to the message view.
+    func makeMessageViewModifier() -> MessageViewModifier
+    
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
     /// - Parameter userDisplayInfo: the author's display info.

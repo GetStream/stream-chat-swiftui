@@ -53,6 +53,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             }
         }
         .padding(.bottom, 8)
+        .modifier(factory.makeMessageViewModifier())
         .messageBubble(
             for: message,
             isFirst: isFirst,
