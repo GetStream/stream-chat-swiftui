@@ -54,19 +54,29 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
 }
 
 /// View for the quoted message.
-struct QuotedMessageView: View {
-    
+public struct QuotedMessageView: View {
+
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
     private let attachmentWidth: CGFloat = 36
     
-    var quotedMessage: ChatMessage
-    var fillAvailableSpace: Bool
-    var forceLeftToRight: Bool
+    public var quotedMessage: ChatMessage
+    public var fillAvailableSpace: Bool
+    public var forceLeftToRight: Bool
     
-    var body: some View {
+    public init(
+        quotedMessage: ChatMessage,
+        fillAvailableSpace: Bool,
+        forceLeftToRight: Bool
+    ) {
+        self.quotedMessage = quotedMessage
+        self.fillAvailableSpace = fillAvailableSpace
+        self.forceLeftToRight = forceLeftToRight
+    }
+    
+    public var body: some View {
         HStack(alignment: .top) {
             if !quotedMessage.attachmentCounts.isEmpty {
                 ZStack {

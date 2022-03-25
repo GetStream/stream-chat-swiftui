@@ -667,12 +667,19 @@ public protocol ViewFactory: AnyObject {
         quotedMessage: Binding<ChatMessage?>
     ) -> QuotedMessageHeaderViewType
     
-    associatedtype QuotedMessageComposerViewType: View
-    /// Creates the quoted message shown in a composer view.
-    /// - Parameter quotedMessage: the quoted message shown in the composer input.
-    func makeQuotedMessageComposerView(
-        quotedMessage: ChatMessage
-    ) -> QuotedMessageComposerViewType
+    associatedtype QuotedMessageViewType: View
+    /// Creates the quoted message view, shown in the message list and the composer.
+    /// - Parameters:
+    ///  - quotedMessage: the quoted message.
+    ///  - fillAvailableSpace: whether the quoted container should take all the available space.
+    ///  - isInComposer: whether the quoted message is shown in the composer.
+    ///  - scrolledId: binding of the scroll id, use it to scroll to the original message.
+    func makeQuotedMessageView(
+        quotedMessage: ChatMessage,
+        fillAvailableSpace: Bool,
+        isInComposer: Bool,
+        scrolledId: Binding<String?>
+    ) -> QuotedMessageViewType
     
     associatedtype EditedMessageHeaderViewType: View
     /// Creates the edited message header view in the composer.

@@ -680,15 +680,18 @@ extension ViewFactory {
         QuotedMessageHeaderView(quotedMessage: quotedMessage)
     }
     
-    public func makeQuotedMessageComposerView(
-        quotedMessage: ChatMessage
+    public func makeQuotedMessageView(
+        quotedMessage: ChatMessage,
+        fillAvailableSpace: Bool,
+        isInComposer: Bool,
+        scrolledId: Binding<String?>
     ) -> some View {
         QuotedMessageViewContainer(
             factory: self,
             quotedMessage: quotedMessage,
-            fillAvailableSpace: true,
-            forceLeftToRight: true,
-            scrolledId: .constant(nil)
+            fillAvailableSpace: fillAvailableSpace,
+            forceLeftToRight: isInComposer,
+            scrolledId: scrolledId
         )
     }
     

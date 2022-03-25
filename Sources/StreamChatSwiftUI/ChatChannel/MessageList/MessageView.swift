@@ -115,10 +115,10 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
-                QuotedMessageViewContainer(
-                    factory: factory,
+                factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    isInComposer: false,
                     scrolledId: $scrolledId
                 )
             }
@@ -145,10 +145,10 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
         ZStack {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 VStack(spacing: 0) {
-                    QuotedMessageViewContainer(
-                        factory: factory,
+                    factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,
                         fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
                         scrolledId: $scrolledId
                     )
                     

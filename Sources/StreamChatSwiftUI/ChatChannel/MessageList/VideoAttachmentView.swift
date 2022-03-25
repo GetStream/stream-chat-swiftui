@@ -19,10 +19,10 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
         VStack {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 VStack {
-                    QuotedMessageViewContainer(
-                        factory: factory,
+                    factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,
                         fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
                         scrolledId: $scrolledId
                     )
                     

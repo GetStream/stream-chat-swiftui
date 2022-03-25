@@ -27,10 +27,10 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
-                QuotedMessageViewContainer(
-                    factory: factory,
+                factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    isInComposer: false,
                     scrolledId: $scrolledId
                 )
             }

@@ -464,8 +464,11 @@ class ViewFactory_Tests: StreamChatTestCase {
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeQuotedMessageComposerView(
-            quotedMessage: message
+        let view = viewFactory.makeQuotedMessageView(
+            quotedMessage: message,
+            fillAvailableSpace: true,
+            isInComposer: false,
+            scrolledId: .constant(nil)
         )
         
         // Then

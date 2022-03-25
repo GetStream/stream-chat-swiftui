@@ -211,8 +211,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack {
             if let quotedMessage = quotedMessage.wrappedValue {
-                factory.makeQuotedMessageComposerView(
-                    quotedMessage: quotedMessage
+                factory.makeQuotedMessageView(
+                    quotedMessage: quotedMessage,
+                    fillAvailableSpace: true,
+                    isInComposer: true,
+                    scrolledId: .constant(nil)
                 )
             }
             

@@ -18,10 +18,10 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(alignment: message.alignmentInBubble) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
-                QuotedMessageViewContainer(
-                    factory: factory,
+                factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    isInComposer: false,
                     scrolledId: $scrolledId
                 )
             }
