@@ -123,6 +123,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///
     /// - Parameter index: the currently displayed index.
     public func checkForChannels(index: Int) {
+        checkTabBarVisibilty()
+        
         if index < (controller?.channels.count ?? 0) - 15 {
             return
         }
@@ -328,6 +330,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private func setInitialChannelIfSplitView() {
         if isIPad && deeplinkChannel == nil {
             selectedChannel = channels.first?.channelSelectionInfo
+        }
+    }
+    
+    private func checkTabBarVisibilty() {
+        guard #available(iOS 15, *) else { return }
+        if hideTabBar == true {
+            hideTabBar = false
         }
     }
 }

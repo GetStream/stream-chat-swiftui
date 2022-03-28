@@ -103,6 +103,11 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     }
                 }
             }
+            .onDisappear(perform: {
+                if viewModel.selectedChannel != nil {
+                    viewModel.hideTabBar = true
+                }
+            })
             .background(
                 viewFactory.makeChannelListBackground(colors: colors)
             )
