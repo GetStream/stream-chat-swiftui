@@ -11,13 +11,11 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     
     @StateObject private var viewModel: ChatChannelListViewModel
-    @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
     @State private var tabBar: UITabBar?
     
     private let viewFactory: Factory
     private let title: String
     private var onItemTap: (ChatChannel) -> Void
-    private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     
     public init(
         viewFactory: Factory,
@@ -43,8 +41,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 channelListVM.selectedChannel = channel.channelSelectionInfo
             }
         }
-        
-        channelDestination = viewFactory.makeChannelDestination()
     }
     
     public var body: some View {
@@ -58,48 +54,14 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     ZStack {
                         ChannelDeepLink(
                             deeplinkChannel: $viewModel.deeplinkChannel,
-                            channelDestination: channelDestination
+                            channelDestination: viewFactory.makeChannelDestination()
                         )
                         
-                        VStack {
-                            viewFactory.makeChannelListTopView(
-                                searchText: $viewModel.searchText
-                            )
-                            
-                            if viewModel.isSearching {
-                                SearchResultsView(
-                                    factory: viewFactory,
-                                    selectedChannel: $viewModel.selectedChannel,
-                                    searchResults: viewModel.searchResults,
-                                    loadingSearchResults: viewModel.loadingSearchResults,
-                                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                                    channelNaming: viewModel.name(forChannel:),
-                                    imageLoader: channelHeaderLoader.image(for:),
-                                    onSearchResultTap: { searchResult in
-                                        viewModel.selectedChannel = searchResult
-                                    },
-                                    onItemAppear: viewModel.loadAdditionalSearchResults(index:)
-                                )
-                            } else {
-                                ChannelList(
-                                    factory: viewFactory,
-                                    channels: viewModel.channels,
-                                    selectedChannel: $viewModel.selectedChannel,
-                                    swipedChannelId: $viewModel.swipedChannelId,
-                                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                                    imageLoader: channelHeaderLoader.image(for:),
-                                    onItemTap: onItemTap,
-                                    onItemAppear: viewModel.checkForChannels(index:),
-                                    channelNaming: viewModel.name(forChannel:),
-                                    channelDestination: channelDestination,
-                                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
-                                    trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                                    leadingSwipeButtonTapped: { _ in }
-                                )
-                            }
-                            
-                            viewFactory.makeChannelListStickyFooterView()
-                        }
+                        ChatChannelListContentView(
+                            viewFactory: viewFactory,
+                            viewModel: viewModel,
+                            onItemTap: onItemTap
+                        )
                     }
                 }
             }
@@ -187,5 +149,71 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
 extension ChatChannelListView where Factory == DefaultViewFactory {
     public init() {
         self.init(viewFactory: DefaultViewFactory.shared)
+    }
+}
+
+public struct ChatChannelListContentView<Factory: ViewFactory>: View {
+    
+    private var viewFactory: Factory
+    @ObservedObject private var viewModel: ChatChannelListViewModel
+    @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
+    private var onItemTap: (ChatChannel) -> Void
+    
+    public init(
+        viewFactory: Factory,
+        viewModel: ChatChannelListViewModel,
+        onItemTap: ((ChatChannel) -> Void)? = nil
+    ) {
+        self.viewFactory = viewFactory
+        self.viewModel = viewModel
+        if let onItemTap = onItemTap {
+            self.onItemTap = onItemTap
+        } else {
+            self.onItemTap = { channel in
+                viewModel.selectedChannel = channel.channelSelectionInfo
+            }
+        }
+    }
+    
+    public var body: some View {
+        VStack {
+            viewFactory.makeChannelListTopView(
+                searchText: $viewModel.searchText
+            )
+            
+            if viewModel.isSearching {
+                SearchResultsView(
+                    factory: viewFactory,
+                    selectedChannel: $viewModel.selectedChannel,
+                    searchResults: viewModel.searchResults,
+                    loadingSearchResults: viewModel.loadingSearchResults,
+                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                    channelNaming: viewModel.name(forChannel:),
+                    imageLoader: channelHeaderLoader.image(for:),
+                    onSearchResultTap: { searchResult in
+                        viewModel.selectedChannel = searchResult
+                    },
+                    onItemAppear: viewModel.loadAdditionalSearchResults(index:)
+                )
+            } else {
+                ChannelList(
+                    factory: viewFactory,
+                    channels: viewModel.channels,
+                    selectedChannel: $viewModel.selectedChannel,
+                    swipedChannelId: $viewModel.swipedChannelId,
+                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                    imageLoader: channelHeaderLoader.image(for:),
+                    onItemTap: onItemTap,
+                    onItemAppear: viewModel.checkForChannels(index:),
+                    channelNaming: viewModel.name(forChannel:),
+                    channelDestination: viewFactory.makeChannelDestination(),
+                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                    trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
+                    leadingSwipeButtonTapped: { _ in }
+                )
+            }
+            
+            viewFactory.makeChannelListStickyFooterView()
+        }
     }
 }
