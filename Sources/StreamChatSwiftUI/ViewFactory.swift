@@ -188,7 +188,8 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype MessageViewModifier: ViewModifier
     /// Returns a view modifier applied to the message view.
-    func makeMessageViewModifier() -> MessageViewModifier
+    /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
+    func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
     
     associatedtype UserAvatar: View
     /// Creates the message avatar view.

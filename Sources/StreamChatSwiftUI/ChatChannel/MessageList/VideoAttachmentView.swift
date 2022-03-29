@@ -31,8 +31,14 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                         width: width
                     )
                 }
-                .modifier(factory.makeMessageViewModifier())
-                .messageBubble(for: message, isFirst: false)
+                .modifier(
+                    factory.makeMessageViewModifier(
+                        for: MessageModifierInfo(
+                            message: message,
+                            isFirst: false
+                        )
+                    )
+                )
             } else {
                 VideoAttachmentsList(
                     message: message,

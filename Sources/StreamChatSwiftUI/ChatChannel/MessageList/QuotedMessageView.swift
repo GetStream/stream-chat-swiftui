@@ -131,13 +131,16 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         }
         .id(quotedMessage.messageId)
         .padding(.all, 8)
-        .modifier(factory.makeMessageViewModifier())
-        .messageBubble(
-            for: quotedMessage,
-            isFirst: true,
-            backgroundColor: bubbleBackground,
-            cornerRadius: 12,
-            forceLeftToRight: forceLeftToRight
+        .modifier(
+            factory.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: quotedMessage,
+                    isFirst: true,
+                    injectedBackgroundColor: bubbleBackground,
+                    cornerRadius: 12,
+                    forceLeftToRight: forceLeftToRight
+                )
+            )
         )
     }
     

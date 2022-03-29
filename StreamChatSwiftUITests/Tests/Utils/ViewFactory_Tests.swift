@@ -624,10 +624,15 @@ class ViewFactory_Tests: StreamChatTestCase {
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let modifier = viewFactory.makeMessageViewModifier()
+        let modifier = viewFactory.makeMessageViewModifier(
+            for: MessageModifierInfo(
+                message: message,
+                isFirst: false
+            )
+        )
         
         // Then
-        XCTAssert(modifier is EmptyViewModifier)
+        XCTAssert(modifier is MessageBubbleModifier)
     }
 }
 

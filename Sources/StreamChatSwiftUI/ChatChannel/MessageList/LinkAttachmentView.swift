@@ -53,11 +53,14 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             }
         }
         .padding(.bottom, 8)
-        .modifier(factory.makeMessageViewModifier())
-        .messageBubble(
-            for: message,
-            isFirst: isFirst,
-            backgroundColor: colors.highlightedAccentBackground1
+        .modifier(
+            factory.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: message,
+                    isFirst: isFirst,
+                    injectedBackgroundColor: colors.highlightedAccentBackground1
+                )
+            )
         )
     }
 }

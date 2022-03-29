@@ -204,8 +204,14 @@ extension ViewFactory {
         EmptyViewModifier()
     }
     
-    public func makeMessageViewModifier() -> some ViewModifier {
-        EmptyViewModifier()
+    public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
+        MessageBubbleModifier(
+            message: messageModifierInfo.message,
+            isFirst: messageModifierInfo.isFirst,
+            injectedBackgroundColor: messageModifierInfo.injectedBackgroundColor,
+            cornerRadius: messageModifierInfo.cornerRadius,
+            forceLeftToRight: messageModifierInfo.forceLeftToRight
+        )
     }
     
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {

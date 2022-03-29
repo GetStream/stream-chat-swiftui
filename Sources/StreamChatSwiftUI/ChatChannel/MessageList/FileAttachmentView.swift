@@ -54,8 +54,14 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
             }
             .padding(.all, 4)
         }
-        .modifier(factory.makeMessageViewModifier())
-        .messageBubble(for: message, isFirst: isFirst)
+        .modifier(
+            factory.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: message,
+                    isFirst: isFirst
+                )
+            )
+        )
     }
 }
 

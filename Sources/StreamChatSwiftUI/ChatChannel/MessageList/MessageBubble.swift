@@ -5,15 +5,53 @@
 import StreamChat
 import SwiftUI
 
+/// Contains info needed for a modifier to be applied to the message view.
+public struct MessageModifierInfo {
+    
+    public var message: ChatMessage
+    public var isFirst: Bool
+    public var injectedBackgroundColor: UIColor?
+    public var cornerRadius: CGFloat = 18
+    public var forceLeftToRight = false
+    
+    public init(
+        message: ChatMessage,
+        isFirst: Bool,
+        injectedBackgroundColor: UIColor? = nil,
+        cornerRadius: CGFloat = 18,
+        forceLeftToRight: Bool = false
+    ) {
+        self.message = message
+        self.isFirst = isFirst
+        self.injectedBackgroundColor = injectedBackgroundColor
+        self.cornerRadius = cornerRadius
+        self.forceLeftToRight = forceLeftToRight
+    }
+}
+
 /// Modifier that enables message bubble container.
 public struct MessageBubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
         
-    var message: ChatMessage
-    var isFirst: Bool
-    var injectedBackgroundColor: UIColor?
-    var cornerRadius: CGFloat = 18
-    var forceLeftToRight = false
+    public var message: ChatMessage
+    public var isFirst: Bool
+    public var injectedBackgroundColor: UIColor?
+    public var cornerRadius: CGFloat = 18
+    public var forceLeftToRight = false
+    
+    public init(
+        message: ChatMessage,
+        isFirst: Bool,
+        injectedBackgroundColor: UIColor? = nil,
+        cornerRadius: CGFloat = 18,
+        forceLeftToRight: Bool = false
+    ) {
+        self.message = message
+        self.isFirst = isFirst
+        self.injectedBackgroundColor = injectedBackgroundColor
+        self.cornerRadius = cornerRadius
+        self.forceLeftToRight = forceLeftToRight
+    }
     
     public func body(content: Content) -> some View {
         content
