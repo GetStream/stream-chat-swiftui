@@ -501,6 +501,10 @@ extension ViewFactory {
         }
     }
     
+    public func makeComposerViewModifier() -> some ViewModifier {
+        EmptyViewModifier()
+    }
+    
     public func makeAttachmentPickerView(
         attachmentPickerState: Binding<AttachmentPickerState>,
         filePickerShown: Binding<Bool>,

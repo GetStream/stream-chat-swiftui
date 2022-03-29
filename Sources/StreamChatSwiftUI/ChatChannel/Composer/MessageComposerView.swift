@@ -163,6 +163,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .animation(nil) : nil,
             alignment: .bottom
         )
+        .modifier(factory.makeComposerViewModifier())
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
         }

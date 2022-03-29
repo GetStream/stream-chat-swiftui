@@ -475,6 +475,10 @@ public protocol ViewFactory: AnyObject {
         onTap: @escaping () -> Void
     ) -> TrailingComposerViewType
     
+    associatedtype ComposerViewModifier: ViewModifier
+    /// Creates the composer view modifier, that's applied to the whole composer view.
+    func makeComposerViewModifier() -> ComposerViewModifier
+    
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.
     /// - Parameters:
