@@ -44,7 +44,7 @@ extension KeyboardReadable {
     public var keyboardHeight: AnyPublisher<CGFloat, Never> {
         NotificationCenter
             .default
-            .publisher(for: UIResponder.keyboardWillShowNotification)
+            .publisher(for: UIResponder.keyboardDidShowNotification)
             .map { notification in
                 if let keyboardFrame: NSValue = notification
                     .userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {

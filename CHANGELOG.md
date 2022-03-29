@@ -3,7 +3,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Implement message resend functionality
+- Custom modifiers support for the message view and the composer
+- Custom modifiers support for the channel list and the message list
+- Changing text color per message sender
+
+### 🐞 Fixed
+- Improved TabView appeareance animation
+- Channel list performance improvements
+- Jumbo emoji reply not shown correctly
+- Send message animation improvements
+
 ### 🔄 Changed
+- Method for creating custom quoted message view
 
 # [4.12.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.12.0)
 _March 17, 2022_
