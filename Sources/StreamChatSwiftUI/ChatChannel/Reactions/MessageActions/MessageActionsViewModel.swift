@@ -22,9 +22,7 @@ open class MessageActionsViewModel: ObservableObject {
 
 /// Model describing a message action.
 public struct MessageAction: Identifiable, Equatable {
-    public var id: String {
-        "\(title)-\(iconName)"
-    }
+    public var id: String
 
     public let title: String
     public let iconName: String
@@ -34,12 +32,14 @@ public struct MessageAction: Identifiable, Equatable {
     public var navigationDestination: AnyView?
     
     public init(
+        id: String = UUID().uuidString,
         title: String,
         iconName: String,
         action: @escaping () -> Void,
         confirmationPopup: ConfirmationPopup?,
         isDestructive: Bool
     ) {
+        self.id = id
         self.title = title
         self.iconName = iconName
         self.action = action

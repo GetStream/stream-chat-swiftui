@@ -159,6 +159,7 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
         let copyAction = MessageAction(
+            id: MessageActionId.copy,
             title: L10n.Message.Actions.copy,
             iconName: "icn_copy",
             action: {
@@ -183,6 +184,7 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
         let editAction = MessageAction(
+            id: MessageActionId.edit,
             title: L10n.Message.Actions.edit,
             iconName: "icn_edit",
             action: {
@@ -228,6 +230,7 @@ extension MessageAction {
         }
         
         let pinAction = MessageAction(
+            id: MessageActionId.pin,
             title: L10n.Message.Actions.pin,
             iconName: "icn_pin",
             action: pinMessage,
@@ -266,6 +269,7 @@ extension MessageAction {
         }
         
         let pinAction = MessageAction(
+            id: MessageActionId.unpin,
             title: L10n.Message.Actions.unpin,
             iconName: "pin.slash",
             action: pinMessage,
@@ -282,6 +286,7 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
         let replyAction = MessageAction(
+            id: MessageActionId.reply,
             title: L10n.Message.Actions.inlineReply,
             iconName: "icn_inline_reply",
             action: {
@@ -305,6 +310,7 @@ extension MessageAction {
         channel: ChatChannel
     ) -> MessageAction {
         var replyThread = MessageAction(
+            id: MessageActionId.threadReply,
             title: L10n.Message.Actions.threadReply,
             iconName: "icn_thread_reply",
             action: {},
@@ -351,6 +357,7 @@ extension MessageAction {
         )
         
         let deleteMessage = MessageAction(
+            id: MessageActionId.delete,
             title: L10n.Message.Actions.delete,
             iconName: "trash",
             action: deleteAction,
@@ -395,6 +402,7 @@ extension MessageAction {
         )
         
         let flagMessage = MessageAction(
+            id: MessageActionId.flag,
             title: L10n.Message.Actions.flag,
             iconName: "flag",
             action: flagAction,
@@ -430,6 +438,7 @@ extension MessageAction {
         }
         
         let muteUser = MessageAction(
+            id: MessageActionId.mute,
             title: L10n.Message.Actions.userMute,
             iconName: "speaker.slash",
             action: muteAction,
@@ -465,6 +474,7 @@ extension MessageAction {
         }
         
         let unmuteUser = MessageAction(
+            id: MessageActionId.unmute,
             title: L10n.Message.Actions.userUnmute,
             iconName: "speaker.wave.1",
             action: unmuteAction,
@@ -503,6 +513,7 @@ extension MessageAction {
         }
         
         let messageAction = MessageAction(
+            id: MessageActionId.resend,
             title: L10n.Message.Actions.resend,
             iconName: "icn_resend",
             action: resendAction,
@@ -571,4 +582,19 @@ extension MessageAction {
         
         return messageActions
     }
+}
+
+/// Message action identifiers used in the SDK.
+public enum MessageActionId {
+    public static let copy = "copy_message_action"
+    public static let reply = "reply_message_action"
+    public static let threadReply = "thread_message_action"
+    public static let edit = "edit_message_action"
+    public static let delete = "delete_message_action"
+    public static let mute = "mute_message_action"
+    public static let unmute = "unmute_message_action"
+    public static let flag = "flag_message_action"
+    public static let pin = "pin_message_action"
+    public static let unpin = "unpin_message_action"
+    public static let resend = "resend_message_action"
 }
