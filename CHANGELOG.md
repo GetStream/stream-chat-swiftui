@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.13.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.13.0)
+_March 30, 2022_
+
 ### ✅ Added
 - Implement message resend functionality
 - Custom modifiers support for the message view and the composer
