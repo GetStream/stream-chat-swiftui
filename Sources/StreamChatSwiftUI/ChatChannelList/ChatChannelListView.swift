@@ -69,6 +69,9 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 if viewModel.selectedChannel != nil {
                     viewModel.hideTabBar = true
                 }
+                if viewModel.swipedChannelId != nil {
+                    viewModel.swipedChannelId = nil
+                }
             })
             .background(
                 viewFactory.makeChannelListBackground(colors: colors)

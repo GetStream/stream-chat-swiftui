@@ -56,4 +56,9 @@ public struct MessageAction: Identifiable, Equatable {
 public struct MessageActionInfo {
     let message: ChatMessage
     let identifier: String
+    
+    public init(message: ChatMessage, identifier: String) {
+        self.message = message
+        self.identifier = identifier
+    }
 }
