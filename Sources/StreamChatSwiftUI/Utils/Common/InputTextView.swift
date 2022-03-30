@@ -126,4 +126,16 @@ class InputTextView: UITextView {
             layoutIfNeeded()
         }
     }
+    
+    override open func paste(_ sender: Any?) {
+        super.paste(sender)
+        handleTextChange()
+        
+        // This is due to bug in UITextView where the scroll sometimes disables
+        // when a very long text is pasted in it.
+        // Doing this ensures that it doesn't happen
+        // Reference: https://stackoverflow.com/a/33194525/3825788
+        isScrollEnabled = false
+        isScrollEnabled = true
+    }
 }
