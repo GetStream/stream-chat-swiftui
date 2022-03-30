@@ -22,6 +22,7 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.isEditable = editable
         inputTextView.layoutManager.delegate = context.coordinator
         inputTextView.placeholderLabel.text = placeholder
+        inputTextView.contentInsetAdjustmentBehavior = .never
         
         return inputTextView
     }
