@@ -7,7 +7,7 @@ import UIKit
 struct TextSizeConstants {
     static let minimumHeight = 34.0
     static let maximumHeight = 76.0
-    static let minThreshold = 40.0
+    static let minThreshold = 38.0
 }
 
 class InputTextView: UITextView {
@@ -31,6 +31,12 @@ class InputTextView: UITextView {
     /// When the content in the text view is greater than this height, scrolling will be enabled and the text view's height will be restricted to this value
     open var maximumHeight: CGFloat {
         TextSizeConstants.maximumHeight
+    }
+    
+    override open var text: String! {
+        didSet {
+            textDidChangeProgrammatically()
+        }
     }
         
     override open func didMoveToSuperview() {
