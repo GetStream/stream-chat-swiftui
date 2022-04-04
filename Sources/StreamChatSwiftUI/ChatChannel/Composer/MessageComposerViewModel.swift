@@ -252,7 +252,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         
         return !addedAssets.isEmpty ||
-            !text.isEmpty ||
+            !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
             !addedFileURLs.isEmpty ||
             !addedCustomAttachments.isEmpty
     }

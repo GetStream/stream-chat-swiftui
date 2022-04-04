@@ -44,6 +44,17 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(buttonEnabled == false)
     }
     
+    func test_messageComposerVM_emptySpaceButtonDisabled() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        viewModel.text = "      "
+        
+        // Then
+        XCTAssert(viewModel.sendButtonEnabled == false)
+    }
+    
     func test_messageComposerVM_sendButtonEnabled_textChange() {
         // Given
         let viewModel = makeComposerViewModel()
