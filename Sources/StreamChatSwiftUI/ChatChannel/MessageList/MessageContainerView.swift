@@ -43,14 +43,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
                     if messageListConfig.messageDisplayOptions.showAvatars {
-                        if showsAllInfo {
-                            factory.makeMessageAvatarView(
-                                for: utils.messageCachingUtils.authorInfo(from: message)
-                            )
-                        } else {
-                            Color.clear
-                                .frame(width: CGSize.messageAvatarSize.width)
-                        }
+                        factory.makeMessageAvatarView(
+                            for: utils.messageCachingUtils.authorInfo(from: message)
+                        )
+                        .opacity(showsAllInfo ? 1 : 0)
                     }
                 }
                 
