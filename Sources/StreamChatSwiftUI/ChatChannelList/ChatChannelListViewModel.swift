@@ -206,14 +206,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         _ controller: ChatChannelListController,
         shouldAddNewChannelToList channel: ChatChannel
     ) -> Bool {
-        true
+        channel.membership != nil
     }
     
     public func controller(
         _ controller: ChatChannelListController,
         shouldListUpdatedChannel channel: ChatChannel
     ) -> Bool {
-        true
+        channel.membership != nil
     }
     
     // MARK: - private
