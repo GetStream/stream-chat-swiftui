@@ -35,7 +35,9 @@ class InputTextView: UITextView {
     
     override open var text: String! {
         didSet {
-            textDidChangeProgrammatically()
+            if !oldValue.isEmpty && text.isEmpty {
+                textDidChangeProgrammatically()
+            }
         }
     }
         
