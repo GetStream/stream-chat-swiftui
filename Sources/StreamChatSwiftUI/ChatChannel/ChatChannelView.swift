@@ -41,76 +41,82 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
     
     public var body: some View {
-        VStack(spacing: 0) {
-            MessageListView(
-                factory: factory,
-                channel: viewModel.channel,
-                messages: viewModel.messages,
-                messagesGroupingInfo: viewModel.messagesGroupingInfo,
-                scrolledId: $viewModel.scrolledId,
-                showScrollToLatestButton: $viewModel.showScrollToLatestButton,
-                quotedMessage: $viewModel.quotedMessage,
-                currentDateString: viewModel.currentDateString,
-                listId: viewModel.listId,
-                isMessageThread: viewModel.isMessageThread,
-                onMessageAppear: viewModel.handleMessageAppear(index:),
-                onScrollToBottom: viewModel.scrollToLastMessage,
-                onLongPress: { displayInfo in
-                    withAnimation {
-                        messageDisplayInfo = displayInfo
-                        viewModel.showReactionOverlay()
+        ZStack {
+            if let channel = viewModel.channel {
+                VStack(spacing: 0) {
+                    MessageListView(
+                        factory: factory,
+                        channel: channel,
+                        messages: viewModel.messages,
+                        messagesGroupingInfo: viewModel.messagesGroupingInfo,
+                        scrolledId: $viewModel.scrolledId,
+                        showScrollToLatestButton: $viewModel.showScrollToLatestButton,
+                        quotedMessage: $viewModel.quotedMessage,
+                        currentDateString: viewModel.currentDateString,
+                        listId: viewModel.listId,
+                        isMessageThread: viewModel.isMessageThread,
+                        onMessageAppear: viewModel.handleMessageAppear(index:),
+                        onScrollToBottom: viewModel.scrollToLastMessage,
+                        onLongPress: { displayInfo in
+                            withAnimation {
+                                messageDisplayInfo = displayInfo
+                                viewModel.showReactionOverlay()
+                            }
+                        }
+                    )
+                    .overlay(
+                        viewModel.currentDateString != nil ?
+                            factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
+                            : nil
+                    )
+                    .if(multipleOrientationsSupported) { view in
+                        view.id(orientation.rawValue)
                     }
+                    
+                    Divider()
+                        .navigationBarBackButtonHidden(viewModel.reactionsShown)
+                        .if(viewModel.reactionsShown, transform: { view in
+                            view.navigationBarHidden(true)
+                        })
+                        .if(viewModel.channelHeaderType == .regular) { view in
+                            view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
+                        }
+                        .if(viewModel.channelHeaderType == .typingIndicator) { view in
+                            view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
+                        }
+                        .if(viewModel.channelHeaderType == .messageThread) { view in
+                            view.modifier(factory.makeMessageThreadHeaderViewModifier())
+                        }
+                    
+                    factory.makeMessageComposerViewType(
+                        with: viewModel.channelController,
+                        messageController: viewModel.messageController,
+                        quotedMessage: $viewModel.quotedMessage,
+                        editedMessage: $viewModel.editedMessage,
+                        onMessageSent: viewModel.scrollToLastMessage
+                    )
                 }
-            )
-            .overlay(
-                viewModel.currentDateString != nil ?
-                    factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
-                    : nil
-            )
-            .if(multipleOrientationsSupported) { view in
-                view.id(orientation.rawValue)
-            }
-            
-            Divider()
-                .navigationBarBackButtonHidden(viewModel.reactionsShown)
-                .if(viewModel.reactionsShown, transform: { view in
-                    view.navigationBarHidden(true)
-                })
-                .if(viewModel.channelHeaderType == .regular) { view in
-                    view.modifier(factory.makeChannelHeaderViewModifier(for: viewModel.channel))
-                }
-                .if(viewModel.channelHeaderType == .typingIndicator) { view in
-                    view.modifier(factory.makeChannelHeaderViewModifier(for: viewModel.channel))
-                }
-                .if(viewModel.channelHeaderType == .messageThread) { view in
-                    view.modifier(factory.makeMessageThreadHeaderViewModifier())
-                }
-            
-            factory.makeMessageComposerViewType(
-                with: viewModel.channelController,
-                messageController: viewModel.messageController,
-                quotedMessage: $viewModel.quotedMessage,
-                editedMessage: $viewModel.editedMessage,
-                onMessageSent: viewModel.scrollToLastMessage
-            )
-        }
-        .accentColor(colors.tintColor)
-        .overlay(
-            viewModel.reactionsShown ?
-                factory.makeReactionsOverlayView(
-                    channel: viewModel.channel,
-                    currentSnapshot: viewModel.currentSnapshot!,
-                    messageDisplayInfo: messageDisplayInfo!,
-                    onBackgroundTap: {
-                        viewModel.reactionsShown = false
-                    }, onActionExecuted: { actionInfo in
-                        viewModel.messageActionExecuted(actionInfo)
-                    }
+                .accentColor(colors.tintColor)
+                .overlay(
+                    viewModel.reactionsShown ?
+                        factory.makeReactionsOverlayView(
+                            channel: channel,
+                            currentSnapshot: viewModel.currentSnapshot!,
+                            messageDisplayInfo: messageDisplayInfo!,
+                            onBackgroundTap: {
+                                viewModel.reactionsShown = false
+                            }, onActionExecuted: { actionInfo in
+                                viewModel.messageActionExecuted(actionInfo)
+                            }
+                        )
+                        .transition(.identity)
+                        .edgesIgnoringSafeArea(.all)
+                        : nil
                 )
-                .transition(.identity)
-                .edgesIgnoringSafeArea(.all)
-                : nil
-        )
+            } else {
+                LoadingView()
+            }
+        }
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible
         })

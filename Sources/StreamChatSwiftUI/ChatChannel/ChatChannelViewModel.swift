@@ -86,8 +86,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var editedMessage: ChatMessage?
     @Published public var channelHeaderType: ChannelHeaderType = .regular
     
-    public var channel: ChatChannel {
-        channelController.channel!
+    public var channel: ChatChannel? {
+        channelController.channel
     }
     
     public var isMessageThread: Bool {
@@ -272,6 +272,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func checkHeaderType() {
+        guard let channel = channel else {
+            return
+        }
+
         let type: ChannelHeaderType
         let typingUsers = channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId
