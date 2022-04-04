@@ -149,7 +149,10 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             return colors.highlightedAccentBackground1
         }
         
-        return colors.background8
+        var colors = colors
+        let color = quotedMessage.isSentByCurrentUser ?
+            colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
+        return color
     }
     
     private func filePreviewImage(for url: URL) -> UIImage {
