@@ -387,12 +387,11 @@ open class MessageComposerViewModel: ObservableObject {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
                     self?.imageAssets = assets
                 }
-            case .denied, .restricted:
-                self.imageAssets = PHFetchResult<PHAsset>()
-                log.debug("Access to photos is denied, showing the no permissions screen.")
-            case .notDetermined:
-                self.imageAssets = PHFetchResult<PHAsset>()
-                log.debug("Access to photos is still not determined.")
+            case .denied, .restricted, .notDetermined:
+                DispatchQueue.main.async { [weak self] in
+                    self?.imageAssets = PHFetchResult<PHAsset>()
+                }
+                log.debug("Access to photos is denied or not determined, showing the no permissions screen.")
             @unknown default:
                 log.debug("Unknown authorization status.")
             }

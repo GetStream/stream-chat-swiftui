@@ -110,14 +110,15 @@ struct ReactionImageView: View {
     var isSentByCurrentUser: Bool
     var backgroundColor: Color
     
-    private var reactionColor: Color {
-        isSentByCurrentUser ? colors.tintColor : Color(colors.textLowEmphasis)
+    private var reactionColor: UIColor? {
+        var colors = colors
+        return isSentByCurrentUser ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
     }
     
     var body: some View {
         Image(uiImage: image)
             .resizable()
-            .foregroundColor(reactionColor)
+            .foregroundColor(reactionColor != nil ? Color(reactionColor!) : nil)
             .frame(width: 16, height: 16)
             .padding(.all, 8)
             .background(backgroundColor)
