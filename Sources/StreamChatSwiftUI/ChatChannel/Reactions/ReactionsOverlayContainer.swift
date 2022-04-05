@@ -113,7 +113,8 @@ struct ReactionsAnimatableView: View {
                         onReactionTap(reaction)
                     } label: {
                         Image(uiImage: image)
-                            .customizable()
+                            .resizable()
+                            .scaledToFit()
                             .foregroundColor(color(for: reaction))
                             .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
                     }
@@ -157,9 +158,16 @@ struct ReactionsAnimatableView: View {
         }
     }
     
-    private func color(for reaction: MessageReactionType) -> Color {
-        userReactionIDs
-            .contains(reaction) ? Color(colors.highlightedAccentBackground) : Color(colors.textLowEmphasis)
+    private func color(for reaction: MessageReactionType) -> Color? {
+        var colors = colors
+        let containsUserReaction = userReactionIDs.contains(reaction)
+        let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
+        
+        if let color = color {
+            return Color(color)
+        } else {
+            return nil
+        }
     }
     
     private var userReactionIDs: Set<MessageReactionType> {

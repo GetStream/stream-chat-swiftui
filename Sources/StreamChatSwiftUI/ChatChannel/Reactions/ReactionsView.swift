@@ -74,7 +74,8 @@ struct ReactionsView: View {
             ForEach(reactions) { reaction in
                 if let image = iconProvider(for: reaction) {
                     Image(uiImage: image)
-                        .customizable()
+                        .resizable()
+                        .scaledToFit()
                         .foregroundColor(color(for: reaction))
                         .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
                         .gesture(
@@ -98,9 +99,16 @@ struct ReactionsView: View {
         }
     }
     
-    private func color(for reaction: MessageReactionType) -> Color {
-        userReactionIDs
-            .contains(reaction) ? Color(colors.highlightedAccentBackground) : Color(colors.textLowEmphasis)
+    private func color(for reaction: MessageReactionType) -> Color? {
+        var colors = colors
+        let containsUserReaction = userReactionIDs.contains(reaction)
+        let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
+        
+        if let color = color {
+            return Color(color)
+        } else {
+            return nil
+        }
     }
     
     private var userReactionIDs: Set<MessageReactionType> {
