@@ -368,6 +368,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 }
 
 extension ChatMessage: Identifiable {
+    
+    public var scrollMessageId: String {
+        messageId
+    }
+    
     var messageId: String {
         var statesId = "empty"
         if localState != nil {
