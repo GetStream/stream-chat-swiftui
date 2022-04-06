@@ -118,6 +118,7 @@ struct ReactionsAnimatableView: View {
                             .foregroundColor(color(for: reaction))
                             .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
                     }
+                    .background(reactionSelectedBackgroundColor(for: reaction).cornerRadius(8))
                     .scaleEffect(index(for: reaction) != nil ? animationStates[index(for: reaction)!] : 1)
                     .onAppear {
                         guard let index = index(for: reaction) else {
@@ -140,6 +141,16 @@ struct ReactionsAnimatableView: View {
         .padding(.all, 6)
         .padding(.horizontal, 4)
         .reactionsBubble(for: message, background: colors.background8)
+    }
+    
+    private func reactionSelectedBackgroundColor(for reaction: MessageReactionType) -> Color? {
+        var colors = colors
+        guard let color = colors.selectedReactionBackgroundColor else {
+            return nil
+        }
+        
+        let backgroundColor: Color? = userReactionIDs.contains(reaction) ? Color(color) : nil
+        return backgroundColor
     }
     
     private func index(for reaction: MessageReactionType) -> Int? {

@@ -76,6 +76,7 @@ public struct ColorPalette {
     public lazy var quotedMessageBackgroundOtherUser: UIColor = background8
     public lazy var reactionCurrentUserColor: UIColor? = UIColor(tintColor)
     public lazy var reactionOtherUserColor: UIColor? = textLowEmphasis
+    public lazy var selectedReactionBackgroundColor: UIColor? = nil
 }
 
 // Those colors are default defined stream constants, which are fallback values if you don't implement your color theme.
