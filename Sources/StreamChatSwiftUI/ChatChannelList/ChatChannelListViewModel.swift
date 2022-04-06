@@ -35,6 +35,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Controls loading the channels.
     private var loadingNextChannels: Bool = false
     
+    /// Checks if internet connection is available.
+    private let networkReachability = NetworkReachability()
+    
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
         didSet {
@@ -253,7 +256,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         
         updateChannels()
         
-        loading = true
+        if channels.isEmpty {
+            loading = networkReachability.isNetworkAvailable()
+        }
+        
         controller?.synchronize { [weak self] error in
             guard let self = self else { return }
             self.loading = false

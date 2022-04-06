@@ -163,6 +163,7 @@
 		846608E7278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */; };
 		846608E9278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */; };
 		846D6564279FF0800094B36E /* ReactionUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846D6563279FF0800094B36E /* ReactionUserView.swift */; };
+		84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84733EC527FDBF82006926E0 /* NetworkReachability.swift */; };
 		847BA08127E0B76400ED20C7 /* Spy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08027E0B76400ED20C7 /* Spy.swift */; };
 		847BA08327E0B9C600ED20C7 /* EventBatcherMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */; };
 		847BA08527E0BA2500ED20C7 /* EventNotificationCenterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08427E0BA2500ED20C7 /* EventNotificationCenterMock.swift */; };
@@ -494,6 +495,7 @@
 		846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelExtensions_Tests.swift; sourceTree = "<group>"; };
 		846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorView_Tests.swift; sourceTree = "<group>"; };
 		846D6563279FF0800094B36E /* ReactionUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionUserView.swift; sourceTree = "<group>"; };
+		84733EC527FDBF82006926E0 /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		847BA08027E0B76400ED20C7 /* Spy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spy.swift; sourceTree = "<group>"; };
 		847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatcherMock.swift; sourceTree = "<group>"; };
 		847BA08427E0BA2500ED20C7 /* EventNotificationCenterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotificationCenterMock.swift; sourceTree = "<group>"; };
@@ -968,6 +970,7 @@
 				8465FD3B2746A95600AF091E /* StringExtensions.swift */,
 				841B64C92775BBC10016FF3B /* Errors.swift */,
 				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
+				84733EC527FDBF82006926E0 /* NetworkReachability.swift */,
 				8465FD382746A95600AF091E /* Common */,
 			);
 			path = Utils;
@@ -1577,6 +1580,7 @@
 				841B64CA2775BBC10016FF3B /* Errors.swift in Sources */,
 				8465FD7A2746A95700AF091E /* VideoPlayerView.swift in Sources */,
 				8465FD8B2746A95700AF091E /* FilePickerView.swift in Sources */,
+				84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */,
 				84E6EC27279B0C930017207B /* ReactionsUsersView.swift in Sources */,
 				8465FDA92746A95700AF091E /* AutoLayoutHelpers.swift in Sources */,
 				8465FDC32746A95700AF091E /* ChatChannelListHeader.swift in Sources */,
