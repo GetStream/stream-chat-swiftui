@@ -93,7 +93,11 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                 })
                         }
                     )
-                    .onTapGesture {}
+                    .onTapGesture(count: 2) {
+                        if messageListConfig.doubleTapOverlayEnabled {
+                            handleGestureForMessage(showsMessageActions: true)
+                        }
+                    }
                     .onLongPressGesture(perform: {
                         handleGestureForMessage(showsMessageActions: true)
                     })
