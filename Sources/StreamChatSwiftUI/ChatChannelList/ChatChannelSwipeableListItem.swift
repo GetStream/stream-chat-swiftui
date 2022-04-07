@@ -18,7 +18,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     
     private let numberOfTrailingItems: Int
     
-    private let itemWidth: CGFloat = 60
+    private let itemWidth: CGFloat
     private var menuWidth: CGFloat {
         itemWidth * CGFloat(numberOfTrailingItems) + 8
     }
@@ -47,6 +47,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         swipedChannelId: Binding<String?>,
         channel: ChatChannel,
         numberOfTrailingItems: Int = 2,
+        widthOfTrailingItem: CGFloat = 60,
         trailingRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
@@ -54,6 +55,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         self.factory = factory
         self.channelListItem = channelListItem
         self.channel = channel
+        itemWidth = widthOfTrailingItem
         self.numberOfTrailingItems = numberOfTrailingItems
         self.trailingRightButtonTapped = trailingRightButtonTapped
         self.trailingLeftButtonTapped = trailingLeftButtonTapped
