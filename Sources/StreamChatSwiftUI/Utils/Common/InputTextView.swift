@@ -5,7 +5,7 @@
 import UIKit
 
 struct TextSizeConstants {
-    static let minimumHeight = 34.0
+    static let minimumHeight = 38.0
     static let maximumHeight = 76.0
     static let minThreshold = 38.0
 }
