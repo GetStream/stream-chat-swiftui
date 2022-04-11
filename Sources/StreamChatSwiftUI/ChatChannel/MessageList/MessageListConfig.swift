@@ -4,6 +4,7 @@
 
 import CoreGraphics
 import StreamChat
+import SwiftUI
 
 /// Configuration for the message list.
 public struct MessageListConfig {
@@ -67,15 +68,21 @@ public struct MessageDisplayOptions {
     let showAvatars: Bool
     let showMessageDate: Bool
     let animateChanges: Bool
+    let currentUserMessageTransition: AnyTransition
+    let otherUserMessageTransition: AnyTransition
     
     public init(
         showAvatars: Bool = true,
         showMessageDate: Bool = true,
-        animateChanges: Bool = true
+        animateChanges: Bool = true,
+        currentUserMessageTransition: AnyTransition = .identity,
+        otherUserMessageTransition: AnyTransition = .identity
     ) {
         self.showAvatars = showAvatars
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
+        self.currentUserMessageTransition = currentUserMessageTransition
+        self.otherUserMessageTransition = otherUserMessageTransition
     }
 }
 

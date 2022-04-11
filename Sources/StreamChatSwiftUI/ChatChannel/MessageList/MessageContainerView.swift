@@ -181,6 +181,11 @@ struct MessageContainerView<Factory: ViewFactory>: View {
         .padding(.top, isLast ? paddingValue : 0)
         .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
         .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
+        .transition(
+            message.isSentByCurrentUser ?
+                messageListConfig.messageDisplayOptions.currentUserMessageTransition :
+                messageListConfig.messageDisplayOptions.otherUserMessageTransition
+        )
     }
         
     private var isMessagePinned: Bool {
