@@ -268,7 +268,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 self.channelAlertType = .error
             } else {
                 // access channels
-                self.updateChannels()
+                if self.selectedChannel == nil {
+                    self.updateChannels()
+                }
                 self.checkForDeeplinks()
                 self.setInitialChannelIfSplitView()
             }
