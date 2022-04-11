@@ -126,7 +126,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///
     /// - Parameter index: the currently displayed index.
     public func checkForChannels(index: Int) {
-        checkTabBarVisibilty()
+        handleChannelAppearance()
         
         if index < (controller?.channels.count ?? 0) - 15 {
             return
@@ -339,10 +339,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
     
-    private func checkTabBarVisibilty() {
+    private func handleChannelAppearance() {
         guard #available(iOS 15, *) else { return }
         if hideTabBar == true {
             hideTabBar = false
+        }
+        if !queuedChannelsChanges.isEmpty {
+            channels = queuedChannelsChanges
         }
     }
 }
