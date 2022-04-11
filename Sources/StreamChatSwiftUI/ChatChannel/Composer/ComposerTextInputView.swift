@@ -7,6 +7,9 @@ import UIKit
 
 /// SwiftUI wrapper for a text field with multiple rows.
 struct ComposerTextInputView: UIViewRepresentable {
+    
+    @Injected(\.utils) private var utils
+    
     @Binding var text: String
     @Binding var height: CGFloat
     @Binding var selectedRangeLocation: Int
@@ -23,6 +26,10 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.layoutManager.delegate = context.coordinator
         inputTextView.placeholderLabel.text = placeholder
         inputTextView.contentInsetAdjustmentBehavior = .never
+        
+        if utils.messageListConfig.becomesFirstResponderOnOpen {
+            inputTextView.becomeFirstResponder()
+        }
         
         return inputTextView
     }

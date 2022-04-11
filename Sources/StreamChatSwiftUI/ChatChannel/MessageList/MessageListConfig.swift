@@ -16,7 +16,8 @@ public struct MessageListConfig {
         dateIndicatorPlacement: DateIndicatorPlacement = .overlay,
         pageSize: Int = 50,
         messagePopoverEnabled: Bool = true,
-        doubleTapOverlayEnabled: Bool = false
+        doubleTapOverlayEnabled: Bool = false,
+        becomesFirstResponderOnOpen: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -27,6 +28,7 @@ public struct MessageListConfig {
         self.pageSize = pageSize
         self.messagePopoverEnabled = messagePopoverEnabled
         self.doubleTapOverlayEnabled = doubleTapOverlayEnabled
+        self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
     }
     
     let messageListType: MessageListType
@@ -38,6 +40,7 @@ public struct MessageListConfig {
     let pageSize: Int
     let messagePopoverEnabled: Bool
     let doubleTapOverlayEnabled: Bool
+    let becomesFirstResponderOnOpen: Bool
 }
 
 /// Contains information about the message paddings.
