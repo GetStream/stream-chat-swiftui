@@ -113,12 +113,7 @@ class InputTextView: UITextView {
 
     open func setTextViewHeight() {
         var heightToSet = minimumHeight
-        var contentHeight = contentSize.height
-        if contentHeight < TextSizeConstants.minThreshold
-            && contentHeight != minimumHeight {
-            contentSize.height = minimumHeight
-            contentHeight = minimumHeight
-        }
+        let contentHeight = sizeThatFits(bounds.size).height
 
         if contentHeight <= minimumHeight {
             heightToSet = minimumHeight
