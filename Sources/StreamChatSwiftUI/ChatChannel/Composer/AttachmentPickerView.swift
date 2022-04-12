@@ -44,6 +44,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                             onAssetTap: onAssetTap,
                             isAssetSelected: isAssetSelected
                         )
+                        .edgesIgnoringSafeArea(.bottom)
                     } else {
                         viewFactory.makeAssetsAccessPermissionView()
                     }

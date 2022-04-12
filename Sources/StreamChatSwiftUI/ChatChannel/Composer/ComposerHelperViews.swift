@@ -97,12 +97,15 @@ struct CameraPickerDisplayView: View {
     
     var body: some View {
         Spacer()
-            .sheet(isPresented: $cameraPickerShown, onDismiss: {
+            .fullScreenCover(isPresented: $cameraPickerShown, onDismiss: {
                 selectedPickerState = .photos
             }) {
                 ImagePickerView(sourceType: .camera) { addedImage in
                     cameraImageAdded(addedImage)
                 }
+                .background(
+                    Color.black.edgesIgnoringSafeArea(.all)
+                )
             }
     }
 }

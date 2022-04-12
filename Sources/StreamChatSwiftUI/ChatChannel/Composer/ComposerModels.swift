@@ -14,7 +14,12 @@ public enum AttachmentPickerState {
 }
 
 /// Struct representing an asset added to the composer.
-public struct AddedAsset: Identifiable {
+public struct AddedAsset: Identifiable, Equatable {
+    
+    public static func == (lhs: AddedAsset, rhs: AddedAsset) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     public let image: UIImage
     public let id: String
     public let url: URL

@@ -23,34 +23,45 @@ public struct AddedImageAttachmentsView: View {
     }
     
     public var body: some View {
-        ScrollView(.horizontal) {
-            HStack {
-                ForEach(images) { attachment in
-                    Image(uiImage: attachment.image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: imageSize, height: imageSize)
-                        .clipped()
-                        .cornerRadius(12)
-                        .overlay(
-                            ZStack {
-                                DiscardAttachmentButton(
-                                    attachmentIdentifier: attachment.id,
-                                    onDiscard: onDiscardAttachment
-                                )
-                                
-                                if attachment.type == .video {
-                                    VideoIndicatorView()
+        ScrollViewReader { reader in
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(images) { attachment in
+                        Image(uiImage: attachment.image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: imageSize, height: imageSize)
+                            .clipped()
+                            .cornerRadius(12)
+                            .id(attachment.id)
+                            .overlay(
+                                ZStack {
+                                    DiscardAttachmentButton(
+                                        attachmentIdentifier: attachment.id,
+                                        onDiscard: onDiscardAttachment
+                                    )
                                     
-                                    if let duration = attachment.extraData["duration"] as? String {
-                                        VideoDurationIndicatorView(duration: duration)
+                                    if attachment.type == .video {
+                                        VideoIndicatorView()
+                                        
+                                        if let duration = attachment.extraData["duration"] as? String {
+                                            VideoDurationIndicatorView(duration: duration)
+                                        }
                                     }
                                 }
-                            }
-                        )
+                            )
+                    }
+                }
+            }
+            .frame(height: imageSize)
+            .onChange(of: images) { [images] newValue in
+                if newValue.count > images.count {
+                    let last = newValue.last
+                    withAnimation {
+                        reader.scrollTo(last?.id, anchor: .trailing)
+                    }
                 }
             }
         }
-        .frame(height: imageSize)
     }
 }
