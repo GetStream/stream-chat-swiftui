@@ -8,6 +8,7 @@ import SwiftUI
 /// View for the chat channel.
 public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
     
     @StateObject private var viewModel: ChatChannelViewModel
     
@@ -127,6 +128,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         .onAppear {
             viewModel.onViewAppear()
+            if utils.messageListConfig.becomesFirstResponderOnOpen {
+                keyboardShown = true
+            }
         }
         .onDisappear {
             viewModel.onViewDissappear()
