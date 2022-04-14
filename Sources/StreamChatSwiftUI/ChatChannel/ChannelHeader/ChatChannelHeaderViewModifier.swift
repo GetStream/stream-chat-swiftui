@@ -65,12 +65,14 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         }
         
         ToolbarItem(placement: .navigationBarTrailing) {
-            ChannelAvatarView(
-                avatar: headerImage,
-                showOnlineIndicator: onlineIndicatorShown,
-                size: CGSize(width: 36, height: 36)
-            )
-            .offset(x: 8)
+            NavigationLink(destination: ChatChannelInfoView()) {
+                ChannelAvatarView(
+                    avatar: headerImage,
+                    showOnlineIndicator: onlineIndicatorShown,
+                    size: CGSize(width: 36, height: 36)
+                )
+                .offset(x: 8)
+            }
         }
     }
 }
