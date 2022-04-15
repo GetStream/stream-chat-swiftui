@@ -21,7 +21,7 @@ env:
 jobs:
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v1
       - uses: ./.github/actions/set-build-image-var
@@ -49,7 +49,7 @@ jobs:
 
   build-and-test-ui-debug:
     name: Test SwiftUI (Debug)
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
     - uses: actions/checkout@v1
     - name: Set build image var
@@ -69,14 +69,14 @@ jobs:
         key: ${{ runner.os }}-mint-${{ hashFiles('./Mintfile') }}
         restore-keys: ${{ runner.os }}-mint-
     - uses: ./.github/actions/bootstrap
-    - name: Prepare iPhone 12 with iOS 15.0
+    - name: Prepare iPhone 12 with iOS 15.4
       uses: ./.github/actions/prepare-ios-simulator
       with:
         device: "iPhone 12"
-        ios: "15.2"
-        xcode: "13.2.1"
+        ios: "15.4"
+        xcode: "13.3.1"
     - name: Run Tests (Debug)
-      run: bundle exec fastlane test_ui device:"iPhone 12 (15.2)"
+      run: bundle exec fastlane test_ui device:"iPhone 12 (15.4)"
     - uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
 
   build-apps:
     name: Build Demo App
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
     - uses: actions/checkout@v1
     - name: Set build image var

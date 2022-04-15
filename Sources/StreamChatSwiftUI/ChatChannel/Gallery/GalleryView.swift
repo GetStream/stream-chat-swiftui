@@ -38,7 +38,7 @@ struct GalleryView: View {
                 )
 
                 TabView(selection: $selected) {
-                    ForEach(0..<sourcesCount, id: \.self) { index in
+                    ForEach(0..<sources.count, id: \.self) { index in
                         let url = sources[index]
                         ZoomableScrollView {
                             VStack {
@@ -70,7 +70,7 @@ struct GalleryView: View {
 
                     Spacer()
                     
-                    Text("\(selected + 1) of \(sourcesCount)")
+                    Text("\(selected + 1) of \(sources.count)")
                         .font(fonts.bodyBold)
 
                     Spacer()
@@ -95,11 +95,7 @@ struct GalleryView: View {
             }
         }
     }
-    
-    private var sourcesCount: Int {
-        sources.count
-    }
-    
+
     private var sharingContent: [UIImage] {
         if let image = loadedImages[selected] {
             return [image]

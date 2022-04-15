@@ -20,7 +20,7 @@ struct InstantCommandsView: View {
             InstantCommandsHeader()
                 .standardPadding()
             
-            ForEach(0..<commandsCount, id: \.self) { i in
+            ForEach(0..<instantCommands.count, id: \.self) { i in
                 let command = instantCommands[i]
                 if let displayInfo = command.displayInfo {
                     InstantCommandView(displayInfo: displayInfo)
@@ -44,10 +44,6 @@ struct InstantCommandsView: View {
         .modifier(ShadowViewModifier())
         .padding(.all, 8)
         .animation(.spring())
-    }
-    
-    var commandsCount: Int {
-        instantCommands.count
     }
 }
 
