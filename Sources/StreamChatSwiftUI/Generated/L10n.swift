@@ -86,6 +86,17 @@ internal enum L10n {
     }
   }
 
+  internal enum ChatInfo {
+    internal enum PinnedMessages {
+      /// Long-press an important message and choose Pin to conversation.
+      internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-desc") }
+      /// No pinned messages
+      internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-title") }
+      /// Pinned Messages
+      internal static var title: String { L10n.tr("Localizable", "chat-info.pinned-messages.title") }
+    }
+  }
+
   internal enum Composer {
     internal enum Checkmark {
       /// Also send in channel

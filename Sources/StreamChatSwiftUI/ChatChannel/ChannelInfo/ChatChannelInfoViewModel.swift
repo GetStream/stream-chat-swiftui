@@ -9,4 +9,10 @@ import SwiftUI
 public class ChatChannelInfoViewModel: ObservableObject {
     
     @Published var users = [ChatUser]()
+    
+    let channel: ChatChannel
+    
+    public init(channel: ChatChannel) {
+        self.channel = channel
+    }
 }

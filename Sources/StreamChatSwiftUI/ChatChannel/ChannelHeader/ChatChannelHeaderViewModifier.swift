@@ -65,7 +65,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         }
         
         ToolbarItem(placement: .navigationBarTrailing) {
-            NavigationLink(destination: ChatChannelInfoView()) {
+            NavigationLink(destination: ChatChannelInfoView(channel: channel)) {
                 ChannelAvatarView(
                     avatar: headerImage,
                     showOnlineIndicator: onlineIndicatorShown,

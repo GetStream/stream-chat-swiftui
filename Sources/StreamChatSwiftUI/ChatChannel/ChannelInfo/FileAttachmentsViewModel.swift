@@ -6,4 +6,11 @@ import Foundation
 import StreamChat
 import SwiftUI
 
-class FileAttachmentsViewModel: ObservableObject {}
+class FileAttachmentsViewModel: ObservableObject {
+    
+    private let channel: ChatChannel
+    
+    init(channel: ChatChannel) {
+        self.channel = channel
+    }
+}
