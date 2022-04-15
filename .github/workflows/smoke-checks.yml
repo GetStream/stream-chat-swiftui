@@ -69,14 +69,14 @@ jobs:
         key: ${{ runner.os }}-mint-${{ hashFiles('./Mintfile') }}
         restore-keys: ${{ runner.os }}-mint-
     - uses: ./.github/actions/bootstrap
-    - name: Prepare iPhone 12 with iOS 15.3
+    - name: Prepare iPhone 12 with iOS 15.4
       uses: ./.github/actions/prepare-ios-simulator
       with:
         device: "iPhone 12"
-        ios: "15.3"
-        xcode: "13.3"
+        ios: "15.4"
+        xcode: "13.3.1"
     - name: Run Tests (Debug)
-      run: bundle exec fastlane test_ui device:"iPhone 12 (15.3)"
+      run: bundle exec fastlane test_ui device:"iPhone 12 (15.4)"
     - uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
