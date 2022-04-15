@@ -48,7 +48,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             
             if !giphyActions.isEmpty {
                 HStack {
-                    ForEach(0..<giphyActions.count) { index in
+                    ForEach(0..<giphyActions.count, id: \.self) { index in
                         let action = giphyActions[index]
                         Button {
                             execute(action: action)

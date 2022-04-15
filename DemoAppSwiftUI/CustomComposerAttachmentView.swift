@@ -80,7 +80,7 @@ class CustomAttachmentsFactory: ViewFactory {
     ) -> some View {
         let contactAttachments = message.attachments(payloadType: ContactAttachmentPayload.self)
         return VStack {
-            ForEach(0..<contactAttachments.count) { i in
+            ForEach(0..<contactAttachments.count, id: \.self) { i in
                 let contact = contactAttachments[i]
                 CustomContactAttachmentPreview(
                     contact: CustomAttachment(

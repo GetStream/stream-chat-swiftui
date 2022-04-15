@@ -38,7 +38,7 @@ struct GalleryView: View {
                 )
 
                 TabView(selection: $selected) {
-                    ForEach(0..<sources.count) { index in
+                    ForEach(0..<sources.count, id: \.self) { index in
                         let url = sources[index]
                         ZoomableScrollView {
                             VStack {
