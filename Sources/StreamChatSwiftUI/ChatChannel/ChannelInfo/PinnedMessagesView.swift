@@ -57,7 +57,7 @@ struct PinnedMessageView: View {
                 size: avatarSize
             )
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(message.author.name ?? message.author.id)
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.text))

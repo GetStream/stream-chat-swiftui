@@ -121,3 +121,7 @@
 "chat-info.pinned-messages.title" = "Pinned Messages";
 "chat-info.pinned-messages.empty-title" = "No pinned messages";
 "chat-info.pinned-messages.empty-desc" = "Long-press an important message and choose Pin to conversation.";
+
+"chat-info.files.title" = "Files";
+"chat-info.files.empty-title" = "No files";
+"chat-info.files.empty-desc" = "Files sent in this chat will appear here.";

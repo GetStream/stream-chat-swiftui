@@ -65,8 +65,6 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     }
 }
 
-extension ChatMessageLinkAttachment: Identifiable {}
-
 /// View for previewing link attachments.
 public struct LinkAttachmentView: View {
     @Injected(\.colors) private var colors

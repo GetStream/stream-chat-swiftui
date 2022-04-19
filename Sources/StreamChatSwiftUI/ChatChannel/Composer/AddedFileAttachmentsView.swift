@@ -19,7 +19,7 @@ public struct AddedFileAttachmentsView: View {
                 FileAttachmentDisplayView(
                     url: url,
                     title: url.lastPathComponent,
-                    sizeString: sizeString(for: url)
+                    sizeString: url.sizeString
                 )
                 .padding(.all, 8)
                 .padding(.trailing, 8)
@@ -35,11 +35,14 @@ public struct AddedFileAttachmentsView: View {
             }
         }
     }
+}
+
+extension URL {
     
-    private func sizeString(for url: URL) -> String {
-        _ = url.startAccessingSecurityScopedResource()
-        if let file = try? AttachmentFile(url: url) {
-            url.stopAccessingSecurityScopedResource()
+    var sizeString: String {
+        _ = startAccessingSecurityScopedResource()
+        if let file = try? AttachmentFile(url: self) {
+            stopAccessingSecurityScopedResource()
             return file.sizeString
         }
         

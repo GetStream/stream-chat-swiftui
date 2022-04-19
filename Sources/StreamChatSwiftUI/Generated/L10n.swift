@@ -87,6 +87,14 @@ internal enum L10n {
   }
 
   internal enum ChatInfo {
+    internal enum Files {
+      /// Files sent in this chat will appear here.
+      internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.files.empty-desc") }
+      /// No files
+      internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.files.empty-title") }
+      /// Files
+      internal static var title: String { L10n.tr("Localizable", "chat-info.files.title") }
+    }
     internal enum PinnedMessages {
       /// Long-press an important message and choose Pin to conversation.
       internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-desc") }
