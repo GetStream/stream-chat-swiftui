@@ -10,6 +10,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     
     @StateObject var viewModel: ReactionsOverlayViewModel
     
+    @State private var popIn = false
+    
     var factory: Factory
     var channel: ChatChannel
     var currentSnapshot: UIImage
@@ -84,6 +86,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         isFirst: messageDisplayInfo.isFirst,
                         scrolledId: .constant(nil)
                     )
+                    .scaleEffect(popIn ? 1 : 0.95)
+                    .animation(popInAnimation, value: popIn)
                     .offset(
                         x: messageDisplayInfo.frame.origin.x - diffWidth
                     )
@@ -97,9 +101,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                                     onBackgroundTap()
                                 }
                             )
+                            .scaleEffect(popIn ? 1 : 0)
+                            .animation(popInAnimation, value: popIn)
                             .offset(
                                 x: messageDisplayInfo.frame.origin.x - diffWidth,
-                                y: -24
+                                y: popIn ? -24 : -messageDisplayInfo.frame.height / 2
                             )
                             : nil
                     )
@@ -121,9 +127,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                         .frame(width: messageActionsWidth)
                         .offset(
-                            x: messageActionsOriginX(availableWidth: reader.size.width)
+                            x: popIn ? messageActionsOriginX(availableWidth: reader.size.width) :
+                                (messageDisplayInfo.message.isSentByCurrentUser ? messageActionsWidth : 0),
+                            y: popIn ? 0 : -messageActionsSize / 2
                         )
                         .padding(.top, paddingValue)
+                        .scaleEffect(popIn ? 1 : 0)
+                        .animation(popInAnimation, value: popIn)
                     } else {
                         factory.makeReactionsUsersView(
                             message: viewModel.message,
@@ -135,12 +145,21 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                         .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
                         .padding(.trailing, paddingValue)
+                        .scaleEffect(popIn ? 1 : 0)
+                        .animation(popInAnimation, value: popIn)
                     }
                 }
                 .offset(y: originY)
             }
         }
         .edgesIgnoringSafeArea(.all)
+        .onAppear {
+            popIn = true
+        }
+    }
+    
+    private var popInAnimation: Animation {
+        .spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0.2)
     }
     
     private var userReactionsHeight: CGFloat {
