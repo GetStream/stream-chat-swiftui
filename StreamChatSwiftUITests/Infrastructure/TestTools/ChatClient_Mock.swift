@@ -29,7 +29,7 @@ public extension ChatClient {
                     )
                 },
                 databaseContainerBuilder: {
-                    try DatabaseContainerMock(
+                    DatabaseContainer_Spy(
                         kind: $0,
                         shouldFlushOnStart: $1,
                         shouldResetEphemeralValuesOnStart: $2,

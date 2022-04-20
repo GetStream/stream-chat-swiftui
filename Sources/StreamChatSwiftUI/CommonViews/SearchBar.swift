@@ -46,9 +46,6 @@ struct SearchBar: View, KeyboardReadable {
                     }
                 )
                 .padding(.horizontal, 8)
-                .onTapGesture {
-                    self.isEditing = true
-                }
                 .transition(.identity)
                 .animation(.easeInOut, value: isEditing)
             
@@ -70,6 +67,9 @@ struct SearchBar: View, KeyboardReadable {
         }
         .padding(.top, 8)
         .onReceive(keyboardWillChangePublisher) { shown in
+            if shown {
+                self.isEditing = true
+            }
             if !shown && isEditing {
                 self.isEditing = false
             }

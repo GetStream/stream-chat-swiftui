@@ -123,6 +123,7 @@ extension XCTestCase {
             connectEventsEnabled: true,
             uploadsEnabled: true,
             repliesEnabled: true,
+            quotesEnabled: true,
             searchEnabled: true,
             mutesEnabled: true,
             urlEnrichmentEnabled: true,
@@ -139,7 +140,8 @@ extension XCTestCase {
             createdAt: XCTestCase.channelCreatedDate,
             updatedAt: .unique
         ),
-        channelExtraData: [String: RawJSON] = [:]
+        channelExtraData: [String: RawJSON] = [:],
+        truncatedAt: Date? = nil
     ) -> ChannelPayload {
         var payloadMessages: [MessagePayload] = []
         if let messages = messages {
@@ -164,7 +166,7 @@ extension XCTestCase {
                     createdAt: XCTestCase.channelCreatedDate,
                     deletedAt: nil,
                     updatedAt: .unique,
-                    truncatedAt: nil,
+                    truncatedAt: truncatedAt,
                     createdBy: dummyUser,
                     config: channelConfig,
                     isFrozen: true,

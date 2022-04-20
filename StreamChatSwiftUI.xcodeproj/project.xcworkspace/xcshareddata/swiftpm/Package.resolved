@@ -1,52 +1,50 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Gifu",
-        "repositoryURL": "https://github.com/kaishin/Gifu",
-        "state": {
-          "branch": null,
-          "revision": "51f2eab32903e336f590c013267cfa4d7f8b06c4",
-          "version": "3.3.1"
-        }
-      },
-      {
-        "package": "Nuke",
-        "repositoryURL": "https://github.com/kean/Nuke.git",
-        "state": {
-          "branch": null,
-          "revision": "78fa963b8491fc520791d8c2a509f1b8593d8aae",
-          "version": "10.7.1"
-        }
-      },
-      {
-        "package": "NukeUI",
-        "repositoryURL": "https://github.com/kean/NukeUI.git",
-        "state": {
-          "branch": null,
-          "revision": "71398392943f2538fd0f2ebc6f282920f6775b0c",
-          "version": "0.8.0"
-        }
-      },
-      {
-        "package": "StreamChat",
-        "repositoryURL": "https://github.com/GetStream/stream-chat-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "a1e769e93b500975d0aece93d11acd90cd3c7fa2",
-          "version": "4.13.0"
-        }
-      },
-      {
-        "package": "SnapshotTesting",
-        "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
-        "state": {
-          "branch": null,
-          "revision": "f8a9c997c3c1dab4e216a8ec9014e23144cbab37",
-          "version": "1.9.0"
-        }
+  "pins" : [
+    {
+      "identity" : "gifu",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kaishin/Gifu",
+      "state" : {
+        "revision" : "51f2eab32903e336f590c013267cfa4d7f8b06c4",
+        "version" : "3.3.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke.git",
+      "state" : {
+        "revision" : "78fa963b8491fc520791d8c2a509f1b8593d8aae",
+        "version" : "10.7.1"
+      }
+    },
+    {
+      "identity" : "nukeui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/NukeUI.git",
+      "state" : {
+        "revision" : "71398392943f2538fd0f2ebc6f282920f6775b0c",
+        "version" : "0.8.0"
+      }
+    },
+    {
+      "identity" : "stream-chat-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/GetStream/stream-chat-swift.git",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "e148f4872e5e5cabcfa8d9f25655a7ca33a6e133"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing.git",
+      "state" : {
+        "revision" : "f8a9c997c3c1dab4e216a8ec9014e23144cbab37",
+        "version" : "1.9.0"
+      }
+    }
+  ],
+  "version" : 2
 }

@@ -125,6 +125,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     )
                     .onChange(of: offset, perform: { _ in
+                        if !channel.config.quotesEnabled {
+                            return
+                        }
+                        
                         if offset == .zero {
                             // gesture ended or cancelled
                             setOffsetX(value: 0)
