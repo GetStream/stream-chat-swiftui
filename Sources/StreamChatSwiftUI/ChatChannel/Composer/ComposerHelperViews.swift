@@ -103,9 +103,7 @@ struct CameraPickerDisplayView: View {
                 ImagePickerView(sourceType: .camera) { addedImage in
                     cameraImageAdded(addedImage)
                 }
-                .background(
-                    Color.black.edgesIgnoringSafeArea(.all)
-                )
+                .edgesIgnoringSafeArea(.all)
             }
     }
 }
