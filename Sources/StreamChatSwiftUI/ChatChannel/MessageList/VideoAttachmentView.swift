@@ -71,6 +71,29 @@ public struct VideoAttachmentsList: View {
 
 public struct VideoAttachmentView: View {
     
+    let attachment: ChatMessageVideoAttachment
+    let message: ChatMessage
+    let width: CGFloat
+    var ratio: CGFloat = 0.75
+    var cornerRadius: CGFloat = 24
+    
+    @State var previewImage: UIImage?
+    @State var error: Error?
+    @State var fullScreenShown = false
+    
+    public var body: some View {
+        VideoAttachmentContentView(
+            attachment: attachment,
+            author: message.author,
+            width: width,
+            ratio: ratio,
+            cornerRadius: cornerRadius
+        )
+    }
+}
+
+struct VideoAttachmentContentView: View {
+    
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     
@@ -79,7 +102,7 @@ public struct VideoAttachmentView: View {
     }
     
     let attachment: ChatMessageVideoAttachment
-    let message: ChatMessage
+    let author: ChatUser
     let width: CGFloat
     var ratio: CGFloat = 0.75
     var cornerRadius: CGFloat = 24
@@ -120,7 +143,7 @@ public struct VideoAttachmentView: View {
         .fullScreenCover(isPresented: $fullScreenShown) {
             VideoPlayerView(
                 attachment: attachment,
-                author: message.author,
+                author: author,
                 isShown: $fullScreenShown
             )
         }

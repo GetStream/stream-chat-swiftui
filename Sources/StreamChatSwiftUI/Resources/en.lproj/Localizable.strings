@@ -125,3 +125,7 @@
 "chat-info.files.title" = "Files";
 "chat-info.files.empty-title" = "No files";
 "chat-info.files.empty-desc" = "Files sent in this chat will appear here.";
+
+"chat-info.media.title" = "Photos & Videos";
+"chat-info.media.empty-title" = "No media";
+"chat-info.media.empty-desc" = "Photos or videos sent in this chat will appear here.";

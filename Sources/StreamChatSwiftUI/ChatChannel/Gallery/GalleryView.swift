@@ -12,18 +12,21 @@ struct GalleryView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     
-    var message: ChatMessage
+    var imageAttachments: [ChatMessageImageAttachment]
+    var author: ChatUser
     @Binding var isShown: Bool
     @State private var selected: Int
     @State private var loadedImages = [Int: UIImage]()
     @State private var gridShown = false
     
     init(
-        message: ChatMessage,
+        imageAttachments: [ChatMessageImageAttachment],
+        author: ChatUser,
         isShown: Binding<Bool>,
         selected: Int
     ) {
-        self.message = message
+        self.imageAttachments = imageAttachments
+        self.author = author
         _isShown = isShown
         _selected = State(initialValue: selected)
     }
@@ -32,8 +35,8 @@ struct GalleryView: View {
         GeometryReader { reader in
             VStack {
                 GalleryHeaderView(
-                    title: message.author.name ?? "",
-                    subtitle: message.author.onlineText,
+                    title: author.name ?? "",
+                    subtitle: author.onlineText,
                     isShown: $isShown
                 )
 
@@ -105,7 +108,7 @@ struct GalleryView: View {
     }
     
     private var sources: [URL] {
-        message.imageAttachments.map { attachment in
+        imageAttachments.map { attachment in
             attachment.imageURL
         }
     }

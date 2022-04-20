@@ -95,6 +95,14 @@ internal enum L10n {
       /// Files
       internal static var title: String { L10n.tr("Localizable", "chat-info.files.title") }
     }
+    internal enum Media {
+      /// Photos or videos sent in this chat will appear here.
+      internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.media.empty-desc") }
+      /// No media
+      internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.media.empty-title") }
+      /// Photos & Videos
+      internal static var title: String { L10n.tr("Localizable", "chat-info.media.title") }
+    }
     internal enum PinnedMessages {
       /// Long-press an important message and choose Pin to conversation.
       internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-desc") }

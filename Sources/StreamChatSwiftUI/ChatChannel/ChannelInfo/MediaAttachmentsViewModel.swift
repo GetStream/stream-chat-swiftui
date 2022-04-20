@@ -10,16 +10,38 @@ class MediaAttachmentsViewModel: ObservableObject {
     
     @Published var mediaItems = [MediaItem]()
     @Published var loading = false
+    @Published var galleryShown = false
     
     @Injected(\.chatClient) var chatClient
     
     private let channel: ChatChannel
     private var messageSearchController: ChatMessageSearchController!
     
+    private var loadingNextMessages = false
+    
+    var allImageAttachments: [ChatMessageImageAttachment] {
+        mediaItems.compactMap(\.imageAttachment)
+    }
+    
     init(channel: ChatChannel) {
         self.channel = channel
         messageSearchController = chatClient.messageSearchController()
         loadMessages()
+    }
+    
+    func onMediaAttachmentAppear(with index: Int) {
+        if index < mediaItems.count - 10 {
+            return
+        }
+        
+        if !loadingNextMessages {
+            loadingNextMessages = true
+            messageSearchController.loadNextMessages { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAttachments()
+                self.loadingNextMessages = false
+            }
+        }
     }
     
     private func loadMessages() {
@@ -44,16 +66,20 @@ class MediaAttachmentsViewModel: ObservableObject {
             for imageAttachment in imageAttachments {
                 let mediaItem = MediaItem(
                     id: imageAttachment.id.rawValue,
-                    imageURL: imageAttachment.imageURL,
-                    isVideo: false
+                    isVideo: false,
+                    author: message.author,
+                    videoAttachment: nil,
+                    imageAttachment: imageAttachment
                 )
                 result.append(mediaItem)
             }
             for videoAttachment in videoAttachments {
                 let mediaItem = MediaItem(
                     id: videoAttachment.id.rawValue,
-                    imageURL: videoAttachment.videoURL,
-                    isVideo: true
+                    isVideo: true,
+                    author: message.author,
+                    videoAttachment: videoAttachment,
+                    imageAttachment: nil
                 )
                 result.append(mediaItem)
             }
@@ -66,6 +92,9 @@ class MediaAttachmentsViewModel: ObservableObject {
 
 struct MediaItem: Identifiable {
     let id: String
-    let imageURL: URL
     let isVideo: Bool
+    let author: ChatUser
+    
+    var videoAttachment: ChatMessageVideoAttachment?
+    var imageAttachment: ChatMessageImageAttachment?
 }
