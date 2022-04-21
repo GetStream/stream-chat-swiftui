@@ -111,7 +111,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     )
                     .frame(
                         width: messageDisplayInfo.frame.width,
-                        height: messageDisplayInfo.frame.height
+                        height: messageContainerHeight
                     )
                     
                     if messageDisplayInfo.showsMessageActions {
@@ -156,6 +156,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onAppear {
             popIn = true
         }
+    }
+    
+    private var messageContainerHeight: CGFloat {
+        let screenHeight = UIScreen.main.bounds.size.height
+        let maxAllowed = screenHeight / 2
+        let containerHeight = messageDisplayInfo.frame.height
+        return containerHeight > maxAllowed ? maxAllowed : containerHeight
     }
     
     private var popInAnimation: Animation {
