@@ -158,7 +158,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                     MessageDateView(message: message)
                                 }
                             }
-                        } else if !message.isSentByCurrentUser && !channel.isDirectMessageChannel {
+                        } else if !message.isSentByCurrentUser
+                            && !channel.isDirectMessageChannel
+                            && messageListConfig.messageDisplayOptions.showAuthorName {
                             MessageAuthorAndDateView(message: message)
                         } else if messageListConfig.messageDisplayOptions.showMessageDate {
                             MessageDateView(message: message)
