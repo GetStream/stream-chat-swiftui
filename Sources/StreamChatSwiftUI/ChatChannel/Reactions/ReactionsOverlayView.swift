@@ -73,7 +73,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 )
                 .offset(
                     x: paddingValue / 2,
-                    y: originY + messageDisplayInfo.frame.height - paddingValue + 2
+                    y: originY + messageContainerHeight - paddingValue + 2
                 )
             }
             
@@ -105,7 +105,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             .animation(popInAnimation, value: popIn)
                             .offset(
                                 x: messageDisplayInfo.frame.origin.x - diffWidth,
-                                y: popIn ? -24 : -messageDisplayInfo.frame.height / 2
+                                y: popIn ? -24 : -messageContainerHeight / 2
                             )
                             : nil
                     )
@@ -194,7 +194,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         var originY = messageDisplayInfo.frame.origin.y
         let screenHeight = UIScreen.main.bounds.size.height
         let minOrigin: CGFloat = 100
-        let maxOrigin: CGFloat = screenHeight - messageDisplayInfo.frame.height - bottomPopupOffset - minOrigin
+        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin
         if originY < minOrigin {
             originY = minOrigin
         } else if originY > maxOrigin {
