@@ -129,3 +129,6 @@
 "chat-info.media.title" = "Photos & Videos";
 "chat-info.media.empty-title" = "No media";
 "chat-info.media.empty-desc" = "Photos or videos sent in this chat will appear here.";
+
+"chat-info.mute.user" = "Mute User";
+"chat-info.mute.group" = "Mute Group";

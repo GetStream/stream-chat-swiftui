@@ -103,6 +103,12 @@ internal enum L10n {
       /// Photos & Videos
       internal static var title: String { L10n.tr("Localizable", "chat-info.media.title") }
     }
+    internal enum Mute {
+      /// Mute Group
+      internal static var group: String { L10n.tr("Localizable", "chat-info.mute.group") }
+      /// Mute User
+      internal static var user: String { L10n.tr("Localizable", "chat-info.mute.user") }
+    }
     internal enum PinnedMessages {
       /// Long-press an important message and choose Pin to conversation.
       internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-desc") }

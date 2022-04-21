@@ -17,10 +17,6 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
     
-    private var channelNamer: ChatChannelNamer {
-        utils.channelNamer
-    }
-    
     private var currentUserId: String {
         chatClient.currentUserId ?? ""
     }
@@ -48,20 +44,10 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
-            VStack(spacing: 2) {
-                Text(channelNamer(channel, currentUserId) ?? "")
-                    .font(fonts.bodyBold)
-                if shouldShowTypingIndicator {
-                    HStack {
-                        TypingIndicatorView()
-                        SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
-                    }
-                } else {
-                    Text(channel.onlineInfoText(currentUserId: currentUserId))
-                        .font(fonts.footnote)
-                        .foregroundColor(Color(colors.textLowEmphasis))
-                }
-            }
+            ChannelTitleView(
+                channel: channel,
+                shouldShowTypingIndicator: shouldShowTypingIndicator
+            )
         }
         
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -89,6 +75,42 @@ public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
                 channel: channel,
                 headerImage: channelHeaderLoader.image(for: channel)
             )
+        }
+    }
+}
+
+struct ChannelTitleView: View {
+    
+    @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
+    @Injected(\.colors) private var colors
+    @Injected(\.chatClient) private var chatClient
+    
+    var channel: ChatChannel
+    var shouldShowTypingIndicator: Bool
+    
+    private var currentUserId: String {
+        chatClient.currentUserId ?? ""
+    }
+    
+    private var channelNamer: ChatChannelNamer {
+        utils.channelNamer
+    }
+    
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(channelNamer(channel, currentUserId) ?? "")
+                .font(fonts.bodyBold)
+            if shouldShowTypingIndicator {
+                HStack {
+                    TypingIndicatorView()
+                    SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
+                }
+            } else {
+                Text(channel.onlineInfoText(currentUserId: currentUserId))
+                    .font(fonts.footnote)
+                    .foregroundColor(Color(colors.textLowEmphasis))
+            }
         }
     }
 }

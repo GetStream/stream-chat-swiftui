@@ -19,12 +19,19 @@ public struct ChatChannelInfoView: View {
     
     public var body: some View {
         VStack {
+            Divider()
+            
+            ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
+                Toggle(isOn: $viewModel.muted) {
+                    EmptyView()
+                }
+            }
             
             Divider()
             
             NavigatableChatInfoItemView(
                 icon: images.pin,
-                title: "Pinned Messages"
+                title: L10n.ChatInfo.PinnedMessages.title
             ) {
                 PinnedMessagesView(channel: viewModel.channel)
             }
@@ -33,7 +40,7 @@ public struct ChatChannelInfoView: View {
             
             NavigatableChatInfoItemView(
                 icon: UIImage(systemName: "photo")!,
-                title: "Photos & Videos"
+                title: L10n.ChatInfo.Media.title
             ) {
                 MediaAttachmentsView(channel: viewModel.channel)
             }
@@ -42,7 +49,7 @@ public struct ChatChannelInfoView: View {
             
             NavigatableChatInfoItemView(
                 icon: UIImage(systemName: "folder")!,
-                title: "Files"
+                title: L10n.ChatInfo.Files.title
             ) {
                 FileAttachmentsView(channel: viewModel.channel)
             }
@@ -50,6 +57,14 @@ public struct ChatChannelInfoView: View {
             Divider()
             
             Spacer()
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                ChannelTitleView(
+                    channel: viewModel.channel,
+                    shouldShowTypingIndicator: false
+                )
+            }
         }
     }
 }
