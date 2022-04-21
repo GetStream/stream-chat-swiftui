@@ -62,6 +62,23 @@ struct MediaAttachmentsView: View {
                                     )
                                 }
                             }
+                            .overlay(
+                                BottomRightView {
+                                    MessageAvatarView(
+                                        avatarURL: mediaItem.author.imageURL,
+                                        size: .init(width: 24, height: 24),
+                                        showOnlineIndicator: false
+                                    )
+                                    .overlay(
+                                        Circle()
+                                            .stroke(
+                                                Color.white,
+                                                lineWidth: 1
+                                            )
+                                    )
+                                    .padding(.all, 8)
+                                }
+                            )
                             .onAppear {
                                 viewModel.onMediaAttachmentAppear(with: mediaItemIndex)
                             }
