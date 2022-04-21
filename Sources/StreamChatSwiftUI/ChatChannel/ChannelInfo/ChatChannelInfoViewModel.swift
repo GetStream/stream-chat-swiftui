@@ -10,7 +10,7 @@ public class ChatChannelInfoViewModel: ObservableObject {
     
     @Injected(\.chatClient) private var chatClient
     
-    @Published var users = [ChatUser]()
+    @Published var participants = [ParticipantInfo]()
     @Published var muted: Bool {
         didSet {
             if muted {
@@ -33,5 +33,27 @@ public class ChatChannelInfoViewModel: ObservableObject {
         self.channel = channel
         muted = channel.isMuted
         channelController = chatClient.channelController(for: channel.cid)
+        participants = channel.lastActiveMembers.map { member in
+            ParticipantInfo(
+                chatUser: member,
+                displayName: member.name ?? member.id,
+                onlineInfoText: onlineInfo(for: member)
+            )
+        }
+    }
+    
+    func onlineInfo(for user: ChatUser) -> String {
+        if user.isOnline {
+            return L10n.Message.Title.online
+        } else if let lastActiveAt = user.lastActiveAt,
+                  let timeAgo = lastSeenDateFormatter(lastActiveAt) {
+            return timeAgo
+        } else {
+            return L10n.Message.Title.offline
+        }
+    }
+    
+    private var lastSeenDateFormatter: (Date) -> String? {
+        DateUtils.timeAgo
     }
 }

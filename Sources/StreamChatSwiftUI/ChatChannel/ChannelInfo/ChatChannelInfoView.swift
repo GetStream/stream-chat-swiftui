@@ -18,45 +18,47 @@ public struct ChatChannelInfoView: View {
     }
     
     public var body: some View {
-        VStack {
-            Divider()
-            
-            ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
-                Toggle(isOn: $viewModel.muted) {
-                    EmptyView()
+        ScrollView {
+            LazyVStack {
+                ChatInfoParticipantsView(participants: viewModel.participants)
+                
+                Divider()
+                
+                ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
+                    Toggle(isOn: $viewModel.muted) {
+                        EmptyView()
+                    }
                 }
+                
+                Divider()
+                
+                NavigatableChatInfoItemView(
+                    icon: images.pin,
+                    title: L10n.ChatInfo.PinnedMessages.title
+                ) {
+                    PinnedMessagesView(channel: viewModel.channel)
+                }
+                
+                Divider()
+                
+                NavigatableChatInfoItemView(
+                    icon: UIImage(systemName: "photo")!,
+                    title: L10n.ChatInfo.Media.title
+                ) {
+                    MediaAttachmentsView(channel: viewModel.channel)
+                }
+                
+                Divider()
+                
+                NavigatableChatInfoItemView(
+                    icon: UIImage(systemName: "folder")!,
+                    title: L10n.ChatInfo.Files.title
+                ) {
+                    FileAttachmentsView(channel: viewModel.channel)
+                }
+                
+                Divider()
             }
-            
-            Divider()
-            
-            NavigatableChatInfoItemView(
-                icon: images.pin,
-                title: L10n.ChatInfo.PinnedMessages.title
-            ) {
-                PinnedMessagesView(channel: viewModel.channel)
-            }
-            
-            Divider()
-            
-            NavigatableChatInfoItemView(
-                icon: UIImage(systemName: "photo")!,
-                title: L10n.ChatInfo.Media.title
-            ) {
-                MediaAttachmentsView(channel: viewModel.channel)
-            }
-            
-            Divider()
-            
-            NavigatableChatInfoItemView(
-                icon: UIImage(systemName: "folder")!,
-                title: L10n.ChatInfo.Files.title
-            ) {
-                FileAttachmentsView(channel: viewModel.channel)
-            }
-            
-            Divider()
-            
-            Spacer()
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
