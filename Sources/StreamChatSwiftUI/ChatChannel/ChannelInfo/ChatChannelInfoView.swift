@@ -19,45 +19,11 @@ public struct ChatChannelInfoView: View {
     
     public var body: some View {
         ScrollView {
-            LazyVStack {
-                ChatInfoParticipantsView(participants: viewModel.participants)
-                
-                Divider()
-                
-                ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
-                    Toggle(isOn: $viewModel.muted) {
-                        EmptyView()
-                    }
-                }
-                
-                Divider()
-                
-                NavigatableChatInfoItemView(
-                    icon: images.pin,
-                    title: L10n.ChatInfo.PinnedMessages.title
-                ) {
-                    PinnedMessagesView(channel: viewModel.channel)
-                }
-                
-                Divider()
-                
-                NavigatableChatInfoItemView(
-                    icon: UIImage(systemName: "photo")!,
-                    title: L10n.ChatInfo.Media.title
-                ) {
-                    MediaAttachmentsView(channel: viewModel.channel)
-                }
-                
-                Divider()
-                
-                NavigatableChatInfoItemView(
-                    icon: UIImage(systemName: "folder")!,
-                    title: L10n.ChatInfo.Files.title
-                ) {
-                    FileAttachmentsView(channel: viewModel.channel)
-                }
-                
-                Divider()
+            LazyVStack(spacing: 0) {
+                ChatInfoParticipantsView(participants: viewModel.displayedParticipants)
+                ChannelInfoDivider()
+                ChatInfoOptionsView(viewModel: viewModel)
+                ChannelInfoDivider()
             }
         }
         .toolbar {
@@ -66,6 +32,61 @@ public struct ChatChannelInfoView: View {
                     channel: viewModel.channel,
                     shouldShowTypingIndicator: false
                 )
+            }
+        }
+    }
+}
+
+struct ChannelInfoDivider: View {
+    
+    @Injected(\.colors) private var colors
+    
+    var body: some View {
+        Rectangle()
+            .fill(Color(colors.innerBorder))
+            .frame(height: 8)
+    }
+}
+
+struct ChatInfoOptionsView: View {
+    
+    @Injected(\.images) private var images
+    
+    @StateObject var viewModel: ChatChannelInfoViewModel
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
+                Toggle(isOn: $viewModel.muted) {
+                    EmptyView()
+                }
+            }
+            
+            Divider()
+            
+            NavigatableChatInfoItemView(
+                icon: images.pin,
+                title: L10n.ChatInfo.PinnedMessages.title
+            ) {
+                PinnedMessagesView(channel: viewModel.channel)
+            }
+            
+            Divider()
+            
+            NavigatableChatInfoItemView(
+                icon: UIImage(systemName: "photo")!,
+                title: L10n.ChatInfo.Media.title
+            ) {
+                MediaAttachmentsView(channel: viewModel.channel)
+            }
+            
+            Divider()
+            
+            NavigatableChatInfoItemView(
+                icon: UIImage(systemName: "folder")!,
+                title: L10n.ChatInfo.Files.title
+            ) {
+                FileAttachmentsView(channel: viewModel.channel)
             }
         }
     }

@@ -20,6 +20,20 @@ public class ChatChannelInfoViewModel: ObservableObject {
             }
         }
     }
+
+    @Published var memberListCollapsed = true
+    
+    var displayedParticipants: [ParticipantInfo] {
+        if participants.count <= 6 {
+            return participants
+        }
+        
+        if memberListCollapsed {
+            return Array(participants[0..<6])
+        } else {
+            return participants
+        }
+    }
     
     var mutedText: String {
         let isGroup = channel.memberCount > 2
@@ -28,11 +42,16 @@ public class ChatChannelInfoViewModel: ObservableObject {
     
     let channel: ChatChannel
     var channelController: ChatChannelController!
+    var memberListController: ChatChannelMemberListController!
     
     public init(channel: ChatChannel) {
         self.channel = channel
         muted = channel.isMuted
         channelController = chatClient.channelController(for: channel.cid)
+        memberListController = chatClient.memberListController(
+            query: .init(cid: channel.cid, filter: .none)
+        )
+
         participants = channel.lastActiveMembers.map { member in
             ParticipantInfo(
                 chatUser: member,

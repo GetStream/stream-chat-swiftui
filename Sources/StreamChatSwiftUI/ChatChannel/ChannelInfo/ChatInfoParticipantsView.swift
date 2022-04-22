@@ -31,6 +31,7 @@ struct ChatInfoParticipantsView: View {
                 .padding(.all, 8)
             }
         }
+        .background(Color(colors.background))
     }
 }
 
