@@ -26,8 +26,8 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    @Published private(set) var imageAssets: PHFetchResult<PHAsset>?
-    @Published private(set) var addedAssets = [AddedAsset]() {
+    @Published public private(set) var imageAssets: PHFetchResult<PHAsset>?
+    @Published public private(set) var addedAssets = [AddedAsset]() {
         didSet {
             checkPickerSelectionState()
         }
