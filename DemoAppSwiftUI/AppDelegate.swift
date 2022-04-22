@@ -87,12 +87,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             return
         }
 
-        chatClient.currentUserController().addDevice(token: deviceToken) { error in
+        chatClient.currentUserController().addDevice(.apn(token: deviceToken)) { error in
             if let error = error {
                 log.error("adding a device failed with an error \(error)")
                 return
             }
-            UserDefaults(suiteName: applicationGroupIdentifier)?.set(currentUserId, forKey: currentUserIdRegisteredForPush)
+            UserDefaults(suiteName: applicationGroupIdentifier)?.set(
+                currentUserId,
+                forKey: currentUserIdRegisteredForPush
+            )
         }
     }
 }

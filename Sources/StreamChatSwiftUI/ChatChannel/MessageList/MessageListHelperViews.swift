@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View that displays the message author and the date of sending.
-struct MessageAuthorAndDateView: View {
+public struct MessageAuthorAndDateView: View {
     
     @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
@@ -14,7 +14,11 @@ struct MessageAuthorAndDateView: View {
     
     var message: ChatMessage
     
-    var body: some View {
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+    
+    public var body: some View {
         HStack {
             Text(utils.messageCachingUtils.authorName(for: message))
                 .font(fonts.footnoteBold)

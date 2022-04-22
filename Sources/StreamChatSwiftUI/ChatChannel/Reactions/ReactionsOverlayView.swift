@@ -73,7 +73,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 )
                 .offset(
                     x: paddingValue / 2,
-                    y: originY + messageDisplayInfo.frame.height - paddingValue + 2
+                    y: originY + messageContainerHeight - paddingValue + 2
                 )
             }
             
@@ -105,13 +105,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             .animation(popInAnimation, value: popIn)
                             .offset(
                                 x: messageDisplayInfo.frame.origin.x - diffWidth,
-                                y: popIn ? -24 : -messageDisplayInfo.frame.height / 2
+                                y: popIn ? -24 : -messageContainerHeight / 2
                             )
                             : nil
                     )
                     .frame(
                         width: messageDisplayInfo.frame.width,
-                        height: messageDisplayInfo.frame.height
+                        height: messageContainerHeight
                     )
                     
                     if messageDisplayInfo.showsMessageActions {
@@ -158,6 +158,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
     }
     
+    private var messageContainerHeight: CGFloat {
+        let screenHeight = UIScreen.main.bounds.size.height
+        let maxAllowed = screenHeight / 2
+        let containerHeight = messageDisplayInfo.frame.height
+        return containerHeight > maxAllowed ? maxAllowed : containerHeight
+    }
+    
     private var popInAnimation: Animation {
         .spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0.2)
     }
@@ -187,7 +194,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         var originY = messageDisplayInfo.frame.origin.y
         let screenHeight = UIScreen.main.bounds.size.height
         let minOrigin: CGFloat = 100
-        let maxOrigin: CGFloat = screenHeight - messageDisplayInfo.frame.height - bottomPopupOffset - minOrigin
+        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin
         if originY < minOrigin {
             originY = minOrigin
         } else if originY > maxOrigin {

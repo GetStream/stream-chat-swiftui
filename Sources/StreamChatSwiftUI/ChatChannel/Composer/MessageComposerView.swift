@@ -292,7 +292,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         }
         .padding(.vertical, shouldAddVerticalPadding ? 8 : 0)
         .padding(.leading, 8)
-        .background(Color(colors.background))
+        .background(composerInputBackground)
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color(colors.innerBorder))
@@ -300,6 +300,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         .clipShape(
             RoundedRectangle(cornerRadius: 20)
         )
+    }
+    
+    private var composerInputBackground: Color {
+        var colors = colors
+        return Color(colors.composerInputBackground)
     }
     
     private var shouldAddVerticalPadding: Bool {

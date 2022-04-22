@@ -46,6 +46,7 @@
 		8434E58127707F19001E1B83 /* GridPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E58027707F19001E1B83 /* GridPhotosView.swift */; };
 		8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */; };
 		844EF8ED2809AACD00CC82F9 /* NoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844EF8EC2809AACD00CC82F9 /* NoContentView.swift */; };
+		844CC60E2811378D0006548D /* ComposerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844CC60D2811378D0006548D /* ComposerConfig.swift */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		8465FCB727468B0600AF091E /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB627468B0600AF091E /* NukeUI */; };
 		8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */; };
@@ -243,12 +244,10 @@
 		84C94D0727578BF2007FE2B9 /* RandomDispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CEF27578BF2007FE2B9 /* RandomDispatchQueue.swift */; };
 		84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF027578BF2007FE2B9 /* MockFunc.swift */; };
 		84C94D0927578BF2007FE2B9 /* TestManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF127578BF2007FE2B9 /* TestManagedObject.swift */; };
-		84C94D0A27578BF2007FE2B9 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF227578BF2007FE2B9 /* TestDataModel.xcdatamodeld */; };
 		84C94D0B27578BF2007FE2B9 /* QueueAwareDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF427578BF2007FE2B9 /* QueueAwareDelegate.swift */; };
 		84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF627578BF2007FE2B9 /* AssertJSONEqual.swift */; };
 		84C94D0D27578BF2007FE2B9 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF727578BF2007FE2B9 /* AssertResult.swift */; };
 		84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF827578BF2007FE2B9 /* AssertAsync.swift */; };
-		84C94D1027578BF2007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFA27578BF2007FE2B9 /* TestDataModel2.xcdatamodeld */; };
 		84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFC27578BF2007FE2B9 /* ChannelId.swift */; };
 		84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFD27578BF2007FE2B9 /* JSONEncoder+Extensions.swift */; };
 		84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFE27578BF2007FE2B9 /* XCTestCase+MockJSON.swift */; };
@@ -265,12 +264,9 @@
 		84C94D282757954C007FE2B9 /* VirtualTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D272757954C007FE2B9 /* VirtualTimer.swift */; };
 		84C94D2A275796D0007FE2B9 /* MockNetworkURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D29275796D0007FE2B9 /* MockNetworkURLProtocol.swift */; };
 		84C94D2C275796F7007FE2B9 /* RequestRecorderURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D2B275796F7007FE2B9 /* RequestRecorderURLProtocol.swift */; };
-		84C94D3927579BB0007FE2B9 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D2F27579BB0007FE2B9 /* TestDataModel.xcdatamodeld */; };
 		84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3227579BB0007FE2B9 /* AssertJSONEqual.swift */; };
 		84C94D3B27579BB0007FE2B9 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3327579BB0007FE2B9 /* AssertResult.swift */; };
 		84C94D3C27579BB0007FE2B9 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3427579BB0007FE2B9 /* AssertAsync.swift */; };
-		84C94D3D27579BB0007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3527579BB0007FE2B9 /* TestDataModel2.xcdatamodeld */; };
-		84C94D3E27579BB0007FE2B9 /* StreamChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3727579BB0007FE2B9 /* StreamChatModel.xcdatamodeld */; };
 		84C94D422757C16D007FE2B9 /* ChatChannelListTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D412757C16D007FE2B9 /* ChatChannelListTestHelpers.swift */; };
 		84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */; };
 		84C94D462757D1CA007FE2B9 /* ImageLoader_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D452757D1CA007FE2B9 /* ImageLoader_Mock.swift */; };
@@ -296,6 +292,12 @@
 		84DEC8E82760EABC00172876 /* ChatChannelDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8E72760EABC00172876 /* ChatChannelDataSource.swift */; };
 		84DEC8EA2761089A00172876 /* MessageThreadHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8E92761089A00172876 /* MessageThreadHeaderViewModifier.swift */; };
 		84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8EB27611CAE00172876 /* SendInChannelView.swift */; };
+		84E57C4E281037B2002213C1 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C46281037B2002213C1 /* AssertJSONEqual.swift */; };
+		84E57C4F281037B2002213C1 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C47281037B2002213C1 /* AssertResult.swift */; };
+		84E57C50281037B2002213C1 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C48281037B2002213C1 /* AssertAsync.swift */; };
+		84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */; };
+		84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */; };
+		84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */; };
 		84E6EC23279AEE6B0017207B /* MessageContainerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E6EC22279AEE6B0017207B /* MessageContainerView_Tests.swift */; };
 		84E6EC25279AEE9F0017207B /* StreamChatTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E6EC24279AEE9F0017207B /* StreamChatTestCase.swift */; };
 		84E6EC27279B0C930017207B /* ReactionsUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E6EC26279B0C930017207B /* ReactionsUsersView.swift */; };
@@ -387,6 +389,7 @@
 		8434E58027707F19001E1B83 /* GridPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridPhotosView.swift; sourceTree = "<group>"; };
 		8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleWithCloseButton.swift; sourceTree = "<group>"; };
 		844EF8EC2809AACD00CC82F9 /* NoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoContentView.swift; sourceTree = "<group>"; };
+		844CC60D2811378D0006548D /* ComposerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerConfig.swift; sourceTree = "<group>"; };
 		8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StreamChatSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamChatSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8465FCBC27468B6900AF091E /* DemoAppSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoAppSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -585,12 +588,10 @@
 		84C94CEF27578BF2007FE2B9 /* RandomDispatchQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomDispatchQueue.swift; sourceTree = "<group>"; };
 		84C94CF027578BF2007FE2B9 /* MockFunc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFunc.swift; sourceTree = "<group>"; };
 		84C94CF127578BF2007FE2B9 /* TestManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestManagedObject.swift; sourceTree = "<group>"; };
-		84C94CF327578BF2007FE2B9 /* TestDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestDataModel.xcdatamodel; sourceTree = "<group>"; };
 		84C94CF427578BF2007FE2B9 /* QueueAwareDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueAwareDelegate.swift; sourceTree = "<group>"; };
 		84C94CF627578BF2007FE2B9 /* AssertJSONEqual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertJSONEqual.swift; sourceTree = "<group>"; };
 		84C94CF727578BF2007FE2B9 /* AssertResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
 		84C94CF827578BF2007FE2B9 /* AssertAsync.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertAsync.swift; sourceTree = "<group>"; };
-		84C94CFB27578BF2007FE2B9 /* TestDataModel2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestDataModel2.xcdatamodel; sourceTree = "<group>"; };
 		84C94CFC27578BF2007FE2B9 /* ChannelId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelId.swift; sourceTree = "<group>"; };
 		84C94CFD27578BF2007FE2B9 /* JSONEncoder+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONEncoder+Extensions.swift"; sourceTree = "<group>"; };
 		84C94CFE27578BF2007FE2B9 /* XCTestCase+MockJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MockJSON.swift"; sourceTree = "<group>"; };
@@ -607,12 +608,9 @@
 		84C94D272757954C007FE2B9 /* VirtualTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTimer.swift; sourceTree = "<group>"; };
 		84C94D29275796D0007FE2B9 /* MockNetworkURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkURLProtocol.swift; sourceTree = "<group>"; };
 		84C94D2B275796F7007FE2B9 /* RequestRecorderURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestRecorderURLProtocol.swift; sourceTree = "<group>"; };
-		84C94D3027579BB0007FE2B9 /* TestDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestDataModel.xcdatamodel; sourceTree = "<group>"; };
 		84C94D3227579BB0007FE2B9 /* AssertJSONEqual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertJSONEqual.swift; sourceTree = "<group>"; };
 		84C94D3327579BB0007FE2B9 /* AssertResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
 		84C94D3427579BB0007FE2B9 /* AssertAsync.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertAsync.swift; sourceTree = "<group>"; };
-		84C94D3627579BB0007FE2B9 /* TestDataModel2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestDataModel2.xcdatamodel; sourceTree = "<group>"; };
-		84C94D3827579BB0007FE2B9 /* StreamChatModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StreamChatModel.xcdatamodel; sourceTree = "<group>"; };
 		84C94D412757C16D007FE2B9 /* ChatChannelListTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListTestHelpers.swift; sourceTree = "<group>"; };
 		84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreChannelActionsViewModel_Tests.swift; sourceTree = "<group>"; };
 		84C94D452757D1CA007FE2B9 /* ImageLoader_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader_Mock.swift; sourceTree = "<group>"; };
@@ -638,6 +636,12 @@
 		84DEC8E72760EABC00172876 /* ChatChannelDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelDataSource.swift; sourceTree = "<group>"; };
 		84DEC8E92761089A00172876 /* MessageThreadHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadHeaderViewModifier.swift; sourceTree = "<group>"; };
 		84DEC8EB27611CAE00172876 /* SendInChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendInChannelView.swift; sourceTree = "<group>"; };
+		84E57C46281037B2002213C1 /* AssertJSONEqual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertJSONEqual.swift; sourceTree = "<group>"; };
+		84E57C47281037B2002213C1 /* AssertResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
+		84E57C48281037B2002213C1 /* AssertAsync.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertAsync.swift; sourceTree = "<group>"; };
+		84E57C5428103822002213C1 /* TestDataModel2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestDataModel2.xcdatamodel; sourceTree = "<group>"; };
+		84E57C5628103822002213C1 /* StreamChatModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StreamChatModel.xcdatamodel; sourceTree = "<group>"; };
+		84E57C5828103822002213C1 /* TestDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestDataModel.xcdatamodel; sourceTree = "<group>"; };
 		84E6EC22279AEE6B0017207B /* MessageContainerView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContainerView_Tests.swift; sourceTree = "<group>"; };
 		84E6EC24279AEE9F0017207B /* StreamChatTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatTestCase.swift; sourceTree = "<group>"; };
 		84E6EC26279B0C930017207B /* ReactionsUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersView.swift; sourceTree = "<group>"; };
@@ -945,6 +949,7 @@
 				8465FD1A2746A95600AF091E /* ComposerHelperViews.swift */,
 				841B64C327744DB60016FF3B /* ComposerModels.swift */,
 				8465FD182746A95600AF091E /* PhotoAssetsUtils.swift */,
+				844CC60D2811378D0006548D /* ComposerConfig.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -1163,10 +1168,10 @@
 		84C94CEA27578BF2007FE2B9 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */,
+				84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */,
+				84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */,
 				84C94D3127579BB0007FE2B9 /* CustomAssertions */,
-				84C94D3727579BB0007FE2B9 /* StreamChatModel.xcdatamodeld */,
-				84C94D2F27579BB0007FE2B9 /* TestDataModel.xcdatamodeld */,
-				84C94D3527579BB0007FE2B9 /* TestDataModel2.xcdatamodeld */,
 				84C94CEB27578BF2007FE2B9 /* WaitFor.swift */,
 				84C94CEC27578BF2007FE2B9 /* TestError.swift */,
 				84C94CED27578BF2007FE2B9 /* TestRunnerEnvironment.swift */,
@@ -1174,10 +1179,8 @@
 				84C94CEF27578BF2007FE2B9 /* RandomDispatchQueue.swift */,
 				84C94CF027578BF2007FE2B9 /* MockFunc.swift */,
 				84C94CF127578BF2007FE2B9 /* TestManagedObject.swift */,
-				84C94CF227578BF2007FE2B9 /* TestDataModel.xcdatamodeld */,
 				84C94CF427578BF2007FE2B9 /* QueueAwareDelegate.swift */,
 				84C94CF527578BF2007FE2B9 /* CustomAssertions */,
-				84C94CFA27578BF2007FE2B9 /* TestDataModel2.xcdatamodeld */,
 				84C94CFC27578BF2007FE2B9 /* ChannelId.swift */,
 				84C94CFD27578BF2007FE2B9 /* JSONEncoder+Extensions.swift */,
 				84C94CFE27578BF2007FE2B9 /* XCTestCase+MockJSON.swift */,
@@ -1235,6 +1238,7 @@
 		84C94D3F27579E9B007FE2B9 /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				84E57C45281037B2002213C1 /* CustomAssertions */,
 				84C94D1827579205007FE2B9 /* Mocks */,
 				84C94CEA27578BF2007FE2B9 /* Shared */,
 				84C94CA927578B92007FE2B9 /* TestTools */,
@@ -1293,6 +1297,17 @@
 				84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		84E57C45281037B2002213C1 /* CustomAssertions */ = {
+			isa = PBXGroup;
+			children = (
+				84E57C46281037B2002213C1 /* AssertJSONEqual.swift */,
+				84E57C47281037B2002213C1 /* AssertResult.swift */,
+				84E57C48281037B2002213C1 /* AssertAsync.swift */,
+			);
+			name = CustomAssertions;
+			path = Shared/CustomAssertions;
 			sourceTree = "<group>";
 		};
 		84F29088276B90410045472D /* Gallery */ = {
@@ -1597,6 +1612,7 @@
 				8465FD6F2746A95700AF091E /* StreamChat.swift in Sources */,
 				8465FD8F2746A95700AF091E /* AttachmentUploadingStateView.swift in Sources */,
 				8465FD732746A95700AF091E /* ActionItemView.swift in Sources */,
+				844CC60E2811378D0006548D /* ComposerConfig.swift in Sources */,
 				846608E5278C865200D3D7B3 /* TypingIndicatorPlacement.swift in Sources */,
 				8465FDA72746A95700AF091E /* KeyboardHandling.swift in Sources */,
 				8465FDD72746A95800AF091E /* Appearance.swift in Sources */,
@@ -1672,6 +1688,7 @@
 				84C94CD727578B92007FE2B9 /* ChatMessageLinkAttachment_Mock.swift in Sources */,
 				847BA08327E0B9C600ED20C7 /* EventBatcherMock.swift in Sources */,
 				847BA08527E0BA2500ED20C7 /* EventNotificationCenterMock.swift in Sources */,
+				84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */,
 				84C94D0527578BF2007FE2B9 /* TestRunnerEnvironment.swift in Sources */,
 				84E6EC23279AEE6B0017207B /* MessageContainerView_Tests.swift in Sources */,
 				84C94D68275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift in Sources */,
@@ -1679,11 +1696,11 @@
 				84C94D0927578BF2007FE2B9 /* TestManagedObject.swift in Sources */,
 				846608E7278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift in Sources */,
 				84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */,
-				84C94D3927579BB0007FE2B9 /* TestDataModel.xcdatamodeld in Sources */,
 				84C94D4D2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift in Sources */,
 				84C94CDB27578B92007FE2B9 /* NSManagedObject+ContextChange.swift in Sources */,
 				84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
+				84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */,
 				847BA08927E0BAEE00ED20C7 /* WebSocketEngineMock.swift in Sources */,
 				84C94D492758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift in Sources */,
 				84C94CE027578B92007FE2B9 /* CurrentUserPayload.swift in Sources */,
@@ -1708,6 +1725,8 @@
 				84C94D2227579359007FE2B9 /* AnyEndpoint.swift in Sources */,
 				84C94D5C275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift in Sources */,
 				84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */,
+				84E57C50281037B2002213C1 /* AssertAsync.swift in Sources */,
+				84E57C4F281037B2002213C1 /* AssertResult.swift in Sources */,
 				8423C34C277DDD250092DCF1 /* MuteCommandHandler_Tests.swift in Sources */,
 				84C94D24275794D3007FE2B9 /* InternetConnectionMock.swift in Sources */,
 				84C94CDD27578B92007FE2B9 /* MemberPayload.swift in Sources */,
@@ -1723,9 +1742,9 @@
 				84C94D20275792EA007FE2B9 /* MockBackgroundTaskScheduler.swift in Sources */,
 				846608E9278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift in Sources */,
 				84C94CE227578B92007FE2B9 /* UserPayload.swift in Sources */,
-				84C94D3D27579BB0007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */,
 				8421BCEC27A400E8000F977D /* ReactionsUsersView_Tests.swift in Sources */,
 				84C94CD327578B92007FE2B9 /* ChatMessageFileAttachment_Mock.swift in Sources */,
+				84E57C4E281037B2002213C1 /* AssertJSONEqual.swift in Sources */,
 				84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */,
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84C94CE827578B92007FE2B9 /* ChatMessageController_Mock.swift in Sources */,
@@ -1733,6 +1752,7 @@
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */,
 				847BA08727E0BACB00ED20C7 /* WebSocketPingControllerMock.swift in Sources */,
+				84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */,
 				84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */,
 				84C94D5E275A3AA9007FE2B9 /* ImageCDN_Tests.swift in Sources */,
 				84C94CDF27578B92007FE2B9 /* MessagePayload.swift in Sources */,
@@ -1742,14 +1762,12 @@
 				8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */,
 				8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */,
 				84C94CE727578B92007FE2B9 /* ChatChannelListController_Mock.swift in Sources */,
-				84C94D1027578BF2007FE2B9 /* TestDataModel2.xcdatamodeld in Sources */,
 				84C94CE627578B92007FE2B9 /* CurrentChatUserController_Mock.swift in Sources */,
 				84C94D1527578BF3007FE2B9 /* TestDispatchQueue.swift in Sources */,
 				84C2042327917B6A0024D616 /* MessageListView_Tests.swift in Sources */,
 				84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */,
 				84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */,
 				84C94D1D2757929C007FE2B9 /* WebSocketClient_Mock.swift in Sources */,
-				84C94D3E27579BB0007FE2B9 /* StreamChatModel.xcdatamodeld in Sources */,
 				84C94CD827578B92007FE2B9 /* AnyAttachmentPayload_Mock.swift in Sources */,
 				84C94CDE27578B92007FE2B9 /* UnreadCount.swift in Sources */,
 				84C94CCE27578B92007FE2B9 /* ChatChannel_Mock.swift in Sources */,
@@ -1759,7 +1777,6 @@
 				84C94D0627578BF2007FE2B9 /* UnwrapAsync.swift in Sources */,
 				84D6B55A27DF6EC7009C6D07 /* LoadingView_Tests.swift in Sources */,
 				84C94D0427578BF2007FE2B9 /* TestError.swift in Sources */,
-				84C94D0A27578BF2007FE2B9 /* TestDataModel.xcdatamodeld in Sources */,
 				840008BB27E8D64A00282D88 /* MessageActions_Tests.swift in Sources */,
 				84C94D422757C16D007FE2B9 /* ChatChannelListTestHelpers.swift in Sources */,
 				84C94D5A275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift in Sources */,
@@ -2203,8 +2220,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.13.0;
+				branch = develop;
+				kind = branch;
 			};
 		};
 		848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
@@ -2241,53 +2258,33 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		84C94CF227578BF2007FE2B9 /* TestDataModel.xcdatamodeld */ = {
+		84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				84C94CF327578BF2007FE2B9 /* TestDataModel.xcdatamodel */,
+				84E57C5428103822002213C1 /* TestDataModel2.xcdatamodel */,
 			);
-			currentVersion = 84C94CF327578BF2007FE2B9 /* TestDataModel.xcdatamodel */;
-			path = TestDataModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-		84C94CFA27578BF2007FE2B9 /* TestDataModel2.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				84C94CFB27578BF2007FE2B9 /* TestDataModel2.xcdatamodel */,
-			);
-			currentVersion = 84C94CFB27578BF2007FE2B9 /* TestDataModel2.xcdatamodel */;
+			currentVersion = 84E57C5428103822002213C1 /* TestDataModel2.xcdatamodel */;
 			path = TestDataModel2.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
-		84C94D2F27579BB0007FE2B9 /* TestDataModel.xcdatamodeld */ = {
+		84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				84C94D3027579BB0007FE2B9 /* TestDataModel.xcdatamodel */,
+				84E57C5628103822002213C1 /* StreamChatModel.xcdatamodel */,
 			);
-			currentVersion = 84C94D3027579BB0007FE2B9 /* TestDataModel.xcdatamodel */;
-			path = TestDataModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-		84C94D3527579BB0007FE2B9 /* TestDataModel2.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				84C94D3627579BB0007FE2B9 /* TestDataModel2.xcdatamodel */,
-			);
-			currentVersion = 84C94D3627579BB0007FE2B9 /* TestDataModel2.xcdatamodel */;
-			path = TestDataModel2.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-		84C94D3727579BB0007FE2B9 /* StreamChatModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				84C94D3827579BB0007FE2B9 /* StreamChatModel.xcdatamodel */,
-			);
-			currentVersion = 84C94D3827579BB0007FE2B9 /* StreamChatModel.xcdatamodel */;
+			currentVersion = 84E57C5628103822002213C1 /* StreamChatModel.xcdatamodel */;
 			path = StreamChatModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				84E57C5828103822002213C1 /* TestDataModel.xcdatamodel */,
+			);
+			currentVersion = 84E57C5828103822002213C1 /* TestDataModel.xcdatamodel */;
+			path = TestDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

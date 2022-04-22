@@ -67,6 +67,7 @@ public struct MessageDisplayOptions {
     
     let showAvatars: Bool
     let showMessageDate: Bool
+    let showAuthorName: Bool
     let animateChanges: Bool
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
@@ -74,11 +75,13 @@ public struct MessageDisplayOptions {
     public init(
         showAvatars: Bool = true,
         showMessageDate: Bool = true,
+        showAuthorName: Bool = true,
         animateChanges: Bool = true,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity
     ) {
         self.showAvatars = showAvatars
+        self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
         self.currentUserMessageTransition = currentUserMessageTransition

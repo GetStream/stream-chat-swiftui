@@ -19,6 +19,7 @@ public class Utils {
     public var messageActionsResolver: MessageActionsResolving
     public var commandsConfig: CommandsConfig
     public var messageListConfig: MessageListConfig
+    public var composerConfig: ComposerConfig
     
     var messageCachingUtils = MessageCachingUtils()
     
@@ -34,6 +35,7 @@ public class Utils {
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
+        composerConfig: ComposerConfig = ComposerConfig(),
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer()
     ) {
         self.dateFormatter = dateFormatter
@@ -48,5 +50,6 @@ public class Utils {
         messageActionsResolver = messageActionResolver
         self.commandsConfig = commandsConfig
         self.messageListConfig = messageListConfig
+        self.composerConfig = composerConfig
     }
 }

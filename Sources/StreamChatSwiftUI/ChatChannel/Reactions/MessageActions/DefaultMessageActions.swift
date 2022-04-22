@@ -44,22 +44,22 @@ extension MessageAction {
             return messageActions
         }
         
-        if channel.config.repliesEnabled {
+        if channel.config.quotesEnabled {
             let replyAction = replyAction(
                 for: message,
                 channel: channel,
                 onFinish: onFinish
             )
             messageActions.append(replyAction)
-            
-            if !message.isPartOfThread {
-                let replyThread = threadReplyAction(
-                    factory: factory,
-                    for: message,
-                    channel: channel
-                )
-                messageActions.append(replyThread)
-            }
+        }
+        
+        if channel.config.repliesEnabled && !message.isPartOfThread {
+            let replyThread = threadReplyAction(
+                factory: factory,
+                for: message,
+                channel: channel
+            )
+            messageActions.append(replyThread)
         }
         
         if message.pinDetails != nil {

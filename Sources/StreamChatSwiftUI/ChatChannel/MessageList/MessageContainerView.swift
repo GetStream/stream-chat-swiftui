@@ -125,6 +125,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     )
                     .onChange(of: offset, perform: { _ in
+                        if !channel.config.quotesEnabled {
+                            return
+                        }
+                        
                         if offset == .zero {
                             // gesture ended or cancelled
                             setOffsetX(value: 0)
@@ -154,7 +158,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                                     MessageDateView(message: message)
                                 }
                             }
-                        } else if !message.isSentByCurrentUser && !channel.isDirectMessageChannel {
+                        } else if !message.isSentByCurrentUser
+                            && !channel.isDirectMessageChannel
+                            && messageListConfig.messageDisplayOptions.showAuthorName {
                             MessageAuthorAndDateView(message: message)
                         } else if messageListConfig.messageDisplayOptions.showMessageDate {
                             MessageDateView(message: message)

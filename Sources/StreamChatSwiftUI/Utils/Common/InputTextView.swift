@@ -5,14 +5,22 @@
 import UIKit
 
 struct TextSizeConstants {
-    static let minimumHeight = 38.0
-    static let maximumHeight = 76.0
-    static let minThreshold = 38.0
+    static let composerConfig = InjectedValues[\.utils].composerConfig
+    static let defaultInputViewHeight: CGFloat = 38.0
+    static var minimumHeight: CGFloat {
+        composerConfig.inputViewMinHeight
+    }
+
+    static let maximumHeight: CGFloat = 76
+    static var minThreshold: CGFloat {
+        composerConfig.inputViewMinHeight
+    }
 }
 
 class InputTextView: UITextView {
     @Injected(\.colors) private var colors
-    
+    @Injected(\.utils) private var utils
+        
     /// Label used as placeholder for textView when it's empty.
     open private(set) lazy var placeholderLabel: UILabel = UILabel()
         .withoutAutoresizingMaskConstraints
@@ -62,7 +70,7 @@ class InputTextView: UITextView {
     open func setUpAppearance() {
         backgroundColor = .clear
         textContainer.lineFragmentPadding = 8
-        font = UIFont.preferredFont(forTextStyle: .body)
+        font = utils.composerConfig.inputFont
         textColor = colors.text
         textAlignment = .natural
         
@@ -130,6 +138,16 @@ class InputTextView: UITextView {
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if TextSizeConstants.defaultInputViewHeight != minimumHeight {
+            let rect = layoutManager.usedRect(for: textContainer)
+            let topInset = (bounds.size.height - rect.height) / 2.0
+            textContainerInset.top = max(0, topInset)
+        }
+    }
+        
     override open func paste(_ sender: Any?) {
         super.paste(sender)
         handleTextChange()

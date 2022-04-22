@@ -5,7 +5,7 @@
 @testable import StreamChat
 
 /// Mock implementation of `ChatClientUpdater`
-class ChatClientUpdaterMock: ChatClientUpdater {
+final class ChatClientUpdater_Mock: ChatClientUpdater {
     @Atomic var prepareEnvironment_newToken: Token?
     var prepareEnvironment_called: Bool { prepareEnvironment_newToken != nil }
 
@@ -30,8 +30,9 @@ class ChatClientUpdaterMock: ChatClientUpdater {
 
     override func prepareEnvironment(
         userInfo: UserInfo?,
-        newToken: Token
-    ) throws {
+        newToken: Token,
+        completion: ((Error?) -> Void)? = nil
+    ) {
         prepareEnvironment_newToken = newToken
     }
 
