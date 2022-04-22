@@ -117,6 +117,12 @@ internal enum L10n {
       /// Pinned Messages
       internal static var title: String { L10n.tr("Localizable", "chat-info.pinned-messages.title") }
     }
+    internal enum Users {
+      /// %@ more
+      internal static func loadMore(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "chat-info.users.loadMore", String(describing: p1))
+      }
+    }
   }
 
   internal enum Composer {

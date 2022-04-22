@@ -132,3 +132,4 @@
 
 "chat-info.mute.user" = "Mute User";
 "chat-info.mute.group" = "Mute Group";
+"chat-info.users.loadMore" = "%@ more";

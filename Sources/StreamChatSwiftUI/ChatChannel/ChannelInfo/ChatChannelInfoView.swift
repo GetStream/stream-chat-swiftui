@@ -8,6 +8,8 @@ import SwiftUI
 public struct ChatChannelInfoView: View {
     
     @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     @StateObject private var viewModel: ChatChannelInfoViewModel
     
@@ -20,7 +22,17 @@ public struct ChatChannelInfoView: View {
     public var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ChatInfoParticipantsView(participants: viewModel.displayedParticipants)
+                ChatInfoParticipantsView(
+                    participants: viewModel.displayedParticipants,
+                    onItemAppear: viewModel.onParticipantAppear(_:)
+                )
+                
+                if viewModel.memberListCollapsed && viewModel.notDisplayedParticipantsCount > 0 {
+                    LoadMoreUserButton(notDisplayedCount: viewModel.notDisplayedParticipantsCount) {
+                        viewModel.memberListCollapsed = false
+                    }
+                }
+                
                 ChannelInfoDivider()
                 ChatInfoOptionsView(viewModel: viewModel)
                 ChannelInfoDivider()
@@ -34,6 +46,31 @@ public struct ChatChannelInfoView: View {
                 )
             }
         }
+    }
+}
+
+struct LoadMoreUserButton: View {
+    
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    
+    var notDisplayedCount: Int
+    var loadMoreTapped: () -> Void
+    
+    var body: some View {
+        Button {
+            loadMoreTapped()
+        } label: {
+            HStack(spacing: 16) {
+                Image(systemName: "chevron.down")
+                Text(L10n.ChatInfo.Users.loadMore(notDisplayedCount))
+                Spacer()
+            }
+        }
+        .padding()
+        .font(fonts.bodyBold)
+        .foregroundColor(Color(colors.textLowEmphasis))
+        .background(Color(colors.background))
     }
 }
 

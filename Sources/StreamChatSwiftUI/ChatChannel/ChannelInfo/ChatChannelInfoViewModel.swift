@@ -23,6 +23,12 @@ public class ChatChannelInfoViewModel: ObservableObject {
 
     @Published var memberListCollapsed = true
     
+    let channel: ChatChannel
+    
+    private var channelController: ChatChannelController!
+    private var memberListController: ChatChannelMemberListController!
+    private var loadingUsers = false
+    
     var displayedParticipants: [ParticipantInfo] {
         if participants.count <= 6 {
             return participants
@@ -35,14 +41,16 @@ public class ChatChannelInfoViewModel: ObservableObject {
         }
     }
     
+    var notDisplayedParticipantsCount: Int {
+        let total = channel.memberCount
+        let displayed = displayedParticipants.count
+        return total - displayed
+    }
+    
     var mutedText: String {
         let isGroup = channel.memberCount > 2
         return isGroup ? L10n.ChatInfo.Mute.group : L10n.ChatInfo.Mute.user
     }
-    
-    let channel: ChatChannel
-    var channelController: ChatChannelController!
-    var memberListController: ChatChannelMemberListController!
     
     public init(channel: ChatChannel) {
         self.channel = channel
@@ -69,6 +77,54 @@ public class ChatChannelInfoViewModel: ObservableObject {
             return timeAgo
         } else {
             return L10n.Message.Title.offline
+        }
+    }
+    
+    func onParticipantAppear(_ participantInfo: ParticipantInfo) {
+        if memberListCollapsed {
+            return
+        }
+        
+        let displayedParticipants = self.displayedParticipants
+        if displayedParticipants.isEmpty {
+            loadAdditionalUsers()
+            return
+        }
+        
+        guard let index = displayedParticipants.firstIndex(where: { participant in
+            participant.id == participantInfo.id
+        }) else {
+            return
+        }
+        
+        if index < displayedParticipants.count - 10 {
+            return
+        }
+     
+        loadAdditionalUsers()
+    }
+    
+    private func loadAdditionalUsers() {
+        if loadingUsers {
+            return
+        }
+        
+        loadingUsers = true
+        memberListController.loadNextMembers { [weak self] error in
+            guard let self = self else { return }
+            self.loadingUsers = false
+            if error == nil {
+                let newMembers = self.memberListController.members.map { member in
+                    ParticipantInfo(
+                        chatUser: member,
+                        displayName: member.name ?? member.id,
+                        onlineInfoText: self.onlineInfo(for: member)
+                    )
+                }
+                if newMembers.count > self.participants.count {
+                    self.participants = newMembers
+                }
+            }
         }
     }
     

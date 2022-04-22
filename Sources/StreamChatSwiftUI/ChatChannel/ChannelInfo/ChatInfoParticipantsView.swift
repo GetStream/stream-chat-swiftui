@@ -11,6 +11,7 @@ struct ChatInfoParticipantsView: View {
     @Injected(\.colors) private var colors
     
     var participants: [ParticipantInfo]
+    var onItemAppear: (ParticipantInfo) -> Void
     
     var body: some View {
         LazyVStack {
@@ -29,6 +30,9 @@ struct ChatInfoParticipantsView: View {
                     Spacer()
                 }
                 .padding(.all, 8)
+                .onAppear {
+                    onItemAppear(participant)
+                }
             }
         }
         .background(Color(colors.background))
