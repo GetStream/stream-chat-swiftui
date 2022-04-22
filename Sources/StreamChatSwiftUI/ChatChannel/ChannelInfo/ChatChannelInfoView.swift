@@ -13,6 +13,8 @@ public struct ChatChannelInfoView: View {
     
     @StateObject private var viewModel: ChatChannelInfoViewModel
     
+    @Environment(\.presentationMode) var presentationMode
+    
     public init(channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: ChatChannelInfoViewModel(channel: channel)
@@ -28,14 +30,47 @@ public struct ChatChannelInfoView: View {
                 )
                 
                 if viewModel.memberListCollapsed && viewModel.notDisplayedParticipantsCount > 0 {
-                    LoadMoreUserButton(notDisplayedCount: viewModel.notDisplayedParticipantsCount) {
+                    ChatChannelInfoButton(
+                        title: L10n.ChatInfo.Users.loadMore(viewModel.notDisplayedParticipantsCount),
+                        iconName: "chevron.down",
+                        foregroundColor: Color(colors.textLowEmphasis)
+                    ) {
                         viewModel.memberListCollapsed = false
                     }
                 }
                 
                 ChannelInfoDivider()
+                
                 ChatInfoOptionsView(viewModel: viewModel)
+                
                 ChannelInfoDivider()
+                    .alert(isPresented: $viewModel.errorShown) {
+                        Alert.defaultErrorAlert
+                    }
+                
+                ChatChannelInfoButton(
+                    title: viewModel.leaveButtonTitle,
+                    iconName: "person.fill.xmark",
+                    foregroundColor: Color(colors.alert)
+                ) {
+                    viewModel.leaveGroupAlertShown = true
+                }
+                .alert(isPresented: $viewModel.leaveGroupAlertShown) {
+                    let title = viewModel.leaveButtonTitle
+                    let message = viewModel.leaveConversationDescription
+                    let buttonTitle = viewModel.leaveButtonTitle
+                    
+                    return Alert(
+                        title: Text(title),
+                        message: Text(message),
+                        primaryButton: .destructive(Text(buttonTitle)) {
+                            viewModel.leaveConversationTapped {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
             }
         }
         .toolbar {
@@ -49,27 +84,29 @@ public struct ChatChannelInfoView: View {
     }
 }
 
-struct LoadMoreUserButton: View {
+struct ChatChannelInfoButton: View {
     
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    var notDisplayedCount: Int
-    var loadMoreTapped: () -> Void
+    var title: String
+    var iconName: String
+    var foregroundColor: Color
+    var buttonTapped: () -> Void
     
     var body: some View {
         Button {
-            loadMoreTapped()
+            buttonTapped()
         } label: {
             HStack(spacing: 16) {
-                Image(systemName: "chevron.down")
-                Text(L10n.ChatInfo.Users.loadMore(notDisplayedCount))
+                Image(systemName: iconName)
+                Text(title)
                 Spacer()
             }
         }
         .padding()
         .font(fonts.bodyBold)
-        .foregroundColor(Color(colors.textLowEmphasis))
+        .foregroundColor(foregroundColor)
         .background(Color(colors.background))
     }
 }

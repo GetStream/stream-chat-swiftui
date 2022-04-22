@@ -22,6 +22,8 @@ public class ChatChannelInfoViewModel: ObservableObject {
     }
 
     @Published var memberListCollapsed = true
+    @Published var leaveGroupAlertShown = false
+    @Published var errorShown = false
     
     let channel: ChatChannel
     
@@ -38,6 +40,22 @@ public class ChatChannelInfoViewModel: ObservableObject {
             return Array(participants[0..<6])
         } else {
             return participants
+        }
+    }
+    
+    var leaveButtonTitle: String {
+        if channel.isDirectMessageChannel {
+            return L10n.Alert.Actions.deleteChannelTitle
+        } else {
+            return L10n.Alert.Actions.leaveGroupTitle
+        }
+    }
+    
+    var leaveConversationDescription: String {
+        if channel.isDirectMessageChannel {
+            return L10n.Alert.Actions.deleteChannelMessage
+        } else {
+            return L10n.Alert.Actions.leaveGroupMessage
         }
     }
     
@@ -102,6 +120,35 @@ public class ChatChannelInfoViewModel: ObservableObject {
         }
      
         loadAdditionalUsers()
+    }
+    
+    func leaveConversationTapped(completion: @escaping () -> Void) {
+        if !channel.isDirectMessageChannel {
+            removeUserFromConversation(completion: completion)
+        } else {
+            deleteChannel(completion: completion)
+        }
+    }
+    
+    private func removeUserFromConversation(completion: @escaping () -> Void) {
+        guard let userId = chatClient.currentUserId else { return }
+        channelController.removeMembers(userIds: [userId]) { [weak self] error in
+            if error != nil {
+                self?.errorShown = true
+            } else {
+                completion()
+            }
+        }
+    }
+    
+    private func deleteChannel(completion: @escaping () -> Void) {
+        channelController.deleteChannel { [weak self] error in
+            if error != nil {
+                self?.errorShown = true
+            } else {
+                completion()
+            }
+        }
     }
     
     private func loadAdditionalUsers() {
