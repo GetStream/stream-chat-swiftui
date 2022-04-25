@@ -135,9 +135,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func scrollToLastMessage() {
-        if scrolledId != messages.first?.messageId {
-            scrolledId = messages.first?.messageId
+        if scrolledId != nil {
+            scrolledId = nil
         }
+        scrolledId = messages.first?.messageId
     }
     
     public func handleMessageAppear(index: Int) {

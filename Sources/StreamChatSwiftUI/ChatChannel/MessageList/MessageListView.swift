@@ -150,11 +150,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
+                        let diff = offsetValue - utils.messageCachingUtils.scrollOffset
+                        utils.messageCachingUtils.scrollOffset = offsetValue
                         let scrollButtonShown = offsetValue < -20
                         if scrollButtonShown != showScrollToLatestButton {
                             showScrollToLatestButton = scrollButtonShown
                         }
-                        if keyboardShown {
+                        if keyboardShown && diff < -20 {
                             keyboardShown = false
                             resignFirstResponder()
                         }
