@@ -40,6 +40,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var loadingPreviousMessages: Bool = false
     private var lastMessageRead: String?
     private var disableDateIndicator = false
+    private var channelName = ""
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -125,6 +126,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        channelName = channel?.name ?? ""
         checkHeaderType()
     }
     
@@ -214,6 +216,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func onViewAppear() {
         isActive = true
         messages = channelDataSource.messages
+        checkNameChange()
     }
     
     public func onViewDissappear() {
@@ -272,11 +275,31 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
+    private func checkNameChange() {
+        let currentChannelName = channel?.name ?? ""
+        var nameChanged = false
+        
+        if currentChannelName != channelName {
+            channelName = currentChannelName
+            nameChanged = true
+        }
+        
+        if nameChanged {
+            // Toolbar is not updated unless there's a state change.
+            // Therefore, we manually need to update the state for a short period of time.
+            let headerType = channelHeaderType
+            channelHeaderType = .typingIndicator
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.channelHeaderType = headerType
+            }
+        }
+    }
+    
     private func checkHeaderType() {
         guard let channel = channel else {
             return
         }
-
+        
         let type: ChannelHeaderType
         let typingUsers = channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId

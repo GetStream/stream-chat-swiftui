@@ -6,7 +6,7 @@ import Foundation
 import StreamChat
 import SwiftUI
 
-public class ChatChannelInfoViewModel: ObservableObject {
+public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     
     @Injected(\.chatClient) private var chatClient
     
@@ -24,8 +24,15 @@ public class ChatChannelInfoViewModel: ObservableObject {
     @Published var memberListCollapsed = true
     @Published var leaveGroupAlertShown = false
     @Published var errorShown = false
-    
-    let channel: ChatChannel
+    @Published var channelName: String
+    @Published var channel: ChatChannel {
+        didSet {
+            channelId = UUID().uuidString
+        }
+    }
+
+    @Published var channelId = UUID().uuidString
+    @Published var keyboardShown = false
     
     private var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
@@ -72,8 +79,10 @@ public class ChatChannelInfoViewModel: ObservableObject {
     
     public init(channel: ChatChannel) {
         self.channel = channel
+        channelName = channel.name ?? ""
         muted = channel.isMuted
         channelController = chatClient.channelController(for: channel.cid)
+        channelController.delegate = self
         memberListController = chatClient.memberListController(
             query: .init(cid: channel.cid, filter: .none)
         )
@@ -127,6 +136,29 @@ public class ChatChannelInfoViewModel: ObservableObject {
             removeUserFromConversation(completion: completion)
         } else {
             deleteChannel(completion: completion)
+        }
+    }
+    
+    func cancelGroupRenaming() {
+        resignFirstResponder()
+        channelName = channel.name ?? ""
+    }
+    
+    func confirmGroupRenaming() {
+        resignFirstResponder()
+        channelController.updateChannel(
+            name: channelName,
+            imageURL: channel.imageURL,
+            team: channel.team
+        )
+    }
+    
+    public func channelController(
+        _ channelController: ChatChannelController,
+        didUpdateChannel channel: EntityChange<ChatChannel>
+    ) {
+        if let channel = channelController.channel {
+            self.channel = channel
         }
     }
     

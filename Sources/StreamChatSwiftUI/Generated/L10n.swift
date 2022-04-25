@@ -117,6 +117,12 @@ internal enum L10n {
       /// Pinned Messages
       internal static var title: String { L10n.tr("Localizable", "chat-info.pinned-messages.title") }
     }
+    internal enum Rename {
+      /// NAME
+      internal static var name: String { L10n.tr("Localizable", "chat-info.rename.name") }
+      /// Add a group name
+      internal static var placeholder: String { L10n.tr("Localizable", "chat-info.rename.placeholder") }
+    }
     internal enum Users {
       /// %@ more
       internal static func loadMore(_ p1: Any) -> String {

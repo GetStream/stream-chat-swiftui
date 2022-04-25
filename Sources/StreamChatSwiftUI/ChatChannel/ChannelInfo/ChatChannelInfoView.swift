@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct ChatChannelInfoView: View {
+public struct ChatChannelInfoView: View, KeyboardReadable {
     
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
@@ -72,14 +72,21 @@ public struct ChatChannelInfoView: View {
                     )
                 }
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                ChannelTitleView(
-                    channel: viewModel.channel,
-                    shouldShowTypingIndicator: false
-                )
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    ChannelTitleView(
+                        channel: viewModel.channel,
+                        shouldShowTypingIndicator: false
+                    )
+                    .id(viewModel.channelId)
+                }
             }
+            .onReceive(keyboardWillChangePublisher) { visible in
+                viewModel.keyboardShown = visible
+            }
+            .modifier(
+                HideKeyboardOnTapGesture(shouldAdd: viewModel.keyboardShown)
+            )
         }
     }
 }
@@ -125,11 +132,17 @@ struct ChannelInfoDivider: View {
 struct ChatInfoOptionsView: View {
     
     @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     
     @StateObject var viewModel: ChatChannelInfoViewModel
-    
+        
     var body: some View {
         VStack(spacing: 0) {
+            if !viewModel.channel.isDirectMessageChannel {
+                ChannelNameUpdateView(viewModel: viewModel)
+            }
+            
             ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
                 Toggle(isOn: $viewModel.muted) {
                     EmptyView()
@@ -163,6 +176,47 @@ struct ChatInfoOptionsView: View {
                 FileAttachmentsView(channel: viewModel.channel)
             }
         }
+    }
+}
+
+struct ChannelNameUpdateView: View {
+    
+    @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    
+    @StateObject var viewModel: ChatChannelInfoViewModel
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            Text(L10n.ChatInfo.Rename.name)
+                .font(fonts.footnote)
+                .foregroundColor(Color(colors.textLowEmphasis))
+            
+            TextField(L10n.ChatInfo.Rename.placeholder, text: $viewModel.channelName)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.text))
+            
+            Spacer()
+            
+            if viewModel.keyboardShown {
+                Button {
+                    viewModel.cancelGroupRenaming()
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .foregroundColor(Color(colors.textLowEmphasis))
+                }
+                
+                Button {
+                    viewModel.confirmGroupRenaming()
+                } label: {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(colors.tintColor)
+                }
+            }
+        }
+        .padding()
+        .background(Color(colors.background))
     }
 }
 
