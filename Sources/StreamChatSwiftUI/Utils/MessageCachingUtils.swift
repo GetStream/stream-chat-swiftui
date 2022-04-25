@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import UIKit
 
 /// Caches messages related data to avoid accessing the database.
 /// Cleared on chat channel view dismiss or memory warning.
@@ -14,6 +15,8 @@ class MessageCachingUtils {
     private var messageAttachments = [String: Bool]()
     private var checkedMessageIds = Set<String>()
     private var quotedMessageMapping = [String: ChatMessage]()
+    
+    var scrollOffset: CGFloat = 0
     
     func authorId(for message: ChatMessage) -> String {
         if let userDisplayInfo = userDisplayInfo(for: message) {
@@ -72,6 +75,7 @@ class MessageCachingUtils {
     
     func clearCache() {
         log.debug("Clearing cached message data")
+        scrollOffset = 0
         messageAuthorMapping = [String: String]()
         messageAuthors = [String: UserDisplayInfo]()
         messageAttachments = [String: Bool]()
