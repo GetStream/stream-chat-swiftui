@@ -33,6 +33,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     @Published var channelId = UUID().uuidString
     @Published var keyboardShown = false
+    @Published var addUsersShown = false
+    @Published var addUsersList = [ChatUser]()
     
     private var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
@@ -159,8 +161,24 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     ) {
         if let channel = channelController.channel {
             self.channel = channel
+            if self.channel.lastActiveMembers.count > participants.count {
+                participants = channel.lastActiveMembers.map { member in
+                    ParticipantInfo(
+                        chatUser: member,
+                        displayName: member.name ?? member.id,
+                        onlineInfoText: onlineInfo(for: member)
+                    )
+                }
+            }
         }
     }
+    
+    func addUserTapped(_ user: ChatUser) {
+        channelController.addMembers(userIds: [user.id])
+        addUsersShown = false
+    }
+    
+    // MARK: - private
     
     private func removeUserFromConversation(completion: @escaping () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
