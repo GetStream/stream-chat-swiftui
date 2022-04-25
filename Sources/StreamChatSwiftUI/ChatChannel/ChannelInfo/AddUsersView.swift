@@ -61,6 +61,9 @@ struct AddUsersView: View {
                             }
                             .padding(.all, 8)
                         }
+                        .onAppear {
+                            viewModel.onUserAppear(user)
+                        }
                     }
                 }
             }

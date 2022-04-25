@@ -17,13 +17,34 @@ class AddUsersViewModel: ObservableObject {
     }
     
     private var loadedUserIds: [String]
+    private var loadingNextUsers = false
+    private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     
     init(loadedUserIds: [String]) {
         self.loadedUserIds = loadedUserIds
         searchUsers()
     }
-    
-    private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
+        
+    func onUserAppear(_ user: ChatUser) {
+        guard let index = users.firstIndex(where: { element in
+            user.id == element.id
+        }) else {
+            return
+        }
+        
+        if index < users.count - 10 {
+            return
+        }
+        
+        if !loadingNextUsers {
+            loadingNextUsers = true
+            searchController.loadNextUsers { [weak self] _ in
+                guard let self = self else { return }
+                self.users = self.searchController.userArray
+                self.loadingNextUsers = false
+            }
+        }
+    }
     
     private func searchUsers() {
         let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
