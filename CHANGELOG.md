@@ -4,18 +4,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Animations for reactions overlay
 - Possibility to customize message transitions
 - Config for changing reaction colors
 - Config for becoming first responder in chat channel
 - Config for double tap message overlay
 - Config for custom width / count of trailing items in swiped channel
+- Config for updating composer frames
 
 ### 🐞 Fixed
 - Issue with resizing composer with large text
 - Updating channel list before coming back to the screen
 - Disable the send button when there's only whitespace
-
-### 🔄 Changed
 
 # [4.13.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.13.0)
 _March 30, 2022_
