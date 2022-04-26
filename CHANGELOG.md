@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.14.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.14.0)
+_April 26, 2022_
+
 ### ✅ Added
 - Animations for reactions overlay
 - Possibility to customize message transitions
