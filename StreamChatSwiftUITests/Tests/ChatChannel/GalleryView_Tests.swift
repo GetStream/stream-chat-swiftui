@@ -22,7 +22,8 @@ class GalleryView_Tests: StreamChatTestCase {
         
         // When
         let view = GalleryView(
-            message: imageMessage,
+            imageAttachments: imageMessage.imageAttachments,
+            author: imageMessage.author,
             isShown: .constant(true),
             selected: 0
         )
