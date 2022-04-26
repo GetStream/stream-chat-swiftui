@@ -8,7 +8,8 @@ import NukeUI
 import StreamChat
 import SwiftUI
 
-struct MessageContainerView<Factory: ViewFactory>: View {
+public struct MessageContainerView<Factory: ViewFactory>: View {
+    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -34,7 +35,31 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     private let replyThreshold: CGFloat = 60
     private let paddingValue: CGFloat = 8
     
-    var body: some View {
+    public init(
+        factory: Factory,
+        channel: ChatChannel,
+        message: ChatMessage,
+        width: CGFloat? = nil,
+        showsAllInfo: Bool,
+        isInThread: Bool,
+        isLast: Bool,
+        scrolledId: Binding<String?>,
+        quotedMessage: Binding<ChatMessage?>,
+        onLongPress: @escaping (MessageDisplayInfo) -> Void
+    ) {
+        self.factory = factory
+        self.channel = channel
+        self.message = message
+        self.width = width
+        self.showsAllInfo = showsAllInfo
+        self.isInThread = isInThread
+        self.isLast = isLast
+        self.onLongPress = onLongPress
+        _scrolledId = scrolledId
+        _quotedMessage = quotedMessage
+    }
+    
+    public var body: some View {
         HStack(alignment: .bottom) {
             if message.type == .system {
                 factory.makeSystemMessageView(message: message)
