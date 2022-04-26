@@ -55,9 +55,17 @@ struct ChatInfoOptionsView: View {
         VStack(spacing: 0) {
             if !viewModel.channel.isDirectMessageChannel {
                 ChannelNameUpdateView(viewModel: viewModel)
+            } else {
+                ChatInfoMentionText(participant: viewModel.displayedParticipants.first)
             }
             
-            ChannelInfoItemView(icon: images.muted, title: viewModel.mutedText) {
+            Divider()
+            
+            ChannelInfoItemView(
+                icon: images.muted,
+                title: viewModel.mutedText,
+                verticalPadding: 12
+            ) {
                 Toggle(isOn: $viewModel.muted) {
                     EmptyView()
                 }
@@ -168,6 +176,7 @@ struct ChannelInfoItemView<TrailingView: View>: View {
     
     let icon: UIImage
     let title: String
+    var verticalPadding: CGFloat = 16
     var trailingView: () -> TrailingView
     
     var body: some View {
@@ -185,6 +194,51 @@ struct ChannelInfoItemView<TrailingView: View>: View {
             
             trailingView()
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.vertical, verticalPadding)
+    }
+}
+
+struct ChatInfoDirectChannelView: View {
+    
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    
+    var participant: ParticipantInfo?
+    
+    var body: some View {
+        VStack {
+            MessageAvatarView(
+                avatarURL: participant?.chatUser.imageURL,
+                size: .init(width: 64, height: 64)
+            )
+            
+            Text(participant?.onlineInfoText ?? "")
+                .font(fonts.footnote)
+                .foregroundColor(Color(colors.textLowEmphasis))
+        }
+        .padding(.bottom)
+    }
+}
+
+struct ChatInfoMentionText: View {
+    
+    @Injected(\.colors) private var colors
+    
+    var participant: ParticipantInfo?
+    
+    var body: some View {
+        let mentionText = "@\(participant?.chatUser.mentionText ?? "")"
+        ChannelInfoItemView(
+            icon: UIImage(systemName: "person")!,
+            title: mentionText
+        ) {
+            Button {
+                UIPasteboard.general.string = mentionText
+            } label: {
+                Image(systemName: "doc.on.doc")
+                    .foregroundColor(Color(colors.textLowEmphasis))
+            }
+        }
     }
 }

@@ -25,12 +25,18 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         ZStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    ChatInfoParticipantsView(
-                        participants: viewModel.displayedParticipants,
-                        onItemAppear: viewModel.onParticipantAppear(_:)
-                    )
+                    if viewModel.channel.isDirectMessageChannel {
+                        ChatInfoDirectChannelView(
+                            participant: viewModel.displayedParticipants.first
+                        )
+                    } else {
+                        ChatInfoParticipantsView(
+                            participants: viewModel.displayedParticipants,
+                            onItemAppear: viewModel.onParticipantAppear(_:)
+                        )
+                    }
                     
-                    if viewModel.memberListCollapsed && viewModel.notDisplayedParticipantsCount > 0 {
+                    if viewModel.showMoreUsersButton {
                         ChatChannelInfoButton(
                             title: L10n.ChatInfo.Users.loadMore(viewModel.notDisplayedParticipantsCount),
                             iconName: "chevron.down",
@@ -99,24 +105,33 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                ChannelTitleView(
-                    channel: viewModel.channel,
-                    shouldShowTypingIndicator: false
-                )
-                .id(viewModel.channelId)
+                Group {
+                    if viewModel.channel.isDirectMessageChannel {
+                        Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
+                            .font(fonts.bodyBold)
+                            .foregroundColor(Color(colors.text))
+                    } else {
+                        ChannelTitleView(
+                            channel: viewModel.channel,
+                            shouldShowTypingIndicator: false
+                        )
+                        .id(viewModel.channelId)
+                    }
+                }
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    viewModel.addUsersShown = true
-                } label: {
-                    Image(systemName: "person.badge.plus")
-                        .customizable()
-                        .foregroundColor(Color.white)
-                        .padding(.all, 8)
-                        .background(colors.tintColor)
-                        .clipShape(Circle())
-                }
+                viewModel.channel.isDirectMessageChannel ? nil :
+                    Button {
+                        viewModel.addUsersShown = true
+                    } label: {
+                        Image(systemName: "person.badge.plus")
+                            .customizable()
+                            .foregroundColor(Color.white)
+                            .padding(.all, 8)
+                            .background(colors.tintColor)
+                            .clipShape(Circle())
+                    }
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in

@@ -41,6 +41,13 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     private var loadingUsers = false
     
     var displayedParticipants: [ParticipantInfo] {
+        if channel.isDirectMessageChannel,
+           let otherParticipant = participants.first(where: { info in
+               info.id != chatClient.currentUserId
+           }) {
+            return [otherParticipant]
+        }
+        
         if participants.count <= 6 {
             return participants
         }
@@ -77,6 +84,10 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     var mutedText: String {
         let isGroup = channel.memberCount > 2
         return isGroup ? L10n.ChatInfo.Mute.group : L10n.ChatInfo.Mute.user
+    }
+    
+    var showMoreUsersButton: Bool {
+        !channel.isDirectMessageChannel && memberListCollapsed && notDisplayedParticipantsCount > 0
     }
     
     public init(channel: ChatChannel) {
