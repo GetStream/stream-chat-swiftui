@@ -15,7 +15,7 @@ class LoadingView_Tests: StreamChatTestCase {
         
         // When
         let view = RedactedLoadingView(factory: factory)
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
                 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -24,7 +24,7 @@ class LoadingView_Tests: StreamChatTestCase {
     func test_loadingView_snapshot() {
         // Given
         let view = LoadingView()
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
                 
         // Then
         assertSnapshot(matching: view, as: .image)

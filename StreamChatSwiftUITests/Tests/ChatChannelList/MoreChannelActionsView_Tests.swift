@@ -26,7 +26,7 @@ class MoreChannelActionsView_Tests: StreamChatTestCase {
             swipedChannelId: .constant(nil),
             onDismiss: {}
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)

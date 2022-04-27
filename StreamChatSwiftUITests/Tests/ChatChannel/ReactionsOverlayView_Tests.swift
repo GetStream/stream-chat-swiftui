@@ -40,7 +40,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
         }
                 
         // Then
@@ -60,7 +60,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
         }
                 
         // Then
@@ -104,7 +104,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
         }
                 
         // Then

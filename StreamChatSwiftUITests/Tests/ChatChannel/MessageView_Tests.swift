@@ -27,7 +27,7 @@ class MessageView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -51,7 +51,7 @@ class MessageView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -75,7 +75,7 @@ class MessageView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -99,7 +99,7 @@ class MessageView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -123,7 +123,7 @@ class MessageView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -146,7 +146,7 @@ class MessageView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)

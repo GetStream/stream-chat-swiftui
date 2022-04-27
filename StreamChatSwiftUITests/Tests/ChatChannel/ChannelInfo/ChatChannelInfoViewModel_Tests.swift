@@ -67,7 +67,10 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
     
     func test_chatChannelInfoVM_directChannelParticipant() {
         // Given
-        let members = setupMockMembers(count: 2)
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
         let channel = ChatChannel.mockDMChannel(
             lastActiveMembers: members,
             memberCount: 2
@@ -187,7 +190,10 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
     
     private func mockGroup(with memberCount: Int) -> ChatChannel {
         let cid: ChannelId = .unique
-        let activeMembers = setupMockMembers(count: memberCount)
+        let activeMembers = ChannelInfoMockUtils.setupMockMembers(
+            count: memberCount,
+            currentUserId: chatClient.currentUserId!
+        )
         let channel = ChatChannel.mock(
             cid: cid,
             lastActiveMembers: activeMembers,
@@ -195,15 +201,30 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         )
         return channel
     }
+}
+
+enum ChannelInfoMockUtils {
     
-    private func setupMockMembers(count: Int) -> [ChatChannelMember] {
+    static func setupMockMembers(
+        count: Int,
+        currentUserId: String,
+        onlineUserIndexes: [Int] = []
+    ) -> [ChatChannelMember] {
         var activeMembers = [ChatChannelMember]()
         for i in 0..<count {
             var id: String = .unique
             if i == 0 {
-                id = chatClient.currentUserId!
+                id = currentUserId
             }
-            let member: ChatChannelMember = .mock(id: id)
+            var isOnline = false
+            if onlineUserIndexes.contains(i) {
+                isOnline = true
+            }
+            let member: ChatChannelMember = .mock(
+                id: id,
+                name: "Test \(i)",
+                isOnline: isOnline
+            )
             activeMembers.append(member)
         }
         return activeMembers

@@ -34,7 +34,6 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     @Published var channelId = UUID().uuidString
     @Published var keyboardShown = false
     @Published var addUsersShown = false
-    @Published var addUsersList = [ChatUser]()
     
     private var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!

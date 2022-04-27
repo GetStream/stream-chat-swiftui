@@ -21,6 +21,10 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         )
     }
     
+    init(viewModel: ChatChannelInfoViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     public var body: some View {
         ZStack {
             ScrollView {

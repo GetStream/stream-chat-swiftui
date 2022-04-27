@@ -27,7 +27,7 @@ class GalleryView_Tests: StreamChatTestCase {
             isShown: .constant(true),
             selected: 0
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -52,7 +52,7 @@ class GalleryView_Tests: StreamChatTestCase {
             imageURLs: [ChatChannelTestHelpers.testURL],
             isShown: .constant(true)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
