@@ -43,4 +43,34 @@ struct ChannelInfoMockUtils {
             expiresAt: nil
         )
     )
+    
+    static func generateMessagesWithAttachments(
+        withImages: Int = 0,
+        withVideos: Int = 0
+    ) -> LazyCachedMapCollection<ChatMessage> {
+        var result = [ChatMessage]()
+        for i in 0..<withImages {
+            let message = ChatMessage.mock(
+                id: .unique,
+                cid: .unique,
+                text: "Image Attachment \(i)",
+                author: .mock(id: .unique),
+                attachments: ChatChannelTestHelpers.imageAttachments
+            )
+            result.append(message)
+        }
+        
+        for i in 0..<withVideos {
+            let message = ChatMessage.mock(
+                id: .unique,
+                cid: .unique,
+                text: "Video Attachment \(i)",
+                author: .mock(id: .unique),
+                attachments: ChatChannelTestHelpers.videoAttachments
+            )
+            result.append(message)
+        }
+
+        return LazyCachedMapCollection(source: result) { $0 }
+    }
 }

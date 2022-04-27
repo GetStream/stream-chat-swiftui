@@ -29,6 +29,15 @@ class MediaAttachmentsViewModel: ObservableObject {
         loadMessages()
     }
     
+    init(
+        channel: ChatChannel,
+        messageSearchController: ChatMessageSearchController
+    ) {
+        self.channel = channel
+        self.messageSearchController = messageSearchController
+        loadMessages()
+    }
+    
     func onMediaAttachmentAppear(with index: Int) {
         if index < mediaItems.count - 10 {
             return

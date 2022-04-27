@@ -27,6 +27,12 @@ struct MediaAttachmentsView: View {
         )
     }
     
+    init(viewModel: MediaAttachmentsViewModel) {
+        _viewModel = StateObject(
+            wrappedValue: viewModel
+        )
+    }
+    
     var body: some View {
         ZStack {
             if viewModel.loading {
