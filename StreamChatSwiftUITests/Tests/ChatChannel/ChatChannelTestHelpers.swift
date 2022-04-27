@@ -142,7 +142,7 @@ class ChatChannelTestHelpers {
         return linkAttachments
     }()
     
-    static var fileAttachments: [AnyChatMessageAttachment] = {
+    static var fileAttachments: [AnyChatMessageAttachment] {
         let attachmentFile = AttachmentFile(type: .generic, size: 0, mimeType: "video/mp4")
         let uploadingState = AttachmentUploadingState(
             localFileURL: testURL,
@@ -166,5 +166,5 @@ class ChatChannelTestHelpers {
         ]
         
         return fileAttachments
-    }()
+    }
 }

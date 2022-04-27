@@ -73,4 +73,22 @@ struct ChannelInfoMockUtils {
 
         return LazyCachedMapCollection(source: result) { $0 }
     }
+    
+    static func generateMessagesWithFileAttachments(
+        count: Int
+    ) -> LazyCachedMapCollection<ChatMessage> {
+        var result = [ChatMessage]()
+        for i in 0..<count {
+            let message = ChatMessage.mock(
+                id: .unique,
+                cid: .unique,
+                text: "File Attachment \(i)",
+                author: .mock(id: .unique),
+                attachments: ChatChannelTestHelpers.fileAttachments
+            )
+            result.append(message)
+        }
+
+        return LazyCachedMapCollection(source: result) { $0 }
+    }
 }

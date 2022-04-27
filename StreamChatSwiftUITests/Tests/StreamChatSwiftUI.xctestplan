@@ -13,9 +13,6 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : [
-        "MessageContainerView_Tests"
-      ],
       "target" : {
         "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
         "identifier" : "8465FBBC2746873A00AF091E",

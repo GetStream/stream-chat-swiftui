@@ -18,6 +18,10 @@ struct FileAttachmentsView: View {
         )
     }
     
+    init(viewModel: FileAttachmentsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         ZStack {
             if viewModel.loading {

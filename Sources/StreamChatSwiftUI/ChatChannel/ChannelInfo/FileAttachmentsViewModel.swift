@@ -30,6 +30,14 @@ class FileAttachmentsViewModel: ObservableObject {
         loadMessages()
     }
     
+    init(channel: ChatChannel, messageSearchController: ChatMessageSearchController) {
+        self.channel = channel
+        
+        dateFormatter.dateFormat = "MMMM yyyy"
+        self.messageSearchController = messageSearchController
+        loadMessages()
+    }
+    
     func loadAdditionalAttachments(after: MonthlyFileAttachments, latest: ChatMessageFileAttachment) {
         guard let index = attachmentsDataSource.firstIndex(where: { monthly in
             monthly.id == after.id
