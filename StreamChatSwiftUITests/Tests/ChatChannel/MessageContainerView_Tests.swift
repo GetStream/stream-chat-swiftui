@@ -9,6 +9,12 @@ import XCTest
 
 class MessageContainerView_Tests: StreamChatTestCase {
     
+    override func setUp() {
+        super.setUp()
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
+    
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
