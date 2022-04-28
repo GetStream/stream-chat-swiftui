@@ -145,5 +145,6 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         .modifier(
             HideKeyboardOnTapGesture(shouldAdd: viewModel.keyboardShown)
         )
+        .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
     }
 }

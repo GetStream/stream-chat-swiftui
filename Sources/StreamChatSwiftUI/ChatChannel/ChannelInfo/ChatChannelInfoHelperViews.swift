@@ -28,7 +28,7 @@ struct ChatChannelInfoButton: View {
         .padding()
         .font(fonts.bodyBold)
         .foregroundColor(foregroundColor)
-        .background(Color(colors.background))
+        .background(Color(colors.background8))
     }
 }
 
@@ -196,6 +196,7 @@ struct ChannelInfoItemView<TrailingView: View>: View {
         }
         .padding(.horizontal)
         .padding(.vertical, verticalPadding)
+        .background(Color(colors.background8))
     }
 }
 
