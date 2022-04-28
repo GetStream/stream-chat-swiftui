@@ -47,7 +47,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -69,7 +69,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -91,7 +91,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)

@@ -15,7 +15,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         
         // When
         let view = ChatChannelListScreen(channelListController: controller)
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -30,7 +30,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             viewFactory: DefaultViewFactory.shared,
             channelListController: controller
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)

@@ -22,11 +22,12 @@ class GalleryView_Tests: StreamChatTestCase {
         
         // When
         let view = GalleryView(
-            message: imageMessage,
+            imageAttachments: imageMessage.imageAttachments,
+            author: imageMessage.author,
             isShown: .constant(true),
             selected: 0
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -51,7 +52,7 @@ class GalleryView_Tests: StreamChatTestCase {
             imageURLs: [ChatChannelTestHelpers.testURL],
             isShown: .constant(true)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)

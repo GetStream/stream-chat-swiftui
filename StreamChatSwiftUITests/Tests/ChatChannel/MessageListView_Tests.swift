@@ -13,7 +13,7 @@ class MessageListView_Tests: StreamChatTestCase {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: messageListView, as: .image)
@@ -23,7 +23,7 @@ class MessageListView_Tests: StreamChatTestCase {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: false)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
-            .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+            .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: messageListView, as: .image)

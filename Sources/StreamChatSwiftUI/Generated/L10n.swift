@@ -86,6 +86,51 @@ internal enum L10n {
     }
   }
 
+  internal enum ChatInfo {
+    internal enum Files {
+      /// Files sent in this chat will appear here.
+      internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.files.empty-desc") }
+      /// No files
+      internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.files.empty-title") }
+      /// Files
+      internal static var title: String { L10n.tr("Localizable", "chat-info.files.title") }
+    }
+    internal enum Media {
+      /// Photos or videos sent in this chat will appear here.
+      internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.media.empty-desc") }
+      /// No media
+      internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.media.empty-title") }
+      /// Photos & Videos
+      internal static var title: String { L10n.tr("Localizable", "chat-info.media.title") }
+    }
+    internal enum Mute {
+      /// Mute Group
+      internal static var group: String { L10n.tr("Localizable", "chat-info.mute.group") }
+      /// Mute User
+      internal static var user: String { L10n.tr("Localizable", "chat-info.mute.user") }
+    }
+    internal enum PinnedMessages {
+      /// Long-press an important message and choose Pin to conversation.
+      internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-desc") }
+      /// No pinned messages
+      internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.pinned-messages.empty-title") }
+      /// Pinned Messages
+      internal static var title: String { L10n.tr("Localizable", "chat-info.pinned-messages.title") }
+    }
+    internal enum Rename {
+      /// NAME
+      internal static var name: String { L10n.tr("Localizable", "chat-info.rename.name") }
+      /// Add a group name
+      internal static var placeholder: String { L10n.tr("Localizable", "chat-info.rename.placeholder") }
+    }
+    internal enum Users {
+      /// %@ more
+      internal static func loadMore(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "chat-info.users.loadMore", String(describing: p1))
+      }
+    }
+  }
+
   internal enum Composer {
     internal enum Checkmark {
       /// Also send in channel

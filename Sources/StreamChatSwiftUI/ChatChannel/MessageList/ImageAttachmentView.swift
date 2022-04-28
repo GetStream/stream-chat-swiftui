@@ -68,7 +68,8 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             self.selectedIndex = 0
         }) {
             GalleryView(
-                message: message,
+                imageAttachments: message.imageAttachments,
+                author: message.author,
                 isShown: $galleryShown,
                 selected: selectedIndex
             )

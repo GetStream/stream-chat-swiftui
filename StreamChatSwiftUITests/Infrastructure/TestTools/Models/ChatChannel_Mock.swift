@@ -134,6 +134,7 @@ public extension ChatChannel {
         cooldownDuration: Int = 0,
         extraData: [String: RawJSON] = [:],
         latestMessages: [ChatMessage] = [],
+        pinnedMessages: [ChatMessage] = [],
         muteDetails: MuteDetails? = nil
     ) -> Self {
         self.init(
@@ -158,6 +159,7 @@ public extension ChatChannel {
             cooldownDuration: cooldownDuration,
             extraData: extraData,
             latestMessages: { latestMessages },
+            pinnedMessages: { pinnedMessages },
             muteDetails: { muteDetails },
             underlyingContext: nil
         )

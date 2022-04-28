@@ -117,3 +117,22 @@
 "dates.time-ago-weeks-plural" = "last seen %d weeks ago";
 "dates.time-ago-months-singular" = "last seen one month ago";
 "dates.time-ago-months-plural" = "last seen %d months ago";
+
+"chat-info.pinned-messages.title" = "Pinned Messages";
+"chat-info.pinned-messages.empty-title" = "No pinned messages";
+"chat-info.pinned-messages.empty-desc" = "Long-press an important message and choose Pin to conversation.";
+
+"chat-info.files.title" = "Files";
+"chat-info.files.empty-title" = "No files";
+"chat-info.files.empty-desc" = "Files sent in this chat will appear here.";
+
+"chat-info.media.title" = "Photos & Videos";
+"chat-info.media.empty-title" = "No media";
+"chat-info.media.empty-desc" = "Photos or videos sent in this chat will appear here.";
+
+"chat-info.mute.user" = "Mute User";
+"chat-info.mute.group" = "Mute Group";
+"chat-info.users.loadMore" = "%@ more";
+
+"chat-info.rename.name" = "NAME";
+"chat-info.rename.placeholder" = "Add a group name";

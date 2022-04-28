@@ -25,7 +25,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
             fillAvailableSpace: true,
             scrolledId: .constant(nil)
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)
@@ -39,7 +39,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
             fillAvailableSpace: true,
             forceLeftToRight: true
         )
-        .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
+        .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image)

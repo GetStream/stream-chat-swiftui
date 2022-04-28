@@ -11,6 +11,7 @@ public struct CustomChannelHeader: ToolbarContent {
     
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
+    @Injected(\.colors) var colors
     
     var title: String
     var currentUserController: CurrentChatUserController
@@ -28,6 +29,11 @@ public struct CustomChannelHeader: ToolbarContent {
             } label: {
                 Image(uiImage: images.messageActionEdit)
                     .resizable()
+                    .scaledToFit()
+                    .foregroundColor(Color.white)
+                    .padding(.all, 8)
+                    .background(colors.tintColor)
+                    .clipShape(Circle())
             }
         }
         ToolbarItem(placement: .navigationBarLeading) {
