@@ -91,4 +91,14 @@ struct ChannelInfoMockUtils {
 
         return LazyCachedMapCollection(source: result) { $0 }
     }
+    
+    static func generateMockUsers(count: Int) -> [ChatUser] {
+        var result = [ChatUser]()
+        for i in 0..<count {
+            let user = ChatUser.mock(id: .unique, name: "Test User \(i)")
+            result.append(user)
+        }
+        
+        return result
+    }
 }

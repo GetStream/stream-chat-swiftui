@@ -24,6 +24,12 @@ class AddUsersViewModel: ObservableObject {
         self.loadedUserIds = loadedUserIds
         searchUsers()
     }
+    
+    init(loadedUserIds: [String], searchController: ChatUserSearchController) {
+        self.loadedUserIds = loadedUserIds
+        self.searchController = searchController
+        searchUsers()
+    }
         
     func onUserAppear(_ user: ChatUser) {
         guard let index = users.firstIndex(where: { element in

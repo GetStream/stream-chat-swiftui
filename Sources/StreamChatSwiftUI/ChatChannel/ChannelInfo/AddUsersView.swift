@@ -34,6 +34,16 @@ struct AddUsersView: View {
         )
         self.onUserTap = onUserTap
     }
+    
+    init(
+        viewModel: AddUsersViewModel,
+        onUserTap: @escaping (ChatUser) -> Void
+    ) {
+        _viewModel = StateObject(
+            wrappedValue: viewModel
+        )
+        self.onUserTap = onUserTap
+    }
         
     var body: some View {
         VStack {
