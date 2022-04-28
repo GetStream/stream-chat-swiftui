@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View for the add users popup.
 struct AddUsersView: View {
     
     @Injected(\.fonts) private var fonts

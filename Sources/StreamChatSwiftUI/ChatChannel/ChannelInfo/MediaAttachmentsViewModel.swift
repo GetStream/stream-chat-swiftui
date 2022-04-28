@@ -6,6 +6,7 @@ import Foundation
 import StreamChat
 import SwiftUI
 
+/// View model for the `MediaAttachmentsView`.
 class MediaAttachmentsViewModel: ObservableObject {
     
     @Published var mediaItems = [MediaItem]()

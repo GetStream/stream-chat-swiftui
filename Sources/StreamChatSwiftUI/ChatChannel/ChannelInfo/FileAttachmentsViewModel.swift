@@ -6,6 +6,7 @@ import Foundation
 import StreamChat
 import SwiftUI
 
+/// View model for the `FileAttachmentsView`.
 class FileAttachmentsViewModel: ObservableObject {
     
     @Published var loading = false

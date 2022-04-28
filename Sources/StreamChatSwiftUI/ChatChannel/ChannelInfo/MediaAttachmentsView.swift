@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View displaying media attachments.
 struct MediaAttachmentsView: View {
     
     @StateObject private var viewModel: MediaAttachmentsViewModel

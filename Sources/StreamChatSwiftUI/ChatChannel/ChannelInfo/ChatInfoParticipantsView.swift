@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View for the chat info participants.
 struct ChatInfoParticipantsView: View {
     
     @Injected(\.fonts) private var fonts

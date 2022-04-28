@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+// View for the channel info screen.
 public struct ChatChannelInfoView: View, KeyboardReadable {
     
     @Injected(\.images) private var images
