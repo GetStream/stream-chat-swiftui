@@ -96,7 +96,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
     
-    @Published private(set) var overlayShown = false {
+    @Published public private(set) var overlayShown = false {
         didSet {
             if overlayShown == true {
                 resignFirstResponder()
