@@ -3,7 +3,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Chat info screen
+
+### 🐞 Fixed
+- Bug with swiping video attachments
+- Bug with reactions offset for large number of reactions
 
 # [4.14.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.14.0)
 _April 26, 2022_
