@@ -120,14 +120,19 @@ struct VideoAttachmentContentView: View {
                     .clipped()
                     .allowsHitTesting(false)
                 
-                Button {
-                    fullScreenShown = true
-                } label: {
-                    Image(uiImage: images.playFilled)
-                        .customizable()
-                        .frame(width: 24)
-                        .foregroundColor(.white)
-                        .padding(.all, 32)
+                if width > 64 {
+                    VStack {
+                        Image(uiImage: images.playFilled)
+                            .customizable()
+                            .frame(width: 24)
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: width, height: width * ratio)
+                    .contentShape(Rectangle())
+                    .clipped()
+                    .onTapGesture {
+                        fullScreenShown = true
+                    }
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
