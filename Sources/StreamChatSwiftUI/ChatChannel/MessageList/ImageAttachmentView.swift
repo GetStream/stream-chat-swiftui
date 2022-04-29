@@ -42,8 +42,10 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                     message: message,
                     width: width
                 ) { index in
-                    selectedIndex = index
-                    galleryShown = true
+                    if message.localState == nil {
+                        selectedIndex = index
+                        galleryShown = true
+                    }
                 }
                 
                 if !message.text.isEmpty {

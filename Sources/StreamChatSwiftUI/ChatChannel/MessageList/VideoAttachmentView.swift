@@ -120,7 +120,7 @@ struct VideoAttachmentContentView: View {
                     .clipped()
                     .allowsHitTesting(false)
                 
-                if width > 64 {
+                if width > 64 && attachment.uploadingState == nil {
                     VStack {
                         Image(uiImage: images.playFilled)
                             .customizable()
