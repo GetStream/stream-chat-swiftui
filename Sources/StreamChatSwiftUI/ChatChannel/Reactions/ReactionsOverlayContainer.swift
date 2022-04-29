@@ -56,7 +56,6 @@ struct ReactionsOverlayContainer: View {
     }
     
     private var offsetX: CGFloat {
-        let padding: CGFloat = 16
         if message.isSentByCurrentUser {
             var originX = contentRect.origin.x - reactionsSize / 2
             let total = originX + reactionsSize
@@ -65,11 +64,11 @@ struct ReactionsOverlayContainer: View {
             }
             return -(contentRect.origin.x - originX)
         } else {
-            var originX = contentRect.origin.x - reactionsSize / 2
-            if originX < 0 {
-                originX = padding
+            if contentRect.width < reactionsSize {
+                return (reactionsSize - contentRect.width) / 2
             }
             
+            let originX = contentRect.origin.x - reactionsSize / 2
             return contentRect.origin.x - originX
         }
     }
