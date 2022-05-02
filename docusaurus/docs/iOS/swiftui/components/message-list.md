@@ -171,6 +171,22 @@ public func makeSystemMessageView(
 
 The only parameter you receive in this method is the system `ChatMessage` that's going to be displayed. Note, if you are using custom implementation of the message container, you will need to explicitly add handling for the system messages.
 
+## No Messages View
+
+When there are no messages available in the channel, you can provide your own custom view. To do this, you will need to implement the `makeEmptyMessagesView` method in the `ViewFactory`. In this method, the `channel` is provided as a parameter, allowing you to provide a personalized message for starting a conversation. The `colors` are provided as a parameter too. The default implementation in the SDK just shows the message list background in this slot.
+
+Here's an example usage:
+
+```swift
+public func makeEmptyMessagesView(
+    for channel: ChatChannel,
+    colors: ColorPalette
+) -> some View {
+    Color(colors.background)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+}
+```   
+
 Finally, don't forget to inject your custom factory to our view hierarchy.
 
 ```swift
