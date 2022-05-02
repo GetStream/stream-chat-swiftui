@@ -224,6 +224,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         let newValue = numberOfScreens > 1
         if newValue != hideTabBar {
             hideTabBar = newValue
+            if !hideTabBar {
+                selectedChannel = nil
+            }
         }
     }
     
