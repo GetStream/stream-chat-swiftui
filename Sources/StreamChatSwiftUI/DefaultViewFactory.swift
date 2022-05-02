@@ -214,6 +214,14 @@ extension ViewFactory {
         )
     }
     
+    public func makeEmptyMessagesView(
+        for channel: ChatChannel,
+        colors: ColorPalette
+    ) -> some View {
+        Color(colors.background)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
         MessageAvatarView(avatarURL: userDisplayInfo.imageURL)
     }

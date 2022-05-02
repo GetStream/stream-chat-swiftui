@@ -45,33 +45,37 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         ZStack {
             if let channel = viewModel.channel {
                 VStack(spacing: 0) {
-                    MessageListView(
-                        factory: factory,
-                        channel: channel,
-                        messages: viewModel.messages,
-                        messagesGroupingInfo: viewModel.messagesGroupingInfo,
-                        scrolledId: $viewModel.scrolledId,
-                        showScrollToLatestButton: $viewModel.showScrollToLatestButton,
-                        quotedMessage: $viewModel.quotedMessage,
-                        currentDateString: viewModel.currentDateString,
-                        listId: viewModel.listId,
-                        isMessageThread: viewModel.isMessageThread,
-                        onMessageAppear: viewModel.handleMessageAppear(index:),
-                        onScrollToBottom: viewModel.scrollToLastMessage,
-                        onLongPress: { displayInfo in
-                            withAnimation {
-                                messageDisplayInfo = displayInfo
-                                viewModel.showReactionOverlay()
+                    if !viewModel.messages.isEmpty {
+                        MessageListView(
+                            factory: factory,
+                            channel: channel,
+                            messages: viewModel.messages,
+                            messagesGroupingInfo: viewModel.messagesGroupingInfo,
+                            scrolledId: $viewModel.scrolledId,
+                            showScrollToLatestButton: $viewModel.showScrollToLatestButton,
+                            quotedMessage: $viewModel.quotedMessage,
+                            currentDateString: viewModel.currentDateString,
+                            listId: viewModel.listId,
+                            isMessageThread: viewModel.isMessageThread,
+                            onMessageAppear: viewModel.handleMessageAppear(index:),
+                            onScrollToBottom: viewModel.scrollToLastMessage,
+                            onLongPress: { displayInfo in
+                                withAnimation {
+                                    messageDisplayInfo = displayInfo
+                                    viewModel.showReactionOverlay()
+                                }
                             }
+                        )
+                        .overlay(
+                            viewModel.currentDateString != nil ?
+                                factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
+                                : nil
+                        )
+                        .if(multipleOrientationsSupported) { view in
+                            view.id(orientation.rawValue)
                         }
-                    )
-                    .overlay(
-                        viewModel.currentDateString != nil ?
-                            factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
-                            : nil
-                    )
-                    .if(multipleOrientationsSupported) { view in
-                        view.id(orientation.rawValue)
+                    } else {
+                        factory.makeEmptyMessagesView(for: channel, colors: colors)
                     }
                     
                     Divider()

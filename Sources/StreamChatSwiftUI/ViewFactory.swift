@@ -182,6 +182,17 @@ public protocol ViewFactory: AnyObject {
     /// Returns a function that creats the message thread destination.
     func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> MessageThreadDestination
     
+    associatedtype EmptyMessagesViewType: View
+    /// Returns a view shown when there are no messages in a channel.
+    /// - Parameters:
+    ///  - channel: The channel with no messages.
+    ///  - colors: The color palette.
+    /// - Returns: View shown in the empty messages slot.
+    func makeEmptyMessagesView(
+        for channel: ChatChannel,
+        colors: ColorPalette
+    ) -> EmptyMessagesViewType
+    
     associatedtype MessageListModifier: ViewModifier
     /// Returns a view modifier applied to the message list.
     func makeMessageListModifier() -> MessageListModifier
