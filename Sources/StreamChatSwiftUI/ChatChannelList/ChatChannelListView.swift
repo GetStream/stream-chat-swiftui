@@ -161,6 +161,9 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     @ObservedObject private var viewModel: ChatChannelListViewModel
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
     private var onItemTap: (ChatChannel) -> Void
+    // We have to drop back to UIKit to get the number of pushed controllers.
+    // This is needed for controlling the tabbar visibility.
+    @State private var navigationController: UINavigationController?
     
     public init(
         viewFactory: Factory,
@@ -207,7 +210,11 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                     imageLoader: channelHeaderLoader.image(for:),
                     onItemTap: onItemTap,
-                    onItemAppear: viewModel.checkForChannels(index:),
+                    onItemAppear: { index in
+                        let pushedScreens = navigationController?.viewControllers.count ?? 0
+                        viewModel.checkTabBarAppearance(numberOfScreens: pushedScreens)
+                        viewModel.checkForChannels(index: index)
+                    },
                     channelNaming: viewModel.name(forChannel:),
                     channelDestination: viewFactory.makeChannelDestination(),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
@@ -218,5 +225,12 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
             
             viewFactory.makeChannelListStickyFooterView()
         }
+        .background(
+            Color.clear.background(
+                NavigationControllerAccessor { navController in
+                    self.navigationController = navController
+                }
+            )
+        )
     }
 }

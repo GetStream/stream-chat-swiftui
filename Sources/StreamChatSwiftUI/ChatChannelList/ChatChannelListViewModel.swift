@@ -219,6 +219,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         channel.membership != nil
     }
     
+    func checkTabBarAppearance(numberOfScreens: Int) {
+        guard #available(iOS 15, *) else { return }
+        let newValue = numberOfScreens > 1
+        if newValue != hideTabBar {
+            hideTabBar = newValue
+        }
+    }
+    
     // MARK: - private
     
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
@@ -342,10 +350,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func handleChannelAppearance() {
-        guard #available(iOS 15, *) else { return }
-        if hideTabBar == true {
-            hideTabBar = false
-        }
         if !queuedChannelsChanges.isEmpty {
             channels = queuedChannelsChanges
         }
