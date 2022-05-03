@@ -1,0 +1,11 @@
+coverage_service: sonarqube_xml
+xcodeproj: StreamChatSwiftUI.xcodeproj
+scheme: StreamChatSwiftUI
+source_directory: Sources/
+output_directory: reports
+ignore:
+  - "StreamChatSwiftUITests/**/*"
+  - "**/*_Tests.swift"
+  - "**/*_Mock.swift"
+  - "**/*_Vendor.swift"
+  - "**/Generated/*.swift"
