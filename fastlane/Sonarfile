@@ -38,6 +38,8 @@ lane :sonar_upload do
       slack_sonarcloud_metrics(new_period: version_number, branch: branch)
     when :develop
       slack_sonarcloud_metrics(branch: branch)
+    else
+      UI.message("Sonar MetricKit ignores branch: #{branch}")
     end
   end
 end
