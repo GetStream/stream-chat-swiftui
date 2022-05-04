@@ -112,35 +112,6 @@ struct TabBarAccessor: UIViewControllerRepresentable {
     }
 }
 
-struct NavigationControllerAccessor: UIViewControllerRepresentable {
-    var callback: (UINavigationController) -> Void
-    private let proxyController = ViewController()
-
-    func makeUIViewController(context: UIViewControllerRepresentableContext<NavigationControllerAccessor>) ->
-        UIViewController {
-        proxyController.callback = callback
-        return proxyController
-    }
-
-    func updateUIViewController(
-        _ uiViewController: UIViewController,
-        context: UIViewControllerRepresentableContext<NavigationControllerAccessor>
-    ) {}
-
-    typealias UIViewControllerType = UIViewController
-
-    private class ViewController: UIViewController {
-        var callback: (UINavigationController) -> Void = { _ in }
-
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            if let navigationController = self.navigationController {
-                callback(navigationController)
-            }
-        }
-    }
-}
-
 var isIphone: Bool {
     UIDevice.current.userInterfaceIdiom == .phone
 }

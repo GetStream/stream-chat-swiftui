@@ -63,22 +63,31 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
 
 /// Used for representing selection of an item in the channel list.
 /// The optional message is used in case we need to scroll to a particular one in the message list.
-public struct ChannelSelectionInfo: Identifiable, Hashable {
+public struct ChannelSelectionInfo: Identifiable {
     
-    public var id: String {
-        if let message = message {
-            return "\(channel.id)-\(message.id)"
-        } else {
-            return channel.id
-        }
-    }
-
+    public let id: String
     public let channel: ChatChannel
     public let message: ChatMessage?
     
     public init(channel: ChatChannel, message: ChatMessage?) {
         self.channel = channel
         self.message = message
+        if let message = message {
+            id = "\(channel.cid.id)-\(message.id)"
+        } else {
+            id = channel.name ?? channel.cid.id
+        }
+    }
+}
+
+extension ChannelSelectionInfo: Hashable, Equatable {
+    
+    public static func == (lhs: ChannelSelectionInfo, rhs: ChannelSelectionInfo) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

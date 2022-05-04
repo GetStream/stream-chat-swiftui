@@ -48,9 +48,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var selectedChannel: ChannelSelectionInfo? {
         willSet {
             hideTabBar = newValue != nil
-        }
-        didSet {
-            if oldValue != nil && selectedChannel == nil {
+            if selectedChannel != nil && newValue == nil {
                 // pop happened, apply the queued changes.
                 if !queuedChannelsChanges.isEmpty {
                     channels = queuedChannelsChanges
@@ -59,7 +57,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    @Published public var deeplinkChannel: ChannelSelectionInfo?
+    @Published public var deeplinkChannel: ChannelSelectionInfo? {
+        willSet {
+            hideTabBar = newValue != nil
+        }
+    }
+
     @Published public var swipedChannelId: String?
     @Published public var channelAlertType: ChannelAlertType? {
         didSet {
@@ -219,18 +222,17 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         channel.membership != nil
     }
     
-    func checkTabBarAppearance(numberOfScreens: Int) {
+    func checkTabBarAppearance() {
         guard #available(iOS 15, *) else { return }
-        let newValue = numberOfScreens > 1
-        if newValue != hideTabBar {
-            hideTabBar = newValue
+        if hideTabBar != false {
+            hideTabBar = false
         }
     }
     
     // MARK: - private
     
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
-        if selectedChannel != nil || !searchText.isEmpty {
+        if selectedChannel != nil || !searchText.isEmpty || deeplinkChannel != nil {
             queuedChannelsChanges = controller.channels
         } else {
             channels = controller.channels
@@ -350,7 +352,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func handleChannelAppearance() {
-        if !queuedChannelsChanges.isEmpty {
+        if !queuedChannelsChanges.isEmpty && selectedChannel == nil && deeplinkChannel == nil {
             channels = queuedChannelsChanges
         }
     }
