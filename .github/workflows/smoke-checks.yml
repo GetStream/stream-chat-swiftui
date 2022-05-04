@@ -83,9 +83,13 @@ jobs:
         xcode: "13.3.1"
     - name: Run Tests (Debug)
       run: bundle exec fastlane test_ui device:"iPhone 12 (15.4)"
+    - name: Get branch name
+      id: get_branch_name
+      run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
     - name: Run Sonar analysis
       run: bundle exec fastlane sonar_upload
       env:
+        BRANCH_NAME: ${{ steps.get_branch_name.outputs.branch }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
