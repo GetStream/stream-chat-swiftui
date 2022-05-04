@@ -2,6 +2,10 @@
   <img src="ReadmeAssets/iOS_Chat_Messaging.png"/>
 </p>
 
+<p align="center">
+  <a href="https://sonarcloud.io/summary/new_code?id=GetStream_stream-chat-swiftui"><img src="https://sonarcloud.io/api/project_badges/measure?project=GetStream_stream-chat-swiftui&metric=coverage" /></a>
+</p>
+
 ## SwiftUI StreamChat SDK
 
 The SwiftUI SDK is built on top of the [StreamChat](https://getstream.io/chat/docs/ios-swift/?language=swift) framework and it's a SwiftUI alternative to the [StreamChatUI](https://getstream.io/chat/docs/sdk/ios/) SDK. It's built completely in SwiftUI, using declarative patterns, that will be familiar to developers working with SwiftUI. The SDK includes an extensive set of performant and customizable UI components which allow you to get started quickly with little to no plumbing required.
@@ -13,7 +17,7 @@ The complete documentation and capabilities of the SwiftUI SDK can be found [her
 - **Channel list:** Browse channels and perform actions on them.
 - **Message list:** Fast message list that renders many different types of messages.
 - **Message Composer:** Powerful and customizable message composer, extendable with your own custom attachments.
-- **Message reactions:** Ready made reactions support, easily configurable depending on your use-cases. 
+- **Message reactions:** Ready made reactions support, easily configurable depending on your use-cases.
 - **Offline support:** Browse channels and send messages while offline.
 - **Highly customizable components:** The components are designed in a way that you can easily customize or completely swap existing views with your own implementation.
 
@@ -31,7 +35,7 @@ The SwiftUI SDK offers three types of components:
 
 - Screens - Easiest to integrate, but offer small customizations, like branding and text changes.
 - Stateful components - Offer more customization options and possibility to inject custom views. Also fairly simple to integrate, if the extension points are suitable for your chat use-case. These components come with view models.
-- Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience. 
+- Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience.
 
 ## Free for Makers
 
