@@ -21,6 +21,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     
     public init(
         viewFactory: Factory,
+        viewModel: MessageComposerViewModel? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
@@ -30,7 +31,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         factory = viewFactory
         channelConfig = channelController.channel?.config
         _viewModel = StateObject(
-            wrappedValue: ViewModelsFactory.makeMessageComposerViewModel(
+            wrappedValue: viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
                 with: channelController,
                 messageController: messageController
             )

@@ -25,6 +25,20 @@ public struct AddedAsset: Identifiable, Equatable {
     public let url: URL
     public let type: AssetType
     public var extraData: [String: Any] = [:]
+    
+    public init(
+        image: UIImage,
+        id: String,
+        url: URL,
+        type: AssetType,
+        extraData: [String: Any] = [:]
+    ) {
+        self.image = image
+        self.id = id
+        self.url = url
+        self.type = type
+        self.extraData = extraData
+    }
 }
 
 /// Type of asset added to the composer.
