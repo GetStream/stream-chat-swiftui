@@ -115,6 +115,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             makeDefaultChannelListController()
         }
         setupChannelListController()
+        observeChannelDismiss()
     }
     
     /// Returns the name for the specified channel.
@@ -356,6 +357,27 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             channels = queuedChannelsChanges
         }
     }
+    
+    private func observeChannelDismiss() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateQueuedChannels),
+            name: NSNotification.Name(channelDismissed),
+            object: nil
+        )
+    }
+    
+    @objc private func updateQueuedChannels() {
+        if !queuedChannelsChanges.isEmpty {
+            channels = queuedChannelsChanges
+        }
+    }
+}
+
+private let channelDismissed = "io.getstream.channelDismissed"
+
+public func notifyChannelDismiss() {
+    NotificationCenter.default.post(name: NSNotification.Name(channelDismissed), object: nil)
 }
 
 /// Enum for the type of alert presented in the channel list view.
