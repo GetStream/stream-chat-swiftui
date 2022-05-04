@@ -359,7 +359,7 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
-  universal-darwin-21
+  arm64-darwin-21
 
 DEPENDENCIES
   cocoapods
@@ -377,4 +377,4 @@ DEPENDENCIES
   xcode-install
 
 BUNDLED WITH
-   2.2.4
+   2.3.13
