@@ -45,6 +45,7 @@ public struct AvatarView: View {
     
     public var body: some View {
         Image(uiImage: avatar)
+            .renderingMode(.original)
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(

@@ -51,13 +51,23 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         }
         
         ToolbarItem(placement: .navigationBarTrailing) {
-            NavigationLink(destination: ChatChannelInfoView(channel: channel)) {
+            ZStack {
+                NavigationLink(destination: LazyView(ChatChannelInfoView(channel: channel))) {
+                    Rectangle()
+                        .fill(Color(colors.background))
+                        .contentShape(Rectangle())
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
+                        .offset(x: 8)
+                }
+                
                 ChannelAvatarView(
                     avatar: headerImage,
                     showOnlineIndicator: onlineIndicatorShown,
                     size: CGSize(width: 36, height: 36)
                 )
                 .offset(x: 8)
+                .allowsHitTesting(false)
             }
         }
     }
