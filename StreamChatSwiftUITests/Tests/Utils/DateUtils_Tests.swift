@@ -101,4 +101,40 @@ class DateUtils_Tests: XCTestCase {
         // Then
         XCTAssert(timeAgo == expected)
     }
+    
+    func test_timeAgo4HoursAgo() {
+        // Given
+        let date = Calendar.current.date(byAdding: .hour, value: -4, to: Date())!
+        let expected = "last seen 4 hours ago"
+        
+        // When
+        let timeAgo = DateUtils.timeAgo(relativeTo: date)
+        
+        // Then
+        XCTAssert(timeAgo == expected)
+    }
+    
+    func test_timeAgo5DaysAgo() throws {
+        // Given
+        let date = Calendar.current.date(byAdding: .day, value: -5, to: Date())!
+        let expected = "last seen 5 days ago"
+        
+        // When
+        let timeAgo = DateUtils.timeAgo(relativeTo: date)
+        
+        // Then
+        XCTAssert(timeAgo == expected)
+    }
+
+    func test_timeAgo3WeeksAgo() throws {
+        // Given
+        let date = Calendar.current.date(byAdding: .day, value: -3 * 7, to: Date())!
+        let expected = "last seen 3 weeks ago"
+        
+        // When
+        let timeAgo = DateUtils.timeAgo(relativeTo: date)
+        
+        // Then
+        XCTAssert(timeAgo == expected)
+    }
 }
