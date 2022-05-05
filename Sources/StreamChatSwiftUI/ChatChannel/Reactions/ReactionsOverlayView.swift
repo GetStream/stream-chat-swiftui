@@ -46,8 +46,12 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         messageActionsCount = factory.supportedMessageActions(
             for: messageDisplayInfo.message,
             channel: channel,
-            onFinish: { _ in },
-            onError: { _ in }
+            onFinish: { _ in
+                // No handling needed.
+            },
+            onError: { _ in
+                // No handling needed.
+            }
         ).count
     }
     

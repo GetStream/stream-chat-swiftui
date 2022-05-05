@@ -31,7 +31,9 @@ public protocol ImageMerging {
 
 open class DefaultImageMerger: ImageMerging {
     // Initializer required for subclasses
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     open func merge(
         images: [UIImage],

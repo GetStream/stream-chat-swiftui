@@ -7,7 +7,9 @@ import StreamChat
 
 /// Factory used to create view models.
 public class ViewModelsFactory {
-    private init() {}
+    private init() {
+        // Private init.
+    }
     
     /// Creates the `ChannelListViewModel`.
     ///

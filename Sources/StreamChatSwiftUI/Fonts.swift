@@ -6,7 +6,9 @@ import SwiftUI
 
 /// Provides access to fonts used in the SDK.
 public struct Fonts {
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     public var caption1 = Font.caption
     public var footnoteBold = Font.footnote.bold()

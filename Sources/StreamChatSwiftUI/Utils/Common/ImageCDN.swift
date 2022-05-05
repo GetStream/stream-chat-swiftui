@@ -34,7 +34,9 @@ open class StreamImageCDN: ImageCDN {
     public static var streamCDNURL = "stream-io-cdn.com"
     
     // Initializer required for subclasses
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     open func cachingKey(forImage url: URL) -> String {
         let key = url.absoluteString

@@ -23,31 +23,53 @@ public enum DateUtils {
         else { return nil }
         
         if minuteAgo < date {
-            let diff = calendar.dateComponents([.second], from: date, to: now).second ?? 0
-            return diff > 1 ? L10n.Dates.timeAgoSecondsPlural(diff) : L10n.Dates.timeAgoSecondsSingular
+            return secondsAgo(from: date, to: now, calendar: calendar)
         }
         
         if hourAgo < date {
-            let diff = calendar.dateComponents([.minute], from: date, to: now).minute ?? 0
-            return diff > 1 ? L10n.Dates.timeAgoMinutesPlural(diff) : L10n.Dates.timeAgoMinutesSingular
+            return minutesAgo(from: date, to: now, calendar: calendar)
         }
         
         if dayAgo < date {
-            let diff = calendar.dateComponents([.hour], from: date, to: now).hour ?? 0
-            return diff > 1 ? L10n.Dates.timeAgoHoursPlural(diff) : L10n.Dates.timeAgoHoursSingular
+            return hoursAgo(from: date, to: now, calendar: calendar)
         }
         
         if weekAgo < date {
-            let diff = calendar.dateComponents([.day], from: date, to: now).day ?? 0
-            return diff > 1 ? L10n.Dates.timeAgoDaysPlural(diff) : L10n.Dates.timeAgoDaysSingular
+            return daysAgo(from: date, to: now, calendar: calendar)
         }
         
         if monthAgo < date {
-            let diff = calendar.dateComponents([.weekOfYear], from: date, to: now).weekOfYear ?? 0
-            return diff > 1 ? L10n.Dates.timeAgoWeeksPlural(diff) : L10n.Dates.timeAgoWeeksSingular
+            return weeksAgo(from: date, to: now, calendar: calendar)
         }
 
         let diff = calendar.dateComponents([.month], from: date, to: now).month ?? 0
         return diff > 1 ? L10n.Dates.timeAgoMonthsPlural(diff) : L10n.Dates.timeAgoMonthsSingular
+    }
+    
+    // MARK: - private
+    
+    private static func secondsAgo(from date: Date, to now: Date, calendar: Calendar) -> String? {
+        let diff = calendar.dateComponents([.second], from: date, to: now).second ?? 0
+        return diff > 1 ? L10n.Dates.timeAgoSecondsPlural(diff) : L10n.Dates.timeAgoSecondsSingular
+    }
+    
+    private static func minutesAgo(from date: Date, to now: Date, calendar: Calendar) -> String? {
+        let diff = calendar.dateComponents([.minute], from: date, to: now).minute ?? 0
+        return diff > 1 ? L10n.Dates.timeAgoMinutesPlural(diff) : L10n.Dates.timeAgoMinutesSingular
+    }
+    
+    private static func hoursAgo(from date: Date, to now: Date, calendar: Calendar) -> String? {
+        let diff = calendar.dateComponents([.hour], from: date, to: now).hour ?? 0
+        return diff > 1 ? L10n.Dates.timeAgoHoursPlural(diff) : L10n.Dates.timeAgoHoursSingular
+    }
+    
+    private static func daysAgo(from date: Date, to now: Date, calendar: Calendar) -> String? {
+        let diff = calendar.dateComponents([.day], from: date, to: now).day ?? 0
+        return diff > 1 ? L10n.Dates.timeAgoDaysPlural(diff) : L10n.Dates.timeAgoDaysSingular
+    }
+    
+    private static func weeksAgo(from date: Date, to now: Date, calendar: Calendar) -> String? {
+        let diff = calendar.dateComponents([.weekOfYear], from: date, to: now).weekOfYear ?? 0
+        return diff > 1 ? L10n.Dates.timeAgoWeeksPlural(diff) : L10n.Dates.timeAgoWeeksSingular
     }
 }

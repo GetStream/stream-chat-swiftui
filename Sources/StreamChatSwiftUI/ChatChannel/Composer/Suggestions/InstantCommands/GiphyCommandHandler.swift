@@ -60,7 +60,9 @@ public struct GiphyCommandHandler: CommandHandler {
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
-    ) {}
+    ) {
+        // Handled with attachment actions.
+    }
     
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         nil

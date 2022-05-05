@@ -7,7 +7,9 @@ import UIKit
 
 /// Provides the colors used throughout the SDK.
 public struct ColorPalette {
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     public var tintColor: Color = .accentColor
     
