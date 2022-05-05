@@ -106,6 +106,56 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image)
     }
     
+    func test_imageAttachments_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.imageAttachments
+        )
+        
+        // When
+        let view = ImageAttachmentContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 200,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_imageAttachments_snapshotFiveImages() {
+        // Given
+        let attachment = ChatChannelTestHelpers.imageAttachments[0]
+        let attachments = [AnyChatMessageAttachment](repeating: attachment, count: 5)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: attachments
+        )
+        
+        // When
+        let view = ImageAttachmentContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 200,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
     // MARK: - private
     
     func testMessageViewContainerSnapshot(message: ChatMessage) {

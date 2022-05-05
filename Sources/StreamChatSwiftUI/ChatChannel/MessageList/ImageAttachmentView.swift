@@ -234,10 +234,12 @@ struct ImageAttachmentView: View {
                             
                             if notDisplayedImages > 0 {
                                 Color.black.opacity(0.4)
+                                    .allowsHitTesting(false)
                                 
                                 Text("+\(notDisplayedImages)")
                                     .foregroundColor(Color(colors.staticColorText))
                                     .font(fonts.title)
+                                    .allowsHitTesting(false)
                             }
                         }
                         .frame(width: width / 2, height: fullHeight / 2)
