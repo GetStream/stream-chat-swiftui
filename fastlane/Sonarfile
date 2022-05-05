@@ -25,7 +25,7 @@ lane :sonar_upload do
       project_version: version_number
     )
   else
-    branch = git_branch
+    branch = ENV['BRANCH_NAME'] || git_branch
 
     sonar(
       sonar_login: ENV['SONAR_TOKEN'],
