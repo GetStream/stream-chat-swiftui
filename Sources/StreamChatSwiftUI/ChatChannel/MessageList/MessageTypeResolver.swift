@@ -76,5 +76,7 @@ extension MessageTypeResolving {
 
 /// Default class implementation of the `MessageTypeResolving` protocol.
 public class MessageTypeResolver: MessageTypeResolving {
-    public init() {}
+    public init() {
+        // Public init.
+    }
 }

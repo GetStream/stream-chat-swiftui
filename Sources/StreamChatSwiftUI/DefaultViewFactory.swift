@@ -753,7 +753,9 @@ extension ViewFactory {
 public class DefaultViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
     
-    private init() {}
+    private init() {
+        // Private init.
+    }
     
     public static let shared = DefaultViewFactory()
 }

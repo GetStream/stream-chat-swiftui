@@ -13,7 +13,9 @@ public protocol ChannelAvatarsMerging {
 
 /// Default implementation of `ChannelAvatarsMerging`.
 public class ChannelAvatarsMerger: ChannelAvatarsMerging {
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images

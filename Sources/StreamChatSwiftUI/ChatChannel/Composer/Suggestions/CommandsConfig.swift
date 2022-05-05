@@ -25,7 +25,9 @@ public protocol CommandsConfig {
 /// Default commands configuration.
 public class DefaultCommandsConfig: CommandsConfig {
     
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     public let mentionsSymbol: String = "@"
     public let instantCommandsSymbol: String = "/"

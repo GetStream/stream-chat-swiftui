@@ -44,7 +44,9 @@ open class ChannelHeaderLoader: ObservableObject {
         }
     }
     
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     /// Loads an image for the provided channel.
     /// If the image is not downloaded, placeholder is returned.

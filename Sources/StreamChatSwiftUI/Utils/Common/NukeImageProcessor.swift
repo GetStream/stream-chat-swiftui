@@ -23,7 +23,9 @@ public protocol ImageProcessor {
 
 /// This class provides resizing operations for `UIImage`. It internally uses `Nuke` porcessors to implement operations on images.
 open class NukeImageProcessor: ImageProcessor {
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     open func crop(image: UIImage, to size: CGSize) -> UIImage? {
         let imageProccessor = ImageProcessors.Resize(size: size, crop: true)

@@ -21,7 +21,9 @@ public protocol MessageActionsResolving {
 /// Default implementation of the `MessageActionsResolving` protocol.
 public class MessageActionsResolver: MessageActionsResolving {
     
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     public func resolveMessageAction(
         info: MessageActionInfo,

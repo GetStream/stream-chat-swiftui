@@ -97,12 +97,16 @@ struct TabBarAccessor: UIViewControllerRepresentable {
     func updateUIViewController(
         _ uiViewController: UIViewController,
         context: UIViewControllerRepresentableContext<TabBarAccessor>
-    ) {}
+    ) {
+        // No handling needed.
+    }
 
     typealias UIViewControllerType = UIViewController
 
     private class ViewController: UIViewController {
-        var callback: (UITabBar) -> Void = { _ in }
+        var callback: (UITabBar) -> Void = { _ in
+            // Default implementation.
+        }
 
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)

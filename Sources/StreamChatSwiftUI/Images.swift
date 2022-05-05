@@ -8,7 +8,9 @@ import UIKit
 
 /// Provides access to the images used in the SDK.
 public class Images {
-    public init() {}
+    public init() {
+        // Public init.
+    }
     
     /// A private internal function that will safely load an image from the bundle or return a circle image as backup
     /// - Parameter imageName: The required image name to load from the bundle

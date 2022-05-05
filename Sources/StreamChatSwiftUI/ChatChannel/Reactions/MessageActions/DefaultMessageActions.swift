@@ -313,7 +313,9 @@ extension MessageAction {
             id: MessageActionId.threadReply,
             title: L10n.Message.Actions.threadReply,
             iconName: "icn_thread_reply",
-            action: {},
+            action: {
+                // No action performed, only navigation.
+            },
             confirmationPopup: nil,
             isDestructive: false
         )

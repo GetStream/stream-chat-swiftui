@@ -15,7 +15,9 @@ public struct FilePickerView: UIViewControllerRepresentable {
         return picker
     }
     
-    public func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
+    public func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {
+        // We don't need handling updates of the VC at the moment.
+    }
     
     public func makeCoordinator() -> FilePickerView.Coordinator {
         FilePickerView.Coordinator(fileURLs: $fileURLs)
