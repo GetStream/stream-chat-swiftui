@@ -57,4 +57,13 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_fileAttachmentsPickerView_snapshot() {
+        // Given
+        let view = FilePickerView(fileURLs: .constant([]))
+            .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

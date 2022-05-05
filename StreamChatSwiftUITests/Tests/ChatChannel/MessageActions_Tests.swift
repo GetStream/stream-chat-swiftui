@@ -72,6 +72,44 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[5].title == "Mute User")
     }
     
+    func test_messageActions_currentUserPinned() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: chatClient.currentUserId!),
+            isSentByCurrentUser: true,
+            pinDetails:
+            MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: .unique),
+                expiresAt: nil
+            )
+        )
+        let factory = DefaultViewFactory.shared
+        
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+        
+        // Then
+        XCTAssert(messageActions.count == 6)
+        XCTAssert(messageActions[0].title == "Reply")
+        XCTAssert(messageActions[1].title == "Thread Reply")
+        XCTAssert(messageActions[2].title == "Unpin from conversation")
+        XCTAssert(messageActions[3].title == "Copy Message")
+        XCTAssert(messageActions[4].title == "Edit Message")
+        XCTAssert(messageActions[5].title == "Delete Message")
+    }
+    
     func test_messageActions_messageNotSent() {
         // Given
         let channel = ChatChannel.mockDMChannel()
