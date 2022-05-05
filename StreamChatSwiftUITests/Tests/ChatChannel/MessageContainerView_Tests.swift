@@ -60,6 +60,52 @@ class MessageContainerView_Tests: StreamChatTestCase {
         testMessageViewContainerSnapshot(message: message)
     }
     
+    func test_videoAttachment_snapshotNoText() {
+        // Given
+        let attachment = ChatChannelTestHelpers.videoAttachment
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        let view = VideoAttachmentView(
+            attachment: attachment,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_videoAttachment_snapshotText() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
+        )
+        
+        // When
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
     // MARK: - private
     
     func testMessageViewContainerSnapshot(message: ChatMessage) {

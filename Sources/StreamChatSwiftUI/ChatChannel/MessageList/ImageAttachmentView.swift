@@ -49,13 +49,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 }
                 
                 if !message.text.isEmpty {
-                    HStack {
-                        Text(message.text)
-                            .standardPadding()
-                            .foregroundColor(textColor(for: message))
-                        Spacer()
-                    }
-                    .background(Color(backgroundColor))
+                    AttachmentTextView(message: message)
                 }
             }
         }
@@ -77,16 +71,34 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         }
     }
+}
+
+struct AttachmentTextView: View {
+    
+    @Injected(\.colors) private var colors
+    
+    var message: ChatMessage
+    
+    var body: some View {
+        HStack {
+            Text(message.text)
+                .standardPadding()
+                .foregroundColor(textColor(for: message))
+            Spacer()
+        }
+        .background(Color(backgroundColor))
+    }
     
     private var backgroundColor: UIColor {
+        var colors = colors
         if message.isSentByCurrentUser {
             if message.type == .ephemeral {
                 return colors.background8
             } else {
-                return colors.background6
+                return colors.messageCurrentUserBackground[0]
             }
         } else {
-            return colors.background8
+            return colors.messageOtherUserBackground[0]
         }
     }
 }

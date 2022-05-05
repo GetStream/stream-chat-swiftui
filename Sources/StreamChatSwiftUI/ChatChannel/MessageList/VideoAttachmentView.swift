@@ -16,7 +16,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
     
     public var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                 VStack {
                     factory.makeQuotedMessageView(
@@ -45,7 +45,14 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                     width: width
                 )
             }
+            
+            if !message.text.isEmpty {
+                AttachmentTextView(message: message)
+            }
         }
+        .if(!message.text.isEmpty, transform: { view in
+            view.messageBubble(for: message, isFirst: true, cornerRadius: 24)
+        })
     }
 }
 

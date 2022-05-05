@@ -114,6 +114,28 @@ class ChatChannelTestHelpers {
         return giphyAttachments
     }()
     
+    static var videoAttachment: ChatMessageVideoAttachment = {
+        let attachmentFile = AttachmentFile(type: .mp4, size: 0, mimeType: "video/mp4")
+        let uploadingState = AttachmentUploadingState(
+            localFileURL: testURL,
+            state: .pendingUpload,
+            file: attachmentFile
+        )
+        
+        return ChatMessageVideoAttachment(
+            id: .unique,
+            type: .video,
+            payload: VideoAttachmentPayload(
+                title: "test",
+                videoRemoteURL: testURL,
+                file: attachmentFile,
+                extraData: nil
+            ),
+            uploadingState: uploadingState
+        )
+
+    }()
+    
     static var linkAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .generic, size: 0, mimeType: "video/mp4")
         let uploadingState = AttachmentUploadingState(
