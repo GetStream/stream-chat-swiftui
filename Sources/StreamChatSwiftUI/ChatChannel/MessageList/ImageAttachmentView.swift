@@ -50,6 +50,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 
                 if !message.text.isEmpty {
                     AttachmentTextView(message: message)
+                        .frame(width: width)
                 }
             }
         }

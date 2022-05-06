@@ -48,6 +48,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
             
             if !message.text.isEmpty {
                 AttachmentTextView(message: message)
+                    .frame(width: width)
             }
         }
         .if(!message.text.isEmpty, transform: { view in
