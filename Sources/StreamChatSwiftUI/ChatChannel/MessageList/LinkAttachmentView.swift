@@ -35,14 +35,15 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 )
             }
             
-            let size = message.text.frameSize(maxWidth: width - 2 * padding)
+            let availableWidth = width - 4 * padding
+            let size = message.text.frameSize(maxWidth: availableWidth)
             LinkTextView(
                 text: message.text,
-                width: width - 2 * padding,
+                width: availableWidth,
                 textColor: UIColor(textColor(for: message))
             )
+            .frame(width: availableWidth, height: size.height)
             .standardPadding()
-            .frame(width: width, height: size.height + 2 * padding)
             
             if !message.linkAttachments.isEmpty {
                 LinkAttachmentView(
