@@ -65,6 +65,12 @@ class InputTextView: UITextView {
             name: UITextView.textDidChangeNotification,
             object: self
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(becomeFirstResponder),
+            name: NSNotification.Name(firstResponderNotification),
+            object: nil
+        )
     }
     
     open func setUpAppearance() {

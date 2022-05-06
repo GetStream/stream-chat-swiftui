@@ -245,7 +245,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 message: messageDisplayInfo.message,
                 frame: updatedFrame,
                 contentWidth: messageDisplayInfo.contentWidth,
-                isFirst: messageDisplayInfo.isFirst
+                isFirst: messageDisplayInfo.isFirst,
+                keyboardWasShown: true
             )
             
             onLongPress(updatedDisplayInfo)

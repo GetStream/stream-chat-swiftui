@@ -71,7 +71,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     Alert.defaultErrorAlert
                 }
             
-            if !messageDisplayInfo.message.isSentByCurrentUser {
+            if !messageDisplayInfo.message.isSentByCurrentUser &&
+                utils.messageListConfig.messageDisplayOptions.showAvatars {
                 factory.makeMessageAvatarView(
                     for: utils.messageCachingUtils.authorInfo(from: messageDisplayInfo.message)
                 )

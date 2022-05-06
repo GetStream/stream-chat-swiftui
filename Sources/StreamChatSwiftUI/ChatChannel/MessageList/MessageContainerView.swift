@@ -319,4 +319,5 @@ public struct MessageDisplayInfo {
     let contentWidth: CGFloat
     let isFirst: Bool
     var showsMessageActions: Bool = true
+    var keyboardWasShown: Bool = false
 }

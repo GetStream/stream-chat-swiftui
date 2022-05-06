@@ -110,6 +110,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             messageDisplayInfo: messageDisplayInfo!,
                             onBackgroundTap: {
                                 viewModel.reactionsShown = false
+                                if messageDisplayInfo?.keyboardWasShown == true {
+                                    becomeFirstResponder()
+                                }
                             }, onActionExecuted: { actionInfo in
                                 viewModel.messageActionExecuted(actionInfo)
                             }

@@ -89,3 +89,12 @@ func resignFirstResponder() {
         for: nil
     )
 }
+
+let firstResponderNotification = "io.getstream.inputView.becomeFirstResponder"
+
+func becomeFirstResponder() {
+    NotificationCenter.default.post(
+        name: NSNotification.Name(firstResponderNotification),
+        object: nil
+    )
+}
