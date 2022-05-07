@@ -101,7 +101,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrollToMessage: ChatMessage? = nil
     ) {
         self.channelController = channelController
-        channelController.synchronize()
+        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController) {
+            channelController.synchronize()
+        }
         if let messageController = messageController {
             self.messageController = messageController
             messageController.synchronize()

@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import StreamChat
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
@@ -20,6 +21,7 @@ public class Utils {
     public var commandsConfig: CommandsConfig
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
+    public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     
     var messageCachingUtils = MessageCachingUtils()
     
@@ -36,7 +38,8 @@ public class Utils {
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
-        channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer()
+        channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
+        shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
         self.videoPreviewLoader = videoPreviewLoader
@@ -51,5 +54,6 @@ public class Utils {
         self.commandsConfig = commandsConfig
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig
+        self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
     }
 }
