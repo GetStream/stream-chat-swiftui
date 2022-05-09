@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Usage: ./bootstrap.sh
-# This script will install Mint and bootstrap its dependencies, link git hooks and install required ruby gems.
+# This script will:
+#   - install Mint and bootstrap its dependencies
+#   - link git hooks
+#   - install required ruby gems
+#   - install sonar dependencies if `INSTALL_SONAR` environment variable is provided
 # You should have homebrew installed.
 # If you get `zsh: permission denied: ./bootstrap.sh` error, please run `chmod +x bootstrap.sh` first
 
@@ -11,8 +15,8 @@ function puts {
 
 # Check if Homebrew is installed
 if [[ $(command -v brew) == "" ]]; then
-    echo "Homebrew not installed. Please install."
-    exit 1
+  echo "Homebrew not installed. Please install."
+  exit 1
 fi
 
 set -Eeuo pipefail
@@ -20,8 +24,7 @@ set -Eeuo pipefail
 trap "echo ; echo ❌ The Bootstrap script failed to finish without error. See the log above to debug. ; echo" ERR
 
 puts "Install Mint if needed"
-# List installed Mint versions, if fails, install Mint
-brew list mint || brew install mint
+brew install mint
 
 # Set bash to Strict Mode (http://redsymbol.net/articles/unofficial-bash-strict-mode/)
 set -euo pipefail
@@ -44,7 +47,7 @@ puts "Install bundle dependencies"
 bundle install
 
 if [[ ${INSTALL_SONAR-default} == true ]]; then
-    puts "Install sonar dependencies"
-    pip install lizard
-    brew install sonar-scanner
+  puts "Install sonar dependencies"
+  pip install lizard
+  brew install sonar-scanner
 fi
