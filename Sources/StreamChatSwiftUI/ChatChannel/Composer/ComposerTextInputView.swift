@@ -37,8 +37,10 @@ struct ComposerTextInputView: UIViewRepresentable {
     func updateUIView(_ uiView: InputTextView, context: Context) {
         DispatchQueue.main.async {
             if uiView.markedTextRange == nil {
+                if uiView.text != text {
+                    uiView.text = text
+                }
                 uiView.selectedRange.location = selectedRangeLocation
-                uiView.text = text
                 uiView.isEditable = editable
                 uiView.placeholderLabel.text = placeholder
                 uiView.handleTextChange()
@@ -65,8 +67,8 @@ struct ComposerTextInputView: UIViewRepresentable {
         }
 
         func textViewDidChange(_ textView: UITextView) {
-            textInput.selectedRangeLocation = textView.selectedRange.location
             textInput.text = textView.text
+            textInput.selectedRangeLocation = textView.selectedRange.location
             var height = textView.sizeThatFits(textView.bounds.size).height
             if height < TextSizeConstants.minThreshold {
                 height = TextSizeConstants.minimumHeight
@@ -76,6 +78,10 @@ struct ComposerTextInputView: UIViewRepresentable {
                     textInput.height = height
                 }
             }
+        }
+        
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            textInput.selectedRangeLocation = textView.selectedRange.location
         }
 
         func textView(

@@ -13,6 +13,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
     @State private var composerHeight: CGFloat = 0
+    @State private var keyboardShown = false
     
     private var factory: Factory
     private var channelConfig: ChannelConfig?
@@ -134,13 +135,14 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
-            if visible {
+            if visible && !keyboardShown {
                 if viewModel.composerCommand == nil {
                     withAnimation(.easeInOut(duration: 0.02)) {
                         viewModel.pickerTypeState = .expanded(.none)
                     }
                 }
             }
+            keyboardShown = visible
         }
         .onReceive(keyboardHeight) { height in
             if height > 0 && height != popupSize {
