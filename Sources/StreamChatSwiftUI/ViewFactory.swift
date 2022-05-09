@@ -277,6 +277,18 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>
     ) -> MessageTextViewType
     
+    associatedtype MessageDateViewType: View
+    /// Creates a view for the date info shown below a message.
+    /// - Parameter message: the chat message for which the date info is displayed.
+    /// - Returns: view shown in the date indicator slot.
+    func makeMessageDateView(for message: ChatMessage) -> MessageDateViewType
+    
+    associatedtype MessageAuthorAndDateViewType: View
+    /// Creates a view for the date and author info shown below a message.
+    /// - Parameter message: the chat message for which the date and author info is displayed.
+    /// - Returns: view shown in the date and author indicator slot.
+    func makeMessageAuthorAndDateView(for message: ChatMessage) -> MessageAuthorAndDateViewType
+    
     associatedtype ImageAttachmentViewType: View
     /// Creates the image attachment view.
     /// - Parameters:

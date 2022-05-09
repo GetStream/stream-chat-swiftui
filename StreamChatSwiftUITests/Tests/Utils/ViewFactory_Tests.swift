@@ -645,6 +645,28 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(modifier is EmptyViewModifier)
     }
+    
+    func test_viewFactory_makeMessageDateView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageDateView(for: message)
+        
+        // Then
+        XCTAssert(view is MessageDateView)
+    }
+    
+    func test_viewFactory_makeMessageAuthorAndDateView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageAuthorAndDateView(for: message)
+        
+        // Then
+        XCTAssert(view is MessageAuthorAndDateView)
+    }
 }
 
 extension ChannelAction: Equatable {

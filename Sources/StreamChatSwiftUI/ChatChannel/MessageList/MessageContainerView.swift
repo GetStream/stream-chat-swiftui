@@ -124,7 +124,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
                     .onLongPressGesture(perform: {
-                        handleGestureForMessage(showsMessageActions: true)
+                        if !message.isDeleted {
+                            handleGestureForMessage(showsMessageActions: true)
+                        }
                     })
                     .offset(x: self.offsetX)
                     .simultaneousGesture(
@@ -180,15 +182,15 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 )
                                 
                                 if messageListConfig.messageDisplayOptions.showMessageDate {
-                                    MessageDateView(message: message)
+                                    factory.makeMessageDateView(for: message)
                                 }
                             }
                         } else if !message.isSentByCurrentUser
                             && !channel.isDirectMessageChannel
                             && messageListConfig.messageDisplayOptions.showAuthorName {
-                            MessageAuthorAndDateView(message: message)
+                            factory.makeMessageAuthorAndDateView(for: message)
                         } else if messageListConfig.messageDisplayOptions.showMessageDate {
-                            MessageDateView(message: message)
+                            factory.makeMessageDateView(for: message)
                         }
                     }
                 }

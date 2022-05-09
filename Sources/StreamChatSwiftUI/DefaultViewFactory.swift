@@ -289,6 +289,14 @@ extension ViewFactory {
         )
     }
     
+    public func makeMessageDateView(for message: ChatMessage) -> some View {
+        MessageDateView(message: message)
+    }
+    
+    public func makeMessageAuthorAndDateView(for message: ChatMessage) -> some View {
+        MessageAuthorAndDateView(message: message)
+    }
+    
     public func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,

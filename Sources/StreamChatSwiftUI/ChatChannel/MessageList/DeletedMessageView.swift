@@ -30,20 +30,22 @@ public struct DeletedMessageView: View {
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .messageBubble(for: message, isFirst: isFirst)
             
-            HStack {
-                Spacer()
+            if message.isSentByCurrentUser {
+                HStack {
+                    Spacer()
+                    
+                    Image(uiImage: images.eye)
+                        .customizable()
+                        .frame(maxWidth: 12)
                 
-                Image(uiImage: images.eye)
-                    .customizable()
-                    .frame(maxWidth: 12)
-            
-                Text(L10n.Message.onlyVisibleToYou)
-                    .font(fonts.footnote)
-                
-                Text(dateFormatter.string(from: message.createdAt))
-                    .font(fonts.footnote)
+                    Text(L10n.Message.onlyVisibleToYou)
+                        .font(fonts.footnote)
+                    
+                    Text(dateFormatter.string(from: message.createdAt))
+                        .font(fonts.footnote)
+                }
+                .foregroundColor(Color(colors.textLowEmphasis))
             }
-            .foregroundColor(Color(colors.textLowEmphasis))
         }
     }
 }
