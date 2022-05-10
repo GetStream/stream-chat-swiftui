@@ -369,7 +369,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     
     @objc private func updateQueuedChannels() {
         if !queuedChannelsChanges.isEmpty {
-            channels = queuedChannelsChanges
+            withAnimation {
+                channels = queuedChannelsChanges
+            }
         }
     }
 }
