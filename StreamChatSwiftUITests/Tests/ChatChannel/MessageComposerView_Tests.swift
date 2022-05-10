@@ -121,4 +121,50 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_composerInputView_rangeSelection() {
+        // Given
+        let view = ComposerTextInputView(
+            text: .constant("This is a sample text"),
+            height: .constant(38),
+            selectedRangeLocation: .constant(3),
+            placeholder: "Send a message",
+            editable: true
+        )
+        let inputView = InputTextView(
+            frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
+        )
+        
+        // When
+        inputView.selectedRange.location = 3
+        let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
+        coordinator.textViewDidChangeSelection(inputView)
+        
+        // Then
+        XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
+    }
+    
+    func test_composerInputView_textSelection() {
+        // Given
+        let view = ComposerTextInputView(
+            text: .constant("New text"),
+            height: .constant(38),
+            selectedRangeLocation: .constant(3),
+            placeholder: "Send a message",
+            editable: true
+        )
+        let inputView = InputTextView(
+            frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
+        )
+        
+        // When
+        inputView.text = "New text"
+        inputView.selectedRange.location = 3
+        let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
+        coordinator.textViewDidChange(inputView)
+        
+        // Then
+        XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
+        XCTAssert(coordinator.textInput.text == "New text")
+    }
 }
