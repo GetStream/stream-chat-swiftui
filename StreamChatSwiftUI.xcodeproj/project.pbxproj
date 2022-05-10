@@ -188,6 +188,7 @@
 		847BA08927E0BAEE00ED20C7 /* WebSocketEngineMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08827E0BAEE00ED20C7 /* WebSocketEngineMock.swift */; };
 		847CEFEC27BFAB6400606257 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 847CEFEB27BFAB6400606257 /* StreamChat */; };
 		847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */; };
+		847F7949282A91AD0009F74C /* ChatChannelView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847F7948282A91AD0009F74C /* ChatChannelView_Tests.swift */; };
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
@@ -550,6 +551,7 @@
 		847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketPingControllerMock.swift; sourceTree = "<group>"; };
 		847BA08827E0BAEE00ED20C7 /* WebSocketEngineMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketEngineMock.swift; sourceTree = "<group>"; };
 		847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCachingUtils.swift; sourceTree = "<group>"; };
+		847F7948282A91AD0009F74C /* ChatChannelView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelView_Tests.swift; sourceTree = "<group>"; };
 		848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListView_Tests.swift; sourceTree = "<group>"; };
 		848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsOverlayView_Tests.swift; sourceTree = "<group>"; };
 		8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DemoAppSwiftUI.entitlements; sourceTree = "<group>"; };
@@ -1328,6 +1330,7 @@
 				84C94D482758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift */,
 				84C2042227917B6A0024D616 /* MessageListView_Tests.swift */,
 				84C94D4C2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift */,
+				847F7948282A91AD0009F74C /* ChatChannelView_Tests.swift */,
 				84C94D5027591DE2007FE2B9 /* ChatMessageIDs_Tests.swift */,
 				84C94D57275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift */,
 				84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */,
@@ -1817,6 +1820,7 @@
 				842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */,
 				84DEC8DF2760A1D100172876 /* MessageView_Tests.swift in Sources */,
 				84C94CDA27578B92007FE2B9 /* ChatUser_Mock.swift in Sources */,
+				847F7949282A91AD0009F74C /* ChatChannelView_Tests.swift in Sources */,
 				84C94D2C275796F7007FE2B9 /* RequestRecorderURLProtocol.swift in Sources */,
 				84C94CD627578B92007FE2B9 /* AttachmentUploadingState_Mock.swift in Sources */,
 				84C94D20275792EA007FE2B9 /* MockBackgroundTaskScheduler.swift in Sources */,

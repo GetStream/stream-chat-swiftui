@@ -60,8 +60,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             onMessageAppear: viewModel.handleMessageAppear(index:),
                             onScrollToBottom: viewModel.scrollToLastMessage,
                             onLongPress: { displayInfo in
+                                messageDisplayInfo = displayInfo
                                 withAnimation {
-                                    messageDisplayInfo = displayInfo
                                     viewModel.showReactionOverlay()
                                 }
                             }
@@ -113,6 +113,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 if messageDisplayInfo?.keyboardWasShown == true {
                                     becomeFirstResponder()
                                 }
+                                messageDisplayInfo = nil
                             }, onActionExecuted: { actionInfo in
                                 viewModel.messageActionExecuted(actionInfo)
                             }
@@ -152,8 +153,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 .allowsHitTesting(false)
                 : nil
         )
-        .padding(.bottom, keyboardShown || !tabBarAvailable ? 0 : bottomPadding)
+        .padding(.bottom, keyboardShown || !tabBarAvailable || generatingSnapshot ? 0 : bottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
+    }
+    
+    private var generatingSnapshot: Bool {
+        tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
     }
     
     private var bottomPadding: CGFloat {

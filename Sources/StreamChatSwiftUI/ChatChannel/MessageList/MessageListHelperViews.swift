@@ -21,6 +21,7 @@ public struct MessageAuthorAndDateView: View {
     public var body: some View {
         HStack {
             Text(utils.messageCachingUtils.authorName(for: message))
+                .lineLimit(1)
                 .font(fonts.footnoteBold)
                 .foregroundColor(Color(colors.textLowEmphasis))
             if utils.messageListConfig.messageDisplayOptions.showMessageDate {
