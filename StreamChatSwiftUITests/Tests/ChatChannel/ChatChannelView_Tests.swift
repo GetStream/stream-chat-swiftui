@@ -9,6 +9,12 @@ import SwiftUI
 import XCTest
 
 class ChatChannelView_Tests: StreamChatTestCase {
+    
+    override func setUp() {
+        super.setUp()
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
 
     func test_chatChannelView_snapshot() {
         // Given
