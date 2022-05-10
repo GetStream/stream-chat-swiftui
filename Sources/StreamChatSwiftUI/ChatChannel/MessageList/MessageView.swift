@@ -20,18 +20,18 @@ struct MessageView<Factory: ViewFactory>: View {
     
     var body: some View {
         VStack {
-            if messageTypeResolver.hasCustomAttachment(message: message) {
+            if messageTypeResolver.isDeleted(message: message) {
+                factory.makeDeletedMessageView(
+                    for: message,
+                    isFirst: isFirst,
+                    availableWidth: contentWidth
+                )
+            } else if messageTypeResolver.hasCustomAttachment(message: message) {
                 factory.makeCustomAttachmentViewType(
                     for: message,
                     isFirst: isFirst,
                     availableWidth: contentWidth,
                     scrolledId: $scrolledId
-                )
-            } else if messageTypeResolver.isDeleted(message: message) {
-                factory.makeDeletedMessageView(
-                    for: message,
-                    isFirst: isFirst,
-                    availableWidth: contentWidth
                 )
             } else if !message.attachmentCounts.isEmpty {
                 if messageTypeResolver.hasLinkAttachment(message: message) {
