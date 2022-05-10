@@ -29,6 +29,22 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image)
     }
     
+    func test_scrollToBottomButton_snapshotUnreadCount() {
+        // Given
+        let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
+        
+        // Then
+        assertSnapshot(matching: button, as: .image)
+    }
+    
+    func test_scrollToBottomButton_snapshotEmptyCount() {
+        // Given
+        let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
+        
+        // Then
+        assertSnapshot(matching: button, as: .image)
+    }
+    
     // MARK: - private
     
     private func makeMessageListView(channelConfig: ChannelConfig) -> MessageListView<DefaultViewFactory> {
