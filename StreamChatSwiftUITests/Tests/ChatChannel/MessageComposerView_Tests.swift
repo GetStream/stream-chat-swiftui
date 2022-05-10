@@ -8,6 +8,14 @@ import SnapshotTesting
 import XCTest
 
 class MessageComposerView_Tests: StreamChatTestCase {
+    
+    override func setUp() {
+        super.setUp()
+        let utils = Utils(
+            messageListConfig: MessageListConfig(becomesFirstResponderOnOpen: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
 
     func test_messageComposerView_snapshot() {
         // Given
@@ -81,6 +89,35 @@ class MessageComposerView_Tests: StreamChatTestCase {
         )
         .frame(width: 40, height: 40)
         
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_composerInputView_inputTextView() {
+        // Given
+        let view = InputTextView(
+            frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
+        )
+        
+        // When
+        view.text = "This is a sample text"
+        view.selectedRange.location = 3
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_composerInputView_composerInputTextView() {
+        // Given
+        let view = ComposerTextInputView(
+            text: .constant("This is a sample text"),
+            height: .constant(38),
+            selectedRangeLocation: .constant(3),
+            placeholder: "Send a message",
+            editable: true
+        )
+        .frame(width: defaultScreenSize.width, height: 50)
+                
         // Then
         assertSnapshot(matching: view, as: .image)
     }
