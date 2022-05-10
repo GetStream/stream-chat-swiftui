@@ -125,6 +125,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             
             Text(message.text)
                 .standardPadding()
+                .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }

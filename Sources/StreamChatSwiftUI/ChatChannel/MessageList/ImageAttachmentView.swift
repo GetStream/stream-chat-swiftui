@@ -85,6 +85,7 @@ struct AttachmentTextView: View {
             Text(message.text)
                 .standardPadding()
                 .foregroundColor(textColor(for: message))
+                .fixedSize(horizontal: false, vertical: true)
             Spacer()
         }
         .background(Color(backgroundColor))
