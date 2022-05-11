@@ -5,10 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Chat info screen
+- Possibility to customize empty messages state
+- Possibility to customize author and date view in a message
+- View model injection in the Message Composer View
 
 ### 🐞 Fixed
 - Bug with swiping video attachments
 - Bug with reactions offset for large number of reactions
+- Text input cursor jump
+- Text message rendering issue with custom font
+- Tap enabled on fourth image in attachments if there's a number overlay 
 
 # [4.14.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.14.0)
 _April 26, 2022_
