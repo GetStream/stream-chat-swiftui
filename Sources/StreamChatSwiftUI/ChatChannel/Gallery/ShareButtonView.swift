@@ -49,7 +49,5 @@ struct ShareActivityView: UIViewControllerRepresentable {
     func updateUIViewController(
         _ uiViewController: UIActivityViewController,
         context: UIViewControllerRepresentableContext<ShareActivityView>
-    ) {
-        // We don't need handling updates of the VC at the moment.
-    }
+    ) { /* Not needed. */ }
 }
