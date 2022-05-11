@@ -47,5 +47,6 @@ public struct DeletedMessageView: View {
                 .foregroundColor(Color(colors.textLowEmphasis))
             }
         }
+        .accessibilityIdentifier("DeletedMessageView")
     }
 }

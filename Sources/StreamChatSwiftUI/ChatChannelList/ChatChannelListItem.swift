@@ -60,6 +60,7 @@ public struct ChatChannelListItem: View {
                                 )
                             }
                             SubtitleText(text: timestampText)
+                                .accessibilityIdentifier("timestampView")
                         }
                     }
                 }
@@ -86,6 +87,7 @@ public struct ChatChannelListItem: View {
             SubtitleText(text: subtitleText)
             Spacer()
         }
+        .accessibilityIdentifier("subtitleView")
     }
     
     private var subtitleText: String {
@@ -161,6 +163,7 @@ public struct ChannelAvatarView: View {
                         : nil
                 )
         )
+        .accessibilityIdentifier("ChannelAvatarView")
     }
 }
 
@@ -203,6 +206,7 @@ public struct UnreadIndicatorView: View {
             .padding(.horizontal, unreadCount < 10 ? 0 : 6)
             .background(Color(colors.alert))
             .cornerRadius(9)
+            .accessibilityIdentifier("UnreadIndicatorView")
     }
 }
 

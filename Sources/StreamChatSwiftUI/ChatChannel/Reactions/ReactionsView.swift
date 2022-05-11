@@ -35,6 +35,7 @@ struct ReactionsContainer: View {
             x: offsetX,
             y: -20
         )
+        .accessibilityIdentifier("ReactionsContainer")
     }
     
     private var reactions: [MessageReactionType] {
@@ -84,6 +85,7 @@ struct ReactionsView: View {
                                     onReactionTap(reaction)
                                 } : nil
                         )
+                        .accessibilityIdentifier("reaction-\(reaction.id)")
                 }
             }
         }

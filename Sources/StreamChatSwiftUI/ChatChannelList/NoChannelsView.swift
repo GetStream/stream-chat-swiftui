@@ -16,5 +16,6 @@ public struct NoChannelsView: View {
             description: L10n.Channel.NoContent.message,
             shouldRotateImage: true
         )
+        .accessibilityIdentifier("NoChannelsView")
     }
 }

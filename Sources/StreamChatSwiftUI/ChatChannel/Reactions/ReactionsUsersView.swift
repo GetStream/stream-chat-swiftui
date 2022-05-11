@@ -74,6 +74,7 @@ struct ReactionsUsersView: View {
                 Spacer()
             }
         }
+        .accessibilityIdentifier("ReactionsUsersView")
     }
 }
 

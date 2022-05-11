@@ -71,6 +71,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 selected: selectedIndex
             )
         }
+        .accessibilityIdentifier("ImageAttachmentContainer")
     }
 }
 
@@ -89,6 +90,7 @@ struct AttachmentTextView: View {
             Spacer()
         }
         .background(Color(backgroundColor))
+        .accessibilityIdentifier("AttachmentTextView")
     }
     
     private var backgroundColor: UIColor {
@@ -284,6 +286,7 @@ struct SingleImageView: View {
             index: index
         )
         .frame(width: width, height: height)
+        .accessibilityIdentifier("SingleImageView")
     }
 }
 
@@ -303,6 +306,7 @@ struct MultiImageView: View {
             index: index
         )
         .frame(width: width, height: height)
+        .accessibilityIdentifier("MultiImageView")
     }
 }
 

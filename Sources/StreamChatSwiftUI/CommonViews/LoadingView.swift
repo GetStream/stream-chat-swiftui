@@ -37,6 +37,7 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
                 .shimmering()
             }
         }
+        .accessibilityIdentifier("RedactedLoadingView")
     }
 }
 

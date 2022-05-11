@@ -91,6 +91,7 @@ public struct MoreChannelActionsView: View {
         .onTapGesture {
             onDismiss()
         }
+        .accessibilityIdentifier("MoreChannelActionsView")
     }
     
     private var memberList: some View {

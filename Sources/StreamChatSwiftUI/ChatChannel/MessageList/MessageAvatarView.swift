@@ -53,6 +53,7 @@ public struct MessageAvatarView: View {
                         .offset(x: 3, y: -1)
                         : nil
                 )
+                .accessibilityIdentifier("MessageAvatarView")
         } else {
             Image(uiImage: images.personPlaceholder)
                 .renderingMode(.template)
@@ -62,6 +63,7 @@ public struct MessageAvatarView: View {
                     width: size.width,
                     height: size.height
                 )
+                .accessibilityIdentifier("MessageAvatarViewPlaceholder")
         }
     }
 }

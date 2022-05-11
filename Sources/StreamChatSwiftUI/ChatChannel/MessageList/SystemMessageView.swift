@@ -17,5 +17,6 @@ public struct SystemMessageView: View {
             .bold()
             .foregroundColor(Color(colors.textLowEmphasis))
             .standardPadding()
+            .accessibilityIdentifier("SystemMessageView")
     }
 }

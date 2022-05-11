@@ -70,6 +70,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
         }
         .messageBubble(for: message, isFirst: isFirst)
         .frame(maxWidth: width)
+        .accessibilityIdentifier("GiphyAttachmentView")
     }
     
     private var giphyActions: [AttachmentAction] {

@@ -137,6 +137,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 )
             )
         )
+        .accessibilityIdentifier("MessageTextView")
     }
 }
 
