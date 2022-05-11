@@ -215,9 +215,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     channelDestination: viewFactory.makeChannelDestination(),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                    leadingSwipeButtonTapped: { _ in
-                        // No leading button by default.
-                    }
+                    leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
             }
             

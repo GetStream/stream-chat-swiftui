@@ -319,9 +319,7 @@ struct LazyLoadingImage: View {
     var shouldSetFrame: Bool = true
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
-    var onImageLoaded: (UIImage) -> Void = { _ in
-        // Default implementation.
-    }
+    var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
     
     var body: some View {
         ZStack {

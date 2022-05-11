@@ -277,4 +277,27 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_deletedMessageViewContainer_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Deleted message",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
