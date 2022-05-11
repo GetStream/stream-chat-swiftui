@@ -237,4 +237,27 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_linkAttachmentView_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "https://getstream.io",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        let view = LinkAttachmentContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

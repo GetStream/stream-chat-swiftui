@@ -32,6 +32,12 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
             in: typingSuggestion.text,
             caretLocation: typingSuggestion.locationRange.location
         )
+        commandsHandler.handleCommand(
+            for: .constant(typingSuggestion.text),
+            selectedRangeLocation: .constant(typingSuggestion.locationRange.location),
+            command: .constant(nil),
+            extraData: [:]
+        )
         
         // Then
         XCTAssert(command != nil)
