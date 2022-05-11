@@ -54,13 +54,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
          streamChat = StreamChat(chatClient: chatClient, utils: utils)
          */
         
-#if RELEASE
+        #if RELEASE
         // We're tracking Crash Reports / Issues from the Demo App to keep improving the SDK
         SentrySDK.start { options in
             options.dsn = "https://00e1d4e0213541d2b103ea252b77f120@o389650.ingest.sentry.io/6395489"
             options.tracesSampleRate = 1.0
         }
-#endif
+        #endif
         
         streamChat = StreamChat(chatClient: chatClient)
         
