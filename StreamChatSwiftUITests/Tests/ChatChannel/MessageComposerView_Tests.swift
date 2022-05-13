@@ -167,4 +167,21 @@ class MessageComposerView_Tests: StreamChatTestCase {
         XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
         XCTAssert(coordinator.textInput.text == "New text")
     }
+    
+    func test_quotedMessageHeaderView_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Quoted message",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        let view = QuotedMessageHeaderView(quotedMessage: .constant(message), showContent: true)
+            .frame(width: defaultScreenSize.width, height: 36)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

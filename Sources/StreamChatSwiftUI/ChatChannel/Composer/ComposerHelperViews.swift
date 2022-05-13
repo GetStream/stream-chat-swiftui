@@ -149,23 +149,32 @@ struct QuotedMessageHeaderView: View {
     
     @Binding var quotedMessage: ChatMessage?
     
+    @State var showContent = false
+    
     var body: some View {
         ZStack {
-            Text(L10n.Composer.Title.reply)
-                .font(fonts.bodyBold)
-            
-            HStack {
-                Spacer()
-                Button(action: {
-                    withAnimation {
-                        quotedMessage = nil
-                    }
-                }, label: {
-                    DiscardButtonView()
-                })
+            if showContent {
+                Text(L10n.Composer.Title.reply)
+                    .font(fonts.bodyBold)
+                
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        withAnimation {
+                            quotedMessage = nil
+                        }
+                    }, label: {
+                        DiscardButtonView()
+                    })
+                }
             }
         }
         .frame(height: 32)
+        .onAppear() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                showContent = true
+            }
+        }
         .accessibilityIdentifier("QuotedMessageHeaderView")
     }
 }
