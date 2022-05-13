@@ -77,6 +77,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 askForAssetsAccessPermissions()
             }
         }
+        .accessibilityIdentifier("AttachmentPickerView")
     }
 }
 
@@ -97,6 +98,7 @@ struct AttachmentSourcePickerView: View {
                 isSelected: selected == .photos,
                 onTap: onTap
             )
+            .accessibilityIdentifier("attachmentPickerPhotos")
             
             AttachmentPickerButton(
                 icon: images.attachmentPickerFolder,
@@ -104,6 +106,7 @@ struct AttachmentSourcePickerView: View {
                 isSelected: selected == .files,
                 onTap: onTap
             )
+            .accessibilityIdentifier("attachmentPickerFiles")
             
             AttachmentPickerButton(
                 icon: images.attachmentPickerCamera,
@@ -111,12 +114,14 @@ struct AttachmentSourcePickerView: View {
                 isSelected: selected == .camera,
                 onTap: onTap
             )
+            .accessibilityIdentifier("attachmentPickerCamera")
             
             Spacer()
         }
         .padding(.horizontal, 16)
         .frame(height: 56)
         .background(Color(colors.background1))
+        .accessibilityIdentifier("AttachmentSourcePickerView")
     }
 }
 

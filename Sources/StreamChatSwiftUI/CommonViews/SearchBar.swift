@@ -74,5 +74,6 @@ struct SearchBar: View, KeyboardReadable {
                 self.isEditing = false
             }
         }
+        .accessibilityIdentifier("SearchBar")
     }
 }

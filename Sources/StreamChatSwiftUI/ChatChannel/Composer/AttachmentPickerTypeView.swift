@@ -68,6 +68,7 @@ public struct AttachmentPickerTypeView: View {
                 }
             }
         }
+        .accessibilityIdentifier("AttachmentPickerTypeView")
     }
 }
 

@@ -58,6 +58,7 @@ public struct AttachmentTypeContainer<Content: View>: View {
         }
         .background(Color(colors.background1))
         .cornerRadius(16)
+        .accessibilityIdentifier("AttachmentTypeContainer")
     }
 }
 
@@ -128,6 +129,7 @@ struct AssetsAccessPermissionView: View {
             Spacer()
         }
         .padding(.all, 8)
+        .accessibilityIdentifier("AssetsAccessPermissionView")
     }
     
     func openAppPrivacySettings() {
@@ -164,6 +166,7 @@ struct QuotedMessageHeaderView: View {
             }
         }
         .frame(height: 32)
+        .accessibilityIdentifier("QuotedMessageHeaderView")
     }
 }
 

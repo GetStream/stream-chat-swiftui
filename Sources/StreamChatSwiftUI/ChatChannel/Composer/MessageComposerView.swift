@@ -173,6 +173,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
         }
+        .accessibilityIdentifier("MessageComposerView")
     }
 }
 
@@ -303,6 +304,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         .clipShape(
             RoundedRectangle(cornerRadius: 20)
         )
+        .accessibilityIdentifier("ComposerInputView")
     }
     
     private var composerInputBackground: Color {

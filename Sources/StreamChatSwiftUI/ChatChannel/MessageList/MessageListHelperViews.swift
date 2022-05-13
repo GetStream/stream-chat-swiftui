@@ -29,6 +29,7 @@ public struct MessageAuthorAndDateView: View {
             }
             Spacer()
         }
+        .accessibilityIdentifier("MessageAuthorAndDateView")
     }
 }
 
@@ -49,6 +50,7 @@ struct MessageDateView: View {
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
             .animation(nil)
+            .accessibilityIdentifier("MessageDateView")
     }
 }
 
@@ -75,6 +77,7 @@ struct MessageReadIndicatorView: View {
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
         }
+        .accessibilityIdentifier("MessageReadIndicatorView")
     }
 }
 
@@ -111,6 +114,7 @@ struct MessagePinDetailsView: View {
         .frame(height: 16)
         .padding(.bottom, reactionsShown ? 16 : 0)
         .padding(.top, 4)
+        .accessibilityIdentifier("MessagePinDetailsView")
     }
 }
 

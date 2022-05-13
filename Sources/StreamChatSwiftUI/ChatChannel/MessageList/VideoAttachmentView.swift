@@ -54,6 +54,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
         .if(!message.text.isEmpty, transform: { view in
             view.messageBubble(for: message, isFirst: true, cornerRadius: 24)
         })
+        .accessibilityIdentifier("VideoAttachmentsContainer")
     }
 }
 
@@ -97,6 +98,7 @@ public struct VideoAttachmentView: View {
             ratio: ratio,
             cornerRadius: cornerRadius
         )
+        .accessibilityIdentifier("VideoAttachmentView")
     }
 }
 

@@ -281,6 +281,7 @@ public struct ScrollToBottomButton: View {
                     UnreadButtonIndicator(unreadCount: unreadCount) : nil
             )
         }
+        .accessibilityIdentifier("ScrollToBottomButton")
     }
 }
 

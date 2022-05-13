@@ -219,6 +219,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
+        .accessibilityIdentifier("MessageContainerView")
     }
         
     private var isMessagePinned: Bool {

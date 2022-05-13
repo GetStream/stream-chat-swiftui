@@ -220,6 +220,7 @@ extension ViewFactory {
     ) -> some View {
         Color(colors.background)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .accessibilityIdentifier("EmptyMessagesView")
     }
     
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {

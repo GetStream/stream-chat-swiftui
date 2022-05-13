@@ -107,6 +107,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             }
         })
         .id("\(channel.id)-swipeable")
+        .accessibilityIdentifier("ChatChannelSwipeableListItem")
     }
     
     private var trailingSwipeActions: some View {
@@ -260,6 +261,7 @@ public struct TrailingSwipeActionsView: View {
             }
             .opacity(self.offsetX < -5 ? 1 : 0)
         }
+        .accessibilityIdentifier("TrailingSwipeActionsView")
     }
 }
 

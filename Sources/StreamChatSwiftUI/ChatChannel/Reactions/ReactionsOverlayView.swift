@@ -114,6 +114,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         width: messageDisplayInfo.frame.width,
                         height: messageContainerHeight
                     )
+                    .accessibilityIdentifier("ReactionsMessageView")
                     
                     if messageDisplayInfo.showsMessageActions {
                         factory.makeMessageActionsView(
@@ -157,6 +158,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onAppear {
             popIn = true
         }
+        .accessibilityIdentifier("ReactionsOverlayView")
     }
     
     private var messageContainerHeight: CGFloat {
