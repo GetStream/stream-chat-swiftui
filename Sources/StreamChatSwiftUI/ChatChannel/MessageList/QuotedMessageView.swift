@@ -52,6 +52,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
         .onTapGesture(perform: {
             scrolledId = quotedMessage.messageId
         })
+        .accessibilityIdentifier("QuotedMessageViewContainer")
     }
 }
 

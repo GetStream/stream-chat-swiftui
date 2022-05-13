@@ -203,5 +203,6 @@ struct EditMessageHeaderView: View {
             }
         }
         .frame(height: 32)
+        .accessibilityIdentifier("EditMessageHeaderView")
     }
 }
