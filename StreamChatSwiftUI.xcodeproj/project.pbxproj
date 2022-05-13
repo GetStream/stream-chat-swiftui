@@ -12,6 +12,8 @@
 		8400A348282C06F90067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A347282C06F90067D3A0 /* OHHTTPStubs */; };
 		8400A34A282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */; };
 		8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A34B282C081E0067D3A0 /* OHHTTPStubs */; };
+		8400A354282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A353282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.swift */; };
+		8400A356282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A355282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTestsLaunchTests.swift */; };
 		8402EAC6282BF69900CCA696 /* StreamChatSwiftUITestsAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8402EAC5282BF69900CCA696 /* StreamChatSwiftUITestsAppApp.swift */; };
 		8402EACA282BF69B00CCA696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8402EAC9282BF69B00CCA696 /* Assets.xcassets */; };
 		8402EACD282BF69B00CCA696 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8402EACC282BF69B00CCA696 /* Preview Assets.xcassets */; };
@@ -341,6 +343,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8400A357282E6BE30067D3A0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8465FBAC2746873A00AF091E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8402EAC2282BF69900CCA696;
+			remoteInfo = StreamChatSwiftUITestsApp;
+		};
 		8402EAD5282BFE5100CCA696 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8465FBAC2746873A00AF091E /* Project object */;
@@ -390,6 +399,9 @@
 		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatWrapper.swift; sourceTree = "<group>"; };
 		8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionMonitor_Mock.swift; sourceTree = "<group>"; };
+		8400A351282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamChatSwiftUITestsAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8400A353282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatSwiftUITestsAppTests.swift; sourceTree = "<group>"; };
+		8400A355282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatSwiftUITestsAppTestsLaunchTests.swift; sourceTree = "<group>"; };
 		8402EAC3282BF69900CCA696 /* StreamChatSwiftUITestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StreamChatSwiftUITestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8402EAC5282BF69900CCA696 /* StreamChatSwiftUITestsAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatSwiftUITestsAppApp.swift; sourceTree = "<group>"; };
 		8402EAC9282BF69B00CCA696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -720,6 +732,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8400A34E282E6BE30067D3A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8402EAC0282BF69900CCA696 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -760,6 +779,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8400A352282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				8400A353282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.swift */,
+				8400A355282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTestsLaunchTests.swift */,
+			);
+			path = StreamChatSwiftUITestsAppTests;
+			sourceTree = "<group>";
+		};
 		8402EAC4282BF69900CCA696 /* StreamChatSwiftUITestsApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -843,6 +871,7 @@
 				8465FBC12746873A00AF091E /* StreamChatSwiftUITests */,
 				8465FCBD27468B6900AF091E /* DemoAppSwiftUI */,
 				8402EAC4282BF69900CCA696 /* StreamChatSwiftUITestsApp */,
+				8400A352282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */,
 				8465FCE5274695B400AF091E /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -854,6 +883,7 @@
 				8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */,
 				8465FCBC27468B6900AF091E /* DemoAppSwiftUI.app */,
 				8402EAC3282BF69900CCA696 /* StreamChatSwiftUITestsApp.app */,
+				8400A351282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.xctest */,
 			);
 			name = Products;
 			path = ..;
@@ -1465,6 +1495,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		8400A350282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8400A35B282E6BE30067D3A0 /* Build configuration list for PBXNativeTarget "StreamChatSwiftUITestsAppTests" */;
+			buildPhases = (
+				8400A34D282E6BE30067D3A0 /* Sources */,
+				8400A34E282E6BE30067D3A0 /* Frameworks */,
+				8400A34F282E6BE30067D3A0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8400A358282E6BE30067D3A0 /* PBXTargetDependency */,
+			);
+			name = StreamChatSwiftUITestsAppTests;
+			productName = StreamChatSwiftUITestsAppTests;
+			productReference = 8400A351282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		8402EAC2282BF69900CCA696 /* StreamChatSwiftUITestsApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8402EAD0282BF69B00CCA696 /* Build configuration list for PBXNativeTarget "StreamChatSwiftUITestsApp" */;
@@ -1565,6 +1613,10 @@
 				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1310;
 				TargetAttributes = {
+					8400A350282E6BE30067D3A0 = {
+						CreatedOnToolsVersion = 13.3.1;
+						TestTargetID = 8402EAC2282BF69900CCA696;
+					};
 					8402EAC2282BF69900CCA696 = {
 						CreatedOnToolsVersion = 13.3.1;
 					};
@@ -1605,11 +1657,19 @@
 				8465FBBC2746873A00AF091E /* StreamChatSwiftUITests */,
 				8465FCBB27468B6900AF091E /* DemoAppSwiftUI */,
 				8402EAC2282BF69900CCA696 /* StreamChatSwiftUITestsApp */,
+				8400A350282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8400A34F282E6BE30067D3A0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8402EAC1282BF69900CCA696 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1675,6 +1735,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8400A34D282E6BE30067D3A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8400A356282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTestsLaunchTests.swift in Sources */,
+				8400A354282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8402EABF282BF69900CCA696 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2013,6 +2082,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8400A358282E6BE30067D3A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8402EAC2282BF69900CCA696 /* StreamChatSwiftUITestsApp */;
+			targetProxy = 8400A357282E6BE30067D3A0 /* PBXContainerItemProxy */;
+		};
 		8402EAD6282BFE5100CCA696 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8465FBB42746873A00AF091E /* StreamChatSwiftUI */;
@@ -2060,6 +2134,42 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8400A359282E6BE30067D3A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EHV7XZLAHA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.getstream.iOS.StreamChatSwiftUITestsAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = StreamChatSwiftUITestsApp;
+			};
+			name = Debug;
+		};
+		8400A35A282E6BE30067D3A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EHV7XZLAHA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.getstream.iOS.StreamChatSwiftUITestsAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = StreamChatSwiftUITestsApp;
+			};
+			name = Release;
+		};
 		8402EACE282BF69B00CCA696 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2428,6 +2538,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8400A35B282E6BE30067D3A0 /* Build configuration list for PBXNativeTarget "StreamChatSwiftUITestsAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8400A359282E6BE30067D3A0 /* Debug */,
+				8400A35A282E6BE30067D3A0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8402EAD0282BF69B00CCA696 /* Build configuration list for PBXNativeTarget "StreamChatSwiftUITestsApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
