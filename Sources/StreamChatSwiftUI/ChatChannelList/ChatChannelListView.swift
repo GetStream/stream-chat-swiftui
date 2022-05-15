@@ -179,7 +179,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             viewFactory.makeChannelListTopView(
                 searchText: $viewModel.searchText
             )
