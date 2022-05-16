@@ -23,7 +23,7 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
     
     public var body: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: 0) {
                 factory.makeChannelListTopView(
                     searchText: .constant("")
                 )

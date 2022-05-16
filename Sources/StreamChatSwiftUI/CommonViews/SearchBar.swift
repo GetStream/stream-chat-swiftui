@@ -65,7 +65,7 @@ struct SearchBar: View, KeyboardReadable {
                 .animation(.easeInOut)
             }
         }
-        .padding(.top, 8)
+        .padding(.vertical, 8)
         .onReceive(keyboardWillChangePublisher) { shown in
             if shown {
                 self.isEditing = true
