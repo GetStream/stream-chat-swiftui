@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MessageCachingUtils_Tests: XCTestCase {
+class MessageCachingUtils_Tests: StreamChatTestCase {
     
     let author = ChatUser.mock(
         id: "test",
@@ -108,5 +108,70 @@ class MessageCachingUtils_Tests: XCTestCase {
         // Then
         XCTAssert(authorIdInitial == "test")
         XCTAssert(authorIdInitial == authorIdAfterClear)
+    }
+    
+    func test_messageCachingUtils_userDisplayInfo() {
+        // Given
+        let id: String = .unique
+        let url = URL(string: "https://imageurl.com")
+        let author = ChatUser.mock(id: id, name: "Martin", imageURL: url)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: author
+        )
+        let utils = MessageCachingUtils()
+        
+        // When
+        let authorInfo = utils.authorInfo(from: message)
+        let userDisplayInfo = message.authorDisplayInfo
+        
+        // Then
+        XCTAssert(authorInfo == userDisplayInfo)
+        XCTAssert(userDisplayInfo.id == id)
+        XCTAssert(userDisplayInfo.name == author.name)
+        XCTAssert(userDisplayInfo.imageURL == url)
+    }
+    
+    func test_messageCachingUtils_userDisplayInfoIdExisting() {
+        // Given
+        let id: String = .unique
+        let url = URL(string: "https://imageurl.com")
+        let author = ChatUser.mock(id: id, name: "Martin", imageURL: url)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: author
+        )
+        let utils = MessageCachingUtils()
+        
+        // When
+        let authorInfo = utils.authorInfo(from: message)
+        let userDisplayInfo = utils.userDisplayInfo(with: id)
+        
+        // Then
+        XCTAssert(userDisplayInfo != nil)
+        XCTAssert(authorInfo == userDisplayInfo)
+        XCTAssert(userDisplayInfo!.id == id)
+        XCTAssert(userDisplayInfo!.name == author.name)
+        XCTAssert(userDisplayInfo!.imageURL == url)
+    }
+    
+    func test_messageCachingUtils_userDisplayInfoIdNonExisting() {
+        let utils = MessageCachingUtils()
+        
+        // When
+        let userDisplayInfo = utils.userDisplayInfo(with: "some id")
+        
+        // Then
+        XCTAssert(userDisplayInfo == nil)
+    }
+}
+
+extension UserDisplayInfo: Equatable {
+    public static func == (lhs: UserDisplayInfo, rhs: UserDisplayInfo) -> Bool {
+        lhs.id == rhs.id && lhs.name == rhs.name && lhs.imageURL == rhs.imageURL
     }
 }
