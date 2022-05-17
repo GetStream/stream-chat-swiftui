@@ -40,12 +40,12 @@ struct ChatInfoParticipantsView: View {
     }
 }
 
-struct ParticipantInfo: Identifiable {
-    var id: String {
+public struct ParticipantInfo: Identifiable {
+    public var id: String {
         chatUser.id
     }
 
-    let chatUser: ChatUser
-    let displayName: String
-    let onlineInfoText: String
+    public let chatUser: ChatUser
+    public let displayName: String
+    public let onlineInfoText: String
 }
