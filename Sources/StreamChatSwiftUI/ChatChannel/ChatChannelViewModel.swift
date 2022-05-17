@@ -173,11 +173,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             array.append(message)
             self.messages = LazyCachedMapCollection(source: array, map: { $0 })
         } else {
-            if shouldAnimate(changes: changes) {
+            let animationState = shouldAnimate(changes: changes)
+            if animationState == .animated {
                 withAnimation {
                     self.messages = messages
                 }
-            } else {
+            } else if animationState == .notAnimated {
                 self.messages = messages
             }
         }
@@ -364,22 +365,32 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges {
-            return false
+            return .notAnimated
         }
         
+        var skipChanges = true
         for change in changes {
             switch change {
             case .insert(_, index: _),
                  .remove(_, index: _):
-                return true
+                return .animated
+            case let .update(message, index: index):
+                if index.row < messages.count,
+                   message.messageId != messages[index.row].messageId {
+                    skipChanges = false
+                }
             default:
-                log.debug("detected non-animatable change")
+                skipChanges = false
             }
         }
         
-        return false
+        if skipChanges {
+            return .skip
+        }
+        
+        return .notAnimated
     }
     
     private func enableDateIndicator() {
@@ -467,4 +478,10 @@ public enum ChannelHeaderType {
     case messageThread
     /// The header shown when someone is typing.
     case typingIndicator
+}
+
+enum AnimationChange {
+    case animated
+    case notAnimated
+    case skip
 }

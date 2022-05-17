@@ -233,6 +233,67 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(headerType == .typingIndicator)
     }
     
+    func test_chatChannelVM_skipChanges() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let messageId = String.unique
+        let message = ChatMessage.mock(
+            id: messageId,
+            cid: .unique,
+            text: "Some text",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        channelController.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
+        let initial = viewModel.messages
+        channelController.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
+        let after = viewModel.messages
+        
+        // Then
+        XCTAssert(initial[0].messageId == after[0].messageId)
+    }
+    
+    func test_chatChannelVM_animatedChanges() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Some text",
+            author: .mock(id: .unique)
+        )
+        let newMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "New message",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        channelController.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
+        let initial = viewModel.messages
+        channelController.simulate(
+            messages: [message, newMessage],
+            changes: [.insert(newMessage, index: .init(row: 1, section: 0))]
+        )
+        let after = viewModel.messages
+        
+        // Then
+        XCTAssert(initial.count < after.count)
+    }
+    
     // MARK: - private
     
     private func makeChannelController(
