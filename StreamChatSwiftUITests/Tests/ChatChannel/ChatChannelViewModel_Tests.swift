@@ -294,6 +294,33 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(initial.count < after.count)
     }
     
+    func test_chatChannelVM_updateReadIndicators() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let channel = ChatChannel.mockDMChannel()
+        let read = ChatChannelRead.mock(lastReadAt: Date(), unreadMessagesCount: 1, user: .mock(id: .unique))
+        let newChannel = ChatChannel.mockDMChannel(reads: [read])
+        
+        // When
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: nil
+        )
+        let readsString = channel.readsString
+        channelController.simulate(
+            channel: newChannel,
+            change: .update(newChannel),
+            typingUsers: nil
+        )
+        let newChannelReadsString = newChannel.readsString
+        
+        // Then
+        XCTAssert(viewModel.channel! == newChannel)
+        XCTAssert(readsString != newChannelReadsString)
+    }
+    
     // MARK: - private
     
     private func makeChannelController(

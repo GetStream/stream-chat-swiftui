@@ -26,6 +26,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
 
     private var isActive = true
+    private var readsString = ""
     
     private let messageListDateOverlay: DateFormatter = {
         let df = DateFormatter()
@@ -195,6 +196,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
+        checkReadIndicators(for: channel)
         checkHeaderType()
     }
 
@@ -275,6 +277,23 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if count > lastRefreshThreshold {
             lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
             listId = UUID().uuidString
+        }
+    }
+    
+    private func checkReadIndicators(for channel: EntityChange<ChatChannel>) {
+        switch channel {
+        case let .update(chatChannel):
+            let newReadsString = chatChannel.readsString
+            if readsString == "" {
+                readsString = newReadsString
+                return
+            }
+            if readsString != newReadsString && isActive {
+                messages = channelDataSource.messages
+                readsString = newReadsString
+            }
+        default:
+            log.debug("skip updating of messages in channel update")
         }
     }
     
@@ -467,6 +486,17 @@ extension ChatMessage: Identifiable {
             output += "\(key.rawValue)\(score)"
         }
         return output
+    }
+}
+
+extension ChatChannel {
+    
+    var readsString: String {
+        reads.map { read in
+            "\(read.user.id)-\(read.lastReadAt)"
+        }
+        .sorted()
+        .joined(separator: "-")
     }
 }
 
