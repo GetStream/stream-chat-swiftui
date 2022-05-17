@@ -397,7 +397,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 return .animated
             case let .update(message, index: index):
                 if index.row < messages.count,
-                   message.messageId != messages[index.row].messageId {
+                   message.messageId != messages[index.row].messageId
+                   || message.type == .ephemeral {
                     skipChanges = false
                 }
             default:
