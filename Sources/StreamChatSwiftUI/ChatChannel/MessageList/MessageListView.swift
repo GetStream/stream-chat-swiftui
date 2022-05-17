@@ -184,6 +184,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     }
                 }
+                .accessibilityIdentifier("MessageListScrollView")
             }
             
             if showScrollToLatestButton {
@@ -218,6 +219,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
         }
+        .accessibilityIdentifier("MessageListView")
     }
     
     private func showsAllData(for message: ChatMessage) -> Bool {

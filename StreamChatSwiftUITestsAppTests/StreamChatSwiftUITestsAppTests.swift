@@ -23,8 +23,18 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
+        
+        let cell = app.otherElements.buttons["ChatChannelSwipeableListItem"].firstMatch
+        cell.tap()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let messageList = app.scrollViews.firstMatch
+        XCTAssert(messageList.waitForExistence(timeout: 1))
+        
+        measure(metrics: [XCTOSSignpostMetric.scrollDecelerationMetric]) {
+            messageList.swipeDown(velocity: .fast)
+            stopMeasuring()
+            messageList.swipeUp(velocity: .fast)
+        }
     }
 
     func testLaunchPerformance() throws {
