@@ -108,6 +108,9 @@ public extension ChatChannel {
             extraData: extraData,
             latestMessages: { latestMessages },
             muteDetails: { muteDetails },
+            previewMessage: {
+                nil
+            },
             underlyingContext: nil
         )
     }
@@ -161,6 +164,9 @@ public extension ChatChannel {
             latestMessages: { latestMessages },
             pinnedMessages: { pinnedMessages },
             muteDetails: { muteDetails },
+            previewMessage: {
+                nil
+            },
             underlyingContext: nil
         )
     }
@@ -210,6 +216,7 @@ public extension ChatChannel {
             extraData: extraData,
             latestMessages: { latestMessages },
             muteDetails: { muteDetails },
+            previewMessage: { nil },
             underlyingContext: nil
         )
     }

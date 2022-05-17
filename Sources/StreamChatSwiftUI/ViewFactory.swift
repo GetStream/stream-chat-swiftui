@@ -168,6 +168,10 @@ public protocol ViewFactory: AnyObject {
         channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
     ) -> ChannelListSearchResultItem
     
+    associatedtype ChannelListContentModifier: ViewModifier
+    /// Returns a view modifier applied to the channel list content (including both header and footer views).
+    func makeChannelListContentModifier() -> ChannelListContentModifier
+    
     associatedtype ChannelListModifier: ViewModifier
     /// Returns a view modifier applied to the channel list.
     func makeChannelListModifier() -> ChannelListModifier

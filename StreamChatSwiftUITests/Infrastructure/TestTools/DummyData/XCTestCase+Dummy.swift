@@ -170,19 +170,20 @@ extension XCTestCase {
                     createdBy: dummyUser,
                     config: channelConfig,
                     isFrozen: true,
+                    isHidden: nil,
+                    members: members,
                     memberCount: 100,
                     team: .unique,
-                    members: members,
                     cooldownDuration: .random(in: 0...120)
                 ),
-                isHidden: false,
                 watcherCount: watchers?.count ?? 1,
                 watchers: watchers ?? [dummyUser],
                 members: members,
                 membership: includeMembership ? members.first : nil,
                 messages: payloadMessages,
                 pinnedMessages: pinnedMessages,
-                channelReads: [dummyChannelRead]
+                channelReads: [dummyChannelRead],
+                isHidden: false
             )
         
         return payload
@@ -276,9 +277,10 @@ extension XCTestCase {
                         updatedAt: .unique
                     ),
                     isFrozen: true,
+                    isHidden: nil,
+                    members: nil,
                     memberCount: 100,
                     team: .unique,
-                    members: nil,
                     cooldownDuration: .random(in: 0...120)
                 ),
                 watcherCount: 10,
@@ -287,7 +289,8 @@ extension XCTestCase {
                 membership: member,
                 messages: [dummyMessageWithNoExtraData],
                 pinnedMessages: [dummyMessageWithNoExtraData],
-                channelReads: [dummyChannelReadWithNoExtraData]
+                channelReads: [dummyChannelReadWithNoExtraData],
+                isHidden: nil
             )
         
         return payload

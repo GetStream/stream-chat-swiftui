@@ -73,6 +73,15 @@ class MessageCachingUtils {
         return quoted
     }
     
+    func userDisplayInfo(with id: String) -> UserDisplayInfo? {
+        for userInfo in messageAuthors.values {
+            if userInfo.id == id {
+                return userInfo
+            }
+        }
+        return nil
+    }
+    
     func clearCache() {
         log.debug("Clearing cached message data")
         scrollOffset = 0
@@ -124,5 +133,18 @@ public struct UserDisplayInfo {
         self.id = id
         self.name = name
         self.imageURL = imageURL
+    }
+}
+
+extension ChatMessage {
+    
+    public var authorDisplayInfo: UserDisplayInfo {
+        let cachingUtils = InjectedValues[\.utils].messageCachingUtils
+        return cachingUtils.authorInfo(from: self)
+    }
+    
+    public func userDisplayInfo(from id: String) -> UserDisplayInfo? {
+        let cachingUtils = InjectedValues[\.utils].messageCachingUtils
+        return cachingUtils.userDisplayInfo(with: id)
     }
 }

@@ -71,6 +71,8 @@ public extension ChatMessage {
             isSentByCurrentUser: isSentByCurrentUser,
             pinDetails: pinDetails,
             translations: nil,
+            readBy: { Set<ChatUser>() },
+            readByCount: { 0 },
             underlyingContext: nil
         )
     }

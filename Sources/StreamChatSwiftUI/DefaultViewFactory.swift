@@ -162,6 +162,10 @@ extension ViewFactory {
         )
     }
     
+    public func makeChannelListContentModifier() -> some ViewModifier {
+        EmptyViewModifier()
+    }
+    
     public func makeChannelListModifier() -> some ViewModifier {
         EmptyViewModifier()
     }

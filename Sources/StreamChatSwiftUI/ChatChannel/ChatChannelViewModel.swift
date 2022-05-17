@@ -26,6 +26,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
 
     private var isActive = true
+    private var readsString = ""
     
     private let messageListDateOverlay: DateFormatter = {
         let df = DateFormatter()
@@ -173,11 +174,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             array.append(message)
             self.messages = LazyCachedMapCollection(source: array, map: { $0 })
         } else {
-            if shouldAnimate(changes: changes) {
+            let animationState = shouldAnimate(changes: changes)
+            if animationState == .animated {
                 withAnimation {
                     self.messages = messages
                 }
-            } else {
+            } else if animationState == .notAnimated {
                 self.messages = messages
             }
         }
@@ -194,6 +196,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
+        checkReadIndicators(for: channel)
         checkHeaderType()
     }
 
@@ -274,6 +277,23 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if count > lastRefreshThreshold {
             lastRefreshThreshold = lastRefreshThreshold + refreshThreshold
             listId = UUID().uuidString
+        }
+    }
+    
+    private func checkReadIndicators(for channel: EntityChange<ChatChannel>) {
+        switch channel {
+        case let .update(chatChannel):
+            let newReadsString = chatChannel.readsString
+            if readsString == "" {
+                readsString = newReadsString
+                return
+            }
+            if readsString != newReadsString && isActive {
+                messages = channelDataSource.messages
+                readsString = newReadsString
+            }
+        default:
+            log.debug("skip updating of messages in channel update")
         }
     }
     
@@ -364,22 +384,33 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges {
-            return false
+            return .notAnimated
         }
         
+        var skipChanges = true
         for change in changes {
             switch change {
             case .insert(_, index: _),
                  .remove(_, index: _):
-                return true
+                return .animated
+            case let .update(message, index: index):
+                if index.row < messages.count,
+                   message.messageId != messages[index.row].messageId
+                   || message.type == .ephemeral {
+                    skipChanges = false
+                }
             default:
-                log.debug("detected non-animatable change")
+                skipChanges = false
             }
         }
         
-        return false
+        if skipChanges {
+            return .skip
+        }
+        
+        return .notAnimated
     }
     
     private func enableDateIndicator() {
@@ -459,6 +490,17 @@ extension ChatMessage: Identifiable {
     }
 }
 
+extension ChatChannel {
+    
+    var readsString: String {
+        reads.map { read in
+            "\(read.user.id)-\(read.lastReadAt)"
+        }
+        .sorted()
+        .joined(separator: "-")
+    }
+}
+
 /// The type of header shown in the chat channel screen.
 public enum ChannelHeaderType {
     /// The regular header showing the channel name and members.
@@ -467,4 +509,10 @@ public enum ChannelHeaderType {
     case messageThread
     /// The header shown when someone is typing.
     case typingIndicator
+}
+
+enum AnimationChange {
+    case animated
+    case notAnimated
+    case skip
 }

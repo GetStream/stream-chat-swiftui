@@ -90,7 +90,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId
                     )
-                    .animation(nil)
                     .overlay(
                         ZStack {
                             reactionsShown ?
@@ -277,7 +276,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private func setOffsetX(value: CGFloat) {
-        withAnimation {
+        withAnimation(.easeInOut) {
             self.offsetX = value
         }
     }
