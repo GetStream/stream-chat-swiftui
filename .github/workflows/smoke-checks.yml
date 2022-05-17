@@ -24,7 +24,6 @@ jobs:
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v1
-    - uses: ./.github/actions/set-build-image-var
     - uses: ./.github/actions/bootstrap
     - name: Run Danger
       run: bundle exec danger
@@ -38,7 +37,6 @@ jobs:
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v1
-    - uses: ./.github/actions/set-build-image-var
     - uses: actions/setup-python@v3.0.0
       with:
         python-version: 3.8
@@ -81,7 +79,6 @@ jobs:
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v1
-    - uses: ./.github/actions/set-build-image-var
     - uses: ./.github/actions/bootstrap
     - name: Build Demo App
       run: bundle exec fastlane build_demo
