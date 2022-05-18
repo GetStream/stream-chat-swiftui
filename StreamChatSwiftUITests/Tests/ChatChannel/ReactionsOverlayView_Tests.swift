@@ -110,6 +110,43 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_reactionsOverlay_veryLongMessage() {
+        // Given
+        let messagePart = "this is some random message text repeated several times "
+        var messageText = ""
+        for _ in 0..<10 {
+            messageText += messagePart
+        }
+        let testMessage = ChatMessage.mock(
+            id: "test",
+            cid: .unique,
+            text: messageText,
+            author: .mock(id: "test", name: "martin")
+        )
+        let messageDisplayInfo = MessageDisplayInfo(
+            message: testMessage,
+            frame: CGRect(x: 44, y: 20, width: defaultScreenSize.width - 60, height: defaultScreenSize.height * 2),
+            contentWidth: 200,
+            isFirst: true
+        )
+        
+        // When
+        let view = VerticallyCenteredView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: .mockDMChannel(),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: messageDisplayInfo,
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+            .applyDefaultSize()
+        }
+                
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
 
 struct VerticallyCenteredView<Content: View>: View {
