@@ -130,7 +130,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     .offset(x: self.offsetX)
                     .simultaneousGesture(
                         DragGesture(
-                            minimumDistance: 10,
+                            minimumDistance: 15,
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
@@ -275,7 +275,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private func setOffsetX(value: CGFloat) {
-        withAnimation(.easeInOut) {
+        withAnimation(.interpolatingSpring(stiffness: 170, damping: 20)) {
             self.offsetX = value
         }
     }
