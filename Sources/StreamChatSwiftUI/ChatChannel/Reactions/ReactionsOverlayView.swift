@@ -80,13 +80,27 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             
             GeometryReader { reader in
                 VStack(alignment: .leading) {
-                    MessageView(
-                        factory: factory,
-                        message: messageDisplayInfo.message,
-                        contentWidth: messageDisplayInfo.contentWidth,
-                        isFirst: messageDisplayInfo.isFirst,
-                        scrolledId: .constant(nil)
-                    )
+                    Group {
+                        if messageDisplayInfo.frame.height > messageContainerHeight {
+                            ScrollView {
+                                MessageView(
+                                    factory: factory,
+                                    message: messageDisplayInfo.message,
+                                    contentWidth: messageDisplayInfo.contentWidth,
+                                    isFirst: messageDisplayInfo.isFirst,
+                                    scrolledId: .constant(nil)
+                                )
+                            }
+                        } else {
+                            MessageView(
+                                factory: factory,
+                                message: messageDisplayInfo.message,
+                                contentWidth: messageDisplayInfo.contentWidth,
+                                isFirst: messageDisplayInfo.isFirst,
+                                scrolledId: .constant(nil)
+                            )
+                        }
+                    }
                     .scaleEffect(popIn ? 1 : 0.95)
                     .animation(popInAnimation, value: popIn)
                     .offset(
