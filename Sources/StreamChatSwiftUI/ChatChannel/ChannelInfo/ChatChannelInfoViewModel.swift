@@ -7,12 +7,12 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     
     @Injected(\.chatClient) private var chatClient
     
-    @Published var participants = [ParticipantInfo]()
-    @Published var muted: Bool {
+    @Published public var participants = [ParticipantInfo]()
+    @Published public var muted: Bool {
         didSet {
             if muted {
                 channelController.muteChannel()
@@ -22,25 +22,25 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
 
-    @Published var memberListCollapsed = true
-    @Published var leaveGroupAlertShown = false
-    @Published var errorShown = false
-    @Published var channelName: String
-    @Published var channel: ChatChannel {
+    @Published public var memberListCollapsed = true
+    @Published public var leaveGroupAlertShown = false
+    @Published public var errorShown = false
+    @Published public var channelName: String
+    @Published public var channel: ChatChannel {
         didSet {
             channelId = UUID().uuidString
         }
     }
 
-    @Published var channelId = UUID().uuidString
-    @Published var keyboardShown = false
-    @Published var addUsersShown = false
+    @Published public var channelId = UUID().uuidString
+    @Published public var keyboardShown = false
+    @Published public var addUsersShown = false
     
     private var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
     
-    var displayedParticipants: [ParticipantInfo] {
+    public var displayedParticipants: [ParticipantInfo] {
         if channel.isDirectMessageChannel,
            let otherParticipant = participants.first(where: { info in
                info.id != chatClient.currentUserId
@@ -59,7 +59,7 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    var leaveButtonTitle: String {
+    public var leaveButtonTitle: String {
         if channel.isDirectMessageChannel {
             return L10n.Alert.Actions.deleteChannelTitle
         } else {
@@ -67,7 +67,7 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    var leaveConversationDescription: String {
+    public var leaveConversationDescription: String {
         if channel.isDirectMessageChannel {
             return L10n.Alert.Actions.deleteChannelMessage
         } else {
@@ -75,18 +75,18 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    var notDisplayedParticipantsCount: Int {
+    public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
         return total - displayed
     }
     
-    var mutedText: String {
+    public var mutedText: String {
         let isGroup = channel.memberCount > 2
         return isGroup ? L10n.ChatInfo.Mute.group : L10n.ChatInfo.Mute.user
     }
     
-    var showMoreUsersButton: Bool {
+    public var showMoreUsersButton: Bool {
         !channel.isDirectMessageChannel && memberListCollapsed && notDisplayedParticipantsCount > 0
     }
     
@@ -109,7 +109,7 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    func onlineInfo(for user: ChatUser) -> String {
+    public func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
             return L10n.Message.Title.online
         } else if let lastActiveAt = user.lastActiveAt,
@@ -120,7 +120,7 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    func onParticipantAppear(_ participantInfo: ParticipantInfo) {
+    public func onParticipantAppear(_ participantInfo: ParticipantInfo) {
         if memberListCollapsed {
             return
         }
@@ -144,7 +144,7 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         loadAdditionalUsers()
     }
     
-    func leaveConversationTapped(completion: @escaping () -> Void) {
+    public func leaveConversationTapped(completion: @escaping () -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
         } else {
@@ -152,12 +152,12 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    func cancelGroupRenaming() {
+    public func cancelGroupRenaming() {
         resignFirstResponder()
         channelName = channel.name ?? ""
     }
     
-    func confirmGroupRenaming() {
+    public func confirmGroupRenaming() {
         resignFirstResponder()
         channelController.updateChannel(
             name: channelName,
@@ -184,7 +184,7 @@ class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate 
         }
     }
     
-    func addUserTapped(_ user: ChatUser) {
+    public func addUserTapped(_ user: ChatUser) {
         channelController.addMembers(userIds: [user.id])
         addUsersShown = false
     }
