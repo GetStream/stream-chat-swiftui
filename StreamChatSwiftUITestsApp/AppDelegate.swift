@@ -21,6 +21,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        disableAnimations()
         connectUser(withCredentials: UserCredentials.mock)
         return true
     }
@@ -49,6 +50,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 return
             }
         }
+    }
+    
+    private func disableAnimations() {
+        UIApplication.shared.keyWindow?.layer.speed = 2
+        UIView.setAnimationsEnabled(false)
     }
     
 }
