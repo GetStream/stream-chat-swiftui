@@ -59,7 +59,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of channels matching provided query </td>
-    <th rowspan="9"><img src="ReadmeAssets/Channel_List_Bezel.png?raw=true" width="80%" /></th>
+    <th rowspan="9"><img src="ReadmeAssets/ChannelListPreview.gif?raw=true" width="80%" /></th>
   </tr>
    <tr> <td> Channel name and image based on the channel members or custom data</td> </tr>
   <tr> <td> Unread messages indicator </td> </tr>
@@ -81,7 +81,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of messages in a channel </td>
-    <th rowspan="12"><img src="ReadmeAssets/Message_List_Bezel.png?raw=true" width="80%" /></th>
+    <th rowspan="12"><img src="ReadmeAssets/MessageListPreview.gif?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Photo attachments </td> </tr>
   <tr> <td> Giphy attachments </td> </tr>

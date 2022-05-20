@@ -170,6 +170,7 @@ struct QuotedMessageHeaderView: View {
             }
         }
         .frame(height: 32)
+        .accessibilityIdentifier("QuotedMessageHeaderView")
         .onAppear() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 showContent = true
