@@ -48,6 +48,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 channel: channel,
                 shouldShowTypingIndicator: shouldShowTypingIndicator
             )
+            .accessibilityIdentifier("ChannelTitleView")
         }
         
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -69,6 +70,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 .offset(x: 8)
                 .allowsHitTesting(false)
             }
+            .accessibilityIdentifier("ChannelAvatarView")
         }
     }
 }
@@ -111,6 +113,8 @@ struct ChannelTitleView: View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)
+                .accessibilityIdentifier("chatName")
+            
             if shouldShowTypingIndicator {
                 HStack {
                     TypingIndicatorView()
@@ -120,6 +124,7 @@ struct ChannelTitleView: View {
                 Text(channel.onlineInfoText(currentUserId: currentUserId))
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
+                    .accessibilityIdentifier("chatOnlineInfo")
             }
         }
     }

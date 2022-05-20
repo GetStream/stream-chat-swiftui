@@ -218,6 +218,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
+        .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("MessageContainerView")
     }
         

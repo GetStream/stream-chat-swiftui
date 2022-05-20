@@ -9,19 +9,6 @@ let app = XCUIApplication()
 
 class StreamChatSwiftUITestsAppTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testExample() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
@@ -60,6 +47,37 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let avatar = ChannelListPage.Attributes.avatar(in: cell)
         XCTAssert(avatar.exists)
     }
+    
+    func testMessageListIdentifiers() {
+        app.launch()
+        
+        let channelCells = ChannelListPage.cells
+        channelCells.firstMatch.tap()
+        
+        let list = MessageListPage.list
+        XCTAssert(list.exists)
+        
+        let cells = MessageListPage.cells
+        XCTAssert(cells.lastMatch!.waitForExistence(timeout: 1))
+        
+        let chatAvatar = MessageListPage.NavigationBar.chatAvatar
+        XCTAssert(chatAvatar.exists)
+        
+        /*
+         TODO: Uncomment when we make them work.
+         let chatName = MessageListPage.NavigationBar.chatName
+         XCTAssert(chatName.exists)
+         
+         let chatOnlineInfo = MessageListPage.NavigationBar.chatOnlineInfo
+         XCTAssert(chatOnlineInfo.exists)
+         
+         let messageComposer = MessageListPage.Composer.container
+         XCTAssert(messageComposer.exists)
+         
+         let sendMessageButton = MessageListPage.Composer.sendButton
+         XCTAssert(sendMessageButton.exists)
+         */
+    }
 
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
@@ -69,4 +87,12 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
             }
         }
     }
+}
+
+public extension XCUIElementQuery {
+
+    var lastMatch: XCUIElement? {
+        allElementsBoundByIndex.last
+    }
+
 }
