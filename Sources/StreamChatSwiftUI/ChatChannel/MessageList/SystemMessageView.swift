@@ -11,6 +11,10 @@ public struct SystemMessageView: View {
     
     var message: String
     
+    public init(message: String) {
+        self.message = message
+    }
+    
     public var body: some View {
         Text(message)
             .font(fonts.caption1)
