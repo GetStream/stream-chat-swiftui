@@ -173,7 +173,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
         }
-        .accessibilityIdentifier("MessageComposerView")
+        .accessibilityElement(children: .contain)
     }
 }
 

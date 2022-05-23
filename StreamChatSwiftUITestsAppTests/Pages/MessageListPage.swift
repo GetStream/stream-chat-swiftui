@@ -39,12 +39,8 @@ class MessageListPage {
     
     enum Composer {
         
-        static var container: XCUIElement {
-            app.otherElements["MessageComposerView"]
-        }
-        
         static var sendButton: XCUIElement {
-            container.buttons["SendMessageButton"]
+            app.buttons["SendMessageButton"]
         }
         
     }
