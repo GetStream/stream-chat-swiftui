@@ -55,13 +55,10 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         XCTAssert(list.exists)
         
         let cells = MessageListPage.cells
-        let cell = cells.firstMatch
-        XCTAssert(cell.waitForExistence(timeout: 1))
+        let message = cells.firstMatch
+        XCTAssert(message.waitForExistence(timeout: 1))
         
-        let message = MessageListPage.messageView(for: cell)
-        XCTAssert(message.exists)
-        
-        let reactionsContainer = MessageListPage.reactionsContainer(for: cell)
+        let reactionsContainer = MessageListPage.Attributes.reactionButton(in: message)
         XCTAssert(reactionsContainer.exists)
         
         message.press(forDuration: 1)
@@ -69,34 +66,34 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let reactionsMessageView = MessageListPage.Reactions.reactionsMessageView
         XCTAssert(reactionsMessageView.waitForExistence(timeout: 1))
                 
-        let reactionLove = MessageListPage.Reactions.reactionLove
+        let reactionLove = MessageListPage.Reactions.love
         XCTAssert(reactionLove.exists)
         
-        let reactionSad = MessageListPage.Reactions.reactionSad
+        let reactionSad = MessageListPage.Reactions.sad
         XCTAssert(reactionSad.exists)
         
-        let reactionWow = MessageListPage.Reactions.reactionWow
+        let reactionWow = MessageListPage.Reactions.wow
         XCTAssert(reactionWow.exists)
         
-        let reactionHaha = MessageListPage.Reactions.reactionHaha
+        let reactionHaha = MessageListPage.Reactions.lol
         XCTAssert(reactionHaha.exists)
         
-        let reactionLike = MessageListPage.Reactions.reactionLike
+        let reactionLike = MessageListPage.Reactions.like
         XCTAssert(reactionLike.exists)
         
-        let messageActionsView = MessageListPage.MessageActions.messageActionsView
+        let messageActionsView = MessageListPage.ContextMenu.actionsView
         XCTAssert(messageActionsView.exists)
         
-        let replyMessageAction = MessageListPage.MessageActions.replyMessageAction
+        let replyMessageAction = MessageListPage.ContextMenu.reply
         XCTAssert(replyMessageAction.exists)
         
-        let threadMessageAction = MessageListPage.MessageActions.threadMessageAction
+        let threadMessageAction = MessageListPage.ContextMenu.threadReply
         XCTAssert(threadMessageAction.exists)
         
-        let pinMessageAction = MessageListPage.MessageActions.pinMessageAction
+        let pinMessageAction = MessageListPage.ContextMenu.pin
         XCTAssert(pinMessageAction.exists)
         
-        let copyMessageAction = MessageListPage.MessageActions.copyMessageAction
+        let copyMessageAction = MessageListPage.ContextMenu.copy
         XCTAssert(copyMessageAction.exists)
         
         /*
@@ -112,21 +109,21 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let sendMessageButton = MessageListPage.Composer.sendButton
         XCTAssert(sendMessageButton.exists)
         
-        let commandsButton = MessageListPage.Composer.commandsButton
+        let commandsButton = MessageListPage.Composer.commandButton
         XCTAssert(commandsButton.exists)
         
-        let composerMediaButton = MessageListPage.Composer.mediaButton
+        let composerMediaButton = MessageListPage.Composer.attachmentButton
         XCTAssert(composerMediaButton.exists)
                 
         composerMediaButton.forceTapElement()
         
-        let attachmentPickerPhotos = MessageListPage.Composer.attachmentPickerPhotos
+        let attachmentPickerPhotos = MessageListPage.AttachmentMenu.photoOrVideoButton
         XCTAssert(attachmentPickerPhotos.waitForExistence(timeout: 1))
         
-        let attachmentPickerFiles = MessageListPage.Composer.attachmentPickerFiles
+        let attachmentPickerFiles = MessageListPage.AttachmentMenu.fileButton
         XCTAssert(attachmentPickerFiles.exists)
         
-        let attachmentPickerCamera = MessageListPage.Composer.attachmentPickerCamera
+        let attachmentPickerCamera = MessageListPage.AttachmentMenu.cameraButton
         XCTAssert(attachmentPickerCamera.exists)
         */
         

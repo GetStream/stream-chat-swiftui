@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AADF3283CCDB000237498 /* ThreadPage.swift */; };
 		840008BB27E8D64A00282D88 /* MessageActions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
 		8400A348282C06F90067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A347282C06F90067D3A0 /* OHHTTPStubs */; };
@@ -428,6 +429,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
 		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatWrapper.swift; sourceTree = "<group>"; };
 		8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionMonitor_Mock.swift; sourceTree = "<group>"; };
@@ -930,6 +932,7 @@
 				8463D9252836617F002B1894 /* ChannelListPage.swift */,
 				84DA1C272837B73D000E4B6A /* MessageListPage.swift */,
 				A3828EAC283F6CFE00538258 /* StartPage.swift */,
+				825AADF3283CCDB000237498 /* ThreadPage.swift */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -1860,6 +1863,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */,
 				8400A356282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTestsLaunchTests.swift in Sources */,
 				A3828EAD283F6CFE00538258 /* StartPage.swift in Sources */,
 				A3600B41283F652400E1C930 /* StreamTestCase.swift in Sources */,

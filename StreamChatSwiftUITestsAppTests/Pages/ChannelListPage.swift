@@ -12,6 +12,11 @@ enum ChannelListPage {
         app.buttons.matching(NSPredicate(format: "identifier LIKE 'ChatChannelSwipeableListItem'"))
     }
     
+    enum Search {
+        static var field: XCUIElement { app.textFields["SearchBar"] }
+        static var image: XCUIElement { app.images["SearchBar"] }
+    }
+    
     enum Attributes {
         static func name(in cell: XCUIElement) -> XCUIElement {
             cell.staticTexts["ChatTitleView"]
