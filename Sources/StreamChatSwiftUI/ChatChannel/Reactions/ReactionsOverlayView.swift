@@ -104,7 +104,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .scaleEffect(popIn ? 1 : 0.95)
                     .animation(popInAnimation, value: popIn)
                     .offset(
-                        x: messageDisplayInfo.frame.origin.x - diffWidth
+                        x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
                     )
                     .overlay(
                         channel.config.reactionsEnabled ?
@@ -119,7 +119,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             .scaleEffect(popIn ? 1 : 0)
                             .animation(popInAnimation, value: popIn)
                             .offset(
-                                x: messageDisplayInfo.frame.origin.x - diffWidth,
+                                x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader),
                                 y: popIn ? -24 : -messageContainerHeight / 2
                             )
                             : nil
@@ -193,16 +193,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
     }
     
-    private var diffWidth: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            let screenWidth = UIScreen.main.bounds.size.width
-            let viewWidth = topVC()?.view.frame.width ?? 0
-            return screenWidth - viewWidth
-        } else {
-            return 0
-        }
-    }
-    
     private var originY: CGFloat {
         let bottomPopupOffset =
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
@@ -229,6 +219,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     
     private var userReactionsPopupHeight: CGFloat {
         userReactionsHeight + 3 * paddingValue
+    }
+    
+    private func diffWidth(proxy: GeometryProxy) -> CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return proxy.frame(in: .global).minX
+        } else {
+            return 0
+        }
     }
     
     private func maxUserReactionsWidth(availableWidth: CGFloat) -> CGFloat {

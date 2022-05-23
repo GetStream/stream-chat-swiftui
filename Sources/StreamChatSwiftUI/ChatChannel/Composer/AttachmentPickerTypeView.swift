@@ -33,6 +33,14 @@ public struct AttachmentPickerTypeView: View {
     @Binding var pickerTypeState: PickerTypeState
     var channelConfig: ChannelConfig?
     
+    public init(
+        pickerTypeState: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?
+    ) {
+        _pickerTypeState = pickerTypeState
+        self.channelConfig = channelConfig
+    }
+    
     private var commandsAvailable: Bool {
         channelConfig?.commands.count ?? 0 > 0
     }

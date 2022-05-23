@@ -27,7 +27,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var onLongPress: (MessageDisplayInfo) -> Void
     
     @State private var width: CGFloat?
-    @State private var height: CGFloat?
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
     
@@ -101,10 +100,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         let frame = proxy.frame(in: .named(scrollAreaId))
                         let offset = frame.minY
                         let width = frame.width
-                        let height = frame.height
                         Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
                         Color.clear.preference(key: WidthPreferenceKey.self, value: width)
-                        Color.clear.preference(key: HeightPreferenceKey.self, value: height)
                     }
                     
                     LazyVStack(spacing: 0) {
@@ -162,13 +159,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     }
                 }
-                .onPreferenceChange(HeightPreferenceKey.self) { value in
-                    if let value = value, value != height {
-                        self.height = value
-                    }
-                }
                 .flippedUpsideDown()
-                .frame(minWidth: self.width, minHeight: height)
+                .frame(maxWidth: .infinity)
                 .clipped()
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId = scrolledId {
