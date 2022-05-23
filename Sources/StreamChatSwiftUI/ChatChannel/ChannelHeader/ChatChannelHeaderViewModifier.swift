@@ -49,6 +49,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 shouldShowTypingIndicator: shouldShowTypingIndicator
             )
             .accessibilityIdentifier("ChannelTitleView")
+            .accessibilityElement(children: .contain)
         }
         
         ToolbarItem(placement: .navigationBarTrailing) {

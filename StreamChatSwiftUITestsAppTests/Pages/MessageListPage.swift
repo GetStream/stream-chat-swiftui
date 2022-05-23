@@ -43,6 +43,18 @@ class MessageListPage {
             app.buttons["SendMessageButton"]
         }
         
+        static var mediaButton: XCUIElement {
+            app.buttons["PickerTypeButtonMedia"]
+        }
+        
+        static var commandsButton: XCUIElement {
+            app.buttons["PickerTypeButtonCommands"]
+        }
+        
+        static var collapsedComposerButton: XCUIElement {
+            app.buttons["PickerTypeButtonCollapsed"]
+        }
+        
     }
     
 }

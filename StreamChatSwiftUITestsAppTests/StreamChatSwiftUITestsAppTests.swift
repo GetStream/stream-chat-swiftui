@@ -66,6 +66,12 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let sendMessageButton = MessageListPage.Composer.sendButton
         XCTAssert(sendMessageButton.exists)
         
+        let composerMediaButton = MessageListPage.Composer.mediaButton
+        XCTAssert(composerMediaButton.exists)
+        
+        let commandsButton = MessageListPage.Composer.commandsButton
+        XCTAssert(commandsButton.exists)
+                
         /*
          TODO: Uncomment when we make them work.
          let chatName = MessageListPage.NavigationBar.chatName
