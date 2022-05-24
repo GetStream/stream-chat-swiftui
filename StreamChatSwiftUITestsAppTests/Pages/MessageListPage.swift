@@ -55,6 +55,18 @@ class MessageListPage {
             app.buttons["PickerTypeButtonCollapsed"]
         }
         
+        static var attachmentPickerPhotos: XCUIElement {
+            app.buttons["attachmentPickerPhotos"]
+        }
+        
+        static var attachmentPickerFiles: XCUIElement {
+            app.buttons["attachmentPickerFiles"]
+        }
+        
+        static var attachmentPickerCamera: XCUIElement {
+            app.buttons["attachmentPickerCamera"]
+        }
+        
     }
     
 }

@@ -66,11 +66,22 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let sendMessageButton = MessageListPage.Composer.sendButton
         XCTAssert(sendMessageButton.exists)
         
-        let composerMediaButton = MessageListPage.Composer.mediaButton
-        XCTAssert(composerMediaButton.exists)
-        
         let commandsButton = MessageListPage.Composer.commandsButton
         XCTAssert(commandsButton.exists)
+        
+        let composerMediaButton = MessageListPage.Composer.mediaButton
+        XCTAssert(composerMediaButton.exists)
+                
+        composerMediaButton.forceTapElement()
+        
+        let attachmentPickerPhotos = MessageListPage.Composer.attachmentPickerPhotos
+        XCTAssert(attachmentPickerPhotos.waitForExistence(timeout: 1))
+        
+        let attachmentPickerFiles = MessageListPage.Composer.attachmentPickerFiles
+        XCTAssert(attachmentPickerFiles.exists)
+        
+        let attachmentPickerCamera = MessageListPage.Composer.attachmentPickerCamera
+        XCTAssert(attachmentPickerCamera.exists)
                 
         /*
          TODO: Uncomment when we make them work.
@@ -94,6 +105,7 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
             }
         }
     }
+    
 }
 
 public extension XCUIElementQuery {
@@ -102,4 +114,20 @@ public extension XCUIElementQuery {
         allElementsBoundByIndex.last
     }
 
+}
+
+extension XCUIElement {
+    
+    func forceTapElement() {
+        if self.isHittable {
+            self.tap()
+        }
+        else {
+            let coordinate: XCUICoordinate = self.coordinate(
+                withNormalizedOffset: CGVector(dx: 0.0, dy: 0.0)
+            )
+            coordinate.tap()
+        }
+    }
+    
 }
