@@ -82,7 +82,7 @@ class InputTextView: UITextView {
         
         placeholderLabel.font = font
         placeholderLabel.textAlignment = .center
-        placeholderLabel.textColor = colors.subtitleText
+        placeholderLabel.textColor = colors.composerPlaceholderColor
     }
     
     open func setUpLayout() {
