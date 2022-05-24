@@ -42,6 +42,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
             ChatChannelListItem(
                 channel: channel,
                 channelName: channelName,
+                injectedChannelInfo: injectedChannelInfo,
                 avatar: avatar,
                 onlineIndicatorShown: onlineIndicatorShown,
                 disabled: disabled,
@@ -59,6 +60,10 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
         }
         .id("\(channel.id)-navigatable")
     }
+    
+    private var injectedChannelInfo: InjectedChannelInfo? {
+        selectedChannel?.channel.cid.rawValue == channel.cid.rawValue ? selectedChannel?.injectedChannelInfo : nil
+    }
 }
 
 /// Used for representing selection of an item in the channel list.
@@ -68,6 +73,7 @@ public struct ChannelSelectionInfo: Identifiable {
     public let id: String
     public let channel: ChatChannel
     public let message: ChatMessage?
+    public var injectedChannelInfo: InjectedChannelInfo?
     
     public init(channel: ChatChannel, message: ChatMessage?) {
         self.channel = channel

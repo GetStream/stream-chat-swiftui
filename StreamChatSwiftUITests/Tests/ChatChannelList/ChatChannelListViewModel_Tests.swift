@@ -178,6 +178,62 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.channels.isEmpty)
     }
     
+    func test_channelListVM_queuedChangesUpdate() {
+        // Given
+        let channelId = ChannelId.unique
+        var channel = ChatChannel.mock(cid: channelId)
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
+        channelListController.simulateInitial(channels: [channel], state: .remoteDataFetched)
+        
+        // When
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channelId,
+            text: "Test message",
+            author: .mock(id: .unique, name: "Martin")
+        )
+        channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1), latestMessages: [message])
+        channelListController.simulate(
+            channels: [channel],
+            changes: [.update(channel, index: .init(row: 0, section: 0))]
+        )
+        viewModel.checkForChannels(index: 0)
+        
+        // Then
+        let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
+        let presentedSubtitle = injectedChannelInfo!.subtitle!
+        let unreadCount = injectedChannelInfo!.unreadCount
+        XCTAssert(presentedSubtitle == channel.subtitleText)
+        XCTAssert(viewModel.channels[0].subtitleText == "No messages")
+        XCTAssert(unreadCount == 0)
+        XCTAssert(channel.shouldShowTypingIndicator == false)
+    }
+    
+    func test_channelListVM_badgeCountUpdate() {
+        // Given
+        let channelId = ChannelId.unique
+        let channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1))
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
+        
+        // When
+        viewModel.checkForChannels(index: 0)
+        
+        // Then
+        let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
+        let unreadCount = injectedChannelInfo!.unreadCount
+        XCTAssert(unreadCount == 0)
+    }
+    
     // MARK: - private
     
     private func makeChannelListController(
