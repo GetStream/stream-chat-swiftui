@@ -16,6 +16,7 @@ public struct ChatChannelListItem: View {
         
     var channel: ChatChannel
     var channelName: String
+    var injectedChannelInfo: InjectedChannelInfo?
     var avatar: UIImage
     var onlineIndicatorShown: Bool
     var disabled = false
@@ -37,7 +38,7 @@ public struct ChatChannelListItem: View {
                         
                         Spacer()
                         
-                        if channel.unreadCount != .noUnread {
+                        if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
                             UnreadIndicatorView(
                                 unreadCount: channel.unreadCount.messages
                             )
@@ -59,7 +60,7 @@ public struct ChatChannelListItem: View {
                                     showReadCount: false
                                 )
                             }
-                            SubtitleText(text: timestampText)
+                            SubtitleText(text: injectedChannelInfo?.timestamp ?? channel.timestampText)
                         }
                     }
                 }
@@ -79,24 +80,12 @@ public struct ChatChannelListItem: View {
                     .frame(maxHeight: 12)
                     .foregroundColor(Color(colors.subtitleText))
             } else {
-                if shouldShowTypingIndicator {
+                if channel.shouldShowTypingIndicator {
                     TypingIndicatorView()
                 }
             }
-            SubtitleText(text: subtitleText)
+            SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
             Spacer()
-        }
-    }
-    
-    private var subtitleText: String {
-        if channel.isMuted {
-            return L10n.Channel.Item.muted
-        } else if shouldShowTypingIndicator {
-            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
-        } else if let lastMessageText = channel.lastMessageText {
-            return lastMessageText
-        } else {
-            return L10n.Channel.Item.emptyMessages
         }
     }
     
@@ -110,25 +99,11 @@ public struct ChatChannelListItem: View {
         return false
     }
     
-    private var shouldShowTypingIndicator: Bool {
-        !channel.currentlyTypingUsersFiltered(
-            currentUserId: chatClient.currentUserId
-        ).isEmpty && channel.config.typingEventsEnabled
-    }
-    
     private var image: UIImage? {
         if channel.isMuted {
             return images.muted
         }
         return nil
-    }
-    
-    private var timestampText: String {
-        if let lastMessageAt = channel.lastMessageAt {
-            return utils.dateFormatter.string(from: lastMessageAt)
-        } else {
-            return ""
-        }
     }
 }
 
@@ -206,6 +181,14 @@ public struct UnreadIndicatorView: View {
     }
 }
 
+public struct InjectedChannelInfo {
+    public var subtitle: String?
+    public var unreadCount: Int
+    public var timestamp: String?
+    public var lastMessageAt: Date?
+    public var latestMessages: [ChatMessage]?
+}
+
 extension ChatChannel {
     
     var lastMessageText: String? {
@@ -213,6 +196,32 @@ extension ChatChannel {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {
             return nil
+        }
+    }
+    
+    var shouldShowTypingIndicator: Bool {
+        !currentlyTypingUsersFiltered(
+            currentUserId: InjectedValues[\.chatClient].currentUserId
+        ).isEmpty && config.typingEventsEnabled
+    }
+    
+    var subtitleText: String {
+        if isMuted {
+            return L10n.Channel.Item.muted
+        } else if shouldShowTypingIndicator {
+            return typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
+        } else if let lastMessageText = lastMessageText {
+            return lastMessageText
+        } else {
+            return L10n.Channel.Item.emptyMessages
+        }
+    }
+    
+    var timestampText: String {
+        if let lastMessageAt = lastMessageAt {
+            return InjectedValues[\.utils].dateFormatter.string(from: lastMessageAt)
+        } else {
+            return ""
         }
     }
 }

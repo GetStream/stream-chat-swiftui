@@ -38,10 +38,17 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Checks if internet connection is available.
     private let networkReachability = NetworkReachability()
     
+    /// Checks if the queued changes are completely applied.
+    private var markDirty = false
+    
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
         didSet {
-            queuedChannelsChanges = []
+            if !markDirty {
+                queuedChannelsChanges = []
+            } else {
+                markDirty = false
+            }
         }
     }
 
@@ -355,6 +362,33 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private func handleChannelAppearance() {
         if !queuedChannelsChanges.isEmpty && selectedChannel == nil && deeplinkChannel == nil {
             channels = queuedChannelsChanges
+        } else if !queuedChannelsChanges.isEmpty {
+            let selected = selectedChannel != nil ? selectedChannel?.channel : deeplinkChannel?.channel
+            var index: Int?
+            var temp = Array(queuedChannelsChanges)
+            for i in 0..<temp.count {
+                let current = temp[i]
+                if current.cid == selected?.cid {
+                    index = i
+                    selectedChannel?.injectedChannelInfo = InjectedChannelInfo(
+                        subtitle: current.subtitleText,
+                        unreadCount: 0,
+                        timestamp: current.timestampText,
+                        lastMessageAt: current.lastMessageAt,
+                        latestMessages: current.latestMessages
+                    )
+                    break
+                }
+            }
+            if let index = index, let selected = selected {
+                temp[index] = selected
+            }
+            markDirty = true
+            channels = LazyCachedMapCollection(source: temp, map: { $0 })
+        } else if queuedChannelsChanges.isEmpty && (selectedChannel != nil || deeplinkChannel != nil) {
+            if selectedChannel?.injectedChannelInfo == nil {
+                selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
+            }
         }
     }
     
