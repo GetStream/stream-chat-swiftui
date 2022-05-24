@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import SwiftUI
 
 extension ChannelAction {
     /// Returns the default channel actions.
@@ -19,6 +20,10 @@ extension ChannelAction {
         onError: @escaping (Error) -> Void
     ) -> [ChannelAction] {
         var actions = [ChannelAction]()
+        
+        let viewInfo = viewInfo(for: channel)
+        
+        actions.append(viewInfo)
         
         if !channel.isDirectMessageChannel, let userId = chatClient.currentUserId {
             let leaveGroup = leaveGroup(
@@ -199,6 +204,20 @@ extension ChannelAction {
         )
         
         return leaveConversation
+    }
+    
+    private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
+        var viewInfo = ChannelAction(
+            title: L10n.Alert.Actions.viewInfoTitle,
+            iconName: "person.fill",
+            action: { /* no-op */ },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        viewInfo.navigationDestination = AnyView(ChatChannelInfoView(channel: channel))
+        
+        return viewInfo
     }
     
     private static func naming(for channel: ChatChannel) -> String {

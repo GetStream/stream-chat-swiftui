@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import SwiftUI
 import UIKit
 
 /// View model for the more channel actions.
@@ -102,6 +103,7 @@ public struct ChannelAction: Identifiable {
     public let action: () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
+    public var navigationDestination: AnyView?
     
     public init(
         title: String,

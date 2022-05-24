@@ -33,6 +33,8 @@ internal enum L10n {
       internal static var ok: String { L10n.tr("Localizable", "alert.actions.ok") }
       /// Are you sure you want to unmute this
       internal static var unmuteChannelTitle: String { L10n.tr("Localizable", "alert.actions.unmute-channel-title") }
+      /// View info
+      internal static var viewInfoTitle: String { L10n.tr("Localizable", "alert.actions.view-info-title") }
     }
     internal enum Error {
       /// The operation couldn't be completed.
