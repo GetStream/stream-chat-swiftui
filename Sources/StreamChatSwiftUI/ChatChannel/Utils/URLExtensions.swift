@@ -9,7 +9,7 @@ extension URL {
         let secureScheme = "https"
         
         guard
-            self.scheme != secureScheme,
+            scheme != secureScheme,
             var components = URLComponents(url: self, resolvingAgainstBaseURL: true)
         else {
             return self
