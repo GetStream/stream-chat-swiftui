@@ -9,6 +9,14 @@ import StreamChat
 class MessageListPage {
     
     static var cells: XCUIElementQuery {
+        app.otherElements.matching(identifier: "MessageContainerView")
+    }
+    
+    static func messageView(for cell: XCUIElement) -> XCUIElement {
+        cell.otherElements.matching(identifier: "MessageView").firstMatch
+    }
+    
+    static var messages: XCUIElementQuery {
         app.otherElements.matching(identifier: "MessageView")
     }
     
@@ -18,6 +26,10 @@ class MessageListPage {
     
     static var typingIndicator: XCUIElement {
         app.otherElements["TypingIndicatorBottomView"]
+    }
+    
+    static func reactionsContainer(for message: XCUIElement) -> XCUIElement {
+        message.otherElements["ReactionsContainer"]
     }
     
     enum NavigationBar {

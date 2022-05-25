@@ -162,6 +162,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             dragChanged(to: offset.width)
                         }
                     })
+                    .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
                     
                     if message.replyCount > 0 && !isInThread {

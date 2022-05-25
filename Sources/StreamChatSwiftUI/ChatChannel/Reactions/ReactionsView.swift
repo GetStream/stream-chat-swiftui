@@ -35,6 +35,7 @@ struct ReactionsContainer: View {
             x: offsetX,
             y: -20
         )
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsContainer")
     }
     

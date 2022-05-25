@@ -58,10 +58,17 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         XCTAssert(list.exists)
         
         let cells = MessageListPage.cells
-        XCTAssert(cells.lastMatch!.waitForExistence(timeout: 1))
+        let cell = cells.firstMatch
+        XCTAssert(cell.waitForExistence(timeout: 1))
         
-        cells.firstMatch.press(forDuration: 1)
+        let message = MessageListPage.messageView(for: cell)
+        XCTAssert(message.exists)
         
+        let reactionsContainer = MessageListPage.reactionsContainer(for: cell)
+        XCTAssert(reactionsContainer.exists)
+        
+        message.press(forDuration: 1)
+                
         let reactionsMessageView = MessageListPage.Reactions.reactionsMessageView
         XCTAssert(reactionsMessageView.waitForExistence(timeout: 1))
                 
@@ -95,13 +102,13 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let copyMessageAction = MessageListPage.MessageActions.copyMessageAction
         XCTAssert(copyMessageAction.exists)
         
+        /*
         let editMessageAction = MessageListPage.MessageActions.editMessageAction
         XCTAssert(editMessageAction.exists)
         
         let deleteMessageAction = MessageListPage.MessageActions.deleteMessageAction
         XCTAssert(deleteMessageAction.exists)
         
-        /*
         let chatAvatar = MessageListPage.NavigationBar.chatAvatar
         XCTAssert(chatAvatar.exists)
         
