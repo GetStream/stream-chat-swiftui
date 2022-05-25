@@ -5,13 +5,13 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-import XCTest
 import SwiftUI
+import XCTest
 
 class MoreChannelActionsFullScreenWrappingView_Tests: StreamChatTestCase {
-    func test_moreChannelActionsView_snapshot() {
+    func test_moreChannelActionsFullScreenWrappingView_snapshot() {
         // Given
-        let channel: ChatChannel = .mockDMChannel(name: "test")
+        let channel = ChatChannel.mockDMChannel(name: "test")
         
         // When
         let infoView = ChatChannelInfoView(channel: channel)

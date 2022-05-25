@@ -54,5 +54,4 @@ class URLUtils_Tests: XCTestCase {
             XCTFail()
         }
     }
-
 }
