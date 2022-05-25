@@ -9,7 +9,7 @@ import StreamChat
 class MessageListPage {
     
     static var cells: XCUIElementQuery {
-        app.buttons.matching(identifier: "MessageContainerView")
+        app.otherElements.matching(identifier: "MessageView")
     }
     
     static var list: XCUIElement {
@@ -65,6 +65,42 @@ class MessageListPage {
         
         static var attachmentPickerCamera: XCUIElement {
             app.buttons["attachmentPickerCamera"]
+        }
+        
+    }
+    
+    enum Reactions {
+        
+        static var reactionsMessageView: XCUIElement {
+            app.otherElements["ReactionsMessageView"]
+        }
+        
+        static var reactionLove: XCUIElement {
+            app.otherElements["reaction-love"]
+        }
+        
+        static var reactionHaha: XCUIElement {
+            app.otherElements["reaction-haha"]
+        }
+        
+        static var reactionLike: XCUIElement {
+            app.otherElements["reaction-like"]
+        }
+        
+        static var reactionSad: XCUIElement {
+            app.otherElements["reaction-sad"]
+        }
+        
+        static var reactionWow: XCUIElement {
+            app.otherElements["reaction-wow"]
+        }
+        
+    }
+    
+    enum MessageActions {
+        
+        static var messageActionsView: XCUIElement {
+            app.otherElements["MessageActionsView"]
         }
         
     }

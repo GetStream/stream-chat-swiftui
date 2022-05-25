@@ -134,6 +134,8 @@ struct ReactionsAnimatableView: View {
                             animationStates[index] = 1
                         }
                     }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("reaction-\(reaction.rawValue)")
                 }
             }
         }

@@ -211,6 +211,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
     }
     

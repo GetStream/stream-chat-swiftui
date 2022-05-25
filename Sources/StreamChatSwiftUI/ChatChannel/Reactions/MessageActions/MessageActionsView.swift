@@ -71,6 +71,7 @@ public struct MessageActionsView: View {
                 secondaryButton: .cancel()
             )
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageActionsView")
     }
 }

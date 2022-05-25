@@ -60,6 +60,30 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let cells = MessageListPage.cells
         XCTAssert(cells.lastMatch!.waitForExistence(timeout: 1))
         
+        cells.firstMatch.press(forDuration: 1)
+        
+        let reactionsMessageView = MessageListPage.Reactions.reactionsMessageView
+        XCTAssert(reactionsMessageView.waitForExistence(timeout: 1))
+                
+        let reactionLove = MessageListPage.Reactions.reactionLove
+        XCTAssert(reactionLove.exists)
+        
+        let reactionSad = MessageListPage.Reactions.reactionSad
+        XCTAssert(reactionSad.exists)
+        
+        let reactionWow = MessageListPage.Reactions.reactionWow
+        XCTAssert(reactionWow.exists)
+        
+        let reactionHaha = MessageListPage.Reactions.reactionHaha
+        XCTAssert(reactionHaha.exists)
+        
+        let reactionLike = MessageListPage.Reactions.reactionLike
+        XCTAssert(reactionLike.exists)
+        
+        let messageActionsView = MessageListPage.MessageActions.messageActionsView
+        XCTAssert(messageActionsView.exists)
+        
+        /*
         let chatAvatar = MessageListPage.NavigationBar.chatAvatar
         XCTAssert(chatAvatar.exists)
         
@@ -82,7 +106,8 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         
         let attachmentPickerCamera = MessageListPage.Composer.attachmentPickerCamera
         XCTAssert(attachmentPickerCamera.exists)
-                
+        */
+        
         /*
          TODO: Uncomment when we make them work.
          let chatName = MessageListPage.NavigationBar.chatName

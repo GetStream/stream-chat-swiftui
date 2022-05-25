@@ -162,6 +162,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             dragChanged(to: offset.width)
                         }
                     })
+                    .accessibilityIdentifier("MessageView")
                     
                     if message.replyCount > 0 && !isInThread {
                         MessageRepliesView(
@@ -218,7 +219,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
-        .accessibilityAddTraits(.isButton)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
     }
         
