@@ -38,4 +38,21 @@ class URLUtils_Tests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func test_secureSchemeURL_withSecureScheme() {
+        // Given
+        let initialURLString = "https://www.google.com"
+        let initialURL = URL(string: initialURLString)
+        
+        // When
+        let secureSchemeURL = initialURL?.secureURL
+        
+        // Then
+        if let finalURL = secureSchemeURL {
+            XCTAssertEqual(finalURL.scheme, "https")
+        } else {
+            XCTFail()
+        }
+    }
+
 }

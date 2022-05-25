@@ -14,8 +14,13 @@ public struct MoreChannelActionsView: View {
     @StateObject var viewModel: MoreChannelActionsViewModel
     @Binding var swipedChannelId: String?
     @State private var isPresented = false
-    @State private var presentedView: AnyView?
     var onDismiss: () -> Void
+    
+    @State private var presentedView: AnyView? {
+        didSet {
+            isPresented = presentedView != nil
+        }
+    }
     
     public init(
         channel: ChatChannel,
@@ -54,7 +59,6 @@ public struct MoreChannelActionsView: View {
                         if let destination = action.navigationDestination {
                             Button {
                                 presentedView = destination
-                                isPresented = true
                             } label: {
                                 ActionItemView(
                                     title: action.title,
@@ -108,19 +112,8 @@ public struct MoreChannelActionsView: View {
         }
         .fullScreenCover(isPresented: $isPresented) {
             if let fullScreenView = presentedView {
-                ZStack(alignment: .topTrailing) {
-                    fullScreenView
-                    
-                    Button {
-                        isPresented = false
-                        presentedView = nil
-                    } label: {
-                        Image(uiImage: images.closeFilled)
-                            .customizable()
-                            .frame(height: 30)
-                            .padding(15)
-                            .foregroundColor(.black)
-                    }
+                MoreChannelActionsFullScreenWrappingView(presentedView: fullScreenView) {
+                    presentedView = nil
                 }
             }
         }
