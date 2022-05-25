@@ -225,7 +225,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var contentWidth: CGFloat {
-        let padding: CGFloat = 8
+        let padding: CGFloat = messageListConfig.messagePaddings.horizontal
         let minimumWidth: CGFloat = 240
         let available = max(minimumWidth, (width ?? 0) - spacerWidth) - 2 * padding
         let avatarSize: CGFloat = CGSize.messageAvatarSize.width + padding
