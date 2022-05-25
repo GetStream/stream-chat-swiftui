@@ -83,6 +83,24 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
         let messageActionsView = MessageListPage.MessageActions.messageActionsView
         XCTAssert(messageActionsView.exists)
         
+        let replyMessageAction = MessageListPage.MessageActions.replyMessageAction
+        XCTAssert(replyMessageAction.exists)
+        
+        let threadMessageAction = MessageListPage.MessageActions.threadMessageAction
+        XCTAssert(threadMessageAction.exists)
+        
+        let pinMessageAction = MessageListPage.MessageActions.pinMessageAction
+        XCTAssert(pinMessageAction.exists)
+        
+        let copyMessageAction = MessageListPage.MessageActions.copyMessageAction
+        XCTAssert(copyMessageAction.exists)
+        
+        let editMessageAction = MessageListPage.MessageActions.editMessageAction
+        XCTAssert(editMessageAction.exists)
+        
+        let deleteMessageAction = MessageListPage.MessageActions.deleteMessageAction
+        XCTAssert(deleteMessageAction.exists)
+        
         /*
         let chatAvatar = MessageListPage.NavigationBar.chatAvatar
         XCTAssert(chatAvatar.exists)

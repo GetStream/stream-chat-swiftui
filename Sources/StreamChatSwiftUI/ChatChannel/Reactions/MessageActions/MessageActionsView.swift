@@ -52,6 +52,7 @@ public struct MessageActionsView: View {
                     Divider()
                 }
                 .padding(.leading)
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("messageAction-\(action.id)")
             }
         }

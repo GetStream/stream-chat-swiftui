@@ -103,6 +103,50 @@ class MessageListPage {
             app.otherElements["MessageActionsView"]
         }
         
+        static var copyMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-copy_message_action"]
+        }
+        
+        static var replyMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-reply_message_action"]
+        }
+
+        static var threadMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-thread_message_action"]
+        }
+        
+        static var editMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-edit_message_action"]
+        }
+        
+        static var deleteMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-delete_message_action"]
+        }
+        
+        static var muteMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-mute_message_action"]
+        }
+        
+        static var unmuteMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-unmute_message_action"]
+        }
+        
+        static var flagMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-flag_message_action"]
+        }
+        
+        static var pinMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-pin_message_action"]
+        }
+        
+        static var unpinMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-unpin_message_action"]
+        }
+        
+        static var resendMessageAction: XCUIElement {
+            messageActionsView.otherElements["messageAction-resend_message_action"]
+        }
+        
     }
     
 }
