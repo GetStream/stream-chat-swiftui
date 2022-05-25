@@ -146,7 +146,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrolledId = messages.first?.messageId
     }
     
-    public func handleMessageAppear(index: Int) {
+    open func handleMessageAppear(index: Int) {
         if index >= messages.count {
             return
         }
