@@ -242,6 +242,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
         if selectedChannel != nil || !searchText.isEmpty || deeplinkChannel != nil {
             queuedChannelsChanges = controller.channels
+            handleQueuedChanges()
         } else {
             channels = controller.channels
         }
@@ -363,14 +364,25 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if !queuedChannelsChanges.isEmpty && selectedChannel == nil && deeplinkChannel == nil {
             channels = queuedChannelsChanges
         } else if !queuedChannelsChanges.isEmpty {
+            handleQueuedChanges()
+        } else if queuedChannelsChanges.isEmpty && (selectedChannel != nil || deeplinkChannel != nil) {
+            if selectedChannel?.injectedChannelInfo == nil {
+                selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
+            }
+        }
+    }
+    
+    private func handleQueuedChanges() {
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
             let selected = selectedChannel != nil ? selectedChannel?.channel : deeplinkChannel?.channel
             var index: Int?
             var temp = Array(queuedChannelsChanges)
+            var injectedChannelInfo: InjectedChannelInfo?
             for i in 0..<temp.count {
                 let current = temp[i]
                 if current.cid == selected?.cid {
                     index = i
-                    selectedChannel?.injectedChannelInfo = InjectedChannelInfo(
+                    injectedChannelInfo = InjectedChannelInfo(
                         subtitle: current.subtitleText,
                         unreadCount: 0,
                         timestamp: current.timestampText,
@@ -383,11 +395,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             if let index = index, let selected = selected {
                 temp[index] = selected
             }
-            markDirty = true
-            channels = LazyCachedMapCollection(source: temp, map: { $0 })
-        } else if queuedChannelsChanges.isEmpty && (selectedChannel != nil || deeplinkChannel != nil) {
-            if selectedChannel?.injectedChannelInfo == nil {
-                selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
+            DispatchQueue.main.async { [unowned self] in
+                markDirty = true
+                selectedChannel?.injectedChannelInfo = injectedChannelInfo
+                channels = LazyCachedMapCollection(source: temp, map: { $0 })
             }
         }
     }
