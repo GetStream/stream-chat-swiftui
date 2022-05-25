@@ -346,6 +346,8 @@ struct TypingIndicatorBottomView: View {
                     .opacity(0.9)
             )
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("TypingIndicatorBottomView")
     }
 }
 

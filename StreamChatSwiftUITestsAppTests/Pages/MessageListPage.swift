@@ -16,6 +16,10 @@ class MessageListPage {
         app.scrollViews.firstMatch
     }
     
+    static var typingIndicator: XCUIElement {
+        app.otherElements["TypingIndicatorBottomView"]
+    }
+    
     enum NavigationBar {
         
         static var chatAvatar: XCUIElement {
