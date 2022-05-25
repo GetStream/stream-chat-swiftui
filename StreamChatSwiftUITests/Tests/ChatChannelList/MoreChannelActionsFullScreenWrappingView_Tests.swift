@@ -10,14 +10,11 @@ import XCTest
 
 class MoreChannelActionsFullScreenWrappingView_Tests: StreamChatTestCase {
     func test_moreChannelActionsFullScreenWrappingView_snapshot() {
-        // Given
-        let channel = ChatChannel.mockDMChannel(name: "test")
-        
         // When
-        let infoView = ChatChannelInfoView(channel: channel)
+        let emptyView = Rectangle().background(Color.red)
         
         let wrappingView = MoreChannelActionsFullScreenWrappingView(
-            presentedView: AnyView(infoView),
+            presentedView: AnyView(emptyView),
             onDismiss: { /* no-op */ }
         ).applyDefaultSize()
         
