@@ -11,7 +11,7 @@ import XCTest
 class MoreChannelActionsFullScreenWrappingView_Tests: StreamChatTestCase {
     func test_moreChannelActionsFullScreenWrappingView_snapshot() {
         // When
-        let emptyView = Rectangle().background(Color.red)
+        let emptyView = Text("Default Empty More Channel Actions FullScreen View")
         
         let wrappingView = MoreChannelActionsFullScreenWrappingView(
             presentedView: AnyView(emptyView),
