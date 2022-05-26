@@ -13,7 +13,14 @@ public struct MoreChannelActionsView: View {
     
     @StateObject var viewModel: MoreChannelActionsViewModel
     @Binding var swipedChannelId: String?
+    @State private var isPresented = false
     var onDismiss: () -> Void
+    
+    @State private var presentedView: AnyView? {
+        didSet {
+            isPresented = presentedView != nil
+        }
+    }
     
     public init(
         channel: ChatChannel,
@@ -49,18 +56,30 @@ public struct MoreChannelActionsView: View {
                         Divider()
                             .padding(.horizontal, -16)
                         
-                        Button {
-                            if action.confirmationPopup != nil {
-                                viewModel.alertAction = action
-                            } else {
-                                action.action()
+                        if let destination = action.navigationDestination {
+                            Button {
+                                presentedView = destination
+                            } label: {
+                                ActionItemView(
+                                    title: action.title,
+                                    iconName: action.iconName,
+                                    isDestructive: action.isDestructive
+                                )
                             }
-                        } label: {
-                            ActionItemView(
-                                title: action.title,
-                                iconName: action.iconName,
-                                isDestructive: action.isDestructive
-                            )
+                        } else {
+                            Button {
+                                if action.confirmationPopup != nil {
+                                    viewModel.alertAction = action
+                                } else {
+                                    action.action()
+                                }
+                            } label: {
+                                ActionItemView(
+                                    title: action.title,
+                                    iconName: action.iconName,
+                                    isDestructive: action.isDestructive
+                                )
+                            }
                         }
                     }
                 }
@@ -90,6 +109,13 @@ public struct MoreChannelActionsView: View {
         .background(Color.black.opacity(0.3))
         .onTapGesture {
             onDismiss()
+        }
+        .fullScreenCover(isPresented: $isPresented) {
+            if let fullScreenView = presentedView {
+                MoreChannelActionsFullScreenWrappingView(presentedView: fullScreenView) {
+                    presentedView = nil
+                }
+            }
         }
     }
     

@@ -122,8 +122,8 @@ public struct LinkAttachmentView: View {
         }
         .padding(.horizontal, padding)
         .onTapGesture {
-            if UIApplication.shared.canOpenURL(linkAttachment.originalURL) {
-                UIApplication.shared.open(linkAttachment.originalURL, options: [:])
+            if let url = linkAttachment.originalURL.secureURL, UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:])
             }
         }
     }
