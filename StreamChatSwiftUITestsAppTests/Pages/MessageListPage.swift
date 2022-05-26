@@ -66,7 +66,11 @@ class MessageListPage {
         static var commandsButton: XCUIElement {
             app.buttons["PickerTypeButtonCommands"]
         }
-        
+
+        static var inputField: XCUIElement {
+            app.textViews["ComposerTextInputView"]
+        }
+
         static var collapsedComposerButton: XCUIElement {
             app.buttons["PickerTypeButtonCollapsed"]
         }
@@ -111,6 +115,53 @@ class MessageListPage {
             app.otherElements["reaction-wow"]
         }
         
+    }
+
+    enum Attributes {
+
+//        static func threadButton(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.buttons["threadReplyCountButton"]
+//        }
+//
+//        static func time(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["timestampLabel"]
+//        }
+//
+//        static func author(messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["authorNameLabel"]
+//        }
+
+        static func text(in messageCell: XCUIElement) -> XCUIElement {
+            messageCell.textViews["MessageTextView"].firstMatch
+        }
+//
+//        static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.textViews.matching(NSPredicate(format: "value LIKE '\(text)'")).firstMatch
+//        }
+//
+//        static func deletedIcon(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.images["onlyVisibleToYouImageView"]
+//        }
+//
+//        static func deletedLabel(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["onlyVisibleToYouLabel"]
+//        }
+//
+//        static func errorButton(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.buttons["error indicator"]
+//        }
+//
+//        static func readCount(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["messageReadСountsLabel"]
+//        }
+//
+//        static func statusCheckmark(for status: MessageDeliveryStatus?, in messageCell: XCUIElement) -> XCUIElement {
+//            var identifier = "imageView"
+//            if let status = status {
+//                identifier = "\(identifier)_\(status.rawValue)"
+//            }
+//            return messageCell.images[identifier]
+//        }
     }
     
     enum MessageActions {
@@ -162,7 +213,6 @@ class MessageListPage {
         static var resendMessageAction: XCUIElement {
             messageActionsView.otherElements["messageAction-resend_message_action"]
         }
-        
     }
     
 }

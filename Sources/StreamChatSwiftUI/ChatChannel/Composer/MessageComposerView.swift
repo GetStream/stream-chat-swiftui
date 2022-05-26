@@ -276,6 +276,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     editable: !isInCooldown,
                     maxMessageLength: maxMessageLength
                 )
+                .accessibilityIdentifier("ComposerTextInputView")
+                .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
                 .overlay(
                     command?.displayInfo?.isInstant == true ?

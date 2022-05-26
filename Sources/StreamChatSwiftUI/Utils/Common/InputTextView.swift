@@ -56,6 +56,7 @@ class InputTextView: UITextView {
         setUp()
         setUpLayout()
         setUpAppearance()
+        accessibilityIdentifier = "InputTextView"
     }
         
     open func setUp() {

@@ -29,21 +29,18 @@ class StreamChatSwiftUITestsAppTests: XCTestCase {
     
     func testChannelListIdentifiers() {
         app.launch()
-        
-        let cells = ChannelListPage.cells
-        XCTAssert(cells.exists)
-        
-        let cell = cells.firstMatch
-        
+
+        let cell = ChannelListPage.cells.firstMatch
+
         let name = ChannelListPage.Attributes.name(in: cell)
         XCTAssert(name.exists)
-        
+
         let lastMessageTime = ChannelListPage.Attributes.lastMessageTime(in: cell)
         XCTAssert(lastMessageTime.exists)
-        
+
         let lastMessage = ChannelListPage.Attributes.lastMessage(in: cell)
         XCTAssert(lastMessage.exists)
-        
+
         let avatar = ChannelListPage.Attributes.avatar(in: cell)
         XCTAssert(avatar.exists)
     }

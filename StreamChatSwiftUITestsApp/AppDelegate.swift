@@ -53,7 +53,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     private func disableAnimations() {
-        UIApplication.shared.keyWindow?.layer.speed = 2
+        UIApplication.shared.windows.first?.layer.speed = 2
         UIView.setAnimationsEnabled(false)
     }
     

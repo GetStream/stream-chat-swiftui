@@ -8,8 +8,8 @@ import StreamChat
 
 enum ChannelListPage {
         
-    static var cells: XCUIElement {
-        app.otherElements.buttons["ChatChannelSwipeableListItem"]
+    static var cells: XCUIElementQuery {
+        app.buttons.matching(NSPredicate(format: "identifier LIKE 'ChatChannelSwipeableListItem'"))
     }
     
     enum Attributes {
