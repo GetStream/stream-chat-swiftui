@@ -8,6 +8,14 @@ import XCTest
 
 class ChatChannelListViewModel_Tests: StreamChatTestCase {
     
+    override open func setUp() {
+        super.setUp()
+        let utils = Utils(
+            messageListConfig: MessageListConfig(updateChannelsFromMessageList: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
+    
     func test_channelListVMCreation_channelsLoaded() {
         // Given
         let channelListController = makeChannelListController()

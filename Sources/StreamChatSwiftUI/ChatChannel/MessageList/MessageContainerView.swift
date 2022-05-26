@@ -130,7 +130,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     .offset(x: self.offsetX)
                     .simultaneousGesture(
                         DragGesture(
-                            minimumDistance: 15,
+                            minimumDistance: 10,
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
