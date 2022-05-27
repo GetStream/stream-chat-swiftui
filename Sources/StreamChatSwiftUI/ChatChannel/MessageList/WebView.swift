@@ -27,7 +27,7 @@ struct WebView: UIViewRepresentable {
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.isScrollEnabled = true
         webView.load(URLRequest(url: url))
-        return webView
+        return webView.withAccessibilityIdentifier(identifier: "WKWebView")
     }
     
     func updateUIView(_ webView: WKWebView, context: Context) {

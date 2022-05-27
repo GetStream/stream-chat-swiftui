@@ -25,6 +25,7 @@ struct LinkTextView: UIViewRepresentable {
         textView.adjustsFontForContentSizeCategory = true
         textView.text = text
         textView.textColor = textColor
+        textView.setAccessibilityIdentifier()
         return textView
     }
     
@@ -38,7 +39,7 @@ struct LinkTextView: UIViewRepresentable {
 }
 
 /// Text View that ignores all user interactions except touches on links
-class OnlyLinkTappableTextView: UITextView {
+class OnlyLinkTappableTextView: UITextView, AccessibilityView {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         if let range = characterRange(at: point),
            !range.isEmpty,

@@ -17,7 +17,7 @@ struct TextSizeConstants {
     }
 }
 
-class InputTextView: UITextView {
+class InputTextView: UITextView, AccessibilityView {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
         
@@ -52,11 +52,11 @@ class InputTextView: UITextView {
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         guard superview != nil else { return }
-        
+
+        setAccessibilityIdentifier()
         setUp()
         setUpLayout()
         setUpAppearance()
-        accessibilityIdentifier = "InputTextView"
     }
         
     open func setUp() {

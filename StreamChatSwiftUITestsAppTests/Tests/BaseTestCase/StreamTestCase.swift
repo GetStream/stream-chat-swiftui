@@ -3,7 +3,6 @@
 //
 
 import XCTest
-import StreamChatUITestTools
 
 class StreamTestCase: XCTestCase {
 
