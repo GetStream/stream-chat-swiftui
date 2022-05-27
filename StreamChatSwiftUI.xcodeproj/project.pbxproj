@@ -357,6 +357,7 @@
 		A3600B41283F652400E1C930 /* StreamTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B40283F652400E1C930 /* StreamTestCase.swift */; };
 		A3600B43283F664E00E1C930 /* StartPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B42283F664E00E1C930 /* StartPage.swift */; };
 		A3828EAD283F6CFE00538258 /* StartPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3828EAC283F6CFE00538258 /* StartPage.swift */; };
+		A3A3AA0B2840ED1E003510E4 /* StreamChatTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = A3A3AA0A2840ED1E003510E4 /* StreamChatTestHelpers */; };
 		A3BB08CC2840EBFC0051BF57 /* StreamChatTestMockServer in Frameworks */ = {isa = PBXBuildFile; productRef = A3BB08CB2840EBFC0051BF57 /* StreamChatTestMockServer */; };
 		A3D7B0DF2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D7B0DE2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift */; };
 		E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E3A1C01B282BAC66002D1E26 /* Sentry */; };
@@ -813,6 +814,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3A3AA0B2840ED1E003510E4 /* StreamChatTestHelpers in Frameworks */,
 				8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */,
 				A3165E2E2840E73200D7F9F7 /* StreamChatTestTools in Frameworks */,
 				848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */,
@@ -1692,6 +1694,7 @@
 			packageProductDependencies = (
 				848399E9275FB3E9003075E4 /* SnapshotTesting */,
 				A3165E2D2840E73200D7F9F7 /* StreamChatTestTools */,
+				A3A3AA0A2840ED1E003510E4 /* StreamChatTestHelpers */,
 			);
 			productName = StreamChatSwiftUITests;
 			productReference = 8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */;
@@ -2842,6 +2845,11 @@
 			productName = Swifter;
 		};
 		A3600B39283E9F9D00E1C930 /* StreamChatTestHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3600B38283E9F9D00E1C930 /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
+			productName = StreamChatTestHelpers;
+		};
+		A3A3AA0A2840ED1E003510E4 /* StreamChatTestHelpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A3600B38283E9F9D00E1C930 /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
 			productName = StreamChatTestHelpers;
