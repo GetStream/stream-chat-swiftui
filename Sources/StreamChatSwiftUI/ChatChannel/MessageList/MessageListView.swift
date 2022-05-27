@@ -106,6 +106,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     
                     LazyVStack(spacing: 0) {
                         ForEach(messages, id: \.messageId) { message in
+                            let index = messages.firstIndex { msg in
+                                msg.id == message.id
+                            }
+                            let date = showMessageDate(for: index)
+                            let dateString = date != nil ? DateFormatter.messageListDateOverlay.string(from: date!) : nil
                             factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
@@ -117,16 +122,22 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 onLongPress: handleLongPress(messageDisplayInfo:),
                                 isLast: message == messages.last
                             )
-                            .flippedUpsideDown()
                             .onAppear {
-                                let index = messages.firstIndex { msg in
-                                    msg.id == message.id
-                                }
-
                                 if let index = index {
                                     onMessageAppear(index)
                                 }
                             }
+                            .overlay(
+                                dateString != nil ?
+                                    VStack {
+                                        DateIndicatorView(date: dateString!)
+                                        Spacer()
+                                    }
+                                    .offset(y: -40)
+                                    : nil
+                            )
+                            .padding(.top, dateString != nil ? 40 : 0)
+                            .flippedUpsideDown()
                         }
                         .id(listId)
                     }
@@ -209,6 +220,30 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
+        }
+    }
+    
+    private func showMessageDate(for index: Int?) -> Date? {
+        guard let index = index else {
+            return nil
+        }
+
+        let message = messages[index]
+        let previousIndex = index + 1
+        if previousIndex < messages.count {
+            let previous = messages[previousIndex]
+            let isDifferentDay = !Calendar.current.isDate(
+                message.createdAt,
+                equalTo: previous.createdAt,
+                toGranularity: .day
+            )
+            if isDifferentDay {
+                return message.createdAt
+            } else {
+                return nil
+            }
+        } else {
+            return message.createdAt
         }
     }
     

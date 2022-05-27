@@ -146,13 +146,19 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrolledId = messages.first?.messageId
     }
     
+    var prev = 0
+    
     open func handleMessageAppear(index: Int) {
         if index >= messages.count {
             return
         }
+        
+        let scrollUp = index > prev
+        prev = index
+        
         let message = messages[index]
         checkForNewMessages(index: index)
-        if utils.messageListConfig.dateIndicatorPlacement == .overlay {
+        if utils.messageListConfig.dateIndicatorPlacement == .overlay && scrollUp {
             save(lastDate: message.createdAt)
         }
         if index == 0 {
