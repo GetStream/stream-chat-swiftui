@@ -62,7 +62,7 @@ public struct MessagePaddings {
 public enum DateIndicatorPlacement {
     case none
     case overlay
-    case messageList // Not supported yet.
+    case messageList
 }
 
 /// Used to show and hide different helper views around the message.
@@ -72,6 +72,7 @@ public struct MessageDisplayOptions {
     let showMessageDate: Bool
     let showAuthorName: Bool
     let animateChanges: Bool
+    let dateLabelSize: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
     
@@ -80,6 +81,7 @@ public struct MessageDisplayOptions {
         showMessageDate: Bool = true,
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
+        overlayDateLabelSize: CGFloat = 40,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity
     ) {
@@ -87,6 +89,7 @@ public struct MessageDisplayOptions {
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
+        dateLabelSize = overlayDateLabelSize
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
     }

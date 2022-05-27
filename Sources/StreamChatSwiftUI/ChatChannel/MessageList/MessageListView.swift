@@ -41,6 +41,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         utils.messageListConfig
     }
     
+    private var messageListDateUtils: MessageListDateUtils {
+        utils.messageListDateUtils
+    }
+    
     private var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
             && messageListConfig.typingIndicatorPlacement == .bottomOverlay
@@ -106,11 +110,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     
                     LazyVStack(spacing: 0) {
                         ForEach(messages, id: \.messageId) { message in
-                            let index = messages.firstIndex { msg in
-                                msg.id == message.id
-                            }
-                            let date = showMessageDate(for: index)
-                            let dateString = date != nil ? DateFormatter.messageListDateOverlay.string(from: date!) : nil
+                            var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
+                            let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
                             factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
@@ -123,20 +124,23 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 isLast: message == messages.last
                             )
                             .onAppear {
+                                if index == nil {
+                                    index = messageListDateUtils.index(for: message, in: messages)
+                                }
                                 if let index = index {
                                     onMessageAppear(index)
                                 }
                             }
                             .overlay(
-                                dateString != nil ?
+                                messageDate != nil ?
                                     VStack {
-                                        DateIndicatorView(date: dateString!)
+                                        factory.makeMessageListDateIndicator(date: messageDate!)
+                                            .offset(y: -messageListConfig.messageDisplayOptions.dateLabelSize)
                                         Spacer()
                                     }
-                                    .offset(y: -40)
                                     : nil
                             )
-                            .padding(.top, dateString != nil ? 40 : 0)
+                            .padding(.top, messageDate != nil ? messageListConfig.messageDisplayOptions.dateLabelSize : 0)
                             .flippedUpsideDown()
                         }
                         .id(listId)
@@ -220,30 +224,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
-        }
-    }
-    
-    private func showMessageDate(for index: Int?) -> Date? {
-        guard let index = index else {
-            return nil
-        }
-
-        let message = messages[index]
-        let previousIndex = index + 1
-        if previousIndex < messages.count {
-            let previous = messages[previousIndex]
-            let isDifferentDay = !Calendar.current.isDate(
-                message.createdAt,
-                equalTo: previous.createdAt,
-                toGranularity: .day
-            )
-            if isDifferentDay {
-                return message.createdAt
-            } else {
-                return nil
-            }
-        } else {
-            return message.createdAt
         }
     }
     
@@ -338,11 +318,19 @@ public struct DateIndicatorView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    var date: String
+    var dateString: String
+    
+    public init(date: Date) {
+        dateString = DateFormatter.messageListDateOverlay.string(from: date)
+    }
+    
+    public init(dateString: String) {
+        self.dateString = dateString
+    }
     
     public var body: some View {
         VStack {
-            Text(date)
+            Text(dateString)
                 .font(fonts.footnote)
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)

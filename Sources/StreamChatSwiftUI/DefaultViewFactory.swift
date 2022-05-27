@@ -412,7 +412,11 @@ extension ViewFactory {
     }
     
     public func makeDateIndicatorView(dateString: String) -> some View {
-        DateIndicatorView(date: dateString)
+        DateIndicatorView(dateString: dateString)
+    }
+    
+    public func makeMessageListDateIndicator(date: Date) -> some View {
+        DateIndicatorView(date: date)
     }
     
     public func makeGiphyBadgeViewType(

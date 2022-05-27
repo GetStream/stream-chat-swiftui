@@ -62,7 +62,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         #endif
         
-        streamChat = StreamChat(chatClient: chatClient)
+        let utils = Utils(messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList))
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             withAnimation {
