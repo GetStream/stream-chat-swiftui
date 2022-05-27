@@ -132,7 +132,7 @@ class MessageListPage {
 //        }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.textViews["MessageTextView"].firstMatch
+            messageCell.staticTexts["MessageTextView"].firstMatch
         }
 //
 //        static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {

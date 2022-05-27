@@ -16,7 +16,7 @@ final class UserRobot: Robot {
 
     @discardableResult
     func login() -> Self {
-        StartPage.startButton.tap()
+        StartPage.startButton.forceTapElement()
         return self
     }
 
@@ -45,11 +45,7 @@ final class UserRobot: Robot {
     @discardableResult
     func sendMessage(_ text: String) -> Self {
         typeText(text)
-
-        // Button is not hittable
-        XCTAssertTrue(composer.sendButton.isHittable)
-
-        composer.sendButton.tap()
+        composer.sendButton.forceTapElement()
         return self
     }
 
