@@ -774,7 +774,6 @@
 		A36D1EAA283F8D70008D6110 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A3828EAC283F6CFE00538258 /* StartPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPage.swift; sourceTree = "<group>"; };
 		A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = StreamChatSwiftUITestsApp.xctestplan; path = StreamChatSwiftUITestsAppTests/StreamChatSwiftUITestsApp.xctestplan; sourceTree = "<group>"; };
-		A3C4519F283FA164004AA73E /* stream-chat-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "stream-chat-swift"; path = "../stream-chat-swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -932,7 +931,6 @@
 		8465FBAB2746873A00AF091E = {
 			isa = PBXGroup;
 			children = (
-				A3C4519E283FA164004AA73E /* Packages */,
 				A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */,
 				4A65451E274BA170003C5FA8 /* README.md */,
 				8465FBB72746873A00AF091E /* Sources */,
@@ -1585,14 +1583,6 @@
 				A3600B40283F652400E1C930 /* StreamTestCase.swift */,
 			);
 			path = BaseTestCase;
-			sourceTree = "<group>";
-		};
-		A3C4519E283FA164004AA73E /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				A3C4519F283FA164004AA73E /* stream-chat-swift */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
