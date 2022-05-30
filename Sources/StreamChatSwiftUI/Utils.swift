@@ -18,6 +18,7 @@ public class Utils {
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
+    public var messageGrouping: MessageGrouping
     public var commandsConfig: CommandsConfig
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
@@ -35,6 +36,7 @@ public class Utils {
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
+        messageGrouping: MessageGrouping = DefaultMessageGrouping(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
@@ -51,6 +53,7 @@ public class Utils {
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
+        self.messageGrouping = messageGrouping
         self.commandsConfig = commandsConfig
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig

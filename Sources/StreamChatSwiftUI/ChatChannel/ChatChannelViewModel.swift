@@ -55,7 +55,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
             if utils.messageListConfig.groupMessages {
-                groupMessages()
+                messagesGroupingInfo = utils.messageGrouping.group(messages: messages)
             }
         }
     }
@@ -345,31 +345,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 self?.channelHeaderType = .typingIndicator
             }
         }
-    }
-    
-    private func groupMessages() {
-        var temp = [String: [String]]()
-        for (index, message) in messages.enumerated() {
-            let dateString = messagesDateFormatter.string(from: message.createdAt)
-            let prefix = messageCachingUtils.authorId(for: message)
-            let key = "\(prefix)-\(dateString)"
-            if temp[key] == nil {
-                temp[key] = [message.id]
-            } else {
-                // check if the previous message is not sent by the same user.
-                let previousIndex = index - 1
-                if previousIndex >= 0 {
-                    let previous = messages[previousIndex]
-                    let previousAuthorId = messageCachingUtils.authorId(for: previous)
-                    let shouldAddKey = prefix != previousAuthorId
-                    if shouldAddKey {
-                        temp[key]?.append(message.id)
-                    }
-                }
-            }
-        }
-        
-        messagesGroupingInfo = temp
     }
     
     private func handleDateChange() {
