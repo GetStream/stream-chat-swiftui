@@ -67,7 +67,7 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
-    
+        
     let showAvatars: Bool
     let showMessageDate: Bool
     let showAuthorName: Bool
@@ -75,6 +75,7 @@ public struct MessageDisplayOptions {
     let dateLabelSize: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
+    var messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     
     public init(
         showAvatars: Bool = true,
@@ -83,7 +84,9 @@ public struct MessageDisplayOptions {
         animateChanges: Bool = true,
         overlayDateLabelSize: CGFloat = 40,
         currentUserMessageTransition: AnyTransition = .identity,
-        otherUserMessageTransition: AnyTransition = .identity
+        otherUserMessageTransition: AnyTransition = .identity,
+        messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
+            .defaultLinkDisplay
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
@@ -92,6 +95,15 @@ public struct MessageDisplayOptions {
         dateLabelSize = overlayDateLabelSize
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
+        self.messageLinkDisplayResolver = messageLinkDisplayResolver
+    }
+    
+    public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
+        { _ in
+            [
+                NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)
+            ]
+        }
     }
 }
 

@@ -41,6 +41,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Checks if the queued changes are completely applied.
     private var markDirty = false
     
+    /// Index of the selected channel.
+    private var selectedChannelIndex: Int?
+    
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
         didSet {
@@ -59,6 +62,15 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 // pop happened, apply the queued changes.
                 if !queuedChannelsChanges.isEmpty {
                     channels = queuedChannelsChanges
+                }
+            }
+            if newValue == nil {
+                selectedChannelIndex = nil
+            } else {
+                DispatchQueue.global(qos: .default).async { [unowned self] in
+                    selectedChannelIndex = channels.firstIndex(where: { channel in
+                        channel.cid.rawValue == selectedChannel?.channel.cid.rawValue
+                    })
                 }
             }
         }
@@ -373,7 +385,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func updateChannelsIfNeeded() {
-        if utils.messageListConfig.updateChannelsFromMessageList {
+        if utils.messageListConfig.updateChannelsFromMessageList && ((selectedChannelIndex ?? 0) < 8) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 self?.handleChannelAppearance()
             }
