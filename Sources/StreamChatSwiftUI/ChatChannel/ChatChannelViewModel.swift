@@ -28,12 +28,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var isActive = true
     private var readsString = ""
     
-    private let messageListDateOverlay: DateFormatter = {
-        let df = DateFormatter()
-        df.setLocalizedDateFormatFromTemplate("MMMdd")
-        df.locale = .autoupdatingCurrent
-        return df
-    }()
+    private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
     private lazy var messagesDateFormatter = utils.dateFormatter
     private lazy var messageCachingUtils = utils.messageCachingUtils
@@ -150,6 +145,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if index >= messages.count {
             return
         }
+        
         let message = messages[index]
         checkForNewMessages(index: index)
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {

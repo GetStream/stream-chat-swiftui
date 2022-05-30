@@ -24,6 +24,7 @@ public class Utils {
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     
     var messageCachingUtils = MessageCachingUtils()
+    var messageListDateUtils: MessageListDateUtils
     
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
@@ -55,5 +56,6 @@ public class Utils {
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
+        messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }
 }

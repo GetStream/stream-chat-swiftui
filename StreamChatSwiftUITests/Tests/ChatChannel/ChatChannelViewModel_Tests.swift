@@ -7,7 +7,7 @@
 import XCTest
 
 class ChatChannelViewModel_Tests: StreamChatTestCase {
-
+    
     func test_chatChannelVM_messagesLoaded() {
         // Given
         let channelController = makeChannelController()
