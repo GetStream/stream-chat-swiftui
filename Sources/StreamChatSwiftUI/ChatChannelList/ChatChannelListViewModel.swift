@@ -420,25 +420,21 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private func observeChannelDismiss() {
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(updateQueuedChannels),
-            name: NSNotification.Name(channelDismissed),
+            selector: #selector(dismissPresentedChannel),
+            name: NSNotification.Name(dismissChannel),
             object: nil
         )
     }
     
-    @objc private func updateQueuedChannels() {
-        if !queuedChannelsChanges.isEmpty {
-            withAnimation {
-                channels = queuedChannelsChanges
-            }
-        }
+    @objc private func dismissPresentedChannel() {
+        selectedChannel = nil
     }
 }
 
-private let channelDismissed = "io.getstream.channelDismissed"
+private let dismissChannel = "io.getstream.dismissChannel"
 
-public func notifyChannelDismiss() {
-    NotificationCenter.default.post(name: NSNotification.Name(channelDismissed), object: nil)
+func notifyChannelDismiss() {
+    NotificationCenter.default.post(name: NSNotification.Name(dismissChannel), object: nil)
 }
 
 /// Enum for the type of alert presented in the channel list view.

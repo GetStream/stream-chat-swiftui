@@ -242,6 +242,24 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         XCTAssert(unreadCount == 0)
     }
     
+    func test_channelListVM_channelDismiss() {
+        // Given
+        let channelId = ChannelId.unique
+        let channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1))
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
+        
+        // When
+        notifyChannelDismiss()
+        
+        // Then
+        XCTAssert(viewModel.selectedChannel == nil)
+    }
+    
     // MARK: - private
     
     private func makeChannelListController(
