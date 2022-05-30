@@ -18,15 +18,8 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
             df.locale = .init(identifier: "en_US")
             return df
         }()
-        let dateFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .none
-            formatter.timeStyle = .short
-            formatter.locale = .init(identifier: "en_US")
-            return formatter
-        }()
         let utils = Utils(
-            dateFormatter: dateFormatter,
+            dateFormatter: EmptyDateFormatter(),
             messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
