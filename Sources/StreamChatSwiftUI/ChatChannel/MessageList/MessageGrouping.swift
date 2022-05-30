@@ -18,10 +18,13 @@ public class DefaultMessageGrouping: MessageGrouping {
     
     public func group(messages: LazyCachedMapCollection<ChatMessage>) -> [String: [String]] {
         var temp = [String: [String]]()
+        let notGrouped = "notGrouped"
         for (index, message) in messages.enumerated() {
             let date = message.createdAt
             if index == 0 {
                 // not grouped
+                temp[message.id] = [notGrouped]
+                continue
             }
             
             let previous = index - 1
@@ -31,38 +34,23 @@ public class DefaultMessageGrouping: MessageGrouping {
             
             if currentAuthorId != previousAuthorId {
                 // not grouped
+                temp[message.id] = [notGrouped]
+                continue
             }
             
             if previousMessage.type == .error
                 || previousMessage.type == .ephemeral
                 || previousMessage.type == .system {
                 // not grouped
+                temp[message.id] = [notGrouped]
+                continue
             }
             
             let delay = previousMessage.createdAt.timeIntervalSince(date)
             
-            if delay > 30 {
+            if delay > 60 {
                 // not grouped
-            } else {
-                // grouped
-            }
-            
-            let dateString = messagesDateFormatter.string(from: message.createdAt)
-            let prefix = messageCachingUtils.authorId(for: message)
-            let key = "\(prefix)-\(dateString)"
-            if temp[key] == nil {
-                temp[key] = [message.id]
-            } else {
-                // check if the previous message is not sent by the same user.
-                let previousIndex = index - 1
-                if previousIndex >= 0 {
-                    let previous = messages[previousIndex]
-                    let previousAuthorId = messageCachingUtils.authorId(for: previous)
-                    let shouldAddKey = prefix != previousAuthorId
-                    if shouldAddKey {
-                        temp[key]?.append(message.id)
-                    }
-                }
+                temp[message.id] = [notGrouped]
             }
         }
 
