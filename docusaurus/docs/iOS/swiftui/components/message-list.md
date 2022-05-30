@@ -73,6 +73,14 @@ let utils = Utils(messageListConfig: MessageListConfig(dateIndicatorPlacement: .
 let streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
+If you want to replace the separating date indicator view, you need to implement the `makeMessageListDateIndicator` method. You can control the size of this view view with the `overlayDateLabelSize` in the `MessageDisplayOptions`.
+
+```swift
+public func makeMessageListDateIndicator(date: Date) -> some View {
+    DateIndicatorView(date: date)
+}
+```
+
 ## Message List Background
 
 You can also modify the background of the message list to any SwiftUI `View` (`Color`, `LinearGradient`, `Image` etc.). In order to do this, you would need to implement the `makeMessageListBackground` method in the `ViewFactory`.
