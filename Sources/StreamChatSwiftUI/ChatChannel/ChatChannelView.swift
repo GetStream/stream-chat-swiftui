@@ -111,6 +111,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 messageDisplayInfo = nil
                             }, onActionExecuted: { actionInfo in
                                 viewModel.messageActionExecuted(actionInfo)
+                                messageDisplayInfo = nil
                             }
                         )
                         .transition(.identity)
