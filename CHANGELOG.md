@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Possibility to view channel info on channel options
+- Date separators in the message list
 
 ### 🐞 Fixed
 - Bug about link attachments not opening when the URL was missing the scheme
