@@ -15,7 +15,7 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
         DateFormatter.messageListDateOverlay = {
             let df = DateFormatter()
             df.setLocalizedDateFormatFromTemplate("MMMdd")
-            df.locale = .init(identifier: "us")
+            df.locale = .init(identifier: "en_US")
             return df
         }()
         let utils = Utils(messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList))
