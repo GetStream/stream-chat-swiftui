@@ -1,8 +1,5 @@
 //
-//  SDKIdentifier.swift
-//  StreamChatSwiftUI
-//
-//  Created by Pol Quintana on 31/5/22.
+// Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
