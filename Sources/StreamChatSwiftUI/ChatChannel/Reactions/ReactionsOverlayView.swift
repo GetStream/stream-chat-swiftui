@@ -11,6 +11,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @StateObject var viewModel: ReactionsOverlayViewModel
     
     @State private var popIn = false
+    @State private var willPopOut = false
     
     var factory: Factory
     var channel: ChatChannel
@@ -54,11 +55,15 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     public var body: some View {
         ZStack(alignment: .topLeading) {
             Image(uiImage: currentSnapshot)
-                .overlay(Color.black.opacity(0.1))
-                .blur(radius: 4)
+                .overlay(Color.black.opacity(!popIn ? 0 : 0.1))
+                .blur(radius: !popIn ? 0 : 4)
                 .transition(.opacity)
                 .onTapGesture {
                     withAnimation {
+                        willPopOut = true
+                        popIn = false
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         onBackgroundTap()
                     }
                 }
@@ -76,6 +81,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     x: paddingValue / 2,
                     y: originY + messageContainerHeight - paddingValue + 2
                 )
+                .opacity(willPopOut ? 0 : 1)
             }
             
             GeometryReader { reader in
@@ -101,8 +107,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             )
                         }
                     }
-                    .scaleEffect(popIn ? 1 : 0.95)
-                    .animation(popInAnimation, value: popIn)
+                    .scaleEffect(popIn || willPopOut ? 1 : 0.95)
+                    .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     .offset(
                         x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
                     )
@@ -117,7 +123,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                                 }
                             )
                             .scaleEffect(popIn ? 1 : 0)
-                            .animation(popInAnimation, value: popIn)
+                            .opacity(willPopOut ? 0 : 1)
+                            .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                             .offset(
                                 x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader),
                                 y: popIn ? -24 : -messageContainerHeight / 2
@@ -142,13 +149,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                         .frame(width: messageActionsWidth)
                         .offset(
-                            x: popIn ? messageActionsOriginX(availableWidth: reader.size.width) :
-                                (messageDisplayInfo.message.isSentByCurrentUser ? messageActionsWidth : 0),
+                            x: messageActionsOffsetX(reader: reader),
                             y: popIn ? 0 : -messageActionsSize / 2
                         )
                         .padding(.top, paddingValue)
-                        .scaleEffect(popIn ? 1 : 0)
-                        .animation(popInAnimation, value: popIn)
+                        .opacity(willPopOut ? 0 : 1)
+                        .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
+                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     } else {
                         factory.makeReactionsUsersView(
                             message: viewModel.message,
@@ -161,15 +168,28 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
                         .padding(.trailing, paddingValue)
                         .scaleEffect(popIn ? 1 : 0)
-                        .animation(popInAnimation, value: popIn)
+                        .opacity(willPopOut ? 0 : 1)
+                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     }
                 }
-                .offset(y: originY)
+                .offset(y: !popIn ? messageDisplayInfo.frame.origin.y : originY)
             }
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {
             popIn = true
+        }
+    }
+    
+    private func messageActionsOffsetX(reader: GeometryProxy) -> CGFloat {
+        let originX = messageActionsOriginX(availableWidth: reader.size.width)
+        let sentByCurrentUser = messageDisplayInfo.message.isSentByCurrentUser
+        if popIn {
+            return originX
+        } else if willPopOut {
+            return messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
+        } else {
+            return sentByCurrentUser ? messageActionsWidth : 0
         }
     }
     
