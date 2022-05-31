@@ -397,6 +397,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         var skipChanges = true
+        var animateChanges = false
         for change in changes {
             switch change {
             case .insert(_, index: _),
@@ -407,6 +408,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                    message.messageId != messages[index.row].messageId
                    || message.type == .ephemeral {
                     skipChanges = false
+                    if index.row < messages.count && message.reactionScoresId != messages[index.row].reactionScoresId {
+                        animateChanges = true
+                    }
                 }
             default:
                 skipChanges = false
@@ -417,7 +421,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return .skip
         }
         
-        return .notAnimated
+        return animateChanges ? .animated : .notAnimated
     }
     
     private func enableDateIndicator() {

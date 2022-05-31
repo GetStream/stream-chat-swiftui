@@ -59,13 +59,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 .blur(radius: !popIn ? 0 : 4)
                 .transition(.opacity)
                 .onTapGesture {
-                    withAnimation {
-                        willPopOut = true
-                        popIn = false
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        onBackgroundTap()
-                    }
+                    dismissReactionsOverlay() { /* No additional handling. */ }
                 }
                 .edgesIgnoringSafeArea(.all)
                 .alert(isPresented: $viewModel.errorShown) {
@@ -118,8 +112,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                                 message: viewModel.message,
                                 contentRect: messageDisplayInfo.frame,
                                 onReactionTap: { reaction in
-                                    viewModel.reactionTapped(reaction)
-                                    onBackgroundTap()
+                                    dismissReactionsOverlay {
+                                        viewModel.reactionTapped(reaction)
+                                    }
                                 }
                             )
                             .scaleEffect(popIn ? 1 : 0)
@@ -178,6 +173,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .edgesIgnoringSafeArea(.all)
         .onAppear {
             popIn = true
+        }
+    }
+    
+    private func dismissReactionsOverlay(completion: @escaping () -> Void) {
+        withAnimation {
+            willPopOut = true
+            popIn = false
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            onBackgroundTap()
+            completion()
         }
     }
     
