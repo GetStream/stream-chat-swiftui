@@ -81,7 +81,7 @@ public struct LinkAttachmentView: View {
         VStack(alignment: .leading, spacing: padding) {
             if !imageHidden {
                 ZStack {
-                    LazyImage(source: linkAttachment.previewURL!)
+                    LazyImage(source: linkAttachment.previewURL ?? linkAttachment.originalURL)
                         .onDisappear(.cancel)
                         .processors([ImageProcessors.Resize(width: width)])
                         .priority(.high)
@@ -90,7 +90,7 @@ public struct LinkAttachmentView: View {
                     
                     if !authorHidden {
                         BottomLeftView {
-                            Text(linkAttachment.author!)
+                            Text(linkAttachment.author ?? "")
                                 .foregroundColor(colors.tintColor)
                                 .font(fonts.bodyBold)
                                 .standardPadding()
