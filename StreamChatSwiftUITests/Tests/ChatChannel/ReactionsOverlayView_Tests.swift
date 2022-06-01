@@ -19,7 +19,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
     
     private let messageDisplayInfo = MessageDisplayInfo(
         message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
-        frame: CGRect(x: 44, y: 20, width: 80, height: 50),
+        frame: CGRect(x: 44, y: 200, width: 80, height: 50),
         contentWidth: 200,
         isFirst: true
     )
@@ -87,7 +87,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
         let messageDisplayInfo = MessageDisplayInfo(
             message: message,
-            frame: CGRect(x: 44, y: 20, width: 80, height: 50),
+            frame: CGRect(x: 44, y: 200, width: 80, height: 50),
             contentWidth: 200,
             isFirst: true,
             showsMessageActions: false
@@ -126,7 +126,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
         let messageDisplayInfo = MessageDisplayInfo(
             message: testMessage,
-            frame: CGRect(x: 44, y: 20, width: defaultScreenSize.width - 60, height: defaultScreenSize.height * 2),
+            frame: CGRect(x: 44, y: 105, width: defaultScreenSize.width - 60, height: defaultScreenSize.height * 2),
             contentWidth: 200,
             isFirst: true
         )

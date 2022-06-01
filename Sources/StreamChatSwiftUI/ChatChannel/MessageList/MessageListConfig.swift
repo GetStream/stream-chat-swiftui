@@ -19,7 +19,8 @@ public struct MessageListConfig {
         messagePopoverEnabled: Bool = true,
         doubleTapOverlayEnabled: Bool = false,
         becomesFirstResponderOnOpen: Bool = false,
-        updateChannelsFromMessageList: Bool = false
+        updateChannelsFromMessageList: Bool = false,
+        maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -32,6 +33,7 @@ public struct MessageListConfig {
         self.doubleTapOverlayEnabled = doubleTapOverlayEnabled
         self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
         self.updateChannelsFromMessageList = updateChannelsFromMessageList
+        self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
     }
     
     let messageListType: MessageListType
@@ -45,6 +47,7 @@ public struct MessageListConfig {
     let doubleTapOverlayEnabled: Bool
     let becomesFirstResponderOnOpen: Bool
     let updateChannelsFromMessageList: Bool
+    let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
 }
 
 /// Contains information about the message paddings.

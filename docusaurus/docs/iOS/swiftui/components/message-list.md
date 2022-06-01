@@ -191,6 +191,10 @@ The parameters that you can use in this method are:
 - `onLongPress`: called when the message is long pressed.
 - `isLast`: whether it is the last message (e.g. to apply extra padding).
 
+## Grouping Messages
+
+The messages are grouped based on the `maxTimeIntervalBetweenMessagesInGroup` value in the `MessageListConfig`. The default value of this property is 60 seconds, which means messages that are 60 seconds (or less) apart, will be grouped together. You can change this value when you initialize the `MessageListConfig`.
+
 ## System Messages 
 
 If you are using the default implementation of the message container view, you can customize the system messages. These are messages that are not sent by the participants, but they represent some system events (like people added to the channel and similar). In order to change the UI of the system messages, you need to implement the `makeSystemMessageView` in the `ViewFactory` protocol.

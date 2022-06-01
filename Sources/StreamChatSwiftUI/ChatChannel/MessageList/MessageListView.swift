@@ -231,11 +231,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         if !messageListConfig.groupMessages {
             return true
         }
-        let dateString = dateFormatter.string(from: message.createdAt)
-        let prefix = utils.messageCachingUtils.authorId(for: message)
-        let key = "\(prefix)-\(dateString)"
-        let inMessagingGroup = messagesGroupingInfo[key]?.contains(message.id) ?? false
-        return inMessagingGroup
+        return messagesGroupingInfo[message.id] != nil
     }
     
     private func handleLongPress(messageDisplayInfo: MessageDisplayInfo) {
