@@ -4,10 +4,13 @@
 
 import XCTest
 
+// Application
+let app = XCUIApplication()
+
 class StreamTestCase: XCTestCase {
 
-    let deviceRobot = DeviceRobot()
-    let userRobot = UserRobot()
+    let deviceRobot = DeviceRobot(app)
+    var userRobot: UserRobot!
     var backendRobot: BackendRobot!
     var participantRobot: ParticipantRobot!
     var server: StreamMockServer!
@@ -19,18 +22,18 @@ class StreamTestCase: XCTestCase {
         server.start(port: in_port_t(MockServerConfiguration.port))
         participantRobot = ParticipantRobot(server)
         backendRobot = BackendRobot(server)
+        userRobot = UserRobot(server)
 
         try super.setUpWithError()
-
         useMockServer()
         app.launch()
     }
 
     override func tearDownWithError() throws {
         app.terminate()
-        server?.stop()
+        server.stop()
         server = nil
-
+        
         try super.tearDownWithError()
         app.launchArguments.removeAll()
         app.launchEnvironment.removeAll()

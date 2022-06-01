@@ -40,9 +40,14 @@ class MessageListPage {
     enum Composer {
         static var inputField: XCUIElement { app.textViews["ComposerTextInputView"] }
         static var sendButton: XCUIElement { app.buttons["SendMessageButton"] }
+        static var confirmButton: XCUIElement { sendButton }
         static var mediaButton: XCUIElement { app.buttons["PickerTypeButtonMedia"] }
-        static var commandsButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
+        static var commandButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
         static var collapsedComposerButton: XCUIElement { app.buttons["PickerTypeButtonCollapsed"] }
+        static var cooldown: XCUIElement {
+//            app.staticTexts["cooldownLabel"]
+            return app.staticTexts.firstMatch  // DUMMY LINE
+        }
     }
     
     enum Reactions {
@@ -115,21 +120,79 @@ class MessageListPage {
 //            return messageCell.images[identifier]
             return app.images.firstMatch // DUMMY LINE
         }
+        
+        static func giphySendButton(in messageCell: XCUIElement) -> XCUIElement {
+            attachmentActionButton(in: messageCell, label: "Send")
+        }
+        
+        static func giphyShuffleButton(in messageCell: XCUIElement) -> XCUIElement {
+            attachmentActionButton(in: messageCell, label: "Shuffle")
+        }
+        
+        static func giphyCancelButton(in messageCell: XCUIElement) -> XCUIElement {
+            attachmentActionButton(in: messageCell, label: "Cancel")
+        }
+        
+        private static func attachmentActionButton(in messageCell: XCUIElement, label: String) -> XCUIElement {
+            messageCell.buttons.matching(NSPredicate(
+                format: "identifier LIKE 'GiphyAttachmentView' AND label LIKE '\(label)'")).firstMatch
+        }
     }
     
     enum ContextMenu {
-        static var actionsView: XCUIElement { app.otherElements["MessageActionsView"] }
-        static var reply: XCUIElement { app.otherElements["messageAction-reply_message_action"] }
-        static var threadReply: XCUIElement { app.otherElements["messageAction-thread_message_action"] }
-        static var copy: XCUIElement { app.otherElements["messageAction-copy_message_action"] }
-        static var flag: XCUIElement { app.otherElements["messageAction-flag_message_action"] }
-        static var mute: XCUIElement { app.otherElements["messageAction-mute_message_action"] }
-        static var unmute: XCUIElement { app.otherElements["messageAction-unmute_message_action"] }
-        static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"] }
-        static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"] }
-        static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"] }
-        static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"] }
-        static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"] }
+        case actionsView
+        case reply
+        case threadReply
+        case copy
+        case flag
+        case mute
+        case edit
+        case delete
+        case resend
+        case pin
+        case unpin
+
+        var element: XCUIElement {
+            switch self {
+            case .actionsView:
+                return Element.actionsView
+            case .reply:
+                return Element.reply
+            case .threadReply:
+                return Element.threadReply
+            case .copy:
+                return Element.copy
+            case .flag:
+                return Element.flag
+            case .mute:
+                return Element.mute
+            case .edit:
+                return Element.edit
+            case .delete:
+                return Element.delete
+            case .resend:
+                return Element.resend
+            case .pin:
+                return Element.pin
+            case .unpin:
+                return Element.unpin
+            }
+        }
+        
+        struct Element {
+            static var actionsView: XCUIElement { app.otherElements["MessageActionsView"] }
+            static var reply: XCUIElement { app.otherElements["messageAction-reply_message_action"] }
+            static var threadReply: XCUIElement { app.otherElements["messageAction-thread_message_action"] }
+            static var copy: XCUIElement { app.otherElements["messageAction-copy_message_action"] }
+            static var flag: XCUIElement { app.otherElements["messageAction-flag_message_action"] }
+            static var mute: XCUIElement { app.otherElements["messageAction-mute_message_action"] }
+            static var unmute: XCUIElement { app.otherElements["messageAction-unmute_message_action"] }
+            static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"] }
+            static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"] }
+            static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"] }
+            static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"] }
+            static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"] }
+        }
     }
     
     enum PopUpButtons {

@@ -2,6 +2,7 @@
 // Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
+@testable import StreamChatSwiftUI
 @testable import StreamChat
 import XCTest
 
@@ -55,7 +56,7 @@ extension Robot {
         line: UInt = #line
     ) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-        XCTAssertTrue(messageCell.isHittable)
+        XCTAssertTrue(messageCell.waitForHitPoint().isHittable)
         return self
     }
 
@@ -71,62 +72,48 @@ extension Robot {
         return self
     }
 
-//    @discardableResult
-//    func assertQuotedMessage(
-//        _ text: String,
-//        at messageCellIndex: Int? = nil,
-//        file: StaticString = #filePath,
-//        line: UInt = #line
-//    ) -> Self {
-//        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-//        let message = attributes.quotedText(text, in: messageCell)
-//        let actualText = message.waitForText(text).text
-//        XCTAssertEqual(text, actualText, file: file, line: line)
-//        return self
-//    }
-//
-//    @discardableResult
-//    func assertDeletedMessage(
-//        at messageCellIndex: Int? = nil,
-//        file: StaticString = #filePath,
-//        line: UInt = #line
-//    ) -> Self {
-//        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-//        let message = attributes.text(in: messageCell)
-//        let expectedMessage = L10n.Message.deletedMessagePlaceholder
-//        let actualMessage = message.waitForText(expectedMessage).text
-//        XCTAssertEqual(expectedMessage, actualMessage, "Text is wrong", file: file, line: line)
-//        return self
-//    }
-//
-//    @discardableResult
-//    func assertMessageAuthor(
-//        _ author: String,
-//        at messageCellIndex: Int? = nil,
-//        file: StaticString = #filePath,
-//        line: UInt = #line
-//    ) -> Self {
-//        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-//        let textView = attributes.author(messageCell: messageCell)
-//        let actualAuthor = textView.waitForText(author).text
-//        XCTAssertEqual(author, actualAuthor, file: file, line: line)
-//        return self
-//    }
-
-    /// Waits for a new message from the user or participant
-    ///
-    /// - Returns: Self
     @discardableResult
-    func waitForNewMessage(withText text: String,
-                           at messageCellIndex: Int? = nil,
-                           file: StaticString = #filePath,
-                           line: UInt = #line) -> Self {
-        let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
-        let textView = attributes.text(in: cell)
-        _ = textView.waitForText(text)
+    func assertQuotedMessage(
+        _ text: String,
+        at messageCellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let message = attributes.quotedText(text, in: messageCell)
+        let actualText = message.waitForText(text).text
+        XCTAssertEqual(text, actualText, file: file, line: line)
         return self
     }
 
+    @discardableResult
+    func assertDeletedMessage(
+        at messageCellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let message = attributes.text(in: messageCell)
+        let expectedMessage = L10n.Message.deletedMessagePlaceholder
+        let actualMessage = message.waitForText(expectedMessage).text
+        XCTAssertEqual(expectedMessage, actualMessage, "Text is wrong", file: file, line: line)
+        return self
+    }
+
+    @discardableResult
+    func assertMessageAuthor(
+        _ author: String,
+        at messageCellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let textView = attributes.author(messageCell: messageCell)
+        let actualAuthor = textView.waitForText(author).text
+        XCTAssertEqual(author, actualAuthor, file: file, line: line)
+        return self
+    }
+    
     @discardableResult
     func assertTypingIndicatorShown(
         typingUserName: String,
@@ -138,7 +125,7 @@ extension Robot {
         XCTAssert(typingUserText.contains(typingUserName), file: file, line: line)
         return self
     }
-
+    
     @discardableResult
     func assertTypingIndicatorHidden(
         file: StaticString = #filePath,
@@ -150,74 +137,74 @@ extension Robot {
     }
 }
 
-//// MARK: Thread Replies
-//extension Robot {
-//
-//    @discardableResult
-//    func assertThreadReply(
-//        _ text: String,
-//        at messageCellIndex: Int? = nil,
-//        file: StaticString = #filePath,
-//        line: UInt = #line
-//    ) -> Self {
-//        let isThreadPageOpen = ThreadPage.alsoSendInChannelCheckbox.exists
-//        XCTAssertTrue(isThreadPageOpen, file: file, line: line)
-//        return assertMessage(text,
-//                             at: messageCellIndex,
-//                             file: file,
-//                             line: line)
-//    }
-//}
+// MARK: Thread Replies
+extension Robot {
 
-//// MARK: Quoted Messages
-//extension Robot {
-//    @discardableResult
-//    func assertQuotedMessage(
-//        replyText: String,
-//        quotedText: String,
-//        at messageCellIndex: Int? = nil,
-//        file: StaticString = #filePath,
-//        line: UInt = #line
-//    ) -> Self {
-//        assertQuotedMessage(replyText, file: file, line: line)
-//        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-//        let quotedMessage = attributes.quotedText(quotedText, in: messageCell)
-//        XCTAssertTrue(quotedMessage.exists, "Quoted message was not showed", file: file, line: line)
-//        XCTAssertFalse(quotedMessage.isEnabled, "Quoted message should be disabled", file: file, line: line)
-//        return self
-//    }
-//}
+    @discardableResult
+    func assertThreadReply(
+        _ text: String,
+        at messageCellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let isThreadPageOpen = ThreadPage.alsoSendInChannelCheckbox.exists
+        XCTAssertTrue(isThreadPageOpen, file: file, line: line)
+        return assertMessage(text,
+                             at: messageCellIndex,
+                             file: file,
+                             line: line)
+    }
+}
 
-//// MARK: Reactions
-//extension Robot {
-//    @discardableResult
-//    func assertReaction(
-//        isPresent: Bool,
-//        at messageCellIndex: Int? = nil,
-//        file: StaticString = #filePath,
-//        line: UInt = #line
-//    ) -> Self {
-//        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-//        let reaction = attributes.reactionButton(in: messageCell)
-//        let errMessage = isPresent ? "There are no reactions" : "Reaction is presented"
-//        _ = isPresent ? reaction.wait() : reaction.waitForLoss()
-//        XCTAssertEqual(isPresent, reaction.exists, errMessage, file: file, line: line)
-//        return self
-//    }
-//
-//    /// Waits for a new reaction from the user or participant
-//    ///
-//    /// - Returns: Self
-//    @discardableResult
-//    func waitForNewReaction(at messageCellIndex: Int? = nil,
-//                            file: StaticString = #filePath,
-//                            line: UInt = #line) -> Self {
-//        let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
-//        let reaction = attributes.reactionButton(in: cell)
-//        reaction.wait()
-//        return self
-//    }
-//}
+// MARK: Quoted Messages
+extension Robot {
+    @discardableResult
+    func assertQuotedMessage(
+        replyText: String,
+        quotedText: String,
+        at messageCellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        assertQuotedMessage(replyText, file: file, line: line)
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let quotedMessage = attributes.quotedText(quotedText, in: messageCell)
+        XCTAssertTrue(quotedMessage.exists, "Quoted message was not showed", file: file, line: line)
+        XCTAssertFalse(quotedMessage.isEnabled, "Quoted message should be disabled", file: file, line: line)
+        return self
+    }
+}
+
+// MARK: Reactions
+extension Robot {
+    @discardableResult
+    func assertReaction(
+        isPresent: Bool,
+        at messageCellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let reaction = attributes.reactionButton(in: messageCell)
+        let errMessage = isPresent ? "There are no reactions" : "Reaction is presented"
+        _ = isPresent ? reaction.wait() : reaction.waitForLoss()
+        XCTAssertEqual(isPresent, reaction.exists, errMessage, file: file, line: line)
+        return self
+    }
+
+    /// Waits for a new reaction from the user or participant
+    ///
+    /// - Returns: Self
+    @discardableResult
+    func waitForNewReaction(at messageCellIndex: Int? = nil,
+                            file: StaticString = #filePath,
+                            line: UInt = #line) -> Self {
+        let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
+        let reaction = attributes.reactionButton(in: cell)
+        reaction.wait()
+        return self
+    }
+}
 
 // MARK: Keyboard
 extension Robot {
