@@ -63,49 +63,58 @@ class MessageListPage {
             reactionButton(in: messageCell).images
         }
 
-//        static func threadButton(in messageCell: XCUIElement) -> XCUIElement {
+        static func threadButton(in messageCell: XCUIElement) -> XCUIElement {
 //            messageCell.buttons["threadReplyCountButton"]
-//        }
-//
-        static func time(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["MessageDateView"] // FIXME for participants
+            return app.buttons.firstMatch // DUMMY LINE
         }
 //
-//        static func author(messageCell: XCUIElement) -> XCUIElement {
+        static func time(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["MessageDateView"] // FIXME for participants
+            return app.staticTexts.firstMatch // DUMMY LINE
+        }
+//
+        static func author(messageCell: XCUIElement) -> XCUIElement {
 //            messageCell.staticTexts["authorNameLabel"]
-//        }
+            return app.staticTexts.firstMatch // DUMMY LINE
+        }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.otherElements["MessageView"].staticTexts["MessageTextView"]
         }
 
-//        static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
+        static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
 //            messageCell.textViews.matching(NSPredicate(format: "value LIKE '\(text)'")).firstMatch
-//        }
-//
-//        static func deletedIcon(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.images["onlyVisibleToYouImageView"]
-//        }
-//
-//        static func deletedLabel(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.staticTexts["onlyVisibleToYouLabel"]
-//        }
-//
-//        static func errorButton(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.buttons["error indicator"]
-//        }
-
-        static func readCount(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["MessageReadIndicatorView"]
+            return app.textViews.firstMatch // DUMMY LINE
         }
 
-//        static func statusCheckmark(for status: MessageDeliveryStatus?, in messageCell: XCUIElement) -> XCUIElement {
+        static func deletedIcon(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.images["onlyVisibleToYouImageView"]
+            return app.images.firstMatch // DUMMY LINE
+        }
+
+        static func deletedLabel(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["onlyVisibleToYouLabel"]
+            return app.staticTexts.firstMatch // DUMMY LINE
+        }
+
+        static func errorButton(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.buttons["error indicator"]
+            return app.buttons.firstMatch // DUMMY LINE
+        }
+
+        static func readCount(in messageCell: XCUIElement) -> XCUIElement {
+//            messageCell.staticTexts["MessageReadIndicatorView"]
+            return app.staticTexts.firstMatch // DUMMY LINE
+        }
+
+        static func statusCheckmark(for status: MessageDeliveryStatus?, in messageCell: XCUIElement) -> XCUIElement {
 //            var identifier = "imageView"
 //            if let status = status {
 //                identifier = "\(identifier)_\(status.rawValue)"
 //            }
 //            return messageCell.images[identifier]
-//        }
+            return app.images.firstMatch // DUMMY LINE
+        }
     }
     
     enum ContextMenu {
@@ -143,21 +152,25 @@ class MessageListPage {
     }
     
     enum ComposerCommands {
-//        static var cells: XCUIElementQuery {
+        static var cells: XCUIElementQuery {
 //            app.cells.matching(NSPredicate(format: "identifier LIKE 'ChatCommandSuggestionCollectionViewCell'"))
-//        }
-//
-//        static var headerTitle: XCUIElement {
+            return app.cells // DUMMY LINE
+        }
+
+        static var headerTitle: XCUIElement {
 //            app.otherElements["ChatSuggestionsHeaderView"].staticTexts.firstMatch
-//        }
-//
-//        static var headerImage: XCUIElement {
+            return app.otherElements.firstMatch // DUMMY LINE
+        }
+
+        static var headerImage: XCUIElement {
 //            app.otherElements["ChatSuggestionsHeaderView"].images.firstMatch
-//        }
-//
-//        static var giphyImage: XCUIElement {
+            return app.otherElements.firstMatch // DUMMY LINE
+        }
+
+        static var giphyImage: XCUIElement {
 //            app.images["command_giphy"]
-//        }
+            return app.images.firstMatch // DUMMY LINE
+        }
     }
     
 }
