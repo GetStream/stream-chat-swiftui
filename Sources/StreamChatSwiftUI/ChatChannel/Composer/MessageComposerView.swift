@@ -136,7 +136,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .onReceive(keyboardWillChangePublisher) { visible in
             if visible && !keyboardShown {
-                if viewModel.composerCommand == nil {
+                if viewModel.composerCommand == nil && viewModel.pickerTypeState != .collapsed {
                     withAnimation(.easeInOut(duration: 0.02)) {
                         viewModel.pickerTypeState = .expanded(.none)
                     }

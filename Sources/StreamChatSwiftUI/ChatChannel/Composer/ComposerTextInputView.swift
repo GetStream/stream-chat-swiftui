@@ -39,14 +39,16 @@ struct ComposerTextInputView: UIViewRepresentable {
     func updateUIView(_ uiView: InputTextView, context: Context) {
         DispatchQueue.main.async {
             if uiView.markedTextRange == nil {
+                var shouldAnimate = false
                 if uiView.text != text {
+                    shouldAnimate = uiView.shouldAnimate(text)
                     uiView.text = text
                 }
                 uiView.selectedRange.location = selectedRangeLocation
                 uiView.isEditable = editable
                 uiView.placeholderLabel.text = placeholder
                 uiView.handleTextChange()
-                context.coordinator.updateHeight(uiView)
+                context.coordinator.updateHeight(uiView, shouldAnimate: shouldAnimate)
                 if uiView.frame.size.height != currentHeight {
                     uiView.frame.size = CGSize(
                         width: uiView.frame.size.width,
@@ -57,7 +59,11 @@ struct ComposerTextInputView: UIViewRepresentable {
                     uiView.contentSize.height = height
                 }
                 
+                let previous = uiView.isScrollEnabled
                 uiView.isScrollEnabled = height > currentHeight
+                if previous == false && previous != uiView.isScrollEnabled {
+                    uiView.scrollToBottom()
+                }
             }
         }
     }
@@ -81,18 +87,23 @@ struct ComposerTextInputView: UIViewRepresentable {
         }
 
         func textViewDidChange(_ textView: UITextView) {
+            let shouldAnimate = (textView as? InputTextView)?.shouldAnimate(textInput.text) ?? false
             textInput.text = textView.text
             textInput.selectedRangeLocation = textView.selectedRange.location
-            updateHeight(textView)
+            updateHeight(textView, shouldAnimate: shouldAnimate)
         }
         
-        func updateHeight(_ textView: UITextView) {
+        func updateHeight(_ textView: UITextView, shouldAnimate: Bool) {
             var height = textView.sizeThatFits(textView.bounds.size).height
             if height < TextSizeConstants.minThreshold {
                 height = TextSizeConstants.minimumHeight
             }
             if textInput.height != height {
-                withAnimation {
+                if shouldAnimate {
+                    withAnimation {
+                        textInput.height = height
+                    }
+                } else {
                     textInput.height = height
                 }
             }
@@ -111,5 +122,13 @@ struct ComposerTextInputView: UIViewRepresentable {
             let newMessageLength = textView.text.count + (text.count - range.length)
             return newMessageLength <= maxMessageLength
         }
+    }
+}
+
+extension UITextView {
+    func scrollToBottom() {
+        let textCount: Int = text.count
+        guard textCount >= 1 else { return }
+        scrollRangeToVisible(NSRange(location: textCount - 1, length: 1))
     }
 }
