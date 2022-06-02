@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import SwiftUI
 import XCTest
 
 class MessageComposerView_Tests: StreamChatTestCase {
@@ -186,5 +187,29 @@ class MessageComposerView_Tests: StreamChatTestCase {
         
         // Then
         assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_composerInputView_snapshot() {
+        // Given
+        let inputView = InputTextView()
+        let view = ComposerTextInputView(
+            text: .constant("test test"),
+            height: .constant(100),
+            selectedRangeLocation: .constant(0),
+            placeholder: "Send a message",
+            editable: true,
+            currentHeight: 36
+        )
+        let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
+        let viewWithSize = view.applyDefaultSize()
+        
+        // When
+        inputView.scrollToBottom()
+        coordinator.updateHeight(inputView, shouldAnimate: true)
+        coordinator.updateHeight(inputView, shouldAnimate: false)
+        
+        // Then
+        assertSnapshot(matching: viewWithSize, as: .image)
+        XCTAssert(coordinator.textInput.height == 100)
     }
 }
