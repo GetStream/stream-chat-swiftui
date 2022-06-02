@@ -120,10 +120,11 @@ class InputTextView: UITextView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        if TextSizeConstants.defaultInputViewHeight != minimumHeight {
+
+        if TextSizeConstants.defaultInputViewHeight != minimumHeight
+            && minimumHeight == frame.size.height {
             let rect = layoutManager.usedRect(for: textContainer)
-            let topInset = (bounds.size.height - rect.height) / 2.0
+            let topInset = (frame.size.height - rect.height) / 2.0
             textContainerInset.top = max(0, topInset)
         }
     }
