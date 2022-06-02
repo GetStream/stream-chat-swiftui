@@ -17,6 +17,7 @@ struct ComposerTextInputView: UIViewRepresentable {
     var placeholder: String
     var editable: Bool
     var maxMessageLength: Int?
+    var currentHeight: CGFloat
     
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView = InputTextView()
@@ -26,6 +27,7 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.layoutManager.delegate = context.coordinator
         inputTextView.placeholderLabel.text = placeholder
         inputTextView.contentInsetAdjustmentBehavior = .never
+        inputTextView.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
         
         if utils.messageListConfig.becomesFirstResponderOnOpen {
             inputTextView.becomeFirstResponder()
@@ -44,6 +46,18 @@ struct ComposerTextInputView: UIViewRepresentable {
                 uiView.isEditable = editable
                 uiView.placeholderLabel.text = placeholder
                 uiView.handleTextChange()
+                context.coordinator.updateHeight(uiView)
+                if uiView.frame.size.height != currentHeight {
+                    uiView.frame.size = CGSize(
+                        width: uiView.frame.size.width,
+                        height: currentHeight
+                    )
+                }
+                if uiView.contentSize.height != height {
+                    uiView.contentSize.height = height
+                }
+                
+                uiView.isScrollEnabled = height > currentHeight
             }
         }
     }
@@ -69,6 +83,10 @@ struct ComposerTextInputView: UIViewRepresentable {
         func textViewDidChange(_ textView: UITextView) {
             textInput.text = textView.text
             textInput.selectedRangeLocation = textView.selectedRange.location
+            updateHeight(textView)
+        }
+        
+        func updateHeight(_ textView: UITextView) {
             var height = textView.sizeThatFits(textView.bounds.size).height
             if height < TextSizeConstants.minThreshold {
                 height = TextSizeConstants.minimumHeight

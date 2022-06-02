@@ -32,9 +32,6 @@ class InputTextView: UITextView {
         TextSizeConstants.minimumHeight
     }
     
-    /// The constraint responsible for setting the height of the text view.
-    open var heightConstraint: NSLayoutConstraint?
-    
     /// The maximum height of the text view.
     /// When the content in the text view is greater than this height, scrolling will be enabled and the text view's height will be restricted to this value
     open var maximumHeight: CGFloat {
@@ -96,9 +93,6 @@ class InputTextView: UITextView {
             )
         )
         placeholderLabel.pin(anchors: [.centerY], to: self)
-        
-        heightConstraint = heightAnchor.constraint(equalToConstant: minimumHeight)
-        heightConstraint?.isActive = true
         isScrollEnabled = false
     }
 
@@ -122,28 +116,8 @@ class InputTextView: UITextView {
         
     @objc open func handleTextChange() {
         placeholderLabel.isHidden = !text.isEmpty
-        setTextViewHeight()
     }
 
-    open func setTextViewHeight() {
-        var heightToSet = minimumHeight
-        let contentHeight = sizeThatFits(bounds.size).height
-
-        if contentHeight <= minimumHeight {
-            heightToSet = minimumHeight
-        } else if contentHeight >= maximumHeight {
-            heightToSet = maximumHeight
-        } else {
-            heightToSet = contentHeight
-        }
-
-        if heightConstraint?.constant != heightToSet {
-            heightConstraint?.constant = heightToSet
-            isScrollEnabled = heightToSet > minimumHeight
-            layoutIfNeeded()
-        }
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         

@@ -114,7 +114,8 @@ class MessageComposerView_Tests: StreamChatTestCase {
             height: .constant(38),
             selectedRangeLocation: .constant(3),
             placeholder: "Send a message",
-            editable: true
+            editable: true,
+            currentHeight: 38
         )
         .frame(width: defaultScreenSize.width, height: 50)
                 
@@ -129,7 +130,8 @@ class MessageComposerView_Tests: StreamChatTestCase {
             height: .constant(38),
             selectedRangeLocation: .constant(3),
             placeholder: "Send a message",
-            editable: true
+            editable: true,
+            currentHeight: 38
         )
         let inputView = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
@@ -151,7 +153,8 @@ class MessageComposerView_Tests: StreamChatTestCase {
             height: .constant(38),
             selectedRangeLocation: .constant(3),
             placeholder: "Send a message",
-            editable: true
+            editable: true,
+            currentHeight: 38
         )
         let inputView = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)

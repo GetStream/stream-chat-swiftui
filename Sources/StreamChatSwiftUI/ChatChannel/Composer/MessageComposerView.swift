@@ -273,7 +273,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     selectedRangeLocation: $selectedRangeLocation,
                     placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : L10n.Composer.Placeholder.message,
                     editable: !isInCooldown,
-                    maxMessageLength: maxMessageLength
+                    maxMessageLength: maxMessageLength,
+                    currentHeight: textFieldHeight
                 )
                 .frame(height: textFieldHeight)
                 .overlay(
