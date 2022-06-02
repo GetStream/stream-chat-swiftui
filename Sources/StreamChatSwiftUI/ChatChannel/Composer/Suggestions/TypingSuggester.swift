@@ -77,6 +77,9 @@ public struct TypingSuggester {
         in text: String,
         caretLocation: Int
     ) -> TypingSuggestion? {
+        if caretLocation > text.count {
+            return nil
+        }
         let textString = text as NSString
         // Find the first symbol location before the input caret
         let firstSymbolBeforeCaret = textString.rangeOfCharacter(

@@ -38,7 +38,7 @@ open class MessageComposerViewModel: ObservableObject {
             if text != "" {
                 checkTypingSuggestions()
                 if pickerTypeState != .collapsed {
-                    if composerCommand == nil {
+                    if composerCommand == nil && (abs(text.count - oldValue.count) < 10) {
                         withAnimation {
                             pickerTypeState = .collapsed
                         }
