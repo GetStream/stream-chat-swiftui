@@ -32,9 +32,6 @@ class InputTextView: UITextView {
         TextSizeConstants.minimumHeight
     }
     
-    /// The constraint responsible for setting the height of the text view.
-    open var heightConstraint: NSLayoutConstraint?
-    
     /// The maximum height of the text view.
     /// When the content in the text view is greater than this height, scrolling will be enabled and the text view's height will be restricted to this value
     open var maximumHeight: CGFloat {
@@ -96,9 +93,6 @@ class InputTextView: UITextView {
             )
         )
         placeholderLabel.pin(anchors: [.centerY], to: self)
-        
-        heightConstraint = heightAnchor.constraint(equalToConstant: minimumHeight)
-        heightConstraint?.isActive = true
         isScrollEnabled = false
     }
 
@@ -122,34 +116,19 @@ class InputTextView: UITextView {
         
     @objc open func handleTextChange() {
         placeholderLabel.isHidden = !text.isEmpty
-        setTextViewHeight()
-    }
-
-    open func setTextViewHeight() {
-        var heightToSet = minimumHeight
-        let contentHeight = sizeThatFits(bounds.size).height
-
-        if contentHeight <= minimumHeight {
-            heightToSet = minimumHeight
-        } else if contentHeight >= maximumHeight {
-            heightToSet = maximumHeight
-        } else {
-            heightToSet = contentHeight
-        }
-
-        if heightConstraint?.constant != heightToSet {
-            heightConstraint?.constant = heightToSet
-            isScrollEnabled = heightToSet > minimumHeight
-            layoutIfNeeded()
-        }
     }
     
+    open func shouldAnimate(_ newText: String) -> Bool {
+        abs(newText.count - text.count) < 10
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        if TextSizeConstants.defaultInputViewHeight != minimumHeight {
+
+        if TextSizeConstants.defaultInputViewHeight != minimumHeight
+            && minimumHeight == frame.size.height {
             let rect = layoutManager.usedRect(for: textContainer)
-            let topInset = (bounds.size.height - rect.height) / 2.0
+            let topInset = (frame.size.height - rect.height) / 2.0
             textContainerInset.top = max(0, topInset)
         }
     }
@@ -157,12 +136,5 @@ class InputTextView: UITextView {
     override open func paste(_ sender: Any?) {
         super.paste(sender)
         handleTextChange()
-        
-        // This is due to bug in UITextView where the scroll sometimes disables
-        // when a very long text is pasted in it.
-        // Doing this ensures that it doesn't happen
-        // Reference: https://stackoverflow.com/a/33194525/3825788
-        isScrollEnabled = false
-        isScrollEnabled = true
     }
 }

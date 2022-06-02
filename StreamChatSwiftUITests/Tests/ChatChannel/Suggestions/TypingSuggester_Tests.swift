@@ -153,4 +153,24 @@ class TypingSuggester_Tests: XCTestCase {
         // Then
         XCTAssert(suggestion == nil)
     }
+    
+    func test_typingSuggester_outOfBounds() {
+        // Given
+        let options = TypingSuggestionOptions(
+            symbol: "@",
+            shouldTriggerOnlyAtStart: true
+        )
+        let typingSuggester = TypingSuggester(options: options)
+        let string = "Hey @Mar"
+        let caretLocation = 15
+        
+        // When
+        let suggestion = typingSuggester.typingSuggestion(
+            in: string,
+            caretLocation: caretLocation
+        )
+        
+        // Then
+        XCTAssert(suggestion == nil)
+    }
 }
