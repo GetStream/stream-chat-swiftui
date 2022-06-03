@@ -91,6 +91,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         editedMessage: $viewModel.editedMessage,
                         onMessageSent: viewModel.scrollToLastMessage
                     )
+                    .opacity((
+                        utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
+                            .reactionsShown
+                    ) ? 0 : 1)
                 }
                 .accentColor(colors.tintColor)
                 .overlay(
@@ -107,6 +111,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 messageDisplayInfo = nil
                             }, onActionExecuted: { actionInfo in
                                 viewModel.messageActionExecuted(actionInfo)
+                                messageDisplayInfo = nil
                             }
                         )
                         .transition(.identity)

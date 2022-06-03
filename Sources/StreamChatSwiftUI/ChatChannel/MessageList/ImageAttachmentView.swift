@@ -57,7 +57,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         .modifier(
             factory.makeMessageViewModifier(
                 for: MessageModifierInfo(
-                    message: message, isFirst: isFirst
+                    message: message, isFirst: isFirst && message.videoAttachments.isEmpty
                 )
             )
         )

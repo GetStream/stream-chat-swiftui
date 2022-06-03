@@ -41,6 +41,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Checks if the queued changes are completely applied.
     private var markDirty = false
     
+    /// Index of the selected channel.
+    private var selectedChannelIndex: Int?
+    
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
         didSet {
@@ -59,6 +62,15 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 // pop happened, apply the queued changes.
                 if !queuedChannelsChanges.isEmpty {
                     channels = queuedChannelsChanges
+                }
+            }
+            if newValue == nil {
+                selectedChannelIndex = nil
+            } else {
+                DispatchQueue.global(qos: .default).async { [unowned self] in
+                    selectedChannelIndex = channels.firstIndex(where: { channel in
+                        channel.cid.rawValue == selectedChannel?.channel.cid.rawValue
+                    })
                 }
             }
         }
@@ -242,6 +254,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
         if selectedChannel != nil || !searchText.isEmpty || deeplinkChannel != nil {
             queuedChannelsChanges = controller.channels
+            updateChannelsIfNeeded()
         } else {
             channels = controller.channels
         }
@@ -363,28 +376,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if !queuedChannelsChanges.isEmpty && selectedChannel == nil && deeplinkChannel == nil {
             channels = queuedChannelsChanges
         } else if !queuedChannelsChanges.isEmpty {
-            let selected = selectedChannel != nil ? selectedChannel?.channel : deeplinkChannel?.channel
-            var index: Int?
-            var temp = Array(queuedChannelsChanges)
-            for i in 0..<temp.count {
-                let current = temp[i]
-                if current.cid == selected?.cid {
-                    index = i
-                    selectedChannel?.injectedChannelInfo = InjectedChannelInfo(
-                        subtitle: current.subtitleText,
-                        unreadCount: 0,
-                        timestamp: current.timestampText,
-                        lastMessageAt: current.lastMessageAt,
-                        latestMessages: current.latestMessages
-                    )
-                    break
-                }
-            }
-            if let index = index, let selected = selected {
-                temp[index] = selected
-            }
-            markDirty = true
-            channels = LazyCachedMapCollection(source: temp, map: { $0 })
+            handleQueuedChanges()
         } else if queuedChannelsChanges.isEmpty && (selectedChannel != nil || deeplinkChannel != nil) {
             if selectedChannel?.injectedChannelInfo == nil {
                 selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
@@ -392,28 +384,57 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
     
+    private func updateChannelsIfNeeded() {
+        if utils.messageListConfig.updateChannelsFromMessageList && ((selectedChannelIndex ?? 0) < 8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.handleChannelAppearance()
+            }
+        }
+    }
+    
+    private func handleQueuedChanges() {
+        let selected = selectedChannel != nil ? selectedChannel?.channel : deeplinkChannel?.channel
+        var index: Int?
+        var temp = Array(queuedChannelsChanges)
+        for i in 0..<temp.count {
+            let current = temp[i]
+            if current.cid == selected?.cid {
+                index = i
+                selectedChannel?.injectedChannelInfo = InjectedChannelInfo(
+                    subtitle: current.subtitleText,
+                    unreadCount: 0,
+                    timestamp: current.timestampText,
+                    lastMessageAt: current.lastMessageAt,
+                    latestMessages: current.latestMessages
+                )
+                break
+            }
+        }
+        if let index = index, let selected = selected {
+            temp[index] = selected
+        }
+        markDirty = true
+        channels = LazyCachedMapCollection(source: temp, map: { $0 })
+    }
+    
     private func observeChannelDismiss() {
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(updateQueuedChannels),
-            name: NSNotification.Name(channelDismissed),
+            selector: #selector(dismissPresentedChannel),
+            name: NSNotification.Name(dismissChannel),
             object: nil
         )
     }
     
-    @objc private func updateQueuedChannels() {
-        if !queuedChannelsChanges.isEmpty {
-            withAnimation {
-                channels = queuedChannelsChanges
-            }
-        }
+    @objc private func dismissPresentedChannel() {
+        selectedChannel = nil
     }
 }
 
-private let channelDismissed = "io.getstream.channelDismissed"
+private let dismissChannel = "io.getstream.dismissChannel"
 
-public func notifyChannelDismiss() {
-    NotificationCenter.default.post(name: NSNotification.Name(channelDismissed), object: nil)
+func notifyChannelDismiss() {
+    NotificationCenter.default.post(name: NSNotification.Name(dismissChannel), object: nil)
 }
 
 /// Enum for the type of alert presented in the channel list view.

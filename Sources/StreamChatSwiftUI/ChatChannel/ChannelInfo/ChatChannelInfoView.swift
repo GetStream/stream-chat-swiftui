@@ -13,17 +13,23 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
     @Injected(\.fonts) private var fonts
     
     @StateObject private var viewModel: ChatChannelInfoViewModel
+    private var shownFromMessageList: Bool
     
     @Environment(\.presentationMode) var presentationMode
     
-    public init(channel: ChatChannel) {
+    public init(
+        channel: ChatChannel,
+        shownFromMessageList: Bool = false
+    ) {
         _viewModel = StateObject(
             wrappedValue: ChatChannelInfoViewModel(channel: channel)
         )
+        self.shownFromMessageList = shownFromMessageList
     }
     
     init(viewModel: ChatChannelInfoViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        shownFromMessageList = false
     }
     
     public var body: some View {
@@ -77,7 +83,11 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             message: Text(message),
                             primaryButton: .destructive(Text(buttonTitle)) {
                                 viewModel.leaveConversationTapped {
-                                    presentationMode.wrappedValue.dismiss()
+                                    if shownFromMessageList {
+                                        notifyChannelDismiss()
+                                    } else {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }
                                 }
                             },
                             secondaryButton: .cancel()

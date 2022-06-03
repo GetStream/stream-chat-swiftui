@@ -8,6 +8,14 @@ import XCTest
 
 class ChatChannelListViewModel_Tests: StreamChatTestCase {
     
+    override open func setUp() {
+        super.setUp()
+        let utils = Utils(
+            messageListConfig: MessageListConfig(updateChannelsFromMessageList: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
+    
     func test_channelListVMCreation_channelsLoaded() {
         // Given
         let channelListController = makeChannelListController()
@@ -232,6 +240,24 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
         let unreadCount = injectedChannelInfo!.unreadCount
         XCTAssert(unreadCount == 0)
+    }
+    
+    func test_channelListVM_channelDismiss() {
+        // Given
+        let channelId = ChannelId.unique
+        let channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1))
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
+        
+        // When
+        notifyChannelDismiss()
+        
+        // Then
+        XCTAssert(viewModel.selectedChannel == nil)
     }
     
     // MARK: - private

@@ -60,6 +60,7 @@
 "alert.actions.leave-group-title" = "Leave group";
 "alert.actions.leave-group-message" = "Are you sure you want to leave this group?";
 "alert.actions.leave-group-button" = "Leave";
+"alert.actions.view-info-title" = "View info";
 
 "message.only-visible-to-you" = "Only visible to you";
 "message.deleted-message-placeholder" = "Message deleted";

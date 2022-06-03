@@ -41,6 +41,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         utils.messageListConfig
     }
     
+    private var messageListDateUtils: MessageListDateUtils {
+        utils.messageListDateUtils
+    }
+    
     private var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
             && messageListConfig.typingIndicatorPlacement == .bottomOverlay
@@ -106,6 +110,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     
                     LazyVStack(spacing: 0) {
                         ForEach(messages, id: \.messageId) { message in
+                            var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
+                            let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
                             factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
@@ -117,16 +123,25 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 onLongPress: handleLongPress(messageDisplayInfo:),
                                 isLast: message == messages.last
                             )
-                            .flippedUpsideDown()
                             .onAppear {
-                                let index = messages.firstIndex { msg in
-                                    msg.id == message.id
+                                if index == nil {
+                                    index = messageListDateUtils.index(for: message, in: messages)
                                 }
-
                                 if let index = index {
                                     onMessageAppear(index)
                                 }
                             }
+                            .overlay(
+                                messageDate != nil ?
+                                    VStack {
+                                        factory.makeMessageListDateIndicator(date: messageDate!)
+                                            .offset(y: -messageListConfig.messageDisplayOptions.dateLabelSize)
+                                        Spacer()
+                                    }
+                                    : nil
+                            )
+                            .padding(.top, messageDate != nil ? messageListConfig.messageDisplayOptions.dateLabelSize : 0)
+                            .flippedUpsideDown()
                         }
                         .id(listId)
                     }
@@ -219,11 +234,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         if !messageListConfig.groupMessages {
             return true
         }
-        let dateString = dateFormatter.string(from: message.createdAt)
-        let prefix = utils.messageCachingUtils.authorId(for: message)
-        let key = "\(prefix)-\(dateString)"
-        let inMessagingGroup = messagesGroupingInfo[key]?.contains(message.id) ?? false
-        return inMessagingGroup
+        return messagesGroupingInfo[message.id] != nil
     }
     
     private func handleLongPress(messageDisplayInfo: MessageDisplayInfo) {
@@ -307,11 +318,19 @@ public struct DateIndicatorView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    var date: String
+    var dateString: String
+    
+    public init(date: Date) {
+        dateString = DateFormatter.messageListDateOverlay.string(from: date)
+    }
+    
+    public init(dateString: String) {
+        self.dateString = dateString
+    }
     
     public var body: some View {
         VStack {
-            Text(date)
+            Text(dateString)
                 .font(fonts.footnote)
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)

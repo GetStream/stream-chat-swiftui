@@ -18,7 +18,9 @@ public struct MessageListConfig {
         pageSize: Int = 50,
         messagePopoverEnabled: Bool = true,
         doubleTapOverlayEnabled: Bool = false,
-        becomesFirstResponderOnOpen: Bool = false
+        becomesFirstResponderOnOpen: Bool = false,
+        updateChannelsFromMessageList: Bool = false,
+        maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -30,18 +32,22 @@ public struct MessageListConfig {
         self.messagePopoverEnabled = messagePopoverEnabled
         self.doubleTapOverlayEnabled = doubleTapOverlayEnabled
         self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
+        self.updateChannelsFromMessageList = updateChannelsFromMessageList
+        self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
     }
     
-    let messageListType: MessageListType
-    let typingIndicatorPlacement: TypingIndicatorPlacement
-    let groupMessages: Bool
-    let messageDisplayOptions: MessageDisplayOptions
-    let messagePaddings: MessagePaddings
-    let dateIndicatorPlacement: DateIndicatorPlacement
-    let pageSize: Int
-    let messagePopoverEnabled: Bool
-    let doubleTapOverlayEnabled: Bool
-    let becomesFirstResponderOnOpen: Bool
+    public let messageListType: MessageListType
+    public let typingIndicatorPlacement: TypingIndicatorPlacement
+    public let groupMessages: Bool
+    public let messageDisplayOptions: MessageDisplayOptions
+    public let messagePaddings: MessagePaddings
+    public let dateIndicatorPlacement: DateIndicatorPlacement
+    public let pageSize: Int
+    public let messagePopoverEnabled: Bool
+    public let doubleTapOverlayEnabled: Bool
+    public let becomesFirstResponderOnOpen: Bool
+    public let updateChannelsFromMessageList: Bool
+    public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
 }
 
 /// Contains information about the message paddings.
@@ -59,33 +65,48 @@ public struct MessagePaddings {
 public enum DateIndicatorPlacement {
     case none
     case overlay
-    case messageList // Not supported yet.
+    case messageList
 }
 
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
-    
+        
     let showAvatars: Bool
     let showMessageDate: Bool
     let showAuthorName: Bool
     let animateChanges: Bool
+    let dateLabelSize: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
+    var messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     
     public init(
         showAvatars: Bool = true,
         showMessageDate: Bool = true,
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
+        overlayDateLabelSize: CGFloat = 40,
         currentUserMessageTransition: AnyTransition = .identity,
-        otherUserMessageTransition: AnyTransition = .identity
+        otherUserMessageTransition: AnyTransition = .identity,
+        messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
+            .defaultLinkDisplay
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
+        dateLabelSize = overlayDateLabelSize
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
+        self.messageLinkDisplayResolver = messageLinkDisplayResolver
+    }
+    
+    public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
+        { _ in
+            [
+                NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)
+            ]
+        }
     }
 }
 

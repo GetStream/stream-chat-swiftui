@@ -38,7 +38,7 @@ open class MessageComposerViewModel: ObservableObject {
             if text != "" {
                 checkTypingSuggestions()
                 if pickerTypeState != .collapsed {
-                    if composerCommand == nil {
+                    if composerCommand == nil && (abs(text.count - oldValue.count) < 10) {
                         withAnimation {
                             pickerTypeState = .collapsed
                         }
@@ -53,6 +53,7 @@ open class MessageComposerViewModel: ObservableObject {
                 }
                 selectedRangeLocation = 0
                 suggestions = [String: Any]()
+                mentionedUsers = Set<ChatUser>()
             }
         }
     }
@@ -136,6 +137,8 @@ open class MessageComposerViewModel: ObservableObject {
             with: channelController
         )
     
+    private(set) var mentionedUsers = Set<ChatUser>()
+    
     private var messageText: String {
         if let composerCommand = composerCommand,
            let displayInfo = composerCommand.displayInfo,
@@ -187,6 +190,9 @@ open class MessageComposerViewModel: ObservableObject {
             }
         }
         
+        clearRemovedMentions()
+        let mentionedUserIds = mentionedUsers.map(\.id)
+        
         if let editedMessage = editedMessage {
             edit(message: editedMessage, completion: completion)
             return
@@ -213,6 +219,7 @@ open class MessageComposerViewModel: ObservableObject {
                 messageController.createNewReply(
                     text: messageText,
                     attachments: attachments,
+                    mentionedUserIds: mentionedUserIds,
                     showReplyInChannel: showReplyInChannel,
                     quotedMessageId: quotedMessage?.id
                 ) { [weak self] in
@@ -227,6 +234,7 @@ open class MessageComposerViewModel: ObservableObject {
                 channelController.createNewMessage(
                     text: messageText,
                     attachments: attachments,
+                    mentionedUserIds: mentionedUserIds,
                     quotedMessageId: quotedMessage?.id
                 ) { [weak self] in
                     switch $0 {
@@ -404,15 +412,39 @@ open class MessageComposerViewModel: ObservableObject {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
+        let commandId = command.wrappedValue?.id
         commandsHandler.handleCommand(
             for: text,
             selectedRangeLocation: selectedRangeLocation,
             command: command,
             extraData: extraData
         )
+        checkForMentionedUsers(
+            commandId: commandId,
+            extraData: extraData
+        )
     }
     
     // MARK: - private
+    
+    private func checkForMentionedUsers(
+        commandId: String?,
+        extraData: [String: Any]
+    ) {
+        guard commandId == "mentions",
+              let user = extraData["chatUser"] as? ChatUser else {
+            return
+        }
+        mentionedUsers.insert(user)
+    }
+    
+    private func clearRemovedMentions() {
+        for user in mentionedUsers {
+            if !text.contains("@\(user.mentionText)") {
+                mentionedUsers.remove(user)
+            }
+        }
+    }
     
     private func edit(
         message: ChatMessage,
@@ -443,6 +475,7 @@ open class MessageComposerViewModel: ObservableObject {
         addedFileURLs = []
         addedCustomAttachments = []
         composerCommand = nil
+        mentionedUsers = Set<ChatUser>()
         clearText()
     }
     

@@ -678,6 +678,17 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(viewModifier is EmptyViewModifier)
     }
+    
+    func test_viewFactory_makeMessageListDateIndicator() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageListDateIndicator(date: Date())
+        
+        // Then
+        XCTAssert(view is DateIndicatorView)
+    }
 }
 
 extension ChannelAction: Equatable {

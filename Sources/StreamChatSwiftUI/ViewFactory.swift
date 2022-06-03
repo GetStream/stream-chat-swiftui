@@ -418,6 +418,12 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter dateString: the displayed date string.
     /// - Returns: view in the date indicator slot.
     func makeDateIndicatorView(dateString: String) -> DateIndicatorViewType
+
+    associatedtype MessageListDateIndicatorViewType: View
+    /// Creates the date indicator view in the message list.
+    /// - Parameter date: the date that will be displayed.
+    /// - Returns: view shown above messages separated by date.
+    func makeMessageListDateIndicator(date: Date) -> MessageListDateIndicatorViewType
     
     associatedtype GiphyBadgeViewType: View
     /// Creates giphy badge view.

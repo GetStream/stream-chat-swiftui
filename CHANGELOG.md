@@ -3,7 +3,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Possibility to view channel info on channel options
+- Date separators in the message list
+
+### 🐞 Fixed
+- Bug about link attachments not opening when the URL was missing the scheme
 
 # [4.15.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.15.0)
 _May 17, 2022_

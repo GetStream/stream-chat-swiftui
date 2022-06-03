@@ -54,7 +54,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         
         ToolbarItem(placement: .navigationBarTrailing) {
             ZStack {
-                NavigationLink(destination: LazyView(ChatChannelInfoView(channel: channel))) {
+                NavigationLink(destination: LazyView(ChatChannelInfoView(channel: channel, shownFromMessageList: true))) {
                     Rectangle()
                         .fill(Color(colors.background))
                         .contentShape(Rectangle())

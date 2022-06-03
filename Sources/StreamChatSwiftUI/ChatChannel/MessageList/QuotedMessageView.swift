@@ -109,10 +109,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                             cornerRadius: 0
                         )
                     } else if !quotedMessage.linkAttachments.isEmpty {
-                        LazyImage(source: quotedMessage.linkAttachments[0].previewURL!)
-                            .onDisappear(.cancel)
-                            .processors([ImageProcessors.Resize(width: attachmentWidth)])
-                            .priority(.high)
+                        LazyImage(
+                            source: quotedMessage.linkAttachments[0].previewURL ?? quotedMessage.linkAttachments[0]
+                                .originalURL
+                        )
+                        .onDisappear(.cancel)
+                        .processors([ImageProcessors.Resize(width: attachmentWidth)])
+                        .priority(.high)
                     }
                 }
                 .frame(width: attachmentWidth, height: attachmentWidth)

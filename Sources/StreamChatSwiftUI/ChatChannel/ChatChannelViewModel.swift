@@ -28,12 +28,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var isActive = true
     private var readsString = ""
     
-    private let messageListDateOverlay: DateFormatter = {
-        let df = DateFormatter()
-        df.setLocalizedDateFormatFromTemplate("MMMdd")
-        df.locale = .autoupdatingCurrent
-        return df
-    }()
+    private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
     private lazy var messagesDateFormatter = utils.dateFormatter
     private lazy var messageCachingUtils = utils.messageCachingUtils
@@ -150,6 +145,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if index >= messages.count {
             return
         }
+        
         let message = messages[index]
         checkForNewMessages(index: index)
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
@@ -349,23 +345,34 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func groupMessages() {
         var temp = [String: [String]]()
+        let primary = "primary"
         for (index, message) in messages.enumerated() {
-            let dateString = messagesDateFormatter.string(from: message.createdAt)
-            let prefix = messageCachingUtils.authorId(for: message)
-            let key = "\(prefix)-\(dateString)"
-            if temp[key] == nil {
-                temp[key] = [message.id]
-            } else {
-                // check if the previous message is not sent by the same user.
-                let previousIndex = index - 1
-                if previousIndex >= 0 {
-                    let previous = messages[previousIndex]
-                    let previousAuthorId = messageCachingUtils.authorId(for: previous)
-                    let shouldAddKey = prefix != previousAuthorId
-                    if shouldAddKey {
-                        temp[key]?.append(message.id)
-                    }
-                }
+            let date = message.createdAt
+            if index == 0 {
+                temp[message.id] = [primary]
+                continue
+            }
+
+            let previous = index - 1
+            let previousMessage = messages[previous]
+            let currentAuthorId = messageCachingUtils.authorId(for: message)
+            let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
+
+            if currentAuthorId != previousAuthorId {
+                temp[message.id] = [primary]
+            }
+
+            if previousMessage.type == .error
+                || previousMessage.type == .ephemeral
+                || previousMessage.type == .system {
+                temp[message.id] = [primary]
+                continue
+            }
+
+            let delay = previousMessage.createdAt.timeIntervalSince(date)
+
+            if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
+                temp[message.id] = [primary]
             }
         }
         
@@ -390,6 +397,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         var skipChanges = true
+        var animateChanges = false
         for change in changes {
             switch change {
             case .insert(_, index: _),
@@ -400,6 +408,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                    message.messageId != messages[index.row].messageId
                    || message.type == .ephemeral {
                     skipChanges = false
+                    if index.row < messages.count && message.reactionScoresId != messages[index.row].reactionScoresId {
+                        animateChanges = message.linkAttachments.isEmpty
+                    }
                 }
             default:
                 skipChanges = false
@@ -410,7 +421,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return .skip
         }
         
-        return .notAnimated
+        return animateChanges ? .animated : .notAnimated
     }
     
     private func enableDateIndicator() {

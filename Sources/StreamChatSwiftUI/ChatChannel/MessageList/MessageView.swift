@@ -5,20 +5,28 @@
 import StreamChat
 import SwiftUI
 
-struct MessageView<Factory: ViewFactory>: View {
+public struct MessageView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
     
     private var messageTypeResolver: MessageTypeResolving {
         utils.messageTypeResolver
     }
     
-    var factory: Factory
-    var message: ChatMessage
-    var contentWidth: CGFloat
-    var isFirst: Bool
-    @Binding var scrolledId: String?
+    public var factory: Factory
+    public var message: ChatMessage
+    public var contentWidth: CGFloat
+    public var isFirst: Bool
+    @Binding public var scrolledId: String?
+
+    public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
+        self.factory = factory
+        self.message = message
+        self.contentWidth = contentWidth
+        self.isFirst = isFirst
+        _scrolledId = scrolledId
+    }
     
-    var body: some View {
+    public var body: some View {
         VStack {
             if messageTypeResolver.isDeleted(message: message) {
                 factory.makeDeletedMessageView(

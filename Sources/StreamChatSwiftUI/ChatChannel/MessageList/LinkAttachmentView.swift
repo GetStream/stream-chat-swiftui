@@ -38,7 +38,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             let availableWidth = width - 4 * padding
             let size = message.text.frameSize(maxWidth: availableWidth)
             LinkTextView(
-                text: message.text,
+                message: message,
                 width: availableWidth,
                 textColor: UIColor(textColor(for: message))
             )
@@ -82,7 +82,7 @@ public struct LinkAttachmentView: View {
         VStack(alignment: .leading, spacing: padding) {
             if !imageHidden {
                 ZStack {
-                    LazyImage(source: linkAttachment.previewURL!)
+                    LazyImage(source: linkAttachment.previewURL ?? linkAttachment.originalURL)
                         .onDisappear(.cancel)
                         .processors([ImageProcessors.Resize(width: width)])
                         .priority(.high)
@@ -91,7 +91,7 @@ public struct LinkAttachmentView: View {
                     
                     if !authorHidden {
                         BottomLeftView {
-                            Text(linkAttachment.author!)
+                            Text(linkAttachment.author ?? "")
                                 .foregroundColor(colors.tintColor)
                                 .font(fonts.bodyBold)
                                 .standardPadding()
@@ -123,8 +123,8 @@ public struct LinkAttachmentView: View {
         }
         .padding(.horizontal, padding)
         .onTapGesture {
-            if UIApplication.shared.canOpenURL(linkAttachment.originalURL) {
-                UIApplication.shared.open(linkAttachment.originalURL, options: [:])
+            if let url = linkAttachment.originalURL.secureURL, UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:])
             }
         }
         .accessibilityIdentifier("LinkAttachmentView")
