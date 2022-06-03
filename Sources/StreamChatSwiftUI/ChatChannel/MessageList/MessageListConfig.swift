@@ -36,18 +36,18 @@ public struct MessageListConfig {
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
     }
     
-    let messageListType: MessageListType
-    let typingIndicatorPlacement: TypingIndicatorPlacement
-    let groupMessages: Bool
-    let messageDisplayOptions: MessageDisplayOptions
-    let messagePaddings: MessagePaddings
-    let dateIndicatorPlacement: DateIndicatorPlacement
-    let pageSize: Int
-    let messagePopoverEnabled: Bool
-    let doubleTapOverlayEnabled: Bool
-    let becomesFirstResponderOnOpen: Bool
-    let updateChannelsFromMessageList: Bool
-    let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
+    public let messageListType: MessageListType
+    public let typingIndicatorPlacement: TypingIndicatorPlacement
+    public let groupMessages: Bool
+    public let messageDisplayOptions: MessageDisplayOptions
+    public let messagePaddings: MessagePaddings
+    public let dateIndicatorPlacement: DateIndicatorPlacement
+    public let pageSize: Int
+    public let messagePopoverEnabled: Bool
+    public let doubleTapOverlayEnabled: Bool
+    public let becomesFirstResponderOnOpen: Bool
+    public let updateChannelsFromMessageList: Bool
+    public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
 }
 
 /// Contains information about the message paddings.
