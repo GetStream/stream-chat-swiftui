@@ -265,7 +265,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
     private func makeChannelListController(
         channels: [ChatChannel] = []
     ) -> ChatChannelListController_Mock {
-        let channelListController = ChatChannelListController_Mock.mock()
+        let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
         var chatChannels = [ChatChannel]()
         if channels.isEmpty {
             let channel = ChatChannel.mockDMChannel()

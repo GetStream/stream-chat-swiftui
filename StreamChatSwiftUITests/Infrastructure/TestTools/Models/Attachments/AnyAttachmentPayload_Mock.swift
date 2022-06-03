@@ -39,17 +39,3 @@ public extension AnyAttachmentPayload {
         )
     }
 }
-
-extension AnyAttachmentPayload: Equatable {
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        let lhsData = try! JSONEncoder.default.encode(lhs.payload.asAnyEncodable)
-        let lhsJSON = try! JSONDecoder.default.decode(RawJSON.self, from: lhsData)
-
-        let rhsData = try! JSONEncoder.default.encode(rhs.payload.asAnyEncodable)
-        let rhsJSON = try! JSONDecoder.default.decode(RawJSON.self, from: rhsData)
-
-        return lhs.type == rhs.type &&
-            lhs.localFileURL == rhs.localFileURL &&
-            lhsJSON == rhsJSON
-    }
-}

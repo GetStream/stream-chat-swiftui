@@ -86,7 +86,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let expected: [ChatMessage] = [message]
-        let messageController = ChatMessageController_Mock(
+        let messageController = ChatMessageController_Mock.mock(
             client: chatClient,
             cid: channel.cid,
             messageId: message.id
@@ -113,7 +113,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let expected: [ChatMessage] = [message]
-        let messageController = ChatMessageController_Mock(
+        let messageController = ChatMessageController_Mock.mock(
             client: chatClient,
             cid: channel.cid,
             messageId: message.id

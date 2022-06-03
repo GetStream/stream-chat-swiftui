@@ -33,6 +33,7 @@ public extension ChatClient {
                         kind: $0,
                         shouldFlushOnStart: $1,
                         shouldResetEphemeralValuesOnStart: $2,
+                        bundle: Bundle(for: StreamChatTestCase.self),
                         localCachingSettings: $3,
                         deletedMessagesVisibility: $4,
                         shouldShowShadowedMessages: $5

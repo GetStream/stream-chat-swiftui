@@ -18,7 +18,7 @@ class ChatChannelTestHelpers {
         let channel = chatChannel ?? ChatChannel.mockDMChannel(config: config, lastActiveWatchers: lastActiveWatchers)
         let channelQuery = ChannelQuery(cid: channel.cid)
         let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId!]))
-        let channelController = ChatChannelController_Mock(
+        let channelController = ChatChannelController_Mock.mock(
             channelQuery: channelQuery,
             channelListQuery: channelListQuery,
             client: chatClient
