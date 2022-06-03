@@ -490,6 +490,68 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.addedAssets.isEmpty)
     }
     
+    func test_messageComposerVM_mentionUsers() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let command = ComposerCommand(
+            id: "mentions",
+            typingSuggestion: TypingSuggestion(text: "Hey @Martin", locationRange: NSRange(location: 0, length: 11)),
+            displayInfo: nil
+        )
+        let user = ChatUser.mock(id: .unique, name: "Martin")
+        
+        // When
+        viewModel.handleCommand(
+            for: .constant("Hey @Martin"),
+            selectedRangeLocation: .constant(11),
+            command: .constant(command),
+            extraData: ["chatUser": user]
+        )
+        
+        // Then
+        XCTAssert(viewModel.mentionedUsers.count == 1)
+        XCTAssert(viewModel.mentionedUsers.first?.name == "Martin")
+    }
+    
+    func test_messageComposerVM_noMentionedUsers() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // When
+        viewModel.handleCommand(
+            for: .constant("Hey Martin"),
+            selectedRangeLocation: .constant(10),
+            command: .constant(nil),
+            extraData: [:]
+        )
+        
+        // Then
+        XCTAssert(viewModel.mentionedUsers.isEmpty)
+    }
+    
+    func test_messageComposerVM_mentionedUsersClearText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let command = ComposerCommand(
+            id: "mentions",
+            typingSuggestion: TypingSuggestion(text: "Hey @Martin", locationRange: NSRange(location: 0, length: 11)),
+            displayInfo: nil
+        )
+        let user = ChatUser.mock(id: .unique, name: "Martin")
+        
+        // When
+        viewModel.handleCommand(
+            for: .constant("Hey @Martin"),
+            selectedRangeLocation: .constant(11),
+            command: .constant(command),
+            extraData: ["chatUser": user]
+        )
+        viewModel.text = ""
+        
+        // Then
+        XCTAssert(viewModel.mentionedUsers.isEmpty)
+    }
+    
     // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {

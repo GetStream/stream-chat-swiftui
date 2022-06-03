@@ -88,14 +88,6 @@ open class TwoStepMentionCommand: CommandHandler {
         selectedUser != nil
     }
     
-    private func mentionText(for user: ChatUser) -> String {
-        if let name = user.name, !name.isEmpty {
-            return "\(mentionSymbol)\(name)"
-        } else {
-            return "\(mentionSymbol)\(user.id)"
-        }
-    }
-    
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if let selectedUser = selectedUser,
            command.typingSuggestion.text != "\(mentionSymbol)\(selectedUser.mentionText)" {
