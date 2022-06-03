@@ -16,14 +16,14 @@ public struct MessageView<Factory: ViewFactory>: View {
     public var message: ChatMessage
     public var contentWidth: CGFloat
     public var isFirst: Bool
-    @Binding var scrolledId: String?
+    @Binding public var scrolledId: String?
 
     public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
         self.factory = factory
         self.message = message
         self.contentWidth = contentWidth
         self.isFirst = isFirst
-        self._scrolledId = scrolledId
+        _scrolledId = scrolledId
     }
     
     public var body: some View {
