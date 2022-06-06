@@ -322,7 +322,6 @@
 		A35D803B283E89F50084FE25 /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		A35D803C283E89F50084FE25 /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A3600B2A283E9E1900E1C930 /* UserRobot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B24283E9E1900E1C930 /* UserRobot.swift */; };
-		A3600B2B283E9E1900E1C930 /* Robot+CustomAssertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B25283E9E1900E1C930 /* Robot+CustomAssertions.swift */; };
 		A3600B2F283E9E1900E1C930 /* UserRobot+Asserts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B29283E9E1900E1C930 /* UserRobot+Asserts.swift */; };
 		A3600B32283E9E4700E1C930 /* MessageList_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */; };
 		A3600B35283E9EBA00E1C930 /* Bundle+Target.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B34283E9EBA00E1C930 /* Bundle+Target.swift */; };
@@ -715,7 +714,6 @@
 		91CC2039283C3E7F0049A146 /* URLExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensions.swift; sourceTree = "<group>"; };
 		91CC203B283C4C250049A146 /* URLUtils_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLUtils_Tests.swift; sourceTree = "<group>"; };
 		A3600B24283E9E1900E1C930 /* UserRobot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserRobot.swift; sourceTree = "<group>"; };
-		A3600B25283E9E1900E1C930 /* Robot+CustomAssertions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Robot+CustomAssertions.swift"; sourceTree = "<group>"; };
 		A3600B29283E9E1900E1C930 /* UserRobot+Asserts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserRobot+Asserts.swift"; sourceTree = "<group>"; };
 		A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageList_Tests.swift; sourceTree = "<group>"; };
 		A3600B34283E9EBA00E1C930 /* Bundle+Target.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Target.swift"; sourceTree = "<group>"; };
@@ -1466,7 +1464,6 @@
 		A3600B23283E9E1900E1C930 /* Robots */ = {
 			isa = PBXGroup;
 			children = (
-				A3600B25283E9E1900E1C930 /* Robot+CustomAssertions.swift */,
 				A3600B24283E9E1900E1C930 /* UserRobot.swift */,
 				A3600B29283E9E1900E1C930 /* UserRobot+Asserts.swift */,
 			);
@@ -1766,7 +1763,6 @@
 				A3600B41283F652400E1C930 /* StreamTestCase.swift in Sources */,
 				A3600B37283E9EC900E1C930 /* StreamChatSwiftUITests.swift in Sources */,
 				A3600B2A283E9E1900E1C930 /* UserRobot.swift in Sources */,
-				A3600B2B283E9E1900E1C930 /* Robot+CustomAssertions.swift in Sources */,
 				829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */,
 				8463D9262836617F002B1894 /* ChannelListPage.swift in Sources */,
 				A3600B32283E9E4700E1C930 /* MessageList_Tests.swift in Sources */,
