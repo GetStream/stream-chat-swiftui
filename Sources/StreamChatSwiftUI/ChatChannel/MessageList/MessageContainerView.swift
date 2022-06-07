@@ -23,6 +23,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     var showsAllInfo: Bool
     var isInThread: Bool
     var isLast: Bool
+    var isFirstInUsersMessageGroup: Bool
+    var isLastInUsersMessageGroup: Bool
+
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
@@ -45,7 +48,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isLast: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        isFirstInUsersMessageGroup: Bool,
+        isLastInUsersMessageGroup: Bool
     ) {
         self.factory = factory
         self.channel = channel
@@ -55,6 +60,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
+        self.isFirstInUsersMessageGroup = isFirstInUsersMessageGroup
+        self.isLastInUsersMessageGroup = isLastInUsersMessageGroup
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
     }

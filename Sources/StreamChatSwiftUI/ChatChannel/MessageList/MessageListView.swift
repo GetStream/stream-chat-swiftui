@@ -110,8 +110,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     
                     LazyVStack(spacing: 0) {
                         ForEach(messages, id: \.messageId) { message in
-                            var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
+                            var index: Int?  = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
+                            let messageIndex: Int = messages.firstIndex(of: message) ?? 0
+                            let isFirstInUsersMessageGroup: Bool = messages.first == message ? true : messages[messageIndex - 1].author == message.author
+                            let isLastInUsersMessageGroup: Bool = messages.last == message ? true : messages[messageIndex + 1].author == message.author
                             factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
@@ -121,7 +124,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
-                                isLast: message == messages.last
+                                isLast: message == messages.last,
+                                isFirstInUsersMessageGroup: isFirstInUsersMessageGroup,
+                                isLastInUsersMessageGroup: isLastInUsersMessageGroup
                             )
                             .onAppear {
                                 if index == nil {

@@ -263,7 +263,9 @@ extension ViewFactory {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        isLast: Bool
+        isLast: Bool,
+        isFirstInUsersMessageGroup: Bool,
+        isLastInUsersMessageGroup: Bool
     ) -> some View {
         MessageContainerView(
             factory: self,
@@ -275,7 +277,9 @@ extension ViewFactory {
             isLast: isLast,
             scrolledId: scrolledId,
             quotedMessage: quotedMessage,
-            onLongPress: onLongPress
+            onLongPress: onLongPress,
+            isFirstInUsersMessageGroup: isFirstInUsersMessageGroup,
+            isLastInUsersMessageGroup: isLastInUsersMessageGroup
         )
     }
     
