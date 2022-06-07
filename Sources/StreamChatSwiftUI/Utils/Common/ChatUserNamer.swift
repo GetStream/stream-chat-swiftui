@@ -19,6 +19,6 @@ public class DefaultChatUserNamer: ChatUserNamer {
     }
     
     public func name(forUser user: ChatUser) -> String? {
-        return user.name
+        user.name
     }
 }
