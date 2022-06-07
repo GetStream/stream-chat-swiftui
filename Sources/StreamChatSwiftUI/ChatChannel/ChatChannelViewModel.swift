@@ -406,7 +406,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             case let .update(message, index: index):
                 if index.row < messages.count,
                    message.messageId != messages[index.row].messageId
-                   || message.type == .ephemeral {
+                   || message.type == .ephemeral
+                   || !message.linkAttachments.isEmpty {
                     skipChanges = false
                     if index.row < messages.count && message.reactionScoresId != messages[index.row].reactionScoresId {
                         animateChanges = message.linkAttachments.isEmpty
