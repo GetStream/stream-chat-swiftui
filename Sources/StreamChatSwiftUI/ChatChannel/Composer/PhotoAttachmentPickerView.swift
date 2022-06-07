@@ -45,6 +45,8 @@ public struct PhotoAttachmentCell: View {
     
     @State private var assetURL: URL?
     @State private var compressing = false
+    @State private var loading = false
+    @State var requestId: PHContentEditingInputRequestID?
     
     var asset: PHAsset
     var onImageTap: (AddedAsset) -> Void
@@ -89,7 +91,7 @@ public struct PhotoAttachmentCell: View {
                             }
                     }
                     .overlay(
-                        compressing ? ProgressView() : nil
+                        (compressing || loading) ? ProgressView() : nil
                     )
                 }
             } else {
@@ -130,7 +132,12 @@ public struct PhotoAttachmentCell: View {
                 return
             }
             
-            asset.requestContentEditingInput(with: nil) { input, _ in
+            let options = PHContentEditingInputRequestOptions()
+            options.isNetworkAccessAllowed = true
+            self.loading = true
+            
+            self.requestId = asset.requestContentEditingInput(with: options) { input, _ in
+                self.loading = false
                 if asset.mediaType == .image {
                     self.assetURL = input?.fullSizeImageURL
                 } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
@@ -145,6 +152,12 @@ public struct PhotoAttachmentCell: View {
                         self.compressing = false
                     }
                 }
+            }
+        }
+        .onDisappear() {
+            if let requestId = requestId {
+                asset.cancelContentEditingInputRequest(requestId)
+                self.requestId = nil
             }
         }
     }

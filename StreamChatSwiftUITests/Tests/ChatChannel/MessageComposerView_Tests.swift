@@ -2,6 +2,7 @@
 // Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
+import Photos
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
@@ -212,4 +213,25 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: viewWithSize, as: .image)
         XCTAssert(coordinator.textInput.height == 100)
     }
+    
+    func test_photoAttachmentCell_loadingResource() {
+        // Given
+        let asset = PHAsset()
+        let loader = PhotoAssetLoader()
+        let cell = PhotoAttachmentCell(
+            assetLoader: loader,
+            asset: asset,
+            onImageTap: { _ in },
+            imageSelected: { _ in return false }
+        )
+        
+        // When
+        _ = cell.onAppear()
+        _ = cell.onDisappear()
+        let newRequestId = cell.requestId
+        
+        // Then
+        XCTAssert(newRequestId == nil)
+    }
+    
 }
