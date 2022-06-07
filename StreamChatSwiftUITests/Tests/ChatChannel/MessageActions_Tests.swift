@@ -145,7 +145,6 @@ class MessageActions_Tests: StreamChatTestCase {
         let attachments = [
             ChatMessageImageAttachment.mock(
                 id: .unique,
-                imageURL: Bundle(for: MessageActions_Tests.self).url(forResource: "yoda", withExtension: "jpg")!,
                 localState: .uploadingFailed
             )
             .asAnyAttachment

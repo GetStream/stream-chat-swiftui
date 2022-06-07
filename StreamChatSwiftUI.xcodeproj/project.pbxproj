@@ -193,10 +193,6 @@
 		847305BF28243DFA004AC770 /* mock.html in Resources */ = {isa = PBXBuildFile; fileRef = 847305BE28243DF9004AC770 /* mock.html */; };
 		84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84733EC527FDBF82006926E0 /* NetworkReachability.swift */; };
 		84782785284A4DB500D2EE11 /* ChatClient_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CCB27578B92007FE2B9 /* ChatClient_Mock.swift */; };
-		84782786284A51B100D2EE11 /* yoda.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 84C94CB227578B92007FE2B9 /* yoda.jpg */; };
-		84782787284A55EC00D2EE11 /* yoda.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84C94CB427578B92007FE2B9 /* yoda.txt */; };
-		84782788284A564600D2EE11 /* AnyAttachmentPayload_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CB827578B92007FE2B9 /* AnyAttachmentPayload_Mock.swift */; };
-		84782789284A564E00D2EE11 /* ChatMessageImageAttachment_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CB527578B92007FE2B9 /* ChatMessageImageAttachment_Mock.swift */; };
 		847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */; };
 		847F7949282A91AD0009F74C /* ChatChannelView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847F7948282A91AD0009F74C /* ChatChannelView_Tests.swift */; };
 		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
@@ -636,10 +632,6 @@
 		84C2042227917B6A0024D616 /* MessageListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListView_Tests.swift; sourceTree = "<group>"; };
 		84C94C7E27567D3F007FE2B9 /* StreamChatSwiftUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StreamChatSwiftUITests-Bridging-Header.h"; sourceTree = "<group>"; };
 		84C94C7F27567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelListViewModel_Tests.swift; sourceTree = "<group>"; };
-		84C94CB227578B92007FE2B9 /* yoda.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = yoda.jpg; sourceTree = "<group>"; };
-		84C94CB427578B92007FE2B9 /* yoda.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = yoda.txt; sourceTree = "<group>"; };
-		84C94CB527578B92007FE2B9 /* ChatMessageImageAttachment_Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageImageAttachment_Mock.swift; sourceTree = "<group>"; };
-		84C94CB827578B92007FE2B9 /* AnyAttachmentPayload_Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyAttachmentPayload_Mock.swift; sourceTree = "<group>"; };
 		84C94CCB27578B92007FE2B9 /* ChatClient_Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatClient_Mock.swift; sourceTree = "<group>"; };
 		84C94CEB27578BF2007FE2B9 /* WaitFor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitFor.swift; sourceTree = "<group>"; };
 		84C94CEC27578BF2007FE2B9 /* TestError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestError.swift; sourceTree = "<group>"; };
@@ -1276,30 +1268,10 @@
 		84C94CA927578B92007FE2B9 /* TestTools */ = {
 			isa = PBXGroup;
 			children = (
-				84C94CAB27578B92007FE2B9 /* Models */,
 				84C94CCB27578B92007FE2B9 /* ChatClient_Mock.swift */,
 				84B2B5C9281947E100479CEE /* ViewFrameUtils.swift */,
 			);
 			path = TestTools;
-			sourceTree = "<group>";
-		};
-		84C94CAB27578B92007FE2B9 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				84C94CB127578B92007FE2B9 /* Attachments */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		84C94CB127578B92007FE2B9 /* Attachments */ = {
-			isa = PBXGroup;
-			children = (
-				84C94CB227578B92007FE2B9 /* yoda.jpg */,
-				84C94CB427578B92007FE2B9 /* yoda.txt */,
-				84C94CB527578B92007FE2B9 /* ChatMessageImageAttachment_Mock.swift */,
-				84C94CB827578B92007FE2B9 /* AnyAttachmentPayload_Mock.swift */,
-			);
-			path = Attachments;
 			sourceTree = "<group>";
 		};
 		84C94CEA27578BF2007FE2B9 /* Shared */ = {
@@ -1720,8 +1692,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84782786284A51B100D2EE11 /* yoda.jpg in Resources */,
-				84782787284A55EC00D2EE11 /* yoda.txt in Resources */,
 				847305BF28243DFA004AC770 /* mock.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1972,14 +1942,12 @@
 				84B2B5D02819629400479CEE /* PinnedMessagesView_Tests.swift in Sources */,
 				84C94D1427578BF3007FE2B9 /* TemporaryData.swift in Sources */,
 				84C94D4F2758FE59007FE2B9 /* ChatChannelTestHelpers.swift in Sources */,
-				84782789284A564E00D2EE11 /* ChatMessageImageAttachment_Mock.swift in Sources */,
 				84E0478C284A444E00BAFA17 /* TestRequest.swift in Sources */,
 				91CC203C283C4C250049A146 /* URLUtils_Tests.swift in Sources */,
 				84B2B5DA281985DA00479CEE /* FileAttachmentsView_Tests.swift in Sources */,
 				848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */,
 				84C94D0B27578BF2007FE2B9 /* QueueAwareDelegate.swift in Sources */,
 				846B15F42817E7630017F7A1 /* ChatChannelInfoViewModel_Tests.swift in Sources */,
-				84C94CE427578B92007FE2B9 /* ChatChannelController_Mock.swift in Sources */,
 				91B79FD9284E7E9C005B6E4F /* ChatUserNamer_Tests.swift in Sources */,
 				84C94D58275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift in Sources */,
 				84C94D60275A45D2007FE2B9 /* ViewFactory_Tests.swift in Sources */,
@@ -2049,7 +2017,6 @@
 				84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */,
 				8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */,
 				84B2B5D2281965D000479CEE /* MediaAttachmentsViewModel_Tests.swift in Sources */,
-				84782788284A564600D2EE11 /* AnyAttachmentPayload_Mock.swift in Sources */,
 				84E04798284A444E00BAFA17 /* InternetConnectionMock.swift in Sources */,
 				8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */,
 				84C94D1527578BF3007FE2B9 /* TestDispatchQueue.swift in Sources */,
