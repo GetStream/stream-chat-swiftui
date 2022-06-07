@@ -308,12 +308,18 @@ extension ViewFactory {
                     MessageAuthorView(message: message)
                         .padding(.leading, CGSize.messageAvatarSize.width + 24)
                 }
-                .padding(.top, !message.reactionScores.isEmpty ? (message.text.count > 8 ? 8 : -16) : -16)
+                .padding(.top, !message.reactionScores.isEmpty ? (useSmallPadding(for: message) ? 8 : -16) : -16)
+                .frame(maxHeight: 24)
                 Spacer()
             }
             Spacer()
         }
     }
+    
+    private func useSmallPadding(for message: ChatMessage) -> Bool {
+        message.text.count > 8 || !message.attachmentCounts.isEmpty
+    }
+    
     public func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
