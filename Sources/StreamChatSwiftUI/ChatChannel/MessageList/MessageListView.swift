@@ -51,6 +51,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             && channel.config.typingEventsEnabled
     }
     
+    private var lastInGroupHeaderSize: CGFloat {
+        messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
+    }
+    
     private let scrollAreaId = "scrollArea"
     
     public init(
@@ -112,6 +116,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
+                            let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
@@ -132,15 +137,22 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 }
                             }
                             .overlay(
-                                messageDate != nil ?
-                                    VStack {
-                                        factory.makeMessageListDateIndicator(date: messageDate!)
-                                            .offset(y: -messageListConfig.messageDisplayOptions.dateLabelSize)
-                                        Spacer()
-                                    }
+                                VStack {
+                                    showsLastInGroupInfo ?
+                                        factory.makeLastInGroupHeaderView(for: message)
                                     : nil
+                                    
+                                    messageDate != nil ?
+                                        VStack {
+                                            factory.makeMessageListDateIndicator(date: messageDate!)
+                                                .offset(y: -offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo))
+                                            Spacer()
+                                        }
+                                        : nil
+                                }
                             )
-                            .padding(.top, messageDate != nil ? messageListConfig.messageDisplayOptions.dateLabelSize : 0)
+                            .padding(.top, messageDate != nil ?
+                                     offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo) : additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo))
                             .flippedUpsideDown()
                         }
                         .id(listId)
@@ -227,11 +239,35 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
     
+    private func additionalTopPadding(showsLastInGroupInfo: Bool) -> CGFloat {
+        showsLastInGroupInfo ? lastInGroupHeaderSize : 0
+    }
+    
+    private func offsetForDateIndicator(showsLastInGroupInfo: Bool) -> CGFloat {
+        var offset = messageListConfig.messageDisplayOptions.dateLabelSize        
+        offset += (showsLastInGroupInfo ? lastInGroupHeaderSize : 0)
+        return offset
+    }
+    
     private func showsAllData(for message: ChatMessage) -> Bool {
         if !messageListConfig.groupMessages {
             return true
         }
-        return messagesGroupingInfo[message.id] != nil
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(firstMessageKey) == true
+    }
+    
+    private func showsLastInGroupInfo(
+        for message: ChatMessage,
+        channel: ChatChannel
+    ) -> Bool {
+        guard !channel.isDirectMessageChannel
+                && !message.isSentByCurrentUser
+                && (lastInGroupHeaderSize > 0) else {
+            return false
+        }
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(lastMessageKey) == true
     }
     
     private func handleLongPress(messageDisplayInfo: MessageDisplayInfo) {

@@ -345,34 +345,41 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func groupMessages() {
         var temp = [String: [String]]()
-        let primary = "primary"
         for (index, message) in messages.enumerated() {
             let date = message.createdAt
             if index == 0 {
-                temp[message.id] = [primary]
+                temp[message.id] = [firstMessageKey]
                 continue
+            } else if index == messages.count - 1 {
+                temp[message.id] = [lastMessageKey]
             }
-
+            
             let previous = index - 1
             let previousMessage = messages[previous]
             let currentAuthorId = messageCachingUtils.authorId(for: message)
             let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
 
             if currentAuthorId != previousAuthorId {
-                temp[message.id] = [primary]
+                temp[message.id] = [firstMessageKey]
+                var prevInfo = temp[previousMessage.id] ?? []
+                prevInfo.append(lastMessageKey)
+                temp[previousMessage.id] = prevInfo
             }
 
             if previousMessage.type == .error
                 || previousMessage.type == .ephemeral
                 || previousMessage.type == .system {
-                temp[message.id] = [primary]
+                temp[message.id] = [firstMessageKey]
                 continue
             }
 
             let delay = previousMessage.createdAt.timeIntervalSince(date)
 
             if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
-                temp[message.id] = [primary]
+                temp[message.id] = [firstMessageKey]
+                var prevInfo = temp[previousMessage.id] ?? []
+                prevInfo.append(lastMessageKey)
+                temp[previousMessage.id] = prevInfo
             }
         }
         
@@ -527,3 +534,6 @@ enum AnimationChange {
     case notAnimated
     case skip
 }
+
+let firstMessageKey = "firstMessage"
+let lastMessageKey = "lastMessage"

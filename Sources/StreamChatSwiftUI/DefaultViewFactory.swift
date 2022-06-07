@@ -301,6 +301,19 @@ extension ViewFactory {
         MessageAuthorAndDateView(message: message)
     }
     
+    public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
+        VStack {
+            HStack {
+                TopLeftView {
+                    MessageAuthorView(message: message)
+                        .padding(.leading, CGSize.messageAvatarSize.width + 24)
+                }
+                .padding(.top, !message.reactionScores.isEmpty ? (message.text.count > 8 ? 8 : -16) : -16)
+                Spacer()
+            }
+            Spacer()
+        }
+    }
     public func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,

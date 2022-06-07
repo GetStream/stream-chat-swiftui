@@ -689,6 +689,18 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is DateIndicatorView)
     }
+    
+    func test_viewFactory_makeLastInGroupHeaderView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeLastInGroupHeaderView(for: message)
+        
+        // Then
+        XCTAssert(view is EmptyView)
+    }
+    
 }
 
 extension ChannelAction: Equatable {

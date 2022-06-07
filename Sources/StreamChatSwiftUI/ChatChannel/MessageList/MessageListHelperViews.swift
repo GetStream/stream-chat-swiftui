@@ -9,6 +9,28 @@ import SwiftUI
 public struct MessageAuthorAndDateView: View {
     
     @Injected(\.utils) private var utils
+    
+    var message: ChatMessage
+    
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+    
+    public var body: some View {
+        HStack {
+            MessageAuthorView(message: message)
+            if utils.messageListConfig.messageDisplayOptions.showMessageDate {
+                MessageDateView(message: message)
+            }
+            Spacer()
+        }
+    }
+}
+
+/// View that displays the message author.
+public struct MessageAuthorView: View {
+    
+    @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -19,17 +41,12 @@ public struct MessageAuthorAndDateView: View {
     }
     
     public var body: some View {
-        HStack {
-            Text(utils.messageCachingUtils.authorName(for: message))
-                .lineLimit(1)
-                .font(fonts.footnoteBold)
-                .foregroundColor(Color(colors.textLowEmphasis))
-            if utils.messageListConfig.messageDisplayOptions.showMessageDate {
-                MessageDateView(message: message)
-            }
-            Spacer()
-        }
+        Text(utils.messageCachingUtils.authorName(for: message))
+            .lineLimit(1)
+            .font(fonts.footnoteBold)
+            .foregroundColor(Color(colors.textLowEmphasis))
     }
+    
 }
 
 /// View that displays the sending date of a message.
