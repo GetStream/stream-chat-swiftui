@@ -25,7 +25,7 @@ class StreamTestCase: XCTestCase {
         userRobot = UserRobot(server)
 
         try super.setUpWithError()
-        //useMockServer()
+        useMockServer()
         app.launch()
     }
 

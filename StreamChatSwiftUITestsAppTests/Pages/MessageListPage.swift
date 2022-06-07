@@ -15,6 +15,14 @@ class MessageListPage {
         app.otherElements.matching(identifier: "MessageContainerView")
     }
     
+    static func messageView(for cell: XCUIElement) -> XCUIElement {
+        cell.otherElements.matching(identifier: "MessageView").firstMatch
+    }
+    
+    static var messages: XCUIElementQuery {
+        app.otherElements.matching(identifier: "MessageView")
+    }
+    
     static var list: XCUIElement {
         app.scrollViews["ChatChannelView"]
     }

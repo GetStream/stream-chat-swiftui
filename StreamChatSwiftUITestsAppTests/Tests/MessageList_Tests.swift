@@ -50,8 +50,6 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func testMessageListIdentifiers() {
-        app.launch()
-        
         StartPage.startButton.safeTap()
         
         let channelCells = ChannelListPage.cells
@@ -61,12 +59,10 @@ final class MessageList_Tests: StreamTestCase {
         XCTAssert(list.exists)
         
         let cells = MessageListPage.cells
-        let message = cells.firstMatch
-        XCTAssert(message.waitForExistence(timeout: 1))
+        let first = cells.firstMatch
+        XCTAssert(first.exists)
         
-        let reactionsContainer = MessageListPage.Attributes.reactionButton(in: message)
-        XCTAssert(reactionsContainer.exists)
-        
+        let message = MessageListPage.messageView(for: first)
         message.press(forDuration: 1)
                 
         let reactionsMessageView = MessageListPage.Reactions.reactionsMessageView
