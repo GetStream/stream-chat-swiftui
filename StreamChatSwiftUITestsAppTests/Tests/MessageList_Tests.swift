@@ -29,26 +29,10 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
     
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        
-        let cell = app.otherElements.buttons["ChatChannelSwipeableListItem"].firstMatch
-        cell.safeTap()
-
-        let messageList = app.scrollViews.firstMatch
-        XCTAssert(messageList.waitForExistence(timeout: 1))
-        
-        measure(metrics: [XCTOSSignpostMetric.scrollDecelerationMetric]) {
-            messageList.swipeDown(velocity: .fast)
-            stopMeasuring()
-            messageList.swipeUp(velocity: .fast)
-        }
-    }
-    
     func testChannelListIdentifiers() {
         app.launch()
+        
+        StartPage.startButton.safeTap()
 
         let cell = ChannelListPage.cells.firstMatch
 
@@ -67,6 +51,8 @@ final class MessageList_Tests: StreamTestCase {
     
     func testMessageListIdentifiers() {
         app.launch()
+        
+        StartPage.startButton.safeTap()
         
         let channelCells = ChannelListPage.cells
         channelCells.firstMatch.safeTap()

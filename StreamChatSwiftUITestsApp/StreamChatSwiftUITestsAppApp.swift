@@ -16,3 +16,21 @@ struct StreamChatSwiftUITestsAppApp: App {
         }
     }
 }
+
+class AppState: ObservableObject, Equatable {
+    
+    static func == (lhs: AppState, rhs: AppState) -> Bool {
+        lhs.userState == rhs.userState
+    }
+    
+    @Published var userState: UserState = .notLoggedIn
+    
+    static let shared = AppState()
+    
+    private init() {}
+}
+
+enum UserState {
+    case notLoggedIn
+    case loggedIn
+}

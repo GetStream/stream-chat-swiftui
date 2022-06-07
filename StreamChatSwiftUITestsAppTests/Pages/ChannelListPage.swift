@@ -9,8 +9,7 @@ import StreamChat
 enum ChannelListPage {
     
     static var userAvatar: XCUIElement {
-//        app.otherElements["CurrentChatUserAvatarView"]
-        return app.otherElements.firstMatch // DUMMY LINE, by clicking on this element, we must log out.
+        return app.buttons["LogoutButton"]
     }
         
     static var cells: XCUIElementQuery {

@@ -10,22 +10,44 @@ import StreamChatSwiftUI
 
 struct StartPage: View {
     
+    @State var chatShown = false
+    @ObservedObject var appState = AppState.shared
+    
     var body: some View {
         NavigationView {
-            NavigationLink("Start Chat",
-                           destination:
-                            ChatChannelListView()
-                            .navigationBarHidden(true)
-            )
+            ZStack {
+                Button {
+                    appState.userState = .loggedIn
+                } label: {
+                    Text("Start Chat")
+                }
+                
+                NavigationLink(isActive: $chatShown, destination: {
+                    ChatChannelListView(viewFactory: DemoAppFactory.shared).navigationBarHidden(true)
+                }, label: {
+                    EmptyView()
+                })
+            }
             .accessibilityIdentifier("TestApp.Start")
             .navigationTitle("Test UI App")
             .navigationBarHidden(true)
-        }.navigationViewStyle(StackNavigationViewStyle())
+            .onReceive(appState.$userState, perform: { value in
+                chatShown = value == .loggedIn
+            })
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
-struct StartPage_Previews: PreviewProvider {
-    static var previews: some View {
-        StartPage()
+class DemoAppFactory: ViewFactory {
+    
+    @Injected(\.chatClient) public var chatClient
+    
+    private init() {}
+    
+    public static let shared = DemoAppFactory()
+    
+    func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
+        CustomChannelModifier(title: title)
     }
 }
