@@ -235,5 +235,4 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         XCTAssert(newRequestId == nil)
     }
-    
 }
