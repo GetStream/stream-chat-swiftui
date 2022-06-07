@@ -127,10 +127,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             handleGestureForMessage(showsMessageActions: true)
                         }
                     })
-                    .offset(x: self.offsetX)
+                    .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
                     .simultaneousGesture(
                         DragGesture(
-                            minimumDistance: 10,
+                            minimumDistance: utils.messageListConfig.messageDisplayOptions.minimumSwipeGestureDistance,
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
@@ -218,6 +218,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
+    }
+    
+    private var maximumHorizontalSwipeDisplacement: CGFloat {
+        replyThreshold + 20
     }
         
     private var isMessagePinned: Bool {
