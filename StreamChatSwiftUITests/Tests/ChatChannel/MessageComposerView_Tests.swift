@@ -222,7 +222,9 @@ class MessageComposerView_Tests: StreamChatTestCase {
             assetLoader: loader,
             asset: asset,
             onImageTap: { _ in },
-            imageSelected: { _ in return false }
+            imageSelected: { _ in
+                false
+            }
         )
         
         // When
