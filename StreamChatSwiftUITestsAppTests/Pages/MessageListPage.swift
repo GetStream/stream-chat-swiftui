@@ -78,8 +78,7 @@ class MessageListPage {
         }
 
         static func threadButton(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.buttons["threadReplyCountButton"]
-            return app.buttons.firstMatch // DUMMY LINE
+            messageCell.otherElements["MessageRepliesView"].firstMatch
         }
 //
         static func time(in messageCell: XCUIElement) -> XCUIElement {

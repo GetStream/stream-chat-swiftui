@@ -172,6 +172,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             message: message,
                             replyCount: message.replyCount
                         )
+                        .accessibilityElement(children: .contain)
+                        .accessibility(identifier: "MessageRepliesView")
                     }
                                         
                     if showsAllInfo && !message.isDeleted {

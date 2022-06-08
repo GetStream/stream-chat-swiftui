@@ -67,34 +67,34 @@ final class MessageList_Tests: StreamTestCase {
                 
         let reactionsMessageView = MessageListPage.Reactions.reactionsMessageView
         XCTAssert(reactionsMessageView.waitForExistence(timeout: 1))
-                
+
         let reactionLove = MessageListPage.Reactions.love
         XCTAssert(reactionLove.exists)
-        
+
         let reactionSad = MessageListPage.Reactions.sad
         XCTAssert(reactionSad.exists)
-        
+
         let reactionWow = MessageListPage.Reactions.wow
         XCTAssert(reactionWow.exists)
-        
+
         let reactionHaha = MessageListPage.Reactions.lol
         XCTAssert(reactionHaha.exists)
-        
+
         let reactionLike = MessageListPage.Reactions.like
         XCTAssert(reactionLike.exists)
-        
+
         let messageActionsView = MessageListPage.ContextMenu.actionsView.element
         XCTAssert(messageActionsView.exists)
-        
+
         let replyMessageAction = MessageListPage.ContextMenu.reply.element
         XCTAssert(replyMessageAction.exists)
-        
+
         let threadMessageAction = MessageListPage.ContextMenu.threadReply.element
         XCTAssert(threadMessageAction.exists)
-        
+
         let pinMessageAction = MessageListPage.ContextMenu.pin.element
         XCTAssert(pinMessageAction.exists)
-        
+
         let copyMessageAction = MessageListPage.ContextMenu.copy.element
         XCTAssert(copyMessageAction.exists)
         
@@ -127,6 +127,11 @@ final class MessageList_Tests: StreamTestCase {
         
         let attachmentPickerCamera = MessageListPage.AttachmentMenu.cameraButton
         XCTAssert(attachmentPickerCamera.exists)
+         
+        let threadButton = MessageListPage.Attributes.threadButton(in: first)
+        XCTAssert(threadButton.exists)
+         
+        threadButton.safeTap()
         */
         
         /*
