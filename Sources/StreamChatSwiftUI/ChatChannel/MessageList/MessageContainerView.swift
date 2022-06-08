@@ -321,6 +321,8 @@ struct SendFailureIndicator: View {
                 .foregroundColor(Color(colors.alert))
                 .offset(y: 4)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("SendFailureIndicator")
     }
 }
 

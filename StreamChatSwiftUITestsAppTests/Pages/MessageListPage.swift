@@ -53,10 +53,7 @@ class MessageListPage {
         static var mediaButton: XCUIElement { app.buttons["PickerTypeButtonMedia"] }
         static var commandButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
         static var collapsedComposerButton: XCUIElement { app.buttons["PickerTypeButtonCollapsed"] }
-        static var cooldown: XCUIElement {
-//            app.staticTexts["cooldownLabel"]
-            return app.staticTexts.firstMatch  // DUMMY LINE
-        }
+        static var cooldown: XCUIElement { app.textViews["ComposerTextInputView"] }
     }
     
     enum Reactions {
@@ -80,15 +77,13 @@ class MessageListPage {
         static func threadButton(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.otherElements["MessageRepliesView"].firstMatch
         }
-//
+
         static func time(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.staticTexts["MessageDateView"] // FIXME for participants
-            return app.staticTexts.firstMatch // DUMMY LINE
+            messageCell.staticTexts["MessageDateView"]
         }
-//
+        
         static func author(messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.staticTexts["authorNameLabel"]
-            return app.staticTexts.firstMatch // DUMMY LINE
+            messageCell.staticTexts["MessageAuthorView"]
         }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
@@ -96,37 +91,27 @@ class MessageListPage {
         }
 
         static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.textViews.matching(NSPredicate(format: "value LIKE '\(text)'")).firstMatch
-            return app.textViews.firstMatch // DUMMY LINE
+            messageCell.staticTexts["quotedMessageText"]
         }
 
         static func deletedIcon(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.images["onlyVisibleToYouImageView"]
-            return app.images.firstMatch // DUMMY LINE
+            messageCell.images["onlyVisibleToYouImageView"]
         }
 
         static func deletedLabel(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.staticTexts["onlyVisibleToYouLabel"]
-            return app.staticTexts.firstMatch // DUMMY LINE
+            messageCell.staticTexts["onlyVisibleToYouLabel"]
         }
 
         static func errorButton(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.buttons["error indicator"]
-            return app.buttons.firstMatch // DUMMY LINE
+            messageCell.otherElements["SendFailureIndicator"]
         }
 
         static func readCount(in messageCell: XCUIElement) -> XCUIElement {
-//            messageCell.staticTexts["MessageReadIndicatorView"]
-            return app.staticTexts.firstMatch // DUMMY LINE
+            messageCell.staticTexts["readIndicatorCount"]
         }
 
-        static func statusCheckmark(for status: MessageDeliveryStatus?, in messageCell: XCUIElement) -> XCUIElement {
-//            var identifier = "imageView"
-//            if let status = status {
-//                identifier = "\(identifier)_\(status.rawValue)"
-//            }
-//            return messageCell.images[identifier]
-            return app.images.firstMatch // DUMMY LINE
+        static func statusCheckmark(for status: MessageDeliveryStatus? = nil, in messageCell: XCUIElement) -> XCUIElement {
+            messageCell.images["readIndicatorCheckmark"]
         }
         
         static func giphySendButton(in messageCell: XCUIElement) -> XCUIElement {
@@ -228,23 +213,19 @@ class MessageListPage {
     
     enum ComposerCommands {
         static var cells: XCUIElementQuery {
-//            app.cells.matching(NSPredicate(format: "identifier LIKE 'ChatCommandSuggestionCollectionViewCell'"))
-            return app.cells // DUMMY LINE
+            app.otherElements.matching(identifier: "InstantCommandView")
         }
 
         static var headerTitle: XCUIElement {
-//            app.otherElements["ChatSuggestionsHeaderView"].staticTexts.firstMatch
-            return app.otherElements.firstMatch // DUMMY LINE
+            app.staticTexts["InstantCommandsHeader"]
         }
 
         static var headerImage: XCUIElement {
-//            app.otherElements["ChatSuggestionsHeaderView"].images.firstMatch
-            return app.otherElements.firstMatch // DUMMY LINE
+            app.images["InstantCommandsImage"]
         }
 
         static var giphyImage: XCUIElement {
-//            app.images["command_giphy"]
-            return app.images.firstMatch // DUMMY LINE
+            app.images["imageGiphy"].firstMatch
         }
     }
     

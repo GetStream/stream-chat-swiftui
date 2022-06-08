@@ -128,6 +128,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 .foregroundColor(textColor(for: quotedMessage))
                 .lineLimit(3)
                 .font(fonts.footnote)
+                .accessibility(identifier: "quotedMessageText")
             
             if fillAvailableSpace {
                 Spacer()
@@ -146,6 +147,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 )
             )
         )
+        .accessibilityElement(children: .contain)
     }
     
     private var bubbleBackground: UIColor {

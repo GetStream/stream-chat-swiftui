@@ -24,11 +24,14 @@ public struct MessageAuthorAndDateView: View {
                 .lineLimit(1)
                 .font(fonts.footnoteBold)
                 .foregroundColor(Color(colors.textLowEmphasis))
+                .accessibilityIdentifier("MessageAuthorView")
             if utils.messageListConfig.messageDisplayOptions.showMessageDate {
                 MessageDateView(message: message)
+                    .accessibilityIdentifier("MessageDateView")
             }
             Spacer()
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageAuthorAndDateView")
     }
 }
@@ -69,6 +72,7 @@ struct MessageReadIndicatorView: View {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
                     .foregroundColor(colors.tintColor)
+                    .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: !readUsers.isEmpty ? images.readByAll : images.messageSent
@@ -76,7 +80,9 @@ struct MessageReadIndicatorView: View {
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
+            .accessibilityIdentifier("readIndicatorCheckmark")
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageReadIndicatorView")
     }
 }

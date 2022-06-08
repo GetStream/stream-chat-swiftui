@@ -6,7 +6,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 public let apiKeyString = "zcgvnykxsfm8"
-public let applicationGroupIdentifier = "group.io.getstream.iOS.ChatDemoAppSwiftUI"
 public let currentUserIdRegisteredForPush = "currentUserIdRegisteredForPush"
 
 public struct UserCredentials {

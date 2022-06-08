@@ -33,6 +33,7 @@ struct CommandsContainerView: View {
                 .accessibilityIdentifier("InstantCommandsView")
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("CommandsContainerView")
     }
 }
