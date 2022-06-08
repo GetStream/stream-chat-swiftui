@@ -87,7 +87,7 @@ public struct MessageDisplayOptions {
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
         overlayDateLabelSize: CGFloat = 40,
-        minimumSwipeGestureDistance: CGFloat = 15,
+        minimumSwipeGestureDistance: CGFloat = 10,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions

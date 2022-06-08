@@ -221,7 +221,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var maximumHorizontalSwipeDisplacement: CGFloat {
-        replyThreshold + 20
+        replyThreshold + 30
     }
         
     private var isMessagePinned: Bool {
