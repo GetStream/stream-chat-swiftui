@@ -52,10 +52,10 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     viewFactory.makeNoChannelsView()
                 } else {
                     ZStack {
-                        ChannelDeepLink(
-                            deeplinkChannel: $viewModel.deeplinkChannel,
-                            channelDestination: viewFactory.makeChannelDestination()
-                        )
+//                        ChannelDeepLink(
+//                            deeplinkChannel: $viewModel.deeplinkChannel,
+//                            channelDestination: viewFactory.makeChannelDestination()
+//                        )
                         
                         ChatChannelListContentView(
                             viewFactory: viewFactory,

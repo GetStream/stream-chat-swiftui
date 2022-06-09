@@ -49,6 +49,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
         didSet {
+            print("===== messages count = \(messages.count)")
             if utils.messageListConfig.groupMessages {
                 groupMessages()
             }
@@ -97,7 +98,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrollToMessage: ChatMessage? = nil
     ) {
         self.channelController = channelController
-        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController) {
+        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController) && messageController == nil {
             channelController.synchronize()
         }
         if let messageController = messageController {
@@ -433,6 +434,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     deinit {
         messageCachingUtils.clearCache()
+        if messageController == nil {
+            utils.channelControllerFactory.clearCurrentController()
+        }
     }
 }
 
