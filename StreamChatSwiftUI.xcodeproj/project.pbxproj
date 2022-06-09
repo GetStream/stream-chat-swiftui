@@ -270,9 +270,7 @@
 		84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF027578BF2007FE2B9 /* MockFunc.swift */; };
 		84C94D0927578BF2007FE2B9 /* TestManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF127578BF2007FE2B9 /* TestManagedObject.swift */; };
 		84C94D0B27578BF2007FE2B9 /* QueueAwareDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF427578BF2007FE2B9 /* QueueAwareDelegate.swift */; };
-		84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF627578BF2007FE2B9 /* AssertJSONEqual.swift */; };
 		84C94D0D27578BF2007FE2B9 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF727578BF2007FE2B9 /* AssertResult.swift */; };
-		84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF827578BF2007FE2B9 /* AssertAsync.swift */; };
 		84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFC27578BF2007FE2B9 /* ChannelId.swift */; };
 		84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFD27578BF2007FE2B9 /* JSONEncoder+Extensions.swift */; };
 		84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFE27578BF2007FE2B9 /* XCTestCase+MockJSON.swift */; };
@@ -290,7 +288,6 @@
 		84C94D2A275796D0007FE2B9 /* MockNetworkURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D29275796D0007FE2B9 /* MockNetworkURLProtocol.swift */; };
 		84C94D2C275796F7007FE2B9 /* RequestRecorderURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D2B275796F7007FE2B9 /* RequestRecorderURLProtocol.swift */; };
 		84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3227579BB0007FE2B9 /* AssertJSONEqual.swift */; };
-		84C94D3B27579BB0007FE2B9 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3327579BB0007FE2B9 /* AssertResult.swift */; };
 		84C94D3C27579BB0007FE2B9 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3427579BB0007FE2B9 /* AssertAsync.swift */; };
 		84C94D422757C16D007FE2B9 /* ChatChannelListTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D412757C16D007FE2B9 /* ChatChannelListTestHelpers.swift */; };
 		84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */; };
@@ -317,9 +314,6 @@
 		84DEC8E82760EABC00172876 /* ChatChannelDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8E72760EABC00172876 /* ChatChannelDataSource.swift */; };
 		84DEC8EA2761089A00172876 /* MessageThreadHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8E92761089A00172876 /* MessageThreadHeaderViewModifier.swift */; };
 		84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8EB27611CAE00172876 /* SendInChannelView.swift */; };
-		84E57C4E281037B2002213C1 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C46281037B2002213C1 /* AssertJSONEqual.swift */; };
-		84E57C4F281037B2002213C1 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C47281037B2002213C1 /* AssertResult.swift */; };
-		84E57C50281037B2002213C1 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C48281037B2002213C1 /* AssertAsync.swift */; };
 		84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */; };
 		84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */; };
 		84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */; };
@@ -1518,7 +1512,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1310;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					8465FBB42746873A00AF091E = {
 						CreatedOnToolsVersion = 13.1;
@@ -1825,7 +1819,6 @@
 				84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84C94D4D2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift in Sources */,
 				84C94CDB27578B92007FE2B9 /* NSManagedObject+ContextChange.swift in Sources */,
-				84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
 				84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */,
 				847BA08927E0BAEE00ED20C7 /* WebSocketEngineMock.swift in Sources */,
@@ -1858,8 +1851,6 @@
 				84C94D2227579359007FE2B9 /* AnyEndpoint.swift in Sources */,
 				84C94D5C275A2E9F007FE2B9 /* StreamChatUtilsMocks.swift in Sources */,
 				84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */,
-				84E57C50281037B2002213C1 /* AssertAsync.swift in Sources */,
-				84E57C4F281037B2002213C1 /* AssertResult.swift in Sources */,
 				8423C34C277DDD250092DCF1 /* MuteCommandHandler_Tests.swift in Sources */,
 				84C94D24275794D3007FE2B9 /* InternetConnectionMock.swift in Sources */,
 				84C94CDD27578B92007FE2B9 /* MemberPayload.swift in Sources */,
@@ -1888,7 +1879,6 @@
 				84C94CD127578B92007FE2B9 /* CurrentChatUser_Mock.swift in Sources */,
 				84B2B5D82819778D00479CEE /* FileAttachmentsViewModel_Tests.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
-				84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */,
 				847BA08727E0BACB00ED20C7 /* WebSocketPingControllerMock.swift in Sources */,
 				84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */,
 				84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */,
@@ -1911,7 +1901,6 @@
 				84C94CDE27578B92007FE2B9 /* UnreadCount.swift in Sources */,
 				84C94CCE27578B92007FE2B9 /* ChatChannel_Mock.swift in Sources */,
 				84B2B5CA281947E100479CEE /* ViewFrameUtils.swift in Sources */,
-				84C94D3B27579BB0007FE2B9 /* AssertResult.swift in Sources */,
 				84C94CD027578B92007FE2B9 /* ChatMessage_Mock.swift in Sources */,
 				8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */,
 				84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */,
@@ -2365,7 +2354,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = 4.16.0;
+				branch = xcode14;
 				kind = branch;
 			};
 		};
