@@ -521,15 +521,18 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private func listenToCooldownUpdates() {
-        channelController.channelChangePublisher.sink { [weak self] _ in
-            let cooldownDuration = self?.channelController.channel?.cooldownDuration ?? 0
-            if self?.cooldownPeriod == cooldownDuration {
-                return
-            }
-            self?.cooldownPeriod = cooldownDuration
-            self?.checkChannelCooldown()
-        }
-        .store(in: &cancellables)
+        /*
+         TODO: temporarly disabled until LLC iOS 16 issues are fixed.
+         channelController.channelChangePublisher.sink { [weak self] _ in
+             let cooldownDuration = self?.channelController.channel?.cooldownDuration ?? 0
+             if self?.cooldownPeriod == cooldownDuration {
+                 return
+             }
+             self?.cooldownPeriod = cooldownDuration
+             self?.checkChannelCooldown()
+         }
+         .store(in: &cancellables)
+          */
     }
     
     private func checkChannelCooldown() {
