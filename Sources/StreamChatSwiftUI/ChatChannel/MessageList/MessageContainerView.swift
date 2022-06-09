@@ -326,7 +326,14 @@ public struct MessageDisplayInfo {
     public var showsMessageActions: Bool = true
     public var keyboardWasShown: Bool = false
 
-    public init(message: ChatMessage, frame: CGRect, contentWidth: CGFloat, isFirst: Bool, showsMessageActions: Bool = true, keyboardWasShown: Bool = false) {
+    public init(
+        message: ChatMessage,
+        frame: CGRect,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        showsMessageActions: Bool = true,
+        keyboardWasShown: Bool = false
+    ) {
         self.message = message
         self.frame = frame
         self.contentWidth = contentWidth
@@ -334,5 +341,4 @@ public struct MessageDisplayInfo {
         self.showsMessageActions = showsMessageActions
         self.keyboardWasShown = keyboardWasShown
     }
-
 }
