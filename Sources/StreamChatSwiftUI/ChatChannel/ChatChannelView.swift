@@ -67,7 +67,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
                                 : nil
                         )
-                        
                     } else {
                         factory.makeEmptyMessagesView(for: channel, colors: colors)
                     }
