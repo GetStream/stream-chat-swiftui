@@ -40,5 +40,3 @@ extension AccessibilityView where Self: UIView {
 }
 
 #endif
-
-
