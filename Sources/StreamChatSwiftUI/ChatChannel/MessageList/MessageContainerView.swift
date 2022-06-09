@@ -319,10 +319,26 @@ struct SendFailureIndicator: View {
 }
 
 public struct MessageDisplayInfo {
-    let message: ChatMessage
-    let frame: CGRect
-    let contentWidth: CGFloat
-    let isFirst: Bool
-    var showsMessageActions: Bool = true
-    var keyboardWasShown: Bool = false
+    public let message: ChatMessage
+    public let frame: CGRect
+    public let contentWidth: CGFloat
+    public let isFirst: Bool
+    public var showsMessageActions: Bool = true
+    public var keyboardWasShown: Bool = false
+
+    public init(
+        message: ChatMessage,
+        frame: CGRect,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        showsMessageActions: Bool = true,
+        keyboardWasShown: Bool = false
+    ) {
+        self.message = message
+        self.frame = frame
+        self.contentWidth = contentWidth
+        self.isFirst = isFirst
+        self.showsMessageActions = showsMessageActions
+        self.keyboardWasShown = keyboardWasShown
+    }
 }
