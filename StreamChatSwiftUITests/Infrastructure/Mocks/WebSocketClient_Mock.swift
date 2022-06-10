@@ -46,7 +46,7 @@ class WebSocketClientMock: WebSocketClient {
         _connect_calledCounter { $0 += 1 }
     }
 
-    override func disconnect(source: WebSocketConnectionState.DisconnectionSource = .userInitiated) {
+    func disconnect(source: WebSocketConnectionState.DisconnectionSource = .userInitiated) {
         _disconnect_calledCounter { $0 += 1 }
         disconnect_source = source
     }

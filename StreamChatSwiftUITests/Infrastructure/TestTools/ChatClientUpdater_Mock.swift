@@ -61,7 +61,7 @@ final class ChatClientUpdater_Mock: ChatClientUpdater {
         connect_completion = completion
     }
 
-    override func disconnect(source: WebSocketConnectionState.DisconnectionSource = .userInitiated) {
+    func disconnect(source: WebSocketConnectionState.DisconnectionSource = .userInitiated) {
         disconnect_called = true
         disconnect_source = source
     }

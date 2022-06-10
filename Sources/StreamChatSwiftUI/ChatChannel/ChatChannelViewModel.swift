@@ -97,7 +97,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrollToMessage: ChatMessage? = nil
     ) {
         self.channelController = channelController
-        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController) {
+        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController)
+            && messageController == nil {
             channelController.synchronize()
         }
         if let messageController = messageController {
@@ -433,6 +434,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     deinit {
         messageCachingUtils.clearCache()
+        if messageController == nil {
+            utils.channelControllerFactory.clearCurrentController()
+        }
     }
 }
 
