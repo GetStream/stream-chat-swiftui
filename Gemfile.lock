@@ -358,6 +358,7 @@ GEM
       rouge (~> 2.0.7)
     xcpretty-travis-formatter (1.0.1)
       xcpretty (~> 0.2, >= 0.0.7)
+    xctest_list (1.2.1)
     zeitwerk (2.5.4)
 
 PLATFORMS
@@ -375,8 +376,10 @@ DEPENDENCIES
   fastlane-plugin-versioning
   jazzy
   json
+  plist
   slather
   xcode-install
+  xctest_list
 
 BUNDLED WITH
    2.3.13

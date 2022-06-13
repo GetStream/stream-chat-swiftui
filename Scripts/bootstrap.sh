@@ -51,3 +51,15 @@ if [[ ${INSTALL_SONAR-default} == true ]]; then
   pip install lizard
   brew install sonar-scanner
 fi
+
+if [[ ${INSTALL_ALLURE-default} == true ]]; then
+  puts "Install allurectl"
+  DOWNLOAD_URL="https://github.com/allure-framework/allurectl/releases/download/1.22.1/allurectl_darwin_amd64"
+  curl -sL "${DOWNLOAD_URL}" -o ./fastlane/allurectl
+  chmod +x ./fastlane/allurectl
+
+  puts "Install xcresults"
+  DOWNLOAD_URL="https://github.com/eroshenkoam/xcresults/releases/download/1.10.1/xcresults"
+  curl -sL "${DOWNLOAD_URL}" -o ./fastlane/xcresults
+  chmod +x ./fastlane/xcresults
+fi
