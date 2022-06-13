@@ -1458,7 +1458,7 @@
 		A3600B30283E9E4100E1C930 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A3600B3F283F651200E1C930 /* BaseTestCase */,
+				A3600B3F283F651200E1C930 /* Base TestCase */,
 				A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */,
 			);
 			path = Tests;
@@ -1472,12 +1472,12 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		A3600B3F283F651200E1C930 /* BaseTestCase */ = {
+		A3600B3F283F651200E1C930 /* Base TestCase */ = {
 			isa = PBXGroup;
 			children = (
 				A3600B40283F652400E1C930 /* StreamTestCase.swift */,
 			);
-			path = BaseTestCase;
+			path = "Base TestCase";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
