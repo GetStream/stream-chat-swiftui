@@ -26,7 +26,7 @@ public class Utils {
     
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
-    var channelControllerFactory = ChannelControllerFactory()
+    public var channelControllerFactory = ChannelControllerFactory()
     
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
