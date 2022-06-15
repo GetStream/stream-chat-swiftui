@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AADF3283CCDB000237498 /* ThreadPage.swift */; };
+		829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */; };
+		829AB4D42858A532002DC629 /* Reactions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D32858A532002DC629 /* Reactions_Tests.swift */; };
 		829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829CD5CD2848CA6B003C3877 /* Settings.swift */; };
 		840008BB27E8D64A00282D88 /* MessageActions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
@@ -401,6 +403,8 @@
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
+		829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamTestCase+Tags.swift"; sourceTree = "<group>"; };
+		829AB4D32858A532002DC629 /* Reactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions_Tests.swift; sourceTree = "<group>"; };
 		829CD5CD2848CA6B003C3877 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatWrapper.swift; sourceTree = "<group>"; };
@@ -1460,6 +1464,8 @@
 			children = (
 				A3600B3F283F651200E1C930 /* Base TestCase */,
 				A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */,
+				829AB4D32858A532002DC629 /* Reactions_Tests.swift */,
+				829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1743,6 +1749,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				829AB4D42858A532002DC629 /* Reactions_Tests.swift in Sources */,
 				825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */,
 				A3828EAD283F6CFE00538258 /* StartPage.swift in Sources */,
 				A3600B41283F652400E1C930 /* StreamTestCase.swift in Sources */,
@@ -1753,6 +1760,7 @@
 				A3600B32283E9E4700E1C930 /* MessageList_Tests.swift in Sources */,
 				84DA1C282837B73D000E4B6A /* MessageListPage.swift in Sources */,
 				A3600B2F283E9E1900E1C930 /* UserRobot+Asserts.swift in Sources */,
+				829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */,
 				A3600B35283E9EBA00E1C930 /* Bundle+Target.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2634,7 +2642,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = develop;
+				branch = "swiftui-alignment";
 				kind = branch;
 			};
 		};

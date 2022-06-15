@@ -96,7 +96,7 @@ extension UserRobot {
         let messageCell: XCUIElement
         if let index = index {
             let minExpectedCount = index + 1
-            let cells = cells.waitCount(index)
+            let cells = cells.waitCount(minExpectedCount)
             XCTAssertGreaterThanOrEqual(
                 cells.count,
                 minExpectedCount,
@@ -170,7 +170,7 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-        let message = attributes.text(in: messageCell).wait()
+        let message = attributes.deletedText(in: messageCell).wait()
         let expectedMessage = attributes.deletedMessagePlaceholder
         let actualMessage = message.waitForText(expectedMessage).text
         XCTAssertEqual(expectedMessage, actualMessage, "Text is wrong", file: file, line: line)
@@ -285,6 +285,26 @@ extension UserRobot {
         }
         typeText("\(limit)\n\(limit+1)", obtainKeyboardFocus: false)
         XCTAssertEqual(composerHeight, composer.height, file: file, line: line)
+    }
+    
+    func assertMessageSizeChangesAfterEditing(linesCountShouldBeIncreased: Bool,
+                                              at messageCellIndex: Int = 0,
+                                              file: StaticString = #filePath,
+                                              line: UInt = #line) {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let cellHeight = messageCell.height
+        let textView = MessageListPage.Attributes.text(in: messageCell)
+        let newLine = "new line"
+        let newText = linesCountShouldBeIncreased ? "\(textView.text)\n\(newLine)" : newLine
+        
+        editMessage(newText, messageCellIndex: messageCellIndex)
+        assertMessage(newText, at: messageCellIndex, file: file, line: line)
+        
+        if linesCountShouldBeIncreased {
+            XCTAssertLessThan(cellHeight, messageCell.height, file: file, line: line)
+        } else {
+            XCTAssertGreaterThan(cellHeight, messageCell.height, file: file, line: line)
+        }
     }
 }
 

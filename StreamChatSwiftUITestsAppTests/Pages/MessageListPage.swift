@@ -28,7 +28,7 @@ class MessageListPage {
     }
     
     static var typingIndicator: XCUIElement {
-        app.otherElements["TypingIndicatorBottomView"]
+        app.otherElements["TypingIndicatorBottomView"].staticTexts.firstMatch
     }
     
     enum NavigationBar {
@@ -47,6 +47,7 @@ class MessageListPage {
     }
     
     enum Composer {
+        static var textView: XCUIElement { inputField }
         static var inputField: XCUIElement { app.textViews["ComposerTextInputView"] }
         static var sendButton: XCUIElement { app.buttons["SendMessageButton"] }
         static var confirmButton: XCUIElement { sendButton }
@@ -54,6 +55,7 @@ class MessageListPage {
         static var commandButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
         static var collapsedComposerButton: XCUIElement { app.buttons["PickerTypeButtonCollapsed"] }
         static var cooldown: XCUIElement { app.textViews["ComposerTextInputView"] }
+        static var cutButton: XCUIElement { app.menuItems.matching(NSPredicate(format: "label LIKE 'Cut'")).firstMatch }
     }
     
     enum Reactions {
@@ -87,11 +89,15 @@ class MessageListPage {
         }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["MessageView"].staticTexts["MessageTextView"]
+            messageCell.otherElements["MessageView"].staticTexts["MessageTextView"] // TODO: does not work when text equals to emoji
         }
 
         static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["quotedMessageText"]
+        }
+        
+        static func deletedText(in messageCell: XCUIElement) -> XCUIElement {
+            messageCell.staticTexts["deletedMessageText"]
         }
 
         static func deletedIcon(in messageCell: XCUIElement) -> XCUIElement {
@@ -178,17 +184,17 @@ class MessageListPage {
         
         struct Element {
             static var actionsView: XCUIElement { app.otherElements["MessageActionsView"] }
-            static var reply: XCUIElement { app.otherElements["messageAction-reply_message_action"] }
-            static var threadReply: XCUIElement { app.otherElements["messageAction-thread_message_action"] }
-            static var copy: XCUIElement { app.otherElements["messageAction-copy_message_action"] }
-            static var flag: XCUIElement { app.otherElements["messageAction-flag_message_action"] }
-            static var mute: XCUIElement { app.otherElements["messageAction-mute_message_action"] }
-            static var unmute: XCUIElement { app.otherElements["messageAction-unmute_message_action"] }
-            static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"] }
-            static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"] }
-            static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"] }
-            static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"] }
-            static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"] }
+            static var reply: XCUIElement { app.otherElements["messageAction-reply_message_action"].images.firstMatch }
+            static var threadReply: XCUIElement { app.otherElements["messageAction-thread_message_action"].images.firstMatch }
+            static var copy: XCUIElement { app.otherElements["messageAction-copy_message_action"].images.firstMatch }
+            static var flag: XCUIElement { app.otherElements["messageAction-flag_message_action"].images.firstMatch }
+            static var mute: XCUIElement { app.otherElements["messageAction-mute_message_action"].images.firstMatch }
+            static var unmute: XCUIElement { app.otherElements["messageAction-unmute_message_action"].images.firstMatch }
+            static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"].images.firstMatch }
+            static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch }
+            static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"].images.firstMatch }
+            static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"].images.firstMatch }
+            static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"].images.firstMatch }
         }
     }
     
