@@ -12,7 +12,7 @@ final class MessageList_Tests: StreamTestCase {
     }
 
     func test_messageListUpdates_whenUserSendsMessage() {
-//        linkToScenario(withId: 25)
+        linkToScenario(withId: 237)
 
         let message = "message"
 
@@ -30,7 +30,7 @@ final class MessageList_Tests: StreamTestCase {
     }
 
     func test_messageListUpdates_whenParticipantSendsMessage() {
-//        linkToScenario(withId: 26)
+        linkToScenario(withId: 258)
 
         let message = "message"
 
@@ -40,10 +40,7 @@ final class MessageList_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("participant sends a message") {
-            participantRobot
-                .startTyping()
-                .stopTyping()
-                .sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         THEN("MessageList updates for user") {
             userRobot.assertMessage(message)
@@ -51,7 +48,7 @@ final class MessageList_Tests: StreamTestCase {
     }
 
     func test_editsMessage() throws {
-//        linkToScenario(withId: 39)
+        linkToScenario(withId: 264)
         
         let message = "test message"
         let editedMessage = "hello"
@@ -71,7 +68,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_deletesMessage() throws {
-//        linkToScenario(withId: 37)
+        linkToScenario(withId: 262)
         
         let message = "test message"
         
@@ -90,7 +87,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_receivesMessage() throws {
-//        linkToScenario(withId: 64)
+        linkToScenario(withId: 254)
         
         let message = "🚢"
         let author = "Han Solo"
@@ -99,10 +96,7 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the emoji: '\(message)'") {
-            participantRobot
-                .startTyping()
-                .stopTyping()
-                .sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         THEN("the message is delivered") {
             userRobot.assertMessageAuthor(author)
@@ -110,7 +104,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_messageDeleted_whenParticipantDeletesMessage() throws {
-//        linkToScenario(withId: 38)
+        linkToScenario(withId: 261)
         
         let message = "test message"
         
@@ -118,7 +112,7 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant deletes the message: '\(message)'") {
             participantRobot.deleteMessage()
@@ -129,7 +123,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_messageIsEdited_whenParticipantEditsMessage() throws {
-//        linkToScenario(withId: 40)
+        linkToScenario(withId: 266)
         
         let message = "test message"
         let editedMessage = "hello"
@@ -138,10 +132,7 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot
-                .startTyping()
-                .stopTyping()
-                .sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant edits the message: '\(editedMessage)'") {
             participantRobot.editMessage(editedMessage)
@@ -152,7 +143,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_messageIncreases_whenUserEditsMessageWithOneLineText() {
-//        linkToScenario(withId: 99)
+        linkToScenario(withId: 267)
 
         let message = "test message"
         
@@ -168,7 +159,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_messageDecreases_whenUserEditsMessage() throws {
-//        linkToScenario(withId: 100)
+        linkToScenario(withId: 259)
         
         let message = "test\nmessage"
         
@@ -184,7 +175,7 @@ final class MessageList_Tests: StreamTestCase {
     }
 
     func test_messageWithMultipleLinesShown_userSendsMessageWithMultipleLines() {
-//        linkToScenario(withId: 57)
+        linkToScenario(withId: 252)
 
         let message = "1\n2\n3lines increased"
         GIVEN("user opens the channel") {
@@ -201,7 +192,7 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_typingIndicatorHidden_whenParticipantStopsTyping() {
-//        linkToScenario(withId: 73)
+        linkToScenario(withId: 260)
         
         GIVEN("user opens the channel") {
             userRobot
@@ -216,77 +207,6 @@ final class MessageList_Tests: StreamTestCase {
         }
         THEN("user observes typing indicator has disappeared") {
             userRobot.assertTypingIndicatorHidden()
-        }
-    }
-
-    func test_messageListScrollsDown_whenMessageListIsScrolledUp_andUserSendsNewMessage() {
-//        linkToScenario(withId: 193)
-
-        let newMessage = "New message"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("channel is scrollable") {
-            participantRobot.sendMultipleMessages(repeatingText: "message", count: 50)
-        }
-        WHEN("user scrolls up") {
-            userRobot.scrollMessageListUp()
-        }
-        AND("user sends a new message") {
-            userRobot.sendMessage(newMessage)
-        }
-        THEN("message list is scrolled down") {
-            userRobot.assertMessageIsVisible(newMessage)
-        }
-    }
-
-    func test_messageListScrollsDown_whenMessageListIsScrolledDown_andUserReceivesNewMessage() {
-//        linkToScenario(withId: 75)
-
-        let count = 50
-        let message = "message"
-        let newMessage = "New message"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("channel is scrollable") {
-            participantRobot.sendMultipleMessages(repeatingText: message, count: count)
-        }
-        WHEN("participant sends a message") {
-            participantRobot.sendMessage(newMessage)
-        }
-        THEN("message list is scrolled down") {
-            userRobot.assertMessageIsVisible(newMessage)
-        }
-    }
-
-    func test_messageListDoesNotScrollDown_whenMessageListIsScrolledUp_andUserReceivesNewMessage() {
-//        linkToScenario(withId: 194)
-
-        let newMessage = "New message"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("channel is scrollable") {
-            participantRobot.sendMultipleMessages(repeatingText: "message", count: 50)
-        }
-        WHEN("user scrolls up") {
-            userRobot.scrollMessageListUp()
-        }
-        AND("participant sends a message") {
-            participantRobot.sendMessage(newMessage)
-        }
-        THEN("message list is scrolled up") {
-            userRobot.assertMessageIsNotVisible(newMessage)
         }
     }
 

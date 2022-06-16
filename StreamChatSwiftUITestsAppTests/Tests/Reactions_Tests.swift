@@ -12,7 +12,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_addsReaction() throws {
-//        linkToScenario(withId: 41)
+        linkToScenario(withId: 270)
         
         let message = "test message"
         
@@ -31,7 +31,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_deletesReaction() throws {
-//        linkToScenario(withId: 45)
+        linkToScenario(withId: 268)
         
         let message = "test message"
         
@@ -55,7 +55,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_reactionIsAdded_whenReactingToParticipantsMessage() throws {
-//        linkToScenario(withId: 42)
+        linkToScenario(withId: 249)
         
         let message = "test message"
         
@@ -63,10 +63,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot
-                .startTyping()
-                .stopTyping()
-                .sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user adds the reaction") {
             userRobot
@@ -79,7 +76,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_removesReaction_whenUnReactingToParticipantsMessage() throws {
-//        linkToScenario(withId: 46)
+        linkToScenario(withId: 250)
         
         let message = "test message"
         
@@ -87,10 +84,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot
-                .startTyping()
-                .stopTyping()
-                .sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user adds the reaction") {
             userRobot
@@ -106,7 +100,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_reactionIsAddedByParticipant_whenReactingToUsersMessage() throws {
-//        linkToScenario(withId: 43)
+        linkToScenario(withId: 256)
         
         let message = "test message"
         
@@ -127,7 +121,7 @@ final class Reactions_Tests: StreamTestCase {
     }
 
     func test_reactionIsRemovedByParticipant_whenUnReactingToUsersMessage() throws {
-//        linkToScenario(withId: 47)
+        linkToScenario(withId: 269)
         
         let message = "test message"
         
@@ -152,7 +146,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_reactionIsAddedByParticipant_whenReactingToOwnMessage() throws {
-//        linkToScenario(withId: 44)
+        linkToScenario(withId: 265)
         
         let message = "test message"
         
@@ -160,7 +154,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant adds the reaction") {
             participantRobot.addReaction(type: .wow)
@@ -171,7 +165,7 @@ final class Reactions_Tests: StreamTestCase {
     }
     
     func test_reactionIsRemovedByParticipant_whenUnReactingToOwnMessage() throws {
-//        linkToScenario(withId: 48)
+        linkToScenario(withId: 255)
         
         let message = "test message"
         
@@ -179,7 +173,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant adds the reaction") {
             participantRobot.addReaction(type: .sad)

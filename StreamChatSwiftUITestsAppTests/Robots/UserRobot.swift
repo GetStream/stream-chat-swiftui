@@ -251,7 +251,7 @@ extension UserRobot {
 
     @discardableResult
     func scrollMessageListUp() -> Self {
-        let topMessage = MessageListPage.cells.element(boundBy: 0)
+        let topMessage = MessageListPage.cells.element(boundBy: 0).waitForHitPoint()
         MessageListPage.list.press(forDuration: 0.1, thenDragTo: topMessage)
         return self
     }
