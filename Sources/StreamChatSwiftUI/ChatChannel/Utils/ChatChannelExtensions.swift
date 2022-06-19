@@ -47,8 +47,9 @@ extension ChatChannel {
     ///  - currentUserId: the id of the current user.
     /// - Returns: the typing indicator string.
     public func typingIndicatorString(currentUserId: UserId?) -> String {
+        let chatUserNamer = InjectedValues[\.utils].chatUserNamer
         let typingUsers = currentlyTypingUsersFiltered(currentUserId: currentUserId)
-        if let user = typingUsers.first(where: { user in user.name != nil }), let name = user.name {
+        if let user = typingUsers.first(where: { user in user.name != nil }), let name = chatUserNamer.name(forUser: user) {
             return L10n.MessageList.TypingIndicator.users(name, typingUsers.count - 1)
         } else {
             // If we somehow cannot fetch any user name, we simply show that `Someone is typing`

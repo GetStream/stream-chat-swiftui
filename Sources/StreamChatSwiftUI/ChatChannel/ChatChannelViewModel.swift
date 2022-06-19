@@ -97,7 +97,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrollToMessage: ChatMessage? = nil
     ) {
         self.channelController = channelController
-        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController) {
+        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController)
+            && messageController == nil {
             channelController.synchronize()
         }
         if let messageController = messageController {
@@ -413,7 +414,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             case let .update(message, index: index):
                 if index.row < messages.count,
                    message.messageId != messages[index.row].messageId
-                   || message.type == .ephemeral {
+                   || message.type == .ephemeral
+                   || !message.linkAttachments.isEmpty {
                     skipChanges = false
                     if index.row < messages.count && message.reactionScoresId != messages[index.row].reactionScoresId {
                         animateChanges = message.linkAttachments.isEmpty
@@ -439,6 +441,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     deinit {
         messageCachingUtils.clearCache()
+        if messageController == nil {
+            utils.channelControllerFactory.clearCurrentController()
+            Nuke.ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+        }
     }
 }
 

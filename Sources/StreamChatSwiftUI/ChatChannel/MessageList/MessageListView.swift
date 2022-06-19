@@ -136,23 +136,29 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     onMessageAppear(index)
                                 }
                             }
-                            .overlay(
-                                VStack {
-                                    showsLastInGroupInfo ?
-                                        factory.makeLastInGroupHeaderView(for: message)
-                                    : nil
-                                    
-                                    messageDate != nil ?
-                                        VStack {
-                                            factory.makeMessageListDateIndicator(date: messageDate!)
-                                                .offset(y: -offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo))
-                                            Spacer()
-                                        }
-                                        : nil
-                                }
+                            .padding(
+                                .top,
+                                messageDate != nil ?
+                                    offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo) :
+                                    additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
                             )
-                            .padding(.top, messageDate != nil ?
-                                     offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo) : additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo))
+                            .overlay(
+                                (messageDate != nil || showsLastInGroupInfo) ?
+                                    VStack(spacing: 0) {
+                                        messageDate != nil ?
+                                            factory.makeMessageListDateIndicator(date: messageDate!)
+                                            .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
+                                            : nil
+                                    
+                                        showsLastInGroupInfo ?
+                                            factory.makeLastInGroupHeaderView(for: message)
+                                            .frame(maxHeight: lastInGroupHeaderSize)
+                                            : nil
+                                    
+                                        Spacer()
+                                    }
+                                    : nil
+                            )
                             .flippedUpsideDown()
                         }
                         .id(listId)
@@ -244,8 +250,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
     
     private func offsetForDateIndicator(showsLastInGroupInfo: Bool) -> CGFloat {
-        var offset = messageListConfig.messageDisplayOptions.dateLabelSize        
-        offset += (showsLastInGroupInfo ? lastInGroupHeaderSize : 0)
+        var offset = messageListConfig.messageDisplayOptions.dateLabelSize
+        offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
         return offset
     }
     
@@ -262,8 +268,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         channel: ChatChannel
     ) -> Bool {
         guard !channel.isDirectMessageChannel
-                && !message.isSentByCurrentUser
-                && (lastInGroupHeaderSize > 0) else {
+            && !message.isSentByCurrentUser
+            && (lastInGroupHeaderSize > 0) else {
             return false
         }
         let groupInfo = messagesGroupingInfo[message.id] ?? []

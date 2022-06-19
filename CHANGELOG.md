@@ -3,12 +3,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.16.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.16.0)
+_June 10, 2022_
+
 ### ✅ Added
 - Possibility to view channel info on channel options
 - Date separators in the message list
+- ChatUserNamer to customize user name on typing indicator
+- minimumSwipeGestureDistance to control swipe sensitivity
+- Pop-out animation to reactions overlay
+- maxTimeIntervalBetweenMessagesInGroup to control message grouping logic
 
 ### 🐞 Fixed
 - Bug about link attachments not opening when the URL was missing the scheme
+- Picking images synced with iCloud in the composer
+- User mentions not being passed when sending a message
+- Incorrect initial height when editing a message
+- Composer is hidden when reactions shown
 
 # [4.15.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.15.0)
 _May 17, 2022_

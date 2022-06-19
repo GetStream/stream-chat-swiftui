@@ -127,10 +127,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             handleGestureForMessage(showsMessageActions: true)
                         }
                     })
-                    .offset(x: self.offsetX)
+                    .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
                     .simultaneousGesture(
                         DragGesture(
-                            minimumDistance: 10,
+                            minimumDistance: minimumSwipeDistance,
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
@@ -219,6 +219,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
     }
+    
+    private var maximumHorizontalSwipeDisplacement: CGFloat {
+        replyThreshold + 30
+    }
         
     private var isMessagePinned: Bool {
         message.pinDetails != nil
@@ -260,7 +264,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             return
         }
                  
-        if horizontalTranslation > 0 {
+        if horizontalTranslation >= minimumSwipeDistance {
             offsetX = horizontalTranslation
         } else {
             offsetX = 0
@@ -272,6 +276,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 quotedMessage = message
             }
         }
+    }
+    
+    private var minimumSwipeDistance: CGFloat {
+        utils.messageListConfig.messageDisplayOptions.minimumSwipeGestureDistance
     }
     
     private func setOffsetX(value: CGFloat) {
@@ -315,10 +323,26 @@ struct SendFailureIndicator: View {
 }
 
 public struct MessageDisplayInfo {
-    let message: ChatMessage
-    let frame: CGRect
-    let contentWidth: CGFloat
-    let isFirst: Bool
-    var showsMessageActions: Bool = true
-    var keyboardWasShown: Bool = false
+    public let message: ChatMessage
+    public let frame: CGRect
+    public let contentWidth: CGFloat
+    public let isFirst: Bool
+    public var showsMessageActions: Bool = true
+    public var keyboardWasShown: Bool = false
+
+    public init(
+        message: ChatMessage,
+        frame: CGRect,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        showsMessageActions: Bool = true,
+        keyboardWasShown: Bool = false
+    ) {
+        self.message = message
+        self.frame = frame
+        self.contentWidth = contentWidth
+        self.isFirst = isFirst
+        self.showsMessageActions = showsMessageActions
+        self.keyboardWasShown = keyboardWasShown
+    }
 }

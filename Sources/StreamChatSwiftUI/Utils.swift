@@ -15,6 +15,7 @@ public class Utils {
     public var imageProcessor: ImageProcessor
     public var imageMerger: ImageMerging
     public var channelNamer: ChatChannelNamer
+    public var chatUserNamer: ChatUserNamer
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
@@ -25,6 +26,7 @@ public class Utils {
     
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
+    var channelControllerFactory = ChannelControllerFactory()
     
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
@@ -40,6 +42,7 @@ public class Utils {
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
+        chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
@@ -49,6 +52,7 @@ public class Utils {
         self.imageProcessor = imageProcessor
         self.imageMerger = imageMerger
         self.channelNamer = channelNamer
+        self.chatUserNamer = chatUserNamer
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver

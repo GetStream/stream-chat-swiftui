@@ -174,10 +174,9 @@ extension ViewFactory {
     
     public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
-            let controller = chatClient.channelController(
-                for: selectionInfo.channel.cid,
-                messageOrdering: .topToBottom
-            )
+            let controller = InjectedValues[\.utils]
+                .channelControllerFactory
+                .makeChannelController(for: selectionInfo.channel.cid)
             return ChatChannelView(
                 viewFactory: self,
                 channelController: controller,
@@ -188,10 +187,9 @@ extension ViewFactory {
     
     public func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
-            let channelController = chatClient.channelController(
-                for: channel.cid,
-                messageOrdering: .topToBottom
-            )
+            let channelController = InjectedValues[\.utils]
+                .channelControllerFactory
+                .makeChannelController(for: channel.cid)
             let messageController = chatClient.messageController(
                 cid: channel.cid,
                 messageId: message.id
@@ -302,18 +300,11 @@ extension ViewFactory {
     }
     
     public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
-        VStack {
-            HStack {
-                TopLeftView {
-                    MessageAuthorView(message: message)
-                        .padding(.leading, CGSize.messageAvatarSize.width + 24)
-                }
-                .padding(.top, !message.reactionScores.isEmpty ? (useSmallPadding(for: message) ? 8 : -16) : -16)
-                .frame(maxHeight: 24)
-                Spacer()
-            }
+        HStack {
+            MessageAuthorView(message: message)
             Spacer()
         }
+        .padding(.leading, CGSize.messageAvatarSize.width + 24)
     }
     
     private func useSmallPadding(for message: ChatMessage) -> Bool {

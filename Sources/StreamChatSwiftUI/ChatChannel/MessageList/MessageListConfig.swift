@@ -20,7 +20,8 @@ public struct MessageListConfig {
         doubleTapOverlayEnabled: Bool = false,
         becomesFirstResponderOnOpen: Bool = false,
         updateChannelsFromMessageList: Bool = false,
-        maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60
+        maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
+        cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -34,6 +35,7 @@ public struct MessageListConfig {
         self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
         self.updateChannelsFromMessageList = updateChannelsFromMessageList
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
+        self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
     }
     
     public let messageListType: MessageListType
@@ -48,6 +50,7 @@ public struct MessageListConfig {
     public let becomesFirstResponderOnOpen: Bool
     public let updateChannelsFromMessageList: Bool
     public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
+    public let cacheSizeOnChatDismiss: Int
 }
 
 /// Contains information about the message paddings.
@@ -77,6 +80,7 @@ public struct MessageDisplayOptions {
     let animateChanges: Bool
     let dateLabelSize: CGFloat
     let lastInGroupHeaderSize: CGFloat
+    let minimumSwipeGestureDistance: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
     var messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
@@ -88,6 +92,7 @@ public struct MessageDisplayOptions {
         animateChanges: Bool = true,
         overlayDateLabelSize: CGFloat = 40,
         lastInGroupHeaderSize: CGFloat = 0,
+        minimumSwipeGestureDistance: CGFloat = 10,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
@@ -98,6 +103,7 @@ public struct MessageDisplayOptions {
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
         dateLabelSize = overlayDateLabelSize
+        self.minimumSwipeGestureDistance = minimumSwipeGestureDistance
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
         self.messageLinkDisplayResolver = messageLinkDisplayResolver
