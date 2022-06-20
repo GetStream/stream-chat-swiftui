@@ -60,6 +60,8 @@
 		8434E58127707F19001E1B83 /* GridPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E58027707F19001E1B83 /* GridPhotosView.swift */; };
 		8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */; };
 		844CC60E2811378D0006548D /* ComposerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844CC60D2811378D0006548D /* ComposerConfig.swift */; };
+		844D1D6628510304000CCCB9 /* ChannelControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844D1D6528510304000CCCB9 /* ChannelControllerFactory.swift */; };
+		844D1D682851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */; };
 		844EF8ED2809AACD00CC82F9 /* NoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844EF8EC2809AACD00CC82F9 /* NoContentView.swift */; };
 		84507C98281AC40F0081DDC2 /* AddUsersViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84507C97281AC40F0081DDC2 /* AddUsersViewModel_Tests.swift */; };
 		84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84507C99281ACCD70081DDC2 /* AddUsersView_Tests.swift */; };
@@ -275,6 +277,7 @@
 		84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */; };
 		84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */; };
 		84C94D68275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */; };
+		84CAD77B284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */; };
 		84D6B55A27DF6EC7009C6D07 /* LoadingView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */; };
 		84DA1C282837B73D000E4B6A /* MessageListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA1C272837B73D000E4B6A /* MessageListPage.swift */; };
 		84DEC8DB27609FA200172876 /* MoreChannelActionsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */; };
@@ -458,6 +461,8 @@
 		8434E58027707F19001E1B83 /* GridPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridPhotosView.swift; sourceTree = "<group>"; };
 		8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleWithCloseButton.swift; sourceTree = "<group>"; };
 		844CC60D2811378D0006548D /* ComposerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerConfig.swift; sourceTree = "<group>"; };
+		844D1D6528510304000CCCB9 /* ChannelControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelControllerFactory.swift; sourceTree = "<group>"; };
+		844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelControllerFactory_Tests.swift; sourceTree = "<group>"; };
 		844EF8EC2809AACD00CC82F9 /* NoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoContentView.swift; sourceTree = "<group>"; };
 		84507C97281AC40F0081DDC2 /* AddUsersViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersViewModel_Tests.swift; sourceTree = "<group>"; };
 		84507C99281ACCD70081DDC2 /* AddUsersView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersView_Tests.swift; sourceTree = "<group>"; };
@@ -689,6 +694,7 @@
 		84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelNamer_Tests.swift; sourceTree = "<group>"; };
 		84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionsViewModel_Tests.swift; sourceTree = "<group>"; };
 		84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelHeaderLoader_Tests.swift; sourceTree = "<group>"; };
+		84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewLastGroupHeader_Tests.swift; sourceTree = "<group>"; };
 		84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView_Tests.swift; sourceTree = "<group>"; };
 		84DA1C272837B73D000E4B6A /* MessageListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListPage.swift; sourceTree = "<group>"; };
 		84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreChannelActionsView_Tests.swift; sourceTree = "<group>"; };
@@ -1047,6 +1053,7 @@
 				8465FD2D2746A95600AF091E /* ChatChannelView.swift */,
 				8465FD302746A95600AF091E /* ChatChannelViewModel.swift */,
 				84DEC8E72760EABC00172876 /* ChatChannelDataSource.swift */,
+				844D1D6528510304000CCCB9 /* ChannelControllerFactory.swift */,
 				8465FD2E2746A95600AF091E /* ChannelHeader */,
 				8465FCFD2746A95600AF091E /* MessageList */,
 				8465FD0F2746A95600AF091E /* Composer */,
@@ -1410,6 +1417,8 @@
 				847305BA28241D8D004AC770 /* ChatChannelHeader_Tests.swift */,
 				847305BC28243D25004AC770 /* WebView_Tests.swift */,
 				84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */,
+				84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */,
+				844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */
 			);
 			path = ChatChannel;
 			sourceTree = "<group>";
@@ -1833,6 +1842,7 @@
 				8465FDC02746A95700AF091E /* ChatChannelList.swift in Sources */,
 				84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */,
 				8465FD9F2746A95700AF091E /* ChatChannelExtensions.swift in Sources */,
+				844D1D6628510304000CCCB9 /* ChannelControllerFactory.swift in Sources */,
 				8465FD882746A95700AF091E /* SendMessageButton.swift in Sources */,
 				8465FDC82746A95700AF091E /* ChatChannelListItem.swift in Sources */,
 				8465FDA62746A95700AF091E /* LazyView.swift in Sources */,
@@ -1965,6 +1975,7 @@
 				84C94D1427578BF3007FE2B9 /* TemporaryData.swift in Sources */,
 				84C94D4F2758FE59007FE2B9 /* ChatChannelTestHelpers.swift in Sources */,
 				84E0478C284A444E00BAFA17 /* TestRequest.swift in Sources */,
+				84CAD77B284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift in Sources */,
 				91CC203C283C4C250049A146 /* URLUtils_Tests.swift in Sources */,
 				84B2B5DA281985DA00479CEE /* FileAttachmentsView_Tests.swift in Sources */,
 				848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */,
@@ -2023,6 +2034,8 @@
 				846608E9278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift in Sources */,
 				8421BCEC27A400E8000F977D /* ReactionsUsersView_Tests.swift in Sources */,
 				84E04794284A444E00BAFA17 /* APIClient_Mock.swift in Sources */,
+				84C94CD327578B92007FE2B9 /* ChatMessageFileAttachment_Mock.swift in Sources */,
+				844D1D682851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift in Sources */,
 				84E57C4E281037B2002213C1 /* AssertJSONEqual.swift in Sources */,
 				84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */,
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,

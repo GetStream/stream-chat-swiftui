@@ -4,6 +4,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Possibility to add a custom view above the oldest message in a group
+
+### 🐞 Fixed
+- Memory cache trimming on chat dismiss
+- Crash when sending an invalid command
+
+# [4.16.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.16.0)
+_June 10, 2022_
+
+### ✅ Added
 - Possibility to view channel info on channel options
 - Date separators in the message list
 - ChatUserNamer to customize user name on typing indicator

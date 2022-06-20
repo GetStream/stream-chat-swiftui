@@ -12,6 +12,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     
     @StateObject private var viewModel: ChatChannelViewModel
     
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var messageDisplayInfo: MessageDisplayInfo?
     @State private var keyboardShown = false
     @State private var tabBarAvailable: Bool = false
@@ -134,6 +136,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .onDisappear {
             viewModel.onViewDissappear()
         }
+        .onChange(of: presentationMode.wrappedValue, perform: { newValue in
+            if newValue.isPresented == false {
+                viewModel.onViewDissappear()
+            }
+        })
         .background(
             isIphone ?
                 Color.clear.background(
@@ -156,5 +163,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     private var bottomPadding: CGFloat {
         let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
         return bottomPadding
+    }
+}
+
+extension PresentationMode: Equatable {
+    
+    public static func == (lhs: PresentationMode, rhs: PresentationMode) -> Bool {
+        lhs.isPresented == rhs.isPresented
     }
 }

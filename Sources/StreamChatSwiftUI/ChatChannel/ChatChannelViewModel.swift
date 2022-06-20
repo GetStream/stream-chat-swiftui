@@ -97,7 +97,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrollToMessage: ChatMessage? = nil
     ) {
         self.channelController = channelController
-        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController) {
+        if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController)
+            && messageController == nil {
             channelController.synchronize()
         }
         if let messageController = messageController {
@@ -345,34 +346,46 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func groupMessages() {
         var temp = [String: [String]]()
-        let primary = "primary"
         for (index, message) in messages.enumerated() {
             let date = message.createdAt
+            temp[message.id] = []
             if index == 0 {
-                temp[message.id] = [primary]
+                temp[message.id] = [firstMessageKey]
                 continue
+            } else if index == messages.count - 1 {
+                temp[message.id] = [lastMessageKey]
             }
-
+            
             let previous = index - 1
             let previousMessage = messages[previous]
             let currentAuthorId = messageCachingUtils.authorId(for: message)
             let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
 
             if currentAuthorId != previousAuthorId {
-                temp[message.id] = [primary]
+                temp[message.id]?.append(firstMessageKey)
+                var prevInfo = temp[previousMessage.id] ?? []
+                prevInfo.append(lastMessageKey)
+                temp[previousMessage.id] = prevInfo
             }
 
             if previousMessage.type == .error
                 || previousMessage.type == .ephemeral
                 || previousMessage.type == .system {
-                temp[message.id] = [primary]
+                temp[message.id] = [firstMessageKey]
                 continue
             }
 
             let delay = previousMessage.createdAt.timeIntervalSince(date)
 
             if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
-                temp[message.id] = [primary]
+                temp[message.id]?.append(firstMessageKey)
+                var prevInfo = temp[previousMessage.id] ?? []
+                prevInfo.append(lastMessageKey)
+                temp[previousMessage.id] = prevInfo
+            }
+            
+            if temp[message.id]?.isEmpty == true {
+                temp[message.id] = nil
             }
         }
         
@@ -433,6 +446,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     deinit {
         messageCachingUtils.clearCache()
+        if messageController == nil {
+            utils.channelControllerFactory.clearCurrentController()
+            Nuke.ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+        }
     }
 }
 
@@ -528,3 +545,6 @@ enum AnimationChange {
     case notAnimated
     case skip
 }
+
+let firstMessageKey = "firstMessage"
+let lastMessageKey = "lastMessage"

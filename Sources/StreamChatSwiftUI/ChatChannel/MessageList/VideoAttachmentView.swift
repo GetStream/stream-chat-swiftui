@@ -64,16 +64,18 @@ public struct VideoAttachmentsList: View {
     let width: CGFloat
     
     public var body: some View {
-        ForEach(message.videoAttachments, id: \.self) { attachment in
-            VideoAttachmentView(
-                attachment: attachment,
-                message: message,
-                width: width
-            )
-            .withUploadingStateIndicator(
-                for: attachment.uploadingState,
-                url: attachment.videoURL
-            )
+        VStack {
+            ForEach(message.videoAttachments, id: \.self) { attachment in
+                VideoAttachmentView(
+                    attachment: attachment,
+                    message: message,
+                    width: width
+                )
+                .withUploadingStateIndicator(
+                    for: attachment.uploadingState,
+                    url: attachment.videoURL
+                )
+            }
         }
     }
 }

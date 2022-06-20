@@ -20,7 +20,8 @@ public struct MessageListConfig {
         doubleTapOverlayEnabled: Bool = false,
         becomesFirstResponderOnOpen: Bool = false,
         updateChannelsFromMessageList: Bool = false,
-        maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60
+        maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
+        cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -34,6 +35,7 @@ public struct MessageListConfig {
         self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
         self.updateChannelsFromMessageList = updateChannelsFromMessageList
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
+        self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
     }
     
     public let messageListType: MessageListType
@@ -48,6 +50,7 @@ public struct MessageListConfig {
     public let becomesFirstResponderOnOpen: Bool
     public let updateChannelsFromMessageList: Bool
     public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
+    public let cacheSizeOnChatDismiss: Int
 }
 
 /// Contains information about the message paddings.
@@ -76,6 +79,7 @@ public struct MessageDisplayOptions {
     let showAuthorName: Bool
     let animateChanges: Bool
     let dateLabelSize: CGFloat
+    let lastInGroupHeaderSize: CGFloat
     let minimumSwipeGestureDistance: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
@@ -87,6 +91,7 @@ public struct MessageDisplayOptions {
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
         overlayDateLabelSize: CGFloat = 40,
+        lastInGroupHeaderSize: CGFloat = 0,
         minimumSwipeGestureDistance: CGFloat = 10,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
@@ -102,6 +107,7 @@ public struct MessageDisplayOptions {
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
         self.messageLinkDisplayResolver = messageLinkDisplayResolver
+        self.lastInGroupHeaderSize = lastInGroupHeaderSize
     }
     
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {

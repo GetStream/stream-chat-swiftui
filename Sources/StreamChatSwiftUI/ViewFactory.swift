@@ -293,6 +293,12 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(for message: ChatMessage) -> MessageAuthorAndDateViewType
     
+    associatedtype LastInGroupHeaderView: View
+    /// Creates a view shown as a header of the last message in a group.
+    /// - Parameter message: the chat message for which the header will be displayed.
+    /// - Returns: view shown in the header of the last message.
+    func makeLastInGroupHeaderView(for message: ChatMessage) -> LastInGroupHeaderView
+    
     associatedtype ImageAttachmentViewType: View
     /// Creates the image attachment view.
     /// - Parameters:
