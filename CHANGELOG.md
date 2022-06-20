@@ -3,7 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Possibility to add a custom view above the oldest message in a group
+
+### 🐞 Fixed
+- Memory cache trimming on chat dismiss
 
 # [4.16.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.16.0)
 _June 10, 2022_
