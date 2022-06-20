@@ -126,7 +126,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
-                                isLast: message == messages.last
+                                isLast: !showsLastInGroupInfo && message == messages.last
                             )
                             .onAppear {
                                 if index == nil {
@@ -267,7 +267,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         for message: ChatMessage,
         channel: ChatChannel
     ) -> Bool {
-        guard !channel.isDirectMessageChannel
+        guard channel.memberCount > 2
             && !message.isSentByCurrentUser
             && (lastInGroupHeaderSize > 0) else {
             return false

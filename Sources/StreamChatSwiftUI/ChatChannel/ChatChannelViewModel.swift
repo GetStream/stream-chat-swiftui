@@ -348,6 +348,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         var temp = [String: [String]]()
         for (index, message) in messages.enumerated() {
             let date = message.createdAt
+            temp[message.id] = []
             if index == 0 {
                 temp[message.id] = [firstMessageKey]
                 continue
@@ -361,7 +362,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
 
             if currentAuthorId != previousAuthorId {
-                temp[message.id] = [firstMessageKey]
+                temp[message.id]?.append(firstMessageKey)
                 var prevInfo = temp[previousMessage.id] ?? []
                 prevInfo.append(lastMessageKey)
                 temp[previousMessage.id] = prevInfo
@@ -377,10 +378,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             let delay = previousMessage.createdAt.timeIntervalSince(date)
 
             if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
-                temp[message.id] = [firstMessageKey]
+                temp[message.id]?.append(firstMessageKey)
                 var prevInfo = temp[previousMessage.id] ?? []
                 prevInfo.append(lastMessageKey)
                 temp[previousMessage.id] = prevInfo
+            }
+            
+            if temp[message.id]?.isEmpty == true {
+                temp[message.id] = nil
             }
         }
         

@@ -300,15 +300,7 @@ extension ViewFactory {
     }
     
     public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
-        HStack {
-            MessageAuthorView(message: message)
-            Spacer()
-        }
-        .padding(.leading, CGSize.messageAvatarSize.width + 24)
-    }
-    
-    private func useSmallPadding(for message: ChatMessage) -> Bool {
-        message.text.count > 8 || !message.attachmentCounts.isEmpty
+        EmptyView()
     }
     
     public func makeImageAttachmentView(

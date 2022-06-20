@@ -63,10 +63,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         #endif
         
         let utils = Utils(
-            messageListConfig: MessageListConfig(
-                messageDisplayOptions: MessageDisplayOptions(showAuthorName: false, lastInGroupHeaderSize: 16),
-                dateIndicatorPlacement: .messageList
-            )
+            messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         

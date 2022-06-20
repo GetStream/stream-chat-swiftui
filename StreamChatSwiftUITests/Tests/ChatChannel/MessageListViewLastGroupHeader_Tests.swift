@@ -1,3 +1,7 @@
+//
+// Copyright © 2022 Stream.io Inc. All rights reserved.
+//
+
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
@@ -10,7 +14,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(
             showAuthorName: false,
-            lastInGroupHeaderSize: 32
+            lastInGroupHeaderSize: 24
         )
         let messageListConfig = MessageListConfig(messageDisplayOptions: messageDisplayOptions)
         let utils = Utils(messageListConfig: messageListConfig)
@@ -24,7 +28,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
             channelListQuery: nil,
             client: chatClient
         )
-        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel", memberCount: 3)
         let users = ["Martin", "Stefan", "Adolfo"]
         var messages = [ChatMessage]()
         for user in users {
@@ -50,12 +54,11 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
-            .applyDefaultSize()
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
 }
 
 class CustomHeaderViewFactory: ViewFactory {
@@ -63,17 +66,10 @@ class CustomHeaderViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
     
     func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
-        VStack {
-            HStack {
-                TopLeftView {
-                    MessageAuthorView(message: message)
-                        .padding(.leading, CGSize.messageAvatarSize.width + 24)
-                }
-                .padding(.top, !message.reactionScores.isEmpty ? (message.text.count > 8 ? 8 : -16) : -16)
-                Spacer()
-            }
+        HStack {
+            MessageAuthorView(message: message)
             Spacer()
         }
+        .padding(.leading, CGSize.messageAvatarSize.width + 24)
     }
-    
 }
