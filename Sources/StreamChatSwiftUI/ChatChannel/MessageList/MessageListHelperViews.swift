@@ -46,7 +46,6 @@ public struct MessageAuthorView: View {
             .font(fonts.footnoteBold)
             .foregroundColor(Color(colors.textLowEmphasis))
     }
-    
 }
 
 /// View that displays the sending date of a message.

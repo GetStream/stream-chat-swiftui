@@ -13,6 +13,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(
+            showMessageDate: false,
             showAuthorName: false,
             lastInGroupHeaderSize: 24
         )
