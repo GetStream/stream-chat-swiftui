@@ -700,7 +700,6 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is EmptyView)
     }
-    
 }
 
 extension ChannelAction: Equatable {
