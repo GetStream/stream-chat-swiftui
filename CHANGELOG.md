@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Memory cache trimming on chat dismiss
+- Crash when sending an invalid command
 
 # [4.16.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.16.0)
 _June 10, 2022_

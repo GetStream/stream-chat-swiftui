@@ -61,7 +61,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     
     public var body: some View {
         HStack(alignment: .bottom) {
-            if message.type == .system {
+            if message.type == .system || message.type == .error {
                 factory.makeSystemMessageView(message: message)
             } else {
                 if message.isSentByCurrentUser {

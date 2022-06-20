@@ -177,7 +177,7 @@ open class MessageComposerViewModel: ObservableObject {
             checkChannelCooldown()
         }
         
-        if let composerCommand = composerCommand {
+        if let composerCommand = composerCommand, composerCommand.id != "instantCommands" {
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
