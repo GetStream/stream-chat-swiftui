@@ -62,7 +62,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         #endif
         
-        let utils = Utils(messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList))
+        let utils = Utils(
+            messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList)
+        )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {

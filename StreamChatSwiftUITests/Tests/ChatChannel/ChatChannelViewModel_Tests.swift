@@ -47,7 +47,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let messagesGroupingInfo = viewModel.messagesGroupingInfo
         
         // Then
-        XCTAssert(messagesGroupingInfo.count == 1)
+        XCTAssert(messagesGroupingInfo.count == 2)
         for (_, groupingInfo) in messagesGroupingInfo {
             XCTAssert(groupingInfo.count == 1)
         }

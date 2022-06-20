@@ -79,6 +79,7 @@ public struct MessageDisplayOptions {
     let showAuthorName: Bool
     let animateChanges: Bool
     let dateLabelSize: CGFloat
+    let lastInGroupHeaderSize: CGFloat
     let minimumSwipeGestureDistance: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
@@ -90,6 +91,7 @@ public struct MessageDisplayOptions {
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
         overlayDateLabelSize: CGFloat = 40,
+        lastInGroupHeaderSize: CGFloat = 0,
         minimumSwipeGestureDistance: CGFloat = 10,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
@@ -105,6 +107,7 @@ public struct MessageDisplayOptions {
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
         self.messageLinkDisplayResolver = messageLinkDisplayResolver
+        self.lastInGroupHeaderSize = lastInGroupHeaderSize
     }
     
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {

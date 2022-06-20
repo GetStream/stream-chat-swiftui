@@ -299,6 +299,10 @@ extension ViewFactory {
         MessageAuthorAndDateView(message: message)
     }
     
+    public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
+        EmptyView()
+    }
+    
     public func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
