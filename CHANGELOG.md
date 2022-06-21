@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Possibility to add a custom view above the oldest message in a group
+- Swipe gesture to dismiss image gallery
 
 ### 🐞 Fixed
 - Memory cache trimming on chat dismiss
