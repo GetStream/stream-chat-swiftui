@@ -196,7 +196,6 @@
 		846B15F42817E7630017F7A1 /* ChatChannelInfoViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846B15F32817E7630017F7A1 /* ChatChannelInfoViewModel_Tests.swift */; };
 		846D6564279FF0800094B36E /* ReactionUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846D6563279FF0800094B36E /* ReactionUserView.swift */; };
 		847110B628611033004A46D6 /* MessageActions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */; };
-		847110B8286110D0004A46D6 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 847110B7286110D0004A46D6 /* StreamChat */; };
 		847305BB28241D8D004AC770 /* ChatChannelHeader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847305BA28241D8D004AC770 /* ChatChannelHeader_Tests.swift */; };
 		847305BD28243D25004AC770 /* WebView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847305BC28243D25004AC770 /* WebView_Tests.swift */; };
 		847305BF28243DFA004AC770 /* mock.html in Resources */ = {isa = PBXBuildFile; fileRef = 847305BE28243DF9004AC770 /* mock.html */; };
@@ -238,6 +237,7 @@
 		84B2B5DA281985DA00479CEE /* FileAttachmentsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B2B5D9281985DA00479CEE /* FileAttachmentsView_Tests.swift */; };
 		84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B439E027C6B2F100C04C99 /* MessageCachingUtils_Tests.swift */; };
 		84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B55F692798154C00B99B01 /* MessageListConfig.swift */; };
+		84B87F232861C0C900959CBE /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 84B87F222861C0C900959CBE /* StreamChat */; };
 		84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9B20D27998E9200BFAEAE /* ColorExtensions.swift */; };
 		84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB4C4B2841104700CBE004 /* MessageListDateUtils.swift */; };
 		84BB4C4E284115C200CBE004 /* MessageListDateUtils_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */; };
@@ -251,9 +251,7 @@
 		84C94D0727578BF2007FE2B9 /* RandomDispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CEF27578BF2007FE2B9 /* RandomDispatchQueue.swift */; };
 		84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF027578BF2007FE2B9 /* MockFunc.swift */; };
 		84C94D0B27578BF2007FE2B9 /* QueueAwareDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF427578BF2007FE2B9 /* QueueAwareDelegate.swift */; };
-		84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF627578BF2007FE2B9 /* AssertJSONEqual.swift */; };
 		84C94D0D27578BF2007FE2B9 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF727578BF2007FE2B9 /* AssertResult.swift */; };
-		84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CF827578BF2007FE2B9 /* AssertAsync.swift */; };
 		84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFC27578BF2007FE2B9 /* ChannelId.swift */; };
 		84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFD27578BF2007FE2B9 /* JSONEncoder+Extensions.swift */; };
 		84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CFE27578BF2007FE2B9 /* XCTestCase+MockJSON.swift */; };
@@ -261,7 +259,6 @@
 		84C94D1527578BF3007FE2B9 /* TestDispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D0027578BF2007FE2B9 /* TestDispatchQueue.swift */; };
 		84C94D1727578BF3007FE2B9 /* XCTAssertEqual+Difference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D0227578BF2007FE2B9 /* XCTAssertEqual+Difference.swift */; };
 		84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3227579BB0007FE2B9 /* AssertJSONEqual.swift */; };
-		84C94D3B27579BB0007FE2B9 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3327579BB0007FE2B9 /* AssertResult.swift */; };
 		84C94D3C27579BB0007FE2B9 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D3427579BB0007FE2B9 /* AssertAsync.swift */; };
 		84C94D422757C16D007FE2B9 /* ChatChannelListTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D412757C16D007FE2B9 /* ChatChannelListTestHelpers.swift */; };
 		84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */; };
@@ -303,9 +300,6 @@
 		84E04796284A444E00BAFA17 /* EventBatcherMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */; };
 		84E04797284A444E00BAFA17 /* WebSocketPingControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */; };
 		84E04798284A444E00BAFA17 /* InternetConnectionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D23275794D3007FE2B9 /* InternetConnectionMock.swift */; };
-		84E57C4E281037B2002213C1 /* AssertJSONEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C46281037B2002213C1 /* AssertJSONEqual.swift */; };
-		84E57C4F281037B2002213C1 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C47281037B2002213C1 /* AssertResult.swift */; };
-		84E57C50281037B2002213C1 /* AssertAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C48281037B2002213C1 /* AssertAsync.swift */; };
 		84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */; };
 		84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */; };
 		84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */; };
@@ -356,13 +350,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8465FBB42746873A00AF091E;
 			remoteInfo = StreamChatSwiftUI;
-		};
-		844AE868275EB8CF003225E5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8465FBAC2746873A00AF091E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8465FCBB27468B6900AF091E;
-			remoteInfo = DemoAppSwiftUI;
 		};
 		8465FBBF2746873A00AF091E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -783,7 +770,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				847110B8286110D0004A46D6 /* StreamChat in Frameworks */,
+				84B87F232861C0C900959CBE /* StreamChat in Frameworks */,
 				8465FCE6274695B400AF091E /* StreamChatSwiftUI.framework in Frameworks */,
 				E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */,
 			);
@@ -1595,7 +1582,6 @@
 			);
 			dependencies = (
 				8465FBC02746873A00AF091E /* PBXTargetDependency */,
-				844AE869275EB8CF003225E5 /* PBXTargetDependency */,
 			);
 			name = StreamChatSwiftUITests;
 			packageProductDependencies = (
@@ -1623,7 +1609,7 @@
 			name = DemoAppSwiftUI;
 			packageProductDependencies = (
 				E3A1C01B282BAC66002D1E26 /* Sentry */,
-				847110B7286110D0004A46D6 /* StreamChat */,
+				84B87F222861C0C900959CBE /* StreamChat */,
 			);
 			productName = DemoAppSwiftUI;
 			productReference = 8465FCBC27468B6900AF091E /* DemoAppSwiftUI.app */;
@@ -1637,7 +1623,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					8400A350282E6BE30067D3A0 = {
 						CreatedOnToolsVersion = 13.3.1;
@@ -1999,7 +1985,6 @@
 				84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84E0478E284A444E00BAFA17 /* WebSocketEngineMock.swift in Sources */,
 				84C94D4D2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift in Sources */,
-				84C94D0C27578BF2007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
 				84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */,
 				840A3F3828193AB20084E9CC /* ChatChannelInfoView_Tests.swift in Sources */,
@@ -2022,8 +2007,6 @@
 				84C94D0727578BF2007FE2B9 /* RandomDispatchQueue.swift in Sources */,
 				847110B628611033004A46D6 /* MessageActions_Tests.swift in Sources */,
 				84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */,
-				84E57C50281037B2002213C1 /* AssertAsync.swift in Sources */,
-				84E57C4F281037B2002213C1 /* AssertResult.swift in Sources */,
 				84E04797284A444E00BAFA17 /* WebSocketPingControllerMock.swift in Sources */,
 				8423C34C277DDD250092DCF1 /* MuteCommandHandler_Tests.swift in Sources */,
 				84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */,
@@ -2039,13 +2022,11 @@
 				8421BCEC27A400E8000F977D /* ReactionsUsersView_Tests.swift in Sources */,
 				84E04794284A444E00BAFA17 /* APIClient_Mock.swift in Sources */,
 				844D1D682851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift in Sources */,
-				84E57C4E281037B2002213C1 /* AssertJSONEqual.swift in Sources */,
 				84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */,
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84B2B5D82819778D00479CEE /* FileAttachmentsViewModel_Tests.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84E04790284A444E00BAFA17 /* CDNClient_Mock.swift in Sources */,
-				84C94D0E27578BF2007FE2B9 /* AssertAsync.swift in Sources */,
 				84E04796284A444E00BAFA17 /* EventBatcherMock.swift in Sources */,
 				84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */,
 				84E04792284A444E00BAFA17 /* MockBackgroundTaskScheduler.swift in Sources */,
@@ -2062,7 +2043,6 @@
 				84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */,
 				84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */,
 				84B2B5CA281947E100479CEE /* ViewFrameUtils.swift in Sources */,
-				84C94D3B27579BB0007FE2B9 /* AssertResult.swift in Sources */,
 				8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */,
 				84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */,
 				84C94D0627578BF2007FE2B9 /* UnwrapAsync.swift in Sources */,
@@ -2113,11 +2093,6 @@
 			isa = PBXTargetDependency;
 			target = 8465FBB42746873A00AF091E /* StreamChatSwiftUI */;
 			targetProxy = 8402EAD5282BFE5100CCA696 /* PBXContainerItemProxy */;
-		};
-		844AE869275EB8CF003225E5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8465FCBB27468B6900AF091E /* DemoAppSwiftUI */;
-			targetProxy = 844AE868275EB8CF003225E5 /* PBXContainerItemProxy */;
 		};
 		8465FBC02746873A00AF091E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2709,15 +2684,15 @@
 			package = 84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
 			productName = StreamChatTestTools;
 		};
-		847110B7286110D0004A46D6 /* StreamChat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
-			productName = StreamChat;
-		};
 		848399E9275FB3E9003075E4 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
+		};
+		84B87F222861C0C900959CBE /* StreamChat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
+			productName = StreamChat;
 		};
 		84E95A76284A486600699FD3 /* StreamChat */ = {
 			isa = XCSwiftPackageProductDependency;
