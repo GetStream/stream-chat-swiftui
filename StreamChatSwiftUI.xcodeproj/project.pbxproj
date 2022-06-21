@@ -722,7 +722,7 @@
 		A3600B42283F664E00E1C930 /* StartPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPage.swift; sourceTree = "<group>"; };
 		A36D1EAA283F8D70008D6110 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A3828EAC283F6CFE00538258 /* StartPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPage.swift; sourceTree = "<group>"; };
-		A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = StreamChatSwiftUITestsApp.xctestplan; path = StreamChatSwiftUITestsAppTests/StreamChatSwiftUITestsApp.xctestplan; sourceTree = "<group>"; };
+		A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUITestsApp.xctestplan; sourceTree = "<group>"; };
 		A3D7B0DE2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AccessibilityIdentifier.swift"; sourceTree = "<group>"; };
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -782,6 +782,7 @@
 		8400A352282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */,
 				A3600B36283E9EC900E1C930 /* StreamChatSwiftUITests.swift */,
 				A3600B33283E9EBA00E1C930 /* Extensions */,
 				8463D92428365E8F002B1894 /* Pages */,
@@ -884,7 +885,6 @@
 		8465FBAB2746873A00AF091E = {
 			isa = PBXGroup;
 			children = (
-				A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */,
 				4A65451E274BA170003C5FA8 /* README.md */,
 				8465FBB72746873A00AF091E /* Sources */,
 				8465FBC12746873A00AF091E /* StreamChatSwiftUITests */,
