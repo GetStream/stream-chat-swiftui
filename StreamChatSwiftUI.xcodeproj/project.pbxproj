@@ -1388,7 +1388,7 @@
 				847305BC28243D25004AC770 /* WebView_Tests.swift */,
 				84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */,
 				84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */,
-				844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */
+				844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */,
 			);
 			path = ChatChannel;
 			sourceTree = "<group>";
@@ -2247,7 +2247,7 @@
 				CODE_SIGN_ENTITLEMENTS = DemoAppSwiftUI/DemoAppSwiftUI.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"DemoAppSwiftUI/Preview Content\"";
 				DEVELOPMENT_TEAM = EHV7XZLAHA;
 				ENABLE_PREVIEWS = YES;
@@ -2262,7 +2262,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.15.0;
+				MARKETING_VERSION = 4.17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.getstream.iOS.DemoAppSwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.getstream.iOS.DemoAppSwiftUI";
@@ -2281,7 +2281,7 @@
 				CODE_SIGN_ENTITLEMENTS = DemoAppSwiftUI/DemoAppSwiftUI.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"DemoAppSwiftUI/Preview Content\"";
 				DEVELOPMENT_TEAM = EHV7XZLAHA;
 				ENABLE_PREVIEWS = YES;
@@ -2297,7 +2297,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.15.0;
+				MARKETING_VERSION = 4.17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.getstream.iOS.DemoAppSwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.getstream.iOS.DemoAppSwiftUI";
@@ -2369,7 +2369,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = 4.16.0;
+				branch = 4.17.0;
 				kind = branch;
 			};
 		};
