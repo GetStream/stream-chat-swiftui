@@ -185,5 +185,6 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                     .font(fonts.emoji)
             }
         }
+        .accessibilityIdentifier("MessageTextView")
     }
 }
