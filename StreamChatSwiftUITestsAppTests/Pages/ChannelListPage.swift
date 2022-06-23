@@ -42,14 +42,8 @@ enum ChannelListPage {
             cell.staticTexts["UnreadIndicatorView"]
         }
 
-        // TODO:
         static func statusCheckmark(for status: MessageDeliveryStatus?, in cell: XCUIElement) -> XCUIElement {
-//            var identifier = "imageView"
-//            if let status = status {
-//                identifier = "\(identifier)_\(status.rawValue)"
-//            }
-//            return cell.images[identifier]
-            return app.images.firstMatch  // DUMMY LINE
+            return cell.images["readIndicatorCheckmark"]
         }
     }
 

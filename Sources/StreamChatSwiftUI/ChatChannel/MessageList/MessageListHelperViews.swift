@@ -19,6 +19,7 @@ public struct MessageAuthorAndDateView: View {
     public var body: some View {
         HStack {
             MessageAuthorView(message: message)
+                .accessibilityIdentifier("MessageAuthorView")
             if utils.messageListConfig.messageDisplayOptions.showMessageDate {
                 MessageDateView(message: message)
                     .accessibilityIdentifier("MessageDateView")

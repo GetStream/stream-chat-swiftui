@@ -85,7 +85,7 @@ class MessageListPage {
         }
         
         static func author(messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["MessageAuthorView"] // TODO: this accecability identifier disappeared
+            messageCell.staticTexts["MessageAuthorView"]
         }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
