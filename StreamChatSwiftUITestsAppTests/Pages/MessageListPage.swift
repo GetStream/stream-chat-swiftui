@@ -89,7 +89,7 @@ class MessageListPage {
         }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["MessageView"].staticTexts["MessageTextView"] // TODO: does not work when text equals to emoji
+            messageCell.otherElements["MessageView"].staticTexts["MessageTextView"]
         }
 
         static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {

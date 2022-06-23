@@ -47,6 +47,38 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
 
+    func test_sendsMessageWithOneEmoji() throws {
+        linkToScenario(withId: 273)
+        
+        let message = "🍏"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends the emoji: '\(message)'") {
+            userRobot.sendMessage(message)
+        }
+        THEN("the message is delivered") {
+            userRobot.assertMessage(message)
+        }
+    }
+
+    func test_sendsMessageWithMultipleEmojis() throws {
+        linkToScenario(withId: 274)
+
+        let message = "🍏🙂👍"
+
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends a message with multiple emojis - \(message)") {
+            userRobot.sendMessage(message)
+        }
+        THEN("the message is delivered") {
+            userRobot.assertMessage(message)
+        }
+    }
+
     func test_editsMessage() throws {
         linkToScenario(withId: 264)
         
