@@ -89,13 +89,13 @@ final class MessageList_Tests: StreamTestCase {
     func test_receivesMessage() throws {
         linkToScenario(withId: 254)
         
-        let message = "🚢"
+        let message = "message"
         let author = "Han Solo"
         
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
-        WHEN("participant sends the emoji: '\(message)'") {
+        WHEN("participant sends a message: '\(message)'") {
             participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         THEN("the message is delivered") {
