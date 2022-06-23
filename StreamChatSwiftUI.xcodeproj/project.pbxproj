@@ -11,7 +11,6 @@
 		829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */; };
 		829AB4D42858A532002DC629 /* Reactions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D32858A532002DC629 /* Reactions_Tests.swift */; };
 		829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829CD5CD2848CA6B003C3877 /* Settings.swift */; };
-		82CBE566285B2BAF0039C35C /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CBE565285B2BAF0039C35C /* Test.swift */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
 		8400A34A282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */; };
 		8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A34B282C081E0067D3A0 /* OHHTTPStubs */; };
@@ -398,7 +397,6 @@
 		829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamTestCase+Tags.swift"; sourceTree = "<group>"; };
 		829AB4D32858A532002DC629 /* Reactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions_Tests.swift; sourceTree = "<group>"; };
 		829CD5CD2848CA6B003C3877 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		82CBE565285B2BAF0039C35C /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatWrapper.swift; sourceTree = "<group>"; };
 		8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionMonitor_Mock.swift; sourceTree = "<group>"; };
@@ -1466,7 +1464,6 @@
 				A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */,
 				829AB4D32858A532002DC629 /* Reactions_Tests.swift */,
 				829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */,
-				82CBE565285B2BAF0039C35C /* Test.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1753,7 +1750,6 @@
 				829AB4D42858A532002DC629 /* Reactions_Tests.swift in Sources */,
 				825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */,
 				A3828EAD283F6CFE00538258 /* StartPage.swift in Sources */,
-				82CBE566285B2BAF0039C35C /* Test.swift in Sources */,
 				A3600B41283F652400E1C930 /* StreamTestCase.swift in Sources */,
 				A3600B37283E9EC900E1C930 /* StreamChatSwiftUITests.swift in Sources */,
 				A3600B2A283E9E1900E1C930 /* UserRobot.swift in Sources */,
