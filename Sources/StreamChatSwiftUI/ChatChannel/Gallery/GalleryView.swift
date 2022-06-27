@@ -8,6 +8,8 @@ import SwiftUI
 /// View used for displaying image attachments in a gallery.
 struct GalleryView: View {
 
+    @Environment(\.presentationMode) var presentationMode
+    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
@@ -66,6 +68,13 @@ struct GalleryView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .background(Color(colors.background1))
+                .gesture(
+                    DragGesture().onEnded { value in
+                        if value.location.y - value.startLocation.y > 100 {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                )
                 
                 HStack {
                     ShareButtonView(content: sharingContent)
