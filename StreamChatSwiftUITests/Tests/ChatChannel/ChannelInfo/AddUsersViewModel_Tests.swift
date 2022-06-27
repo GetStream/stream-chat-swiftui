@@ -13,7 +13,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
 
     func test_addUsersViewModel_loadedUsers() {
         // Given
-        let searchController = ChatUserSearchController_Mock(client: chatClient)
+        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 10)
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
@@ -29,7 +29,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
     
     func test_addUsersViewModel_search() {
         // Given
-        let searchController = ChatUserSearchController_Mock(client: chatClient)
+        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 12)
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
@@ -51,7 +51,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
     
     func test_addUsersViewModel_onUserAppear() {
         // Given
-        let searchController = ChatUserSearchController_Mock(client: chatClient)
+        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         var users = ChannelInfoMockUtils.generateMockUsers(count: 20)
         searchController.users_mock = users
         let viewModel = AddUsersViewModel(

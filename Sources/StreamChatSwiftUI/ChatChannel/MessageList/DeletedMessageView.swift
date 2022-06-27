@@ -29,6 +29,7 @@ public struct DeletedMessageView: View {
                 .standardPadding()
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .messageBubble(for: message, isFirst: isFirst)
+                .accessibilityIdentifier("deletedMessageText")
             
             if message.isSentByCurrentUser {
                 HStack {
@@ -37,9 +38,11 @@ public struct DeletedMessageView: View {
                     Image(uiImage: images.eye)
                         .customizable()
                         .frame(maxWidth: 12)
+                        .accessibilityIdentifier("onlyVisibleToYouImageView")
                 
                     Text(L10n.Message.onlyVisibleToYou)
                         .font(fonts.footnote)
+                        .accessibilityIdentifier("onlyVisibleToYouLabel")
                     
                     Text(dateFormatter.string(from: message.createdAt))
                         .font(fonts.footnote)
@@ -47,5 +50,7 @@ public struct DeletedMessageView: View {
                 .foregroundColor(Color(colors.textLowEmphasis))
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("DeletedMessageView")
     }
 }

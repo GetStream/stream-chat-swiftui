@@ -179,6 +179,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 editedMessageWillShow = true
             }
         }
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -282,6 +283,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     maxMessageLength: maxMessageLength,
                     currentHeight: textFieldHeight
                 )
+                .accessibilityIdentifier("ComposerTextInputView")
+                .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
                 .overlay(
                     command?.displayInfo?.isInstant == true ?
@@ -310,6 +313,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         .clipShape(
             RoundedRectangle(cornerRadius: 20)
         )
+        .accessibilityIdentifier("ComposerInputView")
     }
     
     private var composerInputBackground: Color {

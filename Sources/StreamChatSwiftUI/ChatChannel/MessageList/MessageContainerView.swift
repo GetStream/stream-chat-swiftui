@@ -162,6 +162,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             dragChanged(to: offset.width)
                         }
                     })
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("MessageView")
                     
                     if message.replyCount > 0 && !isInThread {
                         MessageRepliesView(
@@ -170,6 +172,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             message: message,
                             replyCount: message.replyCount
                         )
+                        .accessibilityElement(children: .contain)
+                        .accessibility(identifier: "MessageRepliesView")
                     }
                                         
                     if showsAllInfo && !message.isDeleted {
@@ -218,6 +222,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageContainerView")
     }
     
     private var maximumHorizontalSwipeDisplacement: CGFloat {
@@ -319,6 +325,8 @@ struct SendFailureIndicator: View {
                 .foregroundColor(Color(colors.alert))
                 .offset(y: 4)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("SendFailureIndicator")
     }
 }
 

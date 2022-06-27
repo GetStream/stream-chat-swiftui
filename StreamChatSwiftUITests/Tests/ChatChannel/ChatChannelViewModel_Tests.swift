@@ -151,7 +151,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
     func test_chatChannelVM_messageThread() {
         // Given
         let channelController = makeChannelController()
-        let messageController = ChatMessageController_Mock(
+        let messageController = ChatMessageController_Mock.mock(
             client: chatClient,
             cid: .unique,
             messageId: .unique

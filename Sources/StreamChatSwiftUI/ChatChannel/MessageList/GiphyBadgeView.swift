@@ -24,5 +24,6 @@ public struct GiphyBadgeView: View {
             .cornerRadius(24)
             .padding(.all, 8)
         }
+        .accessibilityIdentifier("GiphyBadgeView")
     }
 }

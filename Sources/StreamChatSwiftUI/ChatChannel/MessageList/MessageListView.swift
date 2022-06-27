@@ -209,6 +209,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     }
                 }
+                .accessibilityIdentifier("MessageListScrollView")
             }
             
             if showScrollToLatestButton {
@@ -243,6 +244,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageListView")
     }
     
     private func additionalTopPadding(showsLastInGroupInfo: Bool) -> CGFloat {
@@ -326,6 +329,7 @@ public struct ScrollToBottomButton: View {
                     UnreadButtonIndicator(unreadCount: unreadCount) : nil
             )
         }
+        .accessibilityIdentifier("ScrollToBottomButton")
     }
 }
 
@@ -403,6 +407,8 @@ struct TypingIndicatorBottomView: View {
                     .opacity(0.9)
             )
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("TypingIndicatorBottomView")
     }
 }
 

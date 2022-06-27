@@ -52,6 +52,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
         .onTapGesture(perform: {
             scrolledId = quotedMessage.messageId
         })
+        .accessibilityIdentifier("QuotedMessageViewContainer")
     }
 }
 
@@ -127,6 +128,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 .foregroundColor(textColor(for: quotedMessage))
                 .lineLimit(3)
                 .font(fonts.footnote)
+                .accessibility(identifier: "quotedMessageText")
             
             if fillAvailableSpace {
                 Spacer()
@@ -145,6 +147,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 )
             )
         )
+        .accessibilityElement(children: .contain)
     }
     
     private var bubbleBackground: UIColor {

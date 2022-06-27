@@ -24,7 +24,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
     
     func test_messageListView_headerOnTop() {
         // Given
-        let controller = ChatChannelController_Mock(
+        let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
             channelListQuery: nil,
             client: chatClient

@@ -19,11 +19,15 @@ public struct MessageAuthorAndDateView: View {
     public var body: some View {
         HStack {
             MessageAuthorView(message: message)
+                .accessibilityIdentifier("MessageAuthorView")
             if utils.messageListConfig.messageDisplayOptions.showMessageDate {
                 MessageDateView(message: message)
+                    .accessibilityIdentifier("MessageDateView")
             }
             Spacer()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageAuthorAndDateView")
     }
 }
 
@@ -65,6 +69,7 @@ struct MessageDateView: View {
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
             .animation(nil)
+            .accessibilityIdentifier("MessageDateView")
     }
 }
 
@@ -83,6 +88,7 @@ struct MessageReadIndicatorView: View {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
                     .foregroundColor(colors.tintColor)
+                    .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: !readUsers.isEmpty ? images.readByAll : images.messageSent
@@ -90,7 +96,10 @@ struct MessageReadIndicatorView: View {
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
+            .accessibilityIdentifier("readIndicatorCheckmark")
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageReadIndicatorView")
     }
 }
 
@@ -127,6 +136,7 @@ struct MessagePinDetailsView: View {
         .frame(height: 16)
         .padding(.bottom, reactionsShown ? 16 : 0)
         .padding(.top, 4)
+        .accessibilityIdentifier("MessagePinDetailsView")
     }
 }
 

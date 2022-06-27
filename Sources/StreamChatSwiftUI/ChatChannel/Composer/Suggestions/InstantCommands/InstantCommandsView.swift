@@ -19,6 +19,7 @@ struct InstantCommandsView: View {
         VStack {
             InstantCommandsHeader()
                 .standardPadding()
+                .accessibilityElement(children: .contain)
             
             ForEach(0..<instantCommands.count, id: \.self) { i in
                 let command = instantCommands[i]
@@ -37,6 +38,8 @@ struct InstantCommandsView: View {
                                     commandSelected(instantCommand)
                                 }
                         )
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("InstantCommandView")
                 }
             }
         }
@@ -44,6 +47,7 @@ struct InstantCommandsView: View {
         .modifier(ShadowViewModifier())
         .padding(.all, 8)
         .animation(.spring())
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -61,9 +65,11 @@ struct InstantCommandsHeader: View {
                 .resizable()
                 .frame(width: 24, height: 24)
                 .foregroundColor(colors.tintColor)
+                .accessibilityIdentifier("InstantCommandsImage")
             Text(L10n.Composer.Suggestions.Commands.header)
                 .font(fonts.body)
                 .foregroundColor(Color(colors.textLowEmphasis))
+                .accessibilityIdentifier("InstantCommandsHeader")
             Spacer()
         }
     }
@@ -81,6 +87,7 @@ struct InstantCommandView: View {
     var body: some View {
         HStack {
             Image(uiImage: displayInfo.icon)
+                .accessibilityIdentifier("image\(displayInfo.displayName)")
             Text(displayInfo.displayName)
                 .font(fonts.title3)
                 .bold()

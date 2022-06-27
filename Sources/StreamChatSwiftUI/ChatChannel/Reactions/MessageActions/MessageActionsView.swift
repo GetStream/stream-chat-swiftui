@@ -52,6 +52,8 @@ public struct MessageActionsView: View {
                     Divider()
                 }
                 .padding(.leading)
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("messageAction-\(action.id)")
             }
         }
         .background(Color(colors.background8))
@@ -70,5 +72,7 @@ public struct MessageActionsView: View {
                 secondaryButton: .cancel()
             )
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageActionsView")
     }
 }

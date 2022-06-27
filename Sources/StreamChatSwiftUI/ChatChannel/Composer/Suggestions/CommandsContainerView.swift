@@ -20,6 +20,7 @@ struct CommandsContainerView: View {
                         handleCommand(["chatUser": user])
                     }
                 )
+                .accessibilityIdentifier("MentionUsersView")
             }
             
             if let instantCommands = suggestions["instantCommands"] as? [CommandHandler] {
@@ -29,7 +30,10 @@ struct CommandsContainerView: View {
                         handleCommand(["instantCommand": command])
                     }
                 )
+                .accessibilityIdentifier("InstantCommandsView")
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("CommandsContainerView")
     }
 }

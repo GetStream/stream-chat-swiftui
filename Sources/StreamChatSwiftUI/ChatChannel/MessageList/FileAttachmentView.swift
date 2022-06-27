@@ -62,6 +62,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                 )
             )
         )
+        .accessibilityIdentifier("FileAttachmentsContainer")
     }
 }
 
@@ -97,6 +98,7 @@ public struct FileAttachmentView: View {
         .sheet(isPresented: $fullScreenShown) {
             FileAttachmentPreview(url: attachment.assetURL)
         }
+        .accessibilityIdentifier("FileAttachmentView")
     }
 }
 

@@ -129,6 +129,7 @@ struct SearchResultItem<ChannelDestination: View>: View {
             }
             .padding(.all, 8)
         }
+        .accessibilityIdentifier("SearchResultItem")
     }
     
     private var timestampText: String {

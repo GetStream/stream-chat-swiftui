@@ -68,6 +68,7 @@ struct ChatTitleView: View {
             .lineLimit(1)
             .font(fonts.bodyBold)
             .foregroundColor(Color(colors.text))
+            .accessibilityIdentifier("ChatTitleView")
     }
 }
 
