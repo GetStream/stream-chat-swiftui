@@ -124,8 +124,8 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
     
-    private let channelController: ChatChannelController
-    private var messageController: ChatMessageController?
+    public let channelController: ChatChannelController
+    public var messageController: ChatMessageController?
     
     private var timer: Timer?
     private var cooldownPeriod = 0
