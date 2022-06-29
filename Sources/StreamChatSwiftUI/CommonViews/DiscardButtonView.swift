@@ -5,13 +5,17 @@
 import SwiftUI
 
 /// View for the discard button.
-struct DiscardButtonView: View {
+public struct DiscardButtonView: View {
     
     @Injected(\.images) private var images
     
     var color = Color.black.opacity(0.8)
     
-    var body: some View {
+    public init(color: Color = Color.black.opacity(0.8)) {
+        self.color = color
+    }
+    
+    public var body: some View {
         ZStack {
             Circle()
                 .fill(Color.white)
