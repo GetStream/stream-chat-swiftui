@@ -185,6 +185,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View {
+    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
@@ -203,6 +204,34 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var removeAttachmentWithId: (String) -> Void
     
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
+    
+    public init(
+        factory: Factory,
+        text: Binding<String>,
+        selectedRangeLocation: Binding<Int>,
+        command: Binding<ComposerCommand?>,
+        addedAssets: [AddedAsset],
+        addedFileURLs: [URL],
+        addedCustomAttachments: [CustomAttachment],
+        quotedMessage: Binding<ChatMessage?>,
+        maxMessageLength: Int? = nil,
+        cooldownDuration: Int,
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
+        removeAttachmentWithId: @escaping (String) -> Void
+    ) {
+        self.factory = factory
+        _text = text
+        _selectedRangeLocation = selectedRangeLocation
+        _command = command
+        self.addedAssets = addedAssets
+        self.addedFileURLs = addedFileURLs
+        self.addedCustomAttachments = addedCustomAttachments
+        self.quotedMessage = quotedMessage
+        self.maxMessageLength = maxMessageLength
+        self.cooldownDuration = cooldownDuration
+        self.onCustomAttachmentTap = onCustomAttachmentTap
+        self.removeAttachmentWithId = removeAttachmentWithId
+    }
     
     var textFieldHeight: CGFloat {
         let minHeight: CGFloat = TextSizeConstants.minimumHeight
