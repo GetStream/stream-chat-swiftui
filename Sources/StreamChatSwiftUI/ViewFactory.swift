@@ -393,6 +393,18 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed when a system message appears.
     func makeSystemMessageView(message: ChatMessage) -> SystemMessageViewType
     
+    associatedtype EmojiTextViewType: View
+    /// Creates the view displaying emojis.
+    /// - Parameters:
+    ///   - message: the deleted message that will be displayed with indicator.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
+    ///   - isFirst: whether it is first in the group (latest creation date).
+    func makeEmojiTextView(
+        message: ChatMessage,
+        scrolledId: Binding<String?>,
+        isFirst: Bool
+    ) -> EmojiTextViewType
+    
     associatedtype CustomAttachmentViewType: View
     /// Creates custom attachment view.
     /// If support for more than one custom view is needed, just do if-else check inside the view.

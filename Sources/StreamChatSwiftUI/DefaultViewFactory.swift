@@ -395,6 +395,19 @@ extension ViewFactory {
         SystemMessageView(message: message.text)
     }
     
+    public func makeEmojiTextView(
+        message: ChatMessage,
+        scrolledId: Binding<String?>,
+        isFirst: Bool
+    ) -> some View {
+        EmojiTextView(
+            factory: self,
+            message: message,
+            scrolledId: scrolledId,
+            isFirst: isFirst
+        )
+    }
+    
     public func makeCustomAttachmentViewType(
         for message: ChatMessage,
         isFirst: Bool,

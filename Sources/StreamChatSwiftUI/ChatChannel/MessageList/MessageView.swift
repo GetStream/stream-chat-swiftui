@@ -88,8 +88,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                 }
             } else {
                 if message.shouldRenderAsJumbomoji {
-                    EmojiTextView(
-                        factory: factory,
+                    factory.makeEmojiTextView(
                         message: message,
                         scrolledId: $scrolledId,
                         isFirst: isFirst
