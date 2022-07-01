@@ -83,6 +83,7 @@ public struct MessageDisplayOptions {
     let minimumSwipeGestureDistance: CGFloat
     let currentUserMessageTransition: AnyTransition
     let otherUserMessageTransition: AnyTransition
+    let shouldAnimateReactions: Bool
     var messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     
     public init(
@@ -95,6 +96,7 @@ public struct MessageDisplayOptions {
         minimumSwipeGestureDistance: CGFloat = 10,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
+        shouldAnimateReactions: Bool = true,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay
     ) {
@@ -108,6 +110,7 @@ public struct MessageDisplayOptions {
         self.otherUserMessageTransition = otherUserMessageTransition
         self.messageLinkDisplayResolver = messageLinkDisplayResolver
         self.lastInGroupHeaderSize = lastInGroupHeaderSize
+        self.shouldAnimateReactions = shouldAnimateReactions
     }
     
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {

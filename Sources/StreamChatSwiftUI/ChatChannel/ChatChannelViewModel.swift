@@ -422,7 +422,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                    || message.type == .ephemeral
                    || !message.linkAttachments.isEmpty {
                     skipChanges = false
-                    if index.row < messages.count && message.reactionScoresId != messages[index.row].reactionScoresId {
+                    if index.row < messages.count
+                        && (
+                            message.reactionScoresId != messages[index.row].reactionScoresId
+                                && utils.messageListConfig.messageDisplayOptions.shouldAnimateReactions
+                        ) {
                         animateChanges = message.linkAttachments.isEmpty
                     }
                 }
