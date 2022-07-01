@@ -48,4 +48,10 @@ public struct ParticipantInfo: Identifiable {
     public let chatUser: ChatUser
     public let displayName: String
     public let onlineInfoText: String
+
+    public init(chatUser: ChatUser, displayName: String, onlineInfoText: String) {
+        self.chatUser = chatUser
+        self.displayName = displayName
+        self.onlineInfoText = onlineInfoText
+    }
 }
