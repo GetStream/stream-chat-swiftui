@@ -485,9 +485,11 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         // When
         let newAsset = defaultAsset
         viewModel.imageTapped(newAsset) // will not be added because of small max attachment size.
+        let alertShown = viewModel.attachmentSizeExceeded
         
         // Then
         XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(alertShown == true)
     }
     
     func test_messageComposerVM_mentionUsers() {

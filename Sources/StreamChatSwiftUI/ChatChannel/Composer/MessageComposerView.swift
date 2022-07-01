@@ -81,6 +81,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
+                .alert(isPresented: $viewModel.attachmentSizeExceeded) {
+                    Alert(
+                        title: Text(L10n.Attachment.MaxSize.title),
+                        message: Text(L10n.Attachment.MaxSize.message),
+                        dismissButton: .cancel(Text(L10n.Alert.Actions.ok))
+                    )
+                }
                                 
                 factory.makeTrailingComposerView(
                     enabled: viewModel.sendButtonEnabled,
@@ -94,6 +101,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         editedMessage = nil
                         onMessageSent()
                     }
+                }
+                .alert(isPresented: $viewModel.errorShown) {
+                    Alert.defaultErrorAlert
                 }
             }
             .padding(.all, 8)
@@ -169,9 +179,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             alignment: .bottom
         )
         .modifier(factory.makeComposerViewModifier())
-        .alert(isPresented: $viewModel.errorShown) {
-            Alert.defaultErrorAlert
-        }
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
             if editedMessage != nil {

@@ -123,6 +123,7 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
+    @Published public var attachmentSizeExceeded: Bool = false
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -575,7 +576,9 @@ open class MessageComposerViewModel: ObservableObject {
         
         do {
             let fileSize = try AttachmentFile(url: url).size
-            return fileSize < chatClient.config.maxAttachmentSize
+            let canAdd = fileSize < chatClient.config.maxAttachmentSize
+            attachmentSizeExceeded = !canAdd
+            return canAdd
         } catch {
             return false
         }
