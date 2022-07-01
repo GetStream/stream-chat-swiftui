@@ -8,6 +8,7 @@ import SwiftUI
 
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
+    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
         
@@ -27,6 +28,40 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     
     var isDisplayed: Bool
     var height: CGFloat
+    
+    public init(
+        viewFactory: Factory,
+        selectedPickerState: Binding<AttachmentPickerState>,
+        filePickerShown: Binding<Bool>,
+        cameraPickerShown: Binding<Bool>,
+        addedFileURLs: Binding<[URL]>,
+        onPickerStateChange: @escaping (AttachmentPickerState) -> Void,
+        photoLibraryAssets: PHFetchResult<PHAsset>? = nil,
+        onAssetTap: @escaping (AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
+        isAssetSelected: @escaping (String) -> Bool,
+        addedCustomAttachments: [CustomAttachment],
+        cameraImageAdded: @escaping (AddedAsset) -> Void,
+        askForAssetsAccessPermissions: @escaping () -> Void,
+        isDisplayed: Bool,
+        height: CGFloat
+    ) {
+        self.viewFactory = viewFactory
+        _selectedPickerState = selectedPickerState
+        _filePickerShown = filePickerShown
+        _cameraPickerShown = cameraPickerShown
+        _addedFileURLs = addedFileURLs
+        self.onPickerStateChange = onPickerStateChange
+        self.photoLibraryAssets = photoLibraryAssets
+        self.onAssetTap = onAssetTap
+        self.onCustomAttachmentTap = onCustomAttachmentTap
+        self.isAssetSelected = isAssetSelected
+        self.addedCustomAttachments = addedCustomAttachments
+        self.cameraImageAdded = cameraImageAdded
+        self.askForAssetsAccessPermissions = askForAssetsAccessPermissions
+        self.isDisplayed = isDisplayed
+        self.height = height
+    }
     
     public var body: some View {
         VStack(spacing: 0) {
@@ -83,14 +118,23 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 }
 
 /// View for picking the source of the attachment (photo, files or camera).
-struct AttachmentSourcePickerView: View {
+public struct AttachmentSourcePickerView: View {
+    
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     
     var selected: AttachmentPickerState
     var onTap: (AttachmentPickerState) -> Void
     
-    var body: some View {
+    public init(
+        selected: AttachmentPickerState,
+        onTap: @escaping (AttachmentPickerState) -> Void
+    ) {
+        self.selected = selected
+        self.onTap = onTap
+    }
+    
+    public var body: some View {
         
         HStack(alignment: .center, spacing: 24) {
             AttachmentPickerButton(
