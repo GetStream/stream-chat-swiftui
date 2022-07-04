@@ -3,7 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Automated testing infrastructure
+- Config for disabling reaction animations
+- Error indicator when max attachment size exceeded
+- Factory method to swap the jumbo emoji view
+
 ### 🔄 Changed
+- Made few view components public
 
 # [4.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.17.0)
 _June 22, 2022_
