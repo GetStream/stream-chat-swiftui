@@ -205,7 +205,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                         }
                         withAnimation {
-                            scrollView.scrollTo(scrolledId, anchor: .bottom)
+                            scrollView.scrollTo(scrolledId, anchor: .top)
                         }
                     }
                 }
