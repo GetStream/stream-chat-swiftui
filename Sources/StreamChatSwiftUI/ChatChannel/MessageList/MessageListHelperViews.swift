@@ -157,7 +157,7 @@ struct TopLeftView<Content: View>: View {
 
 extension View {
     
-    func textColor(for message: ChatMessage) -> Color {
+    public func textColor(for message: ChatMessage) -> Color {
         @Injected(\.colors) var colors
         
         if message.isSentByCurrentUser {
