@@ -18,6 +18,8 @@ The **message list** in the SwiftUI SDK is the view that shows all the messages 
 
 In order to compose messages there is the message **composer**. It can not only send messages but also all **other kinds of attachments**, such as photos, videos, voicemails, and many more. Also, it is possible to build **customized, personalized attachments** tailored for specific use-cases. The composer also supports advanced features such as **message commands** using e.g. the `/` shortcut.
 
+![An image discriminating the different parts of the chat channel.](../../assets/chat-channel-components.png)
+
 ## Customizing Message Components
 
 The modular architecture of the Stream Chat SwiftUI SDK allows developers to change and customize the message components to match their functionalities and needs.
@@ -45,9 +47,11 @@ The SDK makes this easy as it exposes the `ChatChannelView` as the view that hol
 
 The `channelController` can be initialized from the `chatClient` (using the [injection mechanism described here](../dependency-injection.md)). It requires a `ChannelId` and the specification of the `messageOrdering` (e.g. with the `.topToBottom` option). The creation of the channel id can be done with the knowledge of the id.
 
-The following code shows the example of displaying a certain channel (with the id `"my-channel-id"`) when the app starts:
+:::info
+The `ChatChannelView` is still respecting the replacements that are applied in the custom `ViewFactory` implementation. All customizations are still used there as it pulls its contents dynamically from the factory.
+:::
 
-you want to show directly the channel view, without having a channel list as the previous screen. Here's an example how to show the channel view as an initial screen, with a predefined channel:
+The following code shows the example of displaying a certain channel (with the id `"my-channel-id"`) when the app starts:
 
 ```swift
 @main
