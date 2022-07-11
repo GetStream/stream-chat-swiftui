@@ -139,6 +139,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .onChange(of: presentationMode.wrappedValue, perform: { newValue in
             if newValue.isPresented == false {
                 viewModel.onViewDissappear()
+            } else {
+                viewModel.setActive()
             }
         })
         .background(
