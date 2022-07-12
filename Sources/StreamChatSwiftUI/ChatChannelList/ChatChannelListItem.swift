@@ -195,7 +195,7 @@ public struct InjectedChannelInfo {
 
 extension ChatChannel {
     
-    var lastMessageText: String? {
+    public var lastMessageText: String? {
         if let latestMessage = latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
         } else {
@@ -203,13 +203,13 @@ extension ChatChannel {
         }
     }
     
-    var shouldShowTypingIndicator: Bool {
+    public var shouldShowTypingIndicator: Bool {
         !currentlyTypingUsersFiltered(
             currentUserId: InjectedValues[\.chatClient].currentUserId
         ).isEmpty && config.typingEventsEnabled
     }
     
-    var subtitleText: String {
+    public var subtitleText: String {
         if isMuted {
             return L10n.Channel.Item.muted
         } else if shouldShowTypingIndicator {
@@ -221,7 +221,7 @@ extension ChatChannel {
         }
     }
     
-    var timestampText: String {
+    public var timestampText: String {
         if let lastMessageAt = lastMessageAt {
             return InjectedValues[\.utils].dateFormatter.string(from: lastMessageAt)
         } else {
