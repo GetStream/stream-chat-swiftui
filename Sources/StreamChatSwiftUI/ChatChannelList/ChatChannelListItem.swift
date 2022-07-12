@@ -172,6 +172,10 @@ public struct UnreadIndicatorView: View {
     
     var unreadCount: Int
     
+    public init(unreadCount: Int) {
+        self.unreadCount = unreadCount
+    }
+    
     public var body: some View {
         Text("\(unreadCount)")
             .lineLimit(1)
