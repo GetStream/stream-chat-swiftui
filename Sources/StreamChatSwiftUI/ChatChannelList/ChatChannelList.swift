@@ -137,6 +137,17 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
+        if let channel = selectedChannel?.channel {
+            NavigationLink(
+                tag: channel.channelSelectionInfo,
+                selection: $selectedChannel
+            ) {
+                LazyView(channelDestination(channel.channelSelectionInfo))
+            } label: {
+                EmptyView()
+            }
+        }
+
         LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
                 factory.makeChannelListItem(

@@ -48,15 +48,6 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 disabled: disabled,
                 onItemTap: onItemTap
             )
-                                    
-            NavigationLink(
-                tag: channel.channelSelectionInfo,
-                selection: $selectedChannel
-            ) {
-                LazyView(channelDestination(channel.channelSelectionInfo))
-            } label: {
-                EmptyView()
-            }
         }
         .id("\(channel.id)-navigatable")
     }
