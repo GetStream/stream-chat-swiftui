@@ -258,6 +258,7 @@ extension ViewFactory {
         message: ChatMessage,
         width: CGFloat?,
         showsAllInfo: Bool,
+        showsLastInGroup: Bool,
         isInThread: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,

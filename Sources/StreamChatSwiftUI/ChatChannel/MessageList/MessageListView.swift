@@ -122,6 +122,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 message: message,
                                 width: width,
                                 showsAllInfo: showsAllData(for: message),
+                                showsLastInGroup: showsLastInGroup(for: message),
                                 isInThread: isMessageThread,
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
@@ -265,7 +266,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         let groupInfo = messagesGroupingInfo[message.id] ?? []
         return groupInfo.contains(firstMessageKey) == true
     }
-    
+
+    private func showsLastInGroup(for message: ChatMessage) -> Bool {
+        if !messageListConfig.groupMessages {
+            return true
+        }
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(lastMessageKey) == true
+    }
+
     private func showsLastInGroupInfo(
         for message: ChatMessage,
         channel: ChatChannel
