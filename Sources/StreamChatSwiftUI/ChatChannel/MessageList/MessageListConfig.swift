@@ -74,17 +74,17 @@ public enum DateIndicatorPlacement {
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
         
-    let showAvatars: Bool
-    let showMessageDate: Bool
-    let showAuthorName: Bool
-    let animateChanges: Bool
-    let dateLabelSize: CGFloat
-    let lastInGroupHeaderSize: CGFloat
-    let minimumSwipeGestureDistance: CGFloat
-    let currentUserMessageTransition: AnyTransition
-    let otherUserMessageTransition: AnyTransition
-    let shouldAnimateReactions: Bool
-    var messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
+    public let showAvatars: Bool
+    public let showMessageDate: Bool
+    public let showAuthorName: Bool
+    public let animateChanges: Bool
+    public let dateLabelSize: CGFloat
+    public let lastInGroupHeaderSize: CGFloat
+    public let minimumSwipeGestureDistance: CGFloat
+    public let currentUserMessageTransition: AnyTransition
+    public let otherUserMessageTransition: AnyTransition
+    public let shouldAnimateReactions: Bool
+    public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     
     public init(
         showAvatars: Bool = true,
@@ -104,7 +104,7 @@ public struct MessageDisplayOptions {
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
-        dateLabelSize = overlayDateLabelSize
+        self.dateLabelSize = overlayDateLabelSize
         self.minimumSwipeGestureDistance = minimumSwipeGestureDistance
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
