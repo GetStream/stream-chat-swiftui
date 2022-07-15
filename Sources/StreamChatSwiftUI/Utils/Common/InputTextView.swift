@@ -66,7 +66,7 @@ class InputTextView: UITextView, AccessibilityView {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(becomeFirstResponder),
-            name: NSNotification.Name(firstResponderNotification),
+            name: NSNotification.Name(getStreamFirstResponderNotification),
             object: nil
         )
     }
