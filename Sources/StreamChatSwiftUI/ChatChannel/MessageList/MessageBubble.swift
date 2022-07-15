@@ -38,19 +38,25 @@ public struct MessageBubbleModifier: ViewModifier {
     public var injectedBackgroundColor: UIColor?
     public var cornerRadius: CGFloat = 18
     public var forceLeftToRight = false
+    public var topPadding: CGFloat = 0
+    public var bottomPadding: CGFloat = 0
     
     public init(
         message: ChatMessage,
         isFirst: Bool,
         injectedBackgroundColor: UIColor? = nil,
         cornerRadius: CGFloat = 18,
-        forceLeftToRight: Bool = false
+        forceLeftToRight: Bool = false,
+        topPadding: CGFloat = 0,
+        bottomPadding: CGFloat = 0
     ) {
         self.message = message
         self.isFirst = isFirst
         self.injectedBackgroundColor = injectedBackgroundColor
         self.cornerRadius = cornerRadius
         self.forceLeftToRight = forceLeftToRight
+        self.topPadding = topPadding
+        self.bottomPadding = bottomPadding
     }
     
     public func body(content: Content) -> some View {
@@ -62,6 +68,8 @@ public struct MessageBubbleModifier: ViewModifier {
                     cornerRadius: cornerRadius
                 )
             )
+            .padding(.top, topPadding)
+            .padding(.bottom, bottomPadding)
     }
     
     private var corners: UIRectCorner {

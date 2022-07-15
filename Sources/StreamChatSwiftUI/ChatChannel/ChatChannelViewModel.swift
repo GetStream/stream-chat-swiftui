@@ -216,13 +216,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func onViewAppear() {
-        isActive = true
+        setActive()
         messages = channelDataSource.messages
         checkNameChange()
     }
     
     public func onViewDissappear() {
         isActive = false
+    }
+    
+    public func setActive() {
+        isActive = true
     }
     
     // MARK: - private

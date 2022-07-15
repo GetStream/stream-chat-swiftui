@@ -115,6 +115,13 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     var message: ChatMessage
     var isFirst: Bool
     @Binding var scrolledId: String?
+
+    public init(factory: Factory, message: ChatMessage, isFirst: Bool, scrolledId: Binding<String?>) {
+        self.factory = factory
+        self.message = message
+        self.isFirst = isFirst
+        self._scrolledId = scrolledId
+    }
     
     public var body: some View {
         VStack(

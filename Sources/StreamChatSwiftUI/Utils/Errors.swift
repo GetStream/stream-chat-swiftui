@@ -8,33 +8,33 @@ import Foundation
 public struct StreamChatError: Error {
     
     /// The specific error code.
-    let errorCode: StreamChatErrorCode
+    public let errorCode: StreamChatErrorCode
     
     /// The additional error message description.
-    let description: String?
+    public let description: String?
     
     /// The additional information dictionary.
-    let additionalInfo: [String: Any]?
+    public let additionalInfo: [String: Any]?
         
-    static let unknown = StreamChatError(
+    public static let unknown = StreamChatError(
         errorCode: StreamChatErrorCode.unknown,
         description: nil,
         additionalInfo: nil
     )
     
-    static let missingData = StreamChatError(
+    public static let missingData = StreamChatError(
         errorCode: StreamChatErrorCode.missingData,
         description: nil,
         additionalInfo: nil
     )
     
-    static let wrongConfig = StreamChatError(
+    public static let wrongConfig = StreamChatError(
         errorCode: StreamChatErrorCode.wrongConfig,
         description: nil,
         additionalInfo: nil
     )
     
-    static let noSuggestionsAvailable = StreamChatError(
+    public static let noSuggestionsAvailable = StreamChatError(
         errorCode: StreamChatErrorCode.noSuggestions,
         description: nil,
         additionalInfo: nil
@@ -50,7 +50,7 @@ extension StreamChatError: Equatable {
 
 extension StreamChatError {
     
-    func asFailedPromise<T>() -> Future<T, Error> {
+    public func asFailedPromise<T>() -> Future<T, Error> {
         Future { promise in
             promise(.failure(self))
         }

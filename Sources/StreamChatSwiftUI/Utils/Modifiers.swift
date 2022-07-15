@@ -81,7 +81,7 @@ extension View {
 }
 
 extension Image {
-    func customizable() -> some View {
+    public func customizable() -> some View {
         renderingMode(.template)
             .resizable()
             .scaledToFit()

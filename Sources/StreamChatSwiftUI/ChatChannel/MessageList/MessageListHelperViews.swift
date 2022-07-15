@@ -74,7 +74,7 @@ struct MessageDateView: View {
 }
 
 /// View that displays the read indicator for a message.
-struct MessageReadIndicatorView: View {
+public struct MessageReadIndicatorView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -82,7 +82,12 @@ struct MessageReadIndicatorView: View {
     var readUsers: [ChatUser]
     var showReadCount: Bool
     
-    var body: some View {
+    public init(readUsers: [ChatUser], showReadCount: Bool) {
+        self.readUsers = readUsers
+        self.showReadCount = showReadCount
+    }
+    
+    public var body: some View {
         HStack(spacing: 2) {
             if showReadCount && !readUsers.isEmpty {
                 Text("\(readUsers.count)")
