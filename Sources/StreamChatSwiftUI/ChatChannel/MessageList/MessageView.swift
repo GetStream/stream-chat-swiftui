@@ -120,7 +120,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
-        self._scrolledId = scrolledId
+        _scrolledId = scrolledId
     }
     
     public var body: some View {

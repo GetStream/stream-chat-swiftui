@@ -104,7 +104,7 @@ public struct MessageDisplayOptions {
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
-        self.dateLabelSize = overlayDateLabelSize
+        dateLabelSize = overlayDateLabelSize
         self.minimumSwipeGestureDistance = minimumSwipeGestureDistance
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
