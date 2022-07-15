@@ -33,7 +33,7 @@ There are dedicated sections for each of the components that can be customized w
 In case there is anything missing from that list that you'd like to see, then please [let us know](https://twitter.com/getstream_io).
 
 :::info
-There is more content to be found on our [Youtube channel](https://www.youtube.com/channel/UC2xOn0xQj1HIpHJpOy5tvpA) in a video about [recreating the message list from iMessage](TODO).
+There is more content to be found on our [Youtube channel](https://www.youtube.com/channel/UC2xOn0xQj1HIpHJpOy5tvpA) in a video about [recreating the message list from iMessage](https://youtu.be/8Nkmk85H8HQ).
 :::
 
 ## Showing a Channel programmatically
