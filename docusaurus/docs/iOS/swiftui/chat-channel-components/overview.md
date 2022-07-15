@@ -28,7 +28,7 @@ There are dedicated sections for each of the components that can be customized w
 
 - [Channel Header](../channel-header)
 - [Message List](../message-list)
-- Message Composer (coming soon)
+- [Message Composer](../message-composer)
 
 In case there is anything missing from that list that you'd like to see, then please [let us know](https://twitter.com/getstream_io).
 

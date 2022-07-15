@@ -51,34 +51,44 @@
       "SwiftUI": [
         "swiftui/swiftui-overview",
         "swiftui/getting-started",
-        "swiftui/localization",
-        "swiftui/dependency-injection",
-        "swiftui/view-customizations",
+        {
+          "Core Principles": [
+            "swiftui/localization",
+            "swiftui/dependency-injection",
+            "swiftui/view-customizations",
+            "guides/push-notifications"
+          ]
+        },
+        {
+          "Channel List Components": [
+            "swiftui/channel-list-components/channel-list-header",
+            "swiftui/channel-list-components/swipe-actions-channels",
+            "swiftui/channel-list-components/helper-views",
+            "swiftui/channel-list-components/list-tap-events",
+            "swiftui/channel-list-components/query-filters"
+          ]
+        },
         {
           "Chat Channel Components": [
             "swiftui/chat-channel-components/overview",
             "swiftui/chat-channel-components/channel-header",
-            "swiftui/chat-channel-components/message-list"
+            "swiftui/chat-channel-components/message-list",
+            "swiftui/components/message-list",
+            "swiftui/chat-channel-components/message-composer",
+            "swiftui/chat-channel-components/composer-commands",
+            "swiftui/chat-channel-components/chat-channel"
           ]
         },
         {
-          "Other Components": [
-            "swiftui/components/channel-list-header",
-            "swiftui/components/swipe-actions-channels",
-            "swiftui/components/query-filters",
-            "swiftui/components/helper-views",
-            "swiftui/components/list-tap-events",
-            "swiftui/components/chat-channel",
-            "swiftui/components/message-list",
-            "swiftui/components/custom-avatar",
-            "swiftui/components/attachments",
-            "swiftui/components/message-composer",
-            "swiftui/components/message-reactions",
-            "swiftui/components/message-threads",
-            "swiftui/components/inline-replies",
-            "swiftui/components/composer-commands",
-            "swiftui/components/typing-indicators",
-            "swiftui/components/read-indicators"
+          "Message Components": [
+            "swiftui/message-components/overview",
+            "swiftui/message-components/custom-avatar",
+            "swiftui/message-components/attachments",
+            "swiftui/message-components/message-reactions",
+            "swiftui/message-components/message-threads",
+            "swiftui/message-components/inline-replies",
+            "swiftui/message-components/typing-indicators",
+            "swiftui/message-components/read-indicators"
           ]
         }
       ]
