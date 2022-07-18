@@ -3,7 +3,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Padding support to message bubble modifier
+
+### 🐞 Fixed
+- Fixed a bug with canceled backswipe
+
 ### 🔄 Changed
+- Docs restructuring
+- Exposed some view components as public
 
 # [4.18.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.18.0)
 _July 05, 2022_
