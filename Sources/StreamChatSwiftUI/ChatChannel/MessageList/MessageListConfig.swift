@@ -74,7 +74,8 @@ public enum DateIndicatorPlacement {
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
         
-    public let showAvatars: Bool
+    public let showAvatarsInDirectMessages: Bool
+    public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
     public let showAuthorName: Bool
     public let animateChanges: Bool
@@ -88,7 +89,8 @@ public struct MessageDisplayOptions {
     public let spacerWidth: (CGFloat) -> CGFloat
     
     public init(
-        showAvatars: Bool = true,
+        showAvatarsInDirectMessages: Bool = true,
+        showAvatarsInGroups: Bool = true,
         showMessageDate: Bool = true,
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
@@ -102,11 +104,12 @@ public struct MessageDisplayOptions {
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth
     ) {
-        self.showAvatars = showAvatars
+        self.showAvatarsInDirectMessages = showAvatarsInDirectMessages
+        self.showAvatarsInGroups = showAvatarsInGroups
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
-        dateLabelSize = overlayDateLabelSize
+        self.dateLabelSize = overlayDateLabelSize
         self.minimumSwipeGestureDistance = minimumSwipeGestureDistance
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
