@@ -111,16 +111,19 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     
-    var factory: Factory
-    var message: ChatMessage
-    var isFirst: Bool
+    private let factory: Factory
+    private let message: ChatMessage
+    private let isFirst: Bool
+    private let textEdgeInsets: EdgeInsets
+
     @Binding var scrolledId: String?
 
-    public init(factory: Factory, message: ChatMessage, isFirst: Bool, scrolledId: Binding<String?>) {
+    public init(factory: Factory, message: ChatMessage, isFirst: Bool, textEdgeInsets: EdgeInsets = StandardPaddingModifier.standardInsets, scrolledId: Binding<String?>) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
-        _scrolledId = scrolledId
+        self.textEdgeInsets = textEdgeInsets
+        self._scrolledId = scrolledId
     }
     
     public var body: some View {
@@ -138,7 +141,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             }
             
             Text(message.text)
-                .standardPadding()
+                .padding(textEdgeInsets)
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)

@@ -34,11 +34,12 @@ struct ShadowModifier: ViewModifier {
 }
 
 /// View modifier that applies default padding to elements.
-struct StandardPaddingModifier: ViewModifier {
-    func body(content: Content) -> some View {
+public struct StandardPaddingModifier: ViewModifier {
+    public static let standardInsets: EdgeInsets = EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+
+    public func body(content: Content) -> some View {
         content
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .padding(Self.standardInsets)
     }
 }
 
