@@ -114,12 +114,23 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     var factory: Factory
     var message: ChatMessage
     var isFirst: Bool
+    var horizontalPadding: CGFloat
+    var verticalPadding: CGFloat
     @Binding var scrolledId: String?
 
-    public init(factory: Factory, message: ChatMessage, isFirst: Bool, scrolledId: Binding<String?>) {
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        isFirst: Bool,
+        horizontalPadding: CGFloat = 16,
+        verticalPadding: CGFloat = 8,
+        scrolledId: Binding<String?>
+    ) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
+        self.horizontalPadding = horizontalPadding
+        self.verticalPadding = verticalPadding
         _scrolledId = scrolledId
     }
     
@@ -138,7 +149,8 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             }
             
             Text(message.text)
-                .standardPadding()
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, verticalPadding)
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)

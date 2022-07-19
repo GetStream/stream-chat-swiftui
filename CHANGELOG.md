@@ -4,7 +4,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Padding support to message bubble modifier
+- Customizing padding for message bubble modifier
+- Customizing padding for message text view
 
 ### 🐞 Fixed
 - Fixed a bug with canceled backswipe
