@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Customizing padding for message bubble modifier
 - Customizing padding for message text view
 - Possibility to control tab bar visibility
+- Configuration of message size via spacing
 
 ### 🐞 Fixed
 - Fixed a bug with canceled backswipe
