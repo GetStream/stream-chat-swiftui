@@ -111,26 +111,32 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     
-    var factory: Factory
-    var message: ChatMessage
-    var isFirst: Bool
-    var horizontalPadding: CGFloat
-    var verticalPadding: CGFloat
+    private let factory: Factory
+    private let message: ChatMessage
+    private let isFirst: Bool
+    private let leadingPadding: CGFloat
+    private let trailingPadding: CGFloat
+    private let topPadding: CGFloat
+    private let bottomPadding: CGFloat
     @Binding var scrolledId: String?
 
     public init(
         factory: Factory,
         message: ChatMessage,
         isFirst: Bool,
-        horizontalPadding: CGFloat = 16,
-        verticalPadding: CGFloat = 8,
+        leadingPadding: CGFloat = 16,
+        trailingPadding: CGFloat = 16,
+        topPadding: CGFloat = 8,
+        bottomPadding: CGFloat = 8,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
-        self.horizontalPadding = horizontalPadding
-        self.verticalPadding = verticalPadding
+        self.leadingPadding = leadingPadding
+        self.trailingPadding = trailingPadding
+        self.topPadding = topPadding
+        self.bottomPadding = bottomPadding
         _scrolledId = scrolledId
     }
     
@@ -149,8 +155,10 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             }
             
             Text(message.text)
-                .padding(.horizontal, horizontalPadding)
-                .padding(.vertical, verticalPadding)
+                .padding(.leading, leadingPadding)
+                .padding(.trailing, trailingPadding)
+                .padding(.top, topPadding)
+                .padding(.bottom, bottomPadding)
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
