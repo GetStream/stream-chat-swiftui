@@ -26,6 +26,7 @@ public struct CustomChannelHeader: ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             Button {
                 isNewChatShown = true
+                notifyHideTabBar()
             } label: {
                 Image(uiImage: images.messageActionEdit)
                     .resizable()
