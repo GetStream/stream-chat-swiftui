@@ -297,7 +297,7 @@ streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
 ### cacheSizeOnChatDismiss
 
-The `cacheSizeOnChatDismiss` parameter specifies how large the image cache is after leaving a channel. The default is set to `1024 * 1024 * 100` byte and it means that when the user is leaving a channel, the image cache that [Nuke](https://github.com/kean/Nuke) uses is trimmed down to that size so that it doesn't take up too much memory.
+The `cacheSizeOnChatDismiss` parameter specifies how large the image cache is after leaving a channel. The default is set to `1024 * 1024 * 100` bytes and it means that when the user is leaving a channel, the image cache that [Nuke](https://github.com/kean/Nuke) uses is trimmed down to that size so that it doesn't take up too much memory.
 
 Changing this parameter needs careful consideration of memory allocation limits, so this should only be changed when knowing the exact impacts of it.
 
@@ -314,3 +314,27 @@ streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
 ## No Messages View
+
+When there are no messages available in the channel, a custom view can be provided. In order to do this, the `makeEmptyMessagesView` method needs to be implemented in the `ViewFactory`. In this method, the `channel` is provided as a parameter, allowing for a personalized message for starting a conversation. The `colors` are provided as a parameter too. The default implementation in the SDK just shows the message list background in this slot.
+
+In order to change this up, here is an example usage of an override in the custom `ViewFactory`:
+
+```swift
+func makeEmptyMessagesView(for channel: ChatChannel, colors: ColorPalette) -> some View {
+    Text("No messages yet, enter the first one by tapping on the composer at the bottom of the screen.")
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+            .stroke(Color(UIColor.secondarySystemBackground), lineWidth: 2)
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+}
+```
+
+Here's how that custom implementation looks compared to the default one:
+
+![Comparison of the default look of the empty message list and the custom example shown in the code above.](../../assets/empty-message-list.png)
+
+:::info
+Reminder: the custom `ViewFactory` needs to be injected into e.g. the `ChatChannelListView`. If unsure how to do that, there is a more detailed explanation in the [Getting started](../../getting-started) page.
+:::
