@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.19.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.19.0)
+_July 21, 2022_
+
 ### ✅ Added
 - Customizing padding for message bubble modifier
 - Customizing padding for message text view
