@@ -352,3 +352,28 @@ func makeMessageListBackground(
 See how this looks compared to the default Message List background:
 
 ![Comparison of the default Message List background compared to a custom implementation.](../../assets/message-list-background.png)
+
+## Custom modifier for the Message List
+
+It is possible to customize the message list further by creating a custom view modifier for it using the `makeMessageListModifier` function in the `ViewFactory`. This gives complete freedom over the type of implementation and customization that will be applied to the message list.
+
+The first step in order to implement this is to create a custom `ViewModifier`. In this example this adds a vertical padding to the `View`;
+
+```swift
+struct VerticalPaddingViewModifier: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .padding(.vertical, 8)
+    }
+}
+```
+
+This modifier can then be applied in the custom `ViewFactory` by overriding the `makeMessageListModifier` function:
+
+```swift
+func makeMessageListModifier() -> some ViewModifier {
+    VerticalPaddingViewModifier()
+}
+```
+
+Having this kind of freedom allows for more complex modifiers as well.
