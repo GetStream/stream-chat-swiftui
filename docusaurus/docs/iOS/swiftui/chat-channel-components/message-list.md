@@ -86,8 +86,13 @@ Here is an example for both of the options:
 In case you want to set the `.navigationBar` option here is a snippet of code that achieves that. This goes into the `didFinishLaunchingWithOptions` function of the `AppDelegate.swift` file:
 
 ```swift
+let messageListConfig = MessageListConfig(
+// highlight-start
+    typingIndicatorPlacement: .navigationBar
+// highlight-end
+)
 let utils = Utils(
-    messageListConfig: MessageListConfig(typingIndicatorPlacement: .navigationBar)
+    messageListConfig: messageListConfig
 )
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
@@ -128,7 +133,9 @@ In order to set the `messageDisplayOptions` in the `MessageListConfig` here is a
 
 ```swift
 let messageListConfig = MessageListConfig(
+// highlight-start
     messageDisplayOptions: MessageDisplayOptions()
+// highlight-end
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
@@ -204,7 +211,9 @@ When `messagePopoverEnabled` is set to `false`, this menu does not show up. Here
 
 ```swift
 let messageListConfig = MessageListConfig(
+// highlight-start
     messagePopoverEnabled: false
+// highlight-end
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
@@ -222,7 +231,9 @@ The default is set to `false` so that the menu overlay is not showing up on a do
 
 ```swift
 let messageListConfig = MessageListConfig(
+// highlight-start
     doubleTapOverlayEnabled: true
+// highlight-end
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
@@ -242,13 +253,29 @@ In order to set this option e.g. to `true`, the following code can be used:
 
 ```swift
 let messageListConfig = MessageListConfig(
+// highlight-start
     becomesFirstResponderOnOpen: true
+// highlight-end
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
 ### updateChannelsFromMessageList
+
+The `updateChannelsFromMessageList` parameter specifies whether or not channels will be udpate when the user is in the chat channel screen (i.e. viewing the message list).
+
+The default is set to `false` where updates won't be propagated. If that value should be set to `true`, here is a code snippet that does that:
+
+```swift
+let messageListConfig = MessageListConfig(
+// highlight-start
+    updateChannelsFromMessageList: true
+// highlight-end
+)
+let utils = Utils(messageListConfig: messageListConfig)
+streamChat = StreamChat(chatClient: chatClient, utils: utils)
+```
 
 ### maxTimeIntervalBetweenMessagesInGroup
 
@@ -278,7 +305,9 @@ In case this is required to be changed however, here is a code example on how to
 
 ```swift
 let messageListConfig = MessageListConfig(
+// highlight-start
     cacheSizeOnChatDismiss: 1024 * 1024 * 50
+// highlight-end
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
