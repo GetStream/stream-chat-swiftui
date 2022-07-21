@@ -22,6 +22,8 @@ Reminder: The configuration of the `StreamChat` object is recommended to be happ
 
 It is also possible to replace the screen that is shown when there are no messages yet in the current channel. This can be achieved by overriding the `makeEmptyMessagesView` function in the `ViewFactory`. Read more in the [No Messages](#no-messages-view) section.
 
+In order to change the background of the Message List the `makeMessageListBackground` function in the `ViewFactory` can be overridden. A more detailed explanation together with an example can be found in the [Message List Background](#message-list-background) section.
+
 ## Message List Configuration
 
 The `MessageListConfig` is a helper struct that allows customization of the `MessageList` in a unified, straightforward manner. The way this is done is by handing it into the `Utils` class that is then handed to the `StreamChat` initializer upon creation.
@@ -323,3 +325,30 @@ Here's how that custom implementation looks compared to the default one:
 :::info
 Reminder: the custom `ViewFactory` needs to be injected into e.g. the `ChatChannelListView`. If unsure how to do that, there is a more detailed explanation in the [Getting started](../../getting-started) page.
 :::
+
+## Message List Background
+
+It is possible to change the background of the Message List entirely. This can be done by creating a custom `View` that allows for complete freedom of handing it whatever object that is desired.
+
+The way to do this is to override the `makeMessageListBackground` function in the `ViewFactory` (see [Getting started](../../getting-started) on how to add a custom `ViewFactory` to your app).
+
+The function gets two parameters. The first one is `colors` which is the `ColorPalette` of the app that can be used to customize the background to match the color theme of the applocation itself. The second one is a `Boolean` called `isInThread`, and it specifies whether or not the message list is part of a message thread.
+
+Here is an example on how to create a gradient background for the background of the Message List (the code goes inside of the custom `ViewFactory` of the app):
+
+```swift
+func makeMessageListBackground(
+    colors: ColorPalette,
+    isInThread: Bool
+) -> some View {
+    LinearGradient(gradient: Gradient(
+        colors: [.blue, .red, .white]),
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+}
+```
+
+See how this looks compared to the default Message List background:
+
+![Comparison of the default Message List background compared to a custom implementation.](../../assets/message-list-background.png)
