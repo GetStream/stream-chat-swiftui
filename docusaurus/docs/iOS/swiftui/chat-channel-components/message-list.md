@@ -282,7 +282,9 @@ streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
 The `cacheSizeOnChatDismiss` parameter specifies how large the image cache is after leaving a channel. The default is set to `1024 * 1024 * 100` bytes and it means that when the user is leaving a channel, the image cache that [Nuke](https://github.com/kean/Nuke) uses is trimmed down to that size so that it doesn't take up too much memory.
 
+:::note
 Changing this parameter needs careful consideration of memory allocation limits, so this should only be changed when knowing the exact impacts of it.
+:::
 
 In case this is required to be changed however, here is a code example on how to do it (limiting the cache size to half of what it is per default):
 
