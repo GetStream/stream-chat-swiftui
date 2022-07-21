@@ -51,7 +51,7 @@ Every one of them is discussed in the next chapters, but here is an overview ove
 | [messagePaddings](#messagepaddings)                                             | `MessagePaddings`          | `MessagePaddings(horizontal: 8)` |
 | [dateIndicatorPlacement](#dateindicatorplacement)                               | `DateIndicatorPlacement`   | `.overlay`                       |
 | [pageSize](#pagesize)                                                           | `Int`                      | `50`                             |
-| messagePopoverEnabled                                                           | `Bool`                     | `true`                           |
+| [messagePopoverEnabled](#messagepopoverenabled)                                 | `Bool`                     | `true`                           |
 | doubleTapOverlayEnabled                                                         | `Bool`                     | `false`                          |
 | becomesFirstResponderOnOpen                                                     | `Bool`                     | `false`                          |
 | updateChannelsFromMessageList                                                   | `Bool`                     | `false`                          |
@@ -215,6 +215,24 @@ let messageListConfig = MessageListConfig(
 // highlight-start
     pageSize: 100
 // highlight-end
+)
+let utils = Utils(messageListConfig: messageListConfig)
+streamChat = StreamChat(chatClient: chatClient, utils: utils)
+```
+
+### messagePopoverEnabled
+
+The `messagePopoverEnabled` parameter allows for an easy configuration option to allow to have things like reactions, threads, and other options available when users long-press a message. These options are available when the value is set to `true` (the default) and are disabled when set to `false`.
+
+When set to `true` the following example shows when a user is long-pressing a GIF inside of the message list (works the same with any other type of message):
+
+![When the messagePopoverEnabled parameter is set to true a long-press on a message of any type opens this menu.](../../assets/message-popover-enabled.png)
+
+When `messagePopoverEnabled` is set to `false`, this menu does not show up. Here is the code to set this configuration:
+
+```swift
+let messageListConfig = MessageListConfig(
+    messagePopoverEnabled: false
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
