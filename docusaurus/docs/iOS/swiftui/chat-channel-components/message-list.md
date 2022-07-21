@@ -24,6 +24,8 @@ It is also possible to replace the screen that is shown when there are no messag
 
 In order to change the background of the Message List the `makeMessageListBackground` function in the `ViewFactory` can be overridden. A more detailed explanation together with an example can be found in the [Message List Background](#message-list-background) section.
 
+Another option is to create a custom `ViewModifier` that is applied to the message list using the `makeMessageListModifier` function in the `ViewFactory`. This offers a lot of freedom and more details, togther with an example implementatino can be found in the [Custom modifier for the Message List](#custom-modifier-for-the-message-list) section.
+
 ## Message List Configuration
 
 The `MessageListConfig` is a helper struct that allows customization of the `MessageList` in a unified, straightforward manner. The way this is done is by handing it into the `Utils` class that is then handed to the `StreamChat` initializer upon creation.
