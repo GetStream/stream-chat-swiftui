@@ -50,7 +50,7 @@ Every one of them is discussed in the next chapters, but here is an overview ove
 | [messageDisplayOptions](#messagedisplayoptions)                                 | `MessageDisplayOptions`    | `MessageDisplayOptions()`        |
 | [messagePaddings](#messagepaddings)                                             | `MessagePaddings`          | `MessagePaddings(horizontal: 8)` |
 | [dateIndicatorPlacement](#dateindicatorplacement)                               | `DateIndicatorPlacement`   | `.overlay`                       |
-| pageSize                                                                        | `Int`                      | `50`                             |
+| [pageSize](#pagesize)                                                           | `Int`                      | `50`                             |
 | messagePopoverEnabled                                                           | `Bool`                     | `true`                           |
 | doubleTapOverlayEnabled                                                         | `Bool`                     | `false`                          |
 | becomesFirstResponderOnOpen                                                     | `Bool`                     | `false`                          |
@@ -71,7 +71,7 @@ The `MessageListType` enum has four cases:
 
 The goal with that is to have an easy configuration option to support different types of chat interfaces that are tailored towards specific use-cases.
 
-Currently, the only one supported is the `.messaging` case, which is also the default. The documentation will be updated, once the other cases are supported as well.
+Currently, the only one supported is the `.messaging` case, which is also the default. The documentation will be updated once the other cases are supported as well.
 
 ### typingIndicatorPlacement
 
@@ -200,6 +200,24 @@ let messageListConfig = MessageListConfig(
 )
 let utils = Utils(messageListConfig: messageListConfig)
 let streamChat = StreamChat(chatClient: chatClient, utils: utils)
+```
+
+### pageSize
+
+The `pageSize` parameter specifies how many messages are loaded by the SDK in a chunk before requesting new messages. The default value of `50` specifies that 50 messages are loaded when entering the channel. When the user scrolls to previous messages and the first 50 are passed the next chunk of 50 messages are loaded again.
+
+This value can be changed to any other `Int`. It should be considered, however, that there might be performance and networking considerations to take into account when changing up this value.
+
+In order to change this value e.g. to have a `pageSize` of `100`, this code can be used:
+
+```swift
+let messageListConfig = MessageListConfig(
+// highlight-start
+    pageSize: 100
+// highlight-end
+)
+let utils = Utils(messageListConfig: messageListConfig)
+streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
 ### maxTimeIntervalBetweenMessagesInGroup
