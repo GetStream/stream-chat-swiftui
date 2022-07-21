@@ -81,6 +81,7 @@
         },
         {
           "Message Components": [
+            "swiftui/message-components/message-display-options",
             "swiftui/message-components/custom-avatar",
             "swiftui/message-components/attachments",
             "swiftui/message-components/message-reactions",

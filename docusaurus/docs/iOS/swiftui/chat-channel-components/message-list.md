@@ -54,9 +54,9 @@ Every one of them is discussed in the next chapters, but here is an overview ove
 | [messagePopoverEnabled](#messagepopoverenabled)                                 | `Bool`                     | `true`                           |
 | [doubleTapOverlayEnabled](#doubletapoverlayenabled)                             | `Bool`                     | `false`                          |
 | [becomesFirstResponderOnOpen](#becomesfirstresponderonopen)                     | `Bool`                     | `false`                          |
-| updateChannelsFromMessageList                                                   | `Bool`                     | `false`                          |
+| [updateChannelsFromMessageList](#updatechannelsfrommessagelist)                 | `Bool`                     | `false`                          |
 | [maxTimeIntervalBetweenMessagesInGroup](#maxtimeintervalbetweenmessagesingroup) | `TimeInterval`             | `60`                             |
-| cacheSizeOnChatDismiss                                                          | `Int`                      | `1024 * 1024 * 100`              |
+| [cacheSizeOnChatDismiss](#cachesizeonchatdismiss)                               | `Int`                      | `1024 * 1024 * 100`              |
 
 The next sections will go through these values and discuss the impact they have when altered.
 
@@ -106,60 +106,32 @@ To identify which messages to group together the SDK uses the `maxTimeIntervalBe
 
 ### messageDisplayOptions
 
-TODO
+The `messageDisplayOptions` parameter allows to customize the overall behavior and appearance of messages in the message list.
 
-You can control the display of the helper views around the message (date indicators, avatars) and paddings, via the `MessageListConfig`'s properties `MessageDisplayOptions` and `MessagePaddings`. The `MessageListConfig` is part of the `Utils` class in `StreamChat`. Here's an example on how to hide the date indicators and avatars, while also increasing the horizontal padding.
+For more details on what you can change and customize with the `MessageDisplayOptions` object, go to the [Message Display Options](../../message-components/message-display-options) page in the Message Components section.
+
+It has the following parameters:
+
+- **showAvatars**: `Bool`
+- **showMessageDate**: `Bool`
+- **showAuthorName**: `Bool`
+- **animateChanges**: `Bool`
+- **dateLabelSize**: `CGFloat`
+- **lastInGroupHeaderSize**: `CGFloat`
+- **minimumSwipeGestureDistance**: `CGFloat`
+- **currentUserMessageTransition**: `AnyTransition`
+- **otherUserMessageTransition**: `AnyTransition`
+- **shouldAnimateReactions**: `Bool`
+- **messageLinkDisplayResolver**: `(ChatMessage) -> [NSAttributedString.Key: Any]`
+
+In order to set the `messageDisplayOptions` in the `MessageListConfig` here is an example (with an empty `MessageDisplayOptions` object):
 
 ```swift
-let messageDisplayOptions = MessageDisplayOptions(showAvatars: false, showMessageDate: false)
-let messagePaddings = MessagePaddings(horizontal: 16)
 let messageListConfig = MessageListConfig(
-    messageListType: .messaging,
-    typingIndicatorPlacement: .navigationBar,
-    groupMessages: true,
-    messageDisplayOptions: messageDisplayOptions,
-    messagePaddings: messagePaddings
+    messageDisplayOptions: MessageDisplayOptions()
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
-```
-
-- `messagePopoverEnabled` - the default value is true. If set to false, it will disable the message popover.
-- `doubleTapOverlayEnabled` - the default value is false. If set to true, you can show the message popover also with double tap.
-- `becomesFirstResponderOnOpen` - the default value is false. If set to true, the channel will open the keyboard on view appearance.
-
-With the `MessageDisplayOptions`, you can also customize the transitions applied to the message views. The default message view transition in the SDK is `identity`. You can use the other default ones, such as `scale`, `opacity` and `slide`, or you can create your own custom transitions. Here's an example how to do this:
-
-```swift
-var customTransition: AnyTransition {
-    .scale.combined(with:
-        AnyTransition.asymmetric(
-            insertion: .move(edge: .trailing),
-            removal: .move(edge: .leading)
-        )
-    )
-}
-
-let messageDisplayOptions = MessageDisplayOptions(
-    currentUserMessageTransition: customTransition,
-    otherUserMessageTransition: customTransition
-)
-```
-
-For link attachments, you can control the link text attributes (font, font weight, color) based on the message. Here's an example of how to change the link color based on the message sender, with the `messageLinkDisplayResolver`:
-
-```swift
-let messageDisplayOptions = MessageDisplayOptions(messageLinkDisplayResolver: { message in
-    let color = message.isSentByCurrentUser ? UIColor.red : UIColor.green
-
-    return [
-        NSAttributedString.Key.foregroundColor: color
-    ]
-})
-let messageListConfig = MessageListConfig(messageDisplayOptions: messageDisplayOptions)
-let utils = Utils(messageListConfig: messageListConfig)
-
-let streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
 ### messagePaddings
@@ -276,6 +248,8 @@ let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
 ```
 
+### updateChannelsFromMessageList
+
 ### maxTimeIntervalBetweenMessagesInGroup
 
 The messages in the message list are grouped based on the `maxTimeIntervalBetweenMessagesInGroup` value in the `MessageListConfig` (if the [`groupMessages`](#groupmessages) option is set to `true`). It specifies a `TimeInterval` which determines how far apart messages can maximally be to be grouped together.
@@ -289,6 +263,22 @@ let messageListConfig = MessageListConfig(
 // highlight-start
     maxTimeIntervalBetweenMessagesInGroup: 20
 // highlight-end
+)
+let utils = Utils(messageListConfig: messageListConfig)
+streamChat = StreamChat(chatClient: chatClient, utils: utils)
+```
+
+### cacheSizeOnChatDismiss
+
+The `cacheSizeOnChatDismiss` parameter specifies how large the image cache is after leaving a channel. The default is set to `1024 * 1024 * 100` byte and it means that when the user is leaving a channel, the image cache that [Nuke](https://github.com/kean/Nuke) uses is trimmed down to that size so that it doesn't take up too much memory.
+
+Changing this parameter needs careful consideration of memory allocation limits, so this should only be changed when knowing the exact impacts of it.
+
+In case this is required to be changed however, here is a code example on how to do it (limiting the cache size to half of what it is per default):
+
+```swift
+let messageListConfig = MessageListConfig(
+    cacheSizeOnChatDismiss: 1024 * 1024 * 50
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
