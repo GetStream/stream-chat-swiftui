@@ -53,7 +53,7 @@ Every one of them is discussed in the next chapters, but here is an overview ove
 | [pageSize](#pagesize)                                                           | `Int`                      | `50`                             |
 | [messagePopoverEnabled](#messagepopoverenabled)                                 | `Bool`                     | `true`                           |
 | [doubleTapOverlayEnabled](#doubletapoverlayenabled)                             | `Bool`                     | `false`                          |
-| becomesFirstResponderOnOpen                                                     | `Bool`                     | `false`                          |
+| [becomesFirstResponderOnOpen](#becomesfirstresponderonopen)                     | `Bool`                     | `false`                          |
 | updateChannelsFromMessageList                                                   | `Bool`                     | `false`                          |
 | [maxTimeIntervalBetweenMessagesInGroup](#maxtimeintervalbetweenmessagesingroup) | `TimeInterval`             | `60`                             |
 | cacheSizeOnChatDismiss                                                          | `Int`                      | `1024 * 1024 * 100`              |
@@ -251,6 +251,26 @@ The default is set to `false` so that the menu overlay is not showing up on a do
 ```swift
 let messageListConfig = MessageListConfig(
     doubleTapOverlayEnabled: true
+)
+let utils = Utils(messageListConfig: messageListConfig)
+streamChat = StreamChat(chatClient: chatClient, utils: utils)
+```
+
+### becomesFirstResponderOnOpen
+
+The `becomesFirstResponderOnOpen` parameter describes if the composer is active once the user is entering the chat channel screen. If set to `true` the keyboard will open and the user is directly ready to enter a message.
+
+If set to `false` (the default) the keyboard will not be active and it requires another tap from the user onto the composer. However, the entire list of messages is present, showing more messages initially.
+
+Here, the different options are shown when a user enters a channel:
+
+![The state of entering the chat channel screen when either of the two options for becomesFirstResponderOnOpen are set.](../../assets/becomes-first-responder-on-open.png)
+
+In order to set this option e.g. to `true`, the following code can be used:
+
+```swift
+let messageListConfig = MessageListConfig(
+    becomesFirstResponderOnOpen: true
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
