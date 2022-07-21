@@ -52,7 +52,7 @@ Every one of them is discussed in the next chapters, but here is an overview ove
 | [dateIndicatorPlacement](#dateindicatorplacement)                               | `DateIndicatorPlacement`   | `.overlay`                       |
 | [pageSize](#pagesize)                                                           | `Int`                      | `50`                             |
 | [messagePopoverEnabled](#messagepopoverenabled)                                 | `Bool`                     | `true`                           |
-| doubleTapOverlayEnabled                                                         | `Bool`                     | `false`                          |
+| [doubleTapOverlayEnabled](#doubletapoverlayenabled)                             | `Bool`                     | `false`                          |
 | becomesFirstResponderOnOpen                                                     | `Bool`                     | `false`                          |
 | updateChannelsFromMessageList                                                   | `Bool`                     | `false`                          |
 | [maxTimeIntervalBetweenMessagesInGroup](#maxtimeintervalbetweenmessagesingroup) | `TimeInterval`             | `60`                             |
@@ -233,6 +233,24 @@ When `messagePopoverEnabled` is set to `false`, this menu does not show up. Here
 ```swift
 let messageListConfig = MessageListConfig(
     messagePopoverEnabled: false
+)
+let utils = Utils(messageListConfig: messageListConfig)
+streamChat = StreamChat(chatClient: chatClient, utils: utils)
+```
+
+### doubleTapOverlayEnabled
+
+The `doubleTapOverlayEnabled` parameter is related to the [`messagePopoverEnabled`](#messagepopoverenabled) parameter. If `doubleTapOverlayEnabled` is set to true, the user can also summon the message overlay menu on a double tap in addition to the regularly enabled long-press gesture.
+
+:::note
+If unsure what kind of overlay is meant here, feel free to check the section about the [`messagePopoverEnabled`](#messagepopoverenabled) to see an example how it looks.
+:::
+
+The default is set to `false` so that the menu overlay is not showing up on a double tap. To set this to `true` the following code can be used:
+
+```swift
+let messageListConfig = MessageListConfig(
+    doubleTapOverlayEnabled: true
 )
 let utils = Utils(messageListConfig: messageListConfig)
 streamChat = StreamChat(chatClient: chatClient, utils: utils)
