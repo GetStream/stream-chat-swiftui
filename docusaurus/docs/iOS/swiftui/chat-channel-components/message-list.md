@@ -54,7 +54,6 @@ Every one of them is discussed in the next chapters, but here is an overview ove
 | [messagePopoverEnabled](#messagepopoverenabled)                                 | `Bool`                     | `true`                           |
 | [doubleTapOverlayEnabled](#doubletapoverlayenabled)                             | `Bool`                     | `false`                          |
 | [becomesFirstResponderOnOpen](#becomesfirstresponderonopen)                     | `Bool`                     | `false`                          |
-| [updateChannelsFromMessageList](#updatechannelsfrommessagelist)                 | `Bool`                     | `false`                          |
 | [maxTimeIntervalBetweenMessagesInGroup](#maxtimeintervalbetweenmessagesingroup) | `TimeInterval`             | `60`                             |
 | [cacheSizeOnChatDismiss](#cachesizeonchatdismiss)                               | `Int`                      | `1024 * 1024 * 100`              |
 
@@ -255,22 +254,6 @@ In order to set this option e.g. to `true`, the following code can be used:
 let messageListConfig = MessageListConfig(
 // highlight-start
     becomesFirstResponderOnOpen: true
-// highlight-end
-)
-let utils = Utils(messageListConfig: messageListConfig)
-streamChat = StreamChat(chatClient: chatClient, utils: utils)
-```
-
-### updateChannelsFromMessageList
-
-The `updateChannelsFromMessageList` parameter specifies whether or not channels will be udpate when the user is in the chat channel screen (i.e. viewing the message list).
-
-The default is set to `false` where updates won't be propagated. If that value should be set to `true`, here is a code snippet that does that:
-
-```swift
-let messageListConfig = MessageListConfig(
-// highlight-start
-    updateChannelsFromMessageList: true
 // highlight-end
 )
 let utils = Utils(messageListConfig: messageListConfig)
