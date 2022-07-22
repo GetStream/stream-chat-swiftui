@@ -291,6 +291,10 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
+
+    public func makeMessageTextContent(for message: ChatMessage, withQuotedMessage quotedMessage: ChatMessage?) -> some View {
+        MessageTextContentView(message: message, quotedMessage: quotedMessage)
+    }
     
     public func makeMessageDateView(for message: ChatMessage) -> some View {
         MessageDateView(message: message)

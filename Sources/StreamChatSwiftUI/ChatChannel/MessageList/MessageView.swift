@@ -145,7 +145,8 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+            let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message)
+            if let quotedMessage = quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
@@ -153,15 +154,8 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             }
-            
-            Text(message.adjustedText)
-                .padding(.leading, leadingPadding)
-                .padding(.trailing, trailingPadding)
-                .padding(.top, topPadding)
-                .padding(.bottom, bottomPadding)
-                .fixedSize(horizontal: false, vertical: true)
-                .foregroundColor(textColor(for: message))
-                .font(fonts.body)
+
+            factory.makeMessageTextContent(for: message, withQuotedMessage: quotedMessage)
         }
         .modifier(
             factory.makeMessageViewModifier(
@@ -212,5 +206,20 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             }
         }
         .accessibilityIdentifier("MessageTextView")
+    }
+}
+
+struct MessageTextContentView: View {
+    @Injected(\.fonts) var fonts
+
+    let message: ChatMessage
+    let quotedMessage: ChatMessage?
+
+    var body: some View {
+        Text(message.text)
+            .standardPadding()
+            .fixedSize(horizontal: false, vertical: true)
+            .foregroundColor(textColor(for: message))
+            .font(fonts.body)
     }
 }

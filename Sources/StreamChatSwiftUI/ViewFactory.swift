@@ -280,6 +280,9 @@ public protocol ViewFactory: AnyObject {
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) -> MessageTextViewType
+
+    associatedtype MessageTextContentViewType: View
+    func makeMessageTextContent(for message: ChatMessage, withQuotedMessage quotedMessage: ChatMessage?) -> MessageTextContentViewType
     
     associatedtype MessageDateViewType: View
     /// Creates a view for the date info shown below a message.
