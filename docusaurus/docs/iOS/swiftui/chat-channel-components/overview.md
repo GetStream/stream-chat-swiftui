@@ -47,7 +47,7 @@ The SDK makes this easy as it exposes the `ChatChannelView` as the view that hol
 
 The `channelController` can be initialized from the `chatClient` (using the [injection mechanism described here](../dependency-injection.md)). It requires a `ChannelId` and the specification of the `messageOrdering` (e.g. with the `.topToBottom` option). The creation of the channel id can be done with the knowledge of the id.
 
-:::info
+:::note
 The `ChatChannelView` is still respecting the replacements that are applied in the custom `ViewFactory` implementation. All customizations are still used there as it pulls its contents dynamically from the factory.
 :::
 
