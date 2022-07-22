@@ -1622,8 +1622,8 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1330;
+				LastSwiftUpdateCheck = 1310;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					8400A350282E6BE30067D3A0 = {
 						CreatedOnToolsVersion = 13.3.1;
@@ -1985,6 +1985,7 @@
 				84C94D3A27579BB0007FE2B9 /* AssertJSONEqual.swift in Sources */,
 				84E0478E284A444E00BAFA17 /* WebSocketEngineMock.swift in Sources */,
 				84C94D4D2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift in Sources */,
+				84C94CDB27578B92007FE2B9 /* NSManagedObject+ContextChange.swift in Sources */,
 				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
 				84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */,
 				840A3F3828193AB20084E9CC /* ChatChannelInfoView_Tests.swift in Sources */,
@@ -2028,6 +2029,7 @@
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84E04790284A444E00BAFA17 /* CDNClient_Mock.swift in Sources */,
 				84E04796284A444E00BAFA17 /* EventBatcherMock.swift in Sources */,
+				847BA08727E0BACB00ED20C7 /* WebSocketPingControllerMock.swift in Sources */,
 				84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */,
 				84E04792284A444E00BAFA17 /* MockBackgroundTaskScheduler.swift in Sources */,
 				84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */,
@@ -2043,6 +2045,7 @@
 				84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */,
 				84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */,
 				84B2B5CA281947E100479CEE /* ViewFrameUtils.swift in Sources */,
+				84C94CD027578B92007FE2B9 /* ChatMessage_Mock.swift in Sources */,
 				8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */,
 				84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */,
 				84C94D0627578BF2007FE2B9 /* UnwrapAsync.swift in Sources */,
@@ -2636,7 +2639,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "feature/xcode-14-beta1";
+				branch = xcode14;
 				kind = branch;
 			};
 		};
