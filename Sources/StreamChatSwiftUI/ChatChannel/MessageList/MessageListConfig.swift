@@ -85,6 +85,7 @@ public struct MessageDisplayOptions {
     public let otherUserMessageTransition: AnyTransition
     public let shouldAnimateReactions: Bool
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
+    public let spacerWidth: (CGFloat) -> CGFloat
     
     public init(
         showAvatars: Bool = true,
@@ -98,19 +99,21 @@ public struct MessageDisplayOptions {
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
-            .defaultLinkDisplay
+            .defaultLinkDisplay,
+        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
-        self.dateLabelSize = overlayDateLabelSize
+        dateLabelSize = overlayDateLabelSize
         self.minimumSwipeGestureDistance = minimumSwipeGestureDistance
         self.currentUserMessageTransition = currentUserMessageTransition
         self.otherUserMessageTransition = otherUserMessageTransition
         self.messageLinkDisplayResolver = messageLinkDisplayResolver
         self.lastInGroupHeaderSize = lastInGroupHeaderSize
         self.shouldAnimateReactions = shouldAnimateReactions
+        self.spacerWidth = spacerWidth
     }
     
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
@@ -118,6 +121,16 @@ public struct MessageDisplayOptions {
             [
                 NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)
             ]
+        }
+    }
+    
+    public static var defaultSpacerWidth: (CGFloat) -> (CGFloat) {
+        { availableWidth in
+            if isIPad {
+                return 2 * availableWidth / 3
+            } else {
+                return availableWidth / 4
+            }
         }
     }
 }

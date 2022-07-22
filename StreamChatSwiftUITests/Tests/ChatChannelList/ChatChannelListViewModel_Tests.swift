@@ -260,6 +260,17 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.selectedChannel == nil)
     }
     
+    func test_channelListVM_hideTabBar() {
+        // Given
+        let viewModel = makeDefaultChannelListVM()
+        
+        // When
+        notifyHideTabBar()
+        
+        // Then
+        XCTAssert(viewModel.hideTabBar == true)
+    }
+    
     // MARK: - private
     
     private func makeChannelListController(

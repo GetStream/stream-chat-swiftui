@@ -136,6 +136,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
         setupChannelListController()
         observeChannelDismiss()
+        observeHideTabBar()
     }
     
     /// Returns the name for the specified channel.
@@ -427,15 +428,34 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         )
     }
     
+    private func observeHideTabBar() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleHideTabBar),
+            name: NSNotification.Name(hideTabBarNotification),
+            object: nil
+        )
+    }
+    
     @objc private func dismissPresentedChannel() {
         selectedChannel = nil
+    }
+    
+    @objc private func handleHideTabBar() {
+        hideTabBar = true
     }
 }
 
 private let dismissChannel = "io.getstream.dismissChannel"
 
+private let hideTabBarNotification = "io.getstream.hideTabBar"
+
 func notifyChannelDismiss() {
     NotificationCenter.default.post(name: NSNotification.Name(dismissChannel), object: nil)
+}
+
+public func notifyHideTabBar() {
+    NotificationCenter.default.post(name: NSNotification.Name(hideTabBarNotification), object: nil)
 }
 
 /// Enum for the type of alert presented in the channel list view.
