@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fixed a bug with channel list refreshing after deeplinking
 
 # [4.19.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.19.0)
 _July 21, 2022_

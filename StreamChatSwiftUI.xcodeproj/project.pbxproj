@@ -168,7 +168,6 @@
 		8465FDC22746A95700AF091E /* ChatChannelNavigatableListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD532746A95600AF091E /* ChatChannelNavigatableListItem.swift */; };
 		8465FDC32746A95700AF091E /* ChatChannelListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD542746A95700AF091E /* ChatChannelListHeader.swift */; };
 		8465FDC42746A95700AF091E /* ChatChannelListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD552746A95700AF091E /* ChatChannelListScreen.swift */; };
-		8465FDC52746A95700AF091E /* ChatChannelDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD562746A95700AF091E /* ChatChannelDeepLink.swift */; };
 		8465FDC62746A95700AF091E /* ChannelHeaderLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD572746A95700AF091E /* ChannelHeaderLoader.swift */; };
 		8465FDC72746A95700AF091E /* ChatChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD582746A95700AF091E /* ChatChannelListViewModel.swift */; };
 		8465FDC82746A95700AF091E /* ChatChannelListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD592746A95700AF091E /* ChatChannelListItem.swift */; };
@@ -558,7 +557,6 @@
 		8465FD532746A95600AF091E /* ChatChannelNavigatableListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelNavigatableListItem.swift; sourceTree = "<group>"; };
 		8465FD542746A95700AF091E /* ChatChannelListHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelListHeader.swift; sourceTree = "<group>"; };
 		8465FD552746A95700AF091E /* ChatChannelListScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelListScreen.swift; sourceTree = "<group>"; };
-		8465FD562746A95700AF091E /* ChatChannelDeepLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelDeepLink.swift; sourceTree = "<group>"; };
 		8465FD572746A95700AF091E /* ChannelHeaderLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelHeaderLoader.swift; sourceTree = "<group>"; };
 		8465FD582746A95700AF091E /* ChatChannelListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelListViewModel.swift; sourceTree = "<group>"; };
 		8465FD592746A95700AF091E /* ChatChannelListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelListItem.swift; sourceTree = "<group>"; };
@@ -1217,7 +1215,6 @@
 				8465FD4E2746A95600AF091E /* ChatChannelHelperViews.swift */,
 				8465FD502746A95600AF091E /* DefaultChannelActions.swift */,
 				8465FD522746A95600AF091E /* NoChannelsView.swift */,
-				8465FD562746A95700AF091E /* ChatChannelDeepLink.swift */,
 				8465FD572746A95700AF091E /* ChannelHeaderLoader.swift */,
 				8465FD4F2746A95600AF091E /* MoreChannelActionsView.swift */,
 				8465FD5B2746A95700AF091E /* MoreChannelActionsViewModel.swift */,
@@ -1790,7 +1787,6 @@
 				8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */,
 				84AB7B242773528300631A10 /* CommandsContainerView.swift in Sources */,
 				8465FDB72746A95700AF091E /* ChatMessageReactionAppeareance.swift in Sources */,
-				8465FDC52746A95700AF091E /* ChatChannelDeepLink.swift in Sources */,
 				8465FDBF2746A95700AF091E /* DefaultChannelActions.swift in Sources */,
 				8465FD772746A95700AF091E /* FileAttachmentPreview.swift in Sources */,
 				8465FD862746A95700AF091E /* MessageComposerViewModel.swift in Sources */,

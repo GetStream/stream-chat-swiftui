@@ -77,12 +77,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    @Published public var deeplinkChannel: ChannelSelectionInfo? {
-        willSet {
-            hideTabBar = newValue != nil
-        }
-    }
-
     @Published public var swipedChannelId: String?
     @Published public var channelAlertType: ChannelAlertType? {
         didSet {
@@ -254,7 +248,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     // MARK: - private
     
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
-        if selectedChannel != nil || !searchText.isEmpty || deeplinkChannel != nil {
+        if selectedChannel != nil || !searchText.isEmpty {
             queuedChannelsChanges = controller.channels
             updateChannelsIfNeeded()
         } else {
@@ -269,7 +263,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 for: channelId,
                 messageOrdering: .topToBottom
             )
-            deeplinkChannel = chatController.channel?.channelSelectionInfo
+            selectedChannel = chatController.channel?.channelSelectionInfo
             self.selectedChannelId = nil
         }
     }
@@ -369,17 +363,17 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func setInitialChannelIfSplitView() {
-        if isIPad && deeplinkChannel == nil {
+        if isIPad && selectedChannel == nil {
             selectedChannel = channels.first?.channelSelectionInfo
         }
     }
     
     private func handleChannelAppearance() {
-        if !queuedChannelsChanges.isEmpty && selectedChannel == nil && deeplinkChannel == nil {
+        if !queuedChannelsChanges.isEmpty && selectedChannel == nil {
             channels = queuedChannelsChanges
         } else if !queuedChannelsChanges.isEmpty {
             handleQueuedChanges()
-        } else if queuedChannelsChanges.isEmpty && (selectedChannel != nil || deeplinkChannel != nil) {
+        } else if queuedChannelsChanges.isEmpty && selectedChannel != nil {
             if selectedChannel?.injectedChannelInfo == nil {
                 selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
             }
@@ -395,7 +389,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func handleQueuedChanges() {
-        let selected = selectedChannel != nil ? selectedChannel?.channel : deeplinkChannel?.channel
+        let selected = selectedChannel?.channel
         var index: Int?
         var temp = Array(queuedChannelsChanges)
         for i in 0..<temp.count {

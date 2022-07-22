@@ -51,18 +51,11 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 } else if viewModel.channels.isEmpty {
                     viewFactory.makeNoChannelsView()
                 } else {
-                    ZStack {
-                        ChannelDeepLink(
-                            deeplinkChannel: $viewModel.deeplinkChannel,
-                            channelDestination: viewFactory.makeChannelDestination()
-                        )
-                        
-                        ChatChannelListContentView(
-                            viewFactory: viewFactory,
-                            viewModel: viewModel,
-                            onItemTap: onItemTap
-                        )
-                    }
+                    ChatChannelListContentView(
+                        viewFactory: viewFactory,
+                        viewModel: viewModel,
+                        onItemTap: onItemTap
+                    )
                 }
             }
             .onDisappear(perform: {
