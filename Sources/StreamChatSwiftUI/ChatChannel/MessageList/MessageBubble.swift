@@ -107,9 +107,16 @@ public struct BubbleModifier: ViewModifier {
     
     var corners: UIRectCorner
     var backgroundColors: [Color]
-    var borderColor: Color? = nil
-    var cornerRadius: CGFloat = 18
-    
+    var borderColor: Color?
+    var cornerRadius: CGFloat
+
+    public init(corners: UIRectCorner, backgroundColors: [Color], borderColor: Color? = nil, cornerRadius: CGFloat = 18) {
+        self.corners = corners
+        self.backgroundColors = backgroundColors
+        self.borderColor = borderColor
+        self.cornerRadius = cornerRadius
+    }
+
     public func body(content: Content) -> some View {
         content
             .background(background)

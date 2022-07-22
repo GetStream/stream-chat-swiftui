@@ -244,12 +244,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var spacerWidth: CGFloat {
-        let proposedViewWidth = width ?? 0
-        if isIPad {
-            return 2 * proposedViewWidth / 3
-        } else {
-            return proposedViewWidth / 4
-        }
+        messageListConfig.messageDisplayOptions.spacerWidth(width ?? 0)
     }
     
     private var reactionsShown: Bool {
