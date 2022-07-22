@@ -31,19 +31,3 @@ struct AnyEndpoint: Equatable {
             && lhs.payloadType == rhs.payloadType
     }
 }
-
-// MARK: - Helper AnyEncodable
-
-extension AnyEncodable: Equatable {
-    public static func == (lhs: AnyEncodable, rhs: AnyEncodable) -> Bool {
-        do {
-            let encoder = JSONEncoder.default
-            let encodedLhs = try encoder.encode(lhs)
-            let encodedRhs = try encoder.encode(rhs)
-            try CompareJSONEqual(encodedLhs, encodedRhs)
-            return true
-        } catch {
-            return String(describing: lhs) == String(describing: rhs)
-        }
-    }
-}

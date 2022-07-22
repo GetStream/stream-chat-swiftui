@@ -31,5 +31,6 @@ struct SendInChannelView: View {
         }
         .padding(.horizontal, 8)
         .padding(.bottom, 8)
+        .accessibilityIdentifier("SendInChannelView")
     }
 }

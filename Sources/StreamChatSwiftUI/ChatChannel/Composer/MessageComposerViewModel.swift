@@ -123,9 +123,10 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
+    @Published public var attachmentSizeExceeded: Bool = false
     
-    private let channelController: ChatChannelController
-    private var messageController: ChatMessageController?
+    public let channelController: ChatChannelController
+    public var messageController: ChatMessageController?
     
     private var timer: Timer?
     private var cooldownPeriod = 0
@@ -177,7 +178,7 @@ open class MessageComposerViewModel: ObservableObject {
             checkChannelCooldown()
         }
         
-        if let composerCommand = composerCommand {
+        if let composerCommand = composerCommand, composerCommand.id != "instantCommands" {
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
@@ -578,7 +579,9 @@ open class MessageComposerViewModel: ObservableObject {
         
         do {
             let fileSize = try AttachmentFile(url: url).size
-            return fileSize < chatClient.config.maxAttachmentSize
+            let canAdd = fileSize < chatClient.config.maxAttachmentSize
+            attachmentSizeExceeded = !canAdd
+            return canAdd
         } catch {
             return false
         }

@@ -9,6 +9,32 @@ import SwiftUI
 public struct MessageAuthorAndDateView: View {
     
     @Injected(\.utils) private var utils
+    
+    var message: ChatMessage
+    
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+    
+    public var body: some View {
+        HStack {
+            MessageAuthorView(message: message)
+                .accessibilityIdentifier("MessageAuthorView")
+            if utils.messageListConfig.messageDisplayOptions.showMessageDate {
+                MessageDateView(message: message)
+                    .accessibilityIdentifier("MessageDateView")
+            }
+            Spacer()
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageAuthorAndDateView")
+    }
+}
+
+/// View that displays the message author.
+public struct MessageAuthorView: View {
+    
+    @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -19,16 +45,10 @@ public struct MessageAuthorAndDateView: View {
     }
     
     public var body: some View {
-        HStack {
-            Text(utils.messageCachingUtils.authorName(for: message))
-                .lineLimit(1)
-                .font(fonts.footnoteBold)
-                .foregroundColor(Color(colors.textLowEmphasis))
-            if utils.messageListConfig.messageDisplayOptions.showMessageDate {
-                MessageDateView(message: message)
-            }
-            Spacer()
-        }
+        Text(utils.messageCachingUtils.authorName(for: message))
+            .lineLimit(1)
+            .font(fonts.footnoteBold)
+            .foregroundColor(Color(colors.textLowEmphasis))
     }
 }
 
@@ -49,11 +69,12 @@ struct MessageDateView: View {
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
             .animation(nil)
+            .accessibilityIdentifier("MessageDateView")
     }
 }
 
 /// View that displays the read indicator for a message.
-struct MessageReadIndicatorView: View {
+public struct MessageReadIndicatorView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -61,12 +82,18 @@ struct MessageReadIndicatorView: View {
     var readUsers: [ChatUser]
     var showReadCount: Bool
     
-    var body: some View {
+    public init(readUsers: [ChatUser], showReadCount: Bool) {
+        self.readUsers = readUsers
+        self.showReadCount = showReadCount
+    }
+    
+    public var body: some View {
         HStack(spacing: 2) {
             if showReadCount && !readUsers.isEmpty {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
                     .foregroundColor(colors.tintColor)
+                    .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: !readUsers.isEmpty ? images.readByAll : images.messageSent
@@ -74,7 +101,10 @@ struct MessageReadIndicatorView: View {
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
+            .accessibilityIdentifier("readIndicatorCheckmark")
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageReadIndicatorView")
     }
 }
 
@@ -111,6 +141,7 @@ struct MessagePinDetailsView: View {
         .frame(height: 16)
         .padding(.bottom, reactionsShown ? 16 : 0)
         .padding(.top, 4)
+        .accessibilityIdentifier("MessagePinDetailsView")
     }
 }
 
@@ -131,7 +162,7 @@ struct TopLeftView<Content: View>: View {
 
 extension View {
     
-    func textColor(for message: ChatMessage) -> Color {
+    public func textColor(for message: ChatMessage) -> Color {
         @Injected(\.colors) var colors
         
         if message.isSentByCurrentUser {

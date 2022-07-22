@@ -47,7 +47,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let messagesGroupingInfo = viewModel.messagesGroupingInfo
         
         // Then
-        XCTAssert(messagesGroupingInfo.count == 1)
+        XCTAssert(messagesGroupingInfo.count == 2)
         for (_, groupingInfo) in messagesGroupingInfo {
             XCTAssert(groupingInfo.count == 1)
         }
@@ -151,7 +151,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
     func test_chatChannelVM_messageThread() {
         // Given
         let channelController = makeChannelController()
-        let messageController = ChatMessageController_Mock(
+        let messageController = ChatMessageController_Mock.mock(
             client: chatClient,
             cid: .unique,
             messageId: .unique

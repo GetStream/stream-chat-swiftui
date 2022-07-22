@@ -689,6 +689,32 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is DateIndicatorView)
     }
+    
+    func test_viewFactory_makeLastInGroupHeaderView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeLastInGroupHeaderView(for: message)
+        
+        // Then
+        XCTAssert(view is EmptyView)
+    }
+    
+    func test_viewFactory_makeEmojiTextView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeEmojiTextView(
+            message: message,
+            scrolledId: .constant(nil),
+            isFirst: true
+        )
+        
+        // Then
+        XCTAssert(view is EmojiTextView<DefaultViewFactory>)
+    }
 }
 
 extension ChannelAction: Equatable {

@@ -11,6 +11,10 @@ public struct SubtitleText: View {
     
     var text: String
     
+    public init(text: String) {
+        self.text = text
+    }
+    
     public var body: some View {
         Text(text)
             .lineLimit(1)
@@ -56,18 +60,23 @@ public struct AvatarView: View {
     }
 }
 
-struct ChatTitleView: View {
+public struct ChatTitleView: View {
     
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
     var name: String
     
-    var body: some View {
+    public init(name: String) {
+        self.name = name
+    }
+    
+    public var body: some View {
         Text(name)
             .lineLimit(1)
             .font(fonts.bodyBold)
             .foregroundColor(Color(colors.text))
+            .accessibilityIdentifier("ChatTitleView")
     }
 }
 

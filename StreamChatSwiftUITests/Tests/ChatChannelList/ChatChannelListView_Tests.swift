@@ -37,7 +37,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
     }
     
     private func makeChannelListController() -> ChatChannelListController_Mock {
-        let channelListController = ChatChannelListController_Mock.mock()
+        let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
         channelListController.simulateInitial(channels: mockChannels(), state: .initialized)
         return channelListController
     }

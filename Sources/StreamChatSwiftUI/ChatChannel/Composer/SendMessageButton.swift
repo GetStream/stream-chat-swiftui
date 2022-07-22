@@ -31,6 +31,8 @@ public struct SendMessageButton: View {
                 )
         }
         .disabled(!enabled)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("SendMessageButton")
     }
     
     private var enabledBackground: UIColor {

@@ -347,7 +347,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_inThread() {
         // Given
         let channelController = makeChannelController()
-        let messageController = ChatMessageController_Mock(
+        let messageController = ChatMessageController_Mock.mock(
             client: chatClient,
             cid: .unique,
             messageId: .unique
@@ -485,9 +485,11 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         // When
         let newAsset = defaultAsset
         viewModel.imageTapped(newAsset) // will not be added because of small max attachment size.
+        let alertShown = viewModel.attachmentSizeExceeded
         
         // Then
         XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(alertShown == true)
     }
     
     func test_messageComposerVM_mentionUsers() {

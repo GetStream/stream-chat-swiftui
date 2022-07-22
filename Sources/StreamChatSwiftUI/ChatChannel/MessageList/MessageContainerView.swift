@@ -61,7 +61,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     
     public var body: some View {
         HStack(alignment: .bottom) {
-            if message.type == .system {
+            if message.type == .system || message.type == .error {
                 factory.makeSystemMessageView(message: message)
             } else {
                 if message.isSentByCurrentUser {
@@ -130,7 +130,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
                     .simultaneousGesture(
                         DragGesture(
-                            minimumDistance: utils.messageListConfig.messageDisplayOptions.minimumSwipeGestureDistance,
+                            minimumDistance: minimumSwipeDistance,
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
@@ -162,6 +162,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             dragChanged(to: offset.width)
                         }
                     })
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("MessageView")
                     
                     if message.replyCount > 0 && !isInThread {
                         MessageRepliesView(
@@ -170,6 +172,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             message: message,
                             replyCount: message.replyCount
                         )
+                        .accessibilityElement(children: .contain)
+                        .accessibility(identifier: "MessageRepliesView")
                     }
                                         
                     if showsAllInfo && !message.isDeleted {
@@ -218,6 +222,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
                 messageListConfig.messageDisplayOptions.otherUserMessageTransition
         )
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageContainerView")
     }
     
     private var maximumHorizontalSwipeDisplacement: CGFloat {
@@ -238,12 +244,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
     
     private var spacerWidth: CGFloat {
-        let proposedViewWidth = width ?? 0
-        if isIPad {
-            return 2 * proposedViewWidth / 3
-        } else {
-            return proposedViewWidth / 4
-        }
+        messageListConfig.messageDisplayOptions.spacerWidth(width ?? 0)
     }
     
     private var reactionsShown: Bool {
@@ -264,7 +265,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             return
         }
                  
-        if horizontalTranslation > 0 {
+        if horizontalTranslation >= minimumSwipeDistance {
             offsetX = horizontalTranslation
         } else {
             offsetX = 0
@@ -276,6 +277,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 quotedMessage = message
             }
         }
+    }
+    
+    private var minimumSwipeDistance: CGFloat {
+        utils.messageListConfig.messageDisplayOptions.minimumSwipeGestureDistance
     }
     
     private func setOffsetX(value: CGFloat) {
@@ -315,6 +320,8 @@ struct SendFailureIndicator: View {
                 .foregroundColor(Color(colors.alert))
                 .offset(y: 4)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("SendFailureIndicator")
     }
 }
 

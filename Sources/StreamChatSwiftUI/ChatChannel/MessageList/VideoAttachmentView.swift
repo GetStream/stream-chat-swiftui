@@ -54,6 +54,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
         .if(!message.text.isEmpty, transform: { view in
             view.messageBubble(for: message, isFirst: true, cornerRadius: 24)
         })
+        .accessibilityIdentifier("VideoAttachmentsContainer")
     }
 }
 
@@ -63,16 +64,18 @@ public struct VideoAttachmentsList: View {
     let width: CGFloat
     
     public var body: some View {
-        ForEach(message.videoAttachments, id: \.self) { attachment in
-            VideoAttachmentView(
-                attachment: attachment,
-                message: message,
-                width: width
-            )
-            .withUploadingStateIndicator(
-                for: attachment.uploadingState,
-                url: attachment.videoURL
-            )
+        VStack {
+            ForEach(message.videoAttachments, id: \.self) { attachment in
+                VideoAttachmentView(
+                    attachment: attachment,
+                    message: message,
+                    width: width
+                )
+                .withUploadingStateIndicator(
+                    for: attachment.uploadingState,
+                    url: attachment.videoURL
+                )
+            }
         }
     }
 }
@@ -97,6 +100,7 @@ public struct VideoAttachmentView: View {
             ratio: ratio,
             cornerRadius: cornerRadius
         )
+        .accessibilityIdentifier("VideoAttachmentView")
     }
 }
 

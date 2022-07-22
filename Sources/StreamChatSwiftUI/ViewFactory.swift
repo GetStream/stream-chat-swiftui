@@ -293,6 +293,12 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(for message: ChatMessage) -> MessageAuthorAndDateViewType
     
+    associatedtype LastInGroupHeaderView: View
+    /// Creates a view shown as a header of the last message in a group.
+    /// - Parameter message: the chat message for which the header will be displayed.
+    /// - Returns: view shown in the header of the last message.
+    func makeLastInGroupHeaderView(for message: ChatMessage) -> LastInGroupHeaderView
+    
     associatedtype ImageAttachmentViewType: View
     /// Creates the image attachment view.
     /// - Parameters:
@@ -386,6 +392,18 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter message: the system message.
     /// - Returns: view displayed when a system message appears.
     func makeSystemMessageView(message: ChatMessage) -> SystemMessageViewType
+    
+    associatedtype EmojiTextViewType: View
+    /// Creates the view displaying emojis.
+    /// - Parameters:
+    ///   - message: the deleted message that will be displayed with indicator.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
+    ///   - isFirst: whether it is first in the group (latest creation date).
+    func makeEmojiTextView(
+        message: ChatMessage,
+        scrolledId: Binding<String?>,
+        isFirst: Bool
+    ) -> EmojiTextViewType
     
     associatedtype CustomAttachmentViewType: View
     /// Creates custom attachment view.

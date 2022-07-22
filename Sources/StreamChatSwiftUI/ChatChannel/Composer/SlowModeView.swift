@@ -28,5 +28,6 @@ public struct SlowModeView: View {
             .foregroundColor(Color(colors.textInverted))
             .clipShape(Capsule())
             .padding(.bottom, 2)
+            .accessibilityIdentifier("SlowModeView")
     }
 }

@@ -5,13 +5,15 @@
 import SwiftUI
 
 /// View shown when other users are typing.
-struct TypingIndicatorView: View {
+public struct TypingIndicatorView: View {
     
     @State private var isTyping = false
     
     private let animationDuration: CGFloat = 0.75
     
-    var body: some View {
+    public init() { /* Public init */ }
+    
+    public var body: some View {
         HStack(spacing: 4) {
             TypingIndicatorCircle(isTyping: isTyping)
                 .animation(

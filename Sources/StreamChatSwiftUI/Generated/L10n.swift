@@ -47,6 +47,12 @@ internal enum L10n {
   internal enum Attachment {
     /// Attachment size exceed the limit.
     internal static var maxSizeExceeded: String { L10n.tr("Localizable", "attachment.max-size-exceeded") }
+    internal enum MaxSize {
+      /// Please select a smaller attachment.
+      internal static var message: String { L10n.tr("Localizable", "attachment.max-size.message") }
+      /// Attachment size exceed the limit
+      internal static var title: String { L10n.tr("Localizable", "attachment.max-size.title") }
+    }
   }
 
   internal enum Channel {

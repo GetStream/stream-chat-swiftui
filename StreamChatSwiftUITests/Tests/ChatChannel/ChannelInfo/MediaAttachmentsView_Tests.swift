@@ -16,7 +16,7 @@ class MediaAttachmentsView_Tests: StreamChatTestCase {
             withImages: 10,
             withVideos: 5
         )
-        let messageSearchController = ChatMessageSearchController_Mock(client: chatClient)
+        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
         messageSearchController.messages_mock = messages
         let viewModel = MediaAttachmentsViewModel(
             channel: .mockDMChannel(),

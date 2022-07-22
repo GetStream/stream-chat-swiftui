@@ -55,6 +55,7 @@ public struct AttachmentPickerTypeView: View {
                         pickerType: .media,
                         selected: attachmentPickerType
                     )
+                    .accessibilityIdentifier("PickerTypeButtonMedia")
                 }
                 
                 if commandsAvailable {
@@ -63,6 +64,7 @@ public struct AttachmentPickerTypeView: View {
                         pickerType: .instantCommands,
                         selected: attachmentPickerType
                     )
+                    .accessibilityIdentifier("PickerTypeButtonCommands")
                 }
             case .collapsed:
                 Button {
@@ -74,8 +76,10 @@ public struct AttachmentPickerTypeView: View {
                         .renderingMode(.template)
                         .foregroundColor(Color(colors.highlightedAccentBackground))
                 }
+                .accessibilityIdentifier("PickerTypeButtonCollapsed")
             }
         }
+        .accessibilityElement(children: .contain)
     }
 }
 

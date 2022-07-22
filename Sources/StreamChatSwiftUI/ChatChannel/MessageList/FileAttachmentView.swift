@@ -15,6 +15,20 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     var isFirst: Bool
     @Binding var scrolledId: String?
     
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        width: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) {
+        self.factory = factory
+        self.message = message
+        self.width = width
+        self.isFirst = isFirst
+        _scrolledId = scrolledId
+    }
+    
     public var body: some View {
         VStack(alignment: message.alignmentInBubble) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
@@ -62,6 +76,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                 )
             )
         )
+        .accessibilityIdentifier("FileAttachmentsContainer")
     }
 }
 
@@ -75,6 +90,12 @@ public struct FileAttachmentView: View {
     var attachment: ChatMessageFileAttachment
     var width: CGFloat
     var isFirst: Bool
+    
+    public init(attachment: ChatMessageFileAttachment, width: CGFloat, isFirst: Bool) {
+        self.attachment = attachment
+        self.width = width
+        self.isFirst = isFirst
+    }
     
     public var body: some View {
         HStack {
@@ -97,10 +118,12 @@ public struct FileAttachmentView: View {
         .sheet(isPresented: $fullScreenShown) {
             FileAttachmentPreview(url: attachment.assetURL)
         }
+        .accessibilityIdentifier("FileAttachmentView")
     }
 }
 
-struct FileAttachmentDisplayView: View {
+public struct FileAttachmentDisplayView: View {
+        
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -109,7 +132,13 @@ struct FileAttachmentDisplayView: View {
     var title: String
     var sizeString: String
     
-    var body: some View {
+    public init(url: URL, title: String, sizeString: String) {
+        self.url = url
+        self.title = title
+        self.sizeString = sizeString
+    }
+    
+    public var body: some View {
         HStack {
             Image(uiImage: previewImage)
                 .resizable()

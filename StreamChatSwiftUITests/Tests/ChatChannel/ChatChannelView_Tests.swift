@@ -18,7 +18,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
 
     func test_chatChannelView_snapshot() {
         // Given
-        let controller = ChatChannelController_Mock(
+        let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
             channelListQuery: nil,
             client: chatClient
@@ -56,7 +56,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
     
     func test_chatChannelView_snapshotEmpty() {
         // Given
-        let controller = ChatChannelController_Mock(
+        let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
             channelListQuery: nil,
             client: chatClient
@@ -87,7 +87,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
     
     func test_chatChannelView_snapshotLoading() {
         // Given
-        let controller = ChatChannelController_Mock(
+        let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
             channelListQuery: nil,
             client: chatClient

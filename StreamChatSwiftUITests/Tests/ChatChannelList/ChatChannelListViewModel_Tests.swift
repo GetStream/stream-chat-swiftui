@@ -260,12 +260,23 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.selectedChannel == nil)
     }
     
+    func test_channelListVM_hideTabBar() {
+        // Given
+        let viewModel = makeDefaultChannelListVM()
+        
+        // When
+        notifyHideTabBar()
+        
+        // Then
+        XCTAssert(viewModel.hideTabBar == true)
+    }
+    
     // MARK: - private
     
     private func makeChannelListController(
         channels: [ChatChannel] = []
     ) -> ChatChannelListController_Mock {
-        let channelListController = ChatChannelListController_Mock.mock()
+        let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
         var chatChannels = [ChatChannel]()
         if channels.isEmpty {
             let channel = ChatChannel.mockDMChannel()

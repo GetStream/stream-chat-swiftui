@@ -124,12 +124,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                                 x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader),
                                 y: popIn ? -24 : -messageContainerHeight / 2
                             )
+                            .accessibilityElement(children: .contain)
                             : nil
                     )
                     .frame(
                         width: messageDisplayInfo.frame.width,
                         height: messageContainerHeight
                     )
+                    .accessibilityIdentifier("ReactionsMessageView")
                     
                     if messageDisplayInfo.showsMessageActions {
                         factory.makeMessageActionsView(
@@ -174,6 +176,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onAppear {
             popIn = true
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("ReactionsOverlayView")
     }
     
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {

@@ -51,6 +51,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             && channel.config.typingEventsEnabled
     }
     
+    private var lastInGroupHeaderSize: CGFloat {
+        messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
+    }
+    
     private let scrollAreaId = "scrollArea"
     
     public init(
@@ -112,6 +116,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
+                            let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
                                 message: message,
@@ -121,7 +126,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
-                                isLast: message == messages.last
+                                isLast: !showsLastInGroupInfo && message == messages.last
                             )
                             .onAppear {
                                 if index == nil {
@@ -131,16 +136,29 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     onMessageAppear(index)
                                 }
                             }
-                            .overlay(
+                            .padding(
+                                .top,
                                 messageDate != nil ?
-                                    VStack {
-                                        factory.makeMessageListDateIndicator(date: messageDate!)
-                                            .offset(y: -messageListConfig.messageDisplayOptions.dateLabelSize)
+                                    offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo) :
+                                    additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
+                            )
+                            .overlay(
+                                (messageDate != nil || showsLastInGroupInfo) ?
+                                    VStack(spacing: 0) {
+                                        messageDate != nil ?
+                                            factory.makeMessageListDateIndicator(date: messageDate!)
+                                            .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
+                                            : nil
+                                    
+                                        showsLastInGroupInfo ?
+                                            factory.makeLastInGroupHeaderView(for: message)
+                                            .frame(maxHeight: lastInGroupHeaderSize)
+                                            : nil
+                                    
                                         Spacer()
                                     }
                                     : nil
                             )
-                            .padding(.top, messageDate != nil ? messageListConfig.messageDisplayOptions.dateLabelSize : 0)
                             .flippedUpsideDown()
                         }
                         .id(listId)
@@ -191,6 +209,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     }
                 }
+                .accessibilityIdentifier("MessageListScrollView")
             }
             
             if showScrollToLatestButton {
@@ -225,13 +244,39 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MessageListView")
+    }
+    
+    private func additionalTopPadding(showsLastInGroupInfo: Bool) -> CGFloat {
+        showsLastInGroupInfo ? lastInGroupHeaderSize : 0
+    }
+    
+    private func offsetForDateIndicator(showsLastInGroupInfo: Bool) -> CGFloat {
+        var offset = messageListConfig.messageDisplayOptions.dateLabelSize
+        offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
+        return offset
     }
     
     private func showsAllData(for message: ChatMessage) -> Bool {
         if !messageListConfig.groupMessages {
             return true
         }
-        return messagesGroupingInfo[message.id] != nil
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(firstMessageKey) == true
+    }
+    
+    private func showsLastInGroupInfo(
+        for message: ChatMessage,
+        channel: ChatChannel
+    ) -> Bool {
+        guard channel.memberCount > 2
+            && !message.isSentByCurrentUser
+            && (lastInGroupHeaderSize > 0) else {
+            return false
+        }
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(lastMessageKey) == true
     }
     
     private func handleLongPress(messageDisplayInfo: MessageDisplayInfo) {
@@ -284,6 +329,7 @@ public struct ScrollToBottomButton: View {
                     UnreadButtonIndicator(unreadCount: unreadCount) : nil
             )
         }
+        .accessibilityIdentifier("ScrollToBottomButton")
     }
 }
 
@@ -361,6 +407,8 @@ struct TypingIndicatorBottomView: View {
                     .opacity(0.9)
             )
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("TypingIndicatorBottomView")
     }
 }
 

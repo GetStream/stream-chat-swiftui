@@ -81,6 +81,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
+                .alert(isPresented: $viewModel.attachmentSizeExceeded) {
+                    Alert(
+                        title: Text(L10n.Attachment.MaxSize.title),
+                        message: Text(L10n.Attachment.MaxSize.message),
+                        dismissButton: .cancel(Text(L10n.Alert.Actions.ok))
+                    )
+                }
                                 
                 factory.makeTrailingComposerView(
                     enabled: viewModel.sendButtonEnabled,
@@ -94,6 +101,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         editedMessage = nil
                         onMessageSent()
                     }
+                }
+                .alert(isPresented: $viewModel.errorShown) {
+                    Alert.defaultErrorAlert
                 }
             }
             .padding(.all, 8)
@@ -169,9 +179,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             alignment: .bottom
         )
         .modifier(factory.makeComposerViewModifier())
-        .alert(isPresented: $viewModel.errorShown) {
-            Alert.defaultErrorAlert
-        }
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
             if editedMessage != nil {
@@ -179,11 +186,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 editedMessageWillShow = true
             }
         }
+        .accessibilityElement(children: .contain)
     }
 }
 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View {
+    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
@@ -202,6 +211,34 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var removeAttachmentWithId: (String) -> Void
     
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
+    
+    public init(
+        factory: Factory,
+        text: Binding<String>,
+        selectedRangeLocation: Binding<Int>,
+        command: Binding<ComposerCommand?>,
+        addedAssets: [AddedAsset],
+        addedFileURLs: [URL],
+        addedCustomAttachments: [CustomAttachment],
+        quotedMessage: Binding<ChatMessage?>,
+        maxMessageLength: Int? = nil,
+        cooldownDuration: Int,
+        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
+        removeAttachmentWithId: @escaping (String) -> Void
+    ) {
+        self.factory = factory
+        _text = text
+        _selectedRangeLocation = selectedRangeLocation
+        _command = command
+        self.addedAssets = addedAssets
+        self.addedFileURLs = addedFileURLs
+        self.addedCustomAttachments = addedCustomAttachments
+        self.quotedMessage = quotedMessage
+        self.maxMessageLength = maxMessageLength
+        self.cooldownDuration = cooldownDuration
+        self.onCustomAttachmentTap = onCustomAttachmentTap
+        self.removeAttachmentWithId = removeAttachmentWithId
+    }
     
     var textFieldHeight: CGFloat {
         let minHeight: CGFloat = TextSizeConstants.minimumHeight
@@ -282,6 +319,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     maxMessageLength: maxMessageLength,
                     currentHeight: textFieldHeight
                 )
+                .accessibilityIdentifier("ComposerTextInputView")
+                .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
                 .overlay(
                     command?.displayInfo?.isInstant == true ?
@@ -310,6 +349,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         .clipShape(
             RoundedRectangle(cornerRadius: 20)
         )
+        .accessibilityIdentifier("ComposerInputView")
     }
     
     private var composerInputBackground: Color {

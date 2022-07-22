@@ -63,6 +63,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 )
             )
         )
+        .accessibilityIdentifier("LinkAttachmentContainer")
     }
 }
 
@@ -126,6 +127,7 @@ public struct LinkAttachmentView: View {
                 UIApplication.shared.open(url, options: [:])
             }
         }
+        .accessibilityIdentifier("LinkAttachmentView")
     }
     
     private var imageHidden: Bool {

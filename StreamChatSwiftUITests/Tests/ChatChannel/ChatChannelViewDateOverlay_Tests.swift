@@ -27,7 +27,7 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
 
     func test_chatChannelView_snapshot() {
         // Given
-        let controller = ChatChannelController_Mock(
+        let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
             channelListQuery: nil,
             client: chatClient

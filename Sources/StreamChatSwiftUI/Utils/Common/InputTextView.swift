@@ -17,7 +17,7 @@ struct TextSizeConstants {
     }
 }
 
-class InputTextView: UITextView {
+class InputTextView: UITextView, AccessibilityView {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
         
@@ -49,7 +49,8 @@ class InputTextView: UITextView {
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         guard superview != nil else { return }
-        
+
+        setAccessibilityIdentifier()
         setUp()
         setUpLayout()
         setUpAppearance()
@@ -65,7 +66,7 @@ class InputTextView: UITextView {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(becomeFirstResponder),
-            name: NSNotification.Name(firstResponderNotification),
+            name: NSNotification.Name(getStreamFirstResponderNotification),
             object: nil
         )
     }

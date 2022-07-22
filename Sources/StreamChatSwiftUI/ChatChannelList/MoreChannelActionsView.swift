@@ -117,6 +117,7 @@ public struct MoreChannelActionsView: View {
                 }
             }
         }
+        .accessibilityIdentifier("MoreChannelActionsView")
     }
     
     private var memberList: some View {

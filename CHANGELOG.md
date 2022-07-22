@@ -3,6 +3,51 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.19.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.19.0)
+_July 21, 2022_
+
+### ✅ Added
+- Customizing padding for message bubble modifier
+- Customizing padding for message text view
+- Possibility to control tab bar visibility
+- Configuration of message size via spacing
+
+### 🐞 Fixed
+- Fixed a bug with canceled backswipe
+- Fixed a bug with channel pop on name editing
+
+### 🔄 Changed
+- Docs restructuring
+- Exposed some view components as public
+
+# [4.18.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.18.0)
+_July 05, 2022_
+
+### ✅ Added
+- Automated testing infrastructure
+- Config for disabling reaction animations
+- Error indicator when max attachment size exceeded
+- Factory method to swap the jumbo emoji view
+
+### 🔄 Changed
+- Made few view components public
+
+# [4.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.17.0)
+_June 22, 2022_
+
+### ✅ Added
+- Possibility to add a custom view above the oldest message in a group
+- Swipe gesture to dismiss image gallery
+
+### 🐞 Fixed
+- Memory cache trimming on chat dismiss
+- Crash when sending an invalid command
+
+# [4.16.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.16.0)
+_June 10, 2022_
+
 ### ✅ Added
 - Possibility to view channel info on channel options
 - Date separators in the message list
