@@ -63,7 +63,7 @@ struct PinnedMessageView: View {
                     .foregroundColor(Color(colors.text))
                 
                 HStack {
-                    Text(message.text)
+                    Text(message.adjustedText)
                         .font(fonts.footnote)
                         .foregroundColor(Color(colors.textLowEmphasis))
                     

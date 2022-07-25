@@ -163,7 +163,7 @@ extension MessageAction {
             title: L10n.Message.Actions.copy,
             iconName: "icn_copy",
             action: {
-                UIPasteboard.general.string = message.text
+                UIPasteboard.general.string = message.adjustedText
                 onFinish(
                     MessageActionInfo(
                         message: message,

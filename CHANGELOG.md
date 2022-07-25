@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Exposed a way to customise text message before sending and reading
+
 ### 🐞 Fixed
 - Fixed a bug with channel list refreshing after deeplinking
 

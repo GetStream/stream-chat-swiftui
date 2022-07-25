@@ -83,7 +83,7 @@ struct AttachmentTextView: View {
     
     var body: some View {
         HStack {
-            Text(message.text)
+            Text(message.adjustedText)
                 .standardPadding()
                 .foregroundColor(textColor(for: message))
                 .fixedSize(horizontal: false, vertical: true)

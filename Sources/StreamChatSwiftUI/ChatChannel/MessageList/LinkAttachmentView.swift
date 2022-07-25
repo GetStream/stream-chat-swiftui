@@ -36,7 +36,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             }
             
             let availableWidth = width - 4 * padding
-            let size = message.text.frameSize(maxWidth: availableWidth)
+            let size = message.adjustedText.frameSize(maxWidth: availableWidth)
             LinkTextView(
                 message: message,
                 width: availableWidth,

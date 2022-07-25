@@ -44,7 +44,7 @@ struct LinkTextView: UIViewRepresentable {
     }
     
     private var text: String {
-        message.text
+        message.adjustedText
     }
 }
 

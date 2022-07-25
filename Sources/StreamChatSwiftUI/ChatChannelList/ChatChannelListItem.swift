@@ -201,7 +201,7 @@ extension ChatChannel {
     
     public var lastMessageText: String? {
         if let latestMessage = latestMessages.first {
-            return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.text)"
+            return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.adjustedText)"
         } else {
             return nil
         }

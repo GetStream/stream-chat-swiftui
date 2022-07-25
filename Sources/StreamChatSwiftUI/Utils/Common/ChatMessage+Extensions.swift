@@ -44,7 +44,7 @@ public extension ChatMessage {
             return nil
         }
 
-        return isDeleted ? L10n.Message.deletedMessagePlaceholder : text
+        return isDeleted ? L10n.Message.deletedMessagePlaceholder : adjustedText
     }
 
     /// A boolean value that checks if the message is visible for current user only.
@@ -80,5 +80,9 @@ public extension ChatMessage {
     var shouldRenderAsJumbomoji: Bool {
         guard let textContent = textContent, !textContent.isEmpty else { return false }
         return textContent.count <= 3 && textContent.containsOnlyEmoji
+    }
+    
+    var adjustedText: String {
+        InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
     }
 }

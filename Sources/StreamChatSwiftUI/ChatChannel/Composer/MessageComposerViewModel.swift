@@ -146,8 +146,12 @@ open class MessageComposerViewModel: ObservableObject {
            displayInfo.isInstant == true {
             return "\(composerCommand.id) \(text)"
         } else {
-            return text
+            return adjustedText
         }
+    }
+    
+    var adjustedText: String {
+        utils.composerConfig.adjustMessageOnSend(text)
     }
     
     private var totalAttachmentsCount: Int {
@@ -459,7 +463,7 @@ open class MessageComposerViewModel: ObservableObject {
             messageId: message.id
         )
         
-        messageController.editMessage(text: text) { [weak self] error in
+        messageController.editMessage(text: adjustedText) { [weak self] error in
             if error != nil {
                 self?.errorShown = true
             } else {

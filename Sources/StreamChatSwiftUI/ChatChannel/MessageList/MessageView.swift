@@ -154,7 +154,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 )
             }
             
-            Text(message.text)
+            Text(message.adjustedText)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)
@@ -195,7 +195,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                     
-                    Text(message.text)
+                    Text(message.adjustedText)
                         .font(fonts.emoji)
                 }
                 .modifier(
@@ -207,7 +207,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                     )
                 )
             } else {
-                Text(message.text)
+                Text(message.adjustedText)
                     .font(fonts.emoji)
             }
         }
