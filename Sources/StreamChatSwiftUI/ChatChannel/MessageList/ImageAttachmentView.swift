@@ -75,13 +75,17 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     }
 }
 
-struct AttachmentTextView: View {
+public struct AttachmentTextView: View {
     
     @Injected(\.colors) private var colors
     
     var message: ChatMessage
     
-    var body: some View {
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+    
+    public var body: some View {
         HStack {
             Text(message.adjustedText)
                 .standardPadding()

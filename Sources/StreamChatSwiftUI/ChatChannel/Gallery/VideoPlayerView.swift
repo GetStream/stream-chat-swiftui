@@ -19,7 +19,7 @@ public struct VideoPlayerView: View {
     
     private let avPlayer: AVPlayer
     
-    init(
+    public init(
         attachment: ChatMessageVideoAttachment,
         author: ChatUser,
         isShown: Binding<Bool>

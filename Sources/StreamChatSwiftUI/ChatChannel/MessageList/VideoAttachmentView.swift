@@ -63,6 +63,11 @@ public struct VideoAttachmentsList: View {
     let message: ChatMessage
     let width: CGFloat
     
+    public init(message: ChatMessage, width: CGFloat) {
+        self.message = message
+        self.width = width
+    }
+    
     public var body: some View {
         VStack {
             ForEach(message.videoAttachments, id: \.self) { attachment in
@@ -87,6 +92,20 @@ public struct VideoAttachmentView: View {
     let width: CGFloat
     var ratio: CGFloat = 0.75
     var cornerRadius: CGFloat = 24
+    
+    public init(
+        attachment: ChatMessageVideoAttachment,
+        message: ChatMessage,
+        width: CGFloat,
+        ratio: CGFloat = 0.75,
+        cornerRadius: CGFloat = 24
+    ) {
+        self.attachment = attachment
+        self.message = message
+        self.width = width
+        self.ratio = ratio
+        self.cornerRadius = cornerRadius
+    }
     
     @State var previewImage: UIImage?
     @State var error: Error?

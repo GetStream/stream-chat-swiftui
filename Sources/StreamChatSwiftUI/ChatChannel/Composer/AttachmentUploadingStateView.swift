@@ -83,7 +83,7 @@ extension View {
     /// - Parameters:
     ///  - uploadState: the upload state of the asset.
     ///  - url: the url of the asset.
-    func withUploadingStateIndicator(for uploadState: AttachmentUploadingState?, url: URL) -> some View {
+    public func withUploadingStateIndicator(for uploadState: AttachmentUploadingState?, url: URL) -> some View {
         modifier(AttachmentUploadingStateViewModifier(uploadState: uploadState, url: url))
     }
 }
