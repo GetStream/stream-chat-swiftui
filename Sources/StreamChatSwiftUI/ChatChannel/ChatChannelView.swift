@@ -124,6 +124,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 LoadingView()
             }
         }
+        .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible
         })
