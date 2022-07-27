@@ -157,6 +157,7 @@ struct VideoAttachmentContentView: View {
                             .customizable()
                             .frame(width: 24)
                             .foregroundColor(.white)
+                            .modifier(ShadowModifier())
                     }
                     .frame(width: width, height: width * ratio)
                     .contentShape(Rectangle())
