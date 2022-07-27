@@ -82,6 +82,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     @Published public var editedMessage: ChatMessage?
     @Published public var channelHeaderType: ChannelHeaderType = .regular
+    @Published public var threadMessage: ChatMessage?
+    @Published public var threadMessageShown = false {
+        didSet {
+            if threadMessageShown == false {
+                threadMessage = nil
+            }
+        }
+    }
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -125,8 +133,25 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        if messageController == nil {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(selectedMessageThread(notification:)),
+                name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                object: nil
+            )
+        }
+                
         channelName = channel?.name ?? ""
         checkHeaderType()
+    }
+    
+    @objc
+    private func selectedMessageThread(notification: Notification) {
+        if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {
+            threadMessage = message
+            threadMessageShown = true
+        }
     }
     
     @objc

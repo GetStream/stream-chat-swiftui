@@ -97,6 +97,19 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
                             .reactionsShown
                     ) ? 0 : 1)
+                    
+                    NavigationLink(
+                        isActive: $viewModel.threadMessageShown
+                    ) {
+                        if let message = viewModel.threadMessage {
+                            let threadDestination = factory.makeMessageThreadDestination()
+                            threadDestination(channel, message)
+                        } else {
+                            EmptyView()
+                        }
+                    } label: {
+                        EmptyView()
+                    }
                 }
                 .accentColor(colors.tintColor)
                 .overlay(

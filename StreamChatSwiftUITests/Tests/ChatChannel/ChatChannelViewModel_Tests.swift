@@ -356,6 +356,35 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(readsString != newChannelReadsString)
     }
     
+    func test_chatChannelVM_threadMessage() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Some text",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        NotificationCenter.default.post(
+            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            object: nil,
+            userInfo: [MessageRepliesConstants.selectedMessage: message]
+        )
+        
+        // Then
+        XCTAssert(viewModel.threadMessage == message)
+        XCTAssert(viewModel.threadMessageShown == true)
+        
+        // When
+        viewModel.threadMessageShown = false
+        
+        // Then
+        XCTAssert(viewModel.threadMessage == nil)
+    }
+    
     // MARK: - private
     
     private func makeChannelController(
