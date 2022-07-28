@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
-struct GalleryView: View {
+public struct GalleryView: View {
 
     @Environment(\.presentationMode) var presentationMode
     
@@ -21,7 +21,7 @@ struct GalleryView: View {
     @State private var loadedImages = [Int: UIImage]()
     @State private var gridShown = false
     
-    init(
+    public init(
         imageAttachments: [ChatMessageImageAttachment],
         author: ChatUser,
         isShown: Binding<Bool>,
@@ -33,7 +33,7 @@ struct GalleryView: View {
         _selected = State(initialValue: selected)
     }
     
-    var body: some View {
+    public var body: some View {
         GeometryReader { reader in
             VStack {
                 GalleryHeaderView(
