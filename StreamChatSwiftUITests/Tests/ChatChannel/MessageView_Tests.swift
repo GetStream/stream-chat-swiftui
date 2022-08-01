@@ -300,4 +300,27 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_messageRepliesView_snapshot() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Message with replies",
+            author: .mock(id: .unique)
+        )
+        
+        // When
+        let view = MessageRepliesView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            message: message,
+            replyCount: 3
+        )
+        .frame(width: 300, height: 60)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
