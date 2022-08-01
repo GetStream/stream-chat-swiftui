@@ -120,7 +120,7 @@ struct MessageSpacer: View {
 }
 
 /// View that's displayed when a message is pinned.
-struct MessagePinDetailsView: View {
+public struct MessagePinDetailsView: View {
     
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -129,7 +129,12 @@ struct MessagePinDetailsView: View {
     var message: ChatMessage
     var reactionsShown: Bool
     
-    var body: some View {
+    public init(message: ChatMessage, reactionsShown: Bool) {
+        self.message = message
+        self.reactionsShown = reactionsShown
+    }
+    
+    public var body: some View {
         HStack {
             Image(uiImage: images.pin)
                 .customizable()
@@ -145,11 +150,15 @@ struct MessagePinDetailsView: View {
     }
 }
 
-struct TopLeftView<Content: View>: View {
+public struct TopLeftView<Content: View>: View {
     
     var content: () -> Content
     
-    var body: some View {
+    public init(content: @escaping () -> Content) {
+        self.content = content
+    }
+    
+    public var body: some View {
         VStack {
             HStack {
                 content()

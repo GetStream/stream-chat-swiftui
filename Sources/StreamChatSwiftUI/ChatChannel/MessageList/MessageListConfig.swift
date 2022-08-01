@@ -57,7 +57,7 @@ public struct MessageListConfig {
 public struct MessagePaddings {
     
     /// Horizontal padding for messages.
-    let horizontal: CGFloat
+    public let horizontal: CGFloat
     
     public init(horizontal: CGFloat = 8) {
         self.horizontal = horizontal
