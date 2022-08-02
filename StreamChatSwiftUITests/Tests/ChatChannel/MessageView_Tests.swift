@@ -323,4 +323,18 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_topLeftView_snapshot() {
+        // Given
+        let textView = Text("Test")
+        
+        // Then
+        let view = TopLeftView {
+            textView
+        }
+        .applyDefaultSize()
+        
+        // When
+        assertSnapshot(matching: view, as: .image)
+    }
 }
