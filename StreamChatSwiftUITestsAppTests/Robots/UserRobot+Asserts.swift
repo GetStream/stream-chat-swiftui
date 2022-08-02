@@ -395,7 +395,7 @@ extension UserRobot {
 
     @discardableResult
     func assertSendButtonIsNotShown(file: StaticString = #filePath, line: UInt = #line) -> Self {
-        XCTAssertFalse(MessageListPage.Composer.sendButton.waitForLoss().exists)
+        XCTAssertFalse(MessageListPage.Composer.sendButton.waitForDisappearance().exists)
         return self
     }
 }
@@ -412,7 +412,7 @@ extension UserRobot {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
         let reaction = attributes.reactionButton(in: messageCell)
         let errMessage = isPresent ? "There are no reactions" : "Reaction is presented"
-        _ = isPresent ? reaction.wait() : reaction.waitForLoss()
+        _ = isPresent ? reaction.wait() : reaction.waitForDisappearance()
         XCTAssertEqual(isPresent, reaction.exists, errMessage, file: file, line: line)
         return self
     }
