@@ -309,19 +309,21 @@ extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel
     ) -> MessageAction {
-        var replyThread = MessageAction(
+        let replyThread = MessageAction(
             id: MessageActionId.threadReply,
             title: L10n.Message.Actions.threadReply,
             iconName: "icn_thread_reply",
             action: {
-                // No action performed, only navigation.
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                    object: nil,
+                    userInfo: [MessageRepliesConstants.selectedMessage: message]
+                )
             },
             confirmationPopup: nil,
             isDestructive: false
         )
         
-        let destination = factory.makeMessageThreadDestination()
-        replyThread.navigationDestination = AnyView(destination(channel, message))
         return replyThread
     }
     
