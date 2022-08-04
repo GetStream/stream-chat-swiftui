@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed a bug with channel list refreshing after deeplinking
 - Navigation bar iPad resizing issue
 - Fixed a bug with thread with custom attachments dismissed
+- Fixed Xcode 14 beta build issues
 
 ### 🔄 Changed
 - Docs restructuring
