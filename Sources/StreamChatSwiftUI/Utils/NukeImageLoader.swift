@@ -96,7 +96,6 @@ open class NukeImageLoader: ImageLoading {
         }
 
         let urlRequest = imageCDN.urlRequest(forImage: url)
-        let cachingKey = imageCDN.cachingKey(forImage: url)
         
         var processors = [ImageProcessing]()
         if let preferredSize = preferredSize, resize == true {
@@ -109,6 +108,8 @@ open class NukeImageLoader: ImageLoading {
         if resize && size != .zero {
             url = imageCDN.thumbnailURL(originalURL: url, preferredSize: size)
         }
+        
+        let cachingKey = imageCDN.cachingKey(forImage: url)
         
         let request = ImageRequest(
             urlRequest: urlRequest,
