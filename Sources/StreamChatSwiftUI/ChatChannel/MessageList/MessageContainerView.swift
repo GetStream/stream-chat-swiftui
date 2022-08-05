@@ -67,7 +67,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 if message.isSentByCurrentUser {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
-                    if messageListConfig.messageDisplayOptions.showAvatars {
+                    if messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                         factory.makeMessageAvatarView(
                             for: utils.messageCachingUtils.authorInfo(from: message)
                         )

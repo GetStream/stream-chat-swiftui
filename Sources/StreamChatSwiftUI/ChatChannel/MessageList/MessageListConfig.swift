@@ -75,6 +75,7 @@ public enum DateIndicatorPlacement {
 public struct MessageDisplayOptions {
         
     public let showAvatars: Bool
+    public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
     public let showAuthorName: Bool
     public let animateChanges: Bool
@@ -89,6 +90,7 @@ public struct MessageDisplayOptions {
     
     public init(
         showAvatars: Bool = true,
+        showAvatarsInGroups: Bool? = nil,
         showMessageDate: Bool = true,
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
@@ -114,6 +116,11 @@ public struct MessageDisplayOptions {
         self.lastInGroupHeaderSize = lastInGroupHeaderSize
         self.shouldAnimateReactions = shouldAnimateReactions
         self.spacerWidth = spacerWidth
+        self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
+    }
+    
+    public func showAvatars(for channel: ChatChannel) -> Bool {
+        channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
     }
     
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
