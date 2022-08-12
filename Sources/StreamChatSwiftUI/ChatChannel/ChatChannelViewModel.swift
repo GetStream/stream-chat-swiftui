@@ -90,6 +90,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
+
+    @Published public var shouldShowTypingIndicator = false
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -219,6 +221,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelController: ChatChannelController
     ) {
         checkReadIndicators(for: channel)
+        checkTypingIndicator()
         checkHeaderType()
     }
 
@@ -355,7 +358,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if !reactionsShown && isMessageThread {
             type = .messageThread
-        } else if !typingUsers.isEmpty {
+        } else if !typingUsers.isEmpty && utils.messageListConfig.typingIndicatorPlacement == .navigationBar {
             type = .typingIndicator
         } else {
             type = .regular
@@ -474,6 +477,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func enableDateIndicator() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.disableDateIndicator = false
+        }
+    }
+    
+    private func checkTypingIndicator() {
+        guard let channel = channel else { return }
+        let shouldShow = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
+            && utils.messageListConfig.typingIndicatorPlacement == .bottomOverlay
+            && channel.config.typingEventsEnabled
+        if shouldShow != shouldShowTypingIndicator {
+            shouldShowTypingIndicator = shouldShow
         }
     }
     

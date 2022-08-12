@@ -69,6 +69,7 @@ class MessageListView_Tests: StreamChatTestCase {
             currentDateString: nil,
             listId: "listId",
             isMessageThread: false,
+            shouldShowTypingIndicator: false,
             onMessageAppear: { _ in },
             onScrollToBottom: {},
             onLongPress: { _ in }

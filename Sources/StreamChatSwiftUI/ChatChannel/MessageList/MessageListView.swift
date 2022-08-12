@@ -21,6 +21,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var currentDateString: String?
     var listId: String
     var isMessageThread: Bool
+    var shouldShowTypingIndicator: Bool
     
     var onMessageAppear: (Int) -> Void
     var onScrollToBottom: () -> Void
@@ -45,12 +46,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         utils.messageListDateUtils
     }
     
-    private var shouldShowTypingIndicator: Bool {
-        !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
-            && messageListConfig.typingIndicatorPlacement == .bottomOverlay
-            && channel.config.typingEventsEnabled
-    }
-    
     private var lastInGroupHeaderSize: CGFloat {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
@@ -68,6 +63,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         currentDateString: String? = nil,
         listId: String,
         isMessageThread: Bool,
+        shouldShowTypingIndicator: Bool,
         onMessageAppear: @escaping (Int) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void
@@ -82,6 +78,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onMessageAppear = onMessageAppear
         self.onScrollToBottom = onScrollToBottom
         self.onLongPress = onLongPress
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
         _scrolledId = scrolledId
         _showScrollToLatestButton = showScrollToLatestButton
         _quotedMessage = quotedMessage

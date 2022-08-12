@@ -212,10 +212,15 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(headerType == .regular)
+        XCTAssert(viewModel.shouldShowTypingIndicator == false)
     }
     
     func test_chatChannelVM_typingIndicatorMessageHeader() {
         // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .navigationBar)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let channelController = makeChannelController()
         let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
         let viewModel = ChatChannelViewModel(channelController: channelController)
@@ -231,6 +236,24 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(headerType == .typingIndicator)
+    }
+    
+    func test_chatChannelVM_typingIndicatorMessageList() {
+        // Given
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+        
+        // Then
+        XCTAssert(viewModel.shouldShowTypingIndicator == true)
     }
     
     func test_chatChannelVM_skipChanges() {

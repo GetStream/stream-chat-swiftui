@@ -3,7 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Configuring avatars visibility in groups
+
 ### 🔄 Changed
+- Message list creation requires `shouldShowTypingIndicator` as a parameter
+
+### 🐞 Fixed
+- Channel header sometimes blinks when many messages are sent
 
 # [4.20.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.20.0)
 _August 04, 2022_
