@@ -166,8 +166,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     .accessibilityIdentifier("MessageView")
                     
                     if message.replyCount > 0 && !isInThread {
-                        MessageRepliesView(
-                            factory: factory,
+                        factory.makeMessageRepliesView(
                             channel: channel,
                             message: message,
                             replyCount: message.replyCount

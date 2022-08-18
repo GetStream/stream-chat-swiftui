@@ -715,6 +715,21 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is EmojiTextView<DefaultViewFactory>)
     }
+    
+    func test_viewFactory_makeMessageRepliesView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageRepliesView(
+            channel: ChatChannel.mockDMChannel(),
+            message: message,
+            replyCount: 2
+        )
+        
+        // Then
+        XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
+    }
 }
 
 extension ChannelAction: Equatable {

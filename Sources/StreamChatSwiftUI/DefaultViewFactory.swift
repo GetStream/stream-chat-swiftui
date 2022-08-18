@@ -442,6 +442,19 @@ extension ViewFactory {
         GiphyBadgeView()
     }
     
+    public func makeMessageRepliesView(
+        channel: ChatChannel,
+        message: ChatMessage,
+        replyCount: Int
+    ) -> some View {
+        MessageRepliesView(
+            factory: self,
+            channel: channel,
+            message: message,
+            replyCount: replyCount
+        )
+    }
+    
     public func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,

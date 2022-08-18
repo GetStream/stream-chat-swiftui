@@ -455,6 +455,19 @@ public protocol ViewFactory: AnyObject {
         availableWidth: CGFloat
     ) -> GiphyBadgeViewType
     
+    associatedtype MessageRepliesViewType: View
+    /// Creates the message replies view.
+    /// - Parameters:
+    ///  - channel: the channel where the message is sent.
+    ///  - message: the message that's being replied to.
+    ///  - replyCount: the current number of replies.
+    /// - Returns: view displayed in the message replies view slot.
+    func makeMessageRepliesView(
+        channel: ChatChannel,
+        message: ChatMessage,
+        replyCount: Int
+    ) -> MessageRepliesViewType
+    
     associatedtype MessageComposerViewType: View
     /// Creates the message composer view.
     /// - Parameters:
