@@ -13,7 +13,7 @@ public struct ChatChannelListItem: View {
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
-        
+    
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
@@ -21,6 +21,24 @@ public struct ChatChannelListItem: View {
     var onlineIndicatorShown: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
+    
+    public init(
+        channel: ChatChannel,
+        channelName: String,
+        injectedChannelInfo: InjectedChannelInfo? = nil,
+        avatar: UIImage,
+        onlineIndicatorShown: Bool,
+        disabled: Bool = false,
+        onItemTap: @escaping (ChatChannel) -> Void
+    ) {
+        self.channel = channel
+        self.channelName = channelName
+        self.injectedChannelInfo = injectedChannelInfo
+        self.avatar = avatar
+        self.onlineIndicatorShown = onlineIndicatorShown
+        self.disabled = disabled
+        self.onItemTap = onItemTap
+    }
     
     public var body: some View {
         Button {

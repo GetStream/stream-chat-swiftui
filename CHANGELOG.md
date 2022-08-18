@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Configuring avatars visibility in groups
+- Method to swap the `MessageRepliesView`
+- Public init for `ChatChannelListItem`
 
 ### 🔄 Changed
 - Message list creation requires `shouldShowTypingIndicator` as a parameter
