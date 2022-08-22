@@ -66,13 +66,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             }
             if newValue == nil {
                 selectedChannelIndex = nil
-            } else {
-                DispatchQueue.global(qos: .default).async { [weak self] in
-                    guard let self = self else { return }
-                    self.selectedChannelIndex = self.channels.firstIndex(where: { channel in
-                        channel.cid.rawValue == self.selectedChannel?.channel.cid.rawValue
-                    })
-                }
+            } else if utils.messageListConfig.updateChannelsFromMessageList {
+                selectedChannelIndex = channels.firstIndex(where: { channel in
+                    channel.cid.rawValue == newValue?.channel.cid.rawValue
+                })
             }
         }
     }
