@@ -231,8 +231,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         UIGraphicsBeginImageContext(view.frame.size)
-        view.layer.render(in: UIGraphicsGetCurrentContext()!)
-        currentSnapshot = UIGraphicsGetImageFromCurrentImageContext()
+        if let currentGraphicsContext = UIGraphicsGetCurrentContext() {
+            view.layer.render(in: currentGraphicsContext)
+            currentSnapshot = UIGraphicsGetImageFromCurrentImageContext()
+        } else {
+            currentSnapshot = images.snapshot
+        }
         UIGraphicsEndImageContext()
     }
     

@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Channel header sometimes blinks when many messages are sent
 - Data race when channels are updated from message list
+- Safe unwrapping of current graphics context when showing reactions
 
 # [4.20.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.20.0)
 _August 04, 2022_
