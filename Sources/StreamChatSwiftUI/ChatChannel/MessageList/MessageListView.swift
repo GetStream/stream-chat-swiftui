@@ -217,8 +217,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
                 
             if shouldShowTypingIndicator {
-                TypingIndicatorBottomView(
-                    typingIndicatorString: channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+                factory.makeTypingIndicatorBottomView(
+                    channel: channel,
+                    currentUserId: chatClient.currentUserId
                 )
             }
         }

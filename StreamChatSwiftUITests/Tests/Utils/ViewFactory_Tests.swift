@@ -730,6 +730,20 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
     }
+    
+    func test_viewFactory_makeTypingIndicatorBottomView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeTypingIndicatorBottomView(
+            channel: .mockDMChannel(),
+            currentUserId: nil
+        )
+        
+        // Then
+        XCTAssert(view is TypingIndicatorBottomView)
+    }
 }
 
 extension ChannelAction: Equatable {

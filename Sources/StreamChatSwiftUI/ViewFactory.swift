@@ -443,6 +443,17 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown above messages separated by date.
     func makeMessageListDateIndicator(date: Date) -> MessageListDateIndicatorViewType
     
+    associatedtype TypingIndicatorBottomViewType: View
+    /// Creates the typing indicator shown at the bottom of a message list.
+    /// - Parameters:
+    ///  - channel: the channel where the indicator is shown.
+    ///  - currentUserId: the id of the current user.
+    /// - Returns: view shown in the typing indicator slot.
+    func makeTypingIndicatorBottomView(
+        channel: ChatChannel,
+        currentUserId: UserId?
+    ) -> TypingIndicatorBottomViewType
+    
     associatedtype GiphyBadgeViewType: View
     /// Creates giphy badge view.
     /// If support for more than one custom view is needed, just do if-else check inside the view.

@@ -435,6 +435,14 @@ extension ViewFactory {
         DateIndicatorView(date: date)
     }
     
+    public func makeTypingIndicatorBottomView(
+        channel: ChatChannel,
+        currentUserId: UserId?
+    ) -> some View {
+        let typingIndicatorString = channel.typingIndicatorString(currentUserId: currentUserId)
+        return TypingIndicatorBottomView(typingIndicatorString: typingIndicatorString)
+    }
+    
     public func makeGiphyBadgeViewType(
         for message: ChatMessage,
         availableWidth: CGFloat
