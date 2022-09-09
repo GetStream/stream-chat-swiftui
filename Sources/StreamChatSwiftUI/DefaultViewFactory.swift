@@ -749,6 +749,15 @@ extension ViewFactory {
         )
     }
     
+    public func makeReactionsBackgroundView(
+        currentSnapshot: UIImage,
+        popInAnimationInProgress: Bool
+    ) -> some View {
+        Image(uiImage: currentSnapshot)
+            .overlay(Color.black.opacity(popInAnimationInProgress ? 0 : 0.1))
+            .blur(radius: popInAnimationInProgress ? 0 : 4)
+    }
+    
     public func makeQuotedMessageHeaderView(
         quotedMessage: Binding<ChatMessage?>
     ) -> some View {

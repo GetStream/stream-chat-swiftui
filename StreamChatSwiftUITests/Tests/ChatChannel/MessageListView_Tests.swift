@@ -45,11 +45,31 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: button, as: .image)
     }
     
+    func test_messageListView_typingIndicator() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let typingUser = ChatUser.mock(id: "martin", name: "Martin")
+        let messageListView = makeMessageListView(
+            channelConfig: channelConfig,
+            currentlyTypingUsers: [typingUser]
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: messageListView, as: .image)
+    }
+    
     // MARK: - private
     
-    private func makeMessageListView(channelConfig: ChannelConfig) -> MessageListView<DefaultViewFactory> {
+    private func makeMessageListView(
+        channelConfig: ChannelConfig,
+        currentlyTypingUsers: Set<ChatUser> = []
+    ) -> MessageListView<DefaultViewFactory> {
         let reactions = [MessageReactionType(rawValue: "like"): 2]
-        let channel = ChatChannel.mockDMChannel(config: channelConfig)
+        let channel = ChatChannel.mockDMChannel(
+            config: channelConfig,
+            currentlyTypingUsers: currentlyTypingUsers
+        )
         let temp = [ChatMessage.mock(
             id: .unique,
             cid: channel.cid,
@@ -69,7 +89,7 @@ class MessageListView_Tests: StreamChatTestCase {
             currentDateString: nil,
             listId: "listId",
             isMessageThread: false,
-            shouldShowTypingIndicator: false,
+            shouldShowTypingIndicator: !currentlyTypingUsers.isEmpty,
             onMessageAppear: { _ in },
             onScrollToBottom: {},
             onLongPress: { _ in }

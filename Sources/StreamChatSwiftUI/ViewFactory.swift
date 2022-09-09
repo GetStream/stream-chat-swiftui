@@ -742,6 +742,16 @@ public protocol ViewFactory: AnyObject {
         onActionExecuted: @escaping (MessageActionInfo) -> Void
     ) -> ReactionsOverlayViewType
     
+    associatedtype ReactionsBackground: View
+    /// Creates the reactions background view.
+    /// - Parameters:
+    ///  - currentSnapshot: the current snapshot of the message list screen.
+    ///  - popInAnimationInProgress: whether the pop in animation is in progress.
+    func makeReactionsBackgroundView(
+        currentSnapshot: UIImage,
+        popInAnimationInProgress: Bool
+    ) -> ReactionsBackground
+    
     associatedtype QuotedMessageHeaderViewType: View
     /// Creates the quoted message header view in the composer.
     /// - Parameters:

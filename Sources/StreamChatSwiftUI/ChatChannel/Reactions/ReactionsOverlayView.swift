@@ -54,17 +54,18 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            Image(uiImage: currentSnapshot)
-                .overlay(Color.black.opacity(!popIn ? 0 : 0.1))
-                .blur(radius: !popIn ? 0 : 4)
-                .transition(.opacity)
-                .onTapGesture {
-                    dismissReactionsOverlay() { /* No additional handling. */ }
-                }
-                .edgesIgnoringSafeArea(.all)
-                .alert(isPresented: $viewModel.errorShown) {
-                    Alert.defaultErrorAlert
-                }
+            factory.makeReactionsBackgroundView(
+                currentSnapshot: currentSnapshot,
+                popInAnimationInProgress: !popIn
+            )
+            .transition(.opacity)
+            .onTapGesture {
+                dismissReactionsOverlay() { /* No additional handling. */ }
+            }
+            .edgesIgnoringSafeArea(.all)
+            .alert(isPresented: $viewModel.errorShown) {
+                Alert.defaultErrorAlert
+            }
             
             if !messageDisplayInfo.message.isSentByCurrentUser &&
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
