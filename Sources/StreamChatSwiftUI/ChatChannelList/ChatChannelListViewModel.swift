@@ -360,7 +360,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func setInitialChannelIfSplitView() {
-        if isIPad && selectedChannel == nil {
+        if isIPad && selectedChannel == nil && utils.messageListConfig.iPadSplitViewEnabled {
             selectedChannel = channels.first?.channelSelectionInfo
         }
     }

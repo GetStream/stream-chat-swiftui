@@ -21,7 +21,8 @@ public struct MessageListConfig {
         becomesFirstResponderOnOpen: Bool = false,
         updateChannelsFromMessageList: Bool = false,
         maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
-        cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100
+        cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
+        iPadSplitViewEnabled: Bool = true
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -36,6 +37,7 @@ public struct MessageListConfig {
         self.updateChannelsFromMessageList = updateChannelsFromMessageList
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
         self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
+        self.iPadSplitViewEnabled = iPadSplitViewEnabled
     }
     
     public let messageListType: MessageListType
@@ -51,6 +53,7 @@ public struct MessageListConfig {
     public let updateChannelsFromMessageList: Bool
     public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
     public let cacheSizeOnChatDismiss: Int
+    public let iPadSplitViewEnabled: Bool
 }
 
 /// Contains information about the message paddings.

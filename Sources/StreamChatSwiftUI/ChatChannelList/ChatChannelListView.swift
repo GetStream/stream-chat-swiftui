@@ -9,6 +9,7 @@ import SwiftUI
 public struct ChatChannelListView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
     
     @StateObject private var viewModel: ChatChannelListViewModel
     @State private var tabBar: UITabBar?
@@ -90,7 +91,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         }
         .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
         .accentColor(colors.tintColor)
-        .if(isIphone, transform: { view in
+        .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
             view.navigationViewStyle(.stack)
         })
         .background(
