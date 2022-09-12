@@ -21,10 +21,14 @@ public class DefaultSnapshotCreator: SnapshotCreator {
     public init() { /* Public init. */ }
     
     public func makeSnapshot(for view: AnyView) -> UIImage {
-        let currentSnapshot: UIImage?
-        guard let view: UIView = topVC()?.view else {
+        guard let uiView: UIView = topVC()?.view else {
             return images.snapshot
         }
+        return makeSnapshot(from: uiView)
+    }
+    
+    func makeSnapshot(from view: UIView) -> UIImage {
+        let currentSnapshot: UIImage?
         UIGraphicsBeginImageContext(view.frame.size)
         if let currentGraphicsContext = UIGraphicsGetCurrentContext() {
             view.layer.render(in: currentGraphicsContext)

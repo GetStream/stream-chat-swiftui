@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Configuration for stack based navigation for iPads
 - Customization of the reactions background
+- Possibility to add custom snapshot generation logic
 
 # [4.21.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.21.0)
 _September 02, 2022_

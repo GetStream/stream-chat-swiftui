@@ -60,6 +60,22 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image)
     }
     
+    func test_messageListView_snapshot() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let messageListView = makeMessageListView(channelConfig: channelConfig)
+            .applyDefaultSize()
+        
+        // When
+        let snapshotCreator = DefaultSnapshotCreator()
+        let viewController = UIHostingController(rootView: messageListView)
+        let snapshot = snapshotCreator.makeSnapshot(from: viewController.view)
+        let view = Image(uiImage: snapshot)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
     func test_messageListView_snapshotFallback() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
