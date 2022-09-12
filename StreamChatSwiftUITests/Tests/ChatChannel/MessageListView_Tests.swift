@@ -5,6 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import SwiftUI
 import XCTest
 
 class MessageListView_Tests: StreamChatTestCase {
@@ -57,6 +58,21 @@ class MessageListView_Tests: StreamChatTestCase {
         
         // Then
         assertSnapshot(matching: messageListView, as: .image)
+    }
+    
+    func test_messageListView_snapshotFallback() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let messageListView = makeMessageListView(channelConfig: channelConfig)
+            .applyDefaultSize()
+        
+        // When
+        let snapshotCreator = DefaultSnapshotCreator()
+        let snapshot = snapshotCreator.makeSnapshot(for: AnyView(messageListView))
+        let view = Image(uiImage: snapshot)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
     }
     
     // MARK: - private

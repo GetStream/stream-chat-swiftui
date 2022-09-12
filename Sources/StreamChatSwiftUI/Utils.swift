@@ -23,6 +23,7 @@ public class Utils {
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
+    public var snapshotCreator: SnapshotCreator
     
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
@@ -43,6 +44,7 @@ public class Utils {
         composerConfig: ComposerConfig = ComposerConfig(),
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
+        snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
@@ -59,6 +61,7 @@ public class Utils {
         self.commandsConfig = commandsConfig
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig
+        self.snapshotCreator = snapshotCreator
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }

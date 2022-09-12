@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import SwiftUI
 import XCTest
 
 class ChatChannelViewModel_Tests: StreamChatTestCase {
@@ -93,7 +94,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let viewModel = ChatChannelViewModel(channelController: channelController)
         
         // When
-        viewModel.showReactionOverlay()
+        viewModel.showReactionOverlay(for: AnyView(EmptyView()))
         
         // Then
         XCTAssert(viewModel.currentSnapshot != nil)

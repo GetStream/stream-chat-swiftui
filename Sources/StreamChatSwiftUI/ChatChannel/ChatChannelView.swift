@@ -59,7 +59,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             onLongPress: { displayInfo in
                                 messageDisplayInfo = displayInfo
                                 withAnimation {
-                                    viewModel.showReactionOverlay()
+                                    viewModel.showReactionOverlay(for: AnyView(self))
                                 }
                             }
                         )

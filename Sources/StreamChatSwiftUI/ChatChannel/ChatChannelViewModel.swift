@@ -225,19 +225,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkHeaderType()
     }
 
-    public func showReactionOverlay() {
-        guard let view: UIView = topVC()?.view else {
-            currentSnapshot = images.snapshot
-            return
-        }
-        UIGraphicsBeginImageContext(view.frame.size)
-        if let currentGraphicsContext = UIGraphicsGetCurrentContext() {
-            view.layer.render(in: currentGraphicsContext)
-            currentSnapshot = UIGraphicsGetImageFromCurrentImageContext()
-        } else {
-            currentSnapshot = images.snapshot
-        }
-        UIGraphicsEndImageContext()
+    public func showReactionOverlay(for view: AnyView) {
+        currentSnapshot = utils.snapshotCreator.makeSnapshot(for: view)
     }
     
     public func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
