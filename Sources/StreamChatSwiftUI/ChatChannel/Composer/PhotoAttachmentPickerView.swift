@@ -7,6 +7,7 @@ import SwiftUI
 
 /// View for the photo attachment picker.
 public struct PhotoAttachmentPickerView: View {
+    
     @Injected(\.colors) private var colors
     
     @StateObject var assetLoader = PhotoAssetLoader()
@@ -16,6 +17,16 @@ public struct PhotoAttachmentPickerView: View {
     var imageSelected: (String) -> Bool
     
     let columns = [GridItem(.adaptive(minimum: 120), spacing: 2)]
+    
+    public init(
+        assets: PHFetchResultCollection,
+        onImageTap: @escaping (AddedAsset) -> Void,
+        imageSelected: @escaping (String) -> Bool
+    ) {
+        self.assets = assets
+        self.onImageTap = onImageTap
+        self.imageSelected = imageSelected
+    }
     
     public var body: some View {
         ScrollView {
