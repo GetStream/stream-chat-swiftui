@@ -39,6 +39,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     private var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
+    private var triggerKeyboardAppearance = false
     
     public var displayedParticipants: [ParticipantInfo] {
         if channel.isDirectMessageChannel,
@@ -107,6 +108,12 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
                 onlineInfoText: onlineInfo(for: member)
             )
         }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(saveKeyboardReappearance),
+            name: NSNotification.Name(keyboardShouldReappear),
+            object: nil
+        )
     }
     
     public func onlineInfo(for user: ChatUser) -> String {
@@ -191,6 +198,11 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     
     // MARK: - private
     
+    @objc
+    private func saveKeyboardReappearance() {
+        triggerKeyboardAppearance = true
+    }
+    
     private func removeUserFromConversation(completion: @escaping () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
@@ -238,5 +250,11 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     
     private var lastSeenDateFormatter: (Date) -> String? {
         DateUtils.timeAgo
+    }
+    
+    deinit {
+        if triggerKeyboardAppearance {
+            becomeFirstResponder()
+        }
     }
 }

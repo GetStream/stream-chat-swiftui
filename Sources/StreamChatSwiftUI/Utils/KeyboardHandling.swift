@@ -91,10 +91,15 @@ func resignFirstResponder() {
 }
 
 public let getStreamFirstResponderNotification = "io.getstream.inputView.becomeFirstResponder"
+public let keyboardShouldReappear = "io.getstream.inputView.keyboardReappear"
 
 func becomeFirstResponder() {
+    postNotification(with: getStreamFirstResponderNotification)
+}
+
+func postNotification(with name: String) {
     NotificationCenter.default.post(
-        name: NSNotification.Name(getStreamFirstResponderNotification),
+        name: NSNotification.Name(name),
         object: nil
     )
 }

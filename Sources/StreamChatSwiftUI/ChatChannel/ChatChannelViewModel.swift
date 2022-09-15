@@ -37,6 +37,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
+    private var triggerKeyboardAppearance = false
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -142,6 +143,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
                 object: nil
             )
+        } else {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(saveKeyboardReappearance),
+                name: NSNotification.Name(keyboardShouldReappear),
+                object: nil
+            )
         }
                 
         channelName = channel?.name ?? ""
@@ -160,6 +168,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func didReceiveMemoryWarning() {
         Nuke.ImageCache.shared.removeAll()
         messageCachingUtils.clearCache()
+    }
+    
+    @objc
+    private func saveKeyboardReappearance() {
+        triggerKeyboardAppearance = true
     }
     
     public func scrollToLastMessage() {
@@ -488,6 +501,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
             Nuke.ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+        } else if triggerKeyboardAppearance {
+            becomeFirstResponder()
         }
     }
 }

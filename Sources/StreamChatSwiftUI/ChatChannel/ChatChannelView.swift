@@ -18,7 +18,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var keyboardShown = false
     @State private var tabBarAvailable: Bool = false
     @State private var keyboardDismissDate: Date?
-    @State private var onDisappearDate: Date?
     
     private var factory: Factory
             
@@ -149,13 +148,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         })
         .onAppear {
             viewModel.onViewAppear()
-            checkKeyboardAppearance()
             if utils.messageListConfig.becomesFirstResponderOnOpen {
                 keyboardShown = true
             }
         }
         .onDisappear {
-            onDisappearDate = Date()
+            checkKeyboardAppearance()
             viewModel.onViewDissappear()
         }
         .onChange(of: presentationMode.wrappedValue, perform: { newValue in
@@ -191,19 +189,16 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     
     private func checkKeyboardAppearance() {
         guard !viewModel.isMessageThread,
-              let keyboardDismissDate = keyboardDismissDate,
-              let onDisappearDate = onDisappearDate else {
+              let keyboardDismissDate = keyboardDismissDate else {
             return
         }
-        let distance = abs(onDisappearDate.timeIntervalSince(keyboardDismissDate))
+        let distance = abs(Date().timeIntervalSince(keyboardDismissDate))
         if distance < 1 {
-            let interval: TimeInterval = viewModel.threadMessage != nil ? 0.5 : 0
-            DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
-                becomeFirstResponder()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                postNotification(with: keyboardShouldReappear)
             }
         }
         self.keyboardDismissDate = nil
-        self.onDisappearDate = nil
     }
 }
 
