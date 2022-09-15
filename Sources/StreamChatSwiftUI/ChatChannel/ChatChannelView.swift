@@ -11,7 +11,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
     
     @StateObject private var viewModel: ChatChannelViewModel
-    
+    let becomesFirstResponderOnOpen: Bool?
+
     @Environment(\.presentationMode) var presentationMode
     
     @State private var messageDisplayInfo: MessageDisplayInfo?
@@ -25,7 +26,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         viewModel: ChatChannelViewModel? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
-        scrollToMessage: ChatMessage? = nil
+        scrollToMessage: ChatMessage? = nil,
+        becomesFirstResponderOnOpen: Bool? = nil
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeChannelViewModel(
@@ -35,6 +37,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
         factory = viewFactory
+        self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
     }
     
     public var body: some View {
@@ -144,7 +147,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         })
         .onAppear {
             viewModel.onViewAppear()
-            if utils.messageListConfig.becomesFirstResponderOnOpen {
+            if becomesFirstResponderOnOpen ?? utils.messageListConfig.becomesFirstResponderOnOpen {
                 keyboardShown = true
             }
         }
