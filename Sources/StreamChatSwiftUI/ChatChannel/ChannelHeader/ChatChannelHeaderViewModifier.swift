@@ -36,10 +36,16 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     
     public var channel: ChatChannel
     public var headerImage: UIImage
+    @Binding public var isActive: Bool
     
-    public init(channel: ChatChannel, headerImage: UIImage) {
+    public init(
+        channel: ChatChannel,
+        headerImage: UIImage,
+        isActive: Binding<Bool>
+    ) {
         self.channel = channel
         self.headerImage = headerImage
+        _isActive = isActive
     }
     
     public var body: some ToolbarContent {
@@ -54,13 +60,22 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         
         ToolbarItem(placement: .navigationBarTrailing) {
             ZStack {
-                NavigationLink(destination: LazyView(ChatChannelInfoView(channel: channel, shownFromMessageList: true))) {
+                Button {
+                    resignFirstResponder()
+                    isActive = true
+                } label: {
                     Rectangle()
                         .fill(Color(colors.background))
                         .contentShape(Rectangle())
                         .frame(width: 36, height: 36)
                         .clipShape(Circle())
                         .offset(x: 8)
+                }
+
+                NavigationLink(isActive: $isActive) {
+                    LazyView(ChatChannelInfoView(channel: channel, shownFromMessageList: true))
+                } label: {
+                    EmptyView()
                 }
                 
                 ChannelAvatarView(
@@ -79,6 +94,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
 /// The default header modifier.
 public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
+    @State private var isActive: Bool = false
     
     public var channel: ChatChannel
     
@@ -86,7 +102,8 @@ public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
         content.toolbar {
             DefaultChatChannelHeader(
                 channel: channel,
-                headerImage: channelHeaderLoader.image(for: channel)
+                headerImage: channelHeaderLoader.image(for: channel),
+                isActive: $isActive
             )
         }
     }
