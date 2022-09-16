@@ -35,7 +35,7 @@ class ChatChannelHeader_Tests: StreamChatTestCase {
             Text("Test")
                 .applyDefaultSize()
                 .toolbar {
-                    DefaultChatChannelHeader(channel: channel, headerImage: .circleImage)
+                    DefaultChatChannelHeader(channel: channel, headerImage: .circleImage, isActive: .constant(false))
                 }
         }
         .applyDefaultSize()
