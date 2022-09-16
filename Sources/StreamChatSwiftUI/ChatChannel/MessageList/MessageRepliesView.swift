@@ -30,6 +30,8 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     
     public var body: some View {
         Button {
+            // NOTE: Needed because of a bug in iOS 16.
+            resignFirstResponder()
             // NOTE: this is used to avoid breaking changes.
             // Will be updated in a major release.
             NotificationCenter.default.post(
