@@ -95,6 +95,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         messageController: viewModel.messageController,
                         quotedMessage: $viewModel.quotedMessage,
                         editedMessage: $viewModel.editedMessage,
+                        becomesFirstResponderOnOpen: becomesFirstResponderOnOpen,
                         onMessageSent: viewModel.scrollToLastMessage
                     )
                     .opacity((

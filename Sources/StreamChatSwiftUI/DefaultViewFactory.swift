@@ -468,6 +468,7 @@ extension ViewFactory {
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
+        becomesFirstResponderOnOpen: Bool?,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerView<Self> {
         MessageComposerView(
@@ -476,6 +477,7 @@ extension ViewFactory {
             messageController: messageController,
             quotedMessage: quotedMessage,
             editedMessage: editedMessage,
+            becomesFirstResponderOnOpen: becomesFirstResponderOnOpen,
             onMessageSent: onMessageSent
         )
     }
@@ -504,7 +506,8 @@ extension ViewFactory {
         cooldownDuration: Int,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping (String) -> Void
+        removeAttachmentWithId: @escaping (String) -> Void,
+        becomesFirstResponderOnOpen: Bool?
     ) -> some View {
         if shouldScroll {
             ScrollView {
@@ -520,7 +523,8 @@ extension ViewFactory {
                     maxMessageLength: maxMessageLength,
                     cooldownDuration: cooldownDuration,
                     onCustomAttachmentTap: onCustomAttachmentTap,
-                    removeAttachmentWithId: removeAttachmentWithId
+                    removeAttachmentWithId: removeAttachmentWithId,
+                    becomesFirstResponderOnOpen: becomesFirstResponderOnOpen
                 )
             }
             .frame(height: 240)
@@ -537,7 +541,8 @@ extension ViewFactory {
                 maxMessageLength: maxMessageLength,
                 cooldownDuration: cooldownDuration,
                 onCustomAttachmentTap: onCustomAttachmentTap,
-                removeAttachmentWithId: removeAttachmentWithId
+                removeAttachmentWithId: removeAttachmentWithId,
+                becomesFirstResponderOnOpen: becomesFirstResponderOnOpen
             )
         }
     }

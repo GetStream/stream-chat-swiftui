@@ -493,6 +493,7 @@ public protocol ViewFactory: AnyObject {
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
+        becomesFirstResponderOnOpen: Bool?,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerViewType
     
@@ -534,7 +535,8 @@ public protocol ViewFactory: AnyObject {
         cooldownDuration: Int,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping (String) -> Void
+        removeAttachmentWithId: @escaping (String) -> Void,
+        becomesFirstResponderOnOpen: Bool?
     ) -> ComposerInputViewType
     
     associatedtype TrailingComposerViewType: View

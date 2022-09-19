@@ -28,6 +28,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
+        becomesFirstResponderOnOpen: Bool?,
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
@@ -40,11 +41,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         )
         _quotedMessage = quotedMessage
         _editedMessage = editedMessage
+        self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
         self.onMessageSent = onMessageSent
     }
     
     @StateObject var viewModel: MessageComposerViewModel
-        
+
+    var becomesFirstResponderOnOpen: Bool?
     var onMessageSent: () -> Void
     
     public var body: some View {
@@ -79,7 +82,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     cooldownDuration: viewModel.cooldownDuration,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     shouldScroll: viewModel.inputComposerShouldScroll,
-                    removeAttachmentWithId: viewModel.removeAttachment(with:)
+                    removeAttachmentWithId: viewModel.removeAttachment(with:),
+                    becomesFirstResponderOnOpen: becomesFirstResponderOnOpen
                 )
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
                     Alert(
@@ -209,7 +213,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var cooldownDuration: Int
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
-    
+    var becomesFirstResponderOnOpen: Bool?
+
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
     
     public init(
@@ -224,7 +229,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
-        removeAttachmentWithId: @escaping (String) -> Void
+        removeAttachmentWithId: @escaping (String) -> Void,
+        becomesFirstResponderOnOpen: Bool?
     ) {
         self.factory = factory
         _text = text
@@ -238,6 +244,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         self.cooldownDuration = cooldownDuration
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.removeAttachmentWithId = removeAttachmentWithId
+        self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
     }
     
     var textFieldHeight: CGFloat {
@@ -317,7 +324,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : L10n.Composer.Placeholder.message,
                     editable: !isInCooldown,
                     maxMessageLength: maxMessageLength,
-                    currentHeight: textFieldHeight
+                    currentHeight: textFieldHeight,
+                    becomesFirstResponderOnOpen: becomesFirstResponderOnOpen
                 )
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)

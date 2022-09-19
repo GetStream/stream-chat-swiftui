@@ -18,7 +18,8 @@ struct ComposerTextInputView: UIViewRepresentable {
     var editable: Bool
     var maxMessageLength: Int?
     var currentHeight: CGFloat
-    
+    var becomesFirstResponderOnOpen: Bool?
+
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView = InputTextView()
         context.coordinator.textView = inputTextView
@@ -29,7 +30,7 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.contentInsetAdjustmentBehavior = .never
         inputTextView.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
         
-        if utils.messageListConfig.becomesFirstResponderOnOpen {
+        if becomesFirstResponderOnOpen ?? utils.messageListConfig.becomesFirstResponderOnOpen {
             inputTextView.becomeFirstResponder()
         }
         
