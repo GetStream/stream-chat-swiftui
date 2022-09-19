@@ -91,7 +91,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
     }
 }
 
-extension PHAsset {
+public extension PHAsset {
     /// Return a formatted duration string of an asset.
     var durationString: String {
         let minutes = Int(duration / 60)
@@ -124,6 +124,10 @@ public struct PHFetchResultCollection: RandomAccessCollection, Equatable {
 
     public var endIndex: Int { fetchResult.count }
     public var startIndex: Int { 0 }
+
+    public init(fetchResult: PHFetchResult<PHAsset>) {
+        self.fetchResult = fetchResult
+    }
 
     public subscript(position: Int) -> PHAsset {
         fetchResult.object(at: position)

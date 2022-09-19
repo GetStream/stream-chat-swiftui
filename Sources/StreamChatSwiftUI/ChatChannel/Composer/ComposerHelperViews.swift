@@ -6,34 +6,42 @@ import StreamChat
 import SwiftUI
 
 /// View used to indicate that an asset is a video.
-struct VideoIndicatorView: View {
+public struct VideoIndicatorView: View {
     
     @Injected(\.images) private var images
-    
-    var body: some View {
+
+    public init() {}
+
+    public var body: some View {
         BottomLeftView {
             Image(uiImage: images.videoIndicator)
                 .customizable()
                 .frame(width: 22)
                 .padding(2)
                 .applyDefaultIconOverlayStyle()
+                .modifier(ShadowModifier())
         }
     }
 }
 
 /// View displaying the duration of the video.
-struct VideoDurationIndicatorView: View {
+public struct VideoDurationIndicatorView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
     var duration: String
-    
-    var body: some View {
+
+    public init(duration: String) {
+        self.duration = duration
+    }
+
+    public var body: some View {
         BottomRightView {
             Text(duration)
                 .foregroundColor(Color(colors.staticColorText))
                 .font(fonts.footnoteBold)
                 .padding(.all, 4)
+                .modifier(ShadowModifier())
         }
     }
 }

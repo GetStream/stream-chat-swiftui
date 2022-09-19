@@ -64,7 +64,11 @@ public struct BottomRightView<Content: View>: View {
 /// View container that allows injecting another view in its bottom left corner.
 public struct BottomLeftView<Content: View>: View {
     var content: () -> Content
-    
+
+    public init(content: @escaping () -> Content) {
+        self.content = content
+    }
+
     public var body: some View {
         HStack {
             VStack {
