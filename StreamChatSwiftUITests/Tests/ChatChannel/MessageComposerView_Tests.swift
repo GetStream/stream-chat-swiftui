@@ -235,4 +235,24 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         XCTAssert(newRequestId == nil)
     }
+    
+    func test_videoIndicatorView_snapshot() {
+        // Given
+        let view = VideoIndicatorView()
+            .frame(width: 100, height: 100)
+            .background(.black)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_videoDurationIndicatorView_snapshot() {
+        // Given
+        let view = VideoDurationIndicatorView(duration: "02:54")
+            .frame(width: 100, height: 100)
+            .background(.black)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

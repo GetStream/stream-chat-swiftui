@@ -157,6 +157,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     : nil
                             )
                             .flippedUpsideDown()
+                            .animation(nil, value: messageDate != nil)
                         }
                         .id(listId)
                     }
