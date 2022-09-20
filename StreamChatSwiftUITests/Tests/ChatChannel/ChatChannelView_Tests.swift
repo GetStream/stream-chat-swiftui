@@ -109,4 +109,17 @@ class ChatChannelView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_defaultChannelHeader_snapshot() {
+        // Given
+        let modifier = DefaultChannelHeaderModifier(channel: .mockDMChannel(name: "Test"))
+        let view = NavigationView {
+            Text("Test")
+                .modifier(modifier)
+        }
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
