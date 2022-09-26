@@ -112,10 +112,16 @@ class ChatChannelView_Tests: StreamChatTestCase {
     
     func test_defaultChannelHeader_snapshot() {
         // Given
-        let modifier = DefaultChannelHeaderModifier(channel: .mockDMChannel(name: "Test"))
+        let header = DefaultChatChannelHeader(
+            channel: .mockDMChannel(name: "Test"),
+            headerImage: UIImage(systemName: "person")!,
+            isActive: .constant(false)
+        )
         let view = NavigationView {
             Text("Test")
-                .modifier(modifier)
+                .toolbar {
+                    header
+                }
         }
         .applyDefaultSize()
         

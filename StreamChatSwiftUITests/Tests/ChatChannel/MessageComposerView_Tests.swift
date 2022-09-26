@@ -255,4 +255,17 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_photosPickerView_snapshot() {
+        // Given
+        let view = PhotoAttachmentPickerView(
+            assets: .init(fetchResult: .init()),
+            onImageTap: { _ in },
+            imageSelected: { _ in true }
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Configuration for stack based navigation for iPads
 - Customization of the reactions background
 - Possibility to add custom snapshot generation logic
+- Configuration for composer input field max height
 
 ### 🐞 Fixed
 - iOS 16 keyboard insets issue on pushed screen

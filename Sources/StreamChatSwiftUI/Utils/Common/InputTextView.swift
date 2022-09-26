@@ -11,7 +11,10 @@ struct TextSizeConstants {
         composerConfig.inputViewMinHeight
     }
 
-    static let maximumHeight: CGFloat = 76
+    static var maximumHeight: CGFloat {
+        composerConfig.inputViewMaxHeight
+    }
+
     static var minThreshold: CGFloat {
         composerConfig.inputViewMinHeight
     }
