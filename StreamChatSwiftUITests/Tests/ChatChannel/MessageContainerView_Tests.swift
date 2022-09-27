@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import SwiftUI
 import XCTest
 
 class MessageContainerView_Tests: StreamChatTestCase {
@@ -25,8 +26,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isSentByCurrentUser: true
         )
         
+        // When
+        let view = testMessageViewContainer(message: message)
+        
         // Then
-        testMessageViewContainerSnapshot(message: message)
+        assertSnapshot(matching: view, as: .image)
     }
     
     func test_messageContainerViewSentOtherUser_snapshot() {
@@ -38,8 +42,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
             author: .mock(id: .unique, name: "Martin")
         )
         
+        // When
+        let view = testMessageViewContainer(message: message)
+        
         // Then
-        testMessageViewContainerSnapshot(message: message)
+        assertSnapshot(matching: view, as: .image)
     }
 
     func test_messageContainerViewPinned_snapshot() {
@@ -56,8 +63,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
             )
         )
         
+        // When
+        let view = testMessageViewContainer(message: message)
+        
         // Then
-        testMessageViewContainerSnapshot(message: message)
+        assertSnapshot(matching: view, as: .image)
     }
     
     func test_videoAttachment_snapshotNoText() {
@@ -158,9 +168,8 @@ class MessageContainerView_Tests: StreamChatTestCase {
     
     // MARK: - private
     
-    func testMessageViewContainerSnapshot(message: ChatMessage) {
-        // When
-        let view = MessageContainerView(
+    func testMessageViewContainer(message: ChatMessage) -> some View {
+        MessageContainerView(
             factory: DefaultViewFactory.shared,
             channel: .mockDMChannel(),
             message: message,
@@ -173,8 +182,5 @@ class MessageContainerView_Tests: StreamChatTestCase {
             onLongPress: { _ in }
         )
         .frame(width: 375, height: 200)
-        
-        // Then
-        assertSnapshot(matching: view, as: .image)
     }
 }
