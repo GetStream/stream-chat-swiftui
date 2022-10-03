@@ -97,7 +97,7 @@ struct LazyGiphyView: View {
     let width: CGFloat
     
     var body: some View {
-        LazyImage(source: source) { state in
+        LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {
                 Image(imageContainer)
             } else if state.error != nil {

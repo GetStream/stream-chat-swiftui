@@ -110,7 +110,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                         )
                     } else if !quotedMessage.linkAttachments.isEmpty {
                         LazyImage(
-                            source: quotedMessage.linkAttachments[0].previewURL ?? quotedMessage.linkAttachments[0]
+                            imageURL: quotedMessage.linkAttachments[0].previewURL ?? quotedMessage.linkAttachments[0]
                                 .originalURL
                         )
                         .onDisappear(.cancel)

@@ -51,6 +51,9 @@
 		84289BEB2807239B00282ABE /* MediaAttachmentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84289BEA2807239B00282ABE /* MediaAttachmentsViewModel.swift */; };
 		84289BED2807244E00282ABE /* FileAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84289BEC2807244E00282ABE /* FileAttachmentsView.swift */; };
 		84289BEF2807246E00282ABE /* FileAttachmentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84289BEE2807246E00282ABE /* FileAttachmentsViewModel.swift */; };
+		842ADEA428EADC6600F2BE36 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 842ADEA328EADC6600F2BE36 /* Nuke */; };
+		842ADEA628EADC6600F2BE36 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 842ADEA528EADC6600F2BE36 /* NukeUI */; };
+		842ADEA928EB018C00F2BE36 /* LazyImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */; };
 		842F036D288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F036C288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
@@ -66,7 +69,6 @@
 		84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84507C99281ACCD70081DDC2 /* AddUsersView_Tests.swift */; };
 		8463D9262836617F002B1894 /* ChannelListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8463D9252836617F002B1894 /* ChannelListPage.swift */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
-		8465FCB727468B0600AF091E /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8465FCB627468B0600AF091E /* NukeUI */; };
 		8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */; };
 		8465FCC327468B6A00AF091E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCC227468B6A00AF091E /* Assets.xcassets */; };
 		8465FCC627468B6A00AF091E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCC527468B6A00AF091E /* Preview Assets.xcassets */; };
@@ -443,6 +445,7 @@
 		84289BEA2807239B00282ABE /* MediaAttachmentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAttachmentsViewModel.swift; sourceTree = "<group>"; };
 		84289BEC2807244E00282ABE /* FileAttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAttachmentsView.swift; sourceTree = "<group>"; };
 		84289BEE2807246E00282ABE /* FileAttachmentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAttachmentsViewModel.swift; sourceTree = "<group>"; };
+		842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyImageExtensions.swift; sourceTree = "<group>"; };
 		842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUI.xctestplan; sourceTree = "<group>"; };
 		842F036C288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage_AdjustedText_Tests.swift; sourceTree = "<group>"; };
 		842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedMessageView_Tests.swift; sourceTree = "<group>"; };
@@ -757,8 +760,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				842ADEA628EADC6600F2BE36 /* NukeUI in Frameworks */,
 				84E95A77284A486600699FD3 /* StreamChat in Frameworks */,
-				8465FCB727468B0600AF091E /* NukeUI in Frameworks */,
+				842ADEA428EADC6600F2BE36 /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1179,6 +1183,7 @@
 				841B64C92775BBC10016FF3B /* Errors.swift */,
 				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
 				84733EC527FDBF82006926E0 /* NetworkReachability.swift */,
+				842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */,
 				8465FD382746A95600AF091E /* Common */,
 			);
 			path = Utils;
@@ -1572,8 +1577,9 @@
 			);
 			name = StreamChatSwiftUI;
 			packageProductDependencies = (
-				8465FCB627468B0600AF091E /* NukeUI */,
 				84E95A76284A486600699FD3 /* StreamChat */,
+				842ADEA328EADC6600F2BE36 /* Nuke */,
+				842ADEA528EADC6600F2BE36 /* NukeUI */,
 			);
 			productName = StreamChatSwiftUI;
 			productReference = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */;
@@ -1664,12 +1670,12 @@
 			);
 			mainGroup = 8465FBAB2746873A00AF091E;
 			packageReferences = (
-				8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */,
 				848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				A3571601283E9D9F0014E3B0 /* XCRemoteSwiftPackageReference "swifter" */,
 				84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
+				842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = 8465FBB62746873A00AF091E /* Products */;
 			projectDirPath = "";
@@ -1914,6 +1920,7 @@
 				8465FDA12746A95700AF091E /* ChatChannelHeaderViewModifier.swift in Sources */,
 				84F2908A276B90610045472D /* GalleryView.swift in Sources */,
 				8465FDA02746A95700AF091E /* ChatChannelView.swift in Sources */,
+				842ADEA928EB018C00F2BE36 /* LazyImageExtensions.swift in Sources */,
 				84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */,
 				8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */,
 				8465FD802746A95700AF091E /* WebView.swift in Sources */,
@@ -2620,20 +2627,20 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = exactVersion;
+				version = 11.3.0;
+			};
+		};
 		8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = exactVersion;
 				version = 4.10.1;
-			};
-		};
-		8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kean/NukeUI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.7.0;
 			};
 		};
 		848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
@@ -2676,9 +2683,14 @@
 			package = 8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
 			productName = OHHTTPStubs;
 		};
-		8465FCB627468B0600AF091E /* NukeUI */ = {
+		842ADEA328EADC6600F2BE36 /* Nuke */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8465FCB527468B0600AF091E /* XCRemoteSwiftPackageReference "NukeUI" */;
+			package = 842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		842ADEA528EADC6600F2BE36 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeUI;
 		};
 		8465FCE32746954F00AF091E /* StreamChat */ = {
