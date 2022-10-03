@@ -63,41 +63,19 @@ public struct MessageBubbleModifier: ViewModifier {
         content
             .modifier(
                 BubbleModifier(
-                    corners: corners,
-                    backgroundColors: background,
+                    corners: message.bubbleCorners(
+                        isFirst: isFirst,
+                        forceLeftToRight: forceLeftToRight
+                    ),
+                    backgroundColors: message.bubbleBackground(
+                        colors: colors,
+                        injectedBackgroundColor: injectedBackgroundColor
+                    ),
                     cornerRadius: cornerRadius
                 )
             )
             .padding(.top, topPadding)
             .padding(.bottom, bottomPadding)
-    }
-    
-    private var corners: UIRectCorner {
-        if !isFirst {
-            return [.topLeft, .topRight, .bottomLeft, .bottomRight]
-        }
-        
-        if message.isSentByCurrentUser && !forceLeftToRight {
-            return [.topLeft, .topRight, .bottomLeft]
-        } else {
-            return [.topLeft, .topRight, .bottomRight]
-        }
-    }
-    
-    private var background: [Color] {
-        if let injectedBackgroundColor = injectedBackgroundColor {
-            return [Color(injectedBackgroundColor)]
-        }
-        var colors = colors
-        if message.isSentByCurrentUser {
-            if message.type == .ephemeral {
-                return colors.messageCurrentUserEmphemeralBackground.map { Color($0) }
-            } else {
-                return colors.messageCurrentUserBackground.map { Color($0) }
-            }
-        } else {
-            return colors.messageOtherUserBackground.map { Color($0) }
-        }
     }
 }
 
@@ -210,5 +188,46 @@ extension View {
                 borderColor: borderColor
             )
         )
+    }
+}
+
+extension ChatMessage {
+    
+    /// Returns the default corners that will be rounded by the message bubble modifier.
+    /// - Parameters:
+    ///  - isFirst: whether the message is first.
+    ///  - forceLeftToRight: whether left to right should be forced.
+    /// - Returns: the corners to be rounded in the message cell.
+    public func bubbleCorners(isFirst: Bool, forceLeftToRight: Bool) -> UIRectCorner {
+        if !isFirst {
+            return [.topLeft, .topRight, .bottomLeft, .bottomRight]
+        }
+        
+        if isSentByCurrentUser && !forceLeftToRight {
+            return [.topLeft, .topRight, .bottomLeft]
+        } else {
+            return [.topLeft, .topRight, .bottomRight]
+        }
+    }
+    
+    /// Returns the bubble background(s) for a given message.
+    /// - Parameters:
+    ///  - colors: The color pallete.
+    ///  - injectedBackgroundColor: If you need a custom background color injected.
+    /// - Returns: The background colors (can be many for gradients) for the message cell.
+    public func bubbleBackground(colors: ColorPalette, injectedBackgroundColor: UIColor? = nil) -> [Color] {
+        if let injectedBackgroundColor = injectedBackgroundColor {
+            return [Color(injectedBackgroundColor)]
+        }
+        var colors = colors
+        if isSentByCurrentUser {
+            if type == .ephemeral {
+                return colors.messageCurrentUserEmphemeralBackground.map { Color($0) }
+            } else {
+                return colors.messageCurrentUserBackground.map { Color($0) }
+            }
+        } else {
+            return colors.messageOtherUserBackground.map { Color($0) }
+        }
     }
 }
