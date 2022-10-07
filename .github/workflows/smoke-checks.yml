@@ -49,21 +49,20 @@ jobs:
     - uses: ./.github/actions/bootstrap
       env:
         INSTALL_SONAR: true
-    - name: Prepare iPhone 12 with iOS 15.4
-      uses: ./.github/actions/prepare-ios-simulator
-      with:
-        device: "iPhone 12"
-        ios: "15.4"
-        xcode: "13.3.1"
-    - name: Run Tests (Debug)
-      run: bundle exec fastlane test_ui device:"iPhone 12 (15.4)"
+    - name: Run UI Tests (Debug)
+      run: bundle exec fastlane test_ui device:"iPhone 12 Pro (16.0)"
+      timeout-minutes: 30
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_EVENT: ${{ toJson(github.event) }}
-    - uses: test-summary/action@v1
-      with:
-        paths: fastlane/test_output/report.junit
+    - uses: actions/upload-artifact@v3
       if: failure()
+      with:
+        name: snapshots
+        path: |
+          StreamChatSwiftUITests/Tests/ChatChannel/
+          StreamChatSwiftUITests/Tests/ChatChannelList/
+
     - name: Get branch name
       id: get_branch_name
       run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"

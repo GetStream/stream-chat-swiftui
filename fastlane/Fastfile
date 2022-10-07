@@ -6,12 +6,14 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
+xcode_version = ENV['XCODE_VERSION'] || '14.0.1'
 # The number of times the stress test suite is ran
 stress_tests_cycles = 50
 
 before_all do
   if is_ci
-    setup_ci()
+    setup_ci
+    xcversion(version: "~> #{xcode_version}")
   end
 end
 
@@ -143,6 +145,8 @@ desc "Runs tests in Debug config"
 lane :test_ui do |options|
   next unless testing_required?(:ui)
 
+  remove_snapshots if options[:record]
+
   add_ci_env_var_to('../StreamChatSwiftUITests/Tests/StreamChatSwiftUI.xctestplan')
 
   scan(
@@ -241,6 +245,11 @@ lane :cocoapods_integration do
     clean: true,
     destination: "generic/platform=iOS Simulator"
   )
+end
+
+desc 'Remove UI snapshots'
+private_lane :remove_snapshots do
+  Dir.glob("../StreamChatSwiftUITests/**/__Snapshots__/**/*.png").select { |file| File.delete(file) }
 end
 
 def testing_required?(type)
