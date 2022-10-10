@@ -384,13 +384,13 @@ public struct DateIndicatorView: View {
     }
 }
 
-struct TypingIndicatorBottomView: View {
+public struct TypingIndicatorBottomView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
     var typingIndicatorString: String
     
-    var body: some View {
+    public var body: some View {
         VStack {
             Spacer()
             HStack {

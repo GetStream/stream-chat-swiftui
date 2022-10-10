@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// Container showing the quoted message view with the user avatar.
-struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
+public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
     
     @Injected(\.utils) private var utils
     
@@ -20,7 +20,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
     var forceLeftToRight = false
     @Binding var scrolledId: String?
     
-    var body: some View {
+    public var body: some View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
                 factory.makeQuotedMessageAvatarView(

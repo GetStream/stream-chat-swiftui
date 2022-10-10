@@ -6,12 +6,12 @@ import StreamChat
 import SwiftUI
 
 /// Default implementation of the commands container.
-struct CommandsContainerView: View {
+public struct CommandsContainerView: View {
     
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
     
-    var body: some View {
+    public var body: some View {
         ZStack {
             if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
                 MentionUsersView(

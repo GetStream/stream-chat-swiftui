@@ -80,7 +80,7 @@ public struct ChatTitleView: View {
     }
 }
 
-struct EmptyViewModifier: ViewModifier {
+public struct EmptyViewModifier: ViewModifier {
     
     public func body(content: Content) -> some View {
         content

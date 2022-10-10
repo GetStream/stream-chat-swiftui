@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View displaying users who have reacted to a message.
-struct ReactionsUsersView: View {
+public struct ReactionsUsersView: View {
     
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -30,7 +30,7 @@ struct ReactionsUsersView: View {
         Array(message.latestReactions)
     }
     
-    var body: some View {
+    public var body: some View {
         HStack {
             if message.isSentByCurrentUser {
                 Spacer()

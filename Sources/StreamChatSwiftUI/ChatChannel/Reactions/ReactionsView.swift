@@ -5,13 +5,13 @@
 import StreamChat
 import SwiftUI
 
-struct ReactionsContainer: View {
+public struct ReactionsContainer: View {
     let message: ChatMessage
     var useLargeIcons = false
     var onTapGesture: () -> Void
     var onLongPressGesture: () -> Void
     
-    var body: some View {
+    public var body: some View {
         VStack {
             ReactionsHStack(message: message) {
                 ReactionsView(

@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Search bar used in the message search.
-struct SearchBar: View, KeyboardReadable {
+public struct SearchBar: View, KeyboardReadable {
     
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -14,7 +14,7 @@ struct SearchBar: View, KeyboardReadable {
     @Binding var text: String
     @State private var isEditing = false
         
-    var body: some View {
+    public var body: some View {
         HStack {
             TextField(L10n.Message.Search.title, text: $text)
                 .padding(8)

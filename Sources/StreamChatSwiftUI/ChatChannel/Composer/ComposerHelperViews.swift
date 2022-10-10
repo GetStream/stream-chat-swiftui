@@ -71,14 +71,14 @@ public struct AttachmentTypeContainer<Content: View>: View {
 }
 
 /// View shown after the native file picker is closed.
-struct FilePickerDisplayView: View {
+public struct FilePickerDisplayView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
     @Binding var filePickerShown: Bool
     @Binding var addedFileURLs: [URL]
     
-    var body: some View {
+    public var body: some View {
         AttachmentTypeContainer {
             ZStack {
                 Button {
@@ -98,13 +98,13 @@ struct FilePickerDisplayView: View {
 }
 
 /// View displayed when the camera picker is shown.
-struct CameraPickerDisplayView: View {
+public struct CameraPickerDisplayView: View {
     @Binding var selectedPickerState: AttachmentPickerState
     @Binding var cameraPickerShown: Bool
     
     var cameraImageAdded: (AddedAsset) -> Void
     
-    var body: some View {
+    public var body: some View {
         Spacer()
             .fullScreenCover(isPresented: $cameraPickerShown, onDismiss: {
                 selectedPickerState = .photos
@@ -118,11 +118,11 @@ struct CameraPickerDisplayView: View {
 }
 
 /// View displayed when there's no access permission to the photo library.
-struct AssetsAccessPermissionView: View {
+public struct AssetsAccessPermissionView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .center, spacing: 8) {
             Text(L10n.Composer.Images.noAccessLibrary)
                 .font(fonts.body)
@@ -151,7 +151,7 @@ struct AssetsAccessPermissionView: View {
 }
 
 /// View for the quoted message header.
-struct QuotedMessageHeaderView: View {
+public struct QuotedMessageHeaderView: View {
     
     @Injected(\.fonts) var fonts
     
@@ -159,7 +159,7 @@ struct QuotedMessageHeaderView: View {
     
     @State var showContent = false
     
-    var body: some View {
+    public var body: some View {
         ZStack {
             if showContent {
                 Text(L10n.Composer.Title.reply)
@@ -189,13 +189,13 @@ struct QuotedMessageHeaderView: View {
 }
 
 /// View for the edit message header.
-struct EditMessageHeaderView: View {
+public struct EditMessageHeaderView: View {
     
     @Injected(\.fonts) var fonts
     
     @Binding var editedMessage: ChatMessage?
     
-    var body: some View {
+    public var body: some View {
         ZStack {
             Text(L10n.Composer.Title.edit)
                 .font(fonts.bodyBold)

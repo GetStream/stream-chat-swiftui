@@ -53,7 +53,7 @@ public struct MessageAuthorView: View {
 }
 
 /// View that displays the sending date of a message.
-struct MessageDateView: View {
+public struct MessageDateView: View {
     @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -64,7 +64,7 @@ struct MessageDateView: View {
     
     var message: ChatMessage
     
-    var body: some View {
+    public var body: some View {
         Text(dateFormatter.string(from: message.createdAt))
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
