@@ -533,7 +533,7 @@ extension ChatMessage: Identifiable {
             if localState == .sendingFailed {
                 return "failed"
             } else {
-                return "empty"
+                return localState?.rawValue ?? "empty"
             }
         }
         

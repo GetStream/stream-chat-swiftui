@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Support for custom message receipt states
+
 ### 🔄 Changed
 - Updated Nuke dependency to 11.3.0 for SPM
 - Removed NukeUI dependency for SPM (now part of Nuke)

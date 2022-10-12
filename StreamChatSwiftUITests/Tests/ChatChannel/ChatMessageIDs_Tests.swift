@@ -95,4 +95,23 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Then
         XCTAssert(messageId.contains(expectedId))
     }
+    
+    func test_chatMessage_sendingState() {
+        // Given
+        let id: String = .unique
+        let expectedId = "\(id)sending"
+        let message = ChatMessage.mock(
+            id: id,
+            cid: .unique,
+            text: "test",
+            author: .mock(id: .unique),
+            localState: .sending
+        )
+        
+        // When
+        let messageId = message.messageId
+        
+        // Then
+        XCTAssert(messageId.contains(expectedId))
+    }
 }
