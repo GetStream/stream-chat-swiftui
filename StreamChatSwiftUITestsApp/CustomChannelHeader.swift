@@ -18,6 +18,7 @@ public struct CustomChannelHeader: ToolbarContent {
     @Binding var isNewChatShown: Bool
     @Binding var logoutAlertShown: Bool
     
+    @MainActor
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title)
@@ -27,7 +28,7 @@ public struct CustomChannelHeader: ToolbarContent {
             Button {
                 logoutAlertShown = true
             } label: {
-                LazyImage(source: currentUserController.currentUser?.imageURL)
+                LazyImage(url: currentUserController.currentUser?.imageURL)
                     .onDisappear(.cancel)
                     .clipShape(Circle())
                     .frame(
