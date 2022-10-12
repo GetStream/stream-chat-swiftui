@@ -55,14 +55,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_EVENT: ${{ toJson(github.event) }}
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: snapshots
-        path: |
-          StreamChatSwiftUITests/Tests/ChatChannel/
-          StreamChatSwiftUITests/Tests/ChatChannelList/
-
     - name: Get branch name
       id: get_branch_name
       run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
