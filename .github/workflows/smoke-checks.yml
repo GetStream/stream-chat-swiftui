@@ -21,6 +21,7 @@ concurrency:
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
+  IOS_SIMULATOR_DEVICE: "iPhone 12 Pro (16.0)"
 
 jobs:
   automated-code-review:
@@ -50,7 +51,7 @@ jobs:
       env:
         INSTALL_SONAR: true
     - name: Run UI Tests (Debug)
-      run: bundle exec fastlane test_ui device:"iPhone 12 Pro (16.0)"
+      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}"
       timeout-minutes: 30
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -97,7 +98,7 @@ jobs:
         INSTALL_ALLURE: true
     - name: Run UI Tests (Debug)
       if: env.LAUNCH_ID != ''
-      run: bundle exec fastlane test_e2e_mock device:"iPhone 12 Pro" batch:'${{ matrix.batch }}'
+      run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_EVENT: ${{ toJson(github.event) }}
