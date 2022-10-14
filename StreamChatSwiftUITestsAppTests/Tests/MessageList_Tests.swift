@@ -99,25 +99,6 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
     
-    func test_deletesMessage() throws {
-        linkToScenario(withId: 262)
-        
-        let message = "test message"
-        
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends the message: '\(message)'") {
-            userRobot.sendMessage(message)
-        }
-        AND("user deletes the message: '\(message)'") {
-            userRobot.deleteMessage()
-        }
-        THEN("the message is deleted") {
-            userRobot.assertDeletedMessage()
-        }
-    }
-    
     func test_receivesMessage() throws {
         linkToScenario(withId: 254)
         
@@ -132,25 +113,6 @@ final class MessageList_Tests: StreamTestCase {
         }
         THEN("the message is delivered") {
             userRobot.assertMessageAuthor(author)
-        }
-    }
-    
-    func test_messageDeleted_whenParticipantDeletesMessage() throws {
-        linkToScenario(withId: 261)
-        
-        let message = "test message"
-        
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
-        }
-        AND("participant deletes the message: '\(message)'") {
-            participantRobot.deleteMessage()
-        }
-        THEN("the message is deleted") {
-            userRobot.assertDeletedMessage()
         }
     }
     
@@ -173,8 +135,8 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessage(editedMessage)
         }
     }
-    
-    func test_messageIncreases_whenUserEditsMessageWithOneLineText() {
+
+    func test_messageIncreases_whenUserEditsMessageWithOneLineText() throws {
         linkToScenario(withId: 267)
 
         let message = "test message"
@@ -223,23 +185,888 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
     
-    func test_typingIndicatorHidden_whenParticipantStopsTyping() {
+    func test_composerGrowthLimit() throws {
         linkToScenario(withId: 260)
+        
+        throw XCTSkip("Check out SWUI-188")
+
+        GIVEN("user opens the channel") {
+            userRobot
+                .login()
+                .openChannel()
+        }
+        THEN("user verifies that composer does not grow more than 5 lines") {
+            userRobot.assertComposerLimits(toNumberOfLines: 5)
+        }
+    }
+    
+    func test_typingIndicator() throws {
+        linkToScenario(withId: 358)
+        
+        throw XCTSkip("Check out SWUI-251")
+        
+        let isIpad = UIDevice.current.userInterfaceIdiom == .pad
+        let typingIndicatorTimeout = isIpad ? 10 : XCUIElement.waitTimeout
+        let typingEventsTimeout: Double = 3
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("participant starts typing") {
+            participantRobot.wait(typingEventsTimeout).startTyping()
+        }
+        THEN("user observes typing indicator is shown") {
+            let typingUserName = UserDetails.userName(for: participantRobot.currentUserId)
+            userRobot.assertTypingIndicatorShown(
+                typingUserName: typingUserName,
+                waitTimeout: typingIndicatorTimeout
+            )
+        }
+        WHEN("participant stops typing") {
+            participantRobot.wait(typingEventsTimeout).stopTyping()
+        }
+        THEN("user observes typing indicator has disappeared") {
+            userRobot.assertTypingIndicatorHidden(waitTimeout: typingIndicatorTimeout)
+        }
+    }
+
+    func test_messageListScrollsDown_whenMessageListIsScrolledUp_andUserSendsNewMessage() throws {
+        linkToScenario(withId: 359)
+
+        let newMessage = "New message"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 30)
+            userRobot.login().openChannel()
+        }
+        WHEN("user scrolls up") {
+            userRobot.scrollMessageListUp()
+        }
+        AND("user sends a new message") {
+            userRobot.sendMessage(newMessage, waitForAppearance: true)
+        }
+        THEN("message list is scrolled down") {
+            userRobot.assertMessageIsVisible(newMessage)
+        }
+    }
+
+    func test_messageListScrollsDown_whenMessageListIsScrolledDown_andUserReceivesNewMessage() throws {
+        linkToScenario(withId: 360)
+
+        let newMessage = "New message"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 30)
+            userRobot.login().openChannel()
+        }
+        WHEN("participant sends a message") {
+            participantRobot.sendMessage(newMessage)
+        }
+        THEN("message list is scrolled down") {
+            userRobot.assertMessageIsVisible(newMessage)
+        }
+    }
+
+    func test_messageListDoesNotScrollDown_whenMessageListIsScrolledUp_andUserReceivesNewMessage() {
+        linkToScenario(withId: 361)
+
+        let newMessage = "New message"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 30)
+            userRobot.login().openChannel()
+        }
+        WHEN("user scrolls up") {
+            userRobot.scrollMessageListUp()
+        }
+        AND("participant sends a message") {
+            participantRobot.sendMessage(newMessage)
+        }
+        THEN("message list is scrolled up") {
+            userRobot.assertMessageIsNotVisible(newMessage)
+        }
+    }
+
+    func test_messageListScrollsDown_whenUserTapsOnScrollToBottomButton() throws {
+        linkToScenario(withId: 362)
+
+        let newMessage = "New message"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 30)
+            userRobot.login().openChannel()
+        }
+        AND("user sends a new message") {
+            userRobot.sendMessage(newMessage)
+        }
+        WHEN("user scrolls up") {
+            userRobot.scrollMessageListUp()
+        }
+        AND("user taps on 'scroll to bottom' button") {
+            userRobot.tapOnScrollToBottomButton()
+        }
+        THEN("message list is scrolled down") {
+            userRobot.assertMessageIsVisible(newMessage)
+        }
+    }
+
+    func test_reloadsSkippedMessages_whenScrolledToTheBottom() throws {
+        linkToScenario(withId: 363)
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 30)
+            userRobot.login().openChannel()
+        }
+        AND("user scrolls up") {
+            userRobot.scrollMessageListUpSlow()
+        }
+        AND("participant sends some messages") {
+            participantRobot.sendMultipleMessages(repeatingText: "Some message", count: 16)
+        }
+        WHEN("user scrolls to the bottom") {
+            userRobot.tapOnScrollToBottomButton()
+        }
+        THEN("skipped messages are reloaded") {
+            userRobot.assertMessageIsVisible("Some message-16")
+        }
+    }
+
+    func test_commandsPopupDisappear_whenUserTapsOnMessageList() throws {
+        linkToScenario(withId: 364)
+        
+        throw XCTSkip("Check out SWUI-187")
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 30)
+            userRobot.login().openChannel()
+        }
+        AND("user opens command suggestions") {
+            userRobot.openComposerCommands()
+        }
+        WHEN("user taps on message list") {
+            userRobot.tapOnMessageList()
+        }
+        THEN("command suggestions disappear") {
+            userRobot.assertComposerCommands(shouldBeVisible: false)
+        }
+    }
+    
+    func test_offlineMessageInTheMessageList() throws {
+        linkToScenario(withId: 365)
+        
+        throw XCTSkip("Check out SWUI-245")
+
+        let message = "test message"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 40)
+            userRobot
+                .setConnectivitySwitchVisibility(to: .on)
+                .login()
+                .openChannel()
+        }
+        AND("user becomes offline") {
+            userRobot.setConnectivity(to: .off)
+        }
+        WHEN("participant sends a new message") {
+            participantRobot.sendMessage(message)
+        }
+        AND("user becomes online") {
+            userRobot.setConnectivity(to: .on)
+        }
+        THEN("user observes a new message from participant") {
+            userRobot.assertMessage(message)
+        }
+    }
+    
+    func test_addMessageWhileOffline() throws {
+        linkToScenario(withId: 366)
+        
+        throw XCTSkip("Check out SWUI-245")
+
+        let message = "test message"
+
+        GIVEN("user opens the channel") {
+            userRobot
+                .setIsLocalStorageEnabled(to: .on)
+                .setConnectivitySwitchVisibility(to: .on)
+                .login()
+                .openChannel()
+        }
+        AND("user becomes offline") {
+            userRobot.setConnectivity(to: .off)
+        }
+        WHEN("user sends a new message") {
+            userRobot.sendMessage(message, waitForAppearance: false)
+        }
+        THEN("error indicator is shown for the message") {
+            userRobot.assertMessageFailedToBeSent()
+        }
+        WHEN("user becomes online") {
+            userRobot.setConnectivity(to: .on)
+        }
+        THEN("new message is delivered") {
+            userRobot
+                .assertMessage(message)
+                .assertMessageDeliveryStatus(.sent, at: 0)
+        }
+    }
+    
+    func test_offlineRecoveryWithinSession() throws {
+        linkToScenario(withId: 367)
+        
+        throw XCTSkip("Check out SWUI-245")
+        
+        let message = "test message"
+
+        GIVEN("user opens the channel") {
+            userRobot
+                .setIsLocalStorageEnabled(to: .on)
+                .setStaysConnectedInBackground(to: .on)
+                .login()
+                .openChannel()
+        }
+        AND("user goes to the background") {
+            deviceRobot.moveApplication(to: .background)
+        }
+        WHEN("participant sends a new message") {
+            participantRobot.wait(1).sendMessage(message)
+        }
+        AND("user comes back to the foreground") {
+            deviceRobot.moveApplication(to: .foreground)
+        }
+        THEN("new message is delivered") {
+            userRobot.assertMessage(message)
+        }
+    }
+}
+
+// MARK: Quoted messages
+
+extension MessageList_Tests {
+
+    func test_quotedReplyInList_whenUserAddsQuotedReply() {
+        linkToScenario(withId: 368)
+
+        let messageCount = 1
+        let message = String(messageCount)
+        let quotedMessage = "quoted reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: messageCount)
+            userRobot.login().openChannel()
+        }
+        WHEN("user adds a quoted reply to participant message") {
+            userRobot.replyToMessage(quotedMessage)
+        }
+        THEN("user observes the reply in message list") {
+            userRobot.assertQuotedMessage(replyText: quotedMessage, quotedText: message)
+        }
+    }
+
+    func test_quotedReplyInList_whenParticipantAddsQuotedReply() {
+        linkToScenario(withId: 369)
+
+        let messageCount = 1
+        let message = String(messageCount)
+        let quotedMessage = "quoted reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: messageCount)
+            userRobot.login().openChannel()
+        }
+        WHEN("participant adds a quoted reply to users message") {
+            participantRobot.replyToMessage(quotedMessage)
+        }
+        THEN("user observes the reply in message list") {
+            userRobot.assertQuotedMessage(replyText: quotedMessage, quotedText: message)
+        }
+    }
+    
+    func test_paginationOnMessageList() throws {
+        linkToScenario(withId: 370)
+        
+        let messagesCount = 60
+        
+        WHEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: messagesCount)
+            userRobot.login().openChannel()
+        }
+        THEN("user makes sure that chat history is loaded") {
+            userRobot.assertMessageListPagination(messagesCount: messagesCount)
+        }
+    }
+    
+    func test_paginationOnThread() throws {
+        linkToScenario(withId: 371)
+        
+        let replyCount = 60
+        
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1, replyCount: replyCount)
+            userRobot.login().openChannel()
+        }
+        WHEN("user opens the thread") {
+            userRobot.openThread()
+        }
+        THEN("user makes sure that thread history is loaded") {
+            userRobot.assertMessageListPagination(messagesCount: replyCount + 1)
+        }
+    }
+    
+    func test_addingCommandHidesLeftButtons() throws {
+        linkToScenario(withId: 372)
+        
+        throw XCTSkip("Check out SWUI-243")
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user types '/'") {
+            userRobot.typeText("/")
+        }
+        THEN("composer left buttons disappear") {
+            userRobot.assertComposerLeftButtons(shouldBeVisible: false)
+        }
+        WHEN("user removes '/'") {
+            userRobot.typeText(XCUIKeyboardKey.delete.rawValue)
+        }
+        THEN("composer left buttons appear") {
+            userRobot.assertComposerLeftButtons(shouldBeVisible: true)
+        }
+    }
+    
+    func test_mentionsView() {
+        linkToScenario(withId: 373)
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user types '@'") {
+            userRobot.typeText("@")
+        }
+        THEN("composer mention view appears") {
+            userRobot.assertComposerMentions(shouldBeVisible: true)
+        }
+        WHEN("user removes '@'") {
+            userRobot.typeText(XCUIKeyboardKey.delete.rawValue)
+        }
+        THEN("composer mention view disappears") {
+            userRobot.assertComposerMentions(shouldBeVisible: false)
+        }
+    }
+    
+    func test_userFillsTheComposerMentioningParticipantThroughMentionsView() {
+        linkToScenario(withId: 374)
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user taps on participants name") {
+            userRobot.mentionParticipant()
+        }
+        THEN("composer fills in participants name") {
+            userRobot.assertMentionWasApplied()
+        }
+    }
+    
+    func test_addMessageWithLinkToUnsplash() {
+        linkToScenario(withId: 375)
+        
+        let message = "https://unsplash.com/photos/1_2d3MRbI9c"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends a message with YouTube link") {
+            userRobot
+                .sendMessage(message)
+                .scrollMessageListDown() // to hide the keyboard
+        }
+        THEN("user observes a preview of the image with description") {
+            userRobot.assertLinkPreview()
+        }
+    }
+    
+    func test_addMessageWithLinkToYoutube() throws {
+        linkToScenario(withId: 376)
+        
+        let message = "https://youtube.com/watch?v=xOX7MsrbaPY"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends a message with YouTube link") {
+            userRobot
+                .sendMessage(message)
+                .scrollMessageListDown() // to hide the keyboard
+        }
+        THEN("user observes a preview of the video with description") {
+            userRobot.assertLinkPreview(alsoVerifyServiceName: "YouTube")
+        }
+    }
+    
+    func test_participantAddsMessageWithLinkToUnsplash() {
+        linkToScenario(withId: 377)
+        
+        let message = "https://unsplash.com/photos/1_2d3MRbI9c"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("participant sends a message with Unsplash link") {
+            participantRobot.sendMessage(message)
+            userRobot.scrollMessageListDown() // to hide the keyboard
+        }
+        THEN("user observes a preview of the image with description") {
+            userRobot.assertLinkPreview()
+        }
+    }
+    
+    func test_participantAddsMessageWithLinkToYoutube() {
+        linkToScenario(withId: 378)
+        
+        let message = "https://youtube.com/watch?v=xOX7MsrbaPY"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("participant sends a message with YouTube link") {
+            participantRobot.sendMessage(message)
+            userRobot.scrollMessageListDown() // to hide the keyboard
+        }
+        THEN("user observes a preview of the video with description") {
+            userRobot.assertLinkPreview(alsoVerifyServiceName: "YouTube")
+        }
+    }
+}
+
+// MARK: - Thread replies
+extension MessageList_Tests {
+    func test_threadReplyAppearsInThread_whenParticipantAddsThreadReply() {
+        linkToScenario(withId: 379)
+        
+        let threadReply = "thread reply"
+        
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        WHEN("participant adds a thread reply") {
+            participantRobot.replyToMessageInThread(threadReply)
+        }
+        AND("user enters thread") {
+            userRobot.openThread()
+        }
+        THEN("user observes the thread reply in thread") {
+            userRobot.assertThreadReply(threadReply)
+        }
+    }
+    
+    func test_threadReplyAppearsInChannelAndThread_whenParticipantAddsThreadReplySentAlsoToChannel() {
+        linkToScenario(withId: 380)
+        
+        let threadReply = "thread reply"
+        
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        WHEN("participant adds a thread reply") {
+            participantRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
+        }
+        THEN("user observes the thread reply in channel") {
+            userRobot.assertMessage(threadReply)
+        }
+        WHEN("user enters thread") {
+            userRobot.openThread(messageCellIndex: 1, waitForThreadIcon: true)
+        }
+        THEN("user observes the thread reply in thread") {
+            userRobot.assertThreadReply(threadReply)
+        }
+    }
+    
+    func test_threadReplyAppearsInChannelAndThread_whenUserAddsThreadReplySentAlsoToChannel() {
+        linkToScenario(withId: 381)
+
+        let threadReply = "thread reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        WHEN("user adds a thread reply and sends it also to main channel") {
+            userRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
+        }
+        THEN("user observes the thread reply in thread") {
+            userRobot.assertThreadReply(threadReply)
+        }
+        AND("user observes the thread reply in channel") {
+            userRobot
+                .tapOnBackButton()
+                .assertMessage(threadReply)
+        }
+    }
+    
+    func test_threadTypingIndicatorHidden_whenParticipantStopsTyping() throws {
+        linkToScenario(withId: 382)
+        
+        throw XCTSkip("Check out SWUI-251")
+        
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("user opens the thread") {
+            userRobot.openThread()
+        }
+        WHEN("participant starts typing in thread") {
+            participantRobot.wait(2).startTypingInThread()
+        }
+        THEN("user observes typing indicator is shown") {
+            let typingUserName = UserDetails.userName(for: participantRobot.currentUserId)
+            userRobot.assertTypingIndicatorShown(typingUserName: typingUserName)
+        }
+        WHEN("participant stops typing in thread") {
+            participantRobot.wait(2).stopTypingInThread()
+        }
+        THEN("user observes typing indicator has disappeared") {
+            userRobot.assertTypingIndicatorHidden()
+        }
+    }
+}
+
+// MARK: - Message grouping
+
+extension MessageList_Tests {
+    func test_messageEndsGroup_whenFollowedByErrorMessage() {
+        linkToScenario(withId: 383)
+
+        let message = "Hey there"
+        let messageWithForbiddenContent = server.forbiddenWords.first ?? ""
         
         GIVEN("user opens the channel") {
             userRobot
                 .login()
                 .openChannel()
         }
-        WHEN("participant starts typing") {
-            participantRobot.startTyping()
+        AND("user sends the 1st message") {
+            userRobot.sendMessage(message)
         }
-        AND("participant stops typing") {
-            participantRobot.stopTyping()
+        AND("the timestamp is shown under the 1st message") {
+            userRobot.assertMessageHasTimestamp()
         }
-        THEN("user observes typing indicator has disappeared") {
-            userRobot.assertTypingIndicatorHidden()
+        WHEN("user sends a message that does not pass moderation") {
+            userRobot.sendMessage(messageWithForbiddenContent, waitForAppearance: false)
+        }
+        THEN("messages are not grouped, 1st message shows the timestamp") {
+            userRobot.assertMessageHasTimestamp(at: 1)
+        }
+    }
+    
+    func test_messageEndsGroup_whenFollowedByEphemeralMessage() {
+        linkToScenario(withId: 384)
+        
+        let message = "Hey there"
+        
+        GIVEN("user opens the channel") {
+            userRobot
+                .login()
+                .openChannel()
+        }
+        AND("user sends the 1st message") {
+            userRobot.sendMessage(message)
+        }
+        AND("the timestamp is shown under the 1st message") {
+            userRobot.assertMessageHasTimestamp()
+        }
+        WHEN("user sends an ephemeral message") {
+            userRobot.sendGiphy(send: false)
+        }
+        THEN("messages are not grouped, 1st message shows the timestamp") {
+            userRobot.assertMessageHasTimestamp(at: 1)
         }
     }
 
+    func test_messageRendersTimestampAgain_whenMessageLastInGroupIsHardDeleted() throws {
+        linkToScenario(withId: 385)
+        
+        throw XCTSkip("Check out SWUI-245")
+
+        GIVEN("user opens the channel") {
+            backendRobot
+                .generateChannels(count: 1, messagesCount: 1)
+            userRobot
+                .login()
+                .openChannel()
+        }
+        AND("user inserts 3 group messages") {
+            userRobot.sendMessage("Hey")
+            userRobot.sendMessage("Hey2")
+            userRobot.sendMessage("Hey3")
+            userRobot.assertMessageHasTimestamp()
+        }
+        WHEN("user deletes last message") {
+            userRobot.deleteMessage(hard: true)
+        }
+        THEN("previous message should re-render timestamp") {
+            userRobot.assertMessageHasTimestamp(at: 0)
+        }
+    }
+}
+
+// MARK: Deleted messages
+
+extension MessageList_Tests {
+    func test_deletesMessage() throws {
+        linkToScenario(withId: 386)
+        
+        let message = "test message"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends the message: '\(message)'") {
+            userRobot.sendMessage(message)
+        }
+        AND("user deletes the message: '\(message)'") {
+            userRobot.deleteMessage()
+        }
+        THEN("the message is deleted") {
+            userRobot.assertDeletedMessage()
+        }
+    }
+    
+    func test_messageDeleted_whenParticipantDeletesMessage() throws {
+        linkToScenario(withId: 387)
+        
+        let message = "test message"
+        
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("participant sends the message: '\(message)'") {
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
+        }
+        AND("participant deletes the message: '\(message)'") {
+            participantRobot.deleteMessage()
+        }
+        THEN("the message is deleted") {
+            userRobot.assertDeletedMessage()
+        }
+    }
+    
+    func test_quotedReplyIsDeletedByParticipant_deletedMessageIsShown() {
+        linkToScenario(withId: 388)
+
+        let quotedMessage = "quoted reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("participant adds a quoted reply") {
+            participantRobot.replyToMessage(quotedMessage)
+        }
+        WHEN("participant deletes a quoted message") {
+            participantRobot.deleteMessage()
+        }
+        THEN("user observes Message deleted") {
+            userRobot.assertDeletedMessage()
+        }
+    }
+    
+    func test_quotedReplyIsDeletedByUser_deletedMessageIsShown() {
+        linkToScenario(withId: 389)
+        
+        let quotedMessage = "quoted reply"
+        
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("user adds a quoted reply") {
+            userRobot.replyToMessage(quotedMessage)
+        }
+        WHEN("user deletes a quoted message") {
+            userRobot.deleteMessage()
+        }
+        THEN("deleted message is shown") {
+            userRobot.assertDeletedMessage()
+        }
+    }
+
+    func test_threadReplyIsRemovedEverywhere_whenParticipantRemovesItFromChannel() {
+        linkToScenario(withId: 390)
+
+        let threadReply = "thread reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("participant adds a thread reply and sends it also to main channel") {
+            participantRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
+        }
+        WHEN("participant removes the thread reply from channel") {
+            participantRobot.deleteMessage()
+        }
+        THEN("user observes the thread reply removed in channel") {
+            userRobot.assertDeletedMessage()
+        }
+        AND("user observes the thread reply removed in thread") {
+            userRobot
+                .openThread(messageCellIndex: 1)
+                .assertDeletedMessage()
+        }
+    }
+
+    func test_threadReplyIsRemovedEverywhere_whenUserRemovesItFromChannel() {
+        linkToScenario(withId: 391)
+
+        let threadReply = "thread reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("user adds a thread reply and sends it also to main channel") {
+            userRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
+        }
+        WHEN("user removes thread reply from thread") {
+            userRobot.deleteMessage()
+        }
+        THEN("user observes the thread reply removed in thread") {
+            userRobot.assertDeletedMessage()
+        }
+        AND("user observes the thread reply removed in channel") {
+            userRobot
+                .tapOnBackButton()
+                .assertDeletedMessage()
+        }
+    }
+    
+    func test_participantRemovesThreadReply() {
+        linkToScenario(withId: 392)
+
+        let threadReply = "thread reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("participant adds a thread reply") {
+            participantRobot.replyToMessageInThread(threadReply, alsoSendInChannel: false)
+        }
+        WHEN("participant removes the thread reply") {
+            participantRobot.deleteMessage()
+        }
+        THEN("user observes a thread reply count button in channel") {
+            userRobot.assertThreadReplyCountButton()
+        }
+        THEN("user observes the thread reply removed in thread") {
+            userRobot.openThread().assertDeletedMessage()
+        }
+    }
+    
+    func test_threadReplyIsRemovedEverywhere_whenUserRemovesItFromThread() throws {
+        linkToScenario(withId: 393)
+        
+        throw XCTSkip("Check out SWUI-244")
+
+        let threadReply = "thread reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("user adds a thread reply and sends it also to main channel") {
+            userRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
+        }
+        WHEN("user goes back to channel and removes thread reply") {
+            userRobot
+                .tapOnBackButton()
+                .deleteMessage()
+        }
+        THEN("user observes the thread reply removed in channel") {
+            userRobot.assertDeletedMessage()
+        }
+        AND("user observes the thread reply removed in thread") {
+            userRobot
+                .openThread(messageCellIndex: 1)
+                .assertDeletedMessage()
+        }
+    }
+    
+    func test_userRemovesThreadReply() throws {
+        linkToScenario(withId: 394)
+        
+        throw XCTSkip("Check out SWUI-244")
+
+        let threadReply = "thread reply"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        AND("user adds a thread reply") {
+            userRobot.replyToMessageInThread(threadReply, alsoSendInChannel: false)
+        }
+        WHEN("user removes the thread reply") {
+            userRobot.deleteMessage()
+        }
+        THEN("user observes the thread reply removed in thread") {
+            userRobot.assertDeletedMessage()
+        }
+        AND("user observes a thread reply count button in channel") {
+            userRobot
+                .tapOnBackButton()
+                .assertThreadReplyCountButton()
+        }
+    }
+    
+    func test_hardDeletesMessage() throws {
+        linkToScenario(withId: 395)
+        
+        throw XCTSkip("Check out SWUI-245")
+
+        let message = "test message"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends the message: '\(message)'") {
+            userRobot.sendMessage(message)
+        }
+        AND("user hard-deletes the message: '\(message)'") {
+            userRobot.deleteMessage(hard: true)
+        }
+        THEN("the message is hard-deleted") {
+            userRobot.assertHardDeletedMessage(withText: message)
+        }
+    }
+    
+    func test_messageDeleted_whenParticipantHardDeletesMessage() throws {
+        linkToScenario(withId: 396)
+        
+        let message = "test message"
+        
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
+            userRobot.login().openChannel()
+        }
+        WHEN("participant sends the message: '\(message)'") {
+            participantRobot.sendMessage(message)
+        }
+        AND("the message is delivered") {
+            userRobot.assertMessage(message)
+        }
+        AND("participant hard-deletes the message: '\(message)'") {
+            participantRobot.deleteMessage(hard: true)
+        }
+        THEN("the message is hard-deleted") {
+            userRobot.assertHardDeletedMessage(withText: message)
+        }
+    }
 }
