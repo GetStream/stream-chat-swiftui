@@ -15,39 +15,65 @@ struct InstantCommandsView: View {
     var instantCommands: [CommandHandler]
     var commandSelected: (ComposerCommand) -> Void
     
+    @State private var itemHeight: CGFloat = 40
+    
     var body: some View {
         VStack {
             InstantCommandsHeader()
                 .standardPadding()
                 .accessibilityElement(children: .contain)
             
-            ForEach(0..<instantCommands.count, id: \.self) { i in
-                let command = instantCommands[i]
-                if let displayInfo = command.displayInfo {
-                    InstantCommandView(displayInfo: displayInfo)
-                        .standardPadding()
-                        .highPriorityGesture(
-                            TapGesture()
-                                .onEnded { _ in
-                                    let instantCommand = ComposerCommand(
-                                        id: command.id,
-                                        typingSuggestion: TypingSuggestion.empty,
-                                        displayInfo: command.displayInfo,
-                                        replacesMessageSent: command.replacesMessageSent
-                                    )
-                                    commandSelected(instantCommand)
+            ScrollView {
+                VStack {
+                    ForEach(0..<instantCommands.count, id: \.self) { i in
+                        let command = instantCommands[i]
+                        if let displayInfo = command.displayInfo {
+                            InstantCommandView(displayInfo: displayInfo)
+                                .standardPadding()
+                                .overlay(
+                                    GeometryReader { geo in
+                                        Color.clear.preference(key: HeightPreferenceKey.self, value: geo.size.height)
+                                    }
+                                )
+                                .onPreferenceChange(HeightPreferenceKey.self) { value in
+                                    if let value = value, value != itemHeight {
+                                        itemHeight = value
+                                    }
                                 }
-                        )
-                        .accessibilityElement(children: .contain)
-                        .accessibilityIdentifier("InstantCommandView")
+                                .highPriorityGesture(
+                                    TapGesture()
+                                        .onEnded { _ in
+                                            let instantCommand = ComposerCommand(
+                                                id: command.id,
+                                                typingSuggestion: TypingSuggestion.empty,
+                                                displayInfo: command.displayInfo,
+                                                replacesMessageSent: command.replacesMessageSent
+                                            )
+                                            commandSelected(instantCommand)
+                                        }
+                                )
+                                .accessibilityElement(children: .contain)
+                                .accessibilityIdentifier("InstantCommandView")
+                        }
+                    }
                 }
             }
         }
         .background(Color(colors.background))
+        .frame(height: viewHeight)
         .modifier(ShadowViewModifier())
         .padding(.all, 8)
         .animation(.spring())
         .accessibilityElement(children: .contain)
+    }
+    
+    private var viewHeight: CGFloat {
+        if instantCommands.isEmpty {
+            return 40
+        }
+        let height = CGFloat(instantCommands.count) * itemHeight + 70
+        let maxHeight: CGFloat = 320
+        return height > maxHeight ? maxHeight : height
     }
 }
 

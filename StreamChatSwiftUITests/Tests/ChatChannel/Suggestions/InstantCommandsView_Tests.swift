@@ -25,4 +25,70 @@ class InstantCommandsView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_instantCommandsContainerViewEmpty_snapshot() {
+        // Given
+        let commands: [CommandHandler] = []
+        
+        // When
+        let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
+            .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_instantCommandsContainerView_snapshot() {
+        // Given
+        let commands: [CommandHandler] = defaultCommands()
+        
+        // When
+        let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
+            .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_instantCommandsContainerMaxSize_snapshot() {
+        // Given
+        var commands = [CommandHandler]()
+        for i in 0..<5 {
+            commands.append(contentsOf: defaultCommands(suffix: "\(i)"))
+        }
+        
+        // When
+        let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
+            .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    private func defaultCommands(suffix: String = "") -> [CommandHandler] {
+        let channelController = ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient,
+            messages: []
+        )
+        var instantCommands = [CommandHandler]()
+        let giphyCommand = GiphyCommandHandler(
+            commandSymbol: "/giphy",
+            id: "/giphy\(suffix)"
+        )
+        instantCommands.append(giphyCommand)
+        let muteCommand = MuteCommandHandler(
+            channelController: channelController,
+            commandSymbol: "/mute",
+            id: "/mute\(suffix)"
+        )
+        let unmuteCommand = UnmuteCommandHandler(
+            channelController: channelController,
+            commandSymbol: "/unmute",
+            id: "/unmute\(suffix)"
+        )
+        instantCommands.append(muteCommand)
+        instantCommands.append(unmuteCommand)
+        
+        return instantCommands
+    }
 }
