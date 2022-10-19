@@ -17,6 +17,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private let viewFactory: Factory
     private let title: String
     private var onItemTap: (ChatChannel) -> Void
+    private var handleTabBarVisibility: Bool
     
     public init(
         viewFactory: Factory,
@@ -24,7 +25,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         channelListController: ChatChannelListController? = nil,
         title: String = "Stream Chat",
         onItemTap: ((ChatChannel) -> Void)? = nil,
-        selectedChannelId: String? = nil
+        selectedChannelId: String? = nil,
+        handleTabBarVisibility: Bool = true
     ) {
         let channelListVM = viewModel ?? ViewModelsFactory.makeChannelListViewModel(
             channelListController: channelListController,
@@ -35,6 +37,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         )
         self.viewFactory = viewFactory
         self.title = title
+        self.handleTabBarVisibility = handleTabBarVisibility
         if let onItemTap = onItemTap {
             self.onItemTap = onItemTap
         } else {
@@ -95,7 +98,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             view.navigationViewStyle(.stack)
         })
         .background(
-            isIphone ?
+            isIphone && handleTabBarVisibility ?
                 Color.clear.background(
                     TabBarAccessor { tabBar in
                         self.tabBar = tabBar
@@ -105,7 +108,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 : nil
         )
         .onReceive(viewModel.$hideTabBar) { newValue in
-            if isIphone {
+            if isIphone && handleTabBarVisibility {
                 self.setupTabBarAppeareance()
                 self.tabBar?.isHidden = newValue
             }
