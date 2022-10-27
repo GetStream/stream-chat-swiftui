@@ -15,7 +15,10 @@ open class StreamChatTestCase: XCTestCase {
 
     public var chatClient: ChatClient = {
         let client = ChatClient.mock(isLocalStorageEnabled: false)
-        client.currentUserId = currentUserId
+        let tokenValue =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibHVrZV9za3l3YWxrZXIifQ.b6EiC8dq2AHk0JPfI-6PN-AM9TVzt8JV-qB1N9kchlI"
+        let token = try! Token(rawValue: tokenValue)
+        client.connectUser(userInfo: .init(id: currentUserId), token: token)
         return client
     }()
     

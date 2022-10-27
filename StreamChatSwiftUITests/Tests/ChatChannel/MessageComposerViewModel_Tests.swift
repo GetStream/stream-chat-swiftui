@@ -347,8 +347,8 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_inThread() {
         // Given
         let channelController = makeChannelController()
-        let messageController = ChatMessageController_Mock.mock(
-            client: chatClient,
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
             cid: .unique,
             messageId: .unique
         )

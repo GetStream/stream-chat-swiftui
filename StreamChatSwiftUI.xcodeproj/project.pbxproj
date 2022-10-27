@@ -34,7 +34,6 @@
 		8421BCEC27A400E8000F977D /* ReactionsUsersView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8421BCEB27A400E8000F977D /* ReactionsUsersView_Tests.swift */; };
 		8421BCEE27A43E14000F977D /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8421BCED27A43E14000F977D /* SearchBar.swift */; };
 		8421BCF027A44EAE000F977D /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8421BCEF27A44EAE000F977D /* SearchResultsView.swift */; };
-		842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */; };
 		842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383E327678A4D00888CFC /* QuotedMessageView.swift */; };
 		8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33C277C94F30092DCF1 /* TwoStepMentionCommand.swift */; };
 		8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423C33E277C9A5F0092DCF1 /* UnmuteCommandHandler.swift */; };
@@ -278,6 +277,9 @@
 		84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */; };
 		84C94D68275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */; };
 		84CAD77B284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */; };
+		84CC3731290B095E00689B73 /* ChatChannelDataSource_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */; };
+		84CC3732290B0A4000689B73 /* StreamChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */; };
+		84CC3734290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CC3733290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift */; };
 		84D419BA28EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D419B928EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift */; };
 		84D6B55A27DF6EC7009C6D07 /* LoadingView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */; };
 		84D77B58289D3CF800C241CE /* MessageListViewAvatars_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */; };
@@ -305,7 +307,6 @@
 		84E04797284A444E00BAFA17 /* WebSocketPingControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */; };
 		84E04798284A444E00BAFA17 /* InternetConnectionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D23275794D3007FE2B9 /* InternetConnectionMock.swift */; };
 		84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */; };
-		84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5528103822002213C1 /* StreamChatModel.xcdatamodeld */; };
 		84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */; };
 		84E6EC23279AEE6B0017207B /* MessageContainerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E6EC22279AEE6B0017207B /* MessageContainerView_Tests.swift */; };
 		84E6EC25279AEE9F0017207B /* StreamChatTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E6EC24279AEE9F0017207B /* StreamChatTestCase.swift */; };
@@ -689,6 +690,7 @@
 		84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionsViewModel_Tests.swift; sourceTree = "<group>"; };
 		84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelHeaderLoader_Tests.swift; sourceTree = "<group>"; };
 		84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewLastGroupHeader_Tests.swift; sourceTree = "<group>"; };
+		84CC3733290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageControllerSUI_Mock.swift; sourceTree = "<group>"; };
 		84D419B928EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageBubbles_Tests.swift; sourceTree = "<group>"; };
 		84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView_Tests.swift; sourceTree = "<group>"; };
 		84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewAvatars_Tests.swift; sourceTree = "<group>"; };
@@ -1351,6 +1353,7 @@
 				847BA08427E0BA2500ED20C7 /* EventNotificationCenterMock.swift */,
 				847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */,
 				847BA08827E0BAEE00ED20C7 /* WebSocketEngineMock.swift */,
+				84CC3733290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -2004,7 +2007,6 @@
 				84E0478E284A444E00BAFA17 /* WebSocketEngineMock.swift in Sources */,
 				84C94D4D2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift in Sources */,
 				84C94D62275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift in Sources */,
-				84E57C5A28103822002213C1 /* StreamChatModel.xcdatamodeld in Sources */,
 				840A3F3828193AB20084E9CC /* ChatChannelInfoView_Tests.swift in Sources */,
 				84C94D492758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift in Sources */,
 				842F036D288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift in Sources */,
@@ -2033,18 +2035,20 @@
 				84AB7B21277203EF00631A10 /* GalleryView_Tests.swift in Sources */,
 				84E0478D284A444E00BAFA17 /* ImageLoader_Mock.swift in Sources */,
 				8423C348277DBBDA0092DCF1 /* InstantCommandsHandler_Tests.swift in Sources */,
-				842383E02767394200888CFC /* ChatChannelDataSource_Tests.swift in Sources */,
 				84DEC8DF2760A1D100172876 /* MessageView_Tests.swift in Sources */,
 				847F7949282A91AD0009F74C /* ChatChannelView_Tests.swift in Sources */,
+				84CC3734290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift in Sources */,
 				91B763A6283EB39600B458A9 /* MoreChannelActionsFullScreenWrappingView_Tests.swift in Sources */,
 				846608E9278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift in Sources */,
 				8421BCEC27A400E8000F977D /* ReactionsUsersView_Tests.swift in Sources */,
 				84E04794284A444E00BAFA17 /* APIClient_Mock.swift in Sources */,
 				844D1D682851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift in Sources */,
+				84CC3731290B095E00689B73 /* ChatChannelDataSource_Tests.swift in Sources */,
 				84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */,
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84B2B5D82819778D00479CEE /* FileAttachmentsViewModel_Tests.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
+				84CC3732290B0A4000689B73 /* StreamChatModel.xcdatamodeld in Sources */,
 				84E04790284A444E00BAFA17 /* CDNClient_Mock.swift in Sources */,
 				84E04796284A444E00BAFA17 /* EventBatcherMock.swift in Sources */,
 				84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */,
@@ -2657,7 +2661,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.22.0;
+				minimumVersion = 4.23.0;
 			};
 		};
 		A3571601283E9D9F0014E3B0 /* XCRemoteSwiftPackageReference "swifter" */ = {
