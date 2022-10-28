@@ -48,6 +48,36 @@ class MessageListPage {
         static var participants: XCUIElement {
             app.staticTexts.matching(identifier: "ChannelTitleView").lastMatch!
         }
+        
+        // FIXME
+        static var debugMenu: XCUIElement {
+            app.buttons[""].firstMatch
+        }
+    }
+    
+    // FIXME
+    enum Alert {
+        enum Debug {
+            // Add member
+            static var alert: XCUIElement { app.alerts[""] }
+            static var addMember: XCUIElement { alert.buttons[""] }
+            static var addMemberTextField: XCUIElement { app.textFields[""] }
+            static var addMemberOKButton: XCUIElement { app.alerts[""].buttons[""] }
+
+            // Remove member
+            static var removeMember: XCUIElement { alert.buttons[""] }
+            static func selectMember(withUserId userId: String) -> XCUIElement {
+                app.alerts[""].buttons[userId]
+            }
+
+            // Show member info
+            static var showMemberInfo: XCUIElement { alert.buttons[""] }
+            static var dismissMemberInfo: XCUIElement { app.alerts[""].buttons[""] }
+            
+            // Truncate channel
+            static var truncateWithMessage: XCUIElement { alert.buttons[""] }
+            static var truncateWithoutMessage: XCUIElement { alert.buttons[""] }
+        }
     }
     
     enum Composer {

@@ -11,7 +11,7 @@ final class UserRobot: Robot {
 
     let composer = MessageListPage.Composer.self
     let contextMenu = MessageListPage.ContextMenu.self
-//    let debugAlert = MessageListPage.Alert.Debug.self
+    let debugAlert = MessageListPage.Alert.Debug.self
     private var server: StreamMockServer
     
     init(_ server: StreamMockServer) {
@@ -391,44 +391,43 @@ extension UserRobot {
 
 // MARK: Debug menu
 
-// TODO:
 extension UserRobot {
 
-//    @discardableResult
-//    private func tapOnDebugMenu() -> Self {
-//        MessageListPage.NavigationBar.debugMenu.safeTap()
-//        return self
-//    }
-//
-//    @discardableResult
-//    func addParticipant(withUserId userId: String = UserDetails.leiaOrganaId) -> Self {
-//        tapOnDebugMenu()
-//        debugAlert.addMember.firstMatch.safeTap()
-//        debugAlert.addMemberTextField.firstMatch
-//            .obtainKeyboardFocus()
-//            .typeText(userId)
-//        debugAlert.addMemberOKButton.firstMatch.safeTap()
-//        return self
-//    }
-//
-//    @discardableResult
-//    func removeParticipant(withUserId userId: String = UserDetails.leiaOrganaId) -> Self {
-//        tapOnDebugMenu()
-//        debugAlert.removeMember.firstMatch.safeTap()
-//        debugAlert.selectMember(withUserId: userId).firstMatch.safeTap()
-//        return self
-//    }
-//    
-//    @discardableResult
-//    func truncateChannel(withMessage: Bool) -> Self {
-//        tapOnDebugMenu()
-//        if withMessage {
-//            debugAlert.truncateWithMessage.safeTap()
-//        } else {
-//            debugAlert.truncateWithoutMessage.safeTap()
-//        }
-//        return self
-//    }
+    @discardableResult
+    private func tapOnDebugMenu() -> Self {
+        MessageListPage.NavigationBar.debugMenu.safeTap()
+        return self
+    }
+
+    @discardableResult
+    func addParticipant(withUserId userId: String = UserDetails.leiaOrganaId) -> Self {
+        tapOnDebugMenu()
+        debugAlert.addMember.firstMatch.safeTap()
+        debugAlert.addMemberTextField.firstMatch
+            .obtainKeyboardFocus()
+            .typeText(userId)
+        debugAlert.addMemberOKButton.firstMatch.safeTap()
+        return self
+    }
+
+    @discardableResult
+    func removeParticipant(withUserId userId: String = UserDetails.leiaOrganaId) -> Self {
+        tapOnDebugMenu()
+        debugAlert.removeMember.firstMatch.safeTap()
+        debugAlert.selectMember(withUserId: userId).firstMatch.safeTap()
+        return self
+    }
+    
+    @discardableResult
+    func truncateChannel(withMessage: Bool) -> Self {
+        tapOnDebugMenu()
+        if withMessage {
+            debugAlert.truncateWithMessage.safeTap()
+        } else {
+            debugAlert.truncateWithoutMessage.safeTap()
+        }
+        return self
+    }
 }
 
 // MARK: Connectivity
