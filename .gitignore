@@ -68,6 +68,9 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+fastlane/allurectl
+fastlane/xcresults
+fastlane/recordings
 StreamChatCore.framework.coverage.txt
 StreamChatCoreTests.xctest.coverage.txt
 vendor/bundle/
@@ -78,3 +81,5 @@ Sample/Cocoapods/Podfile.lock
 docusaurus/.env
 reports/
 .scannerwork/
+push_payload.json
+sinatra_log.txt

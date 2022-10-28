@@ -4,16 +4,20 @@ source "https://rubygems.org"
 
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
-gem "fastlane"
-gem "cocoapods"
-gem "danger"
-gem "danger-commit_lint"
-gem "jazzy"
-gem "xcode-install"
-gem "json"
+gem 'cocoapods'
+gem 'danger'
+gem 'danger-commit_lint'
+gem 'fastlane'
+gem 'fastlane-plugin-lizard'
+gem 'jazzy'
+gem 'json'
 gem 'plist'
-gem "fastlane-plugin-lizard"
-gem "slather"
+gem 'rubocop', '1.12.1'
+gem 'rubocop-performance'
+gem 'rubocop-require_tools'
+gem 'sinatra'
+gem 'slather'
+gem 'xcode-install'
 gem 'xctest_list'
 
 plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')

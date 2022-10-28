@@ -2,24 +2,15 @@
 // Copyright © 2022 Stream.io Inc. All rights reserved.
 //
 
-import StreamChat
-import StreamChatSwiftUI
 import SwiftUI
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     
-    var streamChat: StreamChat?
-    
-    var chatClient: ChatClient = {
-        var config = ChatClientConfig(apiKey: .init(apiKeyString))
-        let client = ChatClient(config: config)
-        return client
-    }()
-    
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         disableAnimations()
-        connectUser(withCredentials: UserCredentials.mock)
+        registerForPushNotifications()
+        UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
         return true
     }
     
@@ -31,29 +22,41 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return sceneConfig
     }
     
-
-    private func connectUser(withCredentials credentials: UserCredentials) {
-        let token = try! Token(rawValue: credentials.token)
-        LogConfig.level = .warning
-        
-        streamChat = StreamChat(chatClient: chatClient)
-        
-        chatClient.connectUser(
-                userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
-                token: token
-        ) { error in
-            if let error = error {
-                log.error("connecting the user failed \(error)")
-                return
-            }
-        }
-    }
-    
     private func disableAnimations() {
         UIApplication.shared.windows.first?.layer.speed = 2
         UIView.setAnimationsEnabled(false)
     }
     
+    func registerForPushNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
+            guard granted else { return }
+            self?.getNotificationSettings()
+        }
+    }
+    
+    func getNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else { return }
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+
+    func application(
+      _ application: UIApplication,
+      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+        let token = tokenParts.joined()
+        print("Device Token: \(token)")
+    }
+    func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("Failed to register: \(error)")
+    }
 }
 
 extension UIColor {

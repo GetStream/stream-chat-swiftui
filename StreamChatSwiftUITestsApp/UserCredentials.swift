@@ -6,6 +6,7 @@ import StreamChatSwiftUI
 import SwiftUI
 
 public let apiKeyString = "zcgvnykxsfm8"
+public let applicationGroupIdentifier = "group.io.getstream.iOS.ChatTestAppSwiftUI"
 public let currentUserIdRegisteredForPush = "currentUserIdRegisteredForPush"
 
 public struct UserCredentials {
@@ -17,6 +18,10 @@ public struct UserCredentials {
 }
 
 extension UserCredentials {
+    
+    static func builtInUsersByID(id: String) -> UserCredentials? {
+        mock
+    }
     
     static let mock: UserCredentials = UserCredentials(id: "luke_skywalker",
                                                        name: "Luke Skywalker",

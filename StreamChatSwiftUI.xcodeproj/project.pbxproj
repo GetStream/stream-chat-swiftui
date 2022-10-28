@@ -8,9 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AADF3283CCDB000237498 /* ThreadPage.swift */; };
+		827352FD290BE91100A87385 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
 		829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */; };
 		829AB4D42858A532002DC629 /* Reactions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D32858A532002DC629 /* Reactions_Tests.swift */; };
 		829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829CD5CD2848CA6B003C3877 /* Settings.swift */; };
+		82A1813A28F84CAA005F9D43 /* SpringBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1813928F84CAA005F9D43 /* SpringBoard.swift */; };
+		82A1813C28F9BA53005F9D43 /* Attachments_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1813B28F9BA53005F9D43 /* Attachments_Tests.swift */; };
+		82A1813E28FD68A3005F9D43 /* ChannelList_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1813D28FD68A3005F9D43 /* ChannelList_Tests.swift */; };
+		82A1814028FD691B005F9D43 /* Ephemeral_Messages_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1813F28FD691B005F9D43 /* Ephemeral_Messages_Tests.swift */; };
+		82A1814228FD694A005F9D43 /* PushNotification_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814128FD694A005F9D43 /* PushNotification_Tests.swift */; };
+		82A1814428FD69AE005F9D43 /* SlowMode_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814328FD69AE005F9D43 /* SlowMode_Tests.swift */; };
+		82A1814728FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814628FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift */; };
+		82A1814928FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814828FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
 		8400A34A282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */; };
 		8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A34B282C081E0067D3A0 /* OHHTTPStubs */; };
@@ -404,6 +413,15 @@
 		829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamTestCase+Tags.swift"; sourceTree = "<group>"; };
 		829AB4D32858A532002DC629 /* Reactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions_Tests.swift; sourceTree = "<group>"; };
 		829CD5CD2848CA6B003C3877 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		82A1813928F84CAA005F9D43 /* SpringBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpringBoard.swift; sourceTree = "<group>"; };
+		82A1813B28F9BA53005F9D43 /* Attachments_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachments_Tests.swift; sourceTree = "<group>"; };
+		82A1813D28FD68A3005F9D43 /* ChannelList_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelList_Tests.swift; sourceTree = "<group>"; };
+		82A1813F28FD691B005F9D43 /* Ephemeral_Messages_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ephemeral_Messages_Tests.swift; sourceTree = "<group>"; };
+		82A1814128FD694A005F9D43 /* PushNotification_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification_Tests.swift; sourceTree = "<group>"; };
+		82A1814328FD69AE005F9D43 /* SlowMode_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowMode_Tests.swift; sourceTree = "<group>"; };
+		82A1814628FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDeliveryStatus_Tests.swift; sourceTree = "<group>"; };
+		82A1814828FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessageDeliveryStatus+ChannelList_Tests.swift"; sourceTree = "<group>"; };
+		82E8D79C2902B949008A8F78 /* StreamChatSwiftUITestsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StreamChatSwiftUITestsApp.entitlements; sourceTree = "<group>"; };
 		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatWrapper.swift; sourceTree = "<group>"; };
 		8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionMonitor_Mock.swift; sourceTree = "<group>"; };
@@ -791,6 +809,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		82A1814528FD69E8005F9D43 /* Message Delivery Status */ = {
+			isa = PBXGroup;
+			children = (
+				82A1814628FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift */,
+				82A1814828FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift */,
+			);
+			path = "Message Delivery Status";
+			sourceTree = "<group>";
+		};
 		8400A352282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -807,6 +834,7 @@
 		8402EAC4282BF69900CCA696 /* StreamChatSwiftUITestsApp */ = {
 			isa = PBXGroup;
 			children = (
+				82E8D79C2902B949008A8F78 /* StreamChatSwiftUITestsApp.entitlements */,
 				A36D1EAA283F8D70008D6110 /* Info.plist */,
 				8402EAD1282BFC8700CCA696 /* AppDelegate.swift */,
 				8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */,
@@ -891,6 +919,7 @@
 				A3828EAC283F6CFE00538258 /* StartPage.swift */,
 				825AADF3283CCDB000237498 /* ThreadPage.swift */,
 				829CD5CD2848CA6B003C3877 /* Settings.swift */,
+				82A1813928F84CAA005F9D43 /* SpringBoard.swift */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -1481,9 +1510,15 @@
 			isa = PBXGroup;
 			children = (
 				A3600B3F283F651200E1C930 /* Base TestCase */,
+				82A1813D28FD68A3005F9D43 /* ChannelList_Tests.swift */,
 				A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */,
 				829AB4D32858A532002DC629 /* Reactions_Tests.swift */,
+				82A1813B28F9BA53005F9D43 /* Attachments_Tests.swift */,
+				82A1814328FD69AE005F9D43 /* SlowMode_Tests.swift */,
 				829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */,
+				82A1814528FD69E8005F9D43 /* Message Delivery Status */,
+				82A1813F28FD691B005F9D43 /* Ephemeral_Messages_Tests.swift */,
+				82A1814128FD694A005F9D43 /* PushNotification_Tests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1773,15 +1808,23 @@
 				825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */,
 				A3828EAD283F6CFE00538258 /* StartPage.swift in Sources */,
 				A3600B41283F652400E1C930 /* StreamTestCase.swift in Sources */,
+				82A1814928FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift in Sources */,
+				82A1814228FD694A005F9D43 /* PushNotification_Tests.swift in Sources */,
+				82A1814428FD69AE005F9D43 /* SlowMode_Tests.swift in Sources */,
 				A3600B37283E9EC900E1C930 /* StreamChatSwiftUITests.swift in Sources */,
 				A3600B2A283E9E1900E1C930 /* UserRobot.swift in Sources */,
 				829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */,
 				8463D9262836617F002B1894 /* ChannelListPage.swift in Sources */,
 				A3600B32283E9E4700E1C930 /* MessageList_Tests.swift in Sources */,
+				82A1813E28FD68A3005F9D43 /* ChannelList_Tests.swift in Sources */,
 				84DA1C282837B73D000E4B6A /* MessageListPage.swift in Sources */,
+				82A1814728FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift in Sources */,
 				A3600B2F283E9E1900E1C930 /* UserRobot+Asserts.swift in Sources */,
+				82A1814028FD691B005F9D43 /* Ephemeral_Messages_Tests.swift in Sources */,
 				829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */,
+				82A1813C28F9BA53005F9D43 /* Attachments_Tests.swift in Sources */,
 				A3600B35283E9EBA00E1C930 /* Bundle+Target.swift in Sources */,
+				82A1813A28F84CAA005F9D43 /* SpringBoard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1794,6 +1837,7 @@
 				A3600B43283F664E00E1C930 /* StartPage.swift in Sources */,
 				8400A34A282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift in Sources */,
 				8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */,
+				827352FD290BE91100A87385 /* NotificationsHandler.swift in Sources */,
 				8402EAC6282BF69900CCA696 /* StreamChatSwiftUITestsAppApp.swift in Sources */,
 				8402EAD4282BFCCA00CCA696 /* UserCredentials.swift in Sources */,
 			);
@@ -2196,6 +2240,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = StreamChatSwiftUITestsApp/StreamChatSwiftUITestsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StreamChatSwiftUITestsApp/Preview Content\"";
@@ -2204,6 +2249,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StreamChatSwiftUITestsApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chat SwiftUI Tests";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera for sending photo attachments.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Access to your photo library is needed for attaching photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -2229,6 +2275,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = StreamChatSwiftUITestsApp/StreamChatSwiftUITestsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StreamChatSwiftUITestsApp/Preview Content\"";
@@ -2237,6 +2284,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StreamChatSwiftUITestsApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chat SwiftUI Tests";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera for sending photo attachments.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Access to your photo library is needed for attaching photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

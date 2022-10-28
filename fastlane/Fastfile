@@ -17,6 +17,10 @@ before_all do
   end
 end
 
+after_all do |lane|
+  stop_sinatra if lane == :test_e2e_mock
+end
+
 desc "Release a new version"
 lane :release do |options|
   ensure_git_branch(branch: 'main') # We can only release on default branch
@@ -143,7 +147,7 @@ end
 
 desc "Runs tests in Debug config"
 lane :test_ui do |options|
-  next unless testing_required?(:ui)
+  next unless check_required?(:ui)
 
   remove_snapshots if options[:record]
 
@@ -155,28 +159,45 @@ lane :test_ui do |options|
     testplan: "StreamChatSwiftUI",
     configuration: "Debug",
     clean: true,
+    result_bundle: true,
     devices: options[:device],
     build_for_testing: options[:build_for_testing]
   )
 end
 
-desc "Runs e2e ui tests using mock server in Debug config"
+desc 'Starts Sinatra web server'
+lane :start_sinatra do
+  sh('nohup bundle exec ruby sinatra.rb > sinatra_log.txt 2>&1 &')
+end
+
+desc 'Stops Sinatra web server'
+lane :stop_sinatra do
+  sh('lsof -t -i:4567 | xargs kill -9')
+end
+
+desc 'Runs e2e ui tests using mock server in Debug config'
 lane :test_e2e_mock do |options|
-  next unless testing_required?(:e2e)
+  next unless check_required?(:e2e)
+
+  start_sinatra
 
   add_ci_env_var_to('../StreamChatSwiftUITestsAppTests/StreamChatSwiftUITestsApp.xctestplan')
+
+  ios = options[:ios]
+  device = ios && ios != 'latest' ? "#{options[:device]} (#{ios})" : options[:device]
+  build_for_testing = is_ci && options[:cron].nil?
 
   scan_options = {
     project: 'StreamChatSwiftUI.xcodeproj',
     scheme: 'StreamChatSwiftUITestsApp',
     testplan: 'StreamChatSwiftUITestsApp',
-    configuration: 'Debug',
-    devices: options[:device],
-    number_of_retries: 1
+    result_bundle: true,
+    devices: device,
+    number_of_retries: 3 # TODO: CIS-1737
   }
-  scan(scan_options.merge(clean: true, build_for_testing: is_ci))
+  scan(scan_options.merge(clean: true, build_for_testing: build_for_testing))
 
-  if is_ci
+  if build_for_testing
     parallelize_tests_on_ci(
       scan: scan_options,
       derived_data: lane_context[SharedValues::SCAN_DERIVED_DATA_PATH],
@@ -252,7 +273,7 @@ private_lane :remove_snapshots do
   Dir.glob("../StreamChatSwiftUITests/**/__Snapshots__/**/*.png").select { |file| File.delete(file) }
 end
 
-def testing_required?(type)
+def check_required?(type)
   return true if ENV['GITHUB_EVENT_NAME'] != 'pull_request'
 
   sources = {
@@ -263,6 +284,8 @@ def testing_required?(type)
   pr_number = JSON.parse(ENV['GITHUB_EVENT'])['pull_request']['number']
 
   changed_files = sh("gh pr view #{pr_number} --json files -q '.files[].path'")
+
+  return true if changed_files.size == 100 # TODO: https://github.com/cli/cli/issues/5368
 
   changed_files = changed_files.split("\n").select do |path|
     sources[type.to_sym].any? { |required| path.start_with?(required) }
