@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import SwiftUI
 import XCTest
 
 class ChatChannelListView_Tests: StreamChatTestCase {
@@ -30,6 +31,24 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             viewFactory: DefaultViewFactory.shared,
             channelListController: controller
         )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_chatChannelListViewSansNavigation_snapshot() {
+        // Given
+        let controller = makeChannelListController()
+        
+        // When
+        let view = NavigationView {
+            ChatChannelListView(
+                viewFactory: DefaultViewFactory.shared,
+                channelListController: controller,
+                embedInNavigationView: false
+            )
+        }
         .applyDefaultSize()
 
         // Then

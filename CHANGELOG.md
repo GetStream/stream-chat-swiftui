@@ -12,6 +12,7 @@ _October 27, 2022_
 - Support for custom message receipt states
 - Scrolling of instant commands
 - Config to turn off tab bar visibility handling
+- ChatChannelListView can now, optionally, be embedded in your own navigation stack by specifying `embedInNavigationView: false` during initialization.
 
 ### 🔄 Changed
 - Updated Nuke dependency to 11.3.0 for SPM
