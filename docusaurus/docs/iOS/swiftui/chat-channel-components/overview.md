@@ -79,3 +79,21 @@ struct ExampleApp: App {
 :::info
 This example shows how to display the `ChatChannelView` on app startup. It is perfectly applicable everywhere else in an app (e.g. embedding it in a `NavigationLink` as the `destination`).
 :::
+
+
+In some cases you may want to display a `ChatChannelView` outside of a root context, in your own Navigation Stack. To do this, specify the `embedInNavigationView` as `false` when initializing your chat view.
+
+```swift
+NavigationView {
+    ChatChannelView(
+        viewFactory: MyViewFactory.shared,
+        channelController: chatClient.channelController(
+            for: try! ChannelId(cid: "my-channel-id"),
+            messageOrdering: .topToBottom
+        ),
+        embedInNavigationView: false
+    )
+}
+```
+
+The default value of `embedInNavigationView` is `true` and means that a `ChatChannelListView` should be presented as a root view (e.g. in a `TabBar` or as a Sidebar item on an iPad) or as a modal view (e.g. `sheet` or `fullScreenCover`). If you change this parameter to `false`, you'll need to make sure the presenting views are part of a navigation hierarchy or embed the `ChatChannelListView` in a `NavigationView` themselves.

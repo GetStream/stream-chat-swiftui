@@ -17,6 +17,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private let viewFactory: Factory
     private let title: String
     private var onItemTap: (ChatChannel) -> Void
+    private var embedInNavigationView: Bool
     private var handleTabBarVisibility: Bool
     
     public init(
@@ -26,7 +27,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         title: String = "Stream Chat",
         onItemTap: ((ChatChannel) -> Void)? = nil,
         selectedChannelId: String? = nil,
-        handleTabBarVisibility: Bool = true
+        handleTabBarVisibility: Bool = true,
+        embedInNavigationView: Bool = true
     ) {
         let channelListVM = viewModel ?? ViewModelsFactory.makeChannelListViewModel(
             channelListController: channelListController,
@@ -38,6 +40,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         self.viewFactory = viewFactory
         self.title = title
         self.handleTabBarVisibility = handleTabBarVisibility
+        self.embedInNavigationView = embedInNavigationView
         if let onItemTap = onItemTap {
             self.onItemTap = onItemTap
         } else {
@@ -48,57 +51,14 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        NavigationView {
-            Group {
-                if viewModel.loading {
-                    viewFactory.makeLoadingView()
-                } else if viewModel.channels.isEmpty {
-                    viewFactory.makeNoChannelsView()
-                } else {
-                    ChatChannelListContentView(
-                        viewFactory: viewFactory,
-                        viewModel: viewModel,
-                        onItemTap: onItemTap
-                    )
-                }
-            }
-            .onDisappear(perform: {
-                if viewModel.selectedChannel != nil {
-                    viewModel.hideTabBar = true
-                }
-                if viewModel.swipedChannelId != nil {
-                    viewModel.swipedChannelId = nil
-                }
+        container()
+            .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
+            .accentColor(colors.tintColor)
+            .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
+                view.navigationViewStyle(.stack)
             })
             .background(
-                viewFactory.makeChannelListBackground(colors: colors)
-            )
-            .alert(isPresented: $viewModel.alertShown) {
-                switch viewModel.channelAlertType {
-                case let .deleteChannel(channel):
-                    return Alert(
-                        title: Text(L10n.Alert.Actions.deleteChannelTitle),
-                        message: Text(L10n.Alert.Actions.deleteChannelMessage),
-                        primaryButton: .destructive(Text(L10n.Alert.Actions.delete)) {
-                            viewModel.delete(channel: channel)
-                        },
-                        secondaryButton: .cancel()
-                    )
-                default:
-                    return Alert.defaultErrorAlert
-                }
-            }
-            .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title))
-            .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
-            .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
-        }
-        .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
-        .accentColor(colors.tintColor)
-        .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
-            view.navigationViewStyle(.stack)
-        })
-        .background(
-            isIphone && handleTabBarVisibility ?
+                isIphone && handleTabBarVisibility ?
                 Color.clear.background(
                     TabBarAccessor { tabBar in
                         self.tabBar = tabBar
@@ -106,14 +66,71 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 )
                 .allowsHitTesting(false)
                 : nil
-        )
-        .onReceive(viewModel.$hideTabBar) { newValue in
-            if isIphone && handleTabBarVisibility {
-                self.setupTabBarAppeareance()
-                self.tabBar?.isHidden = newValue
+            )
+            .onReceive(viewModel.$hideTabBar) { newValue in
+                if isIphone && handleTabBarVisibility {
+                    self.setupTabBarAppeareance()
+                    self.tabBar?.isHidden = newValue
+                }
+            }
+            .accessibilityIdentifier("ChatChannelListView")
+    }
+    
+    @ViewBuilder
+    private func container() -> some View {
+        if embedInNavigationView == true {
+            NavigationView {
+                content()
+            }
+        } else {
+            content()
+        }
+    }
+    
+    @ViewBuilder
+    private func content() -> some View {
+        Group {
+            if viewModel.loading {
+                viewFactory.makeLoadingView()
+            } else if viewModel.channels.isEmpty {
+                viewFactory.makeNoChannelsView()
+            } else {
+                ChatChannelListContentView(
+                    viewFactory: viewFactory,
+                    viewModel: viewModel,
+                    onItemTap: onItemTap
+                )
             }
         }
-        .accessibilityIdentifier("ChatChannelListView")
+        .onDisappear(perform: {
+            if viewModel.selectedChannel != nil {
+                viewModel.hideTabBar = true
+            }
+            if viewModel.swipedChannelId != nil {
+                viewModel.swipedChannelId = nil
+            }
+        })
+        .background(
+            viewFactory.makeChannelListBackground(colors: colors)
+        )
+        .alert(isPresented: $viewModel.alertShown) {
+            switch viewModel.channelAlertType {
+            case let .deleteChannel(channel):
+                return Alert(
+                    title: Text(L10n.Alert.Actions.deleteChannelTitle),
+                    message: Text(L10n.Alert.Actions.deleteChannelMessage),
+                    primaryButton: .destructive(Text(L10n.Alert.Actions.delete)) {
+                        viewModel.delete(channel: channel)
+                    },
+                    secondaryButton: .cancel()
+                )
+            default:
+                return Alert.defaultErrorAlert
+            }
+        }
+        .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title))
+        .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
+        .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
     
     private func setupTabBarAppeareance() {
