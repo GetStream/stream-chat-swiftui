@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Support for specifying whether ChatChannelListView is embedded in a NavigationView with `embedInNavigationView`
 
 # [4.23.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.23.0)
 _October 27, 2022_
@@ -12,7 +13,6 @@ _October 27, 2022_
 - Support for custom message receipt states
 - Scrolling of instant commands
 - Config to turn off tab bar visibility handling
-- ChatChannelListView can now, optionally, be embedded in your own navigation stack by specifying `embedInNavigationView: false` during initialization.
 
 ### 🔄 Changed
 - Updated Nuke dependency to 11.3.0 for SPM
