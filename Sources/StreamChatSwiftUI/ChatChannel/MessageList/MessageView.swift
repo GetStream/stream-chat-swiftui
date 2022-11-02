@@ -118,6 +118,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     private let trailingPadding: CGFloat
     private let topPadding: CGFloat
     private let bottomPadding: CGFloat
+    private let lineSpacing: CGFloat
     @Binding var scrolledId: String?
 
     public init(
@@ -128,6 +129,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         trailingPadding: CGFloat = 16,
         topPadding: CGFloat = 8,
         bottomPadding: CGFloat = 8,
+        lineSpacing: CGFloat = 1,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
@@ -137,6 +139,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.trailingPadding = trailingPadding
         self.topPadding = topPadding
         self.bottomPadding = bottomPadding
+        self.lineSpacing = lineSpacing
         _scrolledId = scrolledId
     }
     
@@ -162,6 +165,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
+                .lineSpacing(lineSpacing)
         }
         .modifier(
             factory.makeMessageViewModifier(
