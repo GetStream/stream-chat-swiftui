@@ -16,6 +16,10 @@ public struct DefaultChatChannelListHeader: ToolbarContent {
     
     public var title: String
     
+    public init(title: String) {
+        self.title = title
+    }
+    
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title)
@@ -27,6 +31,10 @@ public struct DefaultChatChannelListHeader: ToolbarContent {
 /// The default channel list header modifier.
 public struct DefaultChannelListHeaderModifier: ChannelListHeaderViewModifier {
     public var title: String
+    
+    public init(title: String) {
+        self.title = title
+    }
     
     public func body(content: Content) -> some View {
         content.toolbar {
