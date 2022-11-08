@@ -58,12 +58,6 @@ struct ComposerTextInputView: UIViewRepresentable {
                 if uiView.contentSize.height != height {
                     uiView.contentSize.height = height
                 }
-                
-                let previous = uiView.isScrollEnabled
-                uiView.isScrollEnabled = height > currentHeight
-                if previous == false && previous != uiView.isScrollEnabled {
-                    uiView.scrollToBottom()
-                }
             }
         }
     }

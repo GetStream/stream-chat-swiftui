@@ -97,7 +97,7 @@ class InputTextView: UITextView, AccessibilityView {
             )
         )
         placeholderLabel.pin(anchors: [.centerY], to: self)
-        isScrollEnabled = false
+        isScrollEnabled = true
     }
 
     /// Sets the given text in the current caret position.
@@ -140,5 +140,8 @@ class InputTextView: UITextView, AccessibilityView {
     override open func paste(_ sender: Any?) {
         super.paste(sender)
         handleTextChange()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.scrollToBottom()
+        }
     }
 }

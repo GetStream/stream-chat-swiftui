@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Support for specifying whether ChatChannelListView is embedded in a NavigationView with `embedInNavigationView`
 
+### 🔄 Changed
+- Public init for `DefaultChannelListHeaderModifier`
+
+### 🐞 Fixed
+- Scroll to bottom when return key is pressed in the composer input view
+
 # [4.23.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.23.0)
 _October 27, 2022_
 
