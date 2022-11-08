@@ -821,6 +821,8 @@ extension MessageList_Tests {
     func test_deletesMessage() throws {
         linkToScenario(withId: 386)
         
+        throw XCTSkip("Check out SWUI-254")
+        
         let message = "test message"
         
         GIVEN("user opens the channel") {
