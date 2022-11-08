@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Scroll to bottom when return key is pressed in the composer input view
+- Typing indicator not shown when empty message list
 
 # [4.23.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.23.0)
 _October 27, 2022_

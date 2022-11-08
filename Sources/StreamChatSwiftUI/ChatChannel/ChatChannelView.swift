@@ -9,6 +9,7 @@ import SwiftUI
 public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
     
     @StateObject private var viewModel: ChatChannelViewModel
     
@@ -69,7 +70,15 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 : nil
                         )
                     } else {
-                        factory.makeEmptyMessagesView(for: channel, colors: colors)
+                        ZStack {
+                            factory.makeEmptyMessagesView(for: channel, colors: colors)
+                            if viewModel.shouldShowTypingIndicator {
+                                factory.makeTypingIndicatorBottomView(
+                                    channel: channel,
+                                    currentUserId: chatClient.currentUserId
+                                )
+                            }
+                        }
                     }
                     
                     Divider()
