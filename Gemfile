@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'cocoapods'
 gem 'danger'
@@ -12,7 +12,7 @@ gem 'fastlane-plugin-lizard'
 gem 'jazzy'
 gem 'json'
 gem 'plist'
-gem 'rubocop', '1.12.1'
+gem 'rubocop', '1.38'
 gem 'rubocop-performance'
 gem 'rubocop-require_tools'
 gem 'sinatra'

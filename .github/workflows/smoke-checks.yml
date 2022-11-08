@@ -27,14 +27,17 @@ jobs:
   automated-code-review:
     name: Automated Code Review
     runs-on: macos-12
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PR_NUM: ${{ github.event.number }}
     if: ${{ github.event_name != 'push' }}
     steps:
     - uses: actions/checkout@v2.5.0
     - uses: ./.github/actions/bootstrap
     - name: Run Danger
       run: bundle exec danger
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run Fastlane Linting
+      run: bundle exec fastlane rubocop
     - name: Run Linting
       run: ./Scripts/run-linter.sh
 
@@ -56,7 +59,7 @@ jobs:
       timeout-minutes: 30
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_EVENT: ${{ toJson(github.event) }}
+        GITHUB_PR_NUM: ${{ github.event.number }}
     - name: Get branch name
       id: get_branch_name
       run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
@@ -112,7 +115,7 @@ jobs:
       run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_EVENT: ${{ toJson(github.event) }}
+        GITHUB_PR_NUM: ${{ github.event.number }}
         MATRIX_SIZE: ${{ strategy.job-total }}
     - name: Allure TestOps Upload
       if: env.LAUNCH_ID != '' && (success() || failure())

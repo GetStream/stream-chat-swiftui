@@ -59,13 +59,13 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             })
             .background(
                 isIphone && handleTabBarVisibility ?
-                Color.clear.background(
-                    TabBarAccessor { tabBar in
-                        self.tabBar = tabBar
-                    }
-                )
-                .allowsHitTesting(false)
-                : nil
+                    Color.clear.background(
+                        TabBarAccessor { tabBar in
+                            self.tabBar = tabBar
+                        }
+                    )
+                    .allowsHitTesting(false)
+                    : nil
             )
             .onReceive(viewModel.$hideTabBar) { newValue in
                 if isIphone && handleTabBarVisibility {
