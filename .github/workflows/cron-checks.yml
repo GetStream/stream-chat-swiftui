@@ -13,13 +13,8 @@ jobs:
     name: Test E2E UI (Debug)
     strategy:
       matrix:
-        ios: [14.5, 15.4, latest]
-        device: ["iPhone 8"]
-        include:
-          - ios: latest
-            device: "iPhone SE (3rd generation)"
-          - ios: latest
-            device: "iPad Air (5th generation)"
+        ios: [latest]
+        device: ["iPhone 8", "iPhone SE (3rd generation)", "iPhone 14 Pro Max"]
       fail-fast: false
     runs-on: macos-12
     env:
