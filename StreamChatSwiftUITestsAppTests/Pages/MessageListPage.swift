@@ -28,7 +28,7 @@ class MessageListPage {
     }
     
     static var typingIndicator: XCUIElement {
-        app.otherElements["TypingIndicatorBottomView"].staticTexts.firstMatch
+        app.staticTexts["TypingIndicatorBottomView"].firstMatch
     }
     
     static var scrollToBottomButton: XCUIElement {

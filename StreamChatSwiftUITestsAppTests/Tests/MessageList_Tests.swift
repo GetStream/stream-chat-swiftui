@@ -203,11 +203,7 @@ final class MessageList_Tests: StreamTestCase {
     func test_typingIndicator() throws {
         linkToScenario(withId: 358)
         
-        throw XCTSkip("Check out SWUI-251")
-        
-        let isIpad = UIDevice.current.userInterfaceIdiom == .pad
-        let typingIndicatorTimeout = isIpad ? 10 : XCUIElement.waitTimeout
-        let typingEventsTimeout: Double = 3
+        let typingEventsTimeout: Double = 4
         
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
@@ -217,16 +213,13 @@ final class MessageList_Tests: StreamTestCase {
         }
         THEN("user observes typing indicator is shown") {
             let typingUserName = UserDetails.userName(for: participantRobot.currentUserId)
-            userRobot.assertTypingIndicatorShown(
-                typingUserName: typingUserName,
-                waitTimeout: typingIndicatorTimeout
-            )
+            userRobot.assertTypingIndicatorShown(typingUserName: typingUserName)
         }
         WHEN("participant stops typing") {
             participantRobot.wait(typingEventsTimeout).stopTyping()
         }
         THEN("user observes typing indicator has disappeared") {
-            userRobot.assertTypingIndicatorHidden(waitTimeout: typingIndicatorTimeout)
+            userRobot.assertTypingIndicatorHidden()
         }
     }
 
