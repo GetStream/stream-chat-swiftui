@@ -225,6 +225,8 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_messageListScrollsDown_whenMessageListIsScrolledUp_andUserSendsNewMessage() throws {
         linkToScenario(withId: 359)
+        
+        throw XCTSkip("Check out SWUI-256")
 
         let newMessage = "New message"
 
