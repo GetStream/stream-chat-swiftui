@@ -7,6 +7,7 @@ on:
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
+  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 180
 
 jobs:
   build-and-test-e2e-debug:
