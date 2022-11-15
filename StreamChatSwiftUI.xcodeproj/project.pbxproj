@@ -2685,7 +2685,7 @@
 			repositoryURL = "https://github.com/kean/Nuke.git";
 			requirement = {
 				kind = exactVersion;
-				version = 11.3.0;
+				version = 11.3.1;
 			};
 		};
 		8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
