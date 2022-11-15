@@ -15,6 +15,7 @@ before_all do
   if is_ci
     setup_ci
     xcversion(version: "~> #{xcode_version}")
+    ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '180'
   end
 end
 
