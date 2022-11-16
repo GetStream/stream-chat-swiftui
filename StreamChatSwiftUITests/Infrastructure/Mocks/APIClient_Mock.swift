@@ -43,7 +43,7 @@ class APIClientMock: APIClient, Spy {
         uploadFile_completion = nil
     }
 
-    override init(
+    init(
         sessionConfiguration: URLSessionConfiguration,
         requestEncoder: RequestEncoder,
         requestDecoder: RequestDecoder,
@@ -55,13 +55,14 @@ class APIClientMock: APIClient, Spy {
         init_requestEncoder = requestEncoder
         init_requestDecoder = requestDecoder
         init_CDNClient = CDNClient
+        let attachmentUploader = StreamAttachmentUploader(cdnClient: CDNClient)
         request_expectation = .init()
 
         super.init(
             sessionConfiguration: sessionConfiguration,
             requestEncoder: requestEncoder,
             requestDecoder: requestDecoder,
-            CDNClient: CDNClient,
+            attachmentUploader: attachmentUploader,
             tokenRefresher: tokenRefresher,
             queueOfflineRequest: queueOfflineRequest
         )
@@ -97,7 +98,7 @@ class APIClientMock: APIClient, Spy {
         _recoveryRequest_allRecordedCalls.mutate { $0.append((recoveryRequest_endpoint!, recoveryRequest_completion!)) }
     }
     
-    override func uploadAttachment(
+    func uploadAttachment(
         _ attachment: AnyChatMessageAttachment,
         progress: ((Double) -> Void)?,
         completion: @escaping (Result<URL, Error>) -> Void

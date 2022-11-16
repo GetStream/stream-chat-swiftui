@@ -88,7 +88,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 ZStack {
                     if !quotedMessage.imageAttachments.isEmpty {
                         LazyLoadingImage(
-                            source: quotedMessage.imageAttachments[0].imagePreviewURL,
+                            source: quotedMessage.imageAttachments[0].imageURL,
                             width: attachmentWidth,
                             height: attachmentWidth,
                             resize: false

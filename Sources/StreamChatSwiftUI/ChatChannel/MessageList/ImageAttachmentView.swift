@@ -132,7 +132,7 @@ struct ImageAttachmentView: View {
             if let state = attachment.uploadingState {
                 return state.localFileURL
             } else {
-                return attachment.imagePreviewURL
+                return attachment.imageURL
             }
         }
     }
