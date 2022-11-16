@@ -40,7 +40,7 @@ lane :release do |options|
 
   UI.user_error!("Tag for version #{version_number} already exists!") if git_tag_exists(tag: version_number)
 
-  changes = touch_changelog(release_version: version_number)
+  changes = touch_changelog(release_version: version_number, github_repo: github_repo)
 
   podspec = 'StreamChatSwiftUI.podspec'
   pod_lib_lint(podspec: podspec, allow_warnings: true)
