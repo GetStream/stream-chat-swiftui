@@ -65,7 +65,7 @@ lane :release do |options|
     description: changes
   )
 
-  pod_push(path: podspec, allow_warnings: true, sync: options[:sync] & true)
+  pod_push(path: podspec, allow_warnings: true)
 
   UI.success("Successfully released #{version_number}")
   UI.success("Github release was created, please visit #{github_release['url']} to see it")
