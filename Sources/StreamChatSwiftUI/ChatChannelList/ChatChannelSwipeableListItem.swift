@@ -31,6 +31,8 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     
     /// minimum horizontal translation value necessary to open the side menu
     private let openTriggerValue: CGFloat = 60
+    /// max horizontal translation value necessary to open the side menu
+    private let maxTriggerValue: CGFloat = 300
     /// An additional value to add to the open menu width. This is useful if the cell has rounded corners.
     private let addWidthMargin: CGFloat = 5
     
@@ -141,6 +143,10 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     
     private func dragChanged(to value: CGFloat) {
         let horizontalTranslation = value
+        
+        if abs(horizontalTranslation) > maxTriggerValue {
+            return
+        }
          
         if horizontalTranslation > 0 && openSideLock == nil && !showLeadingSwipeActions {
             // prevent swiping to left, if not configured.
