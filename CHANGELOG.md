@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Renaming of a channel in ChannelInfo not persisting extra data
 
 # [4.24.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.24.0)
 _November 16, 2022_

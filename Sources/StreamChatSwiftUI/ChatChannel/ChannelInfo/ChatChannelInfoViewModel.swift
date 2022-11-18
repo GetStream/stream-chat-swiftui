@@ -162,7 +162,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         channelController.updateChannel(
             name: channelName,
             imageURL: channel.imageURL,
-            team: channel.team
+            team: channel.team,
+            extraData: channel.extraData
         )
     }
     
