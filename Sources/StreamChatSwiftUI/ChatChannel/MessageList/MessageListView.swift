@@ -23,13 +23,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
     
-    var onMessageAppear: (Int) -> Void
+    var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: () -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
+    var onJumpToMessage: (String) -> Bool
     
     @State private var width: CGFloat?
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
+    @State private var scrollDirection = ScrollDirection.up
     
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -64,9 +66,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         listId: String,
         isMessageThread: Bool,
         shouldShowTypingIndicator: Bool,
-        onMessageAppear: @escaping (Int) -> Void,
+        onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        onJumpToMessage: @escaping (String) -> Bool
     ) {
         self.factory = factory
         self.channel = channel
@@ -78,6 +81,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onMessageAppear = onMessageAppear
         self.onScrollToBottom = onScrollToBottom
         self.onLongPress = onLongPress
+        self.onJumpToMessage = onJumpToMessage
         self.shouldShowTypingIndicator = shouldShowTypingIndicator
         _scrolledId = scrolledId
         _showScrollToLatestButton = showScrollToLatestButton
@@ -130,7 +134,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     index = messageListDateUtils.index(for: message, in: messages)
                                 }
                                 if let index = index {
-                                    onMessageAppear(index)
+                                    onMessageAppear(index, scrollDirection)
                                 }
                             }
                             .padding(
@@ -178,7 +182,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
+                        print("===== offset changed to \(offsetValue)")
                         let diff = offsetValue - utils.messageCachingUtils.scrollOffset
+                        if abs(diff) > 30 {
+                            if diff > 0 && scrollDirection == .up {
+                                scrollDirection = .down
+                            } else if diff < 0 && scrollDirection == .down {
+                                scrollDirection = .up
+                            }
+                            print("===== scroll direction changed to \(scrollDirection)")
+                        }
                         utils.messageCachingUtils.scrollOffset = offsetValue
                         let scrollButtonShown = offsetValue < -20
                         if scrollButtonShown != showScrollToLatestButton {
@@ -195,12 +208,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .clipped()
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId = scrolledId {
-                        if scrolledId == messages.first?.messageId {
-                            self.scrolledId = nil
-                        } else {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                self.scrolledId = nil
-                            }
+                        let shouldJump = onJumpToMessage(scrolledId)
+                        if !shouldJump {
+                            return
                         }
                         withAnimation {
                             scrollView.scrollTo(scrolledId, anchor: .bottom)
@@ -301,6 +311,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             onLongPress(messageDisplayInfo)
         }
     }
+}
+
+public enum ScrollDirection {
+    case up
+    case down
 }
 
 public struct ScrollToBottomButton: View {

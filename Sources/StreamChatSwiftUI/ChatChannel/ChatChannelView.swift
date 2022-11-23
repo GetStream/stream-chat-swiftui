@@ -55,14 +55,15 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             listId: viewModel.listId,
                             isMessageThread: viewModel.isMessageThread,
                             shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
-                            onMessageAppear: viewModel.handleMessageAppear(index:),
+                            onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
                             onScrollToBottom: viewModel.scrollToLastMessage,
                             onLongPress: { displayInfo in
                                 messageDisplayInfo = displayInfo
                                 withAnimation {
                                     viewModel.showReactionOverlay(for: AnyView(self))
                                 }
-                            }
+                            },
+                            onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
                         .overlay(
                             viewModel.currentDateString != nil ?
