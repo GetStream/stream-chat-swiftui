@@ -15,6 +15,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
+    @Binding var offsetY: CGFloat?
     private var scrollable: Bool
     private var onlineIndicatorShown: (ChatChannel) -> Bool
     private var imageLoader: (ChatChannel) -> UIImage
@@ -31,6 +32,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
+        offsetY: Binding<CGFloat?>,
         scrollable: Bool = true,
         onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
         imageLoader: @escaping (ChatChannel) -> UIImage,
@@ -56,13 +58,24 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.scrollable = scrollable
         _selectedChannel = selectedChannel
         _swipedChannelId = swipedChannelId
+        _offsetY = offsetY
     }
     
     public var body: some View {
         Group {
             if scrollable {
                 ScrollView {
-                    channelsVStack
+                    ZStack {
+                        channelsVStack
+                        GeometryReader { proxy in
+                            let offset = proxy.frame(in: .named("scroll")).minY
+                            Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
+                        }
+                    }
+                }
+                .coordinateSpace(name: "scroll")
+                .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
+                    offsetY = value
                 }
             } else {
                 channelsVStack

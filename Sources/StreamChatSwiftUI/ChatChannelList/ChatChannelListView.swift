@@ -219,6 +219,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,
                     swipedChannelId: $viewModel.swipedChannelId,
+                    offsetY: $viewModel.offsetY,
                     onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                     imageLoader: channelHeaderLoader.image(for:),
                     onItemTap: onItemTap,
