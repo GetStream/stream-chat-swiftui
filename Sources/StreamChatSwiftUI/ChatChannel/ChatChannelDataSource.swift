@@ -49,6 +49,11 @@ protocol ChannelDataSource: AnyObject {
         limit: Int,
         completion: ((Error?) -> Void)?
     )
+    
+    func loadNextMessages(
+        limit: Int,
+        completion: ((Error?) -> Void)?
+    )
 }
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
@@ -97,6 +102,10 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
             limit: limit,
             completion: completion
         )
+    }
+    
+    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+        controller.loadNextMessages(limit: limit, completion: completion)
     }
 }
 
@@ -159,5 +168,9 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
             limit: limit,
             completion: completion
         )
+    }
+    
+    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+        // TODO: implement
     }
 }

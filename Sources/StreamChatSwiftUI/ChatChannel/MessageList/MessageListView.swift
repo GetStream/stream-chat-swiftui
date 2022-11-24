@@ -182,15 +182,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
-                        print("===== offset changed to \(offsetValue)")
                         let diff = offsetValue - utils.messageCachingUtils.scrollOffset
-                        if abs(diff) > 30 {
-                            if diff > 0 && scrollDirection == .up {
-                                scrollDirection = .down
+                        if abs(diff) > 15 {
+                            if diff > 0 {
+                                if scrollDirection == .up {
+                                    scrollDirection = .down
+                                }
                             } else if diff < 0 && scrollDirection == .down {
                                 scrollDirection = .up
                             }
-                            print("===== scroll direction changed to \(scrollDirection)")
                         }
                         utils.messageCachingUtils.scrollOffset = offsetValue
                         let scrollButtonShown = offsetValue < -20

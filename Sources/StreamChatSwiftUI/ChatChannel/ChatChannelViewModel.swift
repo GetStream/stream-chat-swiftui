@@ -40,6 +40,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
+    private let messageJumpQueue = DispatchQueue(label: "io.getstream.messageJump")
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -171,38 +172,42 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         scrolledId = messages.first?.messageId
     }
-    
+        
     public func jumpToMessage(messageId: String) -> Bool {
-        if messageId == messages.first?.messageId {
-            scrolledId = nil
-            return true
-        } else {
-            guard let baseId = messageId.components(separatedBy: "$").first else {
+        messageJumpQueue.sync {
+            if messageId == messages.first?.messageId {
                 scrolledId = nil
-                return true
-            }
-            let alreadyLoaded = messages.map(\.id).contains(baseId)
-            if alreadyLoaded {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    self.scrolledId = nil
-                }
                 return true
             } else {
-                scrolledId = nil
-                if loadingMessagesAround {
+                guard let baseId = messageId.components(separatedBy: "$").first else {
+                    scrolledId = nil
+                    return true
+                }
+                let alreadyLoaded = messages.map(\.id).contains(baseId)
+                if alreadyLoaded {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        self.scrolledId = nil
+                    }
+                    return true
+                } else {
+                    scrolledId = nil
+                    if loadingMessagesAround {
+                        return false
+                    }
+                    loadingMessagesAround = true
+                    channelController.loadMessagesAround(messageId: baseId) { [weak self] error in
+                        if error != nil {
+                            log.error("Error loading messages around message \(messageId)")
+                            return
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            self?.scrolledId = messageId
+                            self?.jumpedToOtherPage = true
+                            self?.loadingMessagesAround = false
+                        }
+                    }
                     return false
                 }
-                loadingMessagesAround = true
-                channelController.loadMessagesAround(messageId: baseId) { [weak self] error in
-                    if error != nil {
-                        log.error("Error loading messages around message \(messageId)")
-                        return
-                    }
-                    self?.scrolledId = messageId
-                    self?.jumpedToOtherPage = true
-                    self?.loadingMessagesAround = false
-                }
-                return false
             }
         }
     }
@@ -316,9 +321,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func checkForNewerMessages(index: Int) {
         if !loadingNextMessages {
             loadingNextMessages = true
-            log.debug("Loading newer messages")
-            // TODO: update the data source.
-            channelController.loadNextMessages() { [weak self] _ in
+            channelDataSource.loadNextMessages(limit: 5) { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextMessages = false
             }
@@ -485,7 +488,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
-        if !utils.messageListConfig.messageDisplayOptions.animateChanges || jumpedToOtherPage {
+        if !utils.messageListConfig.messageDisplayOptions.animateChanges {
             return .notAnimated
         }
         
