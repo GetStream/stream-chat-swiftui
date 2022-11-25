@@ -54,8 +54,8 @@ public struct MessageAction: Identifiable, Equatable {
 
 /// Provides information about a performed `MessageAction`.
 public struct MessageActionInfo {
-    let message: ChatMessage
-    let identifier: String
+    public let message: ChatMessage
+    public let identifier: String
     
     public init(message: ChatMessage, identifier: String) {
         self.message = message
