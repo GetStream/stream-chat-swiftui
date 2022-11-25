@@ -42,6 +42,8 @@ final class Attachments_Tests: StreamTestCase {
     func test_participantUploadsVideo() throws {
         linkToScenario(withId: 312)
         
+        throw XCTSkip("Check out CIS-2294")
+        
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -55,8 +57,6 @@ final class Attachments_Tests: StreamTestCase {
     
     func test_participantUploadsFile() throws {
         linkToScenario(withId: 313)
-        
-        throw XCTSkip("Check out CIS-2294")
         
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
