@@ -195,7 +195,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                         return false
                     }
                     loadingMessagesAround = true
-                    channelController.loadMessagesAround(messageId: baseId) { [weak self] error in
+                    channelController.loadPageAroundMessageId(baseId) { [weak self] error in
                         if error != nil {
                             log.error("Error loading messages around message \(messageId)")
                             return
@@ -319,12 +319,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func checkForNewerMessages(index: Int) {
-        if !loadingNextMessages {
-            loadingNextMessages = true
-            channelDataSource.loadNextMessages(limit: 5) { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextMessages = false
-            }
+        channelDataSource.loadNextMessages(limit: 5) { [weak self] _ in
+//            guard let self = self else { return }
+//            self.loadingNextMessages = false
         }
     }
     
