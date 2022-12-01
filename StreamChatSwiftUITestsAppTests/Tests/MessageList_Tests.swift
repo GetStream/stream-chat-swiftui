@@ -913,7 +913,7 @@ extension MessageList_Tests {
         }
         AND("user observes the thread reply removed in thread") {
             userRobot
-                .openThread(messageCellIndex: 1)
+                .openThread(messageCellIndex: 1, waitForThreadIcon: true)
                 .assertDeletedMessage()
         }
     }
