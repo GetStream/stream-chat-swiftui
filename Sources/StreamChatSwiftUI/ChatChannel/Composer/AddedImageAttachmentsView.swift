@@ -55,7 +55,7 @@ public struct AddedImageAttachmentsView: View {
             }
             .frame(height: imageSize)
             .onChange(of: images) { [images] newValue in
-                if newValue.count > images.count {
+                if #available(iOS 15, *), newValue.count > images.count {
                     let last = newValue.last
                     withAnimation {
                         reader.scrollTo(last?.id, anchor: .trailing)
