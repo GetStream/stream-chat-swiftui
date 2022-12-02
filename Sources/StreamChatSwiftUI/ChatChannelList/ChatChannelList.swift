@@ -90,7 +90,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 }
 
 /// LazyVStack displaying list of channels.
-struct ChannelsLazyVStack<Factory: ViewFactory>: View {
+public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
@@ -106,7 +106,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
     
-    init(
+    public init(
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
