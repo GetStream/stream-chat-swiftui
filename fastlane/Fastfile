@@ -7,7 +7,7 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
-xcode_version = ENV['XCODE_VERSION'] || '14.0.1'
+xcode_version = ENV['XCODE_VERSION'] || '14.1'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
 
