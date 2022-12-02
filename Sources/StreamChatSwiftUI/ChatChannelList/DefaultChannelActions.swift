@@ -57,13 +57,15 @@ extension ChannelAction {
             }
         }
 
-        let deleteConversation = deleteAction(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: onDismiss,
-            onError: onError
-        )
-        actions.append(deleteConversation)
+        if channel.ownCapabilities.contains(.deleteChannel) {
+            let deleteConversation = deleteAction(
+                for: channel,
+                chatClient: chatClient,
+                onDismiss: onDismiss,
+                onError: onError
+            )
+            actions.append(deleteConversation)
+        }
         
         let cancel = ChannelAction(
             title: L10n.Alert.Actions.cancel,

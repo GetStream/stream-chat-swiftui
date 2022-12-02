@@ -118,6 +118,7 @@ struct ChannelNameUpdateView: View {
             TextField(L10n.ChatInfo.Rename.placeholder, text: $viewModel.channelName)
                 .font(fonts.body)
                 .foregroundColor(Color(colors.text))
+                .disabled(!viewModel.canRenameChannel)
             
             Spacer()
             

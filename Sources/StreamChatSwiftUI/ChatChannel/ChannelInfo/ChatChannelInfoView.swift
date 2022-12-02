@@ -66,32 +66,34 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             Alert.defaultErrorAlert
                         }
                     
-                    ChatChannelInfoButton(
-                        title: viewModel.leaveButtonTitle,
-                        iconName: "person.fill.xmark",
-                        foregroundColor: Color(colors.alert)
-                    ) {
-                        viewModel.leaveGroupAlertShown = true
-                    }
-                    .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-                        let title = viewModel.leaveButtonTitle
-                        let message = viewModel.leaveConversationDescription
-                        let buttonTitle = viewModel.leaveButtonTitle
-                        
-                        return Alert(
-                            title: Text(title),
-                            message: Text(message),
-                            primaryButton: .destructive(Text(buttonTitle)) {
-                                viewModel.leaveConversationTapped {
-                                    if shownFromMessageList {
-                                        notifyChannelDismiss()
-                                    } else {
-                                        presentationMode.wrappedValue.dismiss()
+                    if viewModel.shouldShowLeaveConversationButton {
+                        ChatChannelInfoButton(
+                            title: viewModel.leaveButtonTitle,
+                            iconName: "person.fill.xmark",
+                            foregroundColor: Color(colors.alert)
+                        ) {
+                            viewModel.leaveGroupAlertShown = true
+                        }
+                        .alert(isPresented: $viewModel.leaveGroupAlertShown) {
+                            let title = viewModel.leaveButtonTitle
+                            let message = viewModel.leaveConversationDescription
+                            let buttonTitle = viewModel.leaveButtonTitle
+                            
+                            return Alert(
+                                title: Text(title),
+                                message: Text(message),
+                                primaryButton: .destructive(Text(buttonTitle)) {
+                                    viewModel.leaveConversationTapped {
+                                        if shownFromMessageList {
+                                            notifyChannelDismiss()
+                                        } else {
+                                            presentationMode.wrappedValue.dismiss()
+                                        }
                                     }
-                                }
-                            },
-                            secondaryButton: .cancel()
-                        )
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
                     }
                 }
             }

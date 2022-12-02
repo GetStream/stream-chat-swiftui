@@ -79,6 +79,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -101,6 +102,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -123,6 +125,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -147,6 +150,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -175,6 +179,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )

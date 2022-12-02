@@ -186,16 +186,86 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.channelName == newName)
     }
     
+    func test_chatChannelInfoVM_canRenameGroup() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        
+        // When
+        let canRenameChannel = viewModel.canRenameChannel
+        
+        // Then
+        XCTAssert(canRenameChannel == true)
+    }
+    
+    func test_chatChannelInfoVM_canNotRenameGroup() {
+        // Given
+        let channel = mockGroup(with: 5, updateCapabilities: false)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        
+        // When
+        let canRenameChannel = viewModel.canRenameChannel
+        
+        // Then
+        XCTAssert(canRenameChannel == false)
+    }
+    
+    func test_chatChannelInfoVM_leaveButtonShownInGroup() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        
+        // When
+        let leaveButton = viewModel.shouldShowLeaveConversationButton
+        
+        // Then
+        XCTAssert(leaveButton == true)
+    }
+    
+    func test_chatChannelInfoVM_leaveButtonShownInDM() {
+        // Given
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            name: "Test",
+            ownCapabilities: [.deleteChannel]
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        
+        // When
+        let leaveButton = viewModel.shouldShowLeaveConversationButton
+        
+        // Then
+        XCTAssert(leaveButton == true)
+    }
+    
+    func test_chatChannelInfoVM_leaveButtonHiddenInDM() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        
+        // When
+        let leaveButton = viewModel.shouldShowLeaveConversationButton
+        
+        // Then
+        XCTAssert(leaveButton == false)
+    }
+    
     // MARK: - private
     
-    private func mockGroup(with memberCount: Int) -> ChatChannel {
+    private func mockGroup(with memberCount: Int, updateCapabilities: Bool = true) -> ChatChannel {
         let cid: ChannelId = .unique
         let activeMembers = ChannelInfoMockUtils.setupMockMembers(
             count: memberCount,
             currentUserId: chatClient.currentUserId!
         )
+        var capabilities = Set<ChannelCapability>()
+        if updateCapabilities {
+            capabilities.insert(.updateChannel)
+            capabilities.insert(.deleteChannel)
+        }
         let channel = ChatChannel.mock(
             cid: cid,
+            ownCapabilities: capabilities,
             lastActiveMembers: activeMembers,
             memberCount: activeMembers.count
         )

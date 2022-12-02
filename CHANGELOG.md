@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Support for channel own capabilities in the UI
+
 ### 🐞 Fixed
 - Renaming of a channel in ChannelInfo not persisting extra data
 - Channel list item swipe gesture collision with native gesture

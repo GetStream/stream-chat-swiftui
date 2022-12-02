@@ -255,14 +255,16 @@ public struct TrailingSwipeActionsView: View {
                         .foregroundColor(Color(colors.text))
                         .background(Color(colors.background1))
                         
-                    ActionItemButton(imageName: "trash", action: {
-                        withAnimation {
-                            rightButtonTapped(channel)
-                        }
-                    })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.textInverted))
-                        .background(Color(colors.alert))
+                    if channel.ownCapabilities.contains(.deleteChannel) {
+                        ActionItemButton(imageName: "trash", action: {
+                            withAnimation {
+                                rightButtonTapped(channel)
+                            }
+                        })
+                            .frame(width: buttonWidth)
+                            .foregroundColor(Color(colors.textInverted))
+                            .background(Color(colors.alert))
+                    }
                 }
             }
             .opacity(self.offsetX < -5 ? 1 : 0)
