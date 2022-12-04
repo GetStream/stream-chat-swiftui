@@ -55,6 +55,21 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image)
     }
     
+    func test_trailingSwipeActionsView_snapshot() {
+        // Given
+        let view = TrailingSwipeActionsView(
+            channel: .mockDMChannel(),
+            offsetX: 80,
+            buttonWidth: 40,
+            leftButtonTapped: { _ in },
+            rightButtonTapped: { _ in }
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
     private func makeChannelListController() -> ChatChannelListController_Mock {
         let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
         channelListController.simulateInitial(channels: mockChannels(), state: .initialized)
