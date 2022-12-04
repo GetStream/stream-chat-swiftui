@@ -143,9 +143,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     private func dragChanged(to value: CGFloat) {
         let horizontalTranslation = value
         
-        if abs(horizontalTranslation) > maxTriggerValue {
-            return
-        }
+        if abs(horizontalTranslation) > maxTriggerValue { return }
          
         if horizontalTranslation > 0 && openSideLock == nil && !showLeadingSwipeActions {
             // prevent swiping to left, if not configured.
