@@ -144,7 +144,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        LazyVStack(spacing: 0) {
+        VStack(spacing: 0) {
             ForEach(channels) { channel in
                 factory.makeChannelListItem(
                     channel: channel,
