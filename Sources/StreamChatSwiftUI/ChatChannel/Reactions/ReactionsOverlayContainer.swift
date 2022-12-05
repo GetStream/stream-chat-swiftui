@@ -140,6 +140,22 @@ public struct ReactionAnimatableView: View {
     @Binding var animationStates: [CGFloat]
     var onReactionTap: (MessageReactionType) -> Void
     
+    public init(
+        message: ChatMessage,
+        reaction: MessageReactionType,
+        useLargeIcons: Bool = false,
+        reactions: [MessageReactionType],
+        animationStates: Binding<[CGFloat]>,
+        onReactionTap: @escaping (MessageReactionType) -> Void
+    ) {
+        self.message = message
+        self.reaction = reaction
+        self.useLargeIcons = useLargeIcons
+        self.reactions = reactions
+        _animationStates = animationStates
+        self.onReactionTap = onReactionTap
+    }
+    
     public var body: some View {
         if let image = iconProvider(for: reaction) {
             Button {
