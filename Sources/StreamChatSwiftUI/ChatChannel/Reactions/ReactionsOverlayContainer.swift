@@ -37,7 +37,10 @@ struct ReactionsOverlayContainer: View {
             Spacer()
         }
         .offset(
-            x: offsetX,
+            x: message.reactionOffsetX(
+                for: contentRect,
+                reactionsSize: reactionsSize
+            ),
             y: -20
         )
     }
@@ -54,9 +57,16 @@ struct ReactionsOverlayContainer: View {
         let entrySize = 28
         return CGFloat(reactions.count * entrySize)
     }
+}
+
+public extension ChatMessage {
     
-    private var offsetX: CGFloat {
-        if message.isSentByCurrentUser {
+    func reactionOffsetX(
+        for contentRect: CGRect,
+        availableWidth: CGFloat = UIScreen.main.bounds.width,
+        reactionsSize: CGFloat
+    ) -> CGFloat {
+        if isSentByCurrentUser {
             var originX = contentRect.origin.x - reactionsSize / 2
             let total = originX + reactionsSize
             if total > availableWidth {
@@ -71,10 +81,6 @@ struct ReactionsOverlayContainer: View {
             let originX = contentRect.origin.x - reactionsSize / 2
             return contentRect.origin.x - originX
         }
-    }
-    
-    private var availableWidth: CGFloat {
-        UIScreen.main.bounds.width
     }
 }
 
@@ -107,41 +113,64 @@ public struct ReactionsAnimatableView: View {
     public var body: some View {
         HStack {
             ForEach(reactions) { reaction in
-                if let image = iconProvider(for: reaction) {
-                    Button {
-                        onReactionTap(reaction)
-                    } label: {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(color(for: reaction))
-                            .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
-                    }
-                    .background(reactionSelectedBackgroundColor(for: reaction).cornerRadius(8))
-                    .scaleEffect(index(for: reaction) != nil ? animationStates[index(for: reaction)!] : 1)
-                    .onAppear {
-                        guard let index = index(for: reaction) else {
-                            return
-                        }
-                        
-                        withAnimation(
-                            .interpolatingSpring(
-                                stiffness: 170,
-                                damping: 8
-                            )
-                            .delay(0.1 * CGFloat(index + 1))
-                        ) {
-                            animationStates[index] = 1
-                        }
-                    }
-                    .accessibilityElement(children: .contain)
-                    .accessibilityIdentifier("reaction-\(reaction.rawValue)")
-                }
+                ReactionAnimatableView(
+                    message: message,
+                    reaction: reaction,
+                    useLargeIcons: useLargeIcons,
+                    reactions: reactions,
+                    animationStates: $animationStates,
+                    onReactionTap: onReactionTap
+                )
             }
         }
         .padding(.all, 6)
         .padding(.horizontal, 4)
         .reactionsBubble(for: message, background: colors.background8)
+    }
+}
+
+public struct ReactionAnimatableView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    
+    let message: ChatMessage
+    let reaction: MessageReactionType
+    var useLargeIcons = false
+    var reactions: [MessageReactionType]
+    @Binding var animationStates: [CGFloat]
+    var onReactionTap: (MessageReactionType) -> Void
+    
+    public var body: some View {
+        if let image = iconProvider(for: reaction) {
+            Button {
+                onReactionTap(reaction)
+            } label: {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(color(for: reaction))
+                    .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
+            }
+            .background(reactionSelectedBackgroundColor(for: reaction).cornerRadius(8))
+            .scaleEffect(index(for: reaction) != nil ? animationStates[index(for: reaction)!] : 1)
+            .onAppear {
+                guard let index = index(for: reaction) else {
+                    return
+                }
+                
+                withAnimation(
+                    .interpolatingSpring(
+                        stiffness: 170,
+                        damping: 8
+                    )
+                    .delay(0.1 * CGFloat(index + 1))
+                ) {
+                    animationStates[index] = 1
+                }
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("reaction-\(reaction.rawValue)")
+        }
     }
     
     private func reactionSelectedBackgroundColor(for reaction: MessageReactionType) -> Color? {
