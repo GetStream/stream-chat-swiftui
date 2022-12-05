@@ -110,7 +110,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
     @Published var hideTabBar = false
-    
+    @Published var firstItemIsVisible: Bool = true
+
     var isSearching: Bool {
         !searchText.isEmpty
     }
@@ -240,6 +241,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if hideTabBar != false {
             hideTabBar = false
         }
+    }
+
+    func checkFirstItemVisible(index: Int, isVisible: Bool) {
+        if index != 0 {
+            return
+        }
+
+        firstItemIsVisible = isVisible
     }
     
     // MARK: - private

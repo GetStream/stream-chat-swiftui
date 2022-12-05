@@ -225,6 +225,10 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     onItemAppear: { index in
                         viewModel.checkTabBarAppearance()
                         viewModel.checkForChannels(index: index)
+                        viewModel.checkFirstItemVisible(index: index, isVisible: true)
+                    },
+                    onItemDisappear: { index in
+                        viewModel.checkFirstItemVisible(index: index, isVisible: false)
                     },
                     channelNaming: viewModel.name(forChannel:),
                     channelDestination: viewFactory.makeChannelDestination(),
@@ -232,6 +236,9 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
+                .onChange(of: viewModel.firstItemIsVisible) { newValue in
+                    print("asdasd: ", newValue)
+                }
             }
             
             viewFactory.makeChannelListStickyFooterView()

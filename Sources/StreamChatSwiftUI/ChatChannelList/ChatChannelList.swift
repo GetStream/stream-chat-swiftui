@@ -20,6 +20,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var imageLoader: (ChatChannel) -> UIImage
     private var onItemTap: (ChatChannel) -> Void
     private var onItemAppear: (Int) -> Void
+    private var onItemDisappear: (Int) -> Void
     private var channelNaming: (ChatChannel) -> String
     private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
@@ -36,6 +37,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         imageLoader: @escaping (ChatChannel) -> UIImage,
         onItemTap: @escaping (ChatChannel) -> Void,
         onItemAppear: @escaping (Int) -> Void,
+        onItemDisappear: @escaping (Int) -> Void,
         channelNaming: @escaping (ChatChannel) -> String,
         channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
@@ -46,6 +48,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.channels = channels
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
+        self.onItemDisappear = onItemDisappear
         self.channelNaming = channelNaming
         self.channelDestination = channelDestination
         self.imageLoader = imageLoader
@@ -80,6 +83,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
             imageLoader: imageLoader,
             onItemTap: onItemTap,
             onItemAppear: onItemAppear,
+            onItemDisappear: onItemDisappear,
             channelNaming: channelNaming,
             channelDestination: channelDestination,
             trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
@@ -100,6 +104,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     private var imageLoader: (ChatChannel) -> UIImage
     private var onItemTap: (ChatChannel) -> Void
     private var onItemAppear: (Int) -> Void
+    private var onItemDisappear: (Int) -> Void
     private var channelNaming: (ChatChannel) -> String
     private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
@@ -115,6 +120,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         imageLoader: @escaping (ChatChannel) -> UIImage,
         onItemTap: @escaping (ChatChannel) -> Void,
         onItemAppear: @escaping (Int) -> Void,
+        onItemDisappear: @escaping (Int) -> Void,
         channelNaming: @escaping (ChatChannel) -> String,
         channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
@@ -125,6 +131,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         self.channels = channels
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
+        self.onItemDisappear = onItemDisappear
         self.channelNaming = channelNaming
         self.channelDestination = channelDestination
         self.imageLoader = imageLoader
@@ -158,6 +165,13 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                         chatChannel.id == channel.id
                     }) {
                         onItemAppear(index)
+                    }
+                }
+                .onDisappear {
+                    if let index = channels.firstIndex(where: { chatChannel in
+                        chatChannel.id == channel.id
+                    }) {
+                        onItemDisappear(index)
                     }
                 }
                 
