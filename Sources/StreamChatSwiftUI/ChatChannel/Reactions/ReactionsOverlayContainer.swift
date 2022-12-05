@@ -78,7 +78,7 @@ struct ReactionsOverlayContainer: View {
     }
 }
 
-struct ReactionsAnimatableView: View {
+public struct ReactionsAnimatableView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     
@@ -89,7 +89,7 @@ struct ReactionsAnimatableView: View {
     
     @State var animationStates: [CGFloat]
     
-    init(
+    public init(
         message: ChatMessage,
         useLargeIcons: Bool = false,
         reactions: [MessageReactionType],
@@ -104,7 +104,7 @@ struct ReactionsAnimatableView: View {
         )
     }
     
-    var body: some View {
+    public var body: some View {
         HStack {
             ForEach(reactions) { reaction in
                 if let image = iconProvider(for: reaction) {

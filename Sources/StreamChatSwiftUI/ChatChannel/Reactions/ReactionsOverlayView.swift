@@ -109,7 +109,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     )
                     .overlay(
                         channel.config.reactionsEnabled ?
-                            ReactionsOverlayContainer(
+                            factory.makeReactionsContentView(
                                 message: viewModel.message,
                                 contentRect: messageDisplayInfo.frame,
                                 onReactionTap: { reaction in

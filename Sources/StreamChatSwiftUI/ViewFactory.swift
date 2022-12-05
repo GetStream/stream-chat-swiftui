@@ -752,6 +752,13 @@ public protocol ViewFactory: AnyObject {
         popInAnimationInProgress: Bool
     ) -> ReactionsBackground
     
+    associatedtype ReactionsContentView: View
+    func makeReactionsContentView(
+        message: ChatMessage,
+        contentRect: CGRect,
+        onReactionTap: @escaping (MessageReactionType) -> Void
+    ) -> ReactionsContentView
+    
     associatedtype QuotedMessageHeaderViewType: View
     /// Creates the quoted message header view in the composer.
     /// - Parameters:

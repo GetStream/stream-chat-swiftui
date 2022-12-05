@@ -750,6 +750,18 @@ extension ViewFactory {
         )
     }
     
+    public func makeReactionsContentView(
+        message: ChatMessage,
+        contentRect: CGRect,
+        onReactionTap: @escaping (MessageReactionType) -> Void
+    ) -> some View {
+        ReactionsOverlayContainer(
+            message: message,
+            contentRect: contentRect,
+            onReactionTap: onReactionTap
+        )
+    }
+    
     public func makeReactionsBackgroundView(
         currentSnapshot: UIImage,
         popInAnimationInProgress: Bool
