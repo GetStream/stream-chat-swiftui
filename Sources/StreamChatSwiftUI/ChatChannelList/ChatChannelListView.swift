@@ -236,9 +236,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
-                .onChange(of: viewModel.firstItemIsVisible) { newValue in
-                    print("asdasd: ", newValue)
-                }
             }
             
             viewFactory.makeChannelListStickyFooterView()
