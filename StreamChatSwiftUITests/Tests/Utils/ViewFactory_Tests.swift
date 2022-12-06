@@ -744,6 +744,21 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is TypingIndicatorBottomView)
     }
+    
+    func test_viewFactory_makeReactionsContentView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeReactionsContentView(
+            message: .mock(),
+            contentRect: .zero,
+            onReactionTap: { _ in }
+        )
+        
+        // Then
+        XCTAssert(view is ReactionsOverlayContainer)
+    }
 }
 
 extension ChannelAction: Equatable {
