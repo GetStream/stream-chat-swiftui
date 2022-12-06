@@ -5,11 +5,16 @@
 import StreamChat
 import SwiftUI
 
-struct ReactionsHStack<Content: View>: View {
+public struct ReactionsHStack<Content: View>: View {
     var message: ChatMessage
     var content: () -> Content
     
-    var body: some View {
+    public init(message: ChatMessage, content: @escaping () -> Content) {
+        self.message = message
+        self.content = content
+    }
+    
+    public var body: some View {
         HStack {
             if !message.isSentByCurrentUser {
                 Spacer()
