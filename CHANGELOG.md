@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.25.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.25.0)
+_December 16, 2022_
+
 ### ✅ Added
 - Support for channel own capabilities in the UI
 - Added possibility to override the message id creation with `MessageIdBuilder`
