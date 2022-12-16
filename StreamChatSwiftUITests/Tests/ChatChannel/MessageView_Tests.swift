@@ -215,6 +215,30 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image)
     }
     
+    func test_messageViewFileText_snapshot() {
+        // Given
+        let fileMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.fileAttachments
+        )
+        
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: fileMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
     func test_messageViewJumboEmoji_snapshot() {
         // Given
         let emojiMessage = ChatMessage.mock(

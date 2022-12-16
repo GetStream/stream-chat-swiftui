@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Channel list item swipe gesture collision with native gesture
 - Attributes from `MessageActionInfo` are now public
 - Crash on older devices when adding multiple images quickly
+- Message text appearing in multiple file attachments from the same message
 
 # [4.24.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.24.0)
 _November 16, 2022_

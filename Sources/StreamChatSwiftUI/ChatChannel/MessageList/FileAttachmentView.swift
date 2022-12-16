@@ -40,29 +40,22 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                 )
             }
             
-            VStack(spacing: 4) {
-                ForEach(message.fileAttachments, id: \.self) { attachment in
-                    if message.text.isEmpty {
+            VStack(spacing: 0) {
+                VStack(spacing: 4) {
+                    ForEach(message.fileAttachments, id: \.self) { attachment in
                         FileAttachmentView(
                             attachment: attachment,
                             width: width,
                             isFirst: isFirst
                         )
-                    } else {
-                        VStack(spacing: 0) {
-                            FileAttachmentView(
-                                attachment: attachment,
-                                width: width,
-                                isFirst: isFirst
-                            )
-
-                            HStack {
-                                Text(message.adjustedText)
-                                    .foregroundColor(textColor(for: message))
-                                    .standardPadding()
-                                Spacer()
-                            }
-                        }
+                    }
+                }
+                if !message.text.isEmpty {
+                    HStack {
+                        Text(message.adjustedText)
+                            .foregroundColor(textColor(for: message))
+                            .standardPadding()
+                        Spacer()
                     }
                 }
             }
