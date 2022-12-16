@@ -114,4 +114,27 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Then
         XCTAssert(messageId.contains(expectedId))
     }
+    
+    func test_chatMessage_messageBuilder() {
+        // Given
+        let id: String = .unique
+        let reaction = "like"
+        let expectedId = id + "empty" + "\(reaction)\(3)"
+        let message = ChatMessage.mock(
+            id: id,
+            cid: .unique,
+            text: "test",
+            author: .mock(id: .unique),
+            reactionScores: [
+                MessageReactionType(rawValue: reaction): 3
+            ]
+        )
+        let defaultMessageBuilder = DefaultMessageIdBuilder()
+        
+        // When
+        let messageId = defaultMessageBuilder.makeMessageId(for: message)
+        
+        // Then
+        XCTAssert(messageId.starts(with: expectedId))
+    }
 }

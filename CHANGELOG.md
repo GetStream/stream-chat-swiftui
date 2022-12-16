@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Support for channel own capabilities in the UI
+- Added possibility to override the message id creation with `MessageIdBuilder`
 
 ### 🐞 Fixed
 - Renaming of a channel in ChannelInfo not persisting extra data

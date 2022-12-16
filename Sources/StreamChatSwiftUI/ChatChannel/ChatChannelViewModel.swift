@@ -499,18 +499,14 @@ extension ChatMessage: Identifiable {
     }
     
     var messageId: String {
-        var statesId = "empty"
-        if localState != nil {
-            statesId = uploadingStatesId
-        }
-        return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)" + pinStateId
+        InjectedValues[\.utils].messageIdBuilder.makeMessageId(for: self)
     }
     
-    private var baseId: String {
+    var baseId: String {
         isDeleted ? "\(id)-deleted" : id
     }
     
-    private var pinStateId: String {
+    var pinStateId: String {
         pinDetails != nil ? "pinned" : "notPinned"
     }
     
