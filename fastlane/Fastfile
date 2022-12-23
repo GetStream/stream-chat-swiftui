@@ -7,14 +7,14 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
-xcode_version = ENV['XCODE_VERSION'] || '14.1'
+xcode_version = ENV['XCODE_VERSION'] || '14.2'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
 
 before_all do
   if is_ci
     setup_ci
-    xcversion(version: "~> #{xcode_version}")
+    xcodes(version: xcode_version, select_for_current_build_only: true)
     ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '180'
   end
 end
