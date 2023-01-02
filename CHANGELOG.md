@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Config to change the scrolling anchor (top/bottom) on messages
+- Pass extra data in attachments
+- Custom message grouping by overriding `groupMessages` in `ChatChannelViewModel`
+
+### 🔄 Changed
+- `AddedAsset`'s `extraData` property is now of type `[String: RawJSON]`
 
 # [4.25.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.25.0)
 _December 16, 2022_
