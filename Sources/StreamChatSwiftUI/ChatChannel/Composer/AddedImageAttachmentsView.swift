@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -44,7 +44,7 @@ public struct AddedImageAttachmentsView: View {
                                     if attachment.type == .video {
                                         VideoIndicatorView()
                                         
-                                        if let duration = attachment.extraData["duration"] as? String {
+                                        if let duration = attachment.extraData["duration"]?.stringValue {
                                             VideoDurationIndicatorView(duration: duration)
                                         }
                                     }

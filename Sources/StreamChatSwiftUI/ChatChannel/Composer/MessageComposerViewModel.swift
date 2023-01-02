@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -204,13 +204,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         
         do {
-            var attachments = try addedAssets.map { added in
-                try AnyAttachmentPayload(
-                    localFileURL: added.url,
-                    attachmentType: added.type == .video ? .video : .image
-                )
-            }
-            
+            var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
             attachments += try addedFileURLs.map { url in
                 _ = url.startAccessingSecurityScopedResource()
                 return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
