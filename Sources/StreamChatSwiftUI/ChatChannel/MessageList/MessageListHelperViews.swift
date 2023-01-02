@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -81,10 +81,12 @@ public struct MessageReadIndicatorView: View {
     
     var readUsers: [ChatUser]
     var showReadCount: Bool
+    var localState: LocalMessageState?
     
-    public init(readUsers: [ChatUser], showReadCount: Bool) {
+    public init(readUsers: [ChatUser], showReadCount: Bool, localState: LocalMessageState? = nil) {
         self.readUsers = readUsers
         self.showReadCount = showReadCount
+        self.localState = localState
     }
     
     public var body: some View {
@@ -96,7 +98,7 @@ public struct MessageReadIndicatorView: View {
                     .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
-                uiImage: !readUsers.isEmpty ? images.readByAll : images.messageSent
+                uiImage: image
             )
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
@@ -105,6 +107,10 @@ public struct MessageReadIndicatorView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageReadIndicatorView")
+    }
+    
+    private var image: UIImage {
+        !readUsers.isEmpty ? images.readByAll : (localState == .pendingSend ? images.messageReceiptSending : images.messageSent)
     }
 }
 

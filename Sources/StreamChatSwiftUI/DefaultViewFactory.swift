@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -819,7 +819,8 @@ extension ViewFactory {
         let showReadCount = channel.memberCount > 2
         return MessageReadIndicatorView(
             readUsers: readUsers,
-            showReadCount: showReadCount
+            showReadCount: showReadCount,
+            localState: message.localState
         )
     }
 }
