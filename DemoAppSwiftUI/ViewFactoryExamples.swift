@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,22 +7,22 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class DemoAppFactory: ViewFactory {
-    
+
     @Injected(\.chatClient) public var chatClient
-    
+
     private init() {}
-    
+
     public static let shared = DemoAppFactory()
-    
+
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
 }
 
 struct CustomChannelDestination: View {
-    
+
     var channel: ChatChannel
-    
+
     var body: some View {
         VStack {
             Text("This is the channel \(channel.name ?? "")")
@@ -31,24 +31,24 @@ struct CustomChannelDestination: View {
 }
 
 class CustomFactory: ViewFactory {
-    
+
     @Injected(\.chatClient) public var chatClient
-    
+
     private init() {}
-    
+
     public static let shared = CustomFactory()
-    
+
     func makeGiphyBadgeViewType(for message: ChatMessage, availableWidth: CGFloat) -> some View {
         EmptyView()
     }
-    
+
     func makeLoadingView() -> some View {
         VStack {
             Text("This is custom loading view")
             ProgressView()
         }
     }
-    
+
     func makeNoChannelsView() -> some View {
         VStack {
             Spacer()
@@ -56,11 +56,11 @@ class CustomFactory: ViewFactory {
             Spacer()
         }
     }
-    
+
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
-    
+
     // Example for an injected action. Uncomment to see it in action.
     func supportedMoreChannelActions(
         for channel: ChatChannel,
@@ -73,7 +73,7 @@ class CustomFactory: ViewFactory {
             onDismiss: onDismiss,
             onError: onError
         )
-        
+
         let freeze = {
             let controller = self.chatClient.channelController(for: channel.cid)
             controller.freezeChannel { error in
@@ -84,13 +84,13 @@ class CustomFactory: ViewFactory {
                 }
             }
         }
-        
+
         let confirmationPopup = ConfirmationPopup(
             title: "Freeze channel",
             message: "Are you sure you want to freeze this channel?",
             buttonTitle: "Freeze"
         )
-        
+
         let channelAction = ChannelAction(
             title: "Freeze channel",
             iconName: "person.crop.circle.badge.minus",
@@ -98,11 +98,11 @@ class CustomFactory: ViewFactory {
             confirmationPopup: confirmationPopup,
             isDestructive: false
         )
-        
+
         defaultActions.insert(channelAction, at: 0)
         return defaultActions
     }
-    
+
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
@@ -121,7 +121,7 @@ class CustomFactory: ViewFactory {
             .padding()
         }
     }
-    
+
     func makeMessageTextView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -132,7 +132,7 @@ class CustomFactory: ViewFactory {
             isFirst: isFirst
         )
     }
-    
+
     func makeCustomAttachmentViewType(
         for message: ChatMessage,
         isFirst: Bool,

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import AVFoundation
@@ -9,7 +9,7 @@ import SwiftUI
 /// Image picker for loading images.
 struct ImagePickerView: UIViewControllerRepresentable {
     let sourceType: UIImagePickerController.SourceType
-    
+
     var onAssetPicked: (AddedAsset) -> Void
     @Environment(\.presentationMode) var presentationMode
 
@@ -20,7 +20,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
             pickerController.sourceType = sourceType
         }
         pickerController.mediaTypes = ["public.image", "public.movie"]
-        
+
         return pickerController
     }
 
@@ -75,7 +75,7 @@ final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, U
                 log.debug("Error generating thumbnail: \(error.localizedDescription)")
             }
         }
-        
+
         dismiss()
     }
 

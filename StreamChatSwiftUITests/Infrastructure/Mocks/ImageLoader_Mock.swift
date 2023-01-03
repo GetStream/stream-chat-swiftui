@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -8,9 +8,9 @@ import StreamChatSwiftUI
 import UIKit
 
 class ImageLoader_Mock: ImageLoading {
-    
+
     static let defaultLoadedImage = UIImage(systemName: "checkmark")!
-    
+
     func loadImage(
         url: URL?,
         imageCDN: ImageCDN,
@@ -20,7 +20,7 @@ class ImageLoader_Mock: ImageLoading {
     ) {
         completion(.success(Self.defaultLoadedImage))
     }
-    
+
     func loadImages(
         from urls: [URL],
         placeholders: [UIImage],

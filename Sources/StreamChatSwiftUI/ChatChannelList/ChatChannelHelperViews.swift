@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -8,13 +8,13 @@ import SwiftUI
 public struct SubtitleText: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var text: String
-    
+
     public init(text: String) {
         self.text = text
     }
-    
+
     public var body: some View {
         Text(text)
             .lineLimit(1)
@@ -26,11 +26,11 @@ public struct SubtitleText: View {
 /// View container that allows injecting another view in its top right corner.
 public struct TopRightView<Content: View>: View {
     var content: () -> Content
-    
+
     public init(content: @escaping () -> Content) {
         self.content = content
     }
-        
+
     public var body: some View {
         HStack {
             Spacer()
@@ -46,7 +46,7 @@ public struct TopRightView<Content: View>: View {
 public struct AvatarView: View {
     var avatar: UIImage
     var size: CGSize = .defaultAvatarSize
-    
+
     public var body: some View {
         Image(uiImage: avatar)
             .renderingMode(.original)
@@ -61,16 +61,16 @@ public struct AvatarView: View {
 }
 
 public struct ChatTitleView: View {
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var name: String
-    
+
     public init(name: String) {
         self.name = name
     }
-    
+
     public var body: some View {
         Text(name)
             .lineLimit(1)
@@ -81,7 +81,7 @@ public struct ChatTitleView: View {
 }
 
 struct EmptyViewModifier: ViewModifier {
-    
+
     public func body(content: Content) -> some View {
         content
     }

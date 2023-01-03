@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,25 +7,25 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct NewChatView: View, KeyboardReadable {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+
     @StateObject var viewModel = NewChatViewModel()
-    
+
     @Binding var isNewChatShown: Bool
-    
+
     @State private var keyboardShown = false
-    
+
     let columns = [GridItem(.adaptive(minimum: 120), spacing: 2)]
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text("TO:")
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
-                
+
                 VStack {
                     if !viewModel.selectedUsers.isEmpty {
                         LazyVGrid(columns: columns, alignment: .leading) {
@@ -41,17 +41,17 @@ struct NewChatView: View, KeyboardReadable {
                             }
                         }
                     }
-                    
+
                     SearchUsersView(viewModel: viewModel)
                 }
             }
             .padding()
-            
+
             if viewModel.state != .channel {
                 CreateGroupButton(isNewChatShown: $isNewChatShown)
                 UsersHeaderView()
             }
-            
+
             if viewModel.state == .loading {
                 VerticallyCenteredView {
                     ProgressView()
@@ -105,18 +105,18 @@ struct NewChatView: View, KeyboardReadable {
 }
 
 struct SelectedUserView: View {
-    
+
     @Injected(\.colors) var colors
-    
+
     var user: ChatUser
-    
+
     var body: some View {
         HStack {
             MessageAvatarView(
                 avatarURL: user.imageURL,
                 size: CGSize(width: 20, height: 20)
             )
-            
+
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .padding(.vertical, 2)
@@ -128,9 +128,9 @@ struct SelectedUserView: View {
 }
 
 struct SearchUsersView: View {
-    
+
     @StateObject var viewModel: NewChatViewModel
-    
+
     var body: some View {
         HStack {
             TextField("Type a name", text: $viewModel.searchText)
@@ -148,9 +148,9 @@ struct SearchUsersView: View {
 }
 
 struct VerticallyCenteredView<Content: View>: View {
-    
+
     var content: () -> Content
-    
+
     var body: some View {
         VStack {
             Spacer()
@@ -161,12 +161,12 @@ struct VerticallyCenteredView<Content: View>: View {
 }
 
 struct CreateGroupButton: View {
-    
+
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
-    
+
     @Binding var isNewChatShown: Bool
-    
+
     var body: some View {
         NavigationLink {
             CreateGroupView(isNewChatShown: $isNewChatShown)
@@ -175,11 +175,11 @@ struct CreateGroupButton: View {
                 Image(systemName: "person.3")
                     .renderingMode(.template)
                     .foregroundColor(colors.tintColor)
-                
+
                 Text("Create a group")
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.text))
-                
+
                 Spacer()
             }
             .padding()
@@ -189,20 +189,20 @@ struct CreateGroupButton: View {
 }
 
 struct ChatUserView: View {
-    
+
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
-    
+
     var user: ChatUser
     var onlineText: String
     var isSelected: Bool
-    
+
     var body: some View {
         HStack {
             LazyView(
                 MessageAvatarView(avatarURL: user.imageURL)
             )
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(user.name ?? user.id)
                     .lineLimit(1)
@@ -212,7 +212,7 @@ struct ChatUserView: View {
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
             Spacer()
-            
+
             if isSelected {
                 Image(systemName: "checkmark")
                     .renderingMode(.template)
@@ -223,12 +223,12 @@ struct ChatUserView: View {
 }
 
 struct UsersHeaderView: View {
-    
+
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
-    
+
     var title = "On the platform"
-    
+
     var body: some View {
         HStack {
             Text(title)
@@ -236,7 +236,7 @@ struct UsersHeaderView: View {
                 .padding(.vertical, 2)
                 .font(fonts.body)
                 .foregroundColor(Color(colors.textLowEmphasis))
-            
+
             Spacer()
         }
         .background(Color(colors.background1))

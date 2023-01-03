@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,13 +7,13 @@ import SwiftUI
 
 /// View for the channel list item.
 public struct ChatChannelListItem: View {
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
-    
+
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
@@ -21,7 +21,7 @@ public struct ChatChannelListItem: View {
     var onlineIndicatorShown: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
-    
+
     public init(
         channel: ChatChannel,
         channelName: String,
@@ -39,7 +39,7 @@ public struct ChatChannelListItem: View {
         self.disabled = disabled
         self.onItemTap = onItemTap
     }
-    
+
     public var body: some View {
         Button {
             onItemTap(channel)
@@ -49,25 +49,25 @@ public struct ChatChannelListItem: View {
                     avatar: avatar,
                     showOnlineIndicator: onlineIndicatorShown
                 )
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         ChatTitleView(name: channelName)
-                        
+
                         Spacer()
-                        
+
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
                             UnreadIndicatorView(
                                 unreadCount: channel.unreadCount.messages
                             )
                         }
                     }
-                    
+
                     HStack {
                         subtitleView
-                        
+
                         Spacer()
-                        
+
                         HStack(spacing: 4) {
                             if shouldShowReadEvents {
                                 MessageReadIndicatorView(
@@ -90,7 +90,7 @@ public struct ChatChannelListItem: View {
         .disabled(disabled)
         .id("\(channel.id)-base")
     }
-        
+
     private var subtitleView: some View {
         HStack(spacing: 4) {
             if let image = image {
@@ -108,7 +108,7 @@ public struct ChatChannelListItem: View {
         }
         .accessibilityIdentifier("subtitleView")
     }
-    
+
     private var shouldShowReadEvents: Bool {
         if let message = channel.latestMessages.first,
            message.isSentByCurrentUser,
@@ -118,7 +118,7 @@ public struct ChatChannelListItem: View {
 
         return false
     }
-    
+
     private var image: UIImage? {
         if channel.isMuted {
             return images.muted
@@ -129,11 +129,11 @@ public struct ChatChannelListItem: View {
 
 /// View for the avatar used in channels (includes online indicator overlay).
 public struct ChannelAvatarView: View {
-        
+
     var avatar: UIImage
     var showOnlineIndicator: Bool
     var size: CGSize = .defaultAvatarSize
-    
+
     public init(
         avatar: UIImage,
         showOnlineIndicator: Bool,
@@ -143,7 +143,7 @@ public struct ChannelAvatarView: View {
         self.showOnlineIndicator = showOnlineIndicator
         self.size = size
     }
-    
+
     public var body: some View {
         LazyView(
             AvatarView(avatar: avatar, size: size)
@@ -163,21 +163,21 @@ public struct ChannelAvatarView: View {
 /// View used for the online indicator.
 public struct OnlineIndicatorView: View {
     @Injected(\.colors) private var colors
-    
+
     var indicatorSize: CGFloat
-    
+
     public var body: some View {
         ZStack {
             Circle()
                 .fill(Color(colors.textInverted))
                 .frame(width: indicatorSize, height: indicatorSize)
-            
+
             Circle()
                 .fill(Color(colors.alternativeActiveTint))
                 .frame(width: innerCircleSize, height: innerCircleSize)
         }
     }
-    
+
     private var innerCircleSize: CGFloat {
         2 * indicatorSize / 3
     }
@@ -187,13 +187,13 @@ public struct OnlineIndicatorView: View {
 public struct UnreadIndicatorView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var unreadCount: Int
-    
+
     public init(unreadCount: Int) {
         self.unreadCount = unreadCount
     }
-    
+
     public var body: some View {
         Text("\(unreadCount)")
             .lineLimit(1)
@@ -216,7 +216,7 @@ public struct InjectedChannelInfo {
 }
 
 extension ChatChannel {
-    
+
     public var lastMessageText: String? {
         if let latestMessage = latestMessages.first {
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(latestMessage.textContent ?? latestMessage.adjustedText)"
@@ -224,13 +224,13 @@ extension ChatChannel {
             return nil
         }
     }
-    
+
     public var shouldShowTypingIndicator: Bool {
         !currentlyTypingUsersFiltered(
             currentUserId: InjectedValues[\.chatClient].currentUserId
         ).isEmpty && config.typingEventsEnabled
     }
-    
+
     public var subtitleText: String {
         if isMuted {
             return L10n.Channel.Item.muted
@@ -242,7 +242,7 @@ extension ChatChannel {
             return L10n.Channel.Item.emptyMessages
         }
     }
-    
+
     public var timestampText: String {
         if let lastMessageAt = lastMessageAt {
             return InjectedValues[\.utils].dateFormatter.string(from: lastMessageAt)

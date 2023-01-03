@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import UIKit
@@ -10,7 +10,7 @@ public enum ImageMergeOrientation {
     /// The width of the resulting images will be the addition of the widths of all the images,
     /// whereas the height of the resulting image will be equal to the max of heights in the images
     case horizontal
-    
+
     /// Merge the given images in vertical orientation.
     /// The width of the resulting images will be equal to the max of widths in the images,
     /// whereas the height of the resulting image will be the addition of the heights of all the images
@@ -34,14 +34,14 @@ open class DefaultImageMerger: ImageMerging {
     public init() {
         // Public init.
     }
-    
+
     open func merge(
         images: [UIImage],
         orientation: ImageMergeOrientation
     ) -> UIImage? {
         orientation == .horizontal ? mergeSideToSide(images: images) : mergeTopToBottom(images: images)
     }
-    
+
     /// Merges images in top to bottom fashion
     /// - Parameter images: The images
     /// - Returns: The merged image
@@ -65,13 +65,13 @@ open class DefaultImageMerger: ImageMerging {
 
         return finalImage
     }
-    
+
     /// Merges images in top to side to side order (left -> right)
     /// - Parameter images: The images
     /// - Returns: The merged image
     open func mergeSideToSide(images: [UIImage]) -> UIImage? {
         var dimensions = CGSize.zero
-        
+
         for image in images {
             dimensions.width += image.size.width
             dimensions.height = max(dimensions.height, image.size.height)

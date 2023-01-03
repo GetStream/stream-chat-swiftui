@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -18,7 +18,7 @@ class MessageView_Tests: StreamChatTestCase {
             text: "test message",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -32,7 +32,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewImage_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -42,7 +42,7 @@ class MessageView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -56,7 +56,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewImage_snapshot2Images() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -69,7 +69,7 @@ class MessageView_Tests: StreamChatTestCase {
                 ChatChannelTestHelpers.imageAttachments[0]
             ]
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -97,7 +97,7 @@ class MessageView_Tests: StreamChatTestCase {
                 ChatChannelTestHelpers.imageAttachments[0]
             ]
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -111,7 +111,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewImage_snapshotQuoted() {
         // Given
         let quoted = ChatMessage.mock(
@@ -128,7 +128,7 @@ class MessageView_Tests: StreamChatTestCase {
             quotedMessage: quoted,
             attachments: ChatChannelTestHelpers.imageAttachments
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -142,7 +142,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewGiphy_snapshot() {
         // Given
         let giphyMessage = ChatMessage.mock(
@@ -152,7 +152,7 @@ class MessageView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.giphyAttachments
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -166,7 +166,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(
@@ -176,7 +176,7 @@ class MessageView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.videoAttachments
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -190,7 +190,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewFile_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
@@ -200,7 +200,7 @@ class MessageView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.fileAttachments
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -214,7 +214,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewFileText_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
@@ -224,7 +224,7 @@ class MessageView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.fileAttachments
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -238,7 +238,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageViewJumboEmoji_snapshot() {
         // Given
         let emojiMessage = ChatMessage.mock(
@@ -247,7 +247,7 @@ class MessageView_Tests: StreamChatTestCase {
             text: "😀",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -261,7 +261,7 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_linkAttachmentView_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -270,7 +270,7 @@ class MessageView_Tests: StreamChatTestCase {
             text: "https://getstream.io",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = LinkAttachmentContainer(
             factory: DefaultViewFactory.shared,
@@ -280,11 +280,11 @@ class MessageView_Tests: StreamChatTestCase {
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_deletedMessageView_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -293,15 +293,15 @@ class MessageView_Tests: StreamChatTestCase {
             text: "Deleted message",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = DeletedMessageView(message: message, isFirst: true)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_deletedMessageViewContainer_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -310,7 +310,7 @@ class MessageView_Tests: StreamChatTestCase {
             text: "Deleted message",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -320,11 +320,11 @@ class MessageView_Tests: StreamChatTestCase {
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageRepliesView_snapshot() {
         // Given
         let channel = ChatChannel.mockDMChannel()
@@ -334,7 +334,7 @@ class MessageView_Tests: StreamChatTestCase {
             text: "Message with replies",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = MessageRepliesView(
             factory: DefaultViewFactory.shared,
@@ -343,21 +343,21 @@ class MessageView_Tests: StreamChatTestCase {
             replyCount: 3
         )
         .frame(width: 300, height: 60)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_topLeftView_snapshot() {
         // Given
         let textView = Text("Test")
-        
+
         // Then
         let view = TopLeftView {
             textView
         }
         .applyDefaultSize()
-        
+
         // When
         assertSnapshot(matching: view, as: .image)
     }

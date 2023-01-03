@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -16,7 +16,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         text: "This is a test message 1",
         author: .mock(id: "test", name: "martin")
     )
-    
+
     func test_quotedMessageViewContainer_snapshot() {
         // Given
         let view = QuotedMessageViewContainer(
@@ -30,7 +30,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_quotedMessageView_snapshot() {
         // Given
         let view = QuotedMessageView(

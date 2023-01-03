@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Nuke
@@ -12,15 +12,15 @@ import SwiftUI
 public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
-    
+
     var factory: Factory
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
     @Binding var scrolledId: String?
-    
+
     private let padding: CGFloat = 8
-    
+
     public var body: some View {
         VStack(
             alignment: message.alignmentInBubble,
@@ -34,7 +34,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             }
-            
+
             let availableWidth = width - 4 * padding
             let size = message.adjustedText.frameSize(maxWidth: availableWidth)
             LinkTextView(
@@ -44,7 +44,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             )
             .frame(width: availableWidth, height: size.height)
             .standardPadding()
-            
+
             if !message.linkAttachments.isEmpty {
                 LinkAttachmentView(
                     linkAttachment: message.linkAttachments[0],
@@ -71,13 +71,13 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
 public struct LinkAttachmentView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     private let padding: CGFloat = 8
-    
+
     var linkAttachment: ChatMessageLinkAttachment
     var width: CGFloat
     var isFirst: Bool
-    
+
     public var body: some View {
         VStack(alignment: .leading, spacing: padding) {
             if !imageHidden {
@@ -88,7 +88,7 @@ public struct LinkAttachmentView: View {
                         .priority(.high)
                         .frame(width: width - 2 * padding, height: (width - 2 * padding) / 2)
                         .cornerRadius(14)
-                    
+
                     if !authorHidden {
                         BottomLeftView {
                             Text(linkAttachment.author ?? "")
@@ -104,14 +104,14 @@ public struct LinkAttachmentView: View {
                     }
                 }
             }
-            
+
             VStack(alignment: .leading) {
                 if let title = linkAttachment.title {
                     Text(title)
                         .font(fonts.footnoteBold)
                         .lineLimit(1)
                 }
-                
+
                 if let description = linkAttachment.text {
                     Text(description)
                         .font(fonts.footnote)
@@ -129,11 +129,11 @@ public struct LinkAttachmentView: View {
         }
         .accessibilityIdentifier("LinkAttachmentView")
     }
-    
+
     private var imageHidden: Bool {
         linkAttachment.previewURL == nil
     }
-    
+
     private var authorHidden: Bool {
         linkAttachment.author == nil
     }

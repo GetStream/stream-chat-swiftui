@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -11,10 +11,10 @@ class URLUtils_Tests: XCTestCase {
         // Given
         let initialURLString = "google.com"
         let initialURL = URL(string: initialURLString)
-        
+
         // When
         let secureSchemeURL = initialURL?.secureURL
-        
+
         // Then
         if let finalURL = secureSchemeURL {
             XCTAssertEqual(finalURL.scheme, "https")
@@ -22,15 +22,15 @@ class URLUtils_Tests: XCTestCase {
             XCTFail()
         }
     }
-    
+
     func test_secureSchemeURL_withUnsecureScheme() {
         // Given
         let initialURLString = "http://www.google.com"
         let initialURL = URL(string: initialURLString)
-        
+
         // When
         let secureSchemeURL = initialURL?.secureURL
-        
+
         // Then
         if let finalURL = secureSchemeURL {
             XCTAssertEqual(finalURL.scheme, "https")
@@ -38,15 +38,15 @@ class URLUtils_Tests: XCTestCase {
             XCTFail()
         }
     }
-    
+
     func test_secureSchemeURL_withSecureScheme() {
         // Given
         let initialURLString = "https://www.google.com"
         let initialURL = URL(string: initialURLString)
-        
+
         // When
         let secureSchemeURL = initialURL?.secureURL
-        
+
         // Then
         if let finalURL = secureSchemeURL {
             XCTAssertEqual(finalURL.scheme, "https")

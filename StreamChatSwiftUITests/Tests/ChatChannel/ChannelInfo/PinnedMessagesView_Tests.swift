@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -9,7 +9,7 @@ import SwiftUI
 import XCTest
 
 class PinnedMessagesView_Tests: StreamChatTestCase {
-    
+
     override func setUp() {
         super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())
@@ -21,23 +21,23 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel(
             pinnedMessages: [ChannelInfoMockUtils.pinnedMessage]
         )
-        
+
         // When
         let view = PinnedMessagesView(channel: channel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_pinnedMessagesView_emptySnapshot() {
         // Given
         let channel = ChatChannel.mockDMChannel()
-        
+
         // When
         let view = PinnedMessagesView(channel: channel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
@@ -45,7 +45,7 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
 
 // Temp solution for failing tests.
 class EmptyDateFormatter: DateFormatter {
-    
+
     override func string(from date: Date) -> String {
         ""
     }

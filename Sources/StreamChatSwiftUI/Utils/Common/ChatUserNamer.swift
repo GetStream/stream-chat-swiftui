@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -17,7 +17,7 @@ public class DefaultChatUserNamer: ChatUserNamer {
     public init() {
         // Public init.
     }
-    
+
     public func name(forUser user: ChatUser) -> String? {
         user.name
     }

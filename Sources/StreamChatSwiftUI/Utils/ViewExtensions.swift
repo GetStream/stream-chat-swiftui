@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ extension View {
         let bottomPadding = window?.safeAreaInsets.bottom ?? 0
         return bottomPadding
     }
-    
+
     public var topSafeArea: CGFloat {
         let window = UIApplication.shared.windows.first
         let topPadding = window?.safeAreaInsets.top ?? 0
@@ -42,7 +42,7 @@ extension View {
             self
         }
     }
-    
+
     /// Method for making a haptic feedback.
     /// - Parameter style: feedback style
     func triggerHapticFeedback(style: UIImpactFeedbackGenerator.FeedbackStyle) {

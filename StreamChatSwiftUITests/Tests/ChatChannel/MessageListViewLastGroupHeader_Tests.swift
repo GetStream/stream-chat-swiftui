@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -9,7 +9,7 @@ import SwiftUI
 import XCTest
 
 class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
-    
+
     override func setUp() {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(
@@ -21,7 +21,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
         let utils = Utils(messageListConfig: messageListConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-    
+
     func test_messageListView_headerOnTop() {
         // Given
         let controller = ChatChannelController_Mock.mock(
@@ -43,7 +43,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
             )
         }
         controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
-        
+
         // When
         let view = NavigationView {
             ScrollView {
@@ -56,16 +56,16 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
             .navigationBarTitleDisplayMode(.inline)
         }
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
 }
 
 class CustomHeaderViewFactory: ViewFactory {
-    
+
     @Injected(\.chatClient) var chatClient: ChatClient
-    
+
     func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
         HStack {
             MessageAuthorView(message: message)

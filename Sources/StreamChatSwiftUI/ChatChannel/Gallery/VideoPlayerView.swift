@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import AVKit
@@ -9,16 +9,16 @@ import SwiftUI
 /// View used for displaying videos.
 public struct VideoPlayerView: View {
     @Environment(\.presentationMode) var presentationMode
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     let attachment: ChatMessageVideoAttachment
     let author: ChatUser
     @Binding var isShown: Bool
-    
+
     private let avPlayer: AVPlayer
-    
+
     public init(
         attachment: ChatMessageVideoAttachment,
         author: ChatUser,
@@ -29,7 +29,7 @@ public struct VideoPlayerView: View {
         avPlayer = AVPlayer(url: attachment.payload.videoURL)
         _isShown = isShown
     }
-    
+
     public var body: some View {
         VStack {
             GalleryHeaderView(
@@ -42,7 +42,7 @@ public struct VideoPlayerView: View {
             HStack {
                 ShareButtonView(content: [attachment.payload.videoURL])
                     .standardPadding()
-                
+
                 Spacer()
             }
             .foregroundColor(Color(colors.text))
@@ -54,7 +54,7 @@ public struct VideoPlayerView: View {
 }
 
 extension ChatUser {
-    
+
     var onlineText: String {
         if isOnline {
             return L10n.Message.Title.online

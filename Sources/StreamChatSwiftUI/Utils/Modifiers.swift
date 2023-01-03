@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -7,7 +7,7 @@ import SwiftUI
 /// Modifier for adding shadow and corner radius to a view.
 struct ShadowViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
-    
+
     var cornerRadius: CGFloat = 16
 
     func body(content: Content) -> some View {
@@ -47,7 +47,7 @@ struct StandardPaddingModifier: ViewModifier {
 struct RoundedBorderModifier: ViewModifier {
     @Injected(\.colors) private var colors
     var cornerRadius: CGFloat = 18
-    
+
     func body(content: Content) -> some View {
         content.overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
@@ -59,7 +59,7 @@ struct RoundedBorderModifier: ViewModifier {
 
 struct IconOverImageModifier: ViewModifier {
     @Injected(\.colors) private var colors
-    
+
     func body(content: Content) -> some View {
         content
             .foregroundColor(Color(colors.staticColorText))
@@ -72,11 +72,11 @@ extension View {
     public func standardPadding() -> some View {
         modifier(StandardPaddingModifier())
     }
-    
+
     public func roundWithBorder(cornerRadius: CGFloat = 18) -> some View {
         modifier(RoundedBorderModifier(cornerRadius: cornerRadius))
     }
-    
+
     public func applyDefaultIconOverlayStyle() -> some View {
         modifier(IconOverImageModifier())
     }

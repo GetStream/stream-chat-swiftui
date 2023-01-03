@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -11,7 +11,7 @@ final class SlowMode_Tests: StreamTestCase {
     let anotherNewMessage = "Another new message"
     let replyMessage = "reply message"
     let editedMessage = "edited message"
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         addTags([.slowMode])
@@ -36,7 +36,7 @@ final class SlowMode_Tests: StreamTestCase {
 
     func test_slowModeIsActiveAndCooldownIsShown_whenAMessageIsReplied() throws {
         linkToScenario(withId: 454)
-        
+
         throw XCTSkip("Check out SWUI-247")
 
         GIVEN("user opens a channel") {
@@ -64,7 +64,7 @@ final class SlowMode_Tests: StreamTestCase {
 
     func test_newMessageCantBeSent_whenSlowModeIsActiveAndCooldownIsShown() throws {
         linkToScenario(withId: 452)
-        
+
         throw XCTSkip("Check out SWUI-248")
 
         GIVEN("user opens a channel") {
@@ -89,7 +89,7 @@ final class SlowMode_Tests: StreamTestCase {
 
     func test_aMessageCantBeReplied_whenSlowModeIsActiveAndCooldownIsShown() throws {
         linkToScenario(withId: 451)
-        
+
         throw XCTSkip("Check out SWUI-248")
 
         GIVEN("user opens a channel") {
@@ -114,7 +114,7 @@ final class SlowMode_Tests: StreamTestCase {
 
     func test_slowModeContinuesActiveAndCooldownIsShownInThreadMessage_whenSlowModeIsActiveAndCooldownIsShownInChannel() throws {
         linkToScenario(withId: 449)
-        
+
         throw XCTSkip("Check out SWUI-248")
 
         GIVEN("user opens a channel") {
@@ -139,7 +139,7 @@ final class SlowMode_Tests: StreamTestCase {
 
     func test_slowModeIsNotActiveAndCooldownIsNotShown_whenAMessageIsEdited() throws {
         linkToScenario(withId: 453)
-        
+
         throw XCTSkip("Check out SWUI-249")
 
         GIVEN("user opens a channel") {

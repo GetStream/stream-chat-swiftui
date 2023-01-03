@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -7,18 +7,18 @@ import StreamChat
 import StreamChatSwiftUI
 
 struct StartPage: View {
-    
+
     @State var streamChat: StreamChat?
     @State var chatShown = false
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
-    
+
     var chatClient: ChatClient = {
         var config = ChatClientConfig(apiKey: .init(apiKeyString))
         let client = ChatClient(config: config)
         return client
     }()
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -28,7 +28,7 @@ struct StartPage: View {
                 } label: {
                     Text("Start Chat")
                 }
-                
+
                 if notificationsHandler.notificationChannelId != nil {
                     NavigationLink(isActive: .constant(true), destination: {
                         LazyView(
@@ -60,12 +60,12 @@ struct StartPage: View {
 
     private func connectUser(withCredentials credentials: UserCredentials) {
         chatClient.logout()
-        
+
         let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .debug
-        
+
         streamChat = StreamChat(chatClient: chatClient)
-        
+
         chatClient.connectUser(
                 userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
                 token: token
@@ -79,13 +79,13 @@ struct StartPage: View {
 }
 
 class DemoAppFactory: ViewFactory {
-    
+
     @Injected(\.chatClient) public var chatClient
-    
+
     private init() {}
-    
+
     public static let shared = DemoAppFactory()
-    
+
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }

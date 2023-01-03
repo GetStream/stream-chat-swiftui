@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -24,7 +24,7 @@ class APIClientMock: APIClient, Spy {
     @Atomic var uploadFile_attachment: AnyChatMessageAttachment?
     @Atomic var uploadFile_progress: ((Double) -> Void)?
     @Atomic var uploadFile_completion: ((Result<URL, Error>) -> Void)?
-    
+
     @Atomic var init_sessionConfiguration: URLSessionConfiguration
     @Atomic var init_requestEncoder: RequestEncoder
     @Atomic var init_requestDecoder: RequestDecoder
@@ -67,7 +67,7 @@ class APIClientMock: APIClient, Spy {
             queueOfflineRequest: queueOfflineRequest
         )
     }
-    
+
     /// Simulates the response of the last `request` method call
     func test_simulateResponse<Response: Decodable>(_ response: Result<Response, Error>) {
         let completion = request_completion as? ((Result<Response, Error>) -> Void)
@@ -78,7 +78,7 @@ class APIClientMock: APIClient, Spy {
         let completion = recoveryRequest_completion as? ((Result<Response, Error>) -> Void)
         completion?(response)
     }
-    
+
     override func request<Response>(
         endpoint: Endpoint<Response>,
         completion: @escaping (Result<Response, Error>) -> Void
@@ -97,7 +97,7 @@ class APIClientMock: APIClient, Spy {
         recoveryRequest_completion = completion
         _recoveryRequest_allRecordedCalls.mutate { $0.append((recoveryRequest_endpoint!, recoveryRequest_completion!)) }
     }
-    
+
     func uploadAttachment(
         _ attachment: AnyChatMessageAttachment,
         progress: ((Double) -> Void)?,

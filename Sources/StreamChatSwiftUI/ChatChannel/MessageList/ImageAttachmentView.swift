@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Nuke
@@ -10,16 +10,16 @@ import SwiftUI
 public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
-    
+
     var factory: Factory
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
-    
+
     @State private var galleryShown = false
     @State private var selectedIndex = 0
-                
+
     public var body: some View {
         VStack(
             alignment: message.alignmentInBubble,
@@ -33,7 +33,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             }
-            
+
             VStack(
                 alignment: message.alignmentInBubble,
                 spacing: 0
@@ -47,7 +47,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                         galleryShown = true
                     }
                 }
-                
+
                 if !message.text.isEmpty {
                     AttachmentTextView(message: message)
                         .frame(width: width)
@@ -76,15 +76,15 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 }
 
 public struct AttachmentTextView: View {
-    
+
     @Injected(\.colors) private var colors
-    
+
     var message: ChatMessage
-    
+
     public init(message: ChatMessage) {
         self.message = message
     }
-    
+
     public var body: some View {
         HStack {
             Text(message.adjustedText)
@@ -96,7 +96,7 @@ public struct AttachmentTextView: View {
         .background(Color(backgroundColor))
         .accessibilityIdentifier("AttachmentTextView")
     }
-    
+
     private var backgroundColor: UIColor {
         var colors = colors
         if message.isSentByCurrentUser {
@@ -115,18 +115,18 @@ struct ImageAttachmentView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
-    
+
     let message: ChatMessage
     let width: CGFloat
     var imageTapped: ((Int) -> Void)? = nil
-    
+
     private let spacing: CGFloat = 2
     private let maxDisplayedImages = 4
-    
+
     private var imageCDN: ImageCDN {
         utils.imageCDN
     }
-    
+
     private var sources: [URL] {
         message.imageAttachments.map { attachment in
             if let state = attachment.uploadingState {
@@ -136,7 +136,7 @@ struct ImageAttachmentView: View {
             }
         }
     }
-    
+
     var body: some View {
         Group {
             if sources.count == 1 {
@@ -157,7 +157,7 @@ struct ImageAttachmentView: View {
                         index: 0
                     )
                     .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
-                    
+
                     MultiImageView(
                         source: sources[1],
                         width: width / 2,
@@ -177,7 +177,7 @@ struct ImageAttachmentView: View {
                         index: 0
                     )
                     .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
-                    
+
                     VStack(spacing: spacing) {
                         MultiImageView(
                             source: sources[1],
@@ -187,7 +187,7 @@ struct ImageAttachmentView: View {
                             index: 1
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
-                        
+
                         MultiImageView(
                             source: sources[2],
                             width: width / 2,
@@ -209,7 +209,7 @@ struct ImageAttachmentView: View {
                             index: 0
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
-                        
+
                         MultiImageView(
                             source: sources[2],
                             width: width / 2,
@@ -219,7 +219,7 @@ struct ImageAttachmentView: View {
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
                     }
-                    
+
                     VStack(spacing: spacing) {
                         MultiImageView(
                             source: sources[1],
@@ -229,7 +229,7 @@ struct ImageAttachmentView: View {
                             index: 1
                         )
                         .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
-                        
+
                         ZStack {
                             MultiImageView(
                                 source: sources[3],
@@ -239,11 +239,11 @@ struct ImageAttachmentView: View {
                                 index: 3
                             )
                             .withUploadingStateIndicator(for: uploadState(for: 3), url: sources[3])
-                            
+
                             if notDisplayedImages > 0 {
                                 Color.black.opacity(0.4)
                                     .allowsHitTesting(false)
-                                
+
                                 Text("+\(notDisplayedImages)")
                                     .foregroundColor(Color(colors.staticColorText))
                                     .font(fonts.title)
@@ -257,15 +257,15 @@ struct ImageAttachmentView: View {
         }
         .frame(width: width, height: fullHeight)
     }
-    
+
     private var fullHeight: CGFloat {
         3 * width / 4
     }
-    
+
     private var notDisplayedImages: Int {
         sources.count > maxDisplayedImages ? sources.count - maxDisplayedImages : 0
     }
-    
+
     private func uploadState(for index: Int) -> AttachmentUploadingState? {
         message.imageAttachments[index].uploadingState
     }
@@ -276,11 +276,11 @@ struct SingleImageView: View {
     let width: CGFloat
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
-    
+
     private var height: CGFloat {
         3 * width / 4
     }
-    
+
     var body: some View {
         LazyLoadingImage(
             source: source,
@@ -300,7 +300,7 @@ struct MultiImageView: View {
     let height: CGFloat
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
-    
+
     var body: some View {
         LazyLoadingImage(
             source: source,
@@ -316,10 +316,10 @@ struct MultiImageView: View {
 
 struct LazyLoadingImage: View {
     @Injected(\.utils) private var utils
-    
+
     @State private var image: UIImage?
     @State private var error: Error?
-    
+
     let source: URL
     let width: CGFloat
     let height: CGFloat
@@ -328,7 +328,7 @@ struct LazyLoadingImage: View {
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
-    
+
     var body: some View {
         ZStack {
             if let image = image {
@@ -361,7 +361,7 @@ struct LazyLoadingImage: View {
             if image != nil {
                 return
             }
-            
+
             utils.imageLoader.loadImage(
                 url: source,
                 imageCDN: utils.imageCDN,
@@ -379,7 +379,7 @@ struct LazyLoadingImage: View {
             )
         }
     }
-    
+
     func imageView(for image: UIImage) -> some View {
         Image(uiImage: image)
             .resizable()
@@ -393,7 +393,7 @@ struct LazyLoadingImage: View {
 }
 
 extension ChatMessage {
-    
+
     var alignmentInBubble: HorizontalAlignment {
         .leading
     }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -12,7 +12,7 @@ public protocol MessageThreadHeaderViewModifier: ViewModifier {}
 public struct DefaultMessageThreadHeader: ToolbarContent {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             VStack {
@@ -28,7 +28,7 @@ public struct DefaultMessageThreadHeader: ToolbarContent {
 
 /// The default message thread header modifier.
 public struct DefaultMessageThreadHeaderModifier: MessageThreadHeaderViewModifier {
-    
+
     public func body(content: Content) -> some View {
         content.toolbar {
             DefaultMessageThreadHeader()

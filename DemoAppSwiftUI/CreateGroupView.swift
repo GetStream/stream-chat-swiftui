@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,21 +7,21 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct CreateGroupView: View, KeyboardReadable {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+
     @StateObject var viewModel = CreateGroupViewModel()
-    
+
     @Binding var isNewChatShown: Bool
-    
+
     @State private var keyboardShown = false
-    
+
     var body: some View {
         VStack(spacing: 0) {
             SearchBar(text: $viewModel.searchText)
                 .padding(.vertical, !viewModel.selectedUsers.isEmpty ? 0 : 16)
-            
+
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
                     ForEach(viewModel.selectedUsers) { user in
@@ -33,7 +33,7 @@ struct CreateGroupView: View, KeyboardReadable {
                 }
                 .padding(.all, !viewModel.selectedUsers.isEmpty ? 16 : 0)
             }
-            
+
             UsersHeaderView()
             List(viewModel.chatUsers) { user in
                 Button {
@@ -76,21 +76,21 @@ struct CreateGroupView: View, KeyboardReadable {
 }
 
 struct SelectedUserGroupView: View {
-    
+
     @Injected(\.fonts) var fonts
-    
+
     private let avatarSize: CGFloat = 50
-    
+
     @StateObject var viewModel: CreateGroupViewModel
     var user: ChatUser
-    
+
     var body: some View {
         VStack {
             MessageAvatarView(
                 avatarURL: user.imageURL,
                 size: CGSize(width: avatarSize, height: avatarSize)
             )
-            
+
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.footnote)
@@ -106,7 +106,7 @@ struct SelectedUserGroupView: View {
                         Circle()
                             .fill(Color.white)
                             .frame(width: 16, height: 16)
-                        
+
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(Color.black.opacity(0.8))
                     }
@@ -120,16 +120,16 @@ struct SelectedUserGroupView: View {
 }
 
 struct SearchBar: View {
-    
+
     @Injected(\.colors) var colors
-    
+
     @Binding var text: String
-    
+
     @State private var isEditing = false
-    
+
     var body: some View {
         HStack {
-            
+
             TextField("Search ...", text: $text)
                 .padding(7)
                 .padding(.horizontal, 25)
@@ -141,11 +141,11 @@ struct SearchBar: View {
                             .foregroundColor(.gray)
                             .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 8)
-                        
+
                         if isEditing {
                             Button(action: {
                                 self.text = ""
-                                
+
                             }) {
                                 Image(systemName: "multiply.circle.fill")
                                     .foregroundColor(.gray)
@@ -158,12 +158,12 @@ struct SearchBar: View {
                 .onTapGesture {
                     self.isEditing = true
                 }
-            
+
             if isEditing {
                 Button(action: {
                     self.isEditing = false
                     self.text = ""
-                    
+
                     // Dismiss the keyboard
                     UIApplication.shared.sendAction(
                         #selector(UIResponder.resignFirstResponder),

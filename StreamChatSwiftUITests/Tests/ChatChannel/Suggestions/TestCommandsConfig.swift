@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -14,12 +14,12 @@ public class TestCommandsConfig: CommandsConfig {
     public init(chatClient: ChatClient) {
         self.chatClient = chatClient
     }
-    
+
     public let mentionsSymbol: String = "@"
     public let instantCommandsSymbol: String = "/"
-    
+
     private let chatClient: ChatClient
-    
+
     public func makeCommandsHandler(
         with channelController: ChatChannelController
     ) -> CommandsHandler {
@@ -51,7 +51,7 @@ public class TestCommandsConfig: CommandsConfig {
         )
         return CommandsHandler(commands: [mentionsCommand, instantCommands])
     }
-    
+
     public static var mockUsers = [
         ChatUser.mock(id: .unique, name: "MartinM"),
         ChatUser.mock(id: .unique, name: "StefanB"),
@@ -60,13 +60,13 @@ public class TestCommandsConfig: CommandsConfig {
 }
 
 class MockCommandHandler: CommandHandler {
-    
+
     var id: String = "mock"
     var displayInfo: CommandDisplayInfo?
-    
+
     public var handleCommandCalled = false
     public var executeOnMessageSentCalled = false
-    
+
     func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text.contains("mock") {
             return ComposerCommand(
@@ -82,7 +82,7 @@ class MockCommandHandler: CommandHandler {
             return nil
         }
     }
-    
+
     func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if command.typingSuggestion.text.contains("mock") {
             return self
@@ -90,14 +90,14 @@ class MockCommandHandler: CommandHandler {
             return nil
         }
     }
-    
+
     func showSuggestions(for command: ComposerCommand) -> Future<SuggestionInfo, Error> {
         let suggestionInfo = SuggestionInfo(key: "mock", value: [])
         return Future { promise in
             promise(.success(suggestionInfo))
         }
     }
-    
+
     func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -106,18 +106,18 @@ class MockCommandHandler: CommandHandler {
     ) {
         handleCommandCalled = true
     }
-    
+
     public var replacesMessageSent: Bool {
         true
     }
-    
+
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
         completion: @escaping (Error?) -> Void
     ) {
         executeOnMessageSentCalled = true
     }
-    
+
     public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
         !composerCommand.typingSuggestion.text.isEmpty
     }

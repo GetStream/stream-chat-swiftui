@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,10 +8,10 @@ import SwiftUI
 
 /// Handles the unmute command.
 public class UnmuteCommandHandler: TwoStepMentionCommand {
-    
+
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
-                        
+
     public init(
         channelController: ChatChannelController,
         commandSymbol: String,

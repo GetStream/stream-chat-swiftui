@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -28,15 +28,15 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             latestReactions: [reaction]
         )
-        
+
         // When
         let view = ReactionsUsersView(message: message, maxHeight: 140)
             .frame(width: 250)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_reactionsUsersView_snapshotTwoRows() {
         // Given
         var reactions = Set<ChatMessageReaction>()
@@ -52,7 +52,7 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             )
             reactions.insert(reaction)
         }
-        
+
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -60,11 +60,11 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             latestReactions: reactions
         )
-        
+
         // When
         let view = ReactionsUsersView(message: message, maxHeight: 280)
             .frame(width: defaultScreenSize.width, height: 320)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

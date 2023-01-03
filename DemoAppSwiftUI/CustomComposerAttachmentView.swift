@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -13,22 +13,22 @@ extension AttachmentType {
 
 struct ContactAttachmentPayload: AttachmentPayload {
     static let type: AttachmentType = .contact
-    
+
     let name: String
     let phoneNumber: String
 }
 
 extension ContactAttachmentPayload: Identifiable {
-    
+
     var id: String {
         "\(name)-\(phoneNumber)"
     }
 }
 
 class CustomAttachmentsFactory: ViewFactory {
-    
+
     @Injected(\.chatClient) var chatClient: ChatClient
-    
+
     private let mockContacts = [
         CustomAttachment(
             id: "123",
@@ -51,7 +51,7 @@ class CustomAttachmentsFactory: ViewFactory {
             content: AnyAttachmentPayload(payload: ContactAttachmentPayload(name: "Test 5", phoneNumber: "534534543543534"))
         )
     ]
-    
+
     func makeAttachmentSourcePickerView(
         selected: AttachmentPickerState,
         onPickerStateChange: @escaping (AttachmentPickerState) -> Void
@@ -61,7 +61,7 @@ class CustomAttachmentsFactory: ViewFactory {
             onTap: onPickerStateChange
         )
     }
-    
+
     func makeCustomAttachmentView(
         addedCustomAttachments: [CustomAttachment],
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
@@ -72,7 +72,7 @@ class CustomAttachmentsFactory: ViewFactory {
             onCustomAttachmentTap: onCustomAttachmentTap
         )
     }
-    
+
     func makeCustomAttachmentViewType(
         for message: ChatMessage,
         isFirst: Bool,
@@ -97,7 +97,7 @@ class CustomAttachmentsFactory: ViewFactory {
             .messageBubble(for: message, isFirst: true)
         }
     }
-    
+
     func makeCustomAttachmentPreviewView(
         addedCustomAttachments: [CustomAttachment],
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
@@ -110,7 +110,7 @@ class CustomAttachmentsFactory: ViewFactory {
 }
 
 class CustomMessageTypeResolver: MessageTypeResolving {
-    
+
     func hasCustomAttachment(message: ChatMessage) -> Bool {
         let contactAttachments = message.attachments(payloadType: ContactAttachmentPayload.self)
         return !contactAttachments.isEmpty
@@ -118,13 +118,13 @@ class CustomMessageTypeResolver: MessageTypeResolving {
 }
 
 struct CustomAttachmentSourcePickerView: View {
-    
+
     @Injected(\.colors) var colors
     @Injected(\.images) var images
-    
+
     var selected: AttachmentPickerState
     var onTap: (AttachmentPickerState) -> Void
-    
+
     var body: some View {
         HStack(alignment: .center, spacing: 24) {
             AttachmentPickerButton(
@@ -133,28 +133,28 @@ struct CustomAttachmentSourcePickerView: View {
                 isSelected: selected == .photos,
                 onTap: onTap
             )
-            
+
             AttachmentPickerButton(
                 icon: images.attachmentPickerFolder,
                 pickerType: .files,
                 isSelected: selected == .files,
                 onTap: onTap
             )
-            
+
             AttachmentPickerButton(
                 icon: images.attachmentPickerCamera,
                 pickerType: .camera,
                 isSelected: selected == .camera,
                 onTap: onTap
             )
-            
+
             AttachmentPickerButton(
                 icon: UIImage(systemName: "person.crop.circle")!,
                 pickerType: .custom,
                 isSelected: selected == .custom,
                 onTap: onTap
             )
-            
+
             Spacer()
         }
         .padding(.horizontal, 16)
@@ -164,21 +164,21 @@ struct CustomAttachmentSourcePickerView: View {
 }
 
 struct CustomContactAttachmentView: View {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+
     let contacts: [CustomAttachment]
     let addedContacts: [CustomAttachment]
     var onCustomAttachmentTap: (CustomAttachment) -> Void
-    
+
     var body: some View {
         AttachmentTypeContainer {
             VStack(alignment: .leading) {
                 Text("Contacts")
                     .font(fonts.headlineBold)
                     .standardPadding()
-                
+
                 ScrollView {
                     VStack {
                         ForEach(contacts) { contact in
@@ -202,10 +202,10 @@ struct CustomContactAttachmentView: View {
 }
 
 struct CustomContactAttachmentComposerPreview: View {
-    
+
     var addedCustomAttachments: [CustomAttachment]
     var onCustomAttachmentTap: (CustomAttachment) -> Void
-    
+
     var body: some View {
         VStack {
             ForEach(addedCustomAttachments) { contact in
@@ -218,9 +218,9 @@ struct CustomContactAttachmentComposerPreview: View {
                             isAttachmentSelected: false
                         )
                         .padding(.leading, 8)
-                        
+
                         Spacer()
-                        
+
                         DiscardAttachmentButton(
                             attachmentIdentifier: payload.id,
                             onDiscard: { _ in
@@ -238,16 +238,16 @@ struct CustomContactAttachmentComposerPreview: View {
 }
 
 struct CustomContactAttachmentPreview: View {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+
     let contact: CustomAttachment
     let payload: ContactAttachmentPayload
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var isAttachmentSelected: Bool
     var hasSpacing = true
-    
+
     var body: some View {
         Button {
             withAnimation {
@@ -258,7 +258,7 @@ struct CustomContactAttachmentPreview: View {
                 Image(systemName: "person.crop.circle")
                     .renderingMode(.template)
                     .foregroundColor(Color(colors.textLowEmphasis))
-                
+
                 VStack(alignment: .leading) {
                     Text(payload.name)
                         .font(fonts.bodyBold)
@@ -267,11 +267,11 @@ struct CustomContactAttachmentPreview: View {
                         .font(fonts.footnote)
                         .foregroundColor(Color(colors.textLowEmphasis))
                 }
-                
+
                 if hasSpacing {
                     Spacer()
                 }
-                
+
                 if isAttachmentSelected {
                     Image(systemName: "checkmark")
                         .renderingMode(.template)

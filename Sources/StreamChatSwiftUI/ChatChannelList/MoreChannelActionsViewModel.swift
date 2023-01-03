@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -13,13 +13,13 @@ open class MoreChannelActionsViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     @Injected(\.images) private var images
-    
+
     /// Private vars.
     private lazy var channelNamer = utils.channelNamer
     private lazy var imageLoader = utils.imageLoader
     private lazy var imageCDN = utils.imageCDN
     private lazy var placeholder2 = images.userAvatarPlaceholder2
-    
+
     /// Published vars.
     @Published var channelActions: [ChannelAction]
     @Published var alertShown = false
@@ -31,12 +31,12 @@ open class MoreChannelActionsViewModel: ObservableObject {
 
     @Published var memberAvatars = [String: UIImage]()
     @Published var members = [ChatChannelMember]()
-    
+
     /// Computed vars.
     public var chatName: String {
         name(forChannel: channel)
     }
-    
+
     public var subtitleText: String {
         guard let currentUserId = chatClient.currentUserId else {
             return ""
@@ -44,9 +44,9 @@ open class MoreChannelActionsViewModel: ObservableObject {
 
         return channel.onlineInfoText(currentUserId: currentUserId)
     }
-    
+
     private let channel: ChatChannel
-    
+
     public init(
         channel: ChatChannel,
         channelActions: [ChannelAction]
@@ -57,7 +57,7 @@ open class MoreChannelActionsViewModel: ObservableObject {
             member.id != chatClient.currentUserId
         }
     }
-    
+
     /// Returns an image for a member.
     ///
     /// - Parameter member: the chat channel member.
@@ -66,7 +66,7 @@ open class MoreChannelActionsViewModel: ObservableObject {
         if let image = memberAvatars[member.id] {
             return image
         }
-        
+
         imageLoader.loadImage(
             url: member.imageURL,
             imageCDN: imageCDN,
@@ -81,12 +81,12 @@ open class MoreChannelActionsViewModel: ObservableObject {
                 log.error("error loading image: \(error.localizedDescription)")
             }
         }
-        
+
         return placeholder2
     }
-    
+
     // MARK: - private
-    
+
     private func name(forChannel channel: ChatChannel) -> String {
         channelNamer(channel, chatClient.currentUserId) ?? ""
     }
@@ -104,7 +104,7 @@ public struct ChannelAction: Identifiable {
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
     public var navigationDestination: AnyView?
-    
+
     public init(
         title: String,
         iconName: String,
@@ -127,7 +127,7 @@ public struct ConfirmationPopup {
         self.message = message
         self.buttonTitle = buttonTitle
     }
-    
+
     let title: String
     let message: String?
     let buttonTitle: String

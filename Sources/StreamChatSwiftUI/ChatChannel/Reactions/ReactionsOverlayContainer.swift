@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -8,11 +8,11 @@ import SwiftUI
 struct ReactionsOverlayContainer: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    
+
     let message: ChatMessage
     let contentRect: CGRect
     var onReactionTap: (MessageReactionType) -> Void
-        
+
     init(
         message: ChatMessage,
         contentRect: CGRect,
@@ -22,7 +22,7 @@ struct ReactionsOverlayContainer: View {
         self.contentRect = contentRect
         self.onReactionTap = onReactionTap
     }
-    
+
     var body: some View {
         VStack {
             ReactionsHStack(message: message) {
@@ -33,7 +33,7 @@ struct ReactionsOverlayContainer: View {
                     onReactionTap: onReactionTap
                 )
             }
-            
+
             Spacer()
         }
         .offset(
@@ -44,7 +44,7 @@ struct ReactionsOverlayContainer: View {
             y: -20
         )
     }
-    
+
     private var reactions: [MessageReactionType] {
         images.availableReactions.keys
             .map { $0 }
@@ -52,7 +52,7 @@ struct ReactionsOverlayContainer: View {
                 lhs.rawValue < rhs.rawValue
             })
     }
-    
+
     private var reactionsSize: CGFloat {
         let entrySize = 28
         return CGFloat(reactions.count * entrySize)
@@ -60,7 +60,7 @@ struct ReactionsOverlayContainer: View {
 }
 
 public extension ChatMessage {
-    
+
     func reactionOffsetX(
         for contentRect: CGRect,
         availableWidth: CGFloat = UIScreen.main.bounds.width,
@@ -77,7 +77,7 @@ public extension ChatMessage {
             if contentRect.width < reactionsSize {
                 return (reactionsSize - contentRect.width) / 2
             }
-            
+
             let originX = contentRect.origin.x - reactionsSize / 2
             return contentRect.origin.x - originX
         }
@@ -87,14 +87,14 @@ public extension ChatMessage {
 public struct ReactionsAnimatableView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    
+
     let message: ChatMessage
     var useLargeIcons = false
     var reactions: [MessageReactionType]
     var onReactionTap: (MessageReactionType) -> Void
-    
+
     @State var animationStates: [CGFloat]
-    
+
     public init(
         message: ChatMessage,
         useLargeIcons: Bool = false,
@@ -109,7 +109,7 @@ public struct ReactionsAnimatableView: View {
             initialValue: [CGFloat](repeating: 0, count: reactions.count)
         )
     }
-    
+
     public var body: some View {
         HStack {
             ForEach(reactions) { reaction in
@@ -132,14 +132,14 @@ public struct ReactionsAnimatableView: View {
 public struct ReactionAnimatableView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    
+
     let message: ChatMessage
     let reaction: MessageReactionType
     var useLargeIcons = false
     var reactions: [MessageReactionType]
     @Binding var animationStates: [CGFloat]
     var onReactionTap: (MessageReactionType) -> Void
-    
+
     public init(
         message: ChatMessage,
         reaction: MessageReactionType,
@@ -155,7 +155,7 @@ public struct ReactionAnimatableView: View {
         _animationStates = animationStates
         self.onReactionTap = onReactionTap
     }
-    
+
     public var body: some View {
         if let image = iconProvider(for: reaction) {
             Button {
@@ -173,7 +173,7 @@ public struct ReactionAnimatableView: View {
                 guard let index = index(for: reaction) else {
                     return
                 }
-                
+
                 withAnimation(
                     .interpolatingSpring(
                         stiffness: 170,
@@ -188,25 +188,25 @@ public struct ReactionAnimatableView: View {
             .accessibilityIdentifier("reaction-\(reaction.rawValue)")
         }
     }
-    
+
     private func reactionSelectedBackgroundColor(for reaction: MessageReactionType) -> Color? {
         var colors = colors
         guard let color = colors.selectedReactionBackgroundColor else {
             return nil
         }
-        
+
         let backgroundColor: Color? = userReactionIDs.contains(reaction) ? Color(color) : nil
         return backgroundColor
     }
-    
+
     private func index(for reaction: MessageReactionType) -> Int? {
         let index = reactions.firstIndex(where: { type in
             type == reaction
         })
-        
+
         return index
     }
-    
+
     private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
         if useLargeIcons {
             return images.availableReactions[reaction]?.largeIcon
@@ -214,19 +214,19 @@ public struct ReactionAnimatableView: View {
             return images.availableReactions[reaction]?.smallIcon
         }
     }
-    
+
     private func color(for reaction: MessageReactionType) -> Color? {
         var colors = colors
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-        
+
         if let color = color {
             return Color(color)
         } else {
             return nil
         }
     }
-    
+
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
     }

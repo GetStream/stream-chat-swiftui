@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,11 +7,11 @@ import SwiftUI
 
 public struct MessageView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
-    
+
     private var messageTypeResolver: MessageTypeResolving {
         utils.messageTypeResolver
     }
-    
+
     public var factory: Factory
     public var message: ChatMessage
     public var contentWidth: CGFloat
@@ -25,7 +25,7 @@ public struct MessageView<Factory: ViewFactory>: View {
         self.isFirst = isFirst
         _scrolledId = scrolledId
     }
-    
+
     public var body: some View {
         VStack {
             if messageTypeResolver.isDeleted(message: message) {
@@ -50,7 +50,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 }
-                
+
                 if messageTypeResolver.hasFileAttachment(message: message) {
                     factory.makeFileAttachmentView(
                         for: message,
@@ -59,7 +59,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 }
-                
+
                 if messageTypeResolver.hasImageAttachment(message: message) {
                     factory.makeImageAttachmentView(
                         for: message,
@@ -68,7 +68,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 }
-                
+
                 if messageTypeResolver.hasGiphyAttachment(message: message) {
                     factory.makeGiphyAttachmentView(
                         for: message,
@@ -77,7 +77,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 }
-                
+
                 if messageTypeResolver.hasVideoAttachment(message: message) {
                     factory.makeVideoAttachmentView(
                         for: message,
@@ -110,7 +110,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
-    
+
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
@@ -139,7 +139,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.bottomPadding = bottomPadding
         _scrolledId = scrolledId
     }
-    
+
     public var body: some View {
         VStack(
             alignment: message.alignmentInBubble,
@@ -153,7 +153,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             }
-            
+
             Text(message.adjustedText)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
@@ -180,10 +180,10 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
     var message: ChatMessage
     @Binding var scrolledId: String?
     var isFirst: Bool
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
-    
+
     public var body: some View {
         ZStack {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
@@ -194,7 +194,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                         isInComposer: false,
                         scrolledId: $scrolledId
                     )
-                    
+
                     Text(message.adjustedText)
                         .font(fonts.emoji)
                 }

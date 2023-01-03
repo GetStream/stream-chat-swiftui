@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import AVKit
@@ -7,14 +7,14 @@ import StreamChat
 import SwiftUI
 
 public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
-    
+
     @Injected(\.utils) private var utils
 
     var factory: Factory
     let message: ChatMessage
     let width: CGFloat
     @Binding var scrolledId: String?
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
@@ -25,7 +25,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                         isInComposer: false,
                         scrolledId: $scrolledId
                     )
-                    
+
                     VideoAttachmentsList(
                         message: message,
                         width: width
@@ -45,7 +45,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                     width: width
                 )
             }
-            
+
             if !message.text.isEmpty {
                 AttachmentTextView(message: message)
                     .frame(width: width)
@@ -59,15 +59,15 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
 }
 
 public struct VideoAttachmentsList: View {
-    
+
     let message: ChatMessage
     let width: CGFloat
-    
+
     public init(message: ChatMessage, width: CGFloat) {
         self.message = message
         self.width = width
     }
-    
+
     public var body: some View {
         VStack {
             ForEach(message.videoAttachments, id: \.self) { attachment in
@@ -86,13 +86,13 @@ public struct VideoAttachmentsList: View {
 }
 
 public struct VideoAttachmentView: View {
-    
+
     let attachment: ChatMessageVideoAttachment
     let message: ChatMessage
     let width: CGFloat
     var ratio: CGFloat = 0.75
     var cornerRadius: CGFloat = 24
-    
+
     public init(
         attachment: ChatMessageVideoAttachment,
         message: ChatMessage,
@@ -106,11 +106,11 @@ public struct VideoAttachmentView: View {
         self.ratio = ratio
         self.cornerRadius = cornerRadius
     }
-    
+
     @State var previewImage: UIImage?
     @State var error: Error?
     @State var fullScreenShown = false
-    
+
     public var body: some View {
         VideoAttachmentContentView(
             attachment: attachment,
@@ -124,24 +124,24 @@ public struct VideoAttachmentView: View {
 }
 
 struct VideoAttachmentContentView: View {
-    
+
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
-    
+
     private var videoPreviewLoader: VideoPreviewLoader {
         utils.videoPreviewLoader
     }
-    
+
     let attachment: ChatMessageVideoAttachment
     let author: ChatUser
     let width: CGFloat
     var ratio: CGFloat = 0.75
     var cornerRadius: CGFloat = 24
-    
+
     @State var previewImage: UIImage?
     @State var error: Error?
     @State var fullScreenShown = false
-    
+
     public var body: some View {
         ZStack {
             if let previewImage = previewImage {
@@ -150,7 +150,7 @@ struct VideoAttachmentContentView: View {
                     .scaledToFill()
                     .clipped()
                     .allowsHitTesting(false)
-                
+
                 if width > 64 && attachment.uploadingState == nil {
                     VStack {
                         Image(uiImage: images.playFilled)

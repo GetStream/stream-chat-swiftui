@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,7 +8,7 @@ import Combine
 import XCTest
 
 class AddUsersViewModel_Tests: StreamChatTestCase {
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     func test_addUsersViewModel_loadedUsers() {
@@ -19,14 +19,14 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
             loadedUserIds: [],
             searchController: searchController
         )
-        
+
         // When
         let users = viewModel.users
-        
+
         // Then
         XCTAssert(users.count == 10)
     }
-    
+
     func test_addUsersViewModel_search() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
@@ -36,7 +36,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
             searchController: searchController
         )
         let expectation = self.expectation(description: "search")
-        
+
         // When
         viewModel.searchText = "Test User 1"
         viewModel.$users.sink { users in
@@ -48,7 +48,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
 
         waitForExpectations(timeout: 1)
     }
-    
+
     func test_addUsersViewModel_onUserAppear() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
@@ -58,7 +58,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
             loadedUserIds: [],
             searchController: searchController
         )
-        
+
         // When
         users.append(contentsOf: ChannelInfoMockUtils.generateMockUsers(count: 20))
         searchController.users_mock = users
@@ -66,7 +66,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         let initial = viewModel.users
         viewModel.onUserAppear(users[15])
         let afterLoad = viewModel.users
-        
+
         // Then
         XCTAssert(initial.count == 20)
         XCTAssert(afterLoad.count == 40)

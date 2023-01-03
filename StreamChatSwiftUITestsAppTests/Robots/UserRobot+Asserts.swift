@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -51,7 +51,7 @@ extension UserRobot {
                       line: line)
         return self
     }
-    
+
     @discardableResult
     func assertLastMessageTimestampInChannelPreview(
         isHidden: Bool,
@@ -105,7 +105,7 @@ extension UserRobot {
         }
         return self
     }
-    
+
     @discardableResult
     func assertChannelListPagination(
         channelsCount expectedCount: Int,
@@ -115,25 +115,25 @@ extension UserRobot {
         ChannelListPage.cells.firstMatch.wait()
         let expectedChannel = ChannelListPage.channel(withName: "\(expectedCount)")
         var expectedChannelExist = expectedChannel.exists
-        
+
         XCTAssertFalse(expectedChannelExist,
                        "Expected channel should not be visible",
                        file: file,
                        line: line)
-        
+
         let endTime = Date().timeIntervalSince1970 * 1000 + XCUIElement.waitTimeout * 1000
         while !expectedChannelExist && endTime > Date().timeIntervalSince1970 * 1000 {
             ChannelListPage.list.swipeUp()
             expectedChannelExist = expectedChannel.exists
         }
-        
+
         XCTAssertTrue(expectedChannelExist,
                       "Expected channel should be visible",
                       file: file,
                       line: line)
         return self
     }
-    
+
     @discardableResult
     func assertChannelCount(
         _ expectedCount: Int,
@@ -148,7 +148,7 @@ extension UserRobot {
 
 // MARK: Message List
 extension UserRobot {
-    
+
     @discardableResult
     func messageCell(withIndex index: Int? = nil,
                      file: StaticString = #filePath,
@@ -184,7 +184,7 @@ extension UserRobot {
         XCTAssertEqual(text, actualText, file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertPushNotification(
         withText text: String,
@@ -197,7 +197,7 @@ extension UserRobot {
                       "Push notification should appear",
                       file: file,
                       line: line)
-        
+
         let pushNotificationContent = pushNotification.text
         XCTAssertTrue(pushNotificationContent.contains(text),
                       "\(pushNotificationContent) does not contain \(text)",
@@ -209,7 +209,7 @@ extension UserRobot {
                       line: line)
         return self
     }
-    
+
     @discardableResult
     func assertPushNotificationDoesNotAppear(file: StaticString = #filePath, line: UInt = #line) -> Self {
         XCTAssertFalse(SpringBoard.notificationBanner.exists,
@@ -218,7 +218,7 @@ extension UserRobot {
                        line: line)
         return self
     }
-    
+
     @discardableResult
     func assertAppIconBadge(
         shouldBeVisible: Bool,
@@ -234,7 +234,7 @@ extension UserRobot {
                        line: line)
         return self
     }
-    
+
     @discardableResult
     func assertMessageCount(
         _ expectedCount: Int,
@@ -356,7 +356,7 @@ extension UserRobot {
         XCTAssertEqual(author, actualAuthor, file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertTypingIndicatorShown(
         typingUserName: String,
@@ -375,7 +375,7 @@ extension UserRobot {
                       line: line)
         return self
     }
-    
+
     @discardableResult
     func assertTypingIndicatorHidden(
         waitTimeout: Double = XCUIElement.waitTimeout,
@@ -444,7 +444,7 @@ extension UserRobot {
         }
         return self
     }
-    
+
     func assertComposerLimits(toNumberOfLines limit: Int,
                               file: StaticString = #filePath,
                               line: UInt = #line) {
@@ -461,7 +461,7 @@ extension UserRobot {
         typeText("\(limit)\n\(limit+1)", obtainKeyboardFocus: false)
         XCTAssertEqual(composerHeight, composer.height, file: file, line: line)
     }
-    
+
     @discardableResult
     func assertMessageHasTimestamp(
         _ hasTimestamp: Bool = true,
@@ -478,7 +478,7 @@ extension UserRobot {
         }
         return self
     }
-    
+
     func assertMessageSizeChangesAfterEditing(linesCountShouldBeIncreased: Bool,
                                               at messageCellIndex: Int = 0,
                                               file: StaticString = #filePath,
@@ -488,17 +488,17 @@ extension UserRobot {
         let textView = attributes.text(in: messageCell)
         let newLine = "new line"
         let newText = linesCountShouldBeIncreased ? "ok\n\(textView.text)\n\(newLine)" : newLine
-        
+
         editMessage(newText, messageCellIndex: messageCellIndex)
         assertMessage(newText, at: messageCellIndex, file: file, line: line)
-        
+
         if linesCountShouldBeIncreased {
             XCTAssertLessThan(cellHeight, messageCell.height, file: file, line: line)
         } else {
             XCTAssertGreaterThan(cellHeight, messageCell.height, file: file, line: line)
         }
     }
-    
+
     @discardableResult
     func assertMessageListPagination(
         messagesCount expectedCount: Int,
@@ -508,20 +508,20 @@ extension UserRobot {
         let endTime = Date().timeIntervalSince1970 * 1000 + XCUIElement.waitTimeout * 2000
         let actualCount = MessageListPage.cells.count
         XCTAssertNotEqual(expectedCount, actualCount, file: file, line: line)
-        
+
         while endTime > Date().timeIntervalSince1970 * 1000 {
             MessageListPage.list.swipeDown()
         }
-        
+
         let paginationLimit = 20
         let penultimateMessageСellIndex = MessageListPage.cells.count - 2
         let penultimateMessageСell = MessageListPage.cells.element(boundBy: penultimateMessageСellIndex)
         let lastLoadedMessage = Int(MessageListPage.Attributes.text(in: penultimateMessageСell).text) ?? paginationLimit
-        
+
         XCTAssertLessThan(lastLoadedMessage, paginationLimit, file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertComposerLeftButtons(
         shouldBeVisible: Bool,
@@ -539,7 +539,7 @@ extension UserRobot {
                        line: line)
         return self
     }
-    
+
     @discardableResult
     func assertComposerMentions(
         shouldBeVisible: Bool,
@@ -556,7 +556,7 @@ extension UserRobot {
         }
         return self
     }
-    
+
     @discardableResult
     func assertMentionWasApplied(file: StaticString = #filePath, line: UInt = #line) -> Self {
         let expectedText = "@\(UserDetails.hanSoloName)"
@@ -581,7 +581,7 @@ extension UserRobot {
         }
         return self
     }
-    
+
     @discardableResult
     func assertLinkPreview(
         alsoVerifyServiceName expectedServiceName: String? = nil,
@@ -613,7 +613,7 @@ extension UserRobot {
 
 // MARK: Quoted Messages
 extension UserRobot {
-    
+
     @discardableResult
     func assertQuotedMessage(
         replyText: String,
@@ -630,7 +630,7 @@ extension UserRobot {
 
 // MARK: Thread Replies
 extension UserRobot {
-    
+
     @discardableResult
     func assertThreadIsOpen(file: StaticString = #filePath, line: UInt = #line) -> Self {
         let alsoSendInChannelCheckbox = ThreadPage.alsoSendInChannelCheckbox.wait()
@@ -640,7 +640,7 @@ extension UserRobot {
                       line: line)
         return self
     }
-    
+
     @discardableResult
     func assertThreadReply(
         _ text: String,
@@ -683,7 +683,7 @@ extension UserRobot {
         assertThreadIsOpen(file: file, line: line)
             .assertMessageFailedToBeSent(at: messageCellIndex, file: file, line: line)
     }
-    
+
     @discardableResult
     func assertCooldownIsShown(file: StaticString = #filePath, line: UInt = #line) -> Self {
         XCTAssertEqual(MessageListPage.Composer.placeholder.text,
@@ -696,7 +696,7 @@ extension UserRobot {
                       line: line)
         return self
     }
-    
+
     @discardableResult
     func assertCooldownIsNotShown(file: StaticString = #filePath, line: UInt = #line) -> Self {
         XCTAssertNotEqual(MessageListPage.Composer.placeholder.text,
@@ -716,7 +716,7 @@ extension UserRobot {
         XCTAssertFalse(sendButton.exists, "Send button is visible", file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertThreadReplyCountButton(
         at messageCellIndex: Int? = nil,
@@ -766,7 +766,7 @@ extension UserRobot {
 // MARK: Ephemeral messages
 
 extension UserRobot {
-    
+
     @discardableResult
     func assertGiphyImage(
         at messageCellIndex: Int? = nil,
@@ -828,7 +828,7 @@ extension UserRobot {
 
 // MARK: Attachments
 extension UserRobot {
-    
+
     @discardableResult
     func assertImage(
         isPresent: Bool,
@@ -840,25 +840,25 @@ extension UserRobot {
         let image = attributes.image(in: messageCell)
         if isPresent {
             image.wait()
-            sleep(2) // At the moment, this assert is flaky without it 
+            sleep(2) // At the moment, this assert is flaky without it
         } else {
             image.waitForDisappearance()
         }
-        
+
         let errMessage = isPresent ? "Image is not presented" : "Image is presented"
         XCTAssertTrue(image.exists, errMessage, file: file, line: line)
-        
+
         image.safeTap()
         image.waitForDisappearance(timeout: 2)
         if image.exists {
             image.safeTap()
         }
-        
+
         let fullscreenImage = attributes.fullscreenImage().wait()
         XCTAssertTrue(fullscreenImage.exists, "Fullscreen \(errMessage)", file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertVideo(
         isPresent: Bool,
@@ -869,17 +869,17 @@ extension UserRobot {
         let messageCell = messageCell(withIndex: messageCellIndex)
         let video = attributes.video(in: messageCell)
         _ = isPresent ? video.wait(timeout: 10) : video.waitForDisappearance()
-        
+
         let errMessage = isPresent ? "Video is not presented" : "Video is presented"
         XCTAssertTrue(video.exists, errMessage, file: file, line: line)
-        
+
         tapOnMessage(messageCell)
-        
+
         let player = attributes.videoPlayer().wait()
         XCTAssertTrue(player.exists, "Fullscreen \(errMessage)", file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertFile(
         count: Int = 1,

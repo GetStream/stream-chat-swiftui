@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,14 +7,14 @@ import SwiftUI
 
 /// View for the mentioned users.
 public struct MentionUsersView: View {
-    
+
     @Injected(\.colors) private var colors
-    
+
     private let itemHeight: CGFloat = 60
-    
+
     var users: [ChatUser]
     var userSelected: (ChatUser) -> Void
-    
+
     public var body: some View {
         ScrollView {
             LazyVStack {
@@ -33,7 +33,7 @@ public struct MentionUsersView: View {
         .padding(.all, 8)
         .animation(.spring())
     }
-    
+
     private var viewHeight: CGFloat {
         if users.count > 3 {
             return 3 * itemHeight
@@ -51,7 +51,7 @@ public struct MentionUserView: View {
 
     var user: ChatUser
     var userSelected: (ChatUser) -> Void
-    
+
     public var body: some View {
         HStack {
             MessageAvatarView(

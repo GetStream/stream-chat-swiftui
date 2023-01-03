@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -12,7 +12,7 @@ class TypingIndicatorView_Tests: XCTestCase {
         // Given
         let view = TypingIndicatorView()
             .frame(width: 20, height: 16)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

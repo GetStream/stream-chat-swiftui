@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -10,12 +10,12 @@ enum TestRunnerEnvironment {
     static var isCI: Bool {
         ProcessInfo.processInfo.environment["CI"] == "TRUE"
     }
-    
+
     /// Number of stress test invocations
     static var testInvocations: Int {
         ProcessInfo.processInfo.environment["TEST_INVOCATIONS"].flatMap(Int.init) ?? 1
     }
-    
+
     /// `true` if we invoke stress tests more than a single time
     static var isStressTest: Bool { testInvocations > 1 }
 }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -8,7 +8,7 @@ import SwiftUI
 ///
 /// Different view can be injected in its place.
 public struct NoChannelsView: View {
-    
+
     public var body: some View {
         NoContentView(
             imageName: "message",

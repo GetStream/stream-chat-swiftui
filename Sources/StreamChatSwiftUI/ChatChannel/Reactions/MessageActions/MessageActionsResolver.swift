@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Defines methods for resolving message actions after execution.
 public protocol MessageActionsResolving {
-    
+
     /// Resolves an executed message action.
     /// - Parameters:
     ///  - info: the message action info.
@@ -20,11 +20,11 @@ public protocol MessageActionsResolving {
 
 /// Default implementation of the `MessageActionsResolving` protocol.
 public class MessageActionsResolver: MessageActionsResolving {
-    
+
     public init() {
         // Public init.
     }
-    
+
     public func resolveMessageAction(
         info: MessageActionInfo,
         viewModel: ChatChannelViewModel
@@ -40,7 +40,7 @@ public class MessageActionsResolver: MessageActionsResolving {
                 viewModel.quotedMessage = nil
             }
         }
-        
+
         viewModel.reactionsShown = false
     }
 }

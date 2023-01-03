@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -71,7 +71,7 @@ public extension ChatMessage {
     var isDeleted: Bool {
         deletedAt != nil
     }
-    
+
     /// A boolean value that determines whether the text message should be rendered as large emojis
     ///
     /// By default, any string which comprises of ONLY emojis of length 3 or less is displayed as large emoji
@@ -81,7 +81,7 @@ public extension ChatMessage {
         guard let textContent = textContent, !textContent.isEmpty else { return false }
         return textContent.count <= 3 && textContent.containsOnlyEmoji
     }
-    
+
     var adjustedText: String {
         InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
     }

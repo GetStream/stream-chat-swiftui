@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,9 +7,9 @@ import SwiftUI
 
 /// View displaying the search results in the channel list.
 struct SearchResultsView<Factory: ViewFactory>: View {
-    
+
     @Injected(\.colors) private var colors
-    
+
     var factory: Factory
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResults: [ChannelSelectionInfo]
@@ -19,7 +19,7 @@ struct SearchResultsView<Factory: ViewFactory>: View {
     var imageLoader: (ChatChannel) -> UIImage
     var onSearchResultTap: (ChannelSelectionInfo) -> Void
     var onItemAppear: (Int) -> Void
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -28,7 +28,7 @@ struct SearchResultsView<Factory: ViewFactory>: View {
                     .standardPadding()
                 Spacer()
             }
-            
+
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(searchResults) { searchResult in
@@ -62,7 +62,7 @@ struct SearchResultsView<Factory: ViewFactory>: View {
 
 /// View for one search result item with navigation support.
 struct SearchResultView<Factory: ViewFactory>: View {
-    
+
     var factory: Factory
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResult: ChannelSelectionInfo
@@ -71,7 +71,7 @@ struct SearchResultView<Factory: ViewFactory>: View {
     var avatar: UIImage
     var onSearchResultTap: (ChannelSelectionInfo) -> Void
     var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
-    
+
     var body: some View {
         ZStack {
             factory.makeChannelListSearchResultItem(
@@ -82,7 +82,7 @@ struct SearchResultView<Factory: ViewFactory>: View {
                 onSearchResultTap: onSearchResultTap,
                 channelDestination: channelDestination
             )
-            
+
             NavigationLink(
                 tag: searchResult,
                 selection: $selectedChannel
@@ -97,16 +97,16 @@ struct SearchResultView<Factory: ViewFactory>: View {
 
 /// The search result item user interface.
 struct SearchResultItem<ChannelDestination: View>: View {
-    
+
     @Injected(\.utils) private var utils
-    
+
     var searchResult: ChannelSelectionInfo
     var onlineIndicatorShown: Bool
     var channelName: String
     var avatar: UIImage
     var onSearchResultTap: (ChannelSelectionInfo) -> Void
     var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
-    
+
     var body: some View {
         Button {
             onSearchResultTap(searchResult)
@@ -116,10 +116,10 @@ struct SearchResultItem<ChannelDestination: View>: View {
                     avatar: avatar,
                     showOnlineIndicator: onlineIndicatorShown
                 )
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     ChatTitleView(name: channelName)
-                    
+
                     HStack {
                         SubtitleText(text: searchResult.message?.text ?? "")
                         Spacer()
@@ -131,7 +131,7 @@ struct SearchResultItem<ChannelDestination: View>: View {
         }
         .accessibilityIdentifier("SearchResultItem")
     }
-    
+
     private var timestampText: String {
         if let lastMessageAt = searchResult.channel.lastMessageAt {
             return utils.dateFormatter.string(from: lastMessageAt)

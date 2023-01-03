@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,22 +7,22 @@ import SwiftUI
 
 /// View displaying file attachments.
 struct FileAttachmentsView: View {
-    
+
     @StateObject private var viewModel: FileAttachmentsViewModel
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     init(channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: FileAttachmentsViewModel(channel: channel)
         )
     }
-    
+
     init(viewModel: FileAttachmentsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
+
     var body: some View {
         ZStack {
             if viewModel.loading {
@@ -38,10 +38,10 @@ struct FileAttachmentsView: View {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.attachmentsDataSource) { monthlyDataSource in
                             MonthlyAttachmentsHeader(monthlyDataSource: monthlyDataSource)
-                                
+
                             ForEach(monthlyDataSource.attachments, id: \.self) { attachment in
                                 let url = attachment.assetURL
-                                
+
                                 Button {
                                     viewModel.selectedAttachment = attachment
                                 } label: {
@@ -62,7 +62,7 @@ struct FileAttachmentsView: View {
                                 .sheet(item: $viewModel.selectedAttachment) { item in
                                     FileAttachmentPreview(url: item.assetURL)
                                 }
-                                
+
                                 Divider()
                             }
                         }
@@ -75,12 +75,12 @@ struct FileAttachmentsView: View {
 }
 
 struct MonthlyAttachmentsHeader: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     var monthlyDataSource: MonthlyFileAttachments
-    
+
     var body: some View {
         HStack {
             Text(monthlyDataSource.monthAndYear)
@@ -88,7 +88,7 @@ struct MonthlyAttachmentsHeader: View {
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-            
+
             Spacer()
         }
         .background(Color(colors.background6))

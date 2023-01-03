@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,7 +8,7 @@ import Combine
 import XCTest
 
 class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     func test_mediaAttachmentsViewModel_attachments() {
@@ -24,16 +24,16 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
             channel: channel,
             messageSearchController: messageSearchController
         )
-        
+
         // When
         let mediaItems = viewModel.mediaItems
         let imageAttachments = viewModel.allImageAttachments
-        
+
         // Then
         XCTAssert(mediaItems.count == 8)
         XCTAssert(imageAttachments.count == 5)
     }
-    
+
     func test_mediaAttachmentsViewModel_onAttachmentAppear() {
         // Given
         var messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
@@ -47,7 +47,7 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
             channel: channel,
             messageSearchController: messageSearchController
         )
-        
+
         // When
         let initial = viewModel.mediaItems
         messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
@@ -59,7 +59,7 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
         let middle = viewModel.mediaItems
         viewModel.onMediaAttachmentAppear(with: 15)
         let afterLoad = viewModel.mediaItems
-        
+
         // Then
         XCTAssert(initial.count == 20)
         XCTAssert(middle.count == 20)

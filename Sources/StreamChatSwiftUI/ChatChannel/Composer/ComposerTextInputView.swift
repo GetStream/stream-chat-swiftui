@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -7,18 +7,18 @@ import UIKit
 
 /// SwiftUI wrapper for a text field with multiple rows.
 struct ComposerTextInputView: UIViewRepresentable {
-    
+
     @Injected(\.utils) private var utils
-    
+
     @Binding var text: String
     @Binding var height: CGFloat
     @Binding var selectedRangeLocation: Int
-    
+
     var placeholder: String
     var editable: Bool
     var maxMessageLength: Int?
     var currentHeight: CGFloat
-    
+
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView = InputTextView()
         context.coordinator.textView = inputTextView
@@ -28,14 +28,14 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.placeholderLabel.text = placeholder
         inputTextView.contentInsetAdjustmentBehavior = .never
         inputTextView.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
-        
+
         if utils.messageListConfig.becomesFirstResponderOnOpen {
             inputTextView.becomeFirstResponder()
         }
-        
+
         return inputTextView
     }
-    
+
     func updateUIView(_ uiView: InputTextView, context: Context) {
         DispatchQueue.main.async {
             if uiView.markedTextRange == nil {
@@ -61,17 +61,17 @@ struct ComposerTextInputView: UIViewRepresentable {
             }
         }
     }
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(textInput: self, maxMessageLength: maxMessageLength)
     }
-    
+
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
         weak var textView: InputTextView?
 
         var textInput: ComposerTextInputView
         var maxMessageLength: Int?
-        
+
         init(
             textInput: ComposerTextInputView,
             maxMessageLength: Int?
@@ -86,7 +86,7 @@ struct ComposerTextInputView: UIViewRepresentable {
             textInput.selectedRangeLocation = textView.selectedRange.location
             updateHeight(textView, shouldAnimate: shouldAnimate)
         }
-        
+
         func updateHeight(_ textView: UITextView, shouldAnimate: Bool) {
             var height = textView.sizeThatFits(textView.bounds.size).height
             if height < TextSizeConstants.minThreshold {
@@ -102,7 +102,7 @@ struct ComposerTextInputView: UIViewRepresentable {
                 }
             }
         }
-        
+
         func textViewDidChangeSelection(_ textView: UITextView) {
             textInput.selectedRangeLocation = textView.selectedRange.location
         }

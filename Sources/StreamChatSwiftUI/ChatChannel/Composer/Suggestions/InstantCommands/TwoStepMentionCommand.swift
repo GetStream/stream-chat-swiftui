@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,20 +8,20 @@ import SwiftUI
 
 /// Base class that supports two step commands, where the second one is mentioning users.
 open class TwoStepMentionCommand: CommandHandler {
-        
+
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    
+
     private let channelController: ChatChannelController
     private let mentionsCommandHandler: MentionsCommandHandler
     private let mentionSymbol: String
-    
+
     internal var selectedUser: ChatUser?
-    
+
     public let id: String
     public var displayInfo: CommandDisplayInfo?
     public let replacesMessageSending: Bool = true
-                
+
     public init(
         channelController: ChatChannelController,
         commandSymbol: String,
@@ -39,7 +39,7 @@ open class TwoStepMentionCommand: CommandHandler {
         )
         self.displayInfo = displayInfo
     }
-    
+
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text == id {
             return ComposerCommand(
@@ -58,7 +58,7 @@ open class TwoStepMentionCommand: CommandHandler {
             return nil
         }
     }
-    
+
     public func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -69,7 +69,7 @@ open class TwoStepMentionCommand: CommandHandler {
               let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
             return
         }
-        
+
         selectedUser = chatUser
 
         let mentionText = "\(mentionSymbol)\(chatUser.mentionText)"
@@ -83,11 +83,11 @@ open class TwoStepMentionCommand: CommandHandler {
             selectedRangeLocation.wrappedValue + (mentionText.count - typingSuggestionValue.text.count)
         selectedRangeLocation.wrappedValue = newCaretLocation
     }
-    
+
     public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
         selectedUser != nil
     }
-    
+
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if let selectedUser = selectedUser,
            command.typingSuggestion.text != "\(mentionSymbol)\(selectedUser.mentionText)" {
@@ -95,7 +95,7 @@ open class TwoStepMentionCommand: CommandHandler {
         }
         return command.id == id ? self : nil
     }
-    
+
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
@@ -125,11 +125,11 @@ open class TwoStepMentionCommand: CommandHandler {
         )
         return mentionsCommandHandler.showSuggestions(for: updated)
     }
-    
+
     public var replacesMessageSent: Bool {
         true
     }
-    
+
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
         completion: @escaping (Error?) -> Void

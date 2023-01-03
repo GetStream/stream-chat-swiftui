@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -9,10 +9,10 @@ struct ShareButtonView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
-    
+
     var content: [Any]
     @State var isSharePresented = false
-    
+
     var body: some View {
         Button(action: {
             self.isSharePresented = true

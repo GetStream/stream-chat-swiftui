@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ extension DateFormatter {
         formatter.locale = Locale.autoupdatingCurrent
         return formatter
     }
-    
+
     /// Formatter that is used to format date for scrolling overlay that should display
     /// day when message below was sent
     public static var messageListDateOverlay: DateFormatter = {
@@ -30,7 +30,7 @@ extension DateComponentsFormatter {
         df.unitsStyle = .full
         return df
     }()
-    
+
     static let videoDuration: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .positional

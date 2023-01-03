@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -8,15 +8,15 @@ import SwiftUI
 public struct SendMessageButton: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    
+
     var enabled: Bool
     var onTap: () -> Void
-    
+
     public init(enabled: Bool, onTap: @escaping () -> Void) {
         self.enabled = enabled
         self.onTap = onTap
     }
-    
+
     public var body: some View {
         Button {
             onTap()
@@ -34,7 +34,7 @@ public struct SendMessageButton: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("SendMessageButton")
     }
-    
+
     private var enabledBackground: UIColor {
         colors.highlightedAccentBackground
     }

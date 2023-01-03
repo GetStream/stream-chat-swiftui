@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -7,14 +7,14 @@
 import XCTest
 
 class InstantCommandsHandler_Tests: StreamChatTestCase {
-        
+
     private var muteCommandHandler: MuteCommandHandler {
         MuteCommandHandler(
             channelController: ChatChannelTestHelpers.makeChannelController(chatClient: chatClient),
             commandSymbol: "/mute"
         )
     }
-    
+
     func test_instantCommandsHandler_canHandleCommand() {
         // Given
         let symbol = "/giphy"
@@ -38,12 +38,12 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
             command: .constant(nil),
             extraData: [:]
         )
-        
+
         // Then
         XCTAssert(command != nil)
         XCTAssert(command?.id == symbol)
     }
-    
+
     func test_instantCommandsHandler_handlerForCommand() {
         // Given
         let symbol = "/mute"
@@ -57,15 +57,15 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
             typingSuggestion: typingSuggestion,
             displayInfo: nil
         )
-        
+
         // When
         let handler = commandsHandler.commandHandler(for: muteCommand) as? MuteCommandHandler
-        
+
         // Then
         XCTAssert(handler != nil)
         XCTAssert(muteCommandHandler.id == handler?.id)
     }
-    
+
     func test_instantCommandsHandler_showSuggestions() {
         // Given
         let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
@@ -81,7 +81,7 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
             displayInfo: nil
         )
         let expectation = expectation(description: "suggestions")
-        
+
         // When
         _ = commandsHandler.showSuggestions(for: command).sink(
             receiveCompletion: { _ in
@@ -95,24 +95,24 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
                 expectation.fulfill()
             }
         )
-        
+
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func test_instantCommandsHandler_cantHandleCommand() {
         // Given
         let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
         let commandsHandler = InstantCommandsHandler(
             commands: [giphyCommand, muteCommandHandler]
         )
-        
+
         // When
         let command = commandsHandler.canHandleCommand(in: "$", caretLocation: 1)
-        
+
         // Then
         XCTAssert(command == nil)
     }
-    
+
     func test_instantCommandsHandler_noHandlerAvailable() {
         // Given
         let symbol = "$"
@@ -129,22 +129,22 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
             typingSuggestion: typingSuggestion,
             displayInfo: nil
         )
-        
+
         // When
         let handler = commandsHandler.commandHandler(for: dollarCommand)
-        
+
         // Then
         XCTAssert(handler == nil)
     }
-    
+
     func test_instantCommandsHandler_info() {
         // Given
         let commandsHandler = InstantCommandsHandler(commands: [muteCommandHandler])
-        
+
         // When
         let id = commandsHandler.id
         let displayInfo = commandsHandler.displayInfo
-        
+
         // Then
         XCTAssert(id == "instantCommands")
         XCTAssert(displayInfo == nil)

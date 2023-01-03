@@ -1,18 +1,18 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
 import StreamChat
 
 class MessageListDateUtils {
-    
+
     private let messageListConfig: MessageListConfig
-    
+
     init(messageListConfig: MessageListConfig) {
         self.messageListConfig = messageListConfig
     }
-    
+
     /// Returns index for a message, only if .messageList date indicator placement is enabled.
     /// - Parameters:
     ///   - message, the message whose index is searched for.
@@ -26,10 +26,10 @@ class MessageListDateUtils {
             // Index computation will be done onAppear.
             return nil
         }
-        
+
         return index(for: message, in: messages)
     }
-    
+
     /// Returns index for a message, if it exists.
     /// - Parameters:
     ///   - message, the message whose index is searched for.
@@ -42,10 +42,10 @@ class MessageListDateUtils {
         let index = messages.firstIndex { msg in
             msg.id == message.id
         }
-        
+
         return index
     }
-    
+
     /// Returns whether a date should be presented above a message.
     /// - Parameters:
     ///   - index, the index of a message.

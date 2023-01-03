@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,17 +8,17 @@ import SwiftUI
 
 open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Injected(\.chatClient) private var chatClient
-    
+
     @Published public var message: ChatMessage
     @Published public var errorShown = false
-    
+
     private var messageController: ChatMessageController?
-    
+
     public init(message: ChatMessage) {
         self.message = message
         makeMessageController()
     }
-    
+
     public func reactionTapped(_ reaction: MessageReactionType) {
         if userReactionIDs.contains(reaction) {
             // reaction should be removed
@@ -28,9 +28,9 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
             messageController?.addReaction(reaction)
         }
     }
-    
+
     // MARK: - ChatMessageControllerDelegate
-    
+
     public func messageController(
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
@@ -41,9 +41,9 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
             }
         }
     }
-    
+
     // MARK: - private
-    
+
     private func makeMessageController() {
         if let channelId = message.cid {
             messageController = chatClient.messageController(
@@ -57,7 +57,7 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
             }
         }
     }
-    
+
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
     }

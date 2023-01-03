@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -34,7 +34,7 @@ final class ChannelList_Tests: StreamTestCase {
 
     func test_participantMessageShownInChannelPreview_whenReturningFromOffline() throws {
         linkToScenario(withId: 349)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -59,14 +59,14 @@ final class ChannelList_Tests: StreamTestCase {
             userRobot.assertLastMessageInChannelPreview(message)
         }
     }
-    
+
     func test_paginationOnChannelList() throws {
         linkToScenario(withId: 350)
-        
+
         throw XCTSkip("Check out SWUI-253")
-        
+
         let channelsCount = 30
-        
+
         WHEN("user opens the channel list") {
             backendRobot.generateChannels(count: channelsCount)
             userRobot.login()
@@ -106,10 +106,10 @@ extension ChannelList_Tests {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
         }
     }
-    
+
     func test_channelPreviewShowsNoMessages_whenChannelIsEmpty() {
         linkToScenario(withId: 352)
-        
+
         WHEN("user opens channel list") {
             userRobot.login()
         }
@@ -121,14 +121,14 @@ extension ChannelList_Tests {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: true)
         }
     }
-    
+
     func test_channelPreviewShowsNoMessages_whenTheOnlyMessageInChannelIsDeleted() throws {
         linkToScenario(withId: 353)
-        
+
         throw XCTSkip("Check out SWUI-246")
-        
+
         let message = "Hey"
-        
+
         GIVEN("user opens the channel") {
             userRobot
                 .login()
@@ -150,10 +150,10 @@ extension ChannelList_Tests {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: true)
         }
     }
-    
+
     func test_channelPreviewShowsPreviousMessage_whenLastMessageIsDeleted() throws {
         linkToScenario(withId: 354)
-        
+
         throw XCTSkip("Check out SWUI-246")
 
         let message1 = "Previous message"
@@ -182,12 +182,12 @@ extension ChannelList_Tests {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
         }
     }
-    
+
     func test_channelPreviewIsNotUpdated_whenThreadReplyIsSent() throws {
         linkToScenario(withId: 355)
-        
+
         throw XCTSkip("Check out SWUI-244")
-        
+
         let channelMessage = "Channel message"
         let threadReply = "Thread reply"
 
@@ -212,10 +212,10 @@ extension ChannelList_Tests {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
         }
     }
-    
+
     func test_channelPreviewIsUpdated_whenPreviewMessageIsEdited() {
         linkToScenario(withId: 356)
-        
+
         let originalMessage = "message"
         let editedMessage = "edited message"
 
@@ -248,7 +248,7 @@ extension ChannelList_Tests {
 
     func test_messageList_and_channelPreview_AreUpdatedWhenChannelTruncatedWithMessage() throws {
         linkToScenario(withId: 357)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let message = "Channel truncated"

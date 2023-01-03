@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -20,7 +20,7 @@ extension View {
 
 struct ScrollViewOffsetPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat? = nil
-    
+
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
     }
@@ -28,7 +28,7 @@ struct ScrollViewOffsetPreferenceKey: PreferenceKey {
 
 struct WidthPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat? = nil
-    
+
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = nextValue() ?? value
     }
@@ -36,7 +36,7 @@ struct WidthPreferenceKey: PreferenceKey {
 
 struct HeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat? = nil
-    
+
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
     }
@@ -45,11 +45,11 @@ struct HeightPreferenceKey: PreferenceKey {
 /// View container that allows injecting another view in its bottom right corner.
 public struct BottomRightView<Content: View>: View {
     var content: () -> Content
-    
+
     public init(content: @escaping () -> Content) {
         self.content = content
     }
-    
+
     public var body: some View {
         HStack {
             Spacer()
@@ -83,12 +83,12 @@ public struct BottomLeftView<Content: View>: View {
 /// Returns the top most view controller.
 func topVC() -> UIViewController? {
     let keyWindow = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-    
+
     if var topController = keyWindow?.rootViewController {
         while let presentedViewController = topController.presentedViewController {
             topController = presentedViewController
         }
-        
+
         if UIDevice.current.userInterfaceIdiom == .pad {
             let children = topController.children
             if !children.isEmpty {
@@ -100,9 +100,9 @@ func topVC() -> UIViewController? {
                 }
             }
         }
-        
+
         return topController
     }
-    
+
     return nil
 }

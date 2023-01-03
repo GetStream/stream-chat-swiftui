@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ struct AnyEndpoint: Equatable {
     let requiresConnectionId: Bool
     let body: AnyEncodable?
     let payloadType: Decodable.Type
-    
+
     init<T: Decodable>(_ endpoint: Endpoint<T>) {
         path = endpoint.path
         method = endpoint.method
@@ -21,7 +21,7 @@ struct AnyEndpoint: Equatable {
         body = endpoint.body?.asAnyEncodable
         payloadType = T.self
     }
-    
+
     static func == (lhs: AnyEndpoint, rhs: AnyEndpoint) -> Bool {
         lhs.path.value == rhs.path.value
             && lhs.method == rhs.method

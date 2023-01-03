@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -29,11 +29,11 @@ public final class MockFunc<In, Out> {
     public func call(with input: In) {
         calls.append(input)
     }
-    
+
     public var input: In {
         calls[count - 1]
     }
-    
+
     public var output: Out {
         result(input)
     }

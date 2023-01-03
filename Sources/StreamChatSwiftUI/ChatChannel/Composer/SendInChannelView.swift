@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,13 +7,13 @@ import SwiftUI
 
 /// View for the check whether the view should be send in the channel.
 struct SendInChannelView: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     @Binding var sendInChannel: Bool
     var isDirectMessage: Bool
-    
+
     var body: some View {
         HStack {
             Button {
@@ -26,7 +26,7 @@ struct SendInChannelView: View {
             Text(isDirectMessage ? L10n.Composer.Checkmark.directMessageReply : L10n.Composer.Checkmark.channelReply)
                 .font(fonts.footnote)
                 .foregroundColor(Color(colors.textLowEmphasis))
-            
+
             Spacer()
         }
         .padding(.horizontal, 8)

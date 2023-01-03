@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import UIKit
@@ -10,11 +10,11 @@ public protocol ImageCDN {
     /// - Parameter imageURL: URL of the image that should be customised (filtered).
     /// - Returns: String to be used as an image cache key.
     func cachingKey(forImage url: URL) -> String
-    
+
     /// Prepare and return a `URLRequest` for the given image `URL`
     /// This function can be used to inject custom headers for image loading request.
     func urlRequest(forImage url: URL) -> URLRequest
-    
+
     /// Enhance image URL with size parameters to get thumbnail
     /// - Parameters:
     ///   - originalURL: URL of the image to get the thumbnail for.
@@ -32,35 +32,35 @@ extension ImageCDN {
 
 open class StreamImageCDN: ImageCDN {
     public static var streamCDNURL = "stream-io-cdn.com"
-    
+
     // Initializer required for subclasses
     public init() {
         // Public init.
     }
-    
+
     open func cachingKey(forImage url: URL) -> String {
         let key = url.absoluteString
-        
+
         guard
             var components = URLComponents(url: url, resolvingAgainstBaseURL: true),
             let host = components.host,
             host.contains(StreamImageCDN.streamCDNURL)
         else { return key }
-        
+
         // Keep these parameters in the cache key as they determine the image size.
         let persistedParameters = ["w", "h"]
-        
+
         let newParameters = components.queryItems?.filter { persistedParameters.contains($0.name) } ?? []
         components.queryItems = newParameters.isEmpty ? nil : newParameters
         return components.string ?? key
     }
-    
+
     // Although this is the same as the default impl, we still need it
     // so subclasses can safely override it
     open func urlRequest(forImage url: URL) -> URLRequest {
         URLRequest(url: url)
     }
-    
+
     open func thumbnailURL(originalURL: URL, preferredSize: CGSize) -> URL {
         guard
             var components = URLComponents(url: originalURL, resolvingAgainstBaseURL: true),

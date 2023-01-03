@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,11 +7,11 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
-    
+
     @Injected(\.chatClient) var chatClient
-    
+
     var channelController: ChatChannelController!
-    
+
     @Published var searchText = "" {
         didSet {
             searchUsers(with: searchText)
@@ -24,21 +24,21 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     @Published var groupName = ""
     @Published var showGroupConversation = false
     @Published var errorShown = false
-    
+
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
-    
+
     init() {
         chatUsers = searchController.userArray
         searchController.delegate = self
         // Empty initial search to get all users
         searchUsers(with: nil)
     }
-    
+
     var canCreateGroup: Bool {
         !selectedUsers.isEmpty && !groupName.isEmpty
     }
-    
+
     func userTapped(_ user: ChatUser) {
         if selectedUsers.contains(user) {
             selectedUsers.removeAll { selected in
@@ -48,7 +48,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             selectedUsers.append(user)
         }
     }
-    
+
     func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
             return "Online"
@@ -59,11 +59,11 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             return "Offline"
         }
     }
-    
+
     func isSelected(user: ChatUser) -> Bool {
         selectedUsers.contains(user)
     }
-    
+
     func showChannelView() {
         do {
             channelController = try chatClient.channelController(
@@ -81,23 +81,23 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                     self?.showGroupConversation = true
                 }
             }
-            
+
         } catch {
             errorShown = true
         }
     }
-    
+
     // MARK: - ChatUserSearchControllerDelegate
-    
+
     func controller(
         _ controller: ChatUserSearchController,
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
         chatUsers = controller.userArray
     }
-    
+
     // MARK: - private
-    
+
     private func searchUsers(with term: String?) {
         state = .loading
         searchController.search(term: term) { [weak self] error in

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -7,7 +7,7 @@
 import XCTest
 
 class CommandsHandler_Tests: StreamChatTestCase {
-    
+
     func test_commandsHandler_commandCanBeExecuted() {
         // Given
         let commandsHandler = makeCommandsHandler()
@@ -19,16 +19,16 @@ class CommandsHandler_Tests: StreamChatTestCase {
             ),
             displayInfo: nil
         )
-        
+
         // When
         let canBeExecuted = commandsHandler.canBeExecuted(composerCommand: command)
         let handler = commandsHandler.commandHandler(for: command)
-        
+
         // Then
         XCTAssert(canBeExecuted == true)
         XCTAssert(handler != nil)
     }
-    
+
     func test_commandsHandler_unknownCommand() {
         // Given
         let commandsHandler = makeCommandsHandler()
@@ -40,24 +40,24 @@ class CommandsHandler_Tests: StreamChatTestCase {
             ),
             displayInfo: nil
         )
-        
+
         // When
         let canBeExecuted = commandsHandler.canBeExecuted(composerCommand: command)
         let handler = commandsHandler.commandHandler(for: command)
-        
+
         // Then
         XCTAssert(canBeExecuted == false)
         XCTAssert(handler == nil)
     }
-    
+
     func test_commandsHandler_suggestionsAvailable() {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "mar"
         let command = command(with: searchTerm)
-        
+
         let expectation = expectation(description: "suggestions")
-        
+
         // When
         _ = commandsHandler.showSuggestions(for: command).sink { _ in
             log.debug("completed suggestsions test")
@@ -70,18 +70,18 @@ class CommandsHandler_Tests: StreamChatTestCase {
             XCTAssert(users.count == 2)
             expectation.fulfill()
         }
-        
+
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func test_commandsHandler_noSuggestionsAvailable() {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "str"
         let command = command(with: searchTerm)
-        
+
         let expectation = expectation(description: "suggestions")
-        
+
         // When
         _ = commandsHandler.showSuggestions(for: command).sink { _ in
             log.debug("completed suggestsions test")
@@ -92,10 +92,10 @@ class CommandsHandler_Tests: StreamChatTestCase {
             XCTAssert(users.isEmpty)
             expectation.fulfill()
         }
-        
+
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func test_commandsHandler_allSuggestionsAvailable() {
         // Given
         let commandsHandler = makeCommandsHandler()
@@ -104,9 +104,9 @@ class CommandsHandler_Tests: StreamChatTestCase {
             with: searchTerm,
             range: NSRange(location: 1, length: 0)
         )
-        
+
         let expectation = expectation(description: "suggestions")
-        
+
         // When
         _ = commandsHandler.showSuggestions(for: command).sink { _ in
             log.debug("completed suggestsions test")
@@ -117,10 +117,10 @@ class CommandsHandler_Tests: StreamChatTestCase {
             XCTAssert(users.count == 3)
             expectation.fulfill()
         }
-        
+
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func test_commandsHandler_handleCommandCalled() {
         // Given
         let commandsHandler = makeCommandsHandler()
@@ -137,7 +137,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
             with: searchTerm,
             range: NSRange(location: 0, length: 4)
         )
-        
+
         // When
         let instantCommandsHandler = commandsHandler.commandHandler(for: command)
         let handler = instantCommandsHandler?.commandHandler(for: command) as? MockCommandHandler
@@ -148,28 +148,28 @@ class CommandsHandler_Tests: StreamChatTestCase {
             extraData: [:]
         )
         commandsHandler.executeOnMessageSent(composerCommand: command, completion: { _ in })
-        
+
         // Then
         XCTAssert(handler != nil)
         XCTAssert(handler?.handleCommandCalled == true)
         XCTAssert(handler?.executeOnMessageSentCalled == true)
     }
-    
+
     func test_instantCommandsHandler_info() {
         // Given
         let commandsHandler = makeCommandsHandler()
-        
+
         // When
         let id = commandsHandler.id
         let displayInfo = commandsHandler.displayInfo
-        
+
         // Then
         XCTAssert(id == "main")
         XCTAssert(displayInfo == nil)
     }
-    
+
     // MARK: - private
-    
+
     private func command(
         id: String = "mentions",
         displayInfo: CommandDisplayInfo? = nil,
@@ -186,7 +186,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         )
         return command
     }
-    
+
     private func makeCommandsHandler() -> CommandsHandler {
         let defaultCommandsConfig = TestCommandsConfig(chatClient: chatClient)
         let channelController = ChatChannelTestHelpers.makeChannelController(

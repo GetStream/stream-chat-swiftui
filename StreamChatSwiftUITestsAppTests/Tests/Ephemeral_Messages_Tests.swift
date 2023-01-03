@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -66,10 +66,10 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .assertMessageHasTimestamp(at: 1)
         }
     }
-    
+
     func test_channelListNotModified_whenEphemeralMessageShown() throws {
         linkToScenario(withId: 438)
-        
+
         throw XCTSkip("Check out SWUI-252")
 
         GIVEN("user opens a channel") {
@@ -87,10 +87,10 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
             userRobot.assertLastMessageInChannelPreview("No messages")
         }
     }
-    
+
     func test_deliveryStatusHidden_whenEphemeralMessageShown() throws {
         linkToScenario(withId: 439)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens a channel") {
@@ -107,10 +107,10 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .assertMessageReadCount(readBy: 0)
         }
     }
-    
+
     func test_deliveryStatusHidden_whenEphemeralMessageShownInThread() throws {
         linkToScenario(withId: 440)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens a channel") {
@@ -128,7 +128,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .assertMessageReadCount(readBy: 0)
         }
     }
-    
+
     func test_userObservesAnimatedGiphy_afterAddingGiphyThroughComposerMenu() throws {
         linkToScenario(withId: 441)
 

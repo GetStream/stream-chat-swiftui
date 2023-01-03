@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -9,18 +9,18 @@ import SwiftUI
 public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
     @State private var composerHeight: CGFloat = 0
     @State private var keyboardShown = false
     @State private var editedMessageWillShow = false
-    
+
     private var factory: Factory
     private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
-    
+
     public init(
         viewFactory: Factory,
         viewModel: MessageComposerViewModel? = nil,
@@ -42,11 +42,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         _editedMessage = editedMessage
         self.onMessageSent = onMessageSent
     }
-    
+
     @StateObject var viewModel: MessageComposerViewModel
-        
+
     var onMessageSent: () -> Void
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             if quotedMessage != nil {
@@ -60,7 +60,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
                 .transition(.identity)
             }
-            
+
             HStack(alignment: .bottom) {
                 factory.makeLeadingComposerView(
                     state: $viewModel.pickerTypeState,
@@ -88,7 +88,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         dismissButton: .cancel(Text(L10n.Alert.Actions.ok))
                     )
                 }
-                                
+
                 factory.makeTrailingComposerView(
                     enabled: viewModel.sendButtonEnabled,
                     cooldownDuration: viewModel.cooldownDuration
@@ -107,14 +107,14 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .padding(.all, 8)
-            
+
             if viewModel.sendInChannelShown {
                 factory.makeSendInChannelView(
                     showReplyInChannel: $viewModel.showReplyInChannel,
                     isDirectMessage: viewModel.isDirectChannel
                 )
             }
-            
+
             factory.makeAttachmentPickerView(
                 attachmentPickerState: $viewModel.pickerState,
                 filePickerShown: $viewModel.filePickerShown,
@@ -192,11 +192,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    
+
     var factory: Factory
     @Binding var text: String
     @Binding var selectedRangeLocation: Int
@@ -209,9 +209,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
     var cooldownDuration: Int
     var onCustomAttachmentTap: (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
-    
+
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
-    
+
     public init(
         factory: Factory,
         text: Binding<String>,
@@ -239,22 +239,22 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.removeAttachmentWithId = removeAttachmentWithId
     }
-    
+
     var textFieldHeight: CGFloat {
         let minHeight: CGFloat = TextSizeConstants.minimumHeight
         let maxHeight: CGFloat = TextSizeConstants.maximumHeight
-            
+
         if textHeight < minHeight {
             return minHeight
         }
-            
+
         if textHeight > maxHeight {
             return maxHeight
         }
-            
+
         return textHeight
     }
-    
+
     public var body: some View {
         VStack {
             if let quotedMessage = quotedMessage.wrappedValue {
@@ -265,7 +265,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     scrolledId: .constant(nil)
                 )
             }
-            
+
             if !addedAssets.isEmpty {
                 AddedImageAttachmentsView(
                     images: addedAssets,
@@ -274,26 +274,26 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                 .transition(.scale)
                 .animation(.default)
             }
-            
+
             if !addedFileURLs.isEmpty {
                 if !addedAssets.isEmpty {
                     Divider()
                 }
-                
+
                 AddedFileAttachmentsView(
                     addedFileURLs: addedFileURLs,
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .padding(.trailing, 8)
             }
-            
+
             if !addedCustomAttachments.isEmpty {
                 factory.makeCustomAttachmentPreviewView(
                     addedCustomAttachments: addedCustomAttachments,
                     onCustomAttachmentTap: onCustomAttachmentTap
                 )
             }
-            
+
             HStack {
                 if let command = command,
                    let displayInfo = command.displayInfo,
@@ -309,7 +309,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     .foregroundColor(.white)
                     .cornerRadius(16)
                 }
-                
+
                 ComposerTextInputView(
                     text: $text,
                     height: $textHeight,
@@ -351,16 +351,16 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         )
         .accessibilityIdentifier("ComposerInputView")
     }
-    
+
     private var composerInputBackground: Color {
         var colors = colors
         return Color(colors.composerInputBackground)
     }
-    
+
     private var shouldAddVerticalPadding: Bool {
         !addedFileURLs.isEmpty || !addedAssets.isEmpty
     }
-    
+
     private var isInCooldown: Bool {
         cooldownDuration > 0
     }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -13,13 +13,13 @@ public protocol ChannelListHeaderViewModifier: ViewModifier {
 public struct DefaultChatChannelListHeader: ToolbarContent {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    
+
     public var title: String
-    
+
     public init(title: String) {
         self.title = title
     }
-    
+
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title)
@@ -31,11 +31,11 @@ public struct DefaultChatChannelListHeader: ToolbarContent {
 /// The default channel list header modifier.
 public struct DefaultChannelListHeaderModifier: ChannelListHeaderViewModifier {
     public var title: String
-    
+
     public init(title: String) {
         self.title = title
     }
-    
+
     public func body(content: Content) -> some View {
         content.toolbar {
             DefaultChatChannelListHeader(title: title)

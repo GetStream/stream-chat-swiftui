@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -9,18 +9,18 @@ import SwiftUI
 public struct GalleryView: View {
 
     @Environment(\.presentationMode) var presentationMode
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    
+
     var imageAttachments: [ChatMessageImageAttachment]
     var author: ChatUser
     @Binding var isShown: Bool
     @State private var selected: Int
     @State private var loadedImages = [Int: UIImage]()
     @State private var gridShown = false
-    
+
     public init(
         imageAttachments: [ChatMessageImageAttachment],
         author: ChatUser,
@@ -32,7 +32,7 @@ public struct GalleryView: View {
         _isShown = isShown
         _selected = State(initialValue: selected)
     }
-    
+
     public var body: some View {
         GeometryReader { reader in
             VStack {
@@ -75,18 +75,18 @@ public struct GalleryView: View {
                         }
                     }
                 )
-                
+
                 HStack {
                     ShareButtonView(content: sharingContent)
                         .standardPadding()
 
                     Spacer()
-                    
+
                     Text("\(selected + 1) of \(sources.count)")
                         .font(fonts.bodyBold)
 
                     Spacer()
-                    
+
                     Button {
                         gridShown = true
                     } label: {
@@ -115,7 +115,7 @@ public struct GalleryView: View {
             return []
         }
     }
-    
+
     private var sources: [URL] {
         imageAttachments.map { attachment in
             attachment.imageURL

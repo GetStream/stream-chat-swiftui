@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -19,13 +19,13 @@ class QueueAwareDelegate {
     let expectedQueueId: UUID
     let file: StaticString
     let line: UInt
-    
+
     init(expectedQueueId: UUID, file: StaticString = #file, line: UInt = #line) {
         self.expectedQueueId = expectedQueueId
         self.file = file
         self.line = line
     }
-    
+
     func validateQueue(function: StaticString = #function) {
         XCTAssertTrue(
             DispatchQueue.isTestQueue(withId: expectedQueueId),

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -9,7 +9,7 @@ import SwiftUI
 import XCTest
 
 class ChatChannelView_Tests: StreamChatTestCase {
-    
+
     override func setUp() {
         super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())
@@ -36,7 +36,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
             )
         }
         controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
-        
+
         // When
         let view = NavigationView {
             ScrollView {
@@ -49,11 +49,11 @@ class ChatChannelView_Tests: StreamChatTestCase {
             .navigationBarTitleDisplayMode(.inline)
         }
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelView_snapshotEmpty() {
         // Given
         let controller = ChatChannelController_Mock.mock(
@@ -67,7 +67,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
             messages: messages,
             state: .remoteDataFetched
         )
-        
+
         // When
         let view = NavigationView {
             ScrollView {
@@ -80,11 +80,11 @@ class ChatChannelView_Tests: StreamChatTestCase {
             .navigationBarTitleDisplayMode(.inline)
         }
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelView_snapshotLoading() {
         // Given
         let controller = ChatChannelController_Mock.mock(
@@ -92,7 +92,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
             channelListQuery: nil,
             client: chatClient
         )
-        
+
         // When
         let view = NavigationView {
             ScrollView {
@@ -105,11 +105,11 @@ class ChatChannelView_Tests: StreamChatTestCase {
             .navigationBarTitleDisplayMode(.inline)
         }
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_defaultChannelHeader_snapshot() {
         // Given
         let header = DefaultChatChannelHeader(
@@ -124,7 +124,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
                 }
         }
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -13,11 +13,11 @@ import StreamChatSwiftUI
 import UIKit
 
 final class StreamChatWrapper {
-    
+
     @Injected(\.chatClient) var client
-    
+
     static let shared = StreamChatWrapper()
-    
+
     func mockConnection(isConnected: Bool) {
         #if TESTS
         if isConnected == false {
@@ -51,5 +51,5 @@ final class StreamChatWrapper {
         }
         #endif
     }
-    
+
 }
