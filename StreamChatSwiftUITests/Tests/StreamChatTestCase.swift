@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -10,7 +10,7 @@ import XCTest
 
 /// Base class that sets up the `StreamChat` object.
 open class StreamChatTestCase: XCTestCase {
-    
+
     public static var currentUserId: String = .unique
 
     public var chatClient: ChatClient = {
@@ -21,9 +21,9 @@ open class StreamChatTestCase: XCTestCase {
         client.connectUser(userInfo: .init(id: currentUserId), token: token)
         return client
     }()
-    
+
     public var streamChat: StreamChat?
-    
+
     override open func setUp() {
         super.setUp()
         streamChat = StreamChat(chatClient: chatClient)

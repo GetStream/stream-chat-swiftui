@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,16 +7,16 @@ import SwiftUI
 
 /// View used for the gallery header, for images and videos.
 struct GalleryHeaderView: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    
+
     var title: String
     var subtitle: String
-    
+
     @Binding var isShown: Bool
-    
+
     var body: some View {
         ZStack {
             HStack {
@@ -29,10 +29,10 @@ struct GalleryHeaderView: View {
                 }
                 .padding()
                 .foregroundColor(Color(colors.text))
-                
+
                 Spacer()
             }
-            
+
             VStack {
                 Text(title)
                     .font(fonts.bodyBold)

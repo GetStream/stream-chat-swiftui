@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -25,11 +25,11 @@ public class Utils {
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
-    
+
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
-    
+
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),

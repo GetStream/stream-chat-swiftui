@@ -1,19 +1,19 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
 
 /// Search bar used in the message search.
 struct SearchBar: View, KeyboardReadable {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    
+
     @Binding var text: String
     @State private var isEditing = false
-        
+
     var body: some View {
         HStack {
             TextField(L10n.Message.Search.title, text: $text)
@@ -29,9 +29,9 @@ struct SearchBar: View, KeyboardReadable {
                             .foregroundColor(Color(colors.textLowEmphasis))
                             .frame(maxHeight: 18)
                             .padding(.leading, 12)
-                        
+
                         Spacer()
-                        
+
                         if !self.text.isEmpty {
                             Button(action: {
                                 self.text = ""
@@ -48,7 +48,7 @@ struct SearchBar: View, KeyboardReadable {
                 .padding(.horizontal, 8)
                 .transition(.identity)
                 .animation(.easeInOut, value: isEditing)
-            
+
             if isEditing {
                 Button(action: {
                     self.isEditing = false

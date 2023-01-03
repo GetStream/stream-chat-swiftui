@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -10,17 +10,17 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
-    
+
     @StateObject private var viewModel: ChatChannelViewModel
-    
+
     @Environment(\.presentationMode) var presentationMode
-    
+
     @State private var messageDisplayInfo: MessageDisplayInfo?
     @State private var keyboardShown = false
     @State private var tabBarAvailable: Bool = false
-    
+
     private var factory: Factory
-            
+
     public init(
         viewFactory: Factory,
         viewModel: ChatChannelViewModel? = nil,
@@ -37,7 +37,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         )
         factory = viewFactory
     }
-    
+
     public var body: some View {
         ZStack {
             if let channel = viewModel.channel {
@@ -80,7 +80,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                         }
                     }
-                    
+
                     Divider()
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
@@ -95,7 +95,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         .if(viewModel.channelHeaderType == .messageThread) { view in
                             view.modifier(factory.makeMessageThreadHeaderViewModifier())
                         }
-                    
+
                     factory.makeMessageComposerViewType(
                         with: viewModel.channelController,
                         messageController: viewModel.messageController,
@@ -107,7 +107,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
                             .reactionsShown
                     ) ? 0 : 1)
-                    
+
                     NavigationLink(
                         isActive: $viewModel.threadMessageShown
                     ) {
@@ -181,11 +181,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
         .accessibilityIdentifier("ChatChannelView")
     }
-    
+
     private var generatingSnapshot: Bool {
         tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
     }
-    
+
     private var bottomPadding: CGFloat {
         let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
         return bottomPadding
@@ -193,7 +193,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 }
 
 extension PresentationMode: Equatable {
-    
+
     public static func == (lhs: PresentationMode, rhs: PresentationMode) -> Bool {
         lhs.isPresented == rhs.isPresented
     }

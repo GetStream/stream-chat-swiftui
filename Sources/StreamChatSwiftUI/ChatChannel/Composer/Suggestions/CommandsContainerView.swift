@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,10 +7,10 @@ import SwiftUI
 
 /// Default implementation of the commands container.
 struct CommandsContainerView: View {
-    
+
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
-    
+
     var body: some View {
         ZStack {
             if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
@@ -22,7 +22,7 @@ struct CommandsContainerView: View {
                 )
                 .accessibilityIdentifier("MentionUsersView")
             }
-            
+
             if let instantCommands = suggestions["instantCommands"] as? [CommandHandler] {
                 InstantCommandsView(
                     instantCommands: instantCommands,

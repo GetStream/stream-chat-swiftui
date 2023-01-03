@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,13 +7,13 @@ import SwiftUI
 
 /// Contains info needed for a modifier to be applied to the message view.
 public struct MessageModifierInfo {
-    
+
     public var message: ChatMessage
     public var isFirst: Bool
     public var injectedBackgroundColor: UIColor?
     public var cornerRadius: CGFloat = 18
     public var forceLeftToRight = false
-    
+
     public init(
         message: ChatMessage,
         isFirst: Bool,
@@ -32,7 +32,7 @@ public struct MessageModifierInfo {
 /// Modifier that enables message bubble container.
 public struct MessageBubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
-        
+
     public var message: ChatMessage
     public var isFirst: Bool
     public var injectedBackgroundColor: UIColor?
@@ -40,7 +40,7 @@ public struct MessageBubbleModifier: ViewModifier {
     public var forceLeftToRight = false
     public var topPadding: CGFloat = 0
     public var bottomPadding: CGFloat = 0
-    
+
     public init(
         message: ChatMessage,
         isFirst: Bool,
@@ -58,7 +58,7 @@ public struct MessageBubbleModifier: ViewModifier {
         self.topPadding = topPadding
         self.bottomPadding = bottomPadding
     }
-    
+
     public func body(content: Content) -> some View {
         content
             .modifier(
@@ -82,7 +82,7 @@ public struct MessageBubbleModifier: ViewModifier {
 /// Modifier that enables bubble container.
 public struct BubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
-    
+
     var corners: UIRectCorner
     var backgroundColors: [Color]
     var borderColor: Color?
@@ -114,7 +114,7 @@ public struct BubbleModifier: ViewModifier {
                 )
             )
     }
-    
+
     @ViewBuilder
     private var background: some View {
         if backgroundColors.count == 1 {
@@ -142,7 +142,7 @@ public struct BubbleBackgroundShape: Shape {
             byRoundingCorners: corners,
             cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
         )
-        
+
         return Path(path.cgPath)
     }
 }
@@ -170,7 +170,7 @@ extension View {
             )
         )
     }
-    
+
     /// Applies bubble modifier to a view.
     /// - Parameters:
     ///  - background: the bubble's background.
@@ -192,7 +192,7 @@ extension View {
 }
 
 extension ChatMessage {
-    
+
     /// Returns the default corners that will be rounded by the message bubble modifier.
     /// - Parameters:
     ///  - isFirst: whether the message is first.
@@ -202,14 +202,14 @@ extension ChatMessage {
         if !isFirst {
             return [.topLeft, .topRight, .bottomLeft, .bottomRight]
         }
-        
+
         if isSentByCurrentUser && !forceLeftToRight {
             return [.topLeft, .topRight, .bottomLeft]
         } else {
             return [.topLeft, .topRight, .bottomRight]
         }
     }
-    
+
     /// Returns the bubble background(s) for a given message.
     /// - Parameters:
     ///  - colors: The color pallete.

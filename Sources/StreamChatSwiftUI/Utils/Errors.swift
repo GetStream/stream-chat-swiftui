@@ -1,39 +1,39 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
 import Foundation
 
 public struct StreamChatError: Error {
-    
+
     /// The specific error code.
     public let errorCode: StreamChatErrorCode
-    
+
     /// The additional error message description.
     public let description: String?
-    
+
     /// The additional information dictionary.
     public let additionalInfo: [String: Any]?
-        
+
     public static let unknown = StreamChatError(
         errorCode: StreamChatErrorCode.unknown,
         description: nil,
         additionalInfo: nil
     )
-    
+
     public static let missingData = StreamChatError(
         errorCode: StreamChatErrorCode.missingData,
         description: nil,
         additionalInfo: nil
     )
-    
+
     public static let wrongConfig = StreamChatError(
         errorCode: StreamChatErrorCode.wrongConfig,
         description: nil,
         additionalInfo: nil
     )
-    
+
     public static let noSuggestionsAvailable = StreamChatError(
         errorCode: StreamChatErrorCode.noSuggestions,
         description: nil,
@@ -42,14 +42,14 @@ public struct StreamChatError: Error {
 }
 
 extension StreamChatError: Equatable {
-    
+
     public static func == (lhs: StreamChatError, rhs: StreamChatError) -> Bool {
         lhs.errorCode == rhs.errorCode
     }
 }
 
 extension StreamChatError {
-    
+
     public func asFailedPromise<T>() -> Future<T, Error> {
         Future { promise in
             promise(.failure(self))

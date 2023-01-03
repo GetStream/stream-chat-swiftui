@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,9 +7,9 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
-    
+
     @Injected(\.chatClient) var chatClient
-    
+
     @Published var searchText: String = "" {
         didSet {
             searchUsers(with: searchText)
@@ -30,7 +30,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                         state = .error
                         updatingSelectedUsers = false
                     }
-                    
+
                 } else {
                     withAnimation {
                         state = .loaded
@@ -40,27 +40,27 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             }
         }
     }
-    
+
     private var loadingNextUsers: Bool = false
     private var updatingSelectedUsers: Bool = false
-    
+
     var channelController: ChatChannelController?
-    
+
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
-    
+
     init() {
         chatUsers = searchController.userArray
         searchController.delegate = self
         // Empty initial search to get all users
         searchUsers(with: nil)
     }
-    
+
     func userTapped(_ user: ChatUser) {
         if updatingSelectedUsers {
             return
         }
-        
+
         if selectedUsers.contains(user) {
             selectedUsers.removeAll { selected in
                 selected == user
@@ -69,7 +69,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             selectedUsers.append(user)
         }
     }
-    
+
     func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
             return "Online"
@@ -80,22 +80,22 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             return "Offline"
         }
     }
-    
+
     func isSelected(user: ChatUser) -> Bool {
         selectedUsers.contains(user)
     }
-    
+
     func onChatUserAppear(_ user: ChatUser) {
         guard let index = chatUsers.firstIndex(where: { element in
             user.id == element.id
         }) else {
             return
         }
-        
+
         if index < chatUsers.count - 10 {
             return
         }
-        
+
         if !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers(limit: 50) { [weak self] _ in
@@ -105,18 +105,18 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             }
         }
     }
-    
+
     // MARK: - ChatUserSearchControllerDelegate
-    
+
     func controller(
         _ controller: ChatUserSearchController,
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
         chatUsers = controller.userArray
     }
-    
+
     // MARK: - private
-    
+
     private func searchUsers(with term: String?) {
         state = .loading
         searchController.search(term: term) { [weak self] error in
@@ -127,7 +127,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             }
         }
     }
-    
+
     private func makeChannelController() throws {
         let selectedUserIds = Set(selectedUsers.map(\.id))
         channelController = try chatClient.channelController(

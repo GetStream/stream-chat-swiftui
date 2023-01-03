@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -17,14 +17,14 @@ public func AssertTestQueue(withId id: UUID, file: StaticString = #file, line: U
 
 extension DispatchQueue {
     private static let queueIdKey = DispatchSpecificKey<String>()
-    
+
     /// Creates a new queue which can be later identified by the id.
     static func testQueue(withId id: UUID) -> DispatchQueue {
         let queue = DispatchQueue(label: "Test queue: <\(id)>")
         queue.setSpecific(key: Self.queueIdKey, value: id.uuidString)
         return queue
     }
-    
+
     /// Checks if the current queue is the queue with the given id.
     static func isTestQueue(withId id: UUID) -> Bool {
         DispatchQueue.getSpecific(key: queueIdKey) == id.uuidString

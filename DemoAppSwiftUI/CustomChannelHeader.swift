@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import NukeUI
@@ -8,16 +8,16 @@ import StreamChatSwiftUI
 import SwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
     @Injected(\.colors) var colors
-    
+
     var title: String
     var currentUserController: CurrentChatUserController
     @Binding var isNewChatShown: Bool
     @Binding var logoutAlertShown: Bool
-    
+
     @MainActor
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
@@ -55,14 +55,14 @@ public struct CustomChannelHeader: ToolbarContent {
 }
 
 struct CustomChannelModifier: ChannelListHeaderViewModifier {
-    
+
     @Injected(\.chatClient) var chatClient
-    
+
     var title: String
-    
+
     @State var isNewChatShown = false
     @State var logoutAlertShown = false
-    
+
     func body(content: Content) -> some View {
         ZStack {
             content.toolbar {
@@ -73,7 +73,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     logoutAlertShown: $logoutAlertShown
                 )
             }
-            
+
             NavigationLink(isActive: $isNewChatShown) {
                 NewChatView(isNewChatShown: $isNewChatShown)
             } label: {

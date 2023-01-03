@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -51,7 +51,7 @@ public struct TypingSuggestion {
 }
 
 extension TypingSuggestion {
-    
+
     static let empty = TypingSuggestion(
         text: "",
         locationRange: NSRange(

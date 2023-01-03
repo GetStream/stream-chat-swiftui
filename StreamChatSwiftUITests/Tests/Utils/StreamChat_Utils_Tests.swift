@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -8,11 +8,11 @@ import Foundation
 import XCTest
 
 class StreamChat_Utils_Tests: StreamChatTestCase {
-    
+
     private let testURL = URL(string: "https://example.com")!
-    
+
     @Injected(\.utils) var utils
-    
+
     override func setUp() {
         let utils = Utils(
             videoPreviewLoader: VideoPreviewLoader_Mock(),
@@ -20,22 +20,22 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-    
+
     func test_streamChatUtils_injectVideoPreviewLoader() {
         // Given
         let videoPreviewLoader = utils.videoPreviewLoader as! VideoPreviewLoader_Mock
-        
+
         // When
         videoPreviewLoader.loadPreviewForVideo(at: testURL, completion: { _ in })
-        
+
         // Then
         XCTAssert(videoPreviewLoader.loadPreviewVideoCalled == true)
     }
-    
+
     func test_streamChatUtils_injectImageLoader() {
         // Given
         let imageLoader = utils.imageLoader as! ImageLoaderUtils_Mock
-        
+
         // When
         imageLoader.loadImage(
             url: testURL,
@@ -44,7 +44,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
             preferredSize: nil,
             completion: { _ in }
         )
-        
+
         // Then
         XCTAssert(imageLoader.loadImageCalled == true)
     }

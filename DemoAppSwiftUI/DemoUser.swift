@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -17,11 +17,11 @@ public struct UserCredentials {
 }
 
 extension UserCredentials: Identifiable {
-    
+
     static func builtInUsersByID(id: String) -> UserCredentials? {
         builtInUsers.filter { $0.id == id }.first
     }
-    
+
     static let builtInUsers: [UserCredentials] = [
         (
             "luke_skywalker",
@@ -135,7 +135,7 @@ extension UserCredentials: Identifiable {
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZ2VuZXJhbF9ncmlldm91cyJ9.g2UUZdENuacFIxhYCylBuDJZUZ2x59MTWaSpndWGCTU",
             "Qymaen jai Sheelal"
         )
-        
+
     ].map {
         UserCredentials(id: $0.0, name: $0.1, avatarURL: URL(string: $0.2)!, token: $0.3, birthLand: $0.4)
     }

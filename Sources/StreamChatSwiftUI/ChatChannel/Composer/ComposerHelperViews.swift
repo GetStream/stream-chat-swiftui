@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,7 +7,7 @@ import SwiftUI
 
 /// View used to indicate that an asset is a video.
 public struct VideoIndicatorView: View {
-    
+
     @Injected(\.images) private var images
 
     public init() {}
@@ -28,7 +28,7 @@ public struct VideoIndicatorView: View {
 public struct VideoDurationIndicatorView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     var duration: String
 
     public init(duration: String) {
@@ -49,18 +49,18 @@ public struct VideoDurationIndicatorView: View {
 /// Container that displays attachment types.
 public struct AttachmentTypeContainer<Content: View>: View {
     @Injected(\.colors) private var colors
-    
+
     var content: () -> Content
-    
+
     public init(content: @escaping () -> Content) {
         self.content = content
     }
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             Color(colors.background)
                 .frame(height: 20)
-            
+
             content()
                 .background(Color(colors.background))
         }
@@ -74,10 +74,10 @@ public struct AttachmentTypeContainer<Content: View>: View {
 struct FilePickerDisplayView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     @Binding var filePickerShown: Bool
     @Binding var addedFileURLs: [URL]
-    
+
     var body: some View {
         AttachmentTypeContainer {
             ZStack {
@@ -101,9 +101,9 @@ struct FilePickerDisplayView: View {
 struct CameraPickerDisplayView: View {
     @Binding var selectedPickerState: AttachmentPickerState
     @Binding var cameraPickerShown: Bool
-    
+
     var cameraImageAdded: (AddedAsset) -> Void
-    
+
     var body: some View {
         Spacer()
             .fullScreenCover(isPresented: $cameraPickerShown, onDismiss: {
@@ -121,7 +121,7 @@ struct CameraPickerDisplayView: View {
 struct AssetsAccessPermissionView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
             Text(L10n.Composer.Images.noAccessLibrary)
@@ -139,7 +139,7 @@ struct AssetsAccessPermissionView: View {
         .padding(.all, 8)
         .accessibilityIdentifier("AssetsAccessPermissionView")
     }
-    
+
     func openAppPrivacySettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString),
               UIApplication.shared.canOpenURL(url) else {
@@ -152,19 +152,19 @@ struct AssetsAccessPermissionView: View {
 
 /// View for the quoted message header.
 struct QuotedMessageHeaderView: View {
-    
+
     @Injected(\.fonts) var fonts
-    
+
     @Binding var quotedMessage: ChatMessage?
-    
+
     @State var showContent = false
-    
+
     var body: some View {
         ZStack {
             if showContent {
                 Text(L10n.Composer.Title.reply)
                     .font(fonts.bodyBold)
-                
+
                 HStack {
                     Spacer()
                     Button(action: {
@@ -190,16 +190,16 @@ struct QuotedMessageHeaderView: View {
 
 /// View for the edit message header.
 struct EditMessageHeaderView: View {
-    
+
     @Injected(\.fonts) var fonts
-    
+
     @Binding var editedMessage: ChatMessage?
-    
+
     var body: some View {
         ZStack {
             Text(L10n.Composer.Title.edit)
                 .font(fonts.bodyBold)
-            
+
             HStack {
                 Spacer()
                 Button(action: {

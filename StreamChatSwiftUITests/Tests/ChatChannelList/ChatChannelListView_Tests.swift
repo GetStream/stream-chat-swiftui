@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -9,15 +9,15 @@ import SwiftUI
 import XCTest
 
 class ChatChannelListView_Tests: StreamChatTestCase {
-        
+
     func test_chatChannelScreen_snapshot() {
         // Given
         let controller = makeChannelListController()
-        
+
         // When
         let view = ChatChannelListScreen(channelListController: controller)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
@@ -25,7 +25,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
     func test_chatChannelListView_snapshot() {
         // Given
         let controller = makeChannelListController()
-        
+
         // When
         let view = ChatChannelListView(
             viewFactory: DefaultViewFactory.shared,
@@ -36,11 +36,11 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelListViewSansNavigation_snapshot() {
         // Given
         let controller = makeChannelListController()
-        
+
         // When
         let view = NavigationView {
             ChatChannelListView(
@@ -54,7 +54,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_trailingSwipeActionsView_snapshot() {
         // Given
         let view = TrailingSwipeActionsView(
@@ -65,17 +65,17 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             rightButtonTapped: { _ in }
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     private func makeChannelListController() -> ChatChannelListController_Mock {
         let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
         channelListController.simulateInitial(channels: mockChannels(), state: .initialized)
         return channelListController
     }
-    
+
     private func mockChannels() -> [ChatChannel] {
         var channels = [ChatChannel]()
         for i in 0..<15 {

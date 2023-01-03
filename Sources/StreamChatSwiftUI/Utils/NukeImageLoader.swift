@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Nuke
@@ -12,7 +12,7 @@ open class NukeImageLoader: ImageLoading {
     public init() {
         // Public init.
     }
-    
+
     open func loadImage(
         using urlRequest: URLRequest,
         cachingKey: String?,
@@ -23,12 +23,12 @@ open class NukeImageLoader: ImageLoading {
         if let cachingKey = cachingKey {
             userInfo = [.imageIdKey: cachingKey]
         }
-        
+
         let request = ImageRequest(
             urlRequest: urlRequest,
             userInfo: userInfo
         )
-        
+
         ImagePipeline.shared.loadImage(with: request) { result in
             switch result {
             case let .success(imageResponse):
@@ -38,7 +38,7 @@ open class NukeImageLoader: ImageLoading {
             }
         }
     }
-    
+
     open func loadImages(
         from urls: [URL],
         placeholders: [UIImage],
@@ -49,10 +49,10 @@ open class NukeImageLoader: ImageLoading {
     ) {
         let group = DispatchGroup()
         var images: [UIImage] = []
-        
+
         for avatarUrl in urls {
             var placeholderIndex = 0
-            
+
             let thumbnailUrl = imageCDN.thumbnailURL(originalURL: avatarUrl, preferredSize: .avatarThumbnailSize)
             var imageRequest = imageCDN.urlRequest(forImage: thumbnailUrl)
             imageRequest.timeoutInterval = 8
@@ -77,12 +77,12 @@ open class NukeImageLoader: ImageLoading {
                 group.leave()
             }
         }
-        
+
         group.notify(queue: .main) {
             completion(images)
         }
     }
-    
+
     open func loadImage(
         url: URL?,
         imageCDN: ImageCDN,
@@ -96,7 +96,7 @@ open class NukeImageLoader: ImageLoading {
         }
 
         let urlRequest = imageCDN.urlRequest(forImage: url)
-        
+
         var processors = [ImageProcessing]()
         if let preferredSize = preferredSize, resize == true {
             processors = [ImageProcessors.LateResize(sizeProvider: {
@@ -108,15 +108,15 @@ open class NukeImageLoader: ImageLoading {
         if resize && size != .zero {
             url = imageCDN.thumbnailURL(originalURL: url, preferredSize: size)
         }
-        
+
         let cachingKey = imageCDN.cachingKey(forImage: url)
-        
+
         let request = ImageRequest(
             urlRequest: urlRequest,
             processors: processors,
             userInfo: [.imageIdKey: cachingKey]
         )
-                
+
         ImagePipeline.shared.loadImage(with: request) { result in
             switch result {
             case let .success(imageResponse):

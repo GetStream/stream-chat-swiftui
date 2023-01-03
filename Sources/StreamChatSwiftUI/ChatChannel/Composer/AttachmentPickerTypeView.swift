@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -29,10 +29,10 @@ public enum AttachmentPickerType {
 public struct AttachmentPickerTypeView: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    
+
     @Binding var pickerTypeState: PickerTypeState
     var channelConfig: ChannelConfig?
-    
+
     public init(
         pickerTypeState: Binding<PickerTypeState>,
         channelConfig: ChannelConfig?
@@ -40,11 +40,11 @@ public struct AttachmentPickerTypeView: View {
         _pickerTypeState = pickerTypeState
         self.channelConfig = channelConfig
     }
-    
+
     private var commandsAvailable: Bool {
         channelConfig?.commands.count ?? 0 > 0
     }
-    
+
     public var body: some View {
         HStack(spacing: 16) {
             switch pickerTypeState {
@@ -57,7 +57,7 @@ public struct AttachmentPickerTypeView: View {
                     )
                     .accessibilityIdentifier("PickerTypeButtonMedia")
                 }
-                
+
                 if commandsAvailable {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
@@ -87,12 +87,12 @@ public struct AttachmentPickerTypeView: View {
 struct PickerTypeButton: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    
+
     @Binding var pickerTypeState: PickerTypeState
-    
+
     let pickerType: AttachmentPickerType
     let selected: AttachmentPickerType
-    
+
     var body: some View {
         Button {
             withAnimation {
@@ -108,7 +108,7 @@ struct PickerTypeButton: View {
                 )
         }
     }
-    
+
     private var icon: UIImage {
         if pickerType == .media {
             return images.openAttachments
@@ -116,7 +116,7 @@ struct PickerTypeButton: View {
             return images.commands
         }
     }
-    
+
     private func onTap(
         attachmentType: AttachmentPickerType,
         selected: AttachmentPickerType
@@ -127,7 +127,7 @@ struct PickerTypeButton: View {
             pickerTypeState = .expanded(attachmentType)
         }
     }
-    
+
     private func foregroundColor(
         for pickerType: AttachmentPickerType,
         selected: AttachmentPickerType

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -17,54 +17,54 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             format: "test command",
             isInstant: false
         )
-        
+
         // When
         let view = InstantCommandView(displayInfo: commandDisplayInfo)
             .frame(width: defaultScreenSize.width, height: 100)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_instantCommandsContainerViewEmpty_snapshot() {
         // Given
         let commands: [CommandHandler] = []
-        
+
         // When
         let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_instantCommandsContainerView_snapshot() {
         // Given
         let commands: [CommandHandler] = defaultCommands()
-        
+
         // When
         let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_instantCommandsContainerMaxSize_snapshot() {
         // Given
         var commands = [CommandHandler]()
         for i in 0..<5 {
             commands.append(contentsOf: defaultCommands(suffix: "\(i)"))
         }
-        
+
         // When
         let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     private func defaultCommands(suffix: String = "") -> [CommandHandler] {
         let channelController = ChatChannelTestHelpers.makeChannelController(
             chatClient: chatClient,
@@ -88,7 +88,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
         )
         instantCommands.append(muteCommand)
         instantCommands.append(unmuteCommand)
-        
+
         return instantCommands
     }
 }

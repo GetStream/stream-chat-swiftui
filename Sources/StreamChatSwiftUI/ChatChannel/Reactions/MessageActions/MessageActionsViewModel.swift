@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -14,7 +14,7 @@ open class MessageActionsViewModel: ObservableObject {
             alertShown = alertAction != nil
         }
     }
-    
+
     public init(messageActions: [MessageAction]) {
         self.messageActions = messageActions
     }
@@ -30,7 +30,7 @@ public struct MessageAction: Identifiable, Equatable {
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
     public var navigationDestination: AnyView?
-    
+
     public init(
         id: String = UUID().uuidString,
         title: String,
@@ -46,7 +46,7 @@ public struct MessageAction: Identifiable, Equatable {
         self.confirmationPopup = confirmationPopup
         self.isDestructive = isDestructive
     }
-    
+
     public static func == (lhs: MessageAction, rhs: MessageAction) -> Bool {
         lhs.id == rhs.id
     }
@@ -56,7 +56,7 @@ public struct MessageAction: Identifiable, Equatable {
 public struct MessageActionInfo {
     public let message: ChatMessage
     public let identifier: String
-    
+
     public init(message: ChatMessage, identifier: String) {
         self.message = message
         self.identifier = identifier

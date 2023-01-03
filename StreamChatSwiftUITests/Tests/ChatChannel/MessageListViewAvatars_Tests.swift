@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -13,50 +13,50 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: nil)
         let channel = ChatChannel.mockDMChannel()
-        
+
         // When
         let view = makeMessageListView(with: channel).applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageListView_defaultGroupsChannel() {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: nil)
         let channel = ChatChannel.mockNonDMChannel()
-        
+
         // When
         let view = makeMessageListView(with: channel).applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageListView_dmChannelAvatarsOff() {
         // Given
         setupConfig(showAvatars: false, showAvatarsInGroups: nil)
         let channel = ChatChannel.mockDMChannel()
-        
+
         // When
         let view = makeMessageListView(with: channel).applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageListView_groupsChannelAvatarsOff() {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: false)
         let channel = ChatChannel.mockNonDMChannel()
-        
+
         // When
         let view = makeMessageListView(with: channel).applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     private func setupConfig(showAvatars: Bool, showAvatarsInGroups: Bool?) {
         let messageDisplayOptions = MessageDisplayOptions(
             showAvatars: showAvatars,
@@ -66,7 +66,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let utils = Utils(messageListConfig: messageListConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-    
+
     private func makeMessageListView(with channel: ChatChannel) -> MessageListView<DefaultViewFactory> {
         let temp = [ChatMessage.mock(
             id: .unique,
@@ -91,7 +91,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
             onScrollToBottom: {},
             onLongPress: { _ in }
         )
-        
+
         return messageListView
     }
 }

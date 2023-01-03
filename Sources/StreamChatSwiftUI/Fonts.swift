@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -9,7 +9,7 @@ public struct Fonts {
     public init() {
         // Public init.
     }
-    
+
     public var caption1 = Font.caption
     public var footnoteBold = Font.footnote.bold()
     public var footnote = Font.footnote

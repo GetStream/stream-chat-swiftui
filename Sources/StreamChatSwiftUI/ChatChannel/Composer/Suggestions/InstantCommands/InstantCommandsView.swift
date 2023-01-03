@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,22 +7,22 @@ import SwiftUI
 
 /// View for the instant commands suggestions.
 struct InstantCommandsView: View {
-    
+
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var instantCommands: [CommandHandler]
     var commandSelected: (ComposerCommand) -> Void
-    
+
     @State private var itemHeight: CGFloat = 40
-    
+
     var body: some View {
         VStack {
             InstantCommandsHeader()
                 .standardPadding()
                 .accessibilityElement(children: .contain)
-            
+
             ScrollView {
                 VStack {
                     ForEach(0..<instantCommands.count, id: \.self) { i in
@@ -66,7 +66,7 @@ struct InstantCommandsView: View {
         .animation(.spring())
         .accessibilityElement(children: .contain)
     }
-    
+
     private var viewHeight: CGFloat {
         if instantCommands.isEmpty {
             return 40
@@ -79,11 +79,11 @@ struct InstantCommandsView: View {
 
 /// View for the instant commands header.
 struct InstantCommandsHeader: View {
-    
+
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var body: some View {
         HStack {
             Image(uiImage: images.smallBolt)
@@ -103,13 +103,13 @@ struct InstantCommandsHeader: View {
 
 /// View for an instant command entry.
 struct InstantCommandView: View {
-    
+
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var displayInfo: CommandDisplayInfo
-    
+
     var body: some View {
         HStack {
             Image(uiImage: displayInfo.icon)

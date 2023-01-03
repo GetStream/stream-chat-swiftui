@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -47,7 +47,7 @@ func waitFor<T>(
             }
         }
     }
-    
+
     let waiterResult = XCTWaiter.wait(for: [expectation], timeout: timeout)
     switch waiterResult {
     case .completed where result != nil:

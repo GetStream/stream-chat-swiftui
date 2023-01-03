@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import NukeUI
@@ -7,9 +7,9 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct LoginView: View {
-    
+
     @StateObject var viewModel = LoginViewModel()
-    
+
     var body: some View {
         VStack {
             Image("STREAMMARK")
@@ -17,16 +17,16 @@ struct LoginView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 40)
                 .padding(.all, 24)
-            
+
             Text("Welcome to Stream Chat")
                 .font(.title)
                 .padding(.all, 8)
-            
+
             Text("Select a user to try the iOS SDK:")
                 .font(.body)
                 .padding(.all, 8)
                 .padding(.bottom, 16)
-            
+
             List(viewModel.demoUsers) { user in
                 Button {
                     viewModel.demoUserTapped(user)
@@ -37,7 +37,7 @@ struct LoginView: View {
                 .animation(nil)
             }
             .listStyle(.plain)
-            
+
             Spacer()
         }
         .overlay(
@@ -47,14 +47,14 @@ struct LoginView: View {
 }
 
 struct DemoUserView: View {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+
     var user: UserCredentials
-    
+
     private let imageSize: CGFloat = 44
-    
+
     var body: some View {
         HStack {
             LazyImage(url: user.avatarURL)
@@ -64,7 +64,7 @@ struct DemoUserView: View {
                     width: imageSize,
                     height: imageSize
                 )
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(user.name)
                     .font(fonts.bodyBold)
@@ -72,9 +72,9 @@ struct DemoUserView: View {
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
-            
+
             Spacer()
-            
+
             Image(systemName: "arrow.forward")
                 .renderingMode(.template)
                 .foregroundColor(colors.tintColor)

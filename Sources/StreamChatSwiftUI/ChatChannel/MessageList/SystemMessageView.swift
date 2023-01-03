@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -8,13 +8,13 @@ import SwiftUI
 public struct SystemMessageView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var message: String
-    
+
     public init(message: String) {
         self.message = message
     }
-    
+
     public var body: some View {
         Text(message)
             .font(fonts.caption1)

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,15 +8,15 @@ import SwiftUI
 
 /// Handles the giphy command and provides suggestions.
 public struct GiphyCommandHandler: CommandHandler {
-        
+
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    
+
     public let id: String
     public var displayInfo: CommandDisplayInfo?
-    
+
     private let typingSuggester: TypingSuggester
-            
+
     public init(
         commandSymbol: String,
         id: String = "/giphy"
@@ -36,7 +36,7 @@ public struct GiphyCommandHandler: CommandHandler {
             isInstant: true
         )
     }
-    
+
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text == id {
             return ComposerCommand(
@@ -54,18 +54,18 @@ public struct GiphyCommandHandler: CommandHandler {
             return nil
         }
     }
-    
+
     public func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) { /* Handled with attachment actions. */ }
-    
+
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         nil
     }
-    
+
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {

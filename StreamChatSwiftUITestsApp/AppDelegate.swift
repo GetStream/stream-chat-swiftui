@@ -1,11 +1,11 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    
+
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         disableAnimations()
@@ -13,7 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
         return true
     }
-    
+
     func application(_ application: UIApplication,
                      configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -21,19 +21,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         sceneConfig.delegateClass = SceneDelegate.self
         return sceneConfig
     }
-    
+
     private func disableAnimations() {
         UIApplication.shared.windows.first?.layer.speed = 2
         UIView.setAnimationsEnabled(false)
     }
-    
+
     func registerForPushNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
             guard granted else { return }
             self?.getNotificationSettings()
         }
     }
-    
+
     func getNotificationSettings() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             guard settings.authorizationStatus == .authorized else { return }

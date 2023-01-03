@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -22,9 +22,9 @@ func CompareJSONEqual(
     guard var json = try JSONSerialization.jsonObject(with: expression1()) as? [String: Any] else {
         throw error(domain: "CompareJSONEqual", message: "The first expression is not a valid json object!")
     }
-    
+
     preprocessBoolValues(&json)
-    
+
     try CompareJSONEqual(json, try expression2())
 }
 
@@ -63,7 +63,7 @@ func CompareJSONEqual(
     guard let json2 = try JSONSerialization.jsonObject(with: expression2()) as? [String: Any] else {
         throw error(domain: "CompareJSONEqual", message: "Second expression is not a valid json object!")
     }
-    
+
     try CompareJSONEqual(json1, json2)
 }
 
@@ -99,14 +99,14 @@ func CompareJSONEqual(
     do {
         let json1 = try expression1()
         let json2 = try expression2()
-        
+
         guard json1.keys == json2.keys else {
             throw error(
                 domain: "CompareJSONEqual",
                 message: "JSON keys do not match. Expression 1 keys: \(json1.keys), Expression 2 keys: \(json2.keys)"
             )
         }
-        
+
         try json1.forEach { key, value in
             guard let value2 = json2[key] else {
                 throw error(domain: "CompareJSONEqual", message: "Expression 2 does not have value for \(key)")

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Nuke
@@ -9,18 +9,18 @@ import SwiftUI
 
 /// View for the giphy attachments.
 public struct GiphyAttachmentView<Factory: ViewFactory>: View {
-    
+
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
-    
+
     let factory: Factory
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
-                
+
     public var body: some View {
         VStack(
             alignment: message.alignmentInBubble,
@@ -34,7 +34,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             }
-            
+
             LazyGiphyView(
                 source: message.giphyAttachments[0].previewURL,
                 width: width
@@ -45,7 +45,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                     availableWidth: width
                 )
             )
-            
+
             if !giphyActions.isEmpty {
                 HStack {
                     ForEach(0..<giphyActions.count, id: \.self) { index in
@@ -72,11 +72,11 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
         .frame(maxWidth: width)
         .accessibilityIdentifier("GiphyAttachmentView")
     }
-    
+
     private var giphyActions: [AttachmentAction] {
         message.giphyAttachments[0].actions
     }
-    
+
     private func execute(action: AttachmentAction) {
         guard let cid = message.cid else {
             log.error("Failed to take the tap on attachment action \(action)")
@@ -95,7 +95,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
 struct LazyGiphyView: View {
     let source: URL
     let width: CGFloat
-    
+
     var body: some View {
         LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {

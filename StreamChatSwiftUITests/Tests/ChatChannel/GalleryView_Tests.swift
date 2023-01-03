@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -19,7 +19,7 @@ class GalleryView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
-        
+
         // When
         let view = GalleryView(
             imageAttachments: imageMessage.imageAttachments,
@@ -28,11 +28,11 @@ class GalleryView_Tests: StreamChatTestCase {
             selected: 0
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_galleryHeader_snapshot() {
         // Given
         let header = GalleryHeaderView(
@@ -41,11 +41,11 @@ class GalleryView_Tests: StreamChatTestCase {
             isShown: .constant(true)
         )
         .frame(width: defaultScreenSize.width, height: 44)
-        
+
         // Then
         assertSnapshot(matching: header, as: .image)
     }
-    
+
     func test_gridView_snapshotLoading() {
         // Given
         let view = GridPhotosView(
@@ -53,7 +53,7 @@ class GalleryView_Tests: StreamChatTestCase {
             isShown: .constant(true)
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -12,22 +12,22 @@ enum MessageRepliesConstants {
 
 /// View shown below a message, when there are replies to it.
 public struct MessageRepliesView<Factory: ViewFactory>: View {
-        
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     var factory: Factory
     var channel: ChatChannel
     var message: ChatMessage
     var replyCount: Int
-    
+
     public init(factory: Factory, channel: ChatChannel, message: ChatMessage, replyCount: Int) {
         self.factory = factory
         self.channel = channel
         self.message = message
         self.replyCount = replyCount
     }
-    
+
     public var body: some View {
         Button {
             // NOTE: Needed because of a bug in iOS 16.
@@ -63,7 +63,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     let height: CGFloat = 2 * corner
                     let startX: CGFloat = 0
                     let endX = startX + corner
-                    
+
                     path.move(to: CGPoint(x: startX, y: 0))
                     path.addLine(to: CGPoint(x: startX, y: height - corner))
                     path.addQuadCurve(
@@ -88,7 +88,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             .foregroundColor(colors.tintColor)
         }
     }
-    
+
     var repliesText: String {
         if message.replyCount == 1 {
             return L10n.Message.Threads.reply

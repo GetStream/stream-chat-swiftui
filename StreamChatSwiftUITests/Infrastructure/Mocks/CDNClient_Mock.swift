@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -7,7 +7,7 @@ import Foundation
 
 final class CDNClient_Mock: CDNClient {
     static var maxAttachmentSize: Int64 = .max
-    
+
     lazy var uploadAttachmentMockFunc = MockFunc.mock(for: uploadAttachment)
     func uploadAttachment(
         _ attachment: AnyChatMessageAttachment,

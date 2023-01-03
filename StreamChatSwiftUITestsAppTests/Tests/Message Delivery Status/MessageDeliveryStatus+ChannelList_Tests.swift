@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -20,7 +20,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_deliveryStatusClocksShownInPreview_whenTheLastMessageIsInPendingState() throws {
         linkToScenario(withId: 424)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -44,7 +44,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_singleCheckmarkShownInPreview_whenTheLastMessageIsSent() throws {
         linkToScenario(withId: 425)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -68,7 +68,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_errorIndicatorShownInPreview_whenMessageFailedToBeSent() throws {
         linkToScenario(withId: 426)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -95,7 +95,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_doubleCheckmarkShownInPreview_whenMessageReadByParticipant() throws {
         linkToScenario(withId: 427)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -122,7 +122,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_deliveryStatusHiddenInPreview_whenMessageIsSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 428)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -146,7 +146,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_deliveryStatusHiddenInPreview_whenMessageIsSentByParticipant() throws {
         linkToScenario(withId: 429)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -174,7 +174,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
 
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSent() throws {
         linkToScenario(withId: 430)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -198,10 +198,10 @@ extension MessageDeliveryStatus_ChannelList_Tests {
                 .assertMessageReadCountInChannelPreview(readBy: 0)
         }
     }
-    
+
     func test_singleCheckmarkShownForMessageInPreview_whenThreadReplyFailedToBeSent() throws {
         linkToScenario(withId: 431)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -232,7 +232,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
 
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyReadByParticipant() throws {
         linkToScenario(withId: 432)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -264,7 +264,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
 
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 433)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -292,7 +292,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
 
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSentByParticipant() throws {
         linkToScenario(withId: 434)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {

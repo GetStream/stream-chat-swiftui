@@ -1,44 +1,44 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChatSwiftUI
 import SwiftUI
 
 struct GroupNameView: View, KeyboardReadable {
-    
+
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+
     @StateObject var viewModel: CreateGroupViewModel
-    
+
     @Binding var isNewChatShown: Bool
-    
+
     @State private var keyboardShown = false
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text("NAME")
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
-                
+
                 TextField(
                     "Choose a group chat name",
                     text: $viewModel.groupName
                 )
-                
+
                 Spacer()
-                
+
                 GroupControlsView(
                     viewModel: viewModel,
                     isNewChatShown: $isNewChatShown
                 )
             }
             .padding()
-            
+
             UsersHeaderView(title: "\(viewModel.selectedUsers.count) Members")
-            
+
             List(viewModel.selectedUsers) { user in
                 HStack {
                     ChatUserView(
@@ -46,9 +46,9 @@ struct GroupNameView: View, KeyboardReadable {
                         onlineText: viewModel.onlineInfo(for: user),
                         isSelected: false
                     )
-                    
+
                     Spacer()
-                    
+
                     Button {
                         viewModel.userTapped(user)
                     } label: {
@@ -73,12 +73,12 @@ struct GroupNameView: View, KeyboardReadable {
 }
 
 struct GroupControlsView: View {
-    
+
     @Injected(\.colors) var colors
-    
+
     @StateObject var viewModel: CreateGroupViewModel
     @Binding var isNewChatShown: Bool
-    
+
     var body: some View {
         HStack {
             Button {
@@ -91,7 +91,7 @@ struct GroupControlsView: View {
                     )
             }
             .disabled(!viewModel.canCreateGroup)
-            
+
             Button {
                 viewModel.groupName = ""
             } label: {
@@ -99,7 +99,7 @@ struct GroupControlsView: View {
                     .renderingMode(.template)
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
-            
+
             NavigationLink(
                 isActive: $viewModel.showGroupConversation,
                 destination: {

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -22,7 +22,7 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
-        
+
         if message.localState == .sendingFailed {
             messageActions = messageNotSentActions(
                 for: message,
@@ -43,7 +43,7 @@ extension MessageAction {
             )
             return messageActions
         }
-        
+
         if channel.config.quotesEnabled {
             let replyAction = replyAction(
                 for: message,
@@ -52,7 +52,7 @@ extension MessageAction {
             )
             messageActions.append(replyAction)
         }
-        
+
         if channel.config.repliesEnabled && !message.isPartOfThread {
             let replyThread = threadReplyAction(
                 factory: factory,
@@ -61,7 +61,7 @@ extension MessageAction {
             )
             messageActions.append(replyThread)
         }
-        
+
         if message.pinDetails != nil {
             let unpinAction = unpinMessageAction(
                 for: message,
@@ -70,7 +70,7 @@ extension MessageAction {
                 onFinish: onFinish,
                 onError: onError
             )
-            
+
             messageActions.append(unpinAction)
         } else {
             let pinAction = pinMessageAction(
@@ -80,19 +80,19 @@ extension MessageAction {
                 onFinish: onFinish,
                 onError: onError
             )
-            
+
             messageActions.append(pinAction)
         }
-        
+
         if !message.text.isEmpty {
             let copyAction = copyMessageAction(
                 for: message,
                 onFinish: onFinish
             )
-            
+
             messageActions.append(copyAction)
         }
-        
+
         if message.isSentByCurrentUser {
             let editAction = editMessageAction(
                 for: message,
@@ -108,7 +108,7 @@ extension MessageAction {
                 onFinish: onFinish,
                 onError: onError
             )
-            
+
             messageActions.append(deleteAction)
         } else {
             let flagAction = flagMessageAction(
@@ -118,9 +118,9 @@ extension MessageAction {
                 onFinish: onFinish,
                 onError: onError
             )
-            
+
             messageActions.append(flagAction)
-            
+
             if channel.config.mutesEnabled {
                 let author = message.author
                 let currentUser = chatClient.currentUserController().currentUser
@@ -148,12 +148,12 @@ extension MessageAction {
                 }
             }
         }
-        
+
         return messageActions
     }
-    
+
     // MARK: - private
-    
+
     private static func copyMessageAction(
         for message: ChatMessage,
         onFinish: @escaping (MessageActionInfo) -> Void
@@ -174,10 +174,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return copyAction
     }
-    
+
     private static func editMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -198,10 +198,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return editAction
     }
-    
+
     private static func pinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -213,7 +213,7 @@ extension MessageAction {
             cid: channel.cid,
             messageId: message.id
         )
-        
+
         let pinMessage = {
             messageController.pin(MessagePinning.noExpiration) { error in
                 if let error = error {
@@ -228,7 +228,7 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let pinAction = MessageAction(
             id: MessageActionId.pin,
             title: L10n.Message.Actions.pin,
@@ -237,10 +237,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return pinAction
     }
-    
+
     private static func unpinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -252,7 +252,7 @@ extension MessageAction {
             cid: channel.cid,
             messageId: message.id
         )
-        
+
         let pinMessage = {
             messageController.unpin { error in
                 if let error = error {
@@ -267,7 +267,7 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let pinAction = MessageAction(
             id: MessageActionId.unpin,
             title: L10n.Message.Actions.unpin,
@@ -276,10 +276,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return pinAction
     }
-    
+
     private static func replyAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -300,10 +300,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return replyAction
     }
-    
+
     private static func threadReplyAction<Factory: ViewFactory>(
         factory: Factory,
         for message: ChatMessage,
@@ -323,10 +323,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return replyThread
     }
-    
+
     private static func deleteMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -338,7 +338,7 @@ extension MessageAction {
             cid: channel.cid,
             messageId: message.id
         )
-        
+
         let deleteAction = {
             messageController.deleteMessage { error in
                 if let error = error {
@@ -353,13 +353,13 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let confirmationPopup = ConfirmationPopup(
             title: L10n.Message.Actions.Delete.confirmationTitle,
             message: L10n.Message.Actions.Delete.confirmationMessage,
             buttonTitle: L10n.Message.Actions.delete
         )
-        
+
         let deleteMessage = MessageAction(
             id: MessageActionId.delete,
             title: L10n.Message.Actions.delete,
@@ -368,10 +368,10 @@ extension MessageAction {
             confirmationPopup: confirmationPopup,
             isDestructive: true
         )
-        
+
         return deleteMessage
     }
-    
+
     private static func flagMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -383,7 +383,7 @@ extension MessageAction {
             cid: channel.cid,
             messageId: message.id
         )
-        
+
         let flagAction = {
             messageController.flag { error in
                 if let error = error {
@@ -398,13 +398,13 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let confirmationPopup = ConfirmationPopup(
             title: L10n.Message.Actions.Flag.confirmationTitle,
             message: L10n.Message.Actions.Flag.confirmationMessage,
             buttonTitle: L10n.Message.Actions.flag
         )
-        
+
         let flagMessage = MessageAction(
             id: MessageActionId.flag,
             title: L10n.Message.Actions.flag,
@@ -413,10 +413,10 @@ extension MessageAction {
             confirmationPopup: confirmationPopup,
             isDestructive: false
         )
-        
+
         return flagMessage
     }
-    
+
     private static func muteAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -440,7 +440,7 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let muteUser = MessageAction(
             id: MessageActionId.mute,
             title: L10n.Message.Actions.userMute,
@@ -449,10 +449,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return muteUser
     }
-    
+
     private static func unmuteAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -476,7 +476,7 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let unmuteUser = MessageAction(
             id: MessageActionId.unmute,
             title: L10n.Message.Actions.userUnmute,
@@ -485,10 +485,10 @@ extension MessageAction {
             confirmationPopup: nil,
             isDestructive: false
         )
-        
+
         return unmuteUser
     }
-    
+
     private static func resendMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -500,7 +500,7 @@ extension MessageAction {
             cid: channel.cid,
             messageId: message.id
         )
-        
+
         let resendAction = {
             messageController.resendMessage { error in
                 if let error = error {
@@ -515,7 +515,7 @@ extension MessageAction {
                 }
             }
         }
-        
+
         let messageAction = MessageAction(
             id: MessageActionId.resend,
             title: L10n.Message.Actions.resend,
@@ -527,7 +527,7 @@ extension MessageAction {
 
         return messageAction
     }
-    
+
     private static func messageNotSentActions(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -536,7 +536,7 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
-        
+
         let resendAction = resendMessageAction(
             for: message,
             channel: channel,
@@ -545,7 +545,7 @@ extension MessageAction {
             onError: onError
         )
         messageActions.append(resendAction)
-        
+
         let editAndDeleteActions = editAndDeleteActions(
             for: message,
             channel: channel,
@@ -554,10 +554,10 @@ extension MessageAction {
             onError: onError
         )
         messageActions.append(contentsOf: editAndDeleteActions)
-        
+
         return messageActions
     }
-    
+
     private static func editAndDeleteActions(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -566,7 +566,7 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
-        
+
         let editAction = editMessageAction(
             for: message,
             channel: channel,
@@ -581,9 +581,9 @@ extension MessageAction {
             onFinish: onFinish,
             onError: onError
         )
-        
+
         messageActions.append(deleteAction)
-        
+
         return messageActions
     }
 }

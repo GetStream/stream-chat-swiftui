@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -8,12 +8,12 @@ import SnapshotTesting
 import XCTest
 
 class NoChannelsView_Tests: StreamChatTestCase {
-    
+
     func test_noChannelsView_snapshot() {
         // Given
         let view = NoChannelsView()
             .frame(width: 375, height: 600)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

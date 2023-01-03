@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -9,7 +9,7 @@ import SwiftUI
 import XCTest
 
 class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
-    
+
     override func setUp() {
         super.setUp()
         DateFormatter.messageListDateOverlay = {
@@ -47,7 +47,7 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
             )
         }
         controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
-        
+
         // When
         let view = NavigationView {
             ScrollView {
@@ -60,7 +60,7 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
             .navigationBarTitleDisplayMode(.inline)
         }
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

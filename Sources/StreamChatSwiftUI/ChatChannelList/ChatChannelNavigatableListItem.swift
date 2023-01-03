@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -16,7 +16,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
     @Binding private var selectedChannel: ChannelSelectionInfo?
     private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
     private var onItemTap: (ChatChannel) -> Void
-    
+
     public init(
         channel: ChatChannel,
         channelName: String,
@@ -36,7 +36,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
         self.disabled = disabled
         _selectedChannel = selectedChannel
     }
-    
+
     public var body: some View {
         ZStack {
             ChatChannelListItem(
@@ -48,7 +48,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 disabled: disabled,
                 onItemTap: onItemTap
             )
-                                    
+
             NavigationLink(
                 tag: channel.channelSelectionInfo,
                 selection: $selectedChannel
@@ -60,7 +60,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
         }
         .id("\(channel.id)-navigatable")
     }
-    
+
     private var injectedChannelInfo: InjectedChannelInfo? {
         selectedChannel?.channel.cid.rawValue == channel.cid.rawValue ? selectedChannel?.injectedChannelInfo : nil
     }
@@ -69,12 +69,12 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
 /// Used for representing selection of an item in the channel list.
 /// The optional message is used in case we need to scroll to a particular one in the message list.
 public struct ChannelSelectionInfo: Identifiable {
-    
+
     public let id: String
     public let channel: ChatChannel
     public let message: ChatMessage?
     public var injectedChannelInfo: InjectedChannelInfo?
-    
+
     public init(channel: ChatChannel, message: ChatMessage?) {
         self.channel = channel
         self.message = message
@@ -87,25 +87,25 @@ public struct ChannelSelectionInfo: Identifiable {
 }
 
 extension ChannelSelectionInfo: Hashable, Equatable {
-    
+
     public static func == (lhs: ChannelSelectionInfo, rhs: ChannelSelectionInfo) -> Bool {
         lhs.id == rhs.id
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 }
 
 extension ChatChannel {
-    
+
     public var channelSelectionInfo: ChannelSelectionInfo {
         ChannelSelectionInfo(channel: self, message: nil)
     }
 }
 
 extension ChatMessage {
-    
+
     func makeChannelSelectionInfo(with chatClient: ChatClient) -> ChannelSelectionInfo? {
         if let channelId = cid,
            let channel = chatClient.channelController(for: channelId).channel {

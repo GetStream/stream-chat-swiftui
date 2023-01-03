@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import CoreGraphics
@@ -41,7 +41,7 @@ public struct MessageListConfig {
         self.iPadSplitViewEnabled = iPadSplitViewEnabled
         self.scrollingAnchor = scrollingAnchor
     }
-    
+
     public let messageListType: MessageListType
     public let typingIndicatorPlacement: TypingIndicatorPlacement
     public let groupMessages: Bool
@@ -61,10 +61,10 @@ public struct MessageListConfig {
 
 /// Contains information about the message paddings.
 public struct MessagePaddings {
-    
+
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
-    
+
     public init(horizontal: CGFloat = 8) {
         self.horizontal = horizontal
     }
@@ -79,7 +79,7 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
-        
+
     public let showAvatars: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
@@ -93,7 +93,7 @@ public struct MessageDisplayOptions {
     public let shouldAnimateReactions: Bool
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
-    
+
     public init(
         showAvatars: Bool = true,
         showAvatarsInGroups: Bool? = nil,
@@ -124,11 +124,11 @@ public struct MessageDisplayOptions {
         self.spacerWidth = spacerWidth
         self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
     }
-    
+
     public func showAvatars(for channel: ChatChannel) -> Bool {
         channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
     }
-    
+
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
         { _ in
             [
@@ -136,7 +136,7 @@ public struct MessageDisplayOptions {
             ]
         }
     }
-    
+
     public static var defaultSpacerWidth: (CGFloat) -> (CGFloat) {
         { availableWidth in
             if isIPad {

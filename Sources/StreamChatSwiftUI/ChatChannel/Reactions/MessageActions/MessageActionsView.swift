@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -7,16 +7,16 @@ import SwiftUI
 /// View for the message actions.
 public struct MessageActionsView: View {
     @Injected(\.colors) private var colors
-    
+
     @StateObject var viewModel: MessageActionsViewModel
-    
+
     public init(messageActions: [MessageAction]) {
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory
                 .makeMessageActionsViewModel(messageActions: messageActions)
         )
     }
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             ForEach(viewModel.messageActions) { action in
@@ -48,7 +48,7 @@ public struct MessageActionsView: View {
                             )
                         }
                     }
-                    
+
                     Divider()
                 }
                 .padding(.leading)
@@ -62,7 +62,7 @@ public struct MessageActionsView: View {
             let title = viewModel.alertAction?.confirmationPopup?.title ?? ""
             let message = viewModel.alertAction?.confirmationPopup?.message ?? ""
             let buttonTitle = viewModel.alertAction?.confirmationPopup?.buttonTitle ?? ""
-            
+
             return Alert(
                 title: Text(title),
                 message: Text(message),
