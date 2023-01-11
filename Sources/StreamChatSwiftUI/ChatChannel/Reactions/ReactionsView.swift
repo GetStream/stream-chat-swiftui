@@ -5,7 +5,8 @@
 import StreamChat
 import SwiftUI
 
-struct ReactionsContainer: View {
+struct ReactionsContainer<Factory: ViewFactory>: View {
+    var factory: Factory
     let message: ChatMessage
     var useLargeIcons = false
     var onTapGesture: () -> Void
@@ -14,13 +15,11 @@ struct ReactionsContainer: View {
     var body: some View {
         VStack {
             ReactionsHStack(message: message) {
-                ReactionsView(
+                factory.makeMessageReactionContentView(
                     message: message,
                     useLargeIcons: useLargeIcons,
                     reactions: reactions
-                ) { _ in
-                    log.debug("tapped on reaction")
-                }
+                )
                 .onTapGesture {
                     onTapGesture()
                 }

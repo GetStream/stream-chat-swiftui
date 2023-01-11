@@ -724,6 +724,13 @@ public protocol ViewFactory: AnyObject {
         onTapGesture: @escaping () -> Void,
         onLongPressGesture: @escaping () -> Void
     ) -> MessageReactionViewType
+    
+    associatedtype MessageReactionContentViewType: View
+    func makeMessageReactionContentView(
+        message: ChatMessage,
+        useLargeIcons: Bool,
+        reactions: [MessageReactionType]
+    ) -> MessageReactionContentViewType
 
     associatedtype ReactionsOverlayViewType: View
     /// Creates the reactions overlay view.
