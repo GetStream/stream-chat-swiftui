@@ -396,7 +396,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
 
         // Then
-        XCTAssert(view is ReactionsContainer)
+        XCTAssert(view is ReactionsContainer<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeReactionsOverlayView() {
@@ -758,6 +758,21 @@ class ViewFactory_Tests: StreamChatTestCase {
 
         // Then
         XCTAssert(view is ReactionsOverlayContainer)
+    }
+    
+    func test_viewFactory_makeMessageReactionContentView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageReactionContentView(
+            message: .mock(),
+            useLargeIcons: false,
+            reactions: [.init(rawValue: "love")]
+        )
+        
+        // Then
+        XCTAssert(view is ReactionsView)
     }
 }
 
