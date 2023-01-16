@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.26.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.26.0)
+_January 16, 2023_
+
 ### ✅ Added
 - Config to change the scrolling anchor (top/bottom) on messages
 - Pass extra data in attachments
