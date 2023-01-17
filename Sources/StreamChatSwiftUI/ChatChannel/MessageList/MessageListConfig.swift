@@ -93,6 +93,7 @@ public struct MessageDisplayOptions {
     public let shouldAnimateReactions: Bool
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
+    public let reactionsTopPadding: (ChatMessage) -> CGFloat
 
     public init(
         showAvatars: Bool = true,
@@ -108,7 +109,8 @@ public struct MessageDisplayOptions {
         shouldAnimateReactions: Bool = true,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
-        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth
+        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
+        reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
@@ -123,6 +125,7 @@ public struct MessageDisplayOptions {
         self.shouldAnimateReactions = shouldAnimateReactions
         self.spacerWidth = spacerWidth
         self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
+        self.reactionsTopPadding = reactionsTopPadding
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {
@@ -145,6 +148,10 @@ public struct MessageDisplayOptions {
                 return availableWidth / 4
             }
         }
+    }
+    
+    public static var defaultReactionsTopPadding: (ChatMessage) -> CGFloat {
+        { _ in 24 }
     }
 }
 
