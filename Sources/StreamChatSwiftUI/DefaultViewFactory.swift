@@ -727,23 +727,9 @@ extension ViewFactory {
         onLongPressGesture: @escaping () -> Void
     ) -> some View {
         ReactionsContainer(
-            factory: self,
             message: message,
             onTapGesture: onTapGesture,
             onLongPressGesture: onLongPressGesture
-        )
-    }
-    
-    public func makeMessageReactionContentView(
-        message: ChatMessage,
-        useLargeIcons: Bool,
-        reactions: [MessageReactionType]
-    ) -> some View {
-        ReactionsView(
-            message: message,
-            useLargeIcons: useLargeIcons,
-            reactions: reactions,
-            onReactionTap: { _ in }
         )
     }
     

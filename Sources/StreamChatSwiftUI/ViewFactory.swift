@@ -724,20 +724,6 @@ public protocol ViewFactory: AnyObject {
         onTapGesture: @escaping () -> Void,
         onLongPressGesture: @escaping () -> Void
     ) -> MessageReactionViewType
-    
-    associatedtype MessageReactionContentViewType: View
-    /// Creates the content view for the reactions view shown above the message.
-    /// Does not have an effect if you have custom implementation of `makeMessageReactionView`.
-    /// - Parameters:
-    ///  - message: the message for which reactions are shown.
-    ///  - useLargeIcons: whether large icons should be used.
-    ///  - reactions: the list of reactions to be displayed.
-    /// - Returns: view shown in the reactions content slot.
-    func makeMessageReactionContentView(
-        message: ChatMessage,
-        useLargeIcons: Bool,
-        reactions: [MessageReactionType]
-    ) -> MessageReactionContentViewType
 
     associatedtype ReactionsOverlayViewType: View
     /// Creates the reactions overlay view.
