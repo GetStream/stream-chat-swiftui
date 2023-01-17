@@ -25,8 +25,8 @@ final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
             return numberOfRows * rowSize + paddingOffset
         }
         let messageDisplayOptions = MessageDisplayOptions(reactionsTopPadding: reactionsTopPadding)
-
         let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
             messageListConfig: MessageListConfig(messageDisplayOptions: messageDisplayOptions)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
