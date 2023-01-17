@@ -210,7 +210,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .padding(.top, reactionsShown && !isMessagePinned ? 3 * paddingValue : 0)
+        .padding(
+            .top,
+            reactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
+        )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
         .padding(.top, isLast ? paddingValue : 0)
