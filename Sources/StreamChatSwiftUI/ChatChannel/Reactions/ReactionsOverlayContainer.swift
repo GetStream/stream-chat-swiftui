@@ -6,6 +6,7 @@ import StreamChat
 import SwiftUI
 
 struct ReactionsOverlayContainer: View {
+    @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 
@@ -48,9 +49,7 @@ struct ReactionsOverlayContainer: View {
     private var reactions: [MessageReactionType] {
         images.availableReactions.keys
             .map { $0 }
-            .sorted(by: { lhs, rhs in
-                lhs.rawValue < rhs.rawValue
-            })
+            .sorted(by: utils.sortReactions)
     }
 
     private var reactionsSize: CGFloat {

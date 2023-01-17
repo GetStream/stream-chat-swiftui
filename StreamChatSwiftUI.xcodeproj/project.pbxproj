@@ -316,6 +316,7 @@
 		84E04797284A444E00BAFA17 /* WebSocketPingControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847BA08627E0BACB00ED20C7 /* WebSocketPingControllerMock.swift */; };
 		84E04798284A444E00BAFA17 /* InternetConnectionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94D23275794D3007FE2B9 /* InternetConnectionMock.swift */; };
 		84E1D8262976B3F100060491 /* MessageViewMultiRowReactions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E1D8252976B3F100060491 /* MessageViewMultiRowReactions_Tests.swift */; };
+		84E1D8282976CCB000060491 /* SortReactions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E1D8272976CCAF00060491 /* SortReactions_Tests.swift */; };
 		84E4F7CF294C69F300DD4CE3 /* MessageIdBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E4F7CE294C69F200DD4CE3 /* MessageIdBuilder.swift */; };
 		84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5328103822002213C1 /* TestDataModel2.xcdatamodeld */; };
 		84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84E57C5728103822002213C1 /* TestDataModel.xcdatamodeld */; };
@@ -723,6 +724,7 @@
 		84DEC8E92761089A00172876 /* MessageThreadHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadHeaderViewModifier.swift; sourceTree = "<group>"; };
 		84DEC8EB27611CAE00172876 /* SendInChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendInChannelView.swift; sourceTree = "<group>"; };
 		84E1D8252976B3F100060491 /* MessageViewMultiRowReactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewMultiRowReactions_Tests.swift; sourceTree = "<group>"; };
+		84E1D8272976CCAF00060491 /* SortReactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortReactions_Tests.swift; sourceTree = "<group>"; };
 		84E4F7CE294C69F200DD4CE3 /* MessageIdBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageIdBuilder.swift; sourceTree = "<group>"; };
 		84E57C46281037B2002213C1 /* AssertJSONEqual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertJSONEqual.swift; sourceTree = "<group>"; };
 		84E57C47281037B2002213C1 /* AssertResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
@@ -1476,6 +1478,7 @@
 				84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */,
 				84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */,
 				91B79FD8284E7E9C005B6E4F /* ChatUserNamer_Tests.swift */,
+				84E1D8272976CCAF00060491 /* SortReactions_Tests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2047,6 +2050,7 @@
 				84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */,
 				84C94D5127591DE2007FE2B9 /* ChatMessageIDs_Tests.swift in Sources */,
 				84F73F8728699FD7006A39C3 /* InstantCommandsView_Tests.swift in Sources */,
+				84E1D8282976CCB000060491 /* SortReactions_Tests.swift in Sources */,
 				847305BD28243D25004AC770 /* WebView_Tests.swift in Sources */,
 				84E04789284A444E00BAFA17 /* AnyEndpoint.swift in Sources */,
 				84E57C5928103822002213C1 /* TestDataModel2.xcdatamodeld in Sources */,

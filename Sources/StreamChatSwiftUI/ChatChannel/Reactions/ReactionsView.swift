@@ -6,6 +6,7 @@ import StreamChat
 import SwiftUI
 
 struct ReactionsContainer: View {
+    @Injected(\.utils) var utils
     let message: ChatMessage
     var useLargeIcons = false
     var onTapGesture: () -> Void
@@ -43,9 +44,7 @@ struct ReactionsContainer: View {
         message.reactionScores.keys.filter { reactionType in
             (message.reactionScores[reactionType] ?? 0) > 0
         }
-        .sorted(by: { lhs, rhs in
-            lhs.rawValue < rhs.rawValue
-        })
+        .sorted(by: utils.sortReactions)
     }
 
     private var reactionsSize: CGFloat {
