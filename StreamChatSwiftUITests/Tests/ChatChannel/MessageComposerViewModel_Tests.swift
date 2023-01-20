@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -552,6 +552,29 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(viewModel.mentionedUsers.isEmpty)
+    }
+    
+    func test_addedAsset_extraData() {
+        // Given
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL()
+        let addedAsset = AddedAsset(
+            image: image,
+            id: "imageId",
+            url: url,
+            type: .image,
+            extraData: ["test": "test"]
+        )
+        
+        // When
+        try! image.pngData()?.write(to: url)
+        let attachment = try! addedAsset.toAttachmentPayload()
+        let payload = attachment.payload as! ImageAttachmentPayload
+        let extraData = payload.extraData
+        
+        // Then
+        XCTAssert(extraData?["test"] == "test")
+        try! FileManager.default.removeItem(at: url)
     }
     
     // MARK: - private

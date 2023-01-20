@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -7,7 +7,7 @@
 import XCTest
 
 class ChatChannelTestHelpers {
-    
+
     static func makeChannelController(
         chatClient: ChatClient,
         chatChannel: ChatChannel? = nil,
@@ -37,9 +37,9 @@ class ChatChannelTestHelpers {
         channelController.simulateInitial(channel: channel, messages: channelMessages, state: .initialized)
         return channelController
     }
-    
+
     static let testURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg")!
-    
+
     static var imageAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .png, size: 0, mimeType: "image/png")
         let uploadingState = AttachmentUploadingState(
@@ -61,10 +61,10 @@ class ChatChannelTestHelpers {
             )
             .asAnyAttachment
         ]
-        
+
         return imageAttachments
     }()
-    
+
     static var giphyAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .gif, size: 0, mimeType: "image/gif")
         let uploadingState = AttachmentUploadingState(
@@ -85,10 +85,10 @@ class ChatChannelTestHelpers {
             )
             .asAnyAttachment
         ]
-        
+
         return giphyAttachments
     }()
-    
+
     static var videoAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .mp4, size: 0, mimeType: "video/mp4")
         let uploadingState = AttachmentUploadingState(
@@ -110,10 +110,10 @@ class ChatChannelTestHelpers {
             )
             .asAnyAttachment
         ]
-        
+
         return giphyAttachments
     }()
-    
+
     static var videoAttachment: ChatMessageVideoAttachment = {
         let attachmentFile = AttachmentFile(type: .mp4, size: 0, mimeType: "video/mp4")
         let uploadingState = AttachmentUploadingState(
@@ -121,7 +121,7 @@ class ChatChannelTestHelpers {
             state: .pendingUpload,
             file: attachmentFile
         )
-        
+
         return ChatMessageVideoAttachment(
             id: .unique,
             type: .video,
@@ -135,7 +135,7 @@ class ChatChannelTestHelpers {
         )
 
     }()
-    
+
     static var linkAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .generic, size: 0, mimeType: "video/mp4")
         let uploadingState = AttachmentUploadingState(
@@ -160,10 +160,10 @@ class ChatChannelTestHelpers {
             )
             .asAnyAttachment
         ]
-        
+
         return linkAttachments
     }()
-    
+
     static var fileAttachments: [AnyChatMessageAttachment] {
         let attachmentFile = AttachmentFile(type: .generic, size: 0, mimeType: "video/mp4")
         let uploadingState = AttachmentUploadingState(
@@ -186,7 +186,7 @@ class ChatChannelTestHelpers {
             )
             .asAnyAttachment
         ]
-        
+
         return fileAttachments
     }
 }

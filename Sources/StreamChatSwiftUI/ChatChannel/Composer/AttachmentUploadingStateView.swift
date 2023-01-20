@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -10,10 +10,10 @@ struct AttachmentUploadingStateView: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     var uploadState: AttachmentUploadingState
     var url: URL
-    
+
     var body: some View {
         Group {
             switch uploadState.state {
@@ -25,7 +25,7 @@ struct AttachmentUploadingStateView: View {
                                 CircularProgressViewStyle(tint: .white)
                             )
                             .scaleEffect(0.7)
-                        
+
                         Text(progressDisplay(for: progress))
                             .font(fonts.footnote)
                             .foregroundColor(Color(colors.staticColorText))
@@ -35,7 +35,7 @@ struct AttachmentUploadingStateView: View {
                     .cornerRadius(8)
                     .padding(.all, 8)
                 }
-                
+
             case .uploadingFailed:
                 BottomRightView {
                     Image(uiImage: images.messageListErrorIndicator)
@@ -51,14 +51,14 @@ struct AttachmentUploadingStateView: View {
                         .foregroundColor(Color.black.opacity(0.7))
                         .padding(.all, 8)
                 }
-                
+
             default:
                 EmptyView()
             }
         }
         .id("\(url.absoluteString)-\(uploadState.state))")
     }
-    
+
     private func progressDisplay(for progress: CGFloat) -> String {
         let value = Int(progress * 100)
         return "\(value)%"
@@ -69,7 +69,7 @@ struct AttachmentUploadingStateView: View {
 struct AttachmentUploadingStateViewModifier: ViewModifier {
     var uploadState: AttachmentUploadingState?
     var url: URL
-    
+
     func body(content: Content) -> some View {
         content
             .overlay(

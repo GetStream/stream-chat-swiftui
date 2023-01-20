@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -11,7 +11,7 @@ public class StreamChat {
     var chatClient: ChatClient
     var appearance: Appearance
     var utils: Utils
-    
+
     public init(
         chatClient: ChatClient,
         appearance: Appearance = Appearance(),

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -10,9 +10,9 @@ public struct ColorPalette {
     public init() {
         // Public init.
     }
-    
+
     public var tintColor: Color = .accentColor
-    
+
     // MARK: - Text
 
     /// General textColor, should be something that contrasts great with your `background` Color
@@ -66,9 +66,9 @@ public struct ColorPalette {
     public var alternativeActiveTint: UIColor = .streamAccentGreen
     public var inactiveTint: UIColor = .streamGray
     public var alternativeInactiveTint: UIColor = .streamGrayGainsboro
-    
+
     // MARK: - Messages
-    
+
     public lazy var messageCurrentUserBackground: [UIColor] = [background6]
     public lazy var messageCurrentUserEmphemeralBackground: [UIColor] = [background8]
     public lazy var messageOtherUserBackground: [UIColor] = [background8]
@@ -79,9 +79,9 @@ public struct ColorPalette {
     public lazy var reactionCurrentUserColor: UIColor? = UIColor(tintColor)
     public lazy var reactionOtherUserColor: UIColor? = textLowEmphasis
     public lazy var selectedReactionBackgroundColor: UIColor? = nil
-    
+
     // MARK: - Composer
-    
+
     public lazy var composerPlaceholderColor: UIColor = subtitleText
     public lazy var composerInputBackground: UIColor = background
 }
@@ -109,7 +109,7 @@ private extension UIColor {
     static let streamInnerBorder = mode(0xdbdde1, 0x272a30)
     static let streamHighlight = mode(0xfbf4dd, 0x333024)
     static let streamDisabled = mode(0xb4b7bb, 0x4c525c)
-    
+
     // Currently we are not using the correct shadow color from figma's color palette. This is to avoid
     // an issue with snapshots inconsistency between Intel vs M1. We can't use shadows with transparency.
     // So we apply a light gray color to fake the transparency.

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -8,21 +8,21 @@ import SwiftUI
 
 /// Helper class that loads assets from the photo library.
 public class PhotoAssetLoader: NSObject, ObservableObject {
-    
+
     @Injected(\.chatClient) private var chatClient
 
     @Published var loadedImages = [String: UIImage]()
-    
+
     /// Loads an image from the provided asset.
     func loadImage(from asset: PHAsset) {
         if loadedImages[asset.localIdentifier] != nil {
             return
         }
-        
+
         let options = PHImageRequestOptions()
         options.version = .current
         options.deliveryMode = .opportunistic
-        
+
         PHImageManager.default().requestImage(
             for: asset,
             targetSize: CGSize(width: 250, height: 250),
@@ -33,7 +33,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
             self.loadedImages[asset.localIdentifier] = image
         }
     }
-    
+
     func compressAsset(at url: URL, type: AssetType, completion: @escaping (URL?) -> Void) {
         if type == .video {
             let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + ".mp4")
@@ -51,7 +51,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
             }
         }
     }
-    
+
     func assetExceedsAllowedSize(url: URL?) -> Bool {
         _ = url?.startAccessingSecurityScopedResource()
         if let assetURL = url,
@@ -62,14 +62,14 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
             return false
         }
     }
-    
+
     private func compressVideo(
         inputURL: URL,
         outputURL: URL,
         handler: @escaping (_ exportSession: AVAssetExportSession?) -> Void
     ) {
         let urlAsset = AVURLAsset(url: inputURL, options: nil)
-        
+
         guard let exportSession = AVAssetExportSession(
             asset: urlAsset,
             presetName: AVAssetExportPresetMediumQuality
@@ -84,7 +84,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
             handler(exportSession)
         }
     }
-    
+
     /// Clears the cache when there's memory warning.
     func didReceiveMemoryWarning() {
         loadedImages = [String: UIImage]()
@@ -104,7 +104,7 @@ public extension PHAsset {
         if seconds < 10 {
             secondsString = "0" + secondsString
         }
-        
+
         return "\(minutesString):\(secondsString)"
     }
 }

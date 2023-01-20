@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -12,7 +12,7 @@ public struct ChatChannelListScreen: View {
     private var title: String
     private var channelListController: ChatChannelListController?
     private var selectedChannelId: String?
-    
+
     public init(
         title: String = "Stream Chat",
         channelListController: ChatChannelListController? = nil,
@@ -22,7 +22,7 @@ public struct ChatChannelListScreen: View {
         self.channelListController = channelListController
         self.selectedChannelId = selectedChannelId
     }
-    
+
     public var body: some View {
         ChatChannelListView(
             viewFactory: DefaultViewFactory.shared,

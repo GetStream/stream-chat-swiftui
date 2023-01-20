@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -24,11 +24,13 @@ public class Utils {
     public var composerConfig: ComposerConfig
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     public var snapshotCreator: SnapshotCreator
-    
+    public var messageIdBuilder: MessageIdBuilder
+    public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
+
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
-    
+
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
@@ -45,6 +47,8 @@ public class Utils {
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
+        messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
+        sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
@@ -62,7 +66,13 @@ public class Utils {
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig
         self.snapshotCreator = snapshotCreator
+        self.messageIdBuilder = messageIdBuilder
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
+        self.sortReactions = sortReactions
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
+    }
+    
+    public static var defaultSortReactions: (MessageReactionType, MessageReactionType) -> Bool {
+        { $0.rawValue < $1.rawValue }
     }
 }

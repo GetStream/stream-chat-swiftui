@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -19,11 +19,11 @@ class AddUsersView_Tests: StreamChatTestCase {
             loadedUserIds: [],
             searchController: searchController
         )
-        
+
         // When
         let view = AddUsersView(viewModel: viewModel, onUserTap: { _ in })
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

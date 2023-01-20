@@ -1,12 +1,12 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
 import StreamChat
 
 extension ChatChannel {
-    
+
     /// Returns the online info text for a channel.
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
@@ -31,7 +31,7 @@ extension ChatChannel {
 
         return L10n.Message.Title.group(memberCount, watcherCount)
     }
-    
+
     /// Returns the currently typing users, without the current user.
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
@@ -41,7 +41,7 @@ extension ChatChannel {
             user.id != currentUserId
         }
     }
-    
+
     /// Returns the typing indicator string.
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
@@ -56,7 +56,7 @@ extension ChatChannel {
             return L10n.MessageList.TypingIndicator.typingUnknown
         }
     }
-    
+
     /// Returns users that have read the channel's latest message.
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
@@ -72,14 +72,14 @@ extension ChatChannel {
         }.map(\.user)
         return readUsers
     }
-    
+
     private var lastSeenDateFormatter: (Date) -> String? {
         DateUtils.timeAgo
     }
 }
 
 extension ChatUser {
-    
+
     var mentionText: String {
         if let name = self.name, !name.isEmpty {
             return name

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Nuke
@@ -9,17 +9,17 @@ import SwiftUI
 
 /// Container showing the quoted message view with the user avatar.
 struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
-    
+
     @Injected(\.utils) private var utils
-    
+
     private let avatarSize: CGFloat = 24
-    
+
     var factory: Factory
     var quotedMessage: ChatMessage
     var fillAvailableSpace: Bool
     var forceLeftToRight = false
     @Binding var scrolledId: String?
-    
+
     var body: some View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
@@ -27,7 +27,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                     for: utils.messageCachingUtils.authorInfo(from: quotedMessage),
                     size: CGSize(width: avatarSize, height: avatarSize)
                 )
-                
+
                 QuotedMessageView(
                     factory: factory,
                     quotedMessage: quotedMessage,
@@ -41,7 +41,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                     fillAvailableSpace: fillAvailableSpace,
                     forceLeftToRight: forceLeftToRight
                 )
-                
+
                 factory.makeQuotedMessageAvatarView(
                     for: utils.messageCachingUtils.authorInfo(from: quotedMessage),
                     size: CGSize(width: avatarSize, height: avatarSize)
@@ -62,14 +62,14 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
     private let attachmentWidth: CGFloat = 36
-    
+
     public var factory: Factory
     public var quotedMessage: ChatMessage
     public var fillAvailableSpace: Bool
     public var forceLeftToRight: Bool
-    
+
     public init(
         factory: Factory,
         quotedMessage: ChatMessage,
@@ -81,7 +81,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         self.fillAvailableSpace = fillAvailableSpace
         self.forceLeftToRight = forceLeftToRight
     }
-    
+
     public var body: some View {
         HStack(alignment: .top) {
             if !quotedMessage.attachmentCounts.isEmpty {
@@ -123,13 +123,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .allowsHitTesting(false)
             }
-            
+
             Text(textForMessage)
                 .foregroundColor(textColor(for: quotedMessage))
                 .lineLimit(3)
                 .font(fonts.footnote)
                 .accessibility(identifier: "quotedMessageText")
-            
+
             if fillAvailableSpace {
                 Spacer()
             }
@@ -149,28 +149,28 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
     }
-    
+
     private var bubbleBackground: UIColor {
         if !quotedMessage.linkAttachments.isEmpty {
             return colors.highlightedAccentBackground1
         }
-        
+
         var colors = colors
         let color = quotedMessage.isSentByCurrentUser ?
             colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
         return color
     }
-    
+
     private func filePreviewImage(for url: URL) -> UIImage {
         let iconName = url.pathExtension
         return images.documentPreviews[iconName] ?? images.fileFallback
     }
-    
+
     private var textForMessage: String {
         if !quotedMessage.text.isEmpty {
             return quotedMessage.adjustedText
         }
-        
+
         if !quotedMessage.imageAttachments.isEmpty {
             return L10n.Composer.Quoted.photo
         } else if !quotedMessage.giphyAttachments.isEmpty {
@@ -180,7 +180,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         } else if !quotedMessage.videoAttachments.isEmpty {
             return L10n.Composer.Quoted.video
         }
-        
+
         return ""
     }
 }

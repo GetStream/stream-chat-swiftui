@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -18,7 +18,7 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
         let utils = Utils(composerConfig: composerConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-    
+
     func test_chatMessage_adjustMessageOnRead() {
         // Given
         let message = ChatMessage.mock(
@@ -27,28 +27,28 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
             text: "Text",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let adjustedText = message.adjustedText
-        
+
         // Then
         XCTAssert(adjustedText == "bla bla Text")
     }
-    
+
     func test_composerVM_adjustMessageOnSend() {
         // Given
         let viewModel = makeComposerViewModel()
-        
+
         // Then
         viewModel.text = "Text"
         let adjustedText = viewModel.adjustedText
-        
+
         // Then
         XCTAssert(adjustedText == "some prefix Text")
     }
-    
+
     // MARK: - private
-    
+
     private func makeComposerViewModel() -> MessageComposerViewModel {
         let channelController = makeChannelController()
         let viewModel = MessageComposerViewModel(
@@ -57,7 +57,7 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
         )
         return viewModel
     }
-    
+
     private func makeChannelController(
         messages: [ChatMessage] = []
     ) -> ChatChannelController_Mock {

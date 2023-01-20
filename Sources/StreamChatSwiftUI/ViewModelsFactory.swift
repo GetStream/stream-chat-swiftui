@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -8,7 +8,7 @@ import StreamChat
 /// Factory used to create view models.
 public class ViewModelsFactory {
     private init() { /* Private init */ }
-    
+
     /// Creates the `ChannelListViewModel`.
     ///
     /// - Parameters:
@@ -24,7 +24,7 @@ public class ViewModelsFactory {
             selectedChannelId: selectedChannelId
         )
     }
-    
+
     /// Creates the `ChatChannelViewModel`.
     /// - Parameters:
     ///    - channelController: the channel controller.
@@ -41,7 +41,7 @@ public class ViewModelsFactory {
         )
         return viewModel
     }
-    
+
     /// Creates the view model for the more channel actions.
     ///
     /// - Parameters:
@@ -58,7 +58,7 @@ public class ViewModelsFactory {
         )
         return viewModel
     }
-    
+
     /// Makes the message composer view model.
     /// - Parameters:
     ///  -  channelController: the channel controller.
@@ -73,7 +73,7 @@ public class ViewModelsFactory {
             messageController: messageController
         )
     }
-    
+
     /// Makes the reactions overlay view model.
     /// - Parameter message: the chat message.
     /// - Returns: `ReactionsOverlayViewModel`.
@@ -82,7 +82,7 @@ public class ViewModelsFactory {
     ) -> ReactionsOverlayViewModel {
         ReactionsOverlayViewModel(message: message)
     }
-    
+
     /// Makes the message actions view model.
     /// - Parameter messageActions: the available message actions.
     /// - Returns: `MessageActionsViewModel`.

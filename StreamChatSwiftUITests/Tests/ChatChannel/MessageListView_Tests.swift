@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -15,37 +15,37 @@ class MessageListView_Tests: StreamChatTestCase {
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: messageListView, as: .image)
     }
-    
+
     func test_messageListView_noReactions() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: false)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: messageListView, as: .image)
     }
-    
+
     func test_scrollToBottomButton_snapshotUnreadCount() {
         // Given
         let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
-        
+
         // Then
         assertSnapshot(matching: button, as: .image)
     }
-    
+
     func test_scrollToBottomButton_snapshotEmptyCount() {
         // Given
         let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
-        
+
         // Then
         assertSnapshot(matching: button, as: .image)
     }
-    
+
     func test_messageListView_typingIndicator() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
@@ -55,44 +55,44 @@ class MessageListView_Tests: StreamChatTestCase {
             currentlyTypingUsers: [typingUser]
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: messageListView, as: .image)
     }
-    
+
     func test_messageListView_snapshot() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
             .applyDefaultSize()
-        
+
         // When
         let snapshotCreator = DefaultSnapshotCreator()
         let viewController = UIHostingController(rootView: messageListView)
         let snapshot = snapshotCreator.makeSnapshot(from: viewController.view)
         let view = Image(uiImage: snapshot)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageListView_snapshotFallback() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
             .applyDefaultSize()
-        
+
         // When
         let snapshotCreator = DefaultSnapshotCreator()
         let snapshot = snapshotCreator.makeSnapshot(for: AnyView(messageListView))
         let view = Image(uiImage: snapshot)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     // MARK: - private
-    
+
     private func makeMessageListView(
         channelConfig: ChannelConfig,
         currentlyTypingUsers: Set<ChatUser> = []
@@ -126,7 +126,7 @@ class MessageListView_Tests: StreamChatTestCase {
             onScrollToBottom: {},
             onLongPress: { _ in }
         )
-        
+
         return messageListView
     }
 }

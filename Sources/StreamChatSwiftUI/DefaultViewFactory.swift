@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -88,6 +88,7 @@ extension ViewFactory {
             channelListItem: listItem,
             swipedChannelId: swipedChannelId,
             channel: channel,
+            numberOfTrailingItems: channel.ownCapabilities.contains(.deleteChannel) ? 2 : 1,
             trailingRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
@@ -749,6 +750,18 @@ extension ViewFactory {
         )
     }
     
+    public func makeReactionsContentView(
+        message: ChatMessage,
+        contentRect: CGRect,
+        onReactionTap: @escaping (MessageReactionType) -> Void
+    ) -> some View {
+        ReactionsOverlayContainer(
+            message: message,
+            contentRect: contentRect,
+            onReactionTap: onReactionTap
+        )
+    }
+    
     public func makeReactionsBackgroundView(
         currentSnapshot: UIImage,
         popInAnimationInProgress: Bool
@@ -806,7 +819,8 @@ extension ViewFactory {
         let showReadCount = channel.memberCount > 2
         return MessageReadIndicatorView(
             readUsers: readUsers,
-            showReadCount: showReadCount
+            showReadCount: showReadCount,
+            localState: message.localState
         )
     }
 }

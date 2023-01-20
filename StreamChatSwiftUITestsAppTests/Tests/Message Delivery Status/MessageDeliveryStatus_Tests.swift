@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -22,7 +22,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     // MARK: Message List
     func test_singleCheckmarkShown_whenMessageIsSent() throws {
         linkToScenario(withId: 397)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -42,7 +42,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 
     func test_deliveryStatusShowsClocks_whenMessageIsInPendingState() throws {
         linkToScenario(withId: 398)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -61,7 +61,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 
     func test_errorIndicatorShown_whenMessageFailedToBeSent() throws {
         linkToScenario(withId: 399)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user becomes offline") {
@@ -87,7 +87,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 
     func test_doubleCheckmarkShown_whenMessageReadByParticipant() throws {
         linkToScenario(withId: 400)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -111,7 +111,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 
     func test_doubleCheckmarkShown_whenNewParticipantAdded() throws {
         linkToScenario(withId: 401)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -141,7 +141,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 
     func test_readByDecremented_whenParticipantIsRemoved() throws {
         linkToScenario(withId: 402)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let participantOne = participantRobot.currentUserId
@@ -171,7 +171,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     func test_deliveryStatusShownForTheLastMessageInGroup() throws {
         linkToScenario(withId: 403)
         let secondMessage = "second message"
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -198,7 +198,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 
     func test_deliveryStatusHidden_whenMessageIsDeleted() throws {
         linkToScenario(withId: 404)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -230,7 +230,7 @@ extension MessageDeliveryStatus_Tests {
     // MARK: Thread Previews
     func test_singleCheckmarkShown_whenMessageIsSent_andPreviewedInThread() throws {
         linkToScenario(withId: 405)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -250,10 +250,10 @@ extension MessageDeliveryStatus_Tests {
                 .assertMessageReadCount(readBy: 0)
         }
     }
-    
+
     func test_errorIndicatorShown_whenMessageFailedToBeSent_andCantBePreviewedInThread() throws {
         linkToScenario(withId: 406)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user becomes offline") {
@@ -281,7 +281,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_doubleCheckmarkShown_whenMessageReadByParticipant_andPreviewedInThread() throws {
         linkToScenario(withId: 407)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -310,7 +310,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_singleCheckmarkShown_whenThreadReplyIsSent() throws {
         linkToScenario(withId: 408)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -333,7 +333,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_errorIndicatorShown_whenThreadReplyFailedToBeSent() throws {
         linkToScenario(withId: 409)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user becomes offline") {
@@ -359,7 +359,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_doubleCheckmarkShown_whenThreadReplyReadByParticipant() throws {
         linkToScenario(withId: 410)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -386,7 +386,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_doubleCheckmarkShownInThreadReply_whenNewParticipantAdded() throws {
         linkToScenario(withId: 411)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -413,7 +413,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_readByDecrementedInThreadReply_whenParticipantIsRemoved() throws {
         linkToScenario(withId: 412)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let participantOne = participantRobot.currentUserId
@@ -445,9 +445,9 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusShownForTheLastThreadReplyInGroup() throws {
         linkToScenario(withId: 413)
-        
+
         throw XCTSkip("Check out SWUI-245")
-        
+
         let secondMessage = "second message"
 
         GIVEN("user opens the channel") {
@@ -477,7 +477,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHidden_whenThreadReplyIsDeleted() throws {
         linkToScenario(withId: 414)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -506,7 +506,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusShownForPreviousMessage_whenErrorMessageShown() throws {
         linkToScenario(withId: 415)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -538,7 +538,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHidden_whenMessageIsSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 416)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
@@ -559,7 +559,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusShowsClocks_whenMessageIsInPendingStateAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 417)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -581,7 +581,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_errorIndicatorShown_whenMessageFailedToBeSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 418)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user becomes offline") {
@@ -607,7 +607,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHidden_whenMessageReadByParticipantAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 419)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -631,7 +631,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHidden_whenNewParticipantAddedAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 420)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -658,7 +658,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHidden_whenParticipantIsRemovedAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 421)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let participantOne = participantRobot.currentUserId
@@ -688,9 +688,9 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHiddenForMessagesInGroup_whenReadEventsIsDisabled() throws {
         linkToScenario(withId: 422)
-        
+
         throw XCTSkip("Check out SWUI-245")
-        
+
         let secondMessage = "second message"
 
         GIVEN("user opens the channel") {
@@ -718,7 +718,7 @@ extension MessageDeliveryStatus_Tests {
 
     func test_deliveryStatusHidden_whenMessageIsDeletedAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 423)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {

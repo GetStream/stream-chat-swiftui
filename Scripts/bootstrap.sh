@@ -31,7 +31,7 @@ brew install mint
 set -euo pipefail
 
 puts "Bootstrap Mint dependencies"
-mint bootstrap
+mint bootstrap --link
 
 puts "Create git/hooks folder if needed"
 mkdir -p .git/hooks

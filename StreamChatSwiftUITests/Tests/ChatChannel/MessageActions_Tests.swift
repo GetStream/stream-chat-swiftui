@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -19,7 +19,7 @@ class MessageActions_Tests: StreamChatTestCase {
             isSentByCurrentUser: true
         )
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let messageActions = MessageAction.defaultActions(
             factory: factory,
@@ -29,7 +29,7 @@ class MessageActions_Tests: StreamChatTestCase {
             onFinish: { _ in },
             onError: { _ in }
         )
-        
+
         // Then
         XCTAssert(messageActions.count == 6)
         XCTAssert(messageActions[0].title == "Reply")
@@ -39,7 +39,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[4].title == "Edit Message")
         XCTAssert(messageActions[5].title == "Delete Message")
     }
-    
+
     func test_messageActions_otherUserDefault() {
         // Given
         let channel = ChatChannel.mockDMChannel()
@@ -51,7 +51,7 @@ class MessageActions_Tests: StreamChatTestCase {
             isSentByCurrentUser: false
         )
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let messageActions = MessageAction.defaultActions(
             factory: factory,
@@ -61,7 +61,7 @@ class MessageActions_Tests: StreamChatTestCase {
             onFinish: { _ in },
             onError: { _ in }
         )
-        
+
         // Then
         XCTAssert(messageActions.count == 6)
         XCTAssert(messageActions[0].title == "Reply")
@@ -71,7 +71,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[4].title == "Flag Message")
         XCTAssert(messageActions[5].title == "Mute User")
     }
-    
+
     func test_messageActions_currentUserPinned() {
         // Given
         let channel = ChatChannel.mockDMChannel()
@@ -89,7 +89,7 @@ class MessageActions_Tests: StreamChatTestCase {
             )
         )
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let messageActions = MessageAction.defaultActions(
             factory: factory,
@@ -99,7 +99,7 @@ class MessageActions_Tests: StreamChatTestCase {
             onFinish: { _ in },
             onError: { _ in }
         )
-        
+
         // Then
         XCTAssert(messageActions.count == 6)
         XCTAssert(messageActions[0].title == "Reply")
@@ -109,7 +109,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[4].title == "Edit Message")
         XCTAssert(messageActions[5].title == "Delete Message")
     }
-    
+
     func test_messageActions_messageNotSent() {
         // Given
         let channel = ChatChannel.mockDMChannel()
@@ -121,7 +121,7 @@ class MessageActions_Tests: StreamChatTestCase {
             localState: .sendingFailed
         )
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let messageActions = MessageAction.defaultActions(
             factory: factory,
@@ -131,14 +131,14 @@ class MessageActions_Tests: StreamChatTestCase {
             onFinish: { _ in },
             onError: { _ in }
         )
-        
+
         // Then
         XCTAssert(messageActions.count == 3)
         XCTAssert(messageActions[0].title == "Resend")
         XCTAssert(messageActions[1].title == "Edit Message")
         XCTAssert(messageActions[2].title == "Delete Message")
     }
-    
+
     func test_messageActions_attachmentFailure() {
         // Given
         let channel = ChatChannel.mockDMChannel()
@@ -158,7 +158,7 @@ class MessageActions_Tests: StreamChatTestCase {
             localState: .pendingSend
         )
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let messageActions = MessageAction.defaultActions(
             factory: factory,
@@ -168,7 +168,7 @@ class MessageActions_Tests: StreamChatTestCase {
             onFinish: { _ in },
             onError: { _ in }
         )
-        
+
         // Then
         XCTAssert(messageActions.count == 2)
         XCTAssert(messageActions[0].title == "Edit Message")

@@ -1,16 +1,16 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
 import SwiftUI
 
 public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
-     
+
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
-    
+
     var factory: Factory
     var channel: ChatChannel
     var messages: LazyCachedMapCollection<ChatMessage>
@@ -35,25 +35,25 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
-    
+
     private var dateFormatter: DateFormatter {
         utils.dateFormatter
     }
-    
+
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
     }
-    
+
     private var messageListDateUtils: MessageListDateUtils {
         utils.messageListDateUtils
     }
-    
+
     private var lastInGroupHeaderSize: CGFloat {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
-    
+
     private let scrollAreaId = "scrollArea"
-    
+
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -100,7 +100,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         }
     }
-    
+
     public var body: some View {
         ZStack {
             ScrollViewReader { scrollView in
@@ -112,7 +112,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
                         Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                     }
-                    
+
                     LazyVStack(spacing: 0) {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
@@ -150,12 +150,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             factory.makeMessageListDateIndicator(date: messageDate!)
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
                                             : nil
-                                    
+
                                         showsLastInGroupInfo ?
                                             factory.makeLastInGroupHeaderView(for: message)
                                             .frame(maxHeight: lastInGroupHeaderSize)
                                             : nil
-                                    
+
                                         Spacer()
                                     }
                                     : nil
@@ -213,20 +213,20 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             return
                         }
                         withAnimation {
-                            scrollView.scrollTo(scrolledId, anchor: .bottom)
+                            scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
                         }
                     }
                 }
                 .accessibilityIdentifier("MessageListScrollView")
             }
-            
+
             if showScrollToLatestButton {
                 factory.makeScrollToBottomButton(
                     unreadCount: channel.unreadCount.messages,
                     onScrollToBottom: onScrollToBottom
                 )
             }
-                
+
             if shouldShowTypingIndicator {
                 factory.makeTypingIndicatorBottomView(
                     channel: channel,
@@ -256,17 +256,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
     }
-    
+
     private func additionalTopPadding(showsLastInGroupInfo: Bool) -> CGFloat {
         showsLastInGroupInfo ? lastInGroupHeaderSize : 0
     }
-    
+
     private func offsetForDateIndicator(showsLastInGroupInfo: Bool) -> CGFloat {
         var offset = messageListConfig.messageDisplayOptions.dateLabelSize
         offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
         return offset
     }
-    
+
     private func showsAllData(for message: ChatMessage) -> Bool {
         if !messageListConfig.groupMessages {
             return true
@@ -274,7 +274,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         let groupInfo = messagesGroupingInfo[message.id] ?? []
         return groupInfo.contains(firstMessageKey) == true
     }
-    
+
     private func showsLastInGroupInfo(
         for message: ChatMessage,
         channel: ChatChannel
@@ -287,7 +287,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         let groupInfo = messagesGroupingInfo[message.id] ?? []
         return groupInfo.contains(lastMessageKey) == true
     }
-    
+
     private func handleLongPress(messageDisplayInfo: MessageDisplayInfo) {
         if keyboardShown {
             resignFirstResponder()
@@ -297,7 +297,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 width: messageDisplayInfo.frame.width,
                 height: messageDisplayInfo.frame.height
             )
-            
+
             let updatedDisplayInfo = MessageDisplayInfo(
                 message: messageDisplayInfo.message,
                 frame: updatedFrame,
@@ -305,7 +305,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 isFirst: messageDisplayInfo.isFirst,
                 keyboardWasShown: true
             )
-            
+
             onLongPress(updatedDisplayInfo)
         } else {
             onLongPress(messageDisplayInfo)
@@ -321,12 +321,12 @@ public enum ScrollDirection {
 public struct ScrollToBottomButton: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    
+
     private let buttonSize: CGFloat = 40
-    
+
     var unreadCount: Int
     var onScrollToBottom: () -> Void
-    
+
     public var body: some View {
         BottomRightView {
             Button {
@@ -350,11 +350,11 @@ public struct ScrollToBottomButton: View {
 struct UnreadButtonIndicator: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     private let size: CGFloat = 16
-    
+
     var unreadCount: Int
-    
+
     var body: some View {
         Text("\(unreadCount)")
             .lineLimit(1)
@@ -373,17 +373,17 @@ struct UnreadButtonIndicator: View {
 public struct DateIndicatorView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     var dateString: String
-    
+
     public init(date: Date) {
         dateString = DateFormatter.messageListDateOverlay.string(from: date)
     }
-    
+
     public init(dateString: String) {
         self.dateString = dateString
     }
-    
+
     public var body: some View {
         VStack {
             Text(dateString)
@@ -402,9 +402,9 @@ public struct DateIndicatorView: View {
 struct TypingIndicatorBottomView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     var typingIndicatorString: String
-    
+
     var body: some View {
         VStack {
             Spacer()
@@ -427,30 +427,30 @@ struct TypingIndicatorBottomView: View {
 }
 
 private class MessageRenderingUtil {
-    
+
     private var previousTopMessage: ChatMessage?
-    
+
     static let shared = MessageRenderingUtil()
-    
+
     var hasPreviousMessageSet: Bool {
         previousTopMessage != nil
     }
-    
+
     func update(previousTopMessage: ChatMessage?) {
         self.previousTopMessage = previousTopMessage
     }
-    
+
     func messagesToSkipRendering(newMessages: LazyCachedMapCollection<ChatMessage>) -> [String] {
         let newTopMessage = newMessages.first
         if newTopMessage?.id == previousTopMessage?.id {
             return []
         }
-        
+
         if newTopMessage?.cid != previousTopMessage?.cid {
             previousTopMessage = newTopMessage
             return []
         }
-        
+
         var skipRendering = [String]()
         for message in newMessages {
             if previousTopMessage?.id == message.id {
@@ -459,7 +459,7 @@ private class MessageRenderingUtil {
                 skipRendering.append(message.id)
             }
         }
-        
+
         return skipRendering
     }
 }

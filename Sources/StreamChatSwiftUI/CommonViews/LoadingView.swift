@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -18,16 +18,16 @@ public struct LoadingView: View {
 
 /// Loading view showing redacted channel list data.
 public struct RedactedLoadingView<Factory: ViewFactory>: View {
-    
+
     public var factory: Factory
-    
+
     public var body: some View {
         ScrollView {
             VStack(spacing: 0) {
                 factory.makeChannelListTopView(
                     searchText: .constant("")
                 )
-                
+
                 VStack(spacing: 0) {
                     ForEach(0..<20) { _ in
                         RedactedChannelCell()
@@ -42,24 +42,24 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
 }
 
 struct RedactedChannelCell: View {
-    
+
     @Injected(\.colors) private var colors
-    
+
     private let circleSize: CGFloat = 48
-    
+
     private var redactedColor: Color {
         Color(colors.disabledColorForColor(colors.text))
     }
-    
+
     public var body: some View {
         HStack {
             Circle()
                 .fill(redactedColor)
                 .frame(width: circleSize, height: circleSize)
-            
+
             VStack(alignment: .leading) {
                 RedactedRectangle(width: 70, redactedColor: redactedColor)
-                
+
                 HStack {
                     RedactedRectangle(redactedColor: redactedColor)
                     RedactedRectangle(width: 50, redactedColor: redactedColor)
@@ -71,10 +71,10 @@ struct RedactedChannelCell: View {
 }
 
 struct RedactedRectangle: View {
-    
+
     var width: CGFloat?
     var redactedColor: Color
-    
+
     var body: some View {
         RoundedRectangle(cornerRadius: 12)
             .fill(redactedColor)

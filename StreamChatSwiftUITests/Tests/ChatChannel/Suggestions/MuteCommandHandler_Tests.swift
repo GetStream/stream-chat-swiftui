@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -19,7 +19,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
                 locationRange: NSRange(location: 1, length: 0)
             ), displayInfo: nil
         )
-        
+
         // When
         muteCommandHandler.handleCommand(
             for: .constant(symbol),
@@ -30,13 +30,13 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
             ]
         )
         let canBeExecuted = muteCommandHandler.canBeExecuted(composerCommand: command)
-        
+
         // Then
         let user = muteCommandHandler.selectedUser
         XCTAssert(user == TestCommandsConfig.mockUsers[0])
         XCTAssert(canBeExecuted == true)
     }
-    
+
     func test_muteCommandHandler_showSuggestions() {
         // Given
         let muteCommandHandler = makeMuteCommandHandler()
@@ -48,7 +48,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
             ), displayInfo: nil
         )
         let expectation = expectation(description: "suggestions")
-        
+
         // When
         _ = muteCommandHandler.showSuggestions(for: command).sink { _ in
             log.debug("finished showing suggestions")
@@ -61,7 +61,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
 
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func test_unmuteCommandHandler_selectingUserToUnmute() {
         // Given
         let symbol = "/unmute"
@@ -77,7 +77,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
                 locationRange: NSRange(location: 1, length: 0)
             ), displayInfo: nil
         )
-        
+
         // When
         unmuteCommandHandler.handleCommand(
             for: .constant(symbol),
@@ -88,15 +88,15 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
             ]
         )
         let canBeExecuted = unmuteCommandHandler.canBeExecuted(composerCommand: command)
-        
+
         // Then
         let user = unmuteCommandHandler.selectedUser
         XCTAssert(user == TestCommandsConfig.mockUsers[0])
         XCTAssert(canBeExecuted == true)
     }
-    
+
     // MARK: - private
-    
+
     private func makeMuteCommandHandler(symbol: String = "/mute") -> MuteCommandHandler {
         let channelController = ChatChannelTestHelpers.makeChannelController(
             chatClient: chatClient,

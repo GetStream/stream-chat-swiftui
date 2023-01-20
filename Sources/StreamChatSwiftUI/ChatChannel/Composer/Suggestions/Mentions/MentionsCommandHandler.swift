@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -8,16 +8,16 @@ import SwiftUI
 
 /// Handles the mention command and provides suggestions.
 public struct MentionsCommandHandler: CommandHandler {
-    
+
     public let id: String
     public var displayInfo: CommandDisplayInfo?
-    
+
     private let mentionAllAppUsers: Bool
     private let typingSuggester: TypingSuggester
-    
+
     private let channelController: ChatChannelController
     private let userSearchController: ChatUserSearchController
-        
+
     public init(
         channelController: ChatChannelController,
         userSearchController: ChatUserSearchController? = nil,
@@ -35,7 +35,7 @@ public struct MentionsCommandHandler: CommandHandler {
             self.userSearchController = channelController.client.userSearchController()
         }
     }
-    
+
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if let suggestion = typingSuggester.typingSuggestion(
             in: text,
@@ -50,7 +50,7 @@ public struct MentionsCommandHandler: CommandHandler {
             return nil
         }
     }
-    
+
     public func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -61,7 +61,7 @@ public struct MentionsCommandHandler: CommandHandler {
               let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
             return
         }
-        
+
         let mentionText = chatUser.mentionText
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
@@ -74,11 +74,11 @@ public struct MentionsCommandHandler: CommandHandler {
         selectedRangeLocation.wrappedValue = newCaretLocation
         command.wrappedValue = nil
     }
-    
+
     public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         command.id == id ? self : nil
     }
-    
+
     public func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
@@ -87,9 +87,9 @@ public struct MentionsCommandHandler: CommandHandler {
             mentionRange: command.typingSuggestion.locationRange
         )
     }
-    
+
     // MARK: - private
-    
+
     private func showMentionSuggestions(
         for typingMention: String,
         mentionRange: NSRange
@@ -111,7 +111,7 @@ public struct MentionsCommandHandler: CommandHandler {
             return resolve(with: suggestionInfo)
         }
     }
-        
+
     /// searchUsers does an autocomplete search on a list of ChatUser and returns users with `id` or `name` containing the search string
     /// results are returned sorted by their edit distance from the searched string
     /// distance is calculated using the levenshtein algorithm
@@ -139,7 +139,7 @@ public struct MentionsCommandHandler: CommandHandler {
             return dist < 0
         }
     }
-    
+
     private func queryForMentionSuggestionsSearch(typingMention term: String) -> UserListQuery {
         UserListQuery(
             filter: .or([
@@ -149,7 +149,7 @@ public struct MentionsCommandHandler: CommandHandler {
             sort: [.init(key: .name, isAscending: true)]
         )
     }
-    
+
     private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
         Future { promise in
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)

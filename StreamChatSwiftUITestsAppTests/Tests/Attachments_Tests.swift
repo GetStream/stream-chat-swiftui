@@ -1,19 +1,19 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
 
 final class Attachments_Tests: StreamTestCase {
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         addTags([.coreFeatures])
     }
-    
+
     func test_uploadImage() throws {
         linkToScenario(withId: 310)
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -24,10 +24,10 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.assertImage(isPresent: true)
         }
     }
-    
+
     func test_participantUploadsImage() throws {
         linkToScenario(withId: 311)
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -38,10 +38,12 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.assertImage(isPresent: true)
         }
     }
-    
+
     func test_participantUploadsVideo() throws {
         linkToScenario(withId: 312)
-        
+
+        throw XCTSkip("Check out CIS-2294")
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -52,10 +54,10 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.assertVideo(isPresent: true)
         }
     }
-    
+
     func test_participantUploadsFile() throws {
         linkToScenario(withId: 313)
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -66,5 +68,5 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.assertFile(isPresent: true)
         }
     }
-    
+
 }

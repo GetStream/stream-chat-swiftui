@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -15,7 +15,7 @@ extension InjectedValues {
             streamChat.chatClient = newValue
         }
     }
-    
+
     /// Provides access to the `ColorPalette` instance.
     public var colors: ColorPalette {
         get {
@@ -25,7 +25,7 @@ extension InjectedValues {
             streamChat.appearance.colors = newValue
         }
     }
-    
+
     /// Provides access to the `Utils` instance.
     public var utils: Utils {
         get {
@@ -35,7 +35,7 @@ extension InjectedValues {
             streamChat.utils = newValue
         }
     }
-    
+
     /// Provides access to the `Images` instance.
     public var images: Images {
         get {
@@ -45,7 +45,7 @@ extension InjectedValues {
             streamChat.appearance.images = newValue
         }
     }
-    
+
     /// Provides access to the `Fonts` instance.
     public var fonts: Fonts {
         get {

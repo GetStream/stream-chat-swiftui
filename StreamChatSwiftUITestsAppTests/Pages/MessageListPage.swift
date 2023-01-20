@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -10,51 +10,51 @@ import StreamChat
 // swiftlint:disable convenience_type
 
 class MessageListPage {
-    
+
     static var cells: XCUIElementQuery {
         app.otherElements.matching(identifier: "MessageContainerView")
     }
-    
+
     static func messageView(for cell: XCUIElement) -> XCUIElement {
         cell.otherElements.matching(identifier: "MessageView").firstMatch
     }
-    
+
     static var messages: XCUIElementQuery {
         app.otherElements.matching(identifier: "MessageView")
     }
-    
+
     static var list: XCUIElement {
         app.scrollViews.matching(NSPredicate(format: "identifier LIKE 'ChatChannelView' or identifier LIKE 'MessageListScrollView'")).firstMatch
     }
-    
+
     static var typingIndicator: XCUIElement {
         app.staticTexts["TypingIndicatorBottomView"].firstMatch
     }
-    
+
     static var scrollToBottomButton: XCUIElement {
         app.buttons["ScrollToBottomButton"]
     }
-    
+
     enum NavigationBar {
-        
+
         static var chatAvatar: XCUIElement {
             app.images["ChannelAvatarView"]
         }
-        
+
         static var chatName: XCUIElement {
             app.staticTexts["ChannelTitleView"].firstMatch
         }
-        
+
         static var participants: XCUIElement {
             app.staticTexts.matching(identifier: "ChannelTitleView").lastMatch!
         }
-        
+
         // FIXME
         static var debugMenu: XCUIElement {
             app.buttons[""].firstMatch
         }
     }
-    
+
     // FIXME
     enum Alert {
         enum Debug {
@@ -73,13 +73,13 @@ class MessageListPage {
             // Show member info
             static var showMemberInfo: XCUIElement { alert.buttons[""] }
             static var dismissMemberInfo: XCUIElement { app.alerts[""].buttons[""] }
-            
+
             // Truncate channel
             static var truncateWithMessage: XCUIElement { alert.buttons[""] }
             static var truncateWithoutMessage: XCUIElement { alert.buttons[""] }
         }
     }
-    
+
     enum Composer {
         static var textView: XCUIElement { inputField }
         static var inputField: XCUIElement { app.textViews["ComposerTextInputView"] }
@@ -93,7 +93,7 @@ class MessageListPage {
         static var cutButton: XCUIElement { app.menuItems.matching(NSPredicate(format: "label LIKE 'Cut'")).firstMatch }
         static var selectAllButton: XCUIElement { app.menuItems.matching(NSPredicate(format: "label LIKE 'Select All'")).firstMatch }
     }
-    
+
     enum Reactions {
         static var reactionsMessageView: XCUIElement { app.otherElements["ReactionsMessageView"] }
         static var love: XCUIElement { app.otherElements["reaction-love"] }
@@ -107,11 +107,11 @@ class MessageListPage {
         static func reactionButton(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.otherElements["ReactionsContainer"]
         }
-        
+
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.buttons["MessageAvatarViewPlaceholder"]
         }
-        
+
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
             reactionButton(in: messageCell).images
         }
@@ -123,7 +123,7 @@ class MessageListPage {
         static func time(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["MessageDateView"]
         }
-        
+
         static func author(messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["MessageAuthorView"]
         }
@@ -131,15 +131,15 @@ class MessageListPage {
         static func text(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.otherElements["MessageView"].staticTexts["MessageTextView"]
         }
-        
+
         static func systemMessage(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["SystemMessageView"]
         }
-        
+
         static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["quotedMessageText"]
         }
-        
+
         static func deletedText(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["deletedMessageText"]
         }
@@ -164,73 +164,73 @@ class MessageListPage {
         static func statusCheckmark(for status: MessageDeliveryStatus? = nil, in messageCell: XCUIElement) -> XCUIElement {
             messageCell.images["readIndicatorCheckmark"]
         }
-        
+
         static func giphyButtons(in messageCell: XCUIElement) -> XCUIElementQuery {
             messageCell.buttons.matching(NSPredicate(format: "identifier LIKE 'GiphyAttachmentView'"))
         }
-        
+
         static func giphySendButton(in messageCell: XCUIElement) -> XCUIElement {
             attachmentActionButton(in: messageCell, label: "Send")
         }
-        
+
         static func giphyShuffleButton(in messageCell: XCUIElement) -> XCUIElement {
             attachmentActionButton(in: messageCell, label: "Shuffle")
         }
-        
+
         static func giphyCancelButton(in messageCell: XCUIElement) -> XCUIElement {
             attachmentActionButton(in: messageCell, label: "Cancel")
         }
-        
+
         static func giphyLabel(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["GiphyAttachmentView"]
         }
-        
+
         private static func attachmentActionButton(in messageCell: XCUIElement, label: String) -> XCUIElement {
             messageCell.buttons.matching(NSPredicate(
                 format: "identifier LIKE 'GiphyAttachmentView' AND label LIKE '\(label)'")).firstMatch
         }
-        
+
         static var deletedMessagePlaceholder: String {
             L10n.Message.deletedMessagePlaceholder
         }
-        
+
         static func image(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.images["ImageAttachmentContainer"]
         }
-        
+
         static func imagePreloader(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.activityIndicators["ImageAttachmentContainer"]
         }
-        
+
         static func video(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.images["VideoAttachmentsContainer"]
         }
-        
+
         static func fullscreenImage() -> XCUIElement {
             app.collectionViews.cells.scrollViews.images.firstMatch
         }
-        
+
         static func files(in messageCell: XCUIElement) -> XCUIElementQuery {
             messageCell.images.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer'"))
         }
-        
+
         static func videoPlayer() -> XCUIElement {
             app.otherElements.otherElements.otherElements.matching(NSPredicate(format: "label LIKE 'Video'")).firstMatch
         }
-        
+
         enum LinkPreview {
             static func link(in messageCell: XCUIElement) -> XCUIElement {
                 messageCell.links["LinkAttachmentContainer"]
             }
-            
+
             static func image(in messageCell: XCUIElement) -> XCUIElement {
                 messageCell.otherElements["LinkAttachmentContainer"].images.firstMatch
             }
-            
+
             static func details(in messageCell: XCUIElement) -> XCUIElementQuery {
                 messageCell.staticTexts.matching(NSPredicate(format: "identifier LIKE 'LinkAttachmentContainer'"))
             }
-            
+
             static func serviceName(in messageCell: XCUIElement) -> XCUIElement {
                 let details = details(in: messageCell).waitCount(2)
                 if details.count > 2 {
@@ -239,7 +239,7 @@ class MessageListPage {
                     return messageCell.staticTexts["ServiceName is missing"]
                 }
             }
-            
+
             static func title(in messageCell: XCUIElement) -> XCUIElement {
                 let details = details(in: messageCell).waitCount(2)
                 if details.count > 2 {
@@ -248,13 +248,13 @@ class MessageListPage {
                     return details.firstMatch
                 }
             }
-            
+
             static func description(in messageCell: XCUIElement) -> XCUIElement {
                 details(in: messageCell).waitCount(2).lastMatch!
             }
         }
     }
-    
+
     enum ContextMenu {
         case actionsView
         case reply
@@ -297,7 +297,7 @@ class MessageListPage {
                 return Element.unpin
             }
         }
-        
+
         struct Element {
             static var actionsView: XCUIElement { app.otherElements["MessageActionsView"] }
             static var reply: XCUIElement { app.otherElements["messageAction-reply_message_action"].images.firstMatch }
@@ -314,17 +314,17 @@ class MessageListPage {
             static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"].images.firstMatch }
         }
     }
-    
+
     enum PopUpButtons {
         static var cancel: XCUIElement {
             app.scrollViews.buttons.matching(NSPredicate(format: "label LIKE 'Cancel'")).firstMatch
         }
-        
+
         static var delete: XCUIElement {
             app.scrollViews.buttons.matching(NSPredicate(format: "label LIKE 'Delete Message'")).firstMatch
         }
     }
-    
+
     enum AttachmentMenu {
         static var fileButton: XCUIElement { app.buttons["attachmentPickerFiles"] }
         static var photoOrVideoButton: XCUIElement { app.buttons["attachmentPickerPhotos"] }
@@ -334,7 +334,7 @@ class MessageListPage {
         }
         static var images: XCUIElementQuery { app.scrollViews["AttachmentTypeContainer"].images }
     }
-    
+
     enum ComposerCommands {
         static var cells: XCUIElementQuery {
             app.otherElements.matching(identifier: "InstantCommandView")
@@ -352,11 +352,11 @@ class MessageListPage {
             app.images["imageGiphy"].firstMatch
         }
     }
-    
+
     enum ComposerMentions {
         static var cells: XCUIElementQuery {
             app.scrollViews["CommandsContainerView"].otherElements.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView'"))
         }
     }
-    
+
 }

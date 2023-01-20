@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -24,20 +24,30 @@ public struct AddedAsset: Identifiable, Equatable {
     public let id: String
     public let url: URL
     public let type: AssetType
-    public var extraData: [String: Any] = [:]
+    public var extraData: [String: RawJSON] = [:]
     
     public init(
         image: UIImage,
         id: String,
         url: URL,
         type: AssetType,
-        extraData: [String: Any] = [:]
+        extraData: [String: RawJSON] = [:]
     ) {
         self.image = image
         self.id = id
         self.url = url
         self.type = type
         self.extraData = extraData
+    }
+}
+
+extension AddedAsset {
+    func toAttachmentPayload() throws -> AnyAttachmentPayload {
+        try AnyAttachmentPayload(
+            localFileURL: url,
+            attachmentType: type == .video ? .video : .image,
+            extraData: extraData
+        )
     }
 }
 

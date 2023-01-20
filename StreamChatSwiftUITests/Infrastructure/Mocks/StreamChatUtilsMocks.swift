@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChatSwiftUI
@@ -7,9 +7,9 @@ import UIKit
 
 /// Mock implementation of `VideoPreviewLoader`.
 class VideoPreviewLoader_Mock: VideoPreviewLoader {
-    
+
     var loadPreviewVideoCalled = false
-    
+
     func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
     }
@@ -17,9 +17,9 @@ class VideoPreviewLoader_Mock: VideoPreviewLoader {
 
 /// Mock implementation of `ImageLoading`.
 class ImageLoaderUtils_Mock: ImageLoading {
-    
+
     var loadImageCalled = false
-    
+
     func loadImage(
         url: URL?,
         imageCDN: ImageCDN,

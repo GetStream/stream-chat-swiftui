@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,24 +7,24 @@ import SwiftUI
 
 public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
-    
+
     @StateObject var viewModel: ReactionsOverlayViewModel
-    
+
     @State private var popIn = false
     @State private var willPopOut = false
-    
+
     var factory: Factory
     var channel: ChatChannel
     var currentSnapshot: UIImage
     var messageDisplayInfo: MessageDisplayInfo
     var onBackgroundTap: () -> Void
     var onActionExecuted: (MessageActionInfo) -> Void
-    
+
     private var messageActionsCount: Int
     private let paddingValue: CGFloat = 16
     private let messageItemSize: CGFloat = 40
     private let maxMessageActionsSize: CGFloat = UIScreen.main.bounds.size.height / 3
-    
+
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -51,7 +51,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             onError: { _ in /* No handling needed. */ }
         ).count
     }
-    
+
     public var body: some View {
         ZStack(alignment: .topLeading) {
             factory.makeReactionsBackgroundView(
@@ -66,7 +66,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             .alert(isPresented: $viewModel.errorShown) {
                 Alert.defaultErrorAlert
             }
-            
+
             if !messageDisplayInfo.message.isSentByCurrentUser &&
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                 factory.makeMessageAvatarView(
@@ -78,7 +78,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 )
                 .opacity(willPopOut ? 0 : 1)
             }
-            
+
             GeometryReader { reader in
                 VStack(alignment: .leading) {
                     Group {
@@ -109,7 +109,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     )
                     .overlay(
                         channel.config.reactionsEnabled ?
-                            ReactionsOverlayContainer(
+                            factory.makeReactionsContentView(
                                 message: viewModel.message,
                                 contentRect: messageDisplayInfo.frame,
                                 onReactionTap: { reaction in
@@ -133,7 +133,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         height: messageContainerHeight
                     )
                     .accessibilityIdentifier("ReactionsMessageView")
-                    
+
                     if messageDisplayInfo.showsMessageActions {
                         factory.makeMessageActionsView(
                             for: messageDisplayInfo.message,
@@ -180,7 +180,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsOverlayView")
     }
-    
+
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {
         withAnimation {
             willPopOut = true
@@ -191,7 +191,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             completion()
         }
     }
-    
+
     private func messageActionsOffsetX(reader: GeometryProxy) -> CGFloat {
         let originX = messageActionsOriginX(availableWidth: reader.size.width)
         let sentByCurrentUser = messageDisplayInfo.message.isSentByCurrentUser
@@ -203,18 +203,18 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return sentByCurrentUser ? messageActionsWidth : 0
         }
     }
-    
+
     private var messageContainerHeight: CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
         let maxAllowed = screenHeight / 2
         let containerHeight = messageDisplayInfo.frame.height
         return containerHeight > maxAllowed ? maxAllowed : containerHeight
     }
-    
+
     private var popInAnimation: Animation {
         .spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0.2)
     }
-    
+
     private var userReactionsHeight: CGFloat {
         let reactionsCount = viewModel.message.latestReactions.count
         if reactionsCount > 4 {
@@ -223,7 +223,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return 140
         }
     }
-    
+
     private var originY: CGFloat {
         let bottomPopupOffset =
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
@@ -236,10 +236,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         } else if originY > maxOrigin {
             originY = maxOrigin
         }
-                
+
         return originY
     }
-    
+
     private var messageActionsSize: CGFloat {
         var messageActionsSize = messageItemSize * CGFloat(messageActionsCount)
         if messageActionsSize > maxMessageActionsSize {
@@ -247,11 +247,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
         return messageActionsSize
     }
-    
+
     private var userReactionsPopupHeight: CGFloat {
         userReactionsHeight + 3 * paddingValue
     }
-    
+
     private func diffWidth(proxy: GeometryProxy) -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return proxy.frame(in: .global).minX
@@ -259,11 +259,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return 0
         }
     }
-    
+
     private func maxUserReactionsWidth(availableWidth: CGFloat) -> CGFloat {
         availableWidth - 2 * paddingValue
     }
-    
+
     private func messageActionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isSentByCurrentUser {
             return availableWidth - messageActionsWidth - paddingValue / 2
@@ -271,7 +271,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return CGSize.messageAvatarSize.width + paddingValue
         }
     }
-    
+
     private func userReactionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isSentByCurrentUser {
             return availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
@@ -279,13 +279,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return paddingValue
         }
     }
-    
+
     private var messageActionsWidth: CGFloat {
         var width = messageDisplayInfo.contentWidth + 2 * paddingValue
         if messageDisplayInfo.message.isSentByCurrentUser {
             width -= 2 * paddingValue
         }
-        
+
         return width
     }
 }

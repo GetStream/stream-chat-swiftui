@@ -1,11 +1,11 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
 
 struct StreamLogoLaunch: View {
-    
+
     @State private var move = false
     let streamBlue = Color(#colorLiteral(red: 0, green: 0.368627451, blue: 1, alpha: 1))
     @State private var swinging = false

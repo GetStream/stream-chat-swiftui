@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -9,13 +9,13 @@ import SwiftUI
 import XCTest
 
 class MessageContainerView_Tests: StreamChatTestCase {
-    
+
     override func setUp() {
         super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-    
+
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -25,14 +25,14 @@ class MessageContainerView_Tests: StreamChatTestCase {
             author: .mock(id: Self.currentUserId, name: "Martin"),
             isSentByCurrentUser: true
         )
-        
+
         // When
         let view = testMessageViewContainer(message: message)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_messageContainerViewSentOtherUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -41,10 +41,10 @@ class MessageContainerView_Tests: StreamChatTestCase {
             text: "Message sent by other user",
             author: .mock(id: .unique, name: "Martin")
         )
-        
+
         // When
         let view = testMessageViewContainer(message: message)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
@@ -62,14 +62,14 @@ class MessageContainerView_Tests: StreamChatTestCase {
                 expiresAt: nil
             )
         )
-        
+
         // When
         let view = testMessageViewContainer(message: message)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_videoAttachment_snapshotNoText() {
         // Given
         let attachment = ChatChannelTestHelpers.videoAttachment
@@ -79,7 +79,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             text: "",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = VideoAttachmentView(
             attachment: attachment,
@@ -87,11 +87,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
             width: 2 * defaultScreenSize.width / 3
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_videoAttachment_snapshotText() {
         // Given
         let message = ChatMessage.mock(
@@ -101,7 +101,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.videoAttachments
         )
-        
+
         // When
         let view = VideoAttachmentsContainer(
             factory: DefaultViewFactory.shared,
@@ -111,11 +111,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
         .frame(width: 200)
         .padding()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_imageAttachments_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -125,7 +125,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
-        
+
         // When
         let view = ImageAttachmentContainer(
             factory: DefaultViewFactory.shared,
@@ -135,11 +135,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
             scrolledId: .constant(nil)
         )
         .frame(width: 200)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_imageAttachments_snapshotFiveImages() {
         // Given
         let attachment = ChatChannelTestHelpers.imageAttachments[0]
@@ -151,7 +151,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             attachments: attachments
         )
-        
+
         // When
         let view = ImageAttachmentContainer(
             factory: DefaultViewFactory.shared,
@@ -161,13 +161,13 @@ class MessageContainerView_Tests: StreamChatTestCase {
             scrolledId: .constant(nil)
         )
         .frame(width: 200)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     // MARK: - private
-    
+
     func testMessageViewContainer(message: ChatMessage) -> some View {
         MessageContainerView(
             factory: DefaultViewFactory.shared,

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,14 +7,14 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct iMessagePocView: View {
-    
+
     @Injected(\.colors) var colors
-    
+
     @StateObject var viewModel: iMessageChatChannelListViewModel
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
-    
+
     private var factory = iMessageViewFactory.shared
-    
+
     init() {
         _viewModel = StateObject(
             wrappedValue:
@@ -24,7 +24,7 @@ struct iMessagePocView: View {
             )
         )
     }
-    
+
     var body: some View {
         NavigationView {
             VStack {
@@ -74,7 +74,7 @@ struct iMessagePocView: View {
                         return Alert.defaultErrorAlert
                     }
                 }
-                
+
                 Spacer()
             }
             .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
@@ -83,7 +83,7 @@ struct iMessagePocView: View {
             .navigationTitle("Messages")
         }
     }
-    
+
     @ViewBuilder
     private func customViewOverlay() -> some View {
         switch viewModel.customChannelPopupType {
@@ -106,9 +106,9 @@ struct iMessagePocView: View {
 }
 
 class iMessageChatChannelListViewModel: ChatChannelListViewModel {
-    
+
     @Published var pinnedChannels = [ChatChannel]()
-    
+
     func pinChannelTapped(_ channel: ChatChannel) {
         if !pinnedChannels.contains(channel) {
             pinnedChannels.append(channel)
@@ -117,14 +117,14 @@ class iMessageChatChannelListViewModel: ChatChannelListViewModel {
 }
 
 class iMessageViewFactory: ViewFactory {
-    
+
     @Injected(\.chatClient) var chatClient
     @Injected(\.colors) var colors
-    
+
     static let shared = iMessageViewFactory()
-    
+
     private init() {}
-    
+
     func makeLeadingSwipeActionsView(
         channel: ChatChannel,
         offsetX: CGFloat,

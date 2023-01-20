@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Nuke
@@ -12,7 +12,7 @@ public protocol ImageProcessor {
     ///   - size: The size to which the image needs to be cropped
     /// - Returns: The cropped image
     func crop(image: UIImage, to size: CGSize) -> UIImage?
-    
+
     /// Scale an image to a given size maintaing the aspect ratio.
     /// - Parameters:
     ///   - image: The image to scale
@@ -26,32 +26,32 @@ open class NukeImageProcessor: ImageProcessor {
     public init() {
         // Public init.
     }
-    
+
     open func crop(image: UIImage, to size: CGSize) -> UIImage? {
         let imageProccessor = ImageProcessors.Resize(size: size, crop: true)
         return imageProccessor.process(image)
     }
-    
+
     open func scale(image: UIImage, to size: CGSize) -> UIImage {
         // Determine the scale factor that preserves aspect ratio
         let widthRatio = size.width / image.size.width
         let heightRatio = size.height / image.size.height
-        
+
         let scaleFactor = min(widthRatio, heightRatio)
-        
+
         // Compute the new image size that preserves aspect ratio
         let scaledImageSize = CGSize(
             width: image.size.width * scaleFactor,
             height: image.size.height * scaleFactor
         )
-        
+
         // Draw and return the resized UIImage
         let renderer = UIGraphicsImageRenderer(size: scaledImageSize)
-        
+
         let scaledImage = renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: scaledImageSize))
         }
-        
+
         return scaledImage
     }
 }
@@ -69,7 +69,7 @@ extension ImageProcessors {
         }
 
         private let sizeProvider: @Sendable() -> CGSize
-        
+
         /// Initializes the processor with size providing closure.
         /// - Parameter sizeProvider: Closure to obtain size after the image is loaded.
         public init(sizeProvider: @escaping @Sendable() -> CGSize) {
@@ -79,7 +79,7 @@ extension ImageProcessors {
         public func process(_ image: PlatformImage) -> PlatformImage? {
             let size = self.size
             guard size != .zero else { return image }
-            
+
             return ImageProcessors.Resize(
                 size: size,
                 unit: .points,

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,7 +7,7 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class CustomMessageResolver: MessageTypeResolving {
-    
+
     func hasCustomAttachment(message: ChatMessage) -> Bool {
         let messageComponents = message.text.components(separatedBy: CharacterSet.whitespacesAndNewlines)
         return !messageComponents.filter { component in
@@ -15,21 +15,21 @@ class CustomMessageResolver: MessageTypeResolving {
         }
         .isEmpty
     }
-    
+
     private func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        
+
         let emailPred = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
     }
 }
 
 struct CustomAttachmentView: View {
-    
+
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
-    
+
     var body: some View {
         HStack {
             Image(systemName: "envelope")
@@ -44,10 +44,10 @@ struct CustomAttachmentView: View {
 struct CustomMessageTextView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
-    
+
     var message: ChatMessage
     var isFirst: Bool
-    
+
     public var body: some View {
         Text(message.text)
             .padding()

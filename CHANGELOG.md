@@ -3,9 +3,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Possibility to customize message reactions top padding (for grid-based reaction containers)
+- Custom sorting of reactions
+
+# [4.26.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.26.0)
+_January 16, 2023_
+
+### ✅ Added
+- Config to change the scrolling anchor (top/bottom) on messages
+- Pass extra data in attachments
+- Custom message grouping by overriding `groupMessages` in `ChatChannelViewModel`
+
+### 🔄 Changed
+- `AddedAsset`'s `extraData` property is now of type `[String: RawJSON]`
+- New icon for `pendingSend` local message state
+
+# [4.25.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.25.0)
+_December 16, 2022_
+
+### ✅ Added
+- Support for channel own capabilities in the UI
+- Added possibility to override the message id creation with `MessageIdBuilder`
+
 ### 🐞 Fixed
 - Renaming of a channel in ChannelInfo not persisting extra data
-- Channel list item swipe gesture collision with native gesture 
+- Channel list item swipe gesture collision with native gesture
+- Attributes from `MessageActionInfo` are now public
+- Crash on older devices when adding multiple images quickly
+- Message text appearing in multiple file attachments from the same message
 
 # [4.24.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.24.0)
 _November 16, 2022_

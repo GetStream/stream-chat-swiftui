@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
@@ -21,9 +21,9 @@ struct Assertion {
     enum State {
         case active, idle
     }
-    
+
     let body: (_ elapsedTime: TimeInterval) -> State
-    
+
     /// Evaluates the assertion.
     func evaluate(elapsedTime: TimeInterval) -> State {
         body(elapsedTime)
@@ -58,7 +58,7 @@ extension Assert {
         var defaultMessage: String {
             "\"\(String(describing: expression1()))\" not equal to \"\(String(describing: expression2()))\""
         }
-        
+
         return willBeTrue(
             expression1() == expression2(),
             timeout: timeout,
@@ -67,7 +67,7 @@ extension Assert {
             line: line
         )
     }
-    
+
     /// Periodically checks if the expression evaluates to `nil`. Fails if the expression result is not `nil` within
     /// the `timeout` period.
     ///
@@ -119,7 +119,7 @@ extension Assert {
             line: line
         )
     }
-    
+
     /// Periodically checks if the expression evaluates to `TRUE`. Fails if the expression result is not `TRUE` within
     /// the `timeout` period.
     ///
@@ -148,11 +148,11 @@ extension Assert {
                 XCTFail(message(), file: file, line: line)
                 return .idle
             }
-            
+
             return .active
         }
     }
-    
+
     /// Periodically checks if the expression evaluates to `FALSE`. Fails if the expression result is not `FALSE` within
     /// the `timeout` period.
     ///
@@ -178,7 +178,7 @@ extension Assert {
             line: line
         )
     }
-    
+
     /// Periodically checks that the expression evaluates stays `FALSE` for the whole `timeout` period.. Fails if the expression
     /// becommes `TRUE` before the end of the `timeout` period.
     ///
@@ -198,7 +198,7 @@ extension Assert {
     ) -> Assertion {
         staysTrue(!expression(), timeout: timeout, message: message(), file: file, line: line)
     }
-    
+
     /// Periodically checks that the expression evaluates stays `TRUE` for the whole `timeout` period.. Fails if the expression
     /// becommes `FALSE` before the end of the `timeout` period.
     ///
@@ -220,17 +220,17 @@ extension Assert {
             if elapsedTime >= timeout {
                 // Success
                 return .idle
-                
+
             } else if expression() == false {
                 // Failure
                 XCTFail(message(), file: file, line: line)
                 return .idle
             }
-            
+
             return .active
         }
     }
-    
+
     /// Blocks the current test execution and periodically checks for the equality of the provided expressions for
     /// the whole `timeout` period. Fails if the expression results are not equal before the end of the `timeout` period.
     ///
@@ -254,7 +254,7 @@ extension Assert {
         var defaultMessage: String {
             "\"\(String(describing: expression1()))\" failed to stay equal to \"\(String(describing: expression2()))\""
         }
-        
+
         return staysTrue(
             expression1() == expression2(),
             timeout: timeout,
@@ -263,7 +263,7 @@ extension Assert {
             line: line
         )
     }
-    
+
     /// Blocks the current test execution and asynchronously checks if the provided object can be released from the memobry
     /// by assigning it to `nil`.
     ///
@@ -283,7 +283,7 @@ extension Assert {
     ) -> Assertion {
         weak var weakObject: T? = object
         object = nil
-        
+
         return willBeNil(weakObject, message: "Failed to be released from the memory.", file: file, line: line)
     }
 }
@@ -321,12 +321,12 @@ struct AssertAsync {
             return [built]
         })
     }
-    
+
     @discardableResult
     init(@AssertionBuilder builder: () -> [Assertion]) {
         var assertions = builder()
         let startTimestamp = Date().timeIntervalSince1970
-        
+
         while assertions.isEmpty == false {
             let elapsedTime = Date().timeIntervalSince1970 - startTimestamp
             // Evaluate and remove idle assertions
@@ -341,7 +341,7 @@ enum AssertionBuilder {
     static func buildBlock(_ assertion: Assertion) -> Assertion {
         assertion
     }
-    
+
     static func buildBlock(_ assertions: Assertion...) -> [Assertion] {
         assertions
     }
@@ -367,7 +367,7 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-                
+
                 AssertAsync {
                     Assert.willBeEqual(
                         expression(),
@@ -381,7 +381,7 @@ extension AssertAsync {
             }
         }
     }
-    
+
     /// Periodically checks if the expression evaluates to `FALSE`. Fails if the expression result is not `FALSE` within
     /// the `timeout` period.
     ///
@@ -401,7 +401,7 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-                
+
                 AssertAsync {
                     Assert.willBeEqual(
                         expression(),
@@ -415,7 +415,7 @@ extension AssertAsync {
             }
         }
     }
-    
+
     /// Blocks the current test execution and periodically checks for the equality of the provided expressions. Fails if
     /// the expression results are not equal within the `timeout` period.
     ///
@@ -438,7 +438,7 @@ extension AssertAsync {
         _ = withoutActuallyEscaping(expression1) { expression1 in
             withoutActuallyEscaping(expression2) { expression2 in
                 withoutActuallyEscaping(message) { message in
-                    
+
                     AssertAsync {
                         Assert.willBeEqual(
                             expression1(),
@@ -453,7 +453,7 @@ extension AssertAsync {
             }
         }
     }
-    
+
     /// Blocks the current test execution and periodically checks if the expression evaluates to `nil`. Fails if
     /// the expression result is not `nil` within the `timeout` period.
     ///
@@ -473,7 +473,7 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-                
+
                 AssertAsync {
                     Assert.willBeTrue(
                         expression() == nil,
@@ -486,7 +486,7 @@ extension AssertAsync {
             }
         }
     }
-    
+
     /// Blocks the current test execution and periodically checks that the expression evaluates stays `TRUE` for
     /// the whole `timeout` period. Fails if the expression becommes `FALSE` before the end of the `timeout` period.
     ///
@@ -512,7 +512,7 @@ extension AssertAsync {
             }
         }
     }
-    
+
     /// Blocks the current test execution and periodically checks for the equality of the provided expressions for
     /// the whole `timeout` period. Fails if the expression results are not equal before the end of the `timeout` period.
     ///
@@ -535,7 +535,7 @@ extension AssertAsync {
         _ = withoutActuallyEscaping(expression1) { expression1 in
             withoutActuallyEscaping(expression2) { expression2 in
                 withoutActuallyEscaping(message) { message in
-                    
+
                     AssertAsync {
                         Assert.staysEqual(
                             expression1(),
@@ -550,7 +550,7 @@ extension AssertAsync {
             }
         }
     }
-    
+
     /// Blocks the current test execution and asynchronously checks if the provided object can be released from the memobry
     /// by assigning it to `nil`.
     ///

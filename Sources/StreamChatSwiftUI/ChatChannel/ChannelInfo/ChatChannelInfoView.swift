@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,16 +7,16 @@ import SwiftUI
 
 // View for the channel info screen.
 public struct ChatChannelInfoView: View, KeyboardReadable {
-    
+
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     @StateObject private var viewModel: ChatChannelInfoViewModel
     private var shownFromMessageList: Bool
-    
+
     @Environment(\.presentationMode) var presentationMode
-    
+
     public init(
         channel: ChatChannel,
         shownFromMessageList: Bool = false
@@ -26,12 +26,12 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         )
         self.shownFromMessageList = shownFromMessageList
     }
-    
+
     init(viewModel: ChatChannelInfoViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
         shownFromMessageList = false
     }
-    
+
     public var body: some View {
         ZStack {
             ScrollView {
@@ -46,7 +46,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             onItemAppear: viewModel.onParticipantAppear(_:)
                         )
                     }
-                    
+
                     if viewModel.showMoreUsersButton {
                         ChatChannelInfoButton(
                             title: L10n.ChatInfo.Users.loadMore(viewModel.notDisplayedParticipantsCount),
@@ -56,42 +56,44 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             viewModel.memberListCollapsed = false
                         }
                     }
-                    
+
                     ChannelInfoDivider()
-                    
+
                     ChatInfoOptionsView(viewModel: viewModel)
-                    
+
                     ChannelInfoDivider()
                         .alert(isPresented: $viewModel.errorShown) {
                             Alert.defaultErrorAlert
                         }
-                    
-                    ChatChannelInfoButton(
-                        title: viewModel.leaveButtonTitle,
-                        iconName: "person.fill.xmark",
-                        foregroundColor: Color(colors.alert)
-                    ) {
-                        viewModel.leaveGroupAlertShown = true
-                    }
-                    .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-                        let title = viewModel.leaveButtonTitle
-                        let message = viewModel.leaveConversationDescription
-                        let buttonTitle = viewModel.leaveButtonTitle
-                        
-                        return Alert(
-                            title: Text(title),
-                            message: Text(message),
-                            primaryButton: .destructive(Text(buttonTitle)) {
-                                viewModel.leaveConversationTapped {
-                                    if shownFromMessageList {
-                                        notifyChannelDismiss()
-                                    } else {
-                                        presentationMode.wrappedValue.dismiss()
+
+                    if viewModel.shouldShowLeaveConversationButton {
+                        ChatChannelInfoButton(
+                            title: viewModel.leaveButtonTitle,
+                            iconName: "person.fill.xmark",
+                            foregroundColor: Color(colors.alert)
+                        ) {
+                            viewModel.leaveGroupAlertShown = true
+                        }
+                        .alert(isPresented: $viewModel.leaveGroupAlertShown) {
+                            let title = viewModel.leaveButtonTitle
+                            let message = viewModel.leaveConversationDescription
+                            let buttonTitle = viewModel.leaveButtonTitle
+
+                            return Alert(
+                                title: Text(title),
+                                message: Text(message),
+                                primaryButton: .destructive(Text(buttonTitle)) {
+                                    viewModel.leaveConversationTapped {
+                                        if shownFromMessageList {
+                                            notifyChannelDismiss()
+                                        } else {
+                                            presentationMode.wrappedValue.dismiss()
+                                        }
                                     }
-                                }
-                            },
-                            secondaryButton: .cancel()
-                        )
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
                     }
                 }
             }
@@ -134,7 +136,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                     }
                 }
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 viewModel.channel.isDirectMessageChannel ? nil :
                     Button {

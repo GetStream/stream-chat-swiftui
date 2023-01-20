@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -18,7 +18,7 @@ class MoreChannelActionsView_Tests: StreamChatTestCase {
             onDismiss: {},
             onError: { _ in }
         )
-        
+
         // When
         let view = MoreChannelActionsView(
             channel: channel,
@@ -27,7 +27,7 @@ class MoreChannelActionsView_Tests: StreamChatTestCase {
             onDismiss: {}
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

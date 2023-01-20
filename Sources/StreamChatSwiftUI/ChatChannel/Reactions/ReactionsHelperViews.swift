@@ -1,22 +1,27 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
 import SwiftUI
 
-struct ReactionsHStack<Content: View>: View {
+public struct ReactionsHStack<Content: View>: View {
     var message: ChatMessage
     var content: () -> Content
-    
-    var body: some View {
+
+    public init(message: ChatMessage, content: @escaping () -> Content) {
+        self.message = message
+        self.content = content
+    }
+
+    public var body: some View {
         HStack {
             if !message.isSentByCurrentUser {
                 Spacer()
             }
-            
+
             content()
-            
+
             if message.isSentByCurrentUser {
                 Spacer()
             }

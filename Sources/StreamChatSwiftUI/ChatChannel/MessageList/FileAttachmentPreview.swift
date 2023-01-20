@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -7,16 +7,16 @@ import SwiftUI
 /// View previewing file attachments.
 public struct FileAttachmentPreview: View {
     @Environment(\.presentationMode) var presentationMode
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    
+
     var url: URL
-    
+
     @State private var isLoading = false
     @State private var title: String?
     @State private var error: Error?
-    
+
     public var body: some View {
         NavigationView {
             ZStack {
@@ -31,7 +31,7 @@ public struct FileAttachmentPreview: View {
                         title: $title,
                         error: $error
                     )
-                    
+
                     if isLoading {
                         ProgressView()
                     }
@@ -44,7 +44,7 @@ public struct FileAttachmentPreview: View {
                         .font(fonts.bodyBold)
                         .lineLimit(1)
                 }
-                
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         presentationMode.wrappedValue.dismiss()

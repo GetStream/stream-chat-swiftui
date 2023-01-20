@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -8,10 +8,10 @@ import SwiftUI
 
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-        
+
     var viewFactory: Factory
     @Binding var selectedPickerState: AttachmentPickerState
     @Binding var filePickerShown: Bool
@@ -25,10 +25,10 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     var addedCustomAttachments: [CustomAttachment]
     var cameraImageAdded: (AddedAsset) -> Void
     var askForAssetsAccessPermissions: () -> Void
-    
+
     var isDisplayed: Bool
     var height: CGFloat
-    
+
     public init(
         viewFactory: Factory,
         selectedPickerState: Binding<AttachmentPickerState>,
@@ -62,14 +62,14 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         self.isDisplayed = isDisplayed
         self.height = height
     }
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             viewFactory.makeAttachmentSourcePickerView(
                 selected: selectedPickerState,
                 onPickerStateChange: onPickerStateChange
             )
-            
+
             if selectedPickerState == .photos {
                 if let assets = photoLibraryAssets,
                    let collection = PHFetchResultCollection(fetchResult: assets) {
@@ -86,7 +86,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 } else {
                     LoadingView()
                 }
-                
+
             } else if selectedPickerState == .files {
                 viewFactory.makeFilePickerView(
                     filePickerShown: $filePickerShown,
@@ -119,13 +119,13 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
 /// View for picking the source of the attachment (photo, files or camera).
 public struct AttachmentSourcePickerView: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    
+
     var selected: AttachmentPickerState
     var onTap: (AttachmentPickerState) -> Void
-    
+
     public init(
         selected: AttachmentPickerState,
         onTap: @escaping (AttachmentPickerState) -> Void
@@ -133,9 +133,9 @@ public struct AttachmentSourcePickerView: View {
         self.selected = selected
         self.onTap = onTap
     }
-    
+
     public var body: some View {
-        
+
         HStack(alignment: .center, spacing: 24) {
             AttachmentPickerButton(
                 icon: images.attachmentPickerPhotos,
@@ -144,7 +144,7 @@ public struct AttachmentSourcePickerView: View {
                 onTap: onTap
             )
             .accessibilityIdentifier("attachmentPickerPhotos")
-            
+
             AttachmentPickerButton(
                 icon: images.attachmentPickerFolder,
                 pickerType: .files,
@@ -152,7 +152,7 @@ public struct AttachmentSourcePickerView: View {
                 onTap: onTap
             )
             .accessibilityIdentifier("attachmentPickerFiles")
-            
+
             AttachmentPickerButton(
                 icon: images.attachmentPickerCamera,
                 pickerType: .camera,
@@ -160,7 +160,7 @@ public struct AttachmentSourcePickerView: View {
                 onTap: onTap
             )
             .accessibilityIdentifier("attachmentPickerCamera")
-            
+
             Spacer()
         }
         .padding(.horizontal, 16)
@@ -174,12 +174,12 @@ public struct AttachmentSourcePickerView: View {
 /// Button used for picking of attachment types.
 public struct AttachmentPickerButton: View {
     @Injected(\.colors) private var colors
-    
+
     var icon: UIImage
     var pickerType: AttachmentPickerState
     var isSelected: Bool
     var onTap: (AttachmentPickerState) -> Void
-    
+
     public init(
         icon: UIImage,
         pickerType: AttachmentPickerState,
@@ -191,7 +191,7 @@ public struct AttachmentPickerButton: View {
         self.isSelected = isSelected
         self.onTap = onTap
     }
-    
+
     public var body: some View {
         Button {
             onTap(pickerType)

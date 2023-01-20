@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import CoreGraphics
@@ -22,7 +22,8 @@ public struct MessageListConfig {
         updateChannelsFromMessageList: Bool = false,
         maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
-        iPadSplitViewEnabled: Bool = true
+        iPadSplitViewEnabled: Bool = true,
+        scrollingAnchor: UnitPoint = .bottom
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -38,8 +39,9 @@ public struct MessageListConfig {
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
         self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
         self.iPadSplitViewEnabled = iPadSplitViewEnabled
+        self.scrollingAnchor = scrollingAnchor
     }
-    
+
     public let messageListType: MessageListType
     public let typingIndicatorPlacement: TypingIndicatorPlacement
     public let groupMessages: Bool
@@ -54,14 +56,15 @@ public struct MessageListConfig {
     public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
     public let cacheSizeOnChatDismiss: Int
     public let iPadSplitViewEnabled: Bool
+    public let scrollingAnchor: UnitPoint
 }
 
 /// Contains information about the message paddings.
 public struct MessagePaddings {
-    
+
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
-    
+
     public init(horizontal: CGFloat = 8) {
         self.horizontal = horizontal
     }
@@ -76,7 +79,7 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
-        
+
     public let showAvatars: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
@@ -90,7 +93,8 @@ public struct MessageDisplayOptions {
     public let shouldAnimateReactions: Bool
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
-    
+    public let reactionsTopPadding: (ChatMessage) -> CGFloat
+
     public init(
         showAvatars: Bool = true,
         showAvatarsInGroups: Bool? = nil,
@@ -105,7 +109,8 @@ public struct MessageDisplayOptions {
         shouldAnimateReactions: Bool = true,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
-        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth
+        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
+        reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
@@ -120,12 +125,13 @@ public struct MessageDisplayOptions {
         self.shouldAnimateReactions = shouldAnimateReactions
         self.spacerWidth = spacerWidth
         self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
+        self.reactionsTopPadding = reactionsTopPadding
     }
-    
+
     public func showAvatars(for channel: ChatChannel) -> Bool {
         channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
     }
-    
+
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
         { _ in
             [
@@ -133,7 +139,7 @@ public struct MessageDisplayOptions {
             ]
         }
     }
-    
+
     public static var defaultSpacerWidth: (CGFloat) -> (CGFloat) {
         { availableWidth in
             if isIPad {
@@ -142,6 +148,10 @@ public struct MessageDisplayOptions {
                 return availableWidth / 4
             }
         }
+    }
+    
+    public static var defaultReactionsTopPadding: (ChatMessage) -> CGFloat {
+        { _ in 24 }
     }
 }
 

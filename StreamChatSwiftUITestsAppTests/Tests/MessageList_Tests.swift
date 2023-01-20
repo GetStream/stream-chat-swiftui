@@ -1,11 +1,11 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import XCTest
 
 final class MessageList_Tests: StreamTestCase {
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         addTags([.coreFeatures])
@@ -49,9 +49,9 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_sendsMessageWithOneEmoji() throws {
         linkToScenario(withId: 273)
-        
+
         let message = "🍏"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -81,10 +81,10 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_editsMessage() throws {
         linkToScenario(withId: 264)
-        
+
         let message = "test message"
         let editedMessage = "hello"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -98,13 +98,13 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessage(editedMessage)
         }
     }
-    
+
     func test_receivesMessage() throws {
         linkToScenario(withId: 254)
-        
+
         let message = "message"
         let author = "Han Solo"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -115,13 +115,13 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessageAuthor(author)
         }
     }
-    
+
     func test_messageIsEdited_whenParticipantEditsMessage() throws {
         linkToScenario(withId: 266)
-        
+
         let message = "test message"
         let editedMessage = "hello"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -140,7 +140,7 @@ final class MessageList_Tests: StreamTestCase {
         linkToScenario(withId: 267)
 
         let message = "test message"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -151,12 +151,12 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessageSizeChangesAfterEditing(linesCountShouldBeIncreased: true)
         }
     }
-    
+
     func test_messageDecreases_whenUserEditsMessage() throws {
         linkToScenario(withId: 259)
-        
+
         let message = "test\nmessage"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -184,10 +184,10 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessage(message)
         }
     }
-    
+
     func test_composerGrowthLimit() throws {
         linkToScenario(withId: 260)
-        
+
         throw XCTSkip("Check out SWUI-188")
 
         GIVEN("user opens the channel") {
@@ -199,12 +199,12 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertComposerLimits(toNumberOfLines: 5)
         }
     }
-    
+
     func test_typingIndicator() throws {
         linkToScenario(withId: 358)
-        
+
         let typingEventsTimeout: Double = 4
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -225,7 +225,7 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_messageListScrollsDown_whenMessageListIsScrolledUp_andUserSendsNewMessage() throws {
         linkToScenario(withId: 359)
-        
+
         throw XCTSkip("Check out SWUI-256")
 
         let newMessage = "New message"
@@ -328,7 +328,7 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_commandsPopupDisappear_whenUserTapsOnMessageList() throws {
         linkToScenario(withId: 364)
-        
+
         throw XCTSkip("Check out SWUI-187")
 
         GIVEN("user opens the channel") {
@@ -345,10 +345,10 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertComposerCommands(shouldBeVisible: false)
         }
     }
-    
+
     func test_offlineMessageInTheMessageList() throws {
         linkToScenario(withId: 365)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let message = "test message"
@@ -373,10 +373,10 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessage(message)
         }
     }
-    
+
     func test_addMessageWhileOffline() throws {
         linkToScenario(withId: 366)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let message = "test message"
@@ -406,12 +406,12 @@ final class MessageList_Tests: StreamTestCase {
                 .assertMessageDeliveryStatus(.sent, at: 0)
         }
     }
-    
+
     func test_offlineRecoveryWithinSession() throws {
         linkToScenario(withId: 367)
-        
+
         throw XCTSkip("Check out SWUI-245")
-        
+
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -477,12 +477,12 @@ extension MessageList_Tests {
             userRobot.assertQuotedMessage(replyText: quotedMessage, quotedText: message)
         }
     }
-    
+
     func test_paginationOnMessageList() throws {
         linkToScenario(withId: 370)
-        
+
         let messagesCount = 60
-        
+
         WHEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: messagesCount)
             userRobot.login().openChannel()
@@ -491,12 +491,12 @@ extension MessageList_Tests {
             userRobot.assertMessageListPagination(messagesCount: messagesCount)
         }
     }
-    
+
     func test_paginationOnThread() throws {
         linkToScenario(withId: 371)
-        
+
         let replyCount = 60
-        
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1, replyCount: replyCount)
             userRobot.login().openChannel()
@@ -508,12 +508,12 @@ extension MessageList_Tests {
             userRobot.assertMessageListPagination(messagesCount: replyCount + 1)
         }
     }
-    
+
     func test_addingCommandHidesLeftButtons() throws {
         linkToScenario(withId: 372)
-        
+
         throw XCTSkip("Check out SWUI-243")
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -530,10 +530,10 @@ extension MessageList_Tests {
             userRobot.assertComposerLeftButtons(shouldBeVisible: true)
         }
     }
-    
+
     func test_mentionsView() {
         linkToScenario(withId: 373)
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -550,10 +550,10 @@ extension MessageList_Tests {
             userRobot.assertComposerMentions(shouldBeVisible: false)
         }
     }
-    
+
     func test_userFillsTheComposerMentioningParticipantThroughMentionsView() {
         linkToScenario(withId: 374)
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -564,12 +564,12 @@ extension MessageList_Tests {
             userRobot.assertMentionWasApplied()
         }
     }
-    
+
     func test_addMessageWithLinkToUnsplash() {
         linkToScenario(withId: 375)
-        
+
         let message = "https://unsplash.com/photos/1_2d3MRbI9c"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -582,12 +582,12 @@ extension MessageList_Tests {
             userRobot.assertLinkPreview()
         }
     }
-    
+
     func test_addMessageWithLinkToYoutube() throws {
         linkToScenario(withId: 376)
-        
+
         let message = "https://youtube.com/watch?v=xOX7MsrbaPY"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -600,12 +600,12 @@ extension MessageList_Tests {
             userRobot.assertLinkPreview(alsoVerifyServiceName: "YouTube")
         }
     }
-    
+
     func test_participantAddsMessageWithLinkToUnsplash() {
         linkToScenario(withId: 377)
-        
+
         let message = "https://unsplash.com/photos/1_2d3MRbI9c"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -617,12 +617,12 @@ extension MessageList_Tests {
             userRobot.assertLinkPreview()
         }
     }
-    
+
     func test_participantAddsMessageWithLinkToYoutube() {
         linkToScenario(withId: 378)
-        
+
         let message = "https://youtube.com/watch?v=xOX7MsrbaPY"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -640,9 +640,9 @@ extension MessageList_Tests {
 extension MessageList_Tests {
     func test_threadReplyAppearsInThread_whenParticipantAddsThreadReply() {
         linkToScenario(withId: 379)
-        
+
         let threadReply = "thread reply"
-        
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
             userRobot.login().openChannel()
@@ -657,12 +657,12 @@ extension MessageList_Tests {
             userRobot.assertThreadReply(threadReply)
         }
     }
-    
+
     func test_threadReplyAppearsInChannelAndThread_whenParticipantAddsThreadReplySentAlsoToChannel() {
         linkToScenario(withId: 380)
-        
+
         let threadReply = "thread reply"
-        
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
             userRobot.login().openChannel()
@@ -680,7 +680,7 @@ extension MessageList_Tests {
             userRobot.assertThreadReply(threadReply)
         }
     }
-    
+
     func test_threadReplyAppearsInChannelAndThread_whenUserAddsThreadReplySentAlsoToChannel() {
         linkToScenario(withId: 381)
 
@@ -702,12 +702,12 @@ extension MessageList_Tests {
                 .assertMessage(threadReply)
         }
     }
-    
+
     func test_threadTypingIndicatorHidden_whenParticipantStopsTyping() throws {
         linkToScenario(withId: 382)
-        
+
         throw XCTSkip("Check out SWUI-251")
-        
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
             userRobot.login().openChannel()
@@ -739,7 +739,7 @@ extension MessageList_Tests {
 
         let message = "Hey there"
         let messageWithForbiddenContent = server.forbiddenWords.first ?? ""
-        
+
         GIVEN("user opens the channel") {
             userRobot
                 .login()
@@ -758,12 +758,12 @@ extension MessageList_Tests {
             userRobot.assertMessageHasTimestamp(at: 1)
         }
     }
-    
+
     func test_messageEndsGroup_whenFollowedByEphemeralMessage() {
         linkToScenario(withId: 384)
-        
+
         let message = "Hey there"
-        
+
         GIVEN("user opens the channel") {
             userRobot
                 .login()
@@ -785,7 +785,7 @@ extension MessageList_Tests {
 
     func test_messageRendersTimestampAgain_whenMessageLastInGroupIsHardDeleted() throws {
         linkToScenario(withId: 385)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
@@ -815,11 +815,11 @@ extension MessageList_Tests {
 extension MessageList_Tests {
     func test_deletesMessage() throws {
         linkToScenario(withId: 386)
-        
+
         throw XCTSkip("Check out SWUI-254")
-        
+
         let message = "test message"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -833,12 +833,12 @@ extension MessageList_Tests {
             userRobot.assertDeletedMessage()
         }
     }
-    
+
     func test_messageDeleted_whenParticipantDeletesMessage() throws {
         linkToScenario(withId: 387)
-        
+
         let message = "test message"
-        
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -852,7 +852,7 @@ extension MessageList_Tests {
             userRobot.assertDeletedMessage()
         }
     }
-    
+
     func test_quotedReplyIsDeletedByParticipant_deletedMessageIsShown() {
         linkToScenario(withId: 388)
 
@@ -872,12 +872,12 @@ extension MessageList_Tests {
             userRobot.assertDeletedMessage()
         }
     }
-    
+
     func test_quotedReplyIsDeletedByUser_deletedMessageIsShown() {
         linkToScenario(withId: 389)
-        
+
         let quotedMessage = "quoted reply"
-        
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
             userRobot.login().openChannel()
@@ -913,7 +913,7 @@ extension MessageList_Tests {
         }
         AND("user observes the thread reply removed in thread") {
             userRobot
-                .openThread(messageCellIndex: 1)
+                .openThread(messageCellIndex: 1, waitForThreadIcon: true)
                 .assertDeletedMessage()
         }
     }
@@ -942,7 +942,7 @@ extension MessageList_Tests {
                 .assertDeletedMessage()
         }
     }
-    
+
     func test_participantRemovesThreadReply() {
         linkToScenario(withId: 392)
 
@@ -965,10 +965,10 @@ extension MessageList_Tests {
             userRobot.openThread().assertDeletedMessage()
         }
     }
-    
+
     func test_threadReplyIsRemovedEverywhere_whenUserRemovesItFromThread() throws {
         linkToScenario(withId: 393)
-        
+
         throw XCTSkip("Check out SWUI-244")
 
         let threadReply = "thread reply"
@@ -994,10 +994,10 @@ extension MessageList_Tests {
                 .assertDeletedMessage()
         }
     }
-    
+
     func test_userRemovesThreadReply() throws {
         linkToScenario(withId: 394)
-        
+
         throw XCTSkip("Check out SWUI-244")
 
         let threadReply = "thread reply"
@@ -1021,10 +1021,10 @@ extension MessageList_Tests {
                 .assertThreadReplyCountButton()
         }
     }
-    
+
     func test_hardDeletesMessage() throws {
         linkToScenario(withId: 395)
-        
+
         throw XCTSkip("Check out SWUI-245")
 
         let message = "test message"
@@ -1043,12 +1043,12 @@ extension MessageList_Tests {
             userRobot.assertHardDeletedMessage(withText: message)
         }
     }
-    
+
     func test_messageDeleted_whenParticipantHardDeletesMessage() throws {
         linkToScenario(withId: 396)
-        
+
         let message = "test message"
-        
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
             userRobot.login().openChannel()

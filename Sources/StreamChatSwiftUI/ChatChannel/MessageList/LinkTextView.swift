@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -8,13 +8,13 @@ import UIKit
 
 /// SwiftUI wrapper for displaying links in a text view.
 struct LinkTextView: UIViewRepresentable {
-    
+
     @Injected(\.utils) private var utils
-    
+
     var message: ChatMessage
     var width: CGFloat
     var textColor: UIColor
-    
+
     func makeUIView(context: Context) -> UITextView {
         let textView = OnlyLinkTappableTextView()
         textView.backgroundColor = .clear
@@ -34,7 +34,7 @@ struct LinkTextView: UIViewRepresentable {
 
         return textView
     }
-    
+
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
         DispatchQueue.main.async {
@@ -42,7 +42,7 @@ struct LinkTextView: UIViewRepresentable {
             uiView.frame.size = size
         }
     }
-    
+
     private var text: String {
         message.adjustedText
     }
@@ -78,7 +78,7 @@ extension String {
             context: nil
         )
         .integral
-        
+
         return rect.size
     }
 }

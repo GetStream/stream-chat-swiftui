@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -8,16 +8,16 @@ import SwiftUI
 /// Chat channel cell that is swipeable.
 public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem: View>: View {
     @Injected(\.colors) private var colors
-    
+
     @State private var offsetX: CGFloat = 0
     @State private var openSideLock: SwipeDirection?
-    
+
     @GestureState private var offset: CGSize = .zero
-    
+
     @Binding var swipedChannelId: String?
-    
+
     private let numberOfTrailingItems: Int
-    
+
     private let itemWidth: CGFloat
     private var menuWidth: CGFloat {
         itemWidth * CGFloat(numberOfTrailingItems) + 8
@@ -28,21 +28,20 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         let width = (offsetX.magnitude + addWidthMargin) * (itemWidth / totalWidth)
         return width
     }
-    
+
     /// minimum horizontal translation value necessary to open the side menu
     private let openTriggerValue: CGFloat = 60
-    /// max horizontal translation value necessary to open the side menu
     private let maxTriggerValue: CGFloat = 300
     /// An additional value to add to the open menu width. This is useful if the cell has rounded corners.
     private let addWidthMargin: CGFloat = 5
-    
+
     private var factory: Factory
     private var channelListItem: ChannelListItem
     private var channel: ChatChannel
     private var trailingRightButtonTapped: (ChatChannel) -> Void
     private var trailingLeftButtonTapped: (ChatChannel) -> Void
     private var leadingButtonTapped: (ChatChannel) -> Void
-    
+
     public init(
         factory: Factory,
         channelListItem: ChannelListItem,
@@ -64,7 +63,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         leadingButtonTapped = leadingSwipeButtonTapped
         _swipedChannelId = swipedChannelId
     }
-    
+
     public var body: some View {
         ZStack {
             if self.offsetX < 0, showTrailingSwipeActions {
@@ -72,7 +71,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             } else if self.offsetX > 0, showLeadingSwipeActions {
                 leadingSwipeActions
             }
-            
+
             channelListItem
                 .offset(x: self.offsetX)
                 .simultaneousGesture(
@@ -86,7 +85,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                             width: value.location.x - value.startLocation.x,
                             height: value.location.y - value.startLocation.y
                         )
-                    
+
                         if diff == .zero {
                             gestureState = .zero
                         } else {
@@ -111,7 +110,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         .id("\(channel.id)-swipeable")
         .accessibilityIdentifier("ChatChannelSwipeableListItem")
     }
-    
+
     private var trailingSwipeActions: some View {
         factory.makeTrailingSwipeActionsView(
             channel: channel,
@@ -122,11 +121,11 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             rightButtonTapped: trailingRightButtonTapped
         )
     }
-    
+
     private var showTrailingSwipeActions: Bool {
         !(trailingSwipeActions is EmptyView)
     }
-    
+
     private var leadingSwipeActions: some View {
         factory.makeLeadingSwipeActionsView(
             channel: channel,
@@ -136,23 +135,21 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             buttonTapped: leadingButtonTapped
         )
     }
-    
+
     private var showLeadingSwipeActions: Bool {
         !(leadingSwipeActions is EmptyView)
     }
-    
+
     private func dragChanged(to value: CGFloat) {
         let horizontalTranslation = value
-        
-        if abs(horizontalTranslation) > maxTriggerValue {
-            return
-        }
-         
+
+        if abs(horizontalTranslation) > maxTriggerValue { return }
+
         if horizontalTranslation > 0 && openSideLock == nil && !showLeadingSwipeActions {
             // prevent swiping to left, if not configured.
             return
         }
-        
+
         if horizontalTranslation < 0 && openSideLock == nil && !showTrailingSwipeActions {
             // prevent swiping to right, if not configured.
             return
@@ -162,7 +159,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             offsetX = width(for: openSideLock) * openSideLock.sideFactor + horizontalTranslation
             return
         }
-                 
+
         if horizontalTranslation != 0 {
             if swipedChannelId != channel.id {
                 swipedChannelId = channel.id
@@ -205,12 +202,12 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             setOffsetX(value: 0)
         }
     }
-    
+
     private func lockSideMenu(side: SwipeDirection) {
         setOffsetX(value: side.sideFactor * width(for: side))
         openSideLock = side
     }
-    
+
     private func width(for direction: SwipeDirection) -> CGFloat {
         direction == .leading ? itemWidth : menuWidth
     }
@@ -220,7 +217,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 public enum SwipeDirection {
     case leading
     case trailing
-    
+
     var sideFactor: CGFloat {
         switch self {
         case .leading:
@@ -232,15 +229,15 @@ public enum SwipeDirection {
 }
 
 public struct TrailingSwipeActionsView: View {
-    
+
     @Injected(\.colors) private var colors
-    
+
     var channel: ChatChannel
     var offsetX: CGFloat
     var buttonWidth: CGFloat
     var leftButtonTapped: (ChatChannel) -> Void
     var rightButtonTapped: (ChatChannel) -> Void
-    
+
     public var body: some View {
         HStack {
             Spacer()
@@ -254,15 +251,17 @@ public struct TrailingSwipeActionsView: View {
                         .frame(width: buttonWidth)
                         .foregroundColor(Color(colors.text))
                         .background(Color(colors.background1))
-                        
-                    ActionItemButton(imageName: "trash", action: {
-                        withAnimation {
-                            rightButtonTapped(channel)
-                        }
-                    })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.textInverted))
-                        .background(Color(colors.alert))
+
+                    if channel.ownCapabilities.contains(.deleteChannel) {
+                        ActionItemButton(imageName: "trash", action: {
+                            withAnimation {
+                                rightButtonTapped(channel)
+                            }
+                        })
+                            .frame(width: buttonWidth)
+                            .foregroundColor(Color(colors.textInverted))
+                            .background(Color(colors.alert))
+                    }
                 }
             }
             .opacity(self.offsetX < -5 ? 1 : 0)
@@ -274,12 +273,12 @@ public struct TrailingSwipeActionsView: View {
 public struct ActionItemButton: View {
     private var imageName: String
     private var action: () -> Void
-    
+
     public init(imageName: String, action: @escaping () -> Void) {
         self.imageName = imageName
         self.action = action
     }
-    
+
     public var body: some View {
         Button {
             action()

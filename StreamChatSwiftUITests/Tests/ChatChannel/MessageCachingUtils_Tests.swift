@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -7,7 +7,7 @@
 import XCTest
 
 class MessageCachingUtils_Tests: StreamChatTestCase {
-    
+
     let author = ChatUser.mock(
         id: "test",
         name: "Test",
@@ -25,58 +25,58 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
             author: author
         )
     )
-    
+
     func test_messageCachingUtils_authorId() {
         // Given
         let utils = MessageCachingUtils()
-        
+
         // When
         let authorIdInitial = utils.authorId(for: message)
         let authorIdCached = utils.authorId(for: message)
-        
+
         // Then
         XCTAssert(authorIdInitial == "test")
         XCTAssert(authorIdInitial == authorIdCached)
     }
-    
+
     func test_messageCachingUtils_authorName() {
         // Given
         let utils = MessageCachingUtils()
-        
+
         // When
         let authorNameInitial = utils.authorName(for: message)
         let authorNameCached = utils.authorName(for: message)
-        
+
         // Then
         XCTAssert(authorNameInitial == "Test")
         XCTAssert(authorNameInitial == authorNameCached)
     }
-    
+
     func test_messageCachingUtils_imageURL() {
         // Given
         let utils = MessageCachingUtils()
-        
+
         // When
         let authorURLInitial = utils.authorImageURL(for: message)
         let authorURLCached = utils.authorImageURL(for: message)
-        
+
         // Then
         XCTAssert(authorURLInitial?.absoluteString == "https://test.com")
         XCTAssert(authorURLInitial == authorURLCached)
     }
-    
+
     func test_messageCachingUtils_quotedMessageAvailable() {
         // Given
         let utils = MessageCachingUtils()
-        
+
         // When
         let quotedMessageInitial = utils.quotedMessage(for: message)
         let quotedMessageCached = utils.quotedMessage(for: message)
-        
+
         // Then
         XCTAssert(quotedMessageInitial == quotedMessageCached)
     }
-    
+
     func test_messageCachingUtils_quotedMessageNotAvailable() {
         // Given
         let message = ChatMessage.mock(
@@ -86,30 +86,30 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
             author: .mock(id: .unique)
         )
         let utils = MessageCachingUtils()
-        
+
         // When
         let quotedMessageInitial = utils.quotedMessage(for: message)
         let quotedMessageCached = utils.quotedMessage(for: message)
-        
+
         // Then
         XCTAssert(quotedMessageInitial == nil)
         XCTAssert(quotedMessageCached == nil)
     }
-    
+
     func test_messageCachingUtils_recreatingCache() {
         // Given
         let utils = MessageCachingUtils()
-        
+
         // When
         let authorIdInitial = utils.authorId(for: message)
         utils.clearCache()
         let authorIdAfterClear = utils.authorId(for: message)
-        
+
         // Then
         XCTAssert(authorIdInitial == "test")
         XCTAssert(authorIdInitial == authorIdAfterClear)
     }
-    
+
     func test_messageCachingUtils_userDisplayInfo() {
         // Given
         let id: String = .unique
@@ -122,18 +122,18 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
             author: author
         )
         let utils = MessageCachingUtils()
-        
+
         // When
         let authorInfo = utils.authorInfo(from: message)
         let userDisplayInfo = message.authorDisplayInfo
-        
+
         // Then
         XCTAssert(authorInfo == userDisplayInfo)
         XCTAssert(userDisplayInfo.id == id)
         XCTAssert(userDisplayInfo.name == author.name)
         XCTAssert(userDisplayInfo.imageURL == url)
     }
-    
+
     func test_messageCachingUtils_userDisplayInfoIdExisting() {
         // Given
         let id: String = .unique
@@ -146,11 +146,11 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
             author: author
         )
         let utils = MessageCachingUtils()
-        
+
         // When
         let authorInfo = utils.authorInfo(from: message)
         let userDisplayInfo = utils.userDisplayInfo(with: id)
-        
+
         // Then
         XCTAssert(userDisplayInfo != nil)
         XCTAssert(authorInfo == userDisplayInfo)
@@ -158,13 +158,13 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
         XCTAssert(userDisplayInfo!.name == author.name)
         XCTAssert(userDisplayInfo!.imageURL == url)
     }
-    
+
     func test_messageCachingUtils_userDisplayInfoIdNonExisting() {
         let utils = MessageCachingUtils()
-        
+
         // When
         let userDisplayInfo = utils.userDisplayInfo(with: "some id")
-        
+
         // Then
         XCTAssert(userDisplayInfo == nil)
     }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -15,7 +15,7 @@ class WebSocketClientMock: WebSocketClient {
 
     @Atomic var connect_calledCounter = 0
     var connect_called: Bool { connect_calledCounter > 0 }
-    
+
     @Atomic var disconnect_calledCounter = 0
     var disconnect_source: WebSocketConnectionState.DisconnectionSource?
     var disconnect_called: Bool { disconnect_calledCounter > 0 }
@@ -50,7 +50,7 @@ class WebSocketClientMock: WebSocketClient {
         _disconnect_calledCounter { $0 += 1 }
         disconnect_source = source
     }
-    
+
     var mockEventsBatcher: EventBatcherMock {
         eventsBatcher as! EventBatcherMock
     }

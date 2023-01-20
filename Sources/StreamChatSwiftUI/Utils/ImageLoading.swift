@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import UIKit
@@ -22,7 +22,7 @@ public protocol ImageLoading: AnyObject {
         imageCDN: ImageCDN,
         completion: @escaping (([UIImage]) -> Void)
     )
-    
+
     /// Loads an image from the provided url.
     /// - Parameters:
     ///   - url: The URL to load the images from.

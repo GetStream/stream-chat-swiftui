@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -7,11 +7,11 @@ import SwiftUI
 
 /// View displaying media attachments.
 struct MediaAttachmentsView: View {
-    
+
     @StateObject private var viewModel: MediaAttachmentsViewModel
-    
+
     private static let spacing: CGFloat = 2
-    
+
     private static var itemWidth: CGFloat {
         if UIDevice.current.userInterfaceIdiom == .phone {
             return (UIScreen.main.bounds.size.width / 3) - spacing * 3
@@ -19,21 +19,21 @@ struct MediaAttachmentsView: View {
             return 120
         }
     }
-    
+
     private let columns = [GridItem(.adaptive(minimum: itemWidth), spacing: spacing)]
-    
+
     init(channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: MediaAttachmentsViewModel(channel: channel)
         )
     }
-    
+
     init(viewModel: MediaAttachmentsViewModel) {
         _viewModel = StateObject(
             wrappedValue: viewModel
         )
     }
-    
+
     var body: some View {
         ZStack {
             if viewModel.loading {
@@ -101,15 +101,15 @@ struct MediaAttachmentsView: View {
 }
 
 struct ImageAttachmentContentView: View {
-    
+
     @State private var galleryShown = false
-    
+
     let mediaItem: MediaItem
     let imageAttachment: ChatMessageImageAttachment
     let allImageAttachments: [ChatMessageImageAttachment]
     let itemWidth: CGFloat
     let index: Int
-    
+
     var body: some View {
         Button {
             galleryShown = true

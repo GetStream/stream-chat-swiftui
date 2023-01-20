@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -10,18 +10,18 @@ public struct MoreChannelActionsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
-    
+
     @StateObject var viewModel: MoreChannelActionsViewModel
     @Binding var swipedChannelId: String?
     @State private var isPresented = false
     var onDismiss: () -> Void
-    
+
     @State private var presentedView: AnyView? {
         didSet {
             isPresented = presentedView != nil
         }
     }
-    
+
     public init(
         channel: ChatChannel,
         channelActions: [ChannelAction],
@@ -37,25 +37,25 @@ public struct MoreChannelActionsView: View {
         self.onDismiss = onDismiss
         _swipedChannelId = swipedChannelId
     }
-    
+
     public var body: some View {
         VStack {
             Spacer()
             VStack(spacing: 4) {
                 Text(viewModel.chatName)
                     .font(fonts.bodyBold)
-                
+
                 Text(viewModel.subtitleText)
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
-                
+
                 memberList
-                
+
                 ForEach(viewModel.channelActions) { action in
                     VStack {
                         Divider()
                             .padding(.horizontal, -16)
-                        
+
                         if let destination = action.navigationDestination {
                             Button {
                                 presentedView = destination
@@ -96,7 +96,7 @@ public struct MoreChannelActionsView: View {
             let title = viewModel.alertAction?.confirmationPopup?.title ?? ""
             let message = viewModel.alertAction?.confirmationPopup?.message ?? ""
             let buttonTitle = viewModel.alertAction?.confirmationPopup?.buttonTitle ?? ""
-            
+
             return Alert(
                 title: Text(title),
                 message: Text(message),
@@ -119,7 +119,7 @@ public struct MoreChannelActionsView: View {
         }
         .accessibilityIdentifier("MoreChannelActionsView")
     }
-    
+
     private var memberList: some View {
         Group {
             if viewModel.members.count == 1 {
@@ -150,13 +150,13 @@ public struct MoreChannelActionsView: View {
 /// View displaying channel members with image and name.
 public struct ChannelMemberView: View {
     @Injected(\.fonts) private var fonts
-    
+
     let avatar: UIImage
     let name: String
     let onlineIndicatorShown: Bool
-    
+
     let memberSize = CGSize(width: 64, height: 64)
-    
+
     public var body: some View {
         VStack(alignment: .center) {
             ChannelAvatarView(
@@ -164,7 +164,7 @@ public struct ChannelMemberView: View {
                 showOnlineIndicator: onlineIndicatorShown,
                 size: memberSize
             )
-            
+
             Text(name)
                 .font(fonts.footnoteBold)
                 .multilineTextAlignment(.center)

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -10,16 +10,16 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
-    
+
     @StateObject private var viewModel: ChatChannelListViewModel
     @State private var tabBar: UITabBar?
-    
+
     private let viewFactory: Factory
     private let title: String
     private var onItemTap: (ChatChannel) -> Void
     private var embedInNavigationView: Bool
     private var handleTabBarVisibility: Bool
-    
+
     public init(
         viewFactory: Factory,
         viewModel: ChatChannelListViewModel? = nil,
@@ -49,7 +49,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         }
     }
-    
+
     public var body: some View {
         container()
             .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
@@ -75,7 +75,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
             .accessibilityIdentifier("ChatChannelListView")
     }
-    
+
     @ViewBuilder
     private func container() -> some View {
         if embedInNavigationView == true {
@@ -86,7 +86,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             content()
         }
     }
-    
+
     @ViewBuilder
     private func content() -> some View {
         Group {
@@ -132,7 +132,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
         .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
-    
+
     private func setupTabBarAppeareance() {
         if #available(iOS 15.0, *) {
             let tabBarAppearance: UITabBarAppearance = UITabBarAppearance()
@@ -141,7 +141,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         }
     }
-    
+
     @ViewBuilder
     private func customViewOverlay() -> some View {
         switch viewModel.customChannelPopupType {
@@ -171,12 +171,12 @@ extension ChatChannelListView where Factory == DefaultViewFactory {
 }
 
 public struct ChatChannelListContentView<Factory: ViewFactory>: View {
-    
+
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
     private var onItemTap: (ChatChannel) -> Void
-    
+
     public init(
         viewFactory: Factory,
         viewModel: ChatChannelListViewModel,
@@ -192,13 +192,13 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
             }
         }
     }
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             viewFactory.makeChannelListTopView(
                 searchText: $viewModel.searchText
             )
-            
+
             if viewModel.isSearching {
                 SearchResultsView(
                     factory: viewFactory,
@@ -233,7 +233,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
             }
-            
+
             viewFactory.makeChannelListStickyFooterView()
         }
         .modifier(viewFactory.makeChannelListContentModifier())

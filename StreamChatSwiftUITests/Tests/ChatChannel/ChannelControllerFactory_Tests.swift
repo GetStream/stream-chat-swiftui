@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -12,25 +12,25 @@ class ChannelControllerFactory_Tests: StreamChatTestCase {
         // Given
         let factory = ChannelControllerFactory()
         let channelId = ChannelId.unique
-        
+
         // When
         let controller1 = factory.makeChannelController(for: channelId)
         let controller2 = factory.makeChannelController(for: channelId)
-        
+
         // Then
         XCTAssert(controller1 === controller2)
     }
-    
+
     func test_channelControllerFactory_removal() {
         // Given
         let factory = ChannelControllerFactory()
         let channelId = ChannelId.unique
-        
+
         // When
         let controller1 = factory.makeChannelController(for: channelId)
         factory.clearCurrentController()
         let controller2 = factory.makeChannelController(for: channelId)
-        
+
         // Then
         XCTAssert(controller1 !== controller2)
     }

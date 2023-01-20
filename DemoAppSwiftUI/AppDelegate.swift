@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Sentry
@@ -9,18 +9,18 @@ import SwiftUI
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    
+
     var streamChat: StreamChat?
-        
+
     var chatClient: ChatClient = {
         var config = ChatClientConfig(apiKey: .init(apiKeyString))
         config.isLocalStorageEnabled = true
         config.applicationGroupIdentifier = applicationGroupIdentifier
-        
+
         let client = ChatClient(config: config)
         return client
     }()
-        
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -29,31 +29,31 @@ class AppDelegate: NSObject, UIApplicationDelegate {
          //Customizations, uncomment to customize.
          var colors = ColorPalette()
          colors.tintColor = Color(.streamBlue)
-         
+
          var fonts = Fonts()
          fonts.footnoteBold = Font.footnote
-         
+
          let images = Images()
          images.reactionLoveBig = UIImage(systemName: "heart.fill")!
-         
+
          let appearance = Appearance(colors: colors, images: images, fonts: fonts)
-         
+
          let channelNamer: ChatChannelNamer = { channel, currentUserId in
          "This is our custom name: \(channel.name ?? "no name")"
          }
          let utils = Utils(channelNamer: channelNamer)
-         
+
          streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
-         
+
          */
-        
+
         /*
          let messageTypeResolver = CustomMessageTypeResolver()
          let utils = Utils(messageTypeResolver: messageTypeResolver)
-         
+
          streamChat = StreamChat(chatClient: chatClient, utils: utils)
          */
-        
+
         #if RELEASE
         // We're tracking Crash Reports / Issues from the Demo App to keep improving the SDK
         SentrySDK.start { options in
@@ -61,12 +61,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             options.tracesSampleRate = 1.0
         }
         #endif
-        
+
         let utils = Utils(
             messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             withAnimation {
                 if AppState.shared.userState == .launchAnimation {
@@ -74,12 +74,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 }
             }
         }
-        
+
         UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
-        
+
         return true
     }
-    
+
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
@@ -89,7 +89,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         sceneConfig.delegateClass = SceneDelegate.self
         return sceneConfig
     }
-    
+
     func application(
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data

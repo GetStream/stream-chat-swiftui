@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import AVKit
@@ -9,13 +9,13 @@ import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
-    
+
     var factory: Factory
     let channel: ChatChannel
     let message: ChatMessage
@@ -26,15 +26,15 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
-    
+
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
     @State private var offsetX: CGFloat = 0
     @GestureState private var offset: CGSize = .zero
-    
+
     private let replyThreshold: CGFloat = 60
     private let paddingValue: CGFloat = 8
-    
+
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -58,7 +58,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
     }
-    
+
     public var body: some View {
         HStack(alignment: .bottom) {
             if message.type == .system || message.type == .error {
@@ -74,7 +74,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .opacity(showsAllInfo ? 1 : 0)
                     }
                 }
-                
+
                 VStack(alignment: message.isSentByCurrentUser ? .trailing : .leading) {
                     if isMessagePinned {
                         MessagePinDetailsView(
@@ -82,7 +82,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             reactionsShown: reactionsShown
                         )
                     }
-                    
+
                     MessageView(
                         factory: factory,
                         message: message,
@@ -103,7 +103,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                     }
                                 )
                                 : nil
-                            
+
                             message.localState == .sendingFailed ? SendFailureIndicator() : nil
                         }
                     )
@@ -142,7 +142,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 width: value.location.x - value.startLocation.x,
                                 height: value.location.y - value.startLocation.y
                             )
-                            
+
                             if diff == .zero {
                                 gestureState = .zero
                             } else {
@@ -154,7 +154,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         if !channel.config.quotesEnabled {
                             return
                         }
-                        
+
                         if offset == .zero {
                             // gesture ended or cancelled
                             setOffsetX(value: 0)
@@ -164,7 +164,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     })
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
-                    
+
                     if message.replyCount > 0 && !isInThread {
                         factory.makeMessageRepliesView(
                             channel: channel,
@@ -174,7 +174,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .accessibilityElement(children: .contain)
                         .accessibility(identifier: "MessageRepliesView")
                     }
-                                        
+
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
@@ -182,7 +182,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                     channel: channel,
                                     message: message
                                 )
-                                
+
                                 if messageListConfig.messageDisplayOptions.showMessageDate {
                                     factory.makeMessageDateView(for: message)
                                 }
@@ -204,13 +204,16 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .offset(x: -32)
                         : nil
                 )
-                
+
                 if !message.isSentByCurrentUser {
                     MessageSpacer(spacerWidth: spacerWidth)
                 }
             }
         }
-        .padding(.top, reactionsShown && !isMessagePinned ? 3 * paddingValue : 0)
+        .padding(
+            .top,
+            reactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
+        )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
         .padding(.top, isLast ? paddingValue : 0)
@@ -224,15 +227,15 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
     }
-    
+
     private var maximumHorizontalSwipeDisplacement: CGFloat {
         replyThreshold + 30
     }
-        
+
     private var isMessagePinned: Bool {
         message.pinDetails != nil
     }
-    
+
     private var contentWidth: CGFloat {
         let padding: CGFloat = messageListConfig.messagePaddings.horizontal
         let minimumWidth: CGFloat = 240
@@ -241,35 +244,35 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         let totalWidth = message.isSentByCurrentUser ? available : available - avatarSize
         return totalWidth
     }
-    
+
     private var spacerWidth: CGFloat {
         messageListConfig.messageDisplayOptions.spacerWidth(width ?? 0)
     }
-    
+
     private var reactionsShown: Bool {
         !message.reactionScores.isEmpty
             && !message.isDeleted
             && channel.config.reactionsEnabled
     }
-    
+
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
     }
-    
+
     private func dragChanged(to value: CGFloat) {
         let horizontalTranslation = value
-         
+
         if horizontalTranslation < 0 {
             // prevent swiping to right.
             return
         }
-                 
+
         if horizontalTranslation >= minimumSwipeDistance {
             offsetX = horizontalTranslation
         } else {
             offsetX = 0
         }
-        
+
         if offsetX > replyThreshold && quotedMessage != message {
             triggerHapticFeedback(style: .medium)
             withAnimation {
@@ -277,17 +280,17 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             }
         }
     }
-    
+
     private var minimumSwipeDistance: CGFloat {
         utils.messageListConfig.messageDisplayOptions.minimumSwipeGestureDistance
     }
-    
+
     private func setOffsetX(value: CGFloat) {
         withAnimation(.interpolatingSpring(stiffness: 170, damping: 20)) {
             self.offsetX = value
         }
     }
-    
+
     private func handleGestureForMessage(showsMessageActions: Bool) {
         computeFrame = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -307,10 +310,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 }
 
 struct SendFailureIndicator: View {
-    
+
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    
+
     var body: some View {
         BottomRightView {
             Image(uiImage: images.messageListErrorIndicator)

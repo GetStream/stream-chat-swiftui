@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -44,7 +44,7 @@ public struct AddedImageAttachmentsView: View {
                                     if attachment.type == .video {
                                         VideoIndicatorView()
                                         
-                                        if let duration = attachment.extraData["duration"] as? String {
+                                        if let duration = attachment.extraData["duration"]?.stringValue {
                                             VideoDurationIndicatorView(duration: duration)
                                         }
                                     }
@@ -55,7 +55,7 @@ public struct AddedImageAttachmentsView: View {
             }
             .frame(height: imageSize)
             .onChange(of: images) { [images] newValue in
-                if newValue.count > images.count {
+                if #available(iOS 15, *), newValue.count > images.count {
                     let last = newValue.last
                     withAnimation {
                         reader.scrollTo(last?.id, anchor: .trailing)

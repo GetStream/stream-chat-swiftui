@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -94,7 +94,8 @@ public struct PhotoAttachmentCell: View {
                                                 id: asset.localIdentifier,
                                                 url: assetURL,
                                                 type: assetType,
-                                                extraData: asset.mediaType == .video ? ["duration": asset.durationString] : [:]
+                                                extraData: asset
+                                                    .mediaType == .video ? ["duration": .string(asset.durationString)] : [:]
                                             )
                                         )
                                     }

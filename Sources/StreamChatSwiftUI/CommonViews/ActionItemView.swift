@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -23,34 +23,34 @@ public struct ActionItemView: View {
                 .foregroundColor(
                     isDestructive ? Color(colors.alert) : Color(colors.textLowEmphasis)
                 )
-            
+
             Text(title)
                 .font(boldTitle ? fonts.bodyBold : fonts.body)
                 .foregroundColor(
                     isDestructive ? Color(colors.alert) : Color(colors.text)
                 )
-            
+
             Spacer()
         }
         .frame(height: 40)
     }
-    
+
     private var image: UIImage {
         // Check if it's in the app bundle.
         if let image = UIImage(named: iconName) {
             return image
         }
-        
+
         // Support for system images.
         if let image = UIImage(systemName: iconName) {
             return image
         }
-        
+
         // Check if it's bundled.
         if let image = UIImage(named: iconName, in: .streamChatUI) {
             return image
         }
-        
+
         // Default image.
         return images.photoDefault
     }

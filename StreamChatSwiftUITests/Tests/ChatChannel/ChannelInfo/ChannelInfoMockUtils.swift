@@ -1,12 +1,12 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 
 struct ChannelInfoMockUtils {
-    
+
     static func setupMockMembers(
         count: Int,
         currentUserId: String,
@@ -31,7 +31,7 @@ struct ChannelInfoMockUtils {
         }
         return activeMembers
     }
-    
+
     static let pinnedMessage = ChatMessage.mock(
         id: .unique,
         cid: .unique,
@@ -43,7 +43,7 @@ struct ChannelInfoMockUtils {
             expiresAt: nil
         )
     )
-    
+
     static func generateMessagesWithAttachments(
         withImages: Int = 0,
         withVideos: Int = 0
@@ -59,7 +59,7 @@ struct ChannelInfoMockUtils {
             )
             result.append(message)
         }
-        
+
         for i in 0..<withVideos {
             let message = ChatMessage.mock(
                 id: .unique,
@@ -73,7 +73,7 @@ struct ChannelInfoMockUtils {
 
         return LazyCachedMapCollection(source: result) { $0 }
     }
-    
+
     static func generateMessagesWithFileAttachments(
         count: Int
     ) -> LazyCachedMapCollection<ChatMessage> {
@@ -91,14 +91,14 @@ struct ChannelInfoMockUtils {
 
         return LazyCachedMapCollection(source: result) { $0 }
     }
-    
+
     static func generateMockUsers(count: Int) -> [ChatUser] {
         var result = [ChatUser]()
         for i in 0..<count {
             let user = ChatUser.mock(id: .unique, name: "Test User \(i)")
             result.append(user)
         }
-        
+
         return result
     }
 }

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -10,7 +10,7 @@ import SwiftUI
 import XCTest
 
 class MessageComposerView_Tests: StreamChatTestCase {
-    
+
     override func setUp() {
         super.setUp()
         let utils = Utils(
@@ -23,7 +23,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-                
+
         // When
         let view = MessageComposerView(
             viewFactory: factory,
@@ -38,7 +38,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_composerInputView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
@@ -58,15 +58,15 @@ class MessageComposerView_Tests: StreamChatTestCase {
             removeAttachmentWithId: { _ in }
         )
         .frame(width: defaultScreenSize.width, height: 100)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_trailingComposerView_snapshot() {
         // Given
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let view = factory.makeTrailingComposerView(
             enabled: true,
@@ -74,15 +74,15 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onTap: {}
         )
         .frame(width: 40, height: 40)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_trailingComposerView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
-        
+
         // When
         let view = factory.makeTrailingComposerView(
             enabled: true,
@@ -90,25 +90,25 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onTap: {}
         )
         .frame(width: 40, height: 40)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_composerInputView_inputTextView() {
         // Given
         let view = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
         )
-        
+
         // When
         view.text = "This is a sample text"
         view.selectedRange.location = 3
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_composerInputView_composerInputTextView() {
         // Given
         let view = ComposerTextInputView(
@@ -120,11 +120,11 @@ class MessageComposerView_Tests: StreamChatTestCase {
             currentHeight: 38
         )
         .frame(width: defaultScreenSize.width, height: 50)
-                
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_composerInputView_rangeSelection() {
         // Given
         let view = ComposerTextInputView(
@@ -138,16 +138,16 @@ class MessageComposerView_Tests: StreamChatTestCase {
         let inputView = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
         )
-        
+
         // When
         inputView.selectedRange.location = 3
         let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
         coordinator.textViewDidChangeSelection(inputView)
-        
+
         // Then
         XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
     }
-    
+
     func test_composerInputView_textSelection() {
         // Given
         let view = ComposerTextInputView(
@@ -161,18 +161,18 @@ class MessageComposerView_Tests: StreamChatTestCase {
         let inputView = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
         )
-        
+
         // When
         inputView.text = "New text"
         inputView.selectedRange.location = 3
         let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
         coordinator.textViewDidChange(inputView)
-        
+
         // Then
         XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
         XCTAssert(coordinator.textInput.text == "New text")
     }
-    
+
     func test_quotedMessageHeaderView_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -181,15 +181,15 @@ class MessageComposerView_Tests: StreamChatTestCase {
             text: "Quoted message",
             author: .mock(id: .unique)
         )
-        
+
         // When
         let view = QuotedMessageHeaderView(quotedMessage: .constant(message), showContent: true)
             .frame(width: defaultScreenSize.width, height: 36)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_composerInputView_snapshot() {
         // Given
         let inputView = InputTextView()
@@ -203,17 +203,17 @@ class MessageComposerView_Tests: StreamChatTestCase {
         )
         let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
         let viewWithSize = view.applyDefaultSize()
-        
+
         // When
         inputView.scrollToBottom()
         coordinator.updateHeight(inputView, shouldAnimate: true)
         coordinator.updateHeight(inputView, shouldAnimate: false)
-        
+
         // Then
         assertSnapshot(matching: viewWithSize, as: .image)
         XCTAssert(coordinator.textInput.height == 100)
     }
-    
+
     func test_photoAttachmentCell_loadingResource() {
         // Given
         let asset = PHAsset()
@@ -226,36 +226,36 @@ class MessageComposerView_Tests: StreamChatTestCase {
                 false
             }
         )
-        
+
         // When
         _ = cell.onAppear()
         _ = cell.onDisappear()
         let newRequestId = cell.requestId
-        
+
         // Then
         XCTAssert(newRequestId == nil)
     }
-    
+
     func test_videoIndicatorView_snapshot() {
         // Given
         let view = VideoIndicatorView()
             .frame(width: 100, height: 100)
             .background(.black)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_videoDurationIndicatorView_snapshot() {
         // Given
         let view = VideoDurationIndicatorView(duration: "02:54")
             .frame(width: 100, height: 100)
             .background(.black)
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_photosPickerView_snapshot() {
         // Given
         let view = PhotoAttachmentPickerView(
@@ -264,7 +264,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             imageSelected: { _ in true }
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

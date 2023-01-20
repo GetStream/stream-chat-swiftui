@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import UIKit
@@ -23,24 +23,24 @@ struct TextSizeConstants {
 class InputTextView: UITextView, AccessibilityView {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
-        
+
     /// Label used as placeholder for textView when it's empty.
     open private(set) lazy var placeholderLabel: UILabel = UILabel()
         .withoutAutoresizingMaskConstraints
-        
+
     /// The minimum height of the text view.
     /// When there is no content in the text view OR the height of the content is less than this value,
     /// the text view will be of this height
     open var minimumHeight: CGFloat {
         TextSizeConstants.minimumHeight
     }
-    
+
     /// The maximum height of the text view.
     /// When the content in the text view is greater than this height, scrolling will be enabled and the text view's height will be restricted to this value
     open var maximumHeight: CGFloat {
         TextSizeConstants.maximumHeight
     }
-    
+
     override open var text: String! {
         didSet {
             if !oldValue.isEmpty && text.isEmpty {
@@ -48,7 +48,7 @@ class InputTextView: UITextView, AccessibilityView {
             }
         }
     }
-        
+
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         guard superview != nil else { return }
@@ -58,7 +58,7 @@ class InputTextView: UITextView, AccessibilityView {
         setUpLayout()
         setUpAppearance()
     }
-        
+
     open func setUp() {
         NotificationCenter.default.addObserver(
             self,
@@ -73,19 +73,19 @@ class InputTextView: UITextView, AccessibilityView {
             object: nil
         )
     }
-    
+
     open func setUpAppearance() {
         backgroundColor = .clear
         textContainer.lineFragmentPadding = 8
         font = utils.composerConfig.inputFont
         textColor = colors.text
         textAlignment = .natural
-        
+
         placeholderLabel.font = font
         placeholderLabel.textAlignment = .center
         placeholderLabel.textColor = colors.composerPlaceholderColor
     }
-    
+
     open func setUpLayout() {
         embed(
             placeholderLabel,
@@ -117,11 +117,11 @@ class InputTextView: UITextView, AccessibilityView {
         delegate?.textViewDidChange?(self)
         handleTextChange()
     }
-        
+
     @objc open func handleTextChange() {
         placeholderLabel.isHidden = !text.isEmpty
     }
-    
+
     open func shouldAnimate(_ newText: String) -> Bool {
         abs(newText.count - text.count) < 10
     }
@@ -136,7 +136,7 @@ class InputTextView: UITextView, AccessibilityView {
             textContainerInset.top = max(0, topInset)
         }
     }
-        
+
     override open func paste(_ sender: Any?) {
         super.paste(sender)
         handleTextChange()

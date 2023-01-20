@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -8,9 +8,9 @@ import SwiftUI
 /// Stateless component for the channel list.
 /// If used directly, you should provide the channel list.
 public struct ChannelList<Factory: ViewFactory>: View {
-    
+
     @Injected(\.colors) private var colors
-    
+
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
@@ -25,7 +25,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
-    
+
     public init(
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
@@ -57,7 +57,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         _selectedChannel = selectedChannel
         _swipedChannelId = swipedChannelId
     }
-    
+
     public var body: some View {
         Group {
             if scrollable {
@@ -69,7 +69,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
             }
         }
     }
-    
+
     private var channelsVStack: some View {
         ChannelsLazyVStack(
             factory: factory,
@@ -90,8 +90,8 @@ public struct ChannelList<Factory: ViewFactory>: View {
 }
 
 /// LazyVStack displaying list of channels.
-struct ChannelsLazyVStack<Factory: ViewFactory>: View {
-    
+public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
+
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
@@ -105,8 +105,8 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
-    
-    init(
+
+    public init(
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
@@ -135,7 +135,7 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         _selectedChannel = selectedChannel
         _swipedChannelId = swipedChannelId
     }
-    
+
     public var body: some View {
         LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
@@ -160,10 +160,10 @@ struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                         onItemAppear(index)
                     }
                 }
-                
+
                 factory.makeChannelListDividerItem()
             }
-            
+
             factory.makeChannelListFooterView()
         }
         .modifier(factory.makeChannelListModifier())
@@ -179,18 +179,18 @@ extension ChatChannel: Identifiable {
     public var id: String {
         "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(typingUsersString)-\(readUsersId)"
     }
-    
+
     private var readUsersId: String {
         "\(readUsers(currentUserId: nil, message: latestMessages.first).count)"
     }
-    
+
     private var lastActiveMembersCount: Int {
         lastActiveMembers.filter { member in
             member.isOnline
         }
         .count
     }
-    
+
     private var typingUsersString: String {
         currentlyTypingUsers.map { user in
             user.id

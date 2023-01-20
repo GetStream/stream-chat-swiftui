@@ -1,12 +1,12 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
 
 /// Data source providing the chat messages.
 protocol MessagesDataSource: AnyObject {
-    
+
     /// Called when the messages are updated.
     ///
     /// - Parameters:
@@ -17,7 +17,7 @@ protocol MessagesDataSource: AnyObject {
         didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
         changes: [ListChange<ChatMessage>]
     )
-    
+
     /// Called when the channel is updated.
     /// - Parameters:
     ///  - channelDataSource: the channel's data source.
@@ -32,13 +32,13 @@ protocol MessagesDataSource: AnyObject {
 
 /// The data source for the channel.
 protocol ChannelDataSource: AnyObject {
-    
+
     /// Delegate implementing the `MessagesDataSource`.
     var delegate: MessagesDataSource? { get set }
-    
+
     /// List of the messages.
     var messages: LazyCachedMapCollection<ChatMessage> { get }
-    
+
     /// Loads the previous messages.
     /// - Parameters:
     ///  - messageId: the id of the last received message.
@@ -64,12 +64,12 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     var messages: LazyCachedMapCollection<ChatMessage> {
         controller.messages
     }
-    
+
     init(controller: ChatChannelController) {
         self.controller = controller
         self.controller.delegate = self
     }
-    
+
     public func channelController(
         _ channelController: ChatChannelController,
         didUpdateMessages changes: [ListChange<ChatMessage>]
@@ -80,7 +80,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
             changes: changes
         )
     }
-    
+
     func channelController(
         _ channelController: ChatChannelController,
         didUpdateChannel channel: EntityChange<ChatChannel>
@@ -91,7 +91,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
             channelController: channelController
         )
     }
-    
+
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
@@ -111,7 +111,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
 
 /// Implementation of the `ChannelDataSource`. Loads the messages in a reply thread.
 class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate {
-    
+
     let channelController: ChatChannelController
     let messageController: ChatMessageController
     weak var delegate: MessagesDataSource?
@@ -135,7 +135,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
             )
         }
     }
-    
+
     func messageController(
         _ controller: ChatMessageController,
         didChangeReplies changes: [ListChange<ChatMessage>]
@@ -146,7 +146,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
             changes: changes
         )
     }
-    
+
     func messageController(
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
@@ -157,7 +157,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
             changes: []
         )
     }
-    
+
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,

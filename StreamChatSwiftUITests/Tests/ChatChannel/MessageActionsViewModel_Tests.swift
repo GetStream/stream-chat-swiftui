@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -7,7 +7,7 @@
 import XCTest
 
 class MessageActionsViewModel_Tests: StreamChatTestCase {
-    
+
     func test_messageActionsViewModel_confirmationAlertShown() {
         // Given
         let actions = MessageAction.defaultActions(
@@ -25,10 +25,10 @@ class MessageActionsViewModel_Tests: StreamChatTestCase {
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
         let action = actions[4]
-        
+
         // When
         viewModel.alertAction = action
-        
+
         // Then
         XCTAssert(action.confirmationPopup != nil)
         XCTAssert(viewModel.alertShown == true)

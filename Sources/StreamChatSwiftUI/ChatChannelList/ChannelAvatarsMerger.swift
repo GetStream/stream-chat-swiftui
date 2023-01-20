@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import UIKit
@@ -16,20 +16,20 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
     public init() {
         // Public init.
     }
-    
+
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
-    
+
     /// Context provided utils.
     private lazy var imageProcessor = utils.imageProcessor
     private lazy var imageMerger = utils.imageMerger
-    
+
     /// Placeholder images.
     private lazy var placeholder1 = images.userAvatarPlaceholder1
     private lazy var placeholder2 = images.userAvatarPlaceholder2
     private lazy var placeholder3 = images.userAvatarPlaceholder3
     private lazy var placeholder4 = images.userAvatarPlaceholder4
-    
+
     /// Creates a merged avatar from the given images
     /// - Parameter avatars: The individual avatars
     /// - Returns: The merged avatar
@@ -37,16 +37,16 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
         guard !avatars.isEmpty else {
             return nil
         }
-        
+
         var combinedImage: UIImage?
-                
+
         let avatarImages = avatars.map {
             imageProcessor.scale(image: $0, to: .avatarThumbnailSize)
         }
-        
+
         // The half of the width of the avatar
         let halfContainerSize = CGSize(width: CGSize.avatarThumbnailSize.width / 2, height: CGSize.avatarThumbnailSize.height)
-        
+
         if avatarImages.count == 1 {
             combinedImage = avatarImages[0]
         } else if avatarImages.count == 2 {
@@ -71,13 +71,13 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
                 ],
                 orientation: .vertical
             )
-            
+
             let rightImage = imageProcessor.crop(
                 image: imageProcessor
                     .scale(image: rightCollage ?? placeholder3, to: .avatarThumbnailSize),
                 to: halfContainerSize
             )
-            
+
             combinedImage = imageMerger.merge(
                 images:
                 [
@@ -94,13 +94,13 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
                 ],
                 orientation: .vertical
             )
-            
+
             let leftImage = imageProcessor.crop(
                 image: imageProcessor
                     .scale(image: leftCollage ?? placeholder1, to: .avatarThumbnailSize),
                 to: halfContainerSize
             )
-            
+
             let rightCollage = imageMerger.merge(
                 images: [
                     avatarImages[1],
@@ -108,13 +108,13 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
                 ],
                 orientation: .vertical
             )
-            
+
             let rightImage = imageProcessor.crop(
                 image: imageProcessor
                     .scale(image: rightCollage ?? placeholder2, to: .avatarThumbnailSize),
                 to: halfContainerSize
             )
-         
+
             combinedImage = imageMerger.merge(
                 images: [
                     leftImage ?? placeholder1,
@@ -123,7 +123,7 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
                 orientation: .horizontal
             )
         }
-        
+
         return combinedImage
     }
 }

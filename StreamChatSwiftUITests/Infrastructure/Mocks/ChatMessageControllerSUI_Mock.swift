@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -23,7 +23,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
         }
         return .init(client: chatClient, cid: channelId!, messageId: messageId)
     }
-    
+
     public var message_mock: ChatMessage?
     override public var message: ChatMessage? {
         message_mock ?? super.message
@@ -65,7 +65,7 @@ public extension ChatMessageControllerSUI_Mock {
         // Initial simulation should also have a user pre-created
         try? client.databaseContainer.createCurrentUser()
     }
-    
+
     /// Simulates a change of the `message` value. Observers are notified with the provided `change` value.
     func simulate(message: ChatMessage?, change: EntityChange<ChatMessage>) {
         message_mock = message
@@ -73,7 +73,7 @@ public extension ChatMessageControllerSUI_Mock {
             $0.messageController(self, didChangeMessage: change)
         }
     }
-    
+
     /// Simulates changes in the `replies` array. Observers are notified with the provided `changes` value.
     func simulate(replies: [ChatMessage], changes: [ListChange<ChatMessage>]) {
         replies_mock = replies
@@ -81,7 +81,7 @@ public extension ChatMessageControllerSUI_Mock {
             $0.messageController(self, didChangeReplies: changes)
         }
     }
-    
+
     /// Simulates changes of `state`. Observers are notified with the new value.
     func simulate(state: DataController.State) {
         state_mock = state

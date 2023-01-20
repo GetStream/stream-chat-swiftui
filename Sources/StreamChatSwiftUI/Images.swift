@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -51,6 +51,7 @@ public class Images {
     public var messageSent: UIImage = loadImageSafely(with: "checkmark_grey")
     public var whiteCheckmark: UIImage = loadImageSafely(with: "checkmark_white")
     public var readByAll: UIImage = loadImageSafely(with: "checkmark_double")
+    public var messageReceiptSending: UIImage = loadImageSafely(with: "message_receipt_sending")
     public var confirmCheckmark: UIImage = loadImageSafely(with: "checkmark_confirm")
     public var bigConfirmCheckmark: UIImage = loadImageSafely(with: "checkmark_confirm_big")
     public var folder: UIImage = loadImageSafely(with: "folder")

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -38,6 +38,19 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         let view = MessageReadIndicatorView(
             readUsers: [.mock(id: .unique)],
             showReadCount: true
+        )
+        .frame(width: 50, height: 16)
+     
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_messageReadIndicatorView_snapshotPendingSend() {
+        // Given
+        let view = MessageReadIndicatorView(
+            readUsers: [],
+            showReadCount: false,
+            localState: .pendingSend
         )
         .frame(width: 50, height: 16)
      

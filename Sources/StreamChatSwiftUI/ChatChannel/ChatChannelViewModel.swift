@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -231,6 +231,54 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
+    open func groupMessages() {
+        var temp = [String: [String]]()
+        for (index, message) in messages.enumerated() {
+            let date = message.createdAt
+            temp[message.id] = []
+            if index == 0 {
+                temp[message.id] = [firstMessageKey]
+                continue
+            } else if index == messages.count - 1 {
+                temp[message.id] = [lastMessageKey]
+            }
+            
+            let previous = index - 1
+            let previousMessage = messages[previous]
+            let currentAuthorId = messageCachingUtils.authorId(for: message)
+            let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
+
+            if currentAuthorId != previousAuthorId {
+                temp[message.id]?.append(firstMessageKey)
+                var prevInfo = temp[previousMessage.id] ?? []
+                prevInfo.append(lastMessageKey)
+                temp[previousMessage.id] = prevInfo
+            }
+
+            if previousMessage.type == .error
+                || previousMessage.type == .ephemeral
+                || previousMessage.type == .system {
+                temp[message.id] = [firstMessageKey]
+                continue
+            }
+
+            let delay = previousMessage.createdAt.timeIntervalSince(date)
+
+            if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
+                temp[message.id]?.append(firstMessageKey)
+                var prevInfo = temp[previousMessage.id] ?? []
+                prevInfo.append(lastMessageKey)
+                temp[previousMessage.id] = prevInfo
+            }
+            
+            if temp[message.id]?.isEmpty == true {
+                temp[message.id] = nil
+            }
+        }
+        
+        messagesGroupingInfo = temp
+    }
+    
     func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
@@ -424,54 +472,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func groupMessages() {
-        var temp = [String: [String]]()
-        for (index, message) in messages.enumerated() {
-            let date = message.createdAt
-            temp[message.id] = []
-            if index == 0 {
-                temp[message.id] = [firstMessageKey]
-                continue
-            } else if index == messages.count - 1 {
-                temp[message.id] = [lastMessageKey]
-            }
-            
-            let previous = index - 1
-            let previousMessage = messages[previous]
-            let currentAuthorId = messageCachingUtils.authorId(for: message)
-            let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
-
-            if currentAuthorId != previousAuthorId {
-                temp[message.id]?.append(firstMessageKey)
-                var prevInfo = temp[previousMessage.id] ?? []
-                prevInfo.append(lastMessageKey)
-                temp[previousMessage.id] = prevInfo
-            }
-
-            if previousMessage.type == .error
-                || previousMessage.type == .ephemeral
-                || previousMessage.type == .system {
-                temp[message.id] = [firstMessageKey]
-                continue
-            }
-
-            let delay = previousMessage.createdAt.timeIntervalSince(date)
-
-            if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
-                temp[message.id]?.append(firstMessageKey)
-                var prevInfo = temp[previousMessage.id] ?? []
-                prevInfo.append(lastMessageKey)
-                temp[previousMessage.id] = prevInfo
-            }
-            
-            if temp[message.id]?.isEmpty == true {
-                temp[message.id] = nil
-            }
-        }
-        
-        messagesGroupingInfo = temp
-    }
-    
     private func handleDateChange() {
         guard showScrollToLatestButton == true, let currentDate = currentDate else {
             currentDateString = nil
@@ -554,18 +554,14 @@ extension ChatMessage: Identifiable {
     }
     
     var messageId: String {
-        var statesId = "empty"
-        if localState != nil {
-            statesId = uploadingStatesId
-        }
-        return baseId + statesId + reactionScoresId + repliesCountId + "\(updatedAt)" + pinStateId
+        InjectedValues[\.utils].messageIdBuilder.makeMessageId(for: self)
     }
     
-    private var baseId: String {
+    var baseId: String {
         isDeleted ? "\(id)$deleted" : "\(id)$"
     }
     
-    private var pinStateId: String {
+    var pinStateId: String {
         pinDetails != nil ? "pinned" : "notPinned"
     }
     

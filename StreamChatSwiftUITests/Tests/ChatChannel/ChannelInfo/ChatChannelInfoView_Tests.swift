@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import SnapshotTesting
@@ -20,15 +20,15 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             name: "Direct channel",
             lastActiveMembers: members
         )
-        
+
         // When
         let view = ChatChannelInfoView(channel: channel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelInfoView_directChannelOnlineSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -40,15 +40,15 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             name: "Direct channel",
             lastActiveMembers: members
         )
-        
+
         // When
         let view = ChatChannelInfoView(channel: channel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelInfoView_directChannelMutedSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -60,15 +60,15 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             lastActiveMembers: members,
             muteDetails: MuteDetails(createdAt: Date(), updatedAt: Date())
         )
-        
+
         // When
         let view = ChatChannelInfoView(channel: channel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelInfoView_groupCollapsedSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -79,18 +79,19 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
-        
+
         // When
         let view = ChatChannelInfoView(channel: group)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelInfoView_smallGroupSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -101,18 +102,19 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
-        
+
         // When
         let view = ChatChannelInfoView(channel: group)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelInfoView_groupExpandedSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -123,20 +125,21 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
         let viewModel = ChatChannelInfoViewModel(channel: group)
         viewModel.memberListCollapsed = false
-        
+
         // When
         let view = ChatChannelInfoView(viewModel: viewModel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_chatChannelInfoView_navBarSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -147,15 +150,16 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
         let viewModel = ChatChannelInfoViewModel(channel: group)
-        
+
         // When
         let view = ChatChannelInfoView(viewModel: viewModel)
             .applyDefaultSize()
-        
+
         let navigationView = NavigationView {
             view
         }
@@ -164,7 +168,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: navigationView, as: .image)
     }
-    
+
     func test_chatChannelInfoView_addUsersShownSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -175,16 +179,17 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
         let viewModel = ChatChannelInfoViewModel(channel: group)
         viewModel.addUsersShown = true
-        
+
         // When
         let view = ChatChannelInfoView(viewModel: viewModel)
             .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }

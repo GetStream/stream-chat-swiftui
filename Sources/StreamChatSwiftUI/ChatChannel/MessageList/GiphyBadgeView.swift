@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -9,7 +9,7 @@ public struct GiphyBadgeView: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     public var body: some View {
         BottomLeftView {
             HStack(spacing: 4) {

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 @testable import StreamChat
@@ -7,7 +7,7 @@
 import XCTest
 
 class ChatMessageIDs_Tests: XCTestCase {
-        
+
     func test_chatMessage_reactionScoresId() {
         // Given
         let id: String = .unique
@@ -22,14 +22,14 @@ class ChatMessageIDs_Tests: XCTestCase {
                 MessageReactionType(rawValue: reaction): 3
             ]
         )
-        
+
         // When
         let messageId = message.messageId
-        
+
         // Then
         XCTAssert(messageId.starts(with: expectedId))
     }
-    
+
     func test_chatMessage_DeletedId() {
         // Given
         let id: String = .unique
@@ -41,14 +41,14 @@ class ChatMessageIDs_Tests: XCTestCase {
             author: .mock(id: .unique),
             deletedAt: Date()
         )
-        
+
         // When
         let messageId = message.messageId
-        
+
         // Then
         XCTAssert(messageId.starts(with: expectedId))
     }
-    
+
     func test_chatMessage_uploadingStatesId() {
         // Given
         let id: String = .unique
@@ -62,11 +62,11 @@ class ChatMessageIDs_Tests: XCTestCase {
             attachments: ChatChannelTestHelpers.imageAttachments,
             localState: .pendingSend
         )
-        
+
         // When
         let uploadingStatesId = message.uploadingStatesId
         let messageId = message.messageId
-        
+
         // Then
         XCTAssert(messageId.contains(expectedId))
         XCTAssert(uploadingStatesId == state)
@@ -88,14 +88,14 @@ class ChatMessageIDs_Tests: XCTestCase {
             attachments: ChatChannelTestHelpers.imageAttachments,
             localState: .pendingSend
         )
-        
+
         // When
         let messageId = message.messageId
-        
+
         // Then
         XCTAssert(messageId.contains(expectedId))
     }
-    
+
     func test_chatMessage_sendingState() {
         // Given
         let id: String = .unique
@@ -107,11 +107,34 @@ class ChatMessageIDs_Tests: XCTestCase {
             author: .mock(id: .unique),
             localState: .sending
         )
-        
+
         // When
         let messageId = message.messageId
-        
+
         // Then
         XCTAssert(messageId.contains(expectedId))
+    }
+
+    func test_chatMessage_messageBuilder() {
+        // Given
+        let id: String = .unique
+        let reaction = "like"
+        let expectedId = id + "empty" + "\(reaction)\(3)"
+        let message = ChatMessage.mock(
+            id: id,
+            cid: .unique,
+            text: "test",
+            author: .mock(id: .unique),
+            reactionScores: [
+                MessageReactionType(rawValue: reaction): 3
+            ]
+        )
+        let defaultMessageBuilder = DefaultMessageIdBuilder()
+
+        // When
+        let messageId = defaultMessageBuilder.makeMessageId(for: message)
+
+        // Then
+        XCTAssert(messageId.starts(with: expectedId))
     }
 }

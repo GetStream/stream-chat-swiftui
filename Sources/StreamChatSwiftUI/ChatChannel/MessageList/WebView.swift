@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ struct WebView: UIViewRepresentable {
     @Binding var isLoading: Bool
     @Binding var title: String?
     @Binding var error: Error?
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(
             webView: self,
@@ -20,7 +20,7 @@ struct WebView: UIViewRepresentable {
             error: $error
         )
     }
-    
+
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView(frame: CGRect.zero)
         webView.navigationDelegate = context.coordinator
@@ -29,17 +29,17 @@ struct WebView: UIViewRepresentable {
         webView.load(URLRequest(url: url))
         return webView.withAccessibilityIdentifier(identifier: "WKWebView")
     }
-    
+
     func updateUIView(_ webView: WKWebView, context: Context) {
         // We don't need handling updates of the view at the moment.
     }
-    
+
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: WebView
         var isLoading: Binding<Bool>
         var title: Binding<String?>
         var error: Binding<Error?>
-        
+
         init(
             webView: WebView,
             isLoading: Binding<Bool>,
@@ -51,7 +51,7 @@ struct WebView: UIViewRepresentable {
             self.title = title
             self.error = error
         }
-        
+
         public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
             isLoading.wrappedValue = true
         }
@@ -65,7 +65,7 @@ struct WebView: UIViewRepresentable {
                 }
             }
         }
-        
+
         func webView(
             _ webView: WKWebView,
             didFailProvisionalNavigation navigation: WKNavigation!,
@@ -74,7 +74,7 @@ struct WebView: UIViewRepresentable {
             isLoading.wrappedValue = false
             self.error.wrappedValue = error
         }
-        
+
         func webView(
             _ webView: WKWebView,
             didFail navigation: WKNavigation!,

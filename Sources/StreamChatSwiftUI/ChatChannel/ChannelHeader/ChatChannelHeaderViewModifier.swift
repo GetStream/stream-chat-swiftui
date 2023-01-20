@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -16,28 +16,28 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
-    
+
     private var currentUserId: String {
         chatClient.currentUserId ?? ""
     }
-    
+
     private var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
             && utils.messageListConfig.typingIndicatorPlacement == .navigationBar
             && channel.config.typingEventsEnabled
     }
-    
+
     private var onlineIndicatorShown: Bool {
         !channel.lastActiveMembers.filter { member in
             member.id != chatClient.currentUserId && member.isOnline
         }
         .isEmpty
     }
-    
+
     public var channel: ChatChannel
     public var headerImage: UIImage
     @Binding public var isActive: Bool
-    
+
     public init(
         channel: ChatChannel,
         headerImage: UIImage,
@@ -47,7 +47,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         self.headerImage = headerImage
         _isActive = isActive
     }
-    
+
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             ChannelTitleView(
@@ -57,7 +57,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
             .accessibilityIdentifier("ChannelTitleView")
             .accessibilityElement(children: .contain)
         }
-        
+
         ToolbarItem(placement: .navigationBarTrailing) {
             ZStack {
                 Button {
@@ -77,7 +77,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 } label: {
                     EmptyView()
                 }
-                
+
                 ChannelAvatarView(
                     avatar: headerImage,
                     showOnlineIndicator: onlineIndicatorShown,
@@ -95,9 +95,9 @@ public struct DefaultChatChannelHeader: ToolbarContent {
 public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
     @State private var isActive: Bool = false
-    
+
     public var channel: ChatChannel
-    
+
     public func body(content: Content) -> some View {
         content.toolbar {
             DefaultChatChannelHeader(
@@ -110,29 +110,29 @@ public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
 }
 
 struct ChannelTitleView: View {
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
-    
+
     var channel: ChatChannel
     var shouldShowTypingIndicator: Bool
-    
+
     private var currentUserId: String {
         chatClient.currentUserId ?? ""
     }
-    
+
     private var channelNamer: ChatChannelNamer {
         utils.channelNamer
     }
-    
+
     var body: some View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)
                 .accessibilityIdentifier("chatName")
-            
+
             if shouldShowTypingIndicator {
                 HStack {
                     TypingIndicatorView()

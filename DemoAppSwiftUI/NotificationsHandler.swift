@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -11,15 +11,15 @@ import UIKit
 /// When a notification is received, the channel id is extracted from the notification object.
 /// The code below shows an example how to use it to navigate directly to the corresponding screen.
 class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
-    
+
     @Injected(\.chatClient) private var chatClient
-    
+
     @Published var notificationChannelId: String?
-    
+
     static let shared = NotificationsHandler()
-    
+
     override private init() {}
-    
+
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -40,7 +40,7 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
         guard case UNNotificationDefaultActionIdentifier = response.actionIdentifier else {
             return
         }
-        
+
         if AppState.shared.userState == .loggedIn {
             notificationChannelId = cid.description
         } else if let userId = UserDefaults(suiteName: applicationGroupIdentifier)?.string(forKey: currentUserIdRegisteredForPush),
@@ -53,7 +53,7 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
             )
         }
     }
-    
+
     func setupRemoteNotifications() {
         UNUserNotificationCenter
             .current()
@@ -65,7 +65,7 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
                 }
             }
     }
-    
+
     private func loginAndNavigateToChannel(
         userCredentials: UserCredentials,
         token: Token,
@@ -81,7 +81,7 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
                 log.debug("Error logging in")
                 return
             }
-            
+
             DispatchQueue.main.async {
                 AppState.shared.userState = .loggedIn
                 self?.notificationChannelId = cid.description

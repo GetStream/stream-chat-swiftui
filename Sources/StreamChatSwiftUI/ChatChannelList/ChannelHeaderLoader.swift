@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -10,13 +10,13 @@ open class ChannelHeaderLoader: ObservableObject {
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
-    
+
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
-    
+
     /// Prevents image requests to be executed if they failed previously.
     private var failedImageLoads = Set<String>()
-    
+
     /// Batches loaded images for update, to improve performance.
     private var scheduledUpdate = false
 
@@ -25,13 +25,13 @@ open class ChannelHeaderLoader: ObservableObject {
     internal lazy var imageCDN = utils.imageCDN
     internal lazy var channelAvatarsMerger = utils.channelAvatarsMerger
     internal lazy var channelNamer = utils.channelNamer
-    
+
     /// Placeholder images.
     internal lazy var placeholder1 = images.userAvatarPlaceholder1
     internal lazy var placeholder2 = images.userAvatarPlaceholder2
     internal lazy var placeholder3 = images.userAvatarPlaceholder3
     internal lazy var placeholder4 = images.userAvatarPlaceholder4
-    
+
     var loadedImages = [String: UIImage]() {
         willSet {
             if !scheduledUpdate {
@@ -43,11 +43,11 @@ open class ChannelHeaderLoader: ObservableObject {
             }
         }
     }
-    
+
     public init() {
         // Public init.
     }
-    
+
     /// Loads an image for the provided channel.
     /// If the image is not downloaded, placeholder is returned.
     /// - Parameter channel: the provided channel.
@@ -56,12 +56,12 @@ open class ChannelHeaderLoader: ObservableObject {
         if let image = loadedImages[channel.cid.rawValue] {
             return image
         }
-        
+
         if let url = channel.imageURL {
             loadChannelThumbnail(for: channel, from: url)
             return placeholder4
         }
-        
+
         if channel.isDirectMessageChannel {
             let lastActiveMembers = self.lastActiveMembers(for: channel)
             if let otherMember = lastActiveMembers.first, let url = otherMember.imageURL {
@@ -72,15 +72,15 @@ open class ChannelHeaderLoader: ObservableObject {
             }
         } else {
             let activeMembers = lastActiveMembers(for: channel)
-            
+
             if activeMembers.isEmpty {
                 return placeholder4
             }
-            
+
             let urls = activeMembers
                 .compactMap(\.imageURL)
                 .prefix(maxNumberOfImagesInCombinedAvatar)
-            
+
             if urls.isEmpty {
                 return placeholder3
             } else {
@@ -89,14 +89,14 @@ open class ChannelHeaderLoader: ObservableObject {
             }
         }
     }
-    
+
     // MARK: - private
-    
+
     private func loadMergedAvatar(from channel: ChatChannel, urls: [URL]) {
         if failedImageLoads.contains(channel.cid.rawValue) {
             return
         }
-        
+
         imageLoader.loadImages(
             from: urls,
             placeholders: [],
@@ -117,7 +117,7 @@ open class ChannelHeaderLoader: ObservableObject {
             }
         }
     }
-    
+
     private func loadChannelThumbnail(
         for channel: ChatChannel,
         from url: URL
@@ -125,7 +125,7 @@ open class ChannelHeaderLoader: ObservableObject {
         if failedImageLoads.contains(channel.cid.rawValue) {
             return
         }
-        
+
         imageLoader.loadImage(
             url: url,
             imageCDN: imageCDN,
@@ -144,7 +144,7 @@ open class ChannelHeaderLoader: ObservableObject {
             }
         }
     }
-    
+
     private func lastActiveMembers(for channel: ChatChannel) -> [ChatChannelMember] {
         channel.lastActiveMembers
             .sorted { $0.memberCreatedAt < $1.memberCreatedAt }

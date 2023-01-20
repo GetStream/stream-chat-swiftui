@@ -1,16 +1,17 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
 import SwiftUI
 
 struct ReactionsContainer: View {
+    @Injected(\.utils) var utils
     let message: ChatMessage
     var useLargeIcons = false
     var onTapGesture: () -> Void
     var onLongPressGesture: () -> Void
-    
+
     var body: some View {
         VStack {
             ReactionsHStack(message: message) {
@@ -28,7 +29,7 @@ struct ReactionsContainer: View {
                     onLongPressGesture()
                 }
             }
-            
+
             Spacer()
         }
         .offset(
@@ -38,21 +39,19 @@ struct ReactionsContainer: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsContainer")
     }
-    
+
     private var reactions: [MessageReactionType] {
         message.reactionScores.keys.filter { reactionType in
             (message.reactionScores[reactionType] ?? 0) > 0
         }
-        .sorted(by: { lhs, rhs in
-            lhs.rawValue < rhs.rawValue
-        })
+        .sorted(by: utils.sortReactions)
     }
-    
+
     private var reactionsSize: CGFloat {
         let entrySize = 32
         return CGFloat(message.reactionScores.count * entrySize)
     }
-    
+
     private var offsetX: CGFloat {
         var offset = reactionsSize / 3
         if message.reactionScores.count == 1 {
@@ -65,12 +64,12 @@ struct ReactionsContainer: View {
 struct ReactionsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    
+
     let message: ChatMessage
     var useLargeIcons = false
     var reactions: [MessageReactionType]
     var onReactionTap: (MessageReactionType) -> Void
-    
+
     var body: some View {
         HStack {
             ForEach(reactions) { reaction in
@@ -93,7 +92,7 @@ struct ReactionsView: View {
         .padding(.all, 6)
         .reactionsBubble(for: message)
     }
-    
+
     private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
         if useLargeIcons {
             return images.availableReactions[reaction]?.largeIcon
@@ -101,19 +100,19 @@ struct ReactionsView: View {
             return images.availableReactions[reaction]?.smallIcon
         }
     }
-    
+
     private func color(for reaction: MessageReactionType) -> Color? {
         var colors = colors
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-        
+
         if let color = color {
             return Color(color)
         } else {
             return nil
         }
     }
-    
+
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
     }

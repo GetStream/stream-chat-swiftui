@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import Combine
@@ -20,27 +20,25 @@ extension KeyboardReadable {
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
                 .map { _ in true },
-            
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillHideNotification)
                 .map { _ in false }
         )
         .eraseToAnyPublisher()
     }
-    
+
     public var keyboardDidChangePublisher: AnyPublisher<Bool, Never> {
         Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardDidShowNotification)
                 .map { _ in true },
-            
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardDidHideNotification)
                 .map { _ in false }
         )
         .eraseToAnyPublisher()
     }
-    
+
     public var keyboardHeight: AnyPublisher<CGFloat, Never> {
         NotificationCenter
             .default
@@ -63,12 +61,12 @@ extension KeyboardReadable {
 public struct HideKeyboardOnTapGesture: ViewModifier {
     var shouldAdd: Bool
     var onTapped: (() -> Void)?
-    
+
     public init(shouldAdd: Bool, onTapped: (() -> Void)? = nil) {
         self.shouldAdd = shouldAdd
         self.onTapped = onTapped
     }
-    
+
     public func body(content: Content) -> some View {
         content
             .gesture(shouldAdd ? TapGesture().onEnded { _ in

@@ -1,5 +1,5 @@
 //
-// Copyright © 2022 Stream.io Inc. All rights reserved.
+// Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
 import SnapshotTesting
@@ -34,7 +34,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
             message: message2
         )
         let searchResults = [result1, result2]
-        
+
         // When
         let view = SearchResultsView(
             factory: DefaultViewFactory.shared,
@@ -48,15 +48,15 @@ class SearchResultsView_Tests: StreamChatTestCase {
             onItemAppear: { _ in }
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_searchResultsView_snapshotNoResults() {
         // Given
         let searchResults = [ChannelSelectionInfo]()
-        
+
         // When
         let view = SearchResultsView(
             factory: DefaultViewFactory.shared,
@@ -70,15 +70,15 @@ class SearchResultsView_Tests: StreamChatTestCase {
             onItemAppear: { _ in }
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
-    
+
     func test_searchResultsView_snapshotLoading() {
         // Given
         let searchResults = [ChannelSelectionInfo]()
-        
+
         // When
         let view = SearchResultsView(
             factory: DefaultViewFactory.shared,
@@ -92,7 +92,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
             onItemAppear: { _ in }
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image)
     }
