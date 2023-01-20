@@ -201,6 +201,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             keyboardShown = false
                             resignFirstResponder()
                         }
+                        if offsetValue > 5 {
+                            onMessageAppear(0, .down)
+                        }
                     }
                 }
                 .flippedUpsideDown()

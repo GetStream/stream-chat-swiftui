@@ -367,9 +367,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func checkForNewerMessages(index: Int) {
-        channelDataSource.loadNextMessages(limit: 5) { [weak self] _ in
-//            guard let self = self else { return }
-//            self.loadingNextMessages = false
+        if loadingNextMessages {
+            return
+        }
+        loadingNextMessages = true
+        channelDataSource.loadNextMessages(limit: 3) { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.loadingNextMessages = false
+            }
         }
     }
     
