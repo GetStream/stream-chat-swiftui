@@ -823,6 +823,16 @@ extension ViewFactory {
             localState: message.localState
         )
     }
+    
+    public func makeNewMessagesIndicatorView(
+        newMessagesStartId: Binding<String?>,
+        count: Int
+    ) -> some View {
+        NewMessagesIndicator(
+            newMessagesStartId: newMessagesStartId,
+            count: count
+        )
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

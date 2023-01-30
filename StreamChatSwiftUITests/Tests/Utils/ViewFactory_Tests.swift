@@ -759,6 +759,20 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is ReactionsOverlayContainer)
     }
+    
+    func test_viewFactory_makeNewMessagesIndicatorView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeNewMessagesIndicatorView(
+            newMessagesStartId: .constant(nil),
+            count: 2
+        )
+        
+        // Then
+        XCTAssert(view is NewMessagesIndicator)
+    }
 }
 
 extension ChannelAction: Equatable {

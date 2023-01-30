@@ -30,6 +30,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var width: CGFloat?
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
+    @State private var newMessagesStartId: String?
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -48,6 +49,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var lastInGroupHeaderSize: CGFloat {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
+    }
+    
+    private var newMessagesSeparatorSize: CGFloat {
+        messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
     }
 
     private let scrollAreaId = "scrollArea"
@@ -95,6 +100,14 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 map: { $0 }
             )
         }
+        if messageListConfig.showNewMessagesSeparator && channel.unreadCount.messages > 0 {
+            let index = channel.unreadCount.messages - 1
+            if index < messages.count {
+                _newMessagesStartId = .init(wrappedValue: messages[index].id)
+            }
+        } else {
+            _newMessagesStartId = .init(wrappedValue: nil)
+        }
     }
 
     public var body: some View {
@@ -113,6 +126,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
+                            let showUnreadSeparator = message.id == newMessagesStartId
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
@@ -136,15 +150,28 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .padding(
                                 .top,
                                 messageDate != nil ?
-                                    offsetForDateIndicator(showsLastInGroupInfo: showsLastInGroupInfo) :
-                                    additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
+                                    offsetForDateIndicator(
+                                        showsLastInGroupInfo: showsLastInGroupInfo,
+                                        showUnreadSeparator: showUnreadSeparator
+                                    ) :
+                                    additionalTopPadding(
+                                        showsLastInGroupInfo: showsLastInGroupInfo,
+                                        showUnreadSeparator: showUnreadSeparator
+                                    )
                             )
                             .overlay(
-                                (messageDate != nil || showsLastInGroupInfo) ?
+                                (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator) ?
                                     VStack(spacing: 0) {
                                         messageDate != nil ?
                                             factory.makeMessageListDateIndicator(date: messageDate!)
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
+                                            : nil
+                                        
+                                        showUnreadSeparator ?
+                                            factory.makeNewMessagesIndicatorView(
+                                                newMessagesStartId: $newMessagesStartId,
+                                                count: newMessagesCount(for: index)
+                                            )
                                             : nil
 
                                         showsLastInGroupInfo ?
@@ -247,14 +274,26 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityIdentifier("MessageListView")
     }
 
-    private func additionalTopPadding(showsLastInGroupInfo: Bool) -> CGFloat {
-        showsLastInGroupInfo ? lastInGroupHeaderSize : 0
+    private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
+        var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
+        if showUnreadSeparator {
+            padding += newMessagesSeparatorSize
+        }
+        return padding
     }
 
-    private func offsetForDateIndicator(showsLastInGroupInfo: Bool) -> CGFloat {
+    private func offsetForDateIndicator(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
         var offset = messageListConfig.messageDisplayOptions.dateLabelSize
-        offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo)
+        offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo, showUnreadSeparator: showUnreadSeparator)
         return offset
+    }
+    
+    private func newMessagesCount(for index: Int?) -> Int {
+        if let index = index {
+            return index + 1
+        } else {
+            return channel.unreadCount.messages
+        }
     }
 
     private func showsAllData(for message: ChatMessage) -> Bool {
@@ -299,6 +338,34 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             onLongPress(updatedDisplayInfo)
         } else {
             onLongPress(messageDisplayInfo)
+        }
+    }
+}
+
+public struct NewMessagesIndicator: View {
+            
+    @Injected(\.colors) var colors
+    
+    @Binding var newMessagesStartId: String?
+    var count: Int
+    
+    public init(newMessagesStartId: Binding<String?>, count: Int) {
+        _newMessagesStartId = newMessagesStartId
+        self.count = count
+    }
+    
+    public var body: some View {
+        HStack {
+            Text("\(L10n.MessageList.newMessages(count))")
+                .foregroundColor(Color(colors.textLowEmphasis))
+                .font(.headline)
+                .padding(.all, 8)
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(colors.background8))
+        .padding(.top, 4)
+        .onDisappear {
+            newMessagesStartId = nil
         }
     }
 }
