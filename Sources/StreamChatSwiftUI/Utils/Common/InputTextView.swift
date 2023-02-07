@@ -18,6 +18,10 @@ struct TextSizeConstants {
     static var minThreshold: CGFloat {
         composerConfig.inputViewMinHeight
     }
+
+    static var cornerRadius: CGFloat {
+        composerConfig.inputViewCornerRadius
+    }
 }
 
 class InputTextView: UITextView, AccessibilityView {

@@ -343,11 +343,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
         .padding(.leading, 8)
         .background(composerInputBackground)
         .overlay(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
                 .stroke(Color(colors.innerBorder))
         )
         .clipShape(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
         )
         .accessibilityIdentifier("ComposerInputView")
     }
