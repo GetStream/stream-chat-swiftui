@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added a configurable separator view for new messages
 - Possibility to customize the cornerRadius of the `ComposerInputView`
 
+### 🐞 Fixed
+- Message List layout for iPad in Slide Over mode
+
 # [4.26.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.26.0)
 _January 16, 2023_
 
