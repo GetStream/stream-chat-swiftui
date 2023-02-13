@@ -33,7 +33,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private var timer: Timer?
 
     /// Controls loading the channels.
-    private var loadingNextChannels: Bool = false
+    public private(set) var loadingNextChannels: Bool = false
 
     /// Checks if internet connection is available.
     private let networkReachability = NetworkReachability()
