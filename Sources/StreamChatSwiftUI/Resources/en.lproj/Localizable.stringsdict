@@ -38,6 +38,24 @@
 			<string>%d results</string>
 		</dict>
 	</dict>
+	<key>messageList.newMessages</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@messages@</string>
+		<key>messages</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%d new messages</string>
+			<key>one</key>
+			<string>%d new message</string>
+			<key>other</key>
+			<string>%d new messages</string>
+		</dict>
+	</dict>
 	<key>messageList.typingIndicator.users</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -23,7 +23,8 @@ public struct MessageListConfig {
         maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
         iPadSplitViewEnabled: Bool = true,
-        scrollingAnchor: UnitPoint = .bottom
+        scrollingAnchor: UnitPoint = .bottom,
+        showNewMessagesSeparator: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -40,6 +41,7 @@ public struct MessageListConfig {
         self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
         self.iPadSplitViewEnabled = iPadSplitViewEnabled
         self.scrollingAnchor = scrollingAnchor
+        self.showNewMessagesSeparator = showNewMessagesSeparator
     }
 
     public let messageListType: MessageListType
@@ -57,6 +59,7 @@ public struct MessageListConfig {
     public let cacheSizeOnChatDismiss: Int
     public let iPadSplitViewEnabled: Bool
     public let scrollingAnchor: UnitPoint
+    public let showNewMessagesSeparator: Bool
 }
 
 /// Contains information about the message paddings.
@@ -87,6 +90,7 @@ public struct MessageDisplayOptions {
     public let animateChanges: Bool
     public let dateLabelSize: CGFloat
     public let lastInGroupHeaderSize: CGFloat
+    public let newMessagesSeparatorSize: CGFloat
     public let minimumSwipeGestureDistance: CGFloat
     public let currentUserMessageTransition: AnyTransition
     public let otherUserMessageTransition: AnyTransition
@@ -103,6 +107,7 @@ public struct MessageDisplayOptions {
         animateChanges: Bool = true,
         overlayDateLabelSize: CGFloat = 40,
         lastInGroupHeaderSize: CGFloat = 0,
+        newMessagesSeparatorSize: CGFloat = 50,
         minimumSwipeGestureDistance: CGFloat = 10,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
@@ -126,6 +131,7 @@ public struct MessageDisplayOptions {
         self.spacerWidth = spacerWidth
         self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
         self.reactionsTopPadding = reactionsTopPadding
+        self.newMessagesSeparatorSize = newMessagesSeparatorSize
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {
@@ -142,7 +148,7 @@ public struct MessageDisplayOptions {
 
     public static var defaultSpacerWidth: (CGFloat) -> (CGFloat) {
         { availableWidth in
-            if isIPad {
+            if isIPad && availableWidth > 500 {
                 return 2 * availableWidth / 3
             } else {
                 return availableWidth / 4

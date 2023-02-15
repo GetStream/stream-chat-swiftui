@@ -93,7 +93,7 @@ class MessageListView_Tests: StreamChatTestCase {
 
     // MARK: - private
 
-    private func makeMessageListView(
+    func makeMessageListView(
         channelConfig: ChannelConfig,
         currentlyTypingUsers: Set<ChatUser> = []
     ) -> MessageListView<DefaultViewFactory> {

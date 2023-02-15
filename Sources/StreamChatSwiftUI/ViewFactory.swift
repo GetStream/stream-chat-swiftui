@@ -812,4 +812,15 @@ public protocol ViewFactory: AnyObject {
         channel: ChatChannel,
         message: ChatMessage
     ) -> MessageReadIndicatorViewType
+    
+    associatedtype NewMessagesIndicatorViewType: View
+    /// Creates a separator view showing the number of new messages in the message list.
+    /// - Parameters:
+    ///  - newMessagesStartId: the id of the message where the new messages start.
+    ///  - count: the number of unread messages.
+    /// - Returns: view shown in the new messages indicator slot.
+    func makeNewMessagesIndicatorView(
+        newMessagesStartId: Binding<String?>,
+        count: Int
+    ) -> NewMessagesIndicatorViewType
 }

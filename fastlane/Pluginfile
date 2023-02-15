@@ -2,8 +2,7 @@
 #
 # Ensure this file is checked in to source control!
 
-gem 'fastlane-plugin-firebase_app_distribution'
 gem 'fastlane-plugin-versioning'
 gem 'fastlane-plugin-emerge'
 gem 'fastlane-plugin-sonarcloud_metric_kit'
-gem 'fastlane-plugin-stream_actions', '0.1.24'
+gem 'fastlane-plugin-stream_actions', '0.2.0'

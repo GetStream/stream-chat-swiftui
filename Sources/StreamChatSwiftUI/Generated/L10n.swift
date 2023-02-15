@@ -359,6 +359,10 @@ internal enum L10n {
   }
 
   internal enum MessageList {
+    /// Plural format key: "%#@messages@"
+    internal static func newMessages(_ p1: Int) -> String {
+      return L10n.tr("Localizable", "messageList.newMessages", p1)
+    }
     internal enum TypingIndicator {
       /// Someone is typing
       internal static var typingUnknown: String { L10n.tr("Localizable", "messageList.typingIndicator.typing-unknown") }

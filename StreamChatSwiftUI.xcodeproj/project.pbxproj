@@ -224,6 +224,7 @@
 		84A1CACF2816BCF00046595A /* AddUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A1CACE2816BCF00046595A /* AddUsersView.swift */; };
 		84A1CAD12816C6900046595A /* AddUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A1CAD02816C6900046595A /* AddUsersViewModel.swift */; };
 		84A75FBB274EA29B00225CE8 /* GiphyAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */; };
+		84AA6EAA2987EE51005732EF /* MessageListViewNewMessages_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AA6EA92987EE51005732EF /* MessageListViewNewMessages_Tests.swift */; };
 		84AB7B1D2771F4AA00631A10 /* DiscardButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */; };
 		84AB7B21277203EF00631A10 /* GalleryView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB7B20277203EF00631A10 /* GalleryView_Tests.swift */; };
 		84AB7B242773528300631A10 /* CommandsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB7B232773528200631A10 /* CommandsContainerView.swift */; };
@@ -633,6 +634,7 @@
 		84A1CACE2816BCF00046595A /* AddUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersView.swift; sourceTree = "<group>"; };
 		84A1CAD02816C6900046595A /* AddUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersViewModel.swift; sourceTree = "<group>"; };
 		84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyAttachmentView.swift; sourceTree = "<group>"; };
+		84AA6EA92987EE51005732EF /* MessageListViewNewMessages_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewNewMessages_Tests.swift; sourceTree = "<group>"; };
 		84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardButtonView.swift; sourceTree = "<group>"; };
 		84AB7B20277203EF00631A10 /* GalleryView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView_Tests.swift; sourceTree = "<group>"; };
 		84AB7B232773528200631A10 /* CommandsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsContainerView.swift; sourceTree = "<group>"; };
@@ -1463,6 +1465,7 @@
 				842F036C288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift */,
 				84D419B928EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift */,
 				84E1D8252976B3F100060491 /* MessageViewMultiRowReactions_Tests.swift */,
+				84AA6EA92987EE51005732EF /* MessageListViewNewMessages_Tests.swift */,
 			);
 			path = ChatChannel;
 			sourceTree = "<group>";
@@ -2030,6 +2033,7 @@
 				848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */,
 				84C94D54275A1380007FE2B9 /* DateUtils_Tests.swift in Sources */,
 				84DEC8DB27609FA200172876 /* MoreChannelActionsView_Tests.swift in Sources */,
+				84AA6EAA2987EE51005732EF /* MessageListViewNewMessages_Tests.swift in Sources */,
 				84C94D56275A1AE1007FE2B9 /* StringExtensions_Tests.swift in Sources */,
 				847305BB28241D8D004AC770 /* ChatChannelHeader_Tests.swift in Sources */,
 				84DEC8DD2760A10500172876 /* NoChannelsView_Tests.swift in Sources */,
