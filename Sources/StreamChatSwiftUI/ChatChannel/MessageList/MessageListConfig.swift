@@ -24,7 +24,8 @@ public struct MessageListConfig {
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
         iPadSplitViewEnabled: Bool = true,
         scrollingAnchor: UnitPoint = .bottom,
-        showNewMessagesSeparator: Bool = false
+        showNewMessagesSeparator: Bool = false,
+        handleTabBarVisibility: Bool = true
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -42,6 +43,7 @@ public struct MessageListConfig {
         self.iPadSplitViewEnabled = iPadSplitViewEnabled
         self.scrollingAnchor = scrollingAnchor
         self.showNewMessagesSeparator = showNewMessagesSeparator
+        self.handleTabBarVisibility = handleTabBarVisibility
     }
 
     public let messageListType: MessageListType
@@ -60,6 +62,7 @@ public struct MessageListConfig {
     public let iPadSplitViewEnabled: Bool
     public let scrollingAnchor: UnitPoint
     public let showNewMessagesSeparator: Bool
+    public let handleTabBarVisibility: Bool
 }
 
 /// Contains information about the message paddings.
