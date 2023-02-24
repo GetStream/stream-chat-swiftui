@@ -3,11 +3,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.27.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.27.0)
+_February 17, 2023_
+
 ### ✅ Added
 - Possibility to customize message reactions top padding (for grid-based reaction containers)
 - Custom sorting of reactions
 - Added a configurable separator view for new messages
 - Possibility to customize the cornerRadius of the `ComposerInputView`
+- Possibility to turn off tab bar handling in the message list
 
 ### 🐞 Fixed
 - Message List layout for iPad in Slide Over mode

@@ -172,7 +172,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             isIphone ?
                 Color.clear.background(
                     TabBarAccessor { _ in
-                        self.tabBarAvailable = true
+                        self.tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
                     }
                 )
                 .allowsHitTesting(false)
