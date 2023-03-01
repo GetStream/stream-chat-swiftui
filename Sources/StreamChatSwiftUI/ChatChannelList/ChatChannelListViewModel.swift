@@ -111,7 +111,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var searchResults = [ChannelSelectionInfo]()
     @Published var hideTabBar = false
 
-    var isSearching: Bool {
+    public var isSearching: Bool {
         !searchText.isEmpty
     }
 

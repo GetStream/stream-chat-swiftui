@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View displaying the search results in the channel list.
-struct SearchResultsView<Factory: ViewFactory>: View {
+public struct SearchResultsView<Factory: ViewFactory>: View {
 
     @Injected(\.colors) private var colors
 
@@ -19,8 +19,30 @@ struct SearchResultsView<Factory: ViewFactory>: View {
     var imageLoader: (ChatChannel) -> UIImage
     var onSearchResultTap: (ChannelSelectionInfo) -> Void
     var onItemAppear: (Int) -> Void
+    
+    public init(
+        factory: Factory,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        searchResults: [ChannelSelectionInfo],
+        loadingSearchResults: Bool,
+        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
+        channelNaming: @escaping (ChatChannel) -> String,
+        imageLoader: @escaping (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping (Int) -> Void
+    ) {
+        self.factory = factory
+        _selectedChannel = selectedChannel
+        self.searchResults = searchResults
+        self.loadingSearchResults = loadingSearchResults
+        self.onlineIndicatorShown = onlineIndicatorShown
+        self.channelNaming = channelNaming
+        self.imageLoader = imageLoader
+        self.onSearchResultTap = onSearchResultTap
+        self.onItemAppear = onItemAppear
+    }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text(L10n.Message.Search.numberOfResults(searchResults.count))
