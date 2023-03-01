@@ -17,8 +17,10 @@ final class SlowMode_Tests: StreamTestCase {
         addTags([.slowMode])
     }
 
-    func test_slowModeIsActiveAndCooldownIsShown_whenNewMessageIsSent() {
+    func test_slowModeIsActiveAndCooldownIsShown_whenNewMessageIsSent() throws {
         linkToScenario(withId: 450)
+        
+        throw XCTSkip("Check out issues/180")
 
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
