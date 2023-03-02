@@ -157,7 +157,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             } onError: { error in
                 viewModel.showErrorPopup(error)
             }
-            .edgesIgnoringSafeArea(.all)
+            .edgesIgnoringSafeArea(.bottom)
         default:
             EmptyView()
         }
