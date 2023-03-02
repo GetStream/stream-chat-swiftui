@@ -79,7 +79,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
             } label: {
                 EmptyView()
             }
-            .isDetailLink(false)
+            .isDetailLink(UIDevice.current.userInterfaceIdiom == .pad)
             .alert(isPresented: $logoutAlertShown) {
                 Alert(
                     title: Text("Sign out"),
