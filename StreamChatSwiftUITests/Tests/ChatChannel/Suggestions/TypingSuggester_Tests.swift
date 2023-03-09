@@ -133,6 +133,24 @@ class TypingSuggester_Tests: XCTestCase {
         XCTAssert(suggestion?.text == "Mar")
         XCTAssert(suggestion?.locationRange == NSRange(location: 5, length: 3))
     }
+    
+    func test_typingSuggester_newLine() {
+        // Given
+        let options = TypingSuggestionOptions(symbol: "@")
+        let typingSuggester = TypingSuggester(options: options)
+        let string = "\n@Mar"
+        let caretLocation = 5
+
+        // When
+        let suggestion = typingSuggester.typingSuggestion(
+            in: string,
+            caretLocation: caretLocation
+        )
+
+        // Then
+        XCTAssert(suggestion?.text == "Mar")
+        XCTAssert(suggestion?.locationRange == NSRange(location: 2, length: 3))
+    }
 
     func test_typingSuggester_onlyOnStartAllowed() {
         // Given
