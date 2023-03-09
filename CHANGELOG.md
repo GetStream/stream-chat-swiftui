@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Exposed `SearchResultsView` as a public component
 - `isSearching` property in the `ChatChannelListViewModel` is now public
+- LazyImage uses image CDN request
 
 ### 🐞 Fixed
 - Channel actions popup wrong appearance using a custom `NavigationView`
