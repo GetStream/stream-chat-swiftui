@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Channel actions popup wrong appearance using a custom `NavigationView`
 - Channel list automatic channel selection disabled for compact iPad screen size
 - Mentions of users available in a new line
+- Cursor jumps around in the composer when @ mentioning
 
 # [4.28.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.28.0)
 _February 28, 2023_

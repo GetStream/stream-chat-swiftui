@@ -41,8 +41,10 @@ struct ComposerTextInputView: UIViewRepresentable {
             if uiView.markedTextRange == nil {
                 var shouldAnimate = false
                 if uiView.text != text {
+                    let previousLocation = selectedRangeLocation
                     shouldAnimate = uiView.shouldAnimate(text)
                     uiView.text = text
+                    selectedRangeLocation = previousLocation
                 }
                 uiView.selectedRange.location = selectedRangeLocation
                 uiView.isEditable = editable
