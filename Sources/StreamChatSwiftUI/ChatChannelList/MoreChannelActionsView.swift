@@ -126,7 +126,7 @@ public struct MoreChannelActionsView: View {
                 let member = viewModel.members[0]
                 ChannelMemberView(
                     avatar: viewModel.image(for: member),
-                    name: member.name ?? "",
+                    name: member.name ?? member.id,
                     onlineIndicatorShown: member.isOnline
                 )
             } else {
@@ -135,7 +135,7 @@ public struct MoreChannelActionsView: View {
                         ForEach(viewModel.members) { member in
                             ChannelMemberView(
                                 avatar: viewModel.image(for: member),
-                                name: member.name ?? "",
+                                name: member.name ?? member.id,
                                 onlineIndicatorShown: member.isOnline
                             )
                         }
