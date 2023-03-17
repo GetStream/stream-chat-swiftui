@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+
+# [4.29.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.29.0)
+_March 17, 2023_
+
+### 🔄 Changed
 - Exposed `SearchResultsView` as a public component
 - `isSearching` property in the `ChatChannelListViewModel` is now public
 - LazyImage uses image CDN request
