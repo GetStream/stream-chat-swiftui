@@ -26,8 +26,6 @@ _February 28, 2023_
 ### 🔄 Changed
 - Updated `StreamChat` dependency
 
-### 🔄 Changed
-
 # [4.27.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.27.0)
 _February 17, 2023_
 
