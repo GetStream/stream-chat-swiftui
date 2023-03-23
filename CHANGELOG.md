@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🔄 Changed
 
+# [4.29.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.29.0)
+_March 17, 2023_
+
+### 🔄 Changed
+- Exposed `SearchResultsView` as a public component
+- `isSearching` property in the `ChatChannelListViewModel` is now public
+- LazyImage uses image CDN request
+- Fallback avatar in `MessageAvatarView`
+
+### 🐞 Fixed
+- Channel actions popup wrong appearance using a custom `NavigationView`
+- Channel list automatic channel selection disabled for compact iPad screen size
+- Mentions of users available in a new line
+- Cursor jumps around in the composer when @ mentioning
+
+# [4.28.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.28.0)
+_February 28, 2023_
+
+### 🔄 Changed
+- Updated `StreamChat` dependency
+
 # [4.27.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.27.0)
 _February 17, 2023_
 

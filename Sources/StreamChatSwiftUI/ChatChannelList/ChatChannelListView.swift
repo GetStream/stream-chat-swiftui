@@ -157,7 +157,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             } onError: { error in
                 viewModel.showErrorPopup(error)
             }
-            .edgesIgnoringSafeArea(.all)
+            .edgesIgnoringSafeArea(.bottom)
         default:
             EmptyView()
         }
@@ -171,6 +171,8 @@ extension ChatChannelListView where Factory == DefaultViewFactory {
 }
 
 public struct ChatChannelListContentView<Factory: ViewFactory>: View {
+    
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
@@ -232,6 +234,11 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
+                .onAppear {
+                    if horizontalSizeClass == .regular {
+                        viewModel.preselectChannelIfNeeded()
+                    }
+                }
             }
 
             viewFactory.makeChannelListStickyFooterView()

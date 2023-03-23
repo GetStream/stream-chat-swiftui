@@ -176,6 +176,10 @@ open class MessageComposerViewModel: ObservableObject {
     public func sendMessage(
         quotedMessage: ChatMessage?,
         editedMessage: ChatMessage?,
+        isSilent: Bool = false,
+        skipPush: Bool = false,
+        skipEnrichUrl: Bool = false,
+        extraData: [String: RawJSON] = [:],
         completion: @escaping () -> Void
     ) {
         defer {
@@ -220,7 +224,11 @@ open class MessageComposerViewModel: ObservableObject {
                     attachments: attachments,
                     mentionedUserIds: mentionedUserIds,
                     showReplyInChannel: showReplyInChannel,
-                    quotedMessageId: quotedMessage?.id
+                    isSilent: isSilent,
+                    quotedMessageId: quotedMessage?.id,
+                    skipPush: skipPush,
+                    skipEnrichUrl: skipEnrichUrl,
+                    extraData: extraData
                 ) { [weak self] in
                     switch $0 {
                     case .success:
@@ -232,9 +240,13 @@ open class MessageComposerViewModel: ObservableObject {
             } else {
                 channelController.createNewMessage(
                     text: messageText,
+                    isSilent: isSilent,
                     attachments: attachments,
                     mentionedUserIds: mentionedUserIds,
-                    quotedMessageId: quotedMessage?.id
+                    quotedMessageId: quotedMessage?.id,
+                    skipPush: skipPush,
+                    skipEnrichUrl: skipEnrichUrl,
+                    extraData: extraData
                 ) { [weak self] in
                     switch $0 {
                     case .success:

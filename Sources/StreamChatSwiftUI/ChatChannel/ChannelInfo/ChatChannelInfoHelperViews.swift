@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-struct ChatChannelInfoButton: View {
+public struct ChatChannelInfoButton: View {
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -14,8 +14,15 @@ struct ChatChannelInfoButton: View {
     var iconName: String
     var foregroundColor: Color
     var buttonTapped: () -> Void
-
-    var body: some View {
+    
+    public init(title: String, iconName: String, foregroundColor: Color, buttonTapped: @escaping () -> Void) {
+        self.title = title
+        self.iconName = iconName
+        self.foregroundColor = foregroundColor
+        self.buttonTapped = buttonTapped
+    }
+    
+    public var body: some View {
         Button {
             buttonTapped()
         } label: {
@@ -43,15 +50,19 @@ struct ChannelInfoDivider: View {
     }
 }
 
-struct ChatInfoOptionsView: View {
-
+public struct ChatInfoOptionsView: View {
+    
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
     @StateObject var viewModel: ChatChannelInfoViewModel
+    
+    public init(viewModel: ChatChannelInfoViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 0) {
             if !viewModel.channel.isDirectMessageChannel {
                 ChannelNameUpdateView(viewModel: viewModel)

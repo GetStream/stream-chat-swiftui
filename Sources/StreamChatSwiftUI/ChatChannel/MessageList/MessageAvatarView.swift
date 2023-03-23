@@ -55,10 +55,8 @@ public struct MessageAvatarView: View {
                 )
                 .accessibilityIdentifier("MessageAvatarView")
         } else {
-            Image(uiImage: images.personPlaceholder)
-                .renderingMode(.template)
+            Image(uiImage: images.userAvatarPlaceholder2)
                 .resizable()
-                .foregroundColor(Color(colors.textLowEmphasis))
                 .frame(
                     width: size.width,
                     height: size.height

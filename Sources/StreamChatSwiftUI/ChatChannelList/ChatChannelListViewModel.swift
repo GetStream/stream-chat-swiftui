@@ -111,7 +111,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var searchResults = [ChannelSelectionInfo]()
     @Published var hideTabBar = false
 
-    var isSearching: Bool {
+    public var isSearching: Bool {
         !searchText.isEmpty
     }
 
@@ -241,6 +241,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             hideTabBar = false
         }
     }
+    
+    public func preselectChannelIfNeeded() {
+        if isIPad && selectedChannel == nil && utils.messageListConfig.iPadSplitViewEnabled {
+            selectedChannel = channels.first?.channelSelectionInfo
+        }
+    }
 
     // MARK: - private
 
@@ -296,7 +302,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                     self.updateChannels()
                 }
                 self.checkForDeeplinks()
-                self.setInitialChannelIfSplitView()
             }
         }
     }
@@ -357,12 +362,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     private func updateChannels() {
         channels = controller?.channels ?? LazyCachedMapCollection<ChatChannel>()
-    }
-
-    private func setInitialChannelIfSplitView() {
-        if isIPad && selectedChannel == nil && utils.messageListConfig.iPadSplitViewEnabled {
-            selectedChannel = channels.first?.channelSelectionInfo
-        }
     }
 
     private func handleChannelAppearance() {

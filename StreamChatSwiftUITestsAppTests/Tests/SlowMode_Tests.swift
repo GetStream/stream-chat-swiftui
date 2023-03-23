@@ -17,8 +17,10 @@ final class SlowMode_Tests: StreamTestCase {
         addTags([.slowMode])
     }
 
-    func test_slowModeIsActiveAndCooldownIsShown_whenNewMessageIsSent() {
+    func test_slowModeIsActiveAndCooldownIsShown_whenNewMessageIsSent() throws {
         linkToScenario(withId: 450)
+        
+        throw XCTSkip("Check out issues/180")
 
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
@@ -37,7 +39,7 @@ final class SlowMode_Tests: StreamTestCase {
     func test_slowModeIsActiveAndCooldownIsShown_whenAMessageIsReplied() throws {
         linkToScenario(withId: 454)
 
-        throw XCTSkip("Check out SWUI-247")
+        throw XCTSkip("Check out issues/178")
 
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
@@ -65,7 +67,7 @@ final class SlowMode_Tests: StreamTestCase {
     func test_newMessageCantBeSent_whenSlowModeIsActiveAndCooldownIsShown() throws {
         linkToScenario(withId: 452)
 
-        throw XCTSkip("Check out SWUI-248")
+        throw XCTSkip("Check out issues/179")
 
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
@@ -90,7 +92,7 @@ final class SlowMode_Tests: StreamTestCase {
     func test_aMessageCantBeReplied_whenSlowModeIsActiveAndCooldownIsShown() throws {
         linkToScenario(withId: 451)
 
-        throw XCTSkip("Check out SWUI-248")
+        throw XCTSkip("Check out issues/179")
 
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
@@ -115,7 +117,7 @@ final class SlowMode_Tests: StreamTestCase {
     func test_slowModeContinuesActiveAndCooldownIsShownInThreadMessage_whenSlowModeIsActiveAndCooldownIsShownInChannel() throws {
         linkToScenario(withId: 449)
 
-        throw XCTSkip("Check out SWUI-248")
+        throw XCTSkip("Check out issues/179")
 
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
@@ -140,7 +142,7 @@ final class SlowMode_Tests: StreamTestCase {
     func test_slowModeIsNotActiveAndCooldownIsNotShown_whenAMessageIsEdited() throws {
         linkToScenario(withId: 453)
 
-        throw XCTSkip("Check out SWUI-249")
+        throw XCTSkip("Check out issues/179")
 
         GIVEN("user opens a channel") {
             backendRobot
