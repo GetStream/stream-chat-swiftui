@@ -112,15 +112,18 @@ public struct ChatInfoOptionsView: View {
     }
 }
 
-struct ChannelNameUpdateView: View {
-
+public struct ChannelNameUpdateView: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
     @StateObject var viewModel: ChatChannelInfoViewModel
+    
+    public init(viewModel: ChatChannelInfoViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 16) {
             Text(L10n.ChatInfo.Rename.name)
                 .font(fonts.footnote)
@@ -154,13 +157,22 @@ struct ChannelNameUpdateView: View {
     }
 }
 
-struct NavigatableChatInfoItemView<Destination: View>: View {
-
+public struct NavigatableChatInfoItemView<Destination: View>: View {
     let icon: UIImage
     let title: String
     var destination: () -> Destination
+    
+    public init(
+        icon: UIImage,
+        title: String,
+        destination: @escaping () -> Destination
+    ) {
+        self.icon = icon
+        self.title = title
+        self.destination = destination
+    }
 
-    var body: some View {
+    public var body: some View {
         NavigationLink {
             destination()
         } label: {
@@ -181,7 +193,7 @@ struct DisclosureIndicatorView: View {
     }
 }
 
-struct ChannelInfoItemView<TrailingView: View>: View {
+public struct ChannelInfoItemView<TrailingView: View>: View {
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -190,8 +202,20 @@ struct ChannelInfoItemView<TrailingView: View>: View {
     let title: String
     var verticalPadding: CGFloat = 16
     var trailingView: () -> TrailingView
+    
+    public init(
+        icon: UIImage,
+        title: String,
+        verticalPadding: CGFloat = 16,
+        trailingView: @escaping () -> TrailingView
+    ) {
+        self.icon = icon
+        self.title = title
+        self.verticalPadding = verticalPadding
+        self.trailingView = trailingView
+    }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 16) {
             Image(uiImage: icon)
                 .customizable()
@@ -234,13 +258,17 @@ struct ChatInfoDirectChannelView: View {
     }
 }
 
-struct ChatInfoMentionText: View {
+public struct ChatInfoMentionText: View {
 
     @Injected(\.colors) private var colors
 
     var participant: ParticipantInfo?
+    
+    public init(participant: ParticipantInfo? = nil) {
+        self.participant = participant
+    }
 
-    var body: some View {
+    public var body: some View {
         let mentionText = "@\(participant?.chatUser.mentionText ?? "")"
         ChannelInfoItemView(
             icon: UIImage(systemName: "person")!,

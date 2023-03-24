@@ -6,17 +6,17 @@ import StreamChat
 import SwiftUI
 
 /// View displaying pinned messages in the chat info screen.
-struct PinnedMessagesView: View {
+public struct PinnedMessagesView: View {
 
     @StateObject private var viewModel: PinnedMessagesViewModel
 
-    init(channel: ChatChannel) {
+    public init(channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: PinnedMessagesViewModel(channel: channel)
         )
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if !viewModel.pinnedMessages.isEmpty {
                 ScrollView {

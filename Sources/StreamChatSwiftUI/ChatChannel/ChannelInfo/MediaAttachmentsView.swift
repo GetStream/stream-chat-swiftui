@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View displaying media attachments.
-struct MediaAttachmentsView: View {
+public struct MediaAttachmentsView: View {
 
     @StateObject private var viewModel: MediaAttachmentsViewModel
 
@@ -22,7 +22,7 @@ struct MediaAttachmentsView: View {
 
     private let columns = [GridItem(.adaptive(minimum: itemWidth), spacing: spacing)]
 
-    init(channel: ChatChannel) {
+    public init(channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: MediaAttachmentsViewModel(channel: channel)
         )
@@ -34,7 +34,7 @@ struct MediaAttachmentsView: View {
         )
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if viewModel.loading {
                 LoadingView()
