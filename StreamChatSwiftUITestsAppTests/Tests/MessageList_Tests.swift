@@ -638,8 +638,10 @@ extension MessageList_Tests {
 
 // MARK: - Thread replies
 extension MessageList_Tests {
-    func test_threadReplyAppearsInThread_whenParticipantAddsThreadReply() {
+    func test_threadReplyAppearsInThread_whenParticipantAddsThreadReply() throws {
         linkToScenario(withId: 379)
+        
+        throw XCTSkip("XCTest issue: Automation type mismatch: computed Other from legacy attributes vs ActivityIndicator from modern attribute.")
 
         let threadReply = "thread reply"
 
