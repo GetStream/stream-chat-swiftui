@@ -214,7 +214,7 @@ extension UserRobot {
         if waitForThreadIcon { threadButton.wait() }
 
         if threadButton.exists {
-            threadButton.tap()
+            threadButton.safeTap()
         } else {
             selectOptionFromContextMenu(option: .threadReply, forMessageAtIndex: messageCellIndex)
         }
