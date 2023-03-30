@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.30.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.30.0)
+_March 30, 2023_
+
 ### ✅ Added
 - Added more parameters to the `sendMessage` method in the `MessageComposerViewModel`
 - Exposed components from the `ChatChannelInfoView`
