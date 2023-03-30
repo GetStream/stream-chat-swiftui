@@ -156,6 +156,7 @@
     <entity name="MemberDTO" representedClassName="MemberDTO" syncable="YES">
         <attribute name="banExpiresAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="channelRoleRaw" optional="YES" attributeType="String"/>
+        <attribute name="deactivatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="inviteAcceptedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="inviteRejectedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
