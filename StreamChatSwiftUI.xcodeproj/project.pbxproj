@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */; };
 		825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AADF3283CCDB000237498 /* ThreadPage.swift */; };
 		827352FD290BE91100A87385 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
 		829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */; };
@@ -414,6 +415,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedReply_Tests.swift; sourceTree = "<group>"; };
 		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
 		829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamTestCase+Tags.swift"; sourceTree = "<group>"; };
 		829AB4D32858A532002DC629 /* Reactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions_Tests.swift; sourceTree = "<group>"; };
@@ -1534,6 +1536,7 @@
 				82A1814528FD69E8005F9D43 /* Message Delivery Status */,
 				82A1813F28FD691B005F9D43 /* Ephemeral_Messages_Tests.swift */,
 				82A1814128FD694A005F9D43 /* PushNotification_Tests.swift */,
+				820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1829,6 +1832,7 @@
 				A3600B37283E9EC900E1C930 /* StreamChatSwiftUITests.swift in Sources */,
 				A3600B2A283E9E1900E1C930 /* UserRobot.swift in Sources */,
 				829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */,
+				820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */,
 				8463D9262836617F002B1894 /* ChannelListPage.swift in Sources */,
 				A3600B32283E9E4700E1C930 /* MessageList_Tests.swift in Sources */,
 				82A1813E28FD68A3005F9D43 /* ChannelList_Tests.swift in Sources */,
