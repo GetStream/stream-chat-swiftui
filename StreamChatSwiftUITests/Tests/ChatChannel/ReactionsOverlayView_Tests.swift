@@ -9,6 +9,8 @@ import SwiftUI
 import XCTest
 
 class ReactionsOverlayView_Tests: StreamChatTestCase {
+    
+    private static let screenSize = CGSize(width: 393, height: 852)
 
     private let testMessage = ChatMessage.mock(
         id: "test",
@@ -27,7 +29,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
     private let overlayImage = UIColor
         .black
         .withAlphaComponent(0.2)
-        .image(defaultScreenSize)
+        .image(screenSize)
 
     func test_reactionsOverlayView_snapshot() {
         // Given
@@ -40,7 +42,6 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
@@ -60,7 +61,6 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
@@ -104,7 +104,6 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
@@ -141,7 +140,6 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then

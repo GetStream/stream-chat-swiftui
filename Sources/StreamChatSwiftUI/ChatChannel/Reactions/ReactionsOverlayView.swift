@@ -7,11 +7,13 @@ import SwiftUI
 
 public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
-
+    @Injected(\.colors) private var colors
+    
     @StateObject var viewModel: ReactionsOverlayViewModel
 
     @State private var popIn = false
     @State private var willPopOut = false
+    @State private var screenHeight = UIScreen.main.bounds.size.height
 
     var factory: Factory
     var channel: ChatChannel
@@ -23,7 +25,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     private var messageActionsCount: Int
     private let paddingValue: CGFloat = 16
     private let messageItemSize: CGFloat = 40
-    private let maxMessageActionsSize: CGFloat = UIScreen.main.bounds.size.height / 3
+    private var maxMessageActionsSize: CGFloat {
+        screenHeight / 3
+    }
 
     public init(
         factory: Factory,
@@ -58,6 +62,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 currentSnapshot: currentSnapshot,
                 popInAnimationInProgress: !popIn
             )
+            .offset(y: spacing > 0 ? screenHeight - currentSnapshot.size.height : 0)
             .transition(.opacity)
             .onTapGesture {
                 dismissReactionsOverlay() { /* No additional handling. */ }
@@ -80,6 +85,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
 
             GeometryReader { reader in
+                let frame = reader.frame(in: .local)
+                let height = frame.height
+                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
                 VStack(alignment: .leading) {
                     Group {
                         if messageDisplayInfo.frame.height > messageContainerHeight {
@@ -170,10 +178,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     }
                 }
-                .offset(y: !popIn ? messageDisplayInfo.frame.origin.y : originY)
+                .offset(y: !popIn ? (messageDisplayInfo.frame.origin.y - spacing) : originY)
+            }
+        }
+        .onPreferenceChange(HeightPreferenceKey.self) { value in
+            if let value = value, value != screenHeight {
+                self.screenHeight = value
             }
         }
         .edgesIgnoringSafeArea(.all)
+        .background(Color(colors.background))
         .onAppear {
             popIn = true
         }
@@ -205,7 +219,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var messageContainerHeight: CGFloat {
-        let screenHeight = UIScreen.main.bounds.size.height
         let maxAllowed = screenHeight / 2
         let containerHeight = messageDisplayInfo.frame.height
         return containerHeight > maxAllowed ? maxAllowed : containerHeight
@@ -228,7 +241,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         let bottomPopupOffset =
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
         var originY = messageDisplayInfo.frame.origin.y
-        let screenHeight = UIScreen.main.bounds.size.height
         let minOrigin: CGFloat = 100
         let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin
         if originY < minOrigin {
@@ -236,8 +248,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         } else if originY > maxOrigin {
             originY = maxOrigin
         }
-
-        return originY
+        
+        return originY - spacing
+    }
+    
+    private var spacing: CGFloat {
+        let divider: CGFloat = isIPad ? 2 : 1
+        let spacing = (UIScreen.main.bounds.height - screenHeight) / divider
+        return spacing > 0 ? spacing : 0
     }
 
     private var messageActionsSize: CGFloat {
