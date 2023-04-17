@@ -230,7 +230,7 @@ lane :sources_matrix do
     e2e: ['Sources', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp'],
     ui: ['Sources', 'StreamChatSwiftUITests', xcode_project],
     sample_apps: ['Sources', 'DemoAppSwiftUI', xcode_project],
-    ruby: ['fastlane']
+    ruby: ['fastlane', 'Gemfile', 'Gemfile.lock']
   }
 end
 
