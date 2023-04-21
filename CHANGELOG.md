@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Reaction overlay display in a modal chat view
 - Warning about UITextView switching to TextKit 1 compatibility mode
+- Unread new messages separator wrong value when date overlay used
 
 # [4.30.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.30.0)
 _March 30, 2023_

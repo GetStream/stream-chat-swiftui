@@ -170,7 +170,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                         showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
                                                 newMessagesStartId: $newMessagesStartId,
-                                                count: newMessagesCount(for: index)
+                                                count: newMessagesCount(for: index, message: message)
                                             )
                                             : nil
 
@@ -288,8 +288,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         return offset
     }
     
-    private func newMessagesCount(for index: Int?) -> Int {
+    private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
         if let index = index {
+            return index + 1
+        } else if let index = messageListDateUtils.index(for: message, in: messages) {
             return index + 1
         } else {
             return channel.unreadCount.messages
