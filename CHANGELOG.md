@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.31.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.31.0)
+_April 25, 2023_
+
 ### 🐞 Fixed
 - Reaction overlay display in a modal chat view
 - Warning about UITextView switching to TextKit 1 compatibility mode
