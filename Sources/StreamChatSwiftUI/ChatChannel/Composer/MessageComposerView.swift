@@ -184,6 +184,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             if editedMessage != nil {
                 becomeFirstResponder()
                 editedMessageWillShow = true
+                viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
         .accessibilityElement(children: .contain)

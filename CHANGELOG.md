@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fixed the text input cursor when a message is being edited
 
 # [4.31.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.31.0)
 _April 25, 2023_
