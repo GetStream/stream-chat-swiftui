@@ -543,6 +543,26 @@ extension ViewFactory {
         }
     }
     
+    public func makeComposerTextInputView(
+        text: Binding<String>,
+        height: Binding<CGFloat>,
+        selectedRangeLocation: Binding<Int>,
+        placeholder: String,
+        editable: Bool,
+        maxMessageLength: Int?,
+        currentHeight: CGFloat
+    ) -> some View {
+        ComposerTextInputView(
+            text: text,
+            height: height,
+            selectedRangeLocation: selectedRangeLocation,
+            placeholder: placeholder,
+            editable: editable,
+            maxMessageLength: maxMessageLength,
+            currentHeight: currentHeight
+        )
+    }
+    
     public func makeTrailingComposerView(
         enabled: Bool,
         cooldownDuration: Int,

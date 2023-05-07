@@ -773,6 +773,25 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is NewMessagesIndicator)
     }
+    
+    func test_viewFactory_makeComposerTextInputView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeComposerTextInputView(
+            text: .constant("test"),
+            height: .constant(40),
+            selectedRangeLocation: .constant(0),
+            placeholder: "Send a message",
+            editable: true,
+            maxMessageLength: nil,
+            currentHeight: 40
+        )
+        
+        // Then
+        XCTAssert(view is ComposerTextInputView)
+    }
 }
 
 extension ChannelAction: Equatable {

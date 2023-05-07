@@ -311,7 +311,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     .cornerRadius(16)
                 }
 
-                ComposerTextInputView(
+                factory.makeComposerTextInputView(
                     text: $text,
                     height: $textHeight,
                     selectedRangeLocation: $selectedRangeLocation,

@@ -536,6 +536,27 @@ public protocol ViewFactory: AnyObject {
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
     ) -> ComposerInputViewType
+    
+    associatedtype ComposerTextInputViewType: View
+    /// Creates the composer input view.
+    /// - Parameters:
+    ///  - text: the text displayed in the input view.
+    ///  - height: the height of the view.
+    ///  - selectedRangeLocation: the selected range location of a text.
+    ///  - placeholder: the placeholder shown when there's no text.
+    ///  - editable: whether the text view should be editable.
+    ///  - maxMessageLength: the maximum allowed message length.
+    ///  - currentHeight: the current height of the view.
+    /// - Returns: View shown in the composer text input slot.
+    func makeComposerTextInputView(
+        text: Binding<String>,
+        height: Binding<CGFloat>,
+        selectedRangeLocation: Binding<Int>,
+        placeholder: String,
+        editable: Bool,
+        maxMessageLength: Int?,
+        currentHeight: CGFloat
+    ) -> ComposerTextInputViewType
 
     associatedtype TrailingComposerViewType: View
     /// Creates the trailing composer view.
