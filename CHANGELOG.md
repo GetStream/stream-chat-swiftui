@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Added a factory method for customizing the composer text input view
 
+### 🔄 Changed
+- Exposed mentionedUsers in the MessageComposerViewModel
+
 # [4.31.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.31.0)
 _April 25, 2023_
 

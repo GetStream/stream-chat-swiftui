@@ -138,7 +138,7 @@ open class MessageComposerViewModel: ObservableObject {
             with: channelController
         )
     
-    private(set) var mentionedUsers = Set<ChatUser>()
+    public var mentionedUsers = Set<ChatUser>()
     
     private var messageText: String {
         if let composerCommand = composerCommand,
