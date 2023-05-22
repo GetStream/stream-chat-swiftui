@@ -9,6 +9,7 @@ import 'Allurefile'
 
 xcode_version = ENV['XCODE_VERSION'] || '14.2'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
+sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
 
 before_all do
@@ -25,14 +26,21 @@ end
 
 desc 'Release a new version'
 lane :release do |options|
-  release_ios_sdk(
+  version_number = release_ios_sdk(
     version: options[:version],
     bump_type: options[:type],
-    sdk_names: ['StreamChatSwiftUI'],
-    github_repo: github_repo,
-    update_version_numbers: true,
-    publish_release: true, # TODO: delete this once we have a develop branch
-    create_pull_request: false # TODO: create pull request once we have a develop branch
+    sdk_names: sdk_names,
+    github_repo: github_repo
+  )
+  publish_release(version: version_number)
+end
+
+desc "Publish a new release to GitHub and CocoaPods"
+lane :publish_release do |options|
+  publish_ios_sdk(
+    version: options[:version],
+    sdk_names: sdk_names,
+    github_repo: github_repo
   )
 end
 
