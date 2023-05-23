@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Fixed the text input cursor when a message is being edited
 - Fixed channel list view model always not using passed channel type for deletion
+- Fixed warning for empty collection literal in Xcode 14.3
 
 ### ✅ Added
 - Added a factory method for customizing the composer text input view
