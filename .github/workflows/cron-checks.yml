@@ -22,7 +22,7 @@ jobs:
         ios: [latest]
         device: ["iPhone 8", "iPhone SE (3rd generation)", "iPhone 14 Pro Max"]
       fail-fast: false
-    runs-on: macos-12
+    runs-on: macos-13
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,8 +75,15 @@ jobs:
     name: Build Demo App
     strategy:
       matrix:
-        xcode: [13.1, 13.4.1, 14.2]
-        os: [macos-12]
+        include:
+          - xcode: 14.3
+            os: macos-13
+          - xcode: 14.2
+            os: macos-12
+          - xcode: 13.4.1
+            os: macos-12
+          - xcode: 13.1
+            os: macos-12
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -97,9 +104,10 @@ jobs:
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/bootstrap
     - run: bundle exec fastlane rubocop
     - run: ./Scripts/run-linter.sh
+    - run: bundle exec fastlane pod_lint
