@@ -91,6 +91,8 @@ jobs:
     - uses: ./.github/actions/bootstrap
     - name: Build Demo App
       run: bundle exec fastlane build_demo
+      env:
+        XCODE_VERSION: ${{ matrix.xcode }}
     - uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
