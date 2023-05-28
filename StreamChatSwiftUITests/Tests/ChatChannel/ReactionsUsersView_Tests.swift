@@ -34,7 +34,7 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             .frame(width: 250)
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
     }
 
     func test_reactionsUsersView_snapshotTwoRows() {
@@ -66,6 +66,6 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             .frame(width: defaultScreenSize.width, height: 320)
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
     }
 }

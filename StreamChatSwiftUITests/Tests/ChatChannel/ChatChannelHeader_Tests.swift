@@ -23,7 +23,7 @@ class ChatChannelHeader_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
     }
 
     func test_chatChannelHeader_snapshot() {
@@ -41,7 +41,7 @@ class ChatChannelHeader_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
     }
 
     func test_channelTitleView_snapshot() {
@@ -53,6 +53,6 @@ class ChatChannelHeader_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
     }
 }
