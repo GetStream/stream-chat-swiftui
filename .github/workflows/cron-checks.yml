@@ -57,7 +57,7 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
-      if: failure()
+      if: failure() && github.event_name == 'schedule'
     - name: Parse xcresult
       if: failure()
       run: xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
@@ -98,7 +98,7 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
-      if: failure()
+      if: failure() && github.event_name == 'schedule'
 
   automated-code-review:
     name: Automated Code Review
