@@ -24,7 +24,7 @@ class MessageListPage {
     }
 
     static var list: XCUIElement {
-        app.scrollViews.matching(NSPredicate(format: "identifier LIKE 'ChatChannelView' or identifier LIKE 'MessageListScrollView'")).firstMatch
+        app.scrollViews.matching(NSPredicate(format: "identifier LIKE 'MessageListView' or identifier LIKE 'MessageListScrollView'")).firstMatch
     }
 
     static var typingIndicator: XCUIElement {

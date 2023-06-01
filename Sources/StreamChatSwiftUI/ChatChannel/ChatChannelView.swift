@@ -179,6 +179,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         )
         .padding(.bottom, keyboardShown || !tabBarAvailable || generatingSnapshot ? 0 : bottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
     }
 
