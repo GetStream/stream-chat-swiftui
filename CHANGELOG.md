@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+
+# [4.33.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.33.0)
+_June 09, 2023_
+
+### 🔄 Changed
 - Updated `StreamChat` dependency
 
 # [4.32.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.32.0)
