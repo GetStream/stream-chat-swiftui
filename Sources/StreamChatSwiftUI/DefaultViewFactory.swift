@@ -207,6 +207,10 @@ extension ViewFactory {
         EmptyViewModifier()
     }
     
+    public func makeMessageListContainerModifier() -> some ViewModifier {
+        EmptyViewModifier()
+    }
+    
     public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
         MessageBubbleModifier(
             message: messageModifierInfo.message,

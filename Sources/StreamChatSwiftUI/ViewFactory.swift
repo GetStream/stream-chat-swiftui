@@ -200,6 +200,10 @@ public protocol ViewFactory: AnyObject {
     associatedtype MessageListModifier: ViewModifier
     /// Returns a view modifier applied to the message list.
     func makeMessageListModifier() -> MessageListModifier
+    
+    associatedtype MessageListContainerModifier: ViewModifier
+    /// Returns a view modifier applied to the message list container.
+    func makeMessageListContainerModifier() -> MessageListContainerModifier
 
     associatedtype MessageViewModifier: ViewModifier
     /// Returns a view modifier applied to the message view.
