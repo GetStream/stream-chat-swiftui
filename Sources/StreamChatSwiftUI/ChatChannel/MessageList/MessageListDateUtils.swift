@@ -63,16 +63,9 @@ class MessageListDateUtils {
         let previousIndex = index + 1
         if previousIndex < messages.count {
             let previous = messages[previousIndex]
-            let isDifferentDay = !Calendar.current.isDate(
-                message.createdAt,
-                equalTo: previous.createdAt,
-                toGranularity: .day
-            )
-            if isDifferentDay {
-                return message.createdAt
-            } else {
-                return nil
-            }
+            return messageListConfig
+                .messageDisplayOptions
+                .dateSeparator(message, previous)
         } else {
             return message.createdAt
         }

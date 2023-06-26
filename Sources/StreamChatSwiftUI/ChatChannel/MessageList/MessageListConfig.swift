@@ -101,6 +101,7 @@ public struct MessageDisplayOptions {
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
+    public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
 
     public init(
         showAvatars: Bool = true,
@@ -118,7 +119,8 @@ public struct MessageDisplayOptions {
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
-        reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding
+        reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
+        dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
@@ -135,10 +137,24 @@ public struct MessageDisplayOptions {
         self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
         self.reactionsTopPadding = reactionsTopPadding
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
+        self.dateSeparator = dateSeparator
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {
         channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
+    }
+    
+    public static func defaultDateSeparator(message: ChatMessage, previous: ChatMessage) -> Date? {
+        let isDifferentDay = !Calendar.current.isDate(
+            message.createdAt,
+            equalTo: previous.createdAt,
+            toGranularity: .day
+        )
+        if isDifferentDay {
+            return message.createdAt
+        } else {
+            return nil
+        }
     }
 
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
