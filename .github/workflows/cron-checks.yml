@@ -70,13 +70,12 @@ jobs:
           fastlane/sinatra_log.txt
           fastlane/test_output/logs/*/Diagnostics/StreamChatSwiftUITestsAppUITests-*/*/*.txt
 
-
   build-apps:
     name: Build Demo App
     strategy:
       matrix:
         include:
-          - xcode: 14.3
+          - xcode: 14.3.1
             os: macos-13
           - xcode: 14.2
             os: macos-12
