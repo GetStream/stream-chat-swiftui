@@ -7,7 +7,7 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
-xcode_version = ENV['XCODE_VERSION'] || '14.3'
+xcode_version = ENV['XCODE_VERSION'] || '14.3.1'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
 sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
@@ -70,7 +70,7 @@ end
 
 desc 'Runs tests in Debug config'
 lane :test_ui do |options|
-  next unless is_check_required(sources: sources_matrix[:ui])
+  # next unless is_check_required(sources: sources_matrix[:ui])
 
   remove_snapshots if options[:record]
 
@@ -100,7 +100,7 @@ end
 
 desc 'Runs e2e ui tests using mock server in Debug config'
 lane :test_e2e_mock do |options|
-  next unless is_check_required(sources: sources_matrix[:e2e])
+  # next unless is_check_required(sources: sources_matrix[:e2e])
 
   start_sinatra
 
@@ -148,7 +148,7 @@ end
 
 desc 'Builds Demo app'
 lane :build_demo do |options|
-  next unless is_check_required(sources: sources_matrix[:sample_apps])
+  # next unless is_check_required(sources: sources_matrix[:sample_apps])
 
   scan(
     project: xcode_project,
