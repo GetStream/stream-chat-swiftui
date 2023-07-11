@@ -68,7 +68,14 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .messageBubble(for: message, isFirst: isFirst)
+        .modifier(
+            factory.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: message,
+                    isFirst: isFirst
+                )
+            )
+        )
         .frame(maxWidth: width)
         .accessibilityIdentifier("GiphyAttachmentView")
     }

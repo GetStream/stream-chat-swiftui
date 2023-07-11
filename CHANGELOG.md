@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+- Video and giphy attachments now use `makeMessageViewModifier`
 
 # [4.34.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.34.0)
 _July 06, 2023_
