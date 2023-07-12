@@ -78,6 +78,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 public struct AttachmentTextView: View {
 
     @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
 
     var message: ChatMessage
 
@@ -88,6 +89,7 @@ public struct AttachmentTextView: View {
     public var body: some View {
         HStack {
             Text(message.adjustedText)
+                .font(fonts.body)
                 .standardPadding()
                 .foregroundColor(textColor(for: message))
                 .fixedSize(horizontal: false, vertical: true)
