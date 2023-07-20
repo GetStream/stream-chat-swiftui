@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - `AttachmentTextView` respects configured body font
 
+### ✅ Added
+- Option to specify bottom offset in `ReactionsOverlayView`
+
 # [4.34.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.34.0)
 _July 06, 2023_
 

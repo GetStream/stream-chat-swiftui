@@ -18,6 +18,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     var factory: Factory
     var channel: ChatChannel
     var currentSnapshot: UIImage
+    var bottomOffset: CGFloat
     var messageDisplayInfo: MessageDisplayInfo
     var onBackgroundTap: () -> Void
     var onActionExecuted: (MessageActionInfo) -> Void
@@ -34,6 +35,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
+        bottomOffset: CGFloat = 0,
         onBackgroundTap: @escaping () -> Void,
         onActionExecuted: @escaping (MessageActionInfo) -> Void
     ) {
@@ -45,6 +47,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
+        self.bottomOffset = bottomOffset
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
         self.onActionExecuted = onActionExecuted
@@ -242,7 +245,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
         var originY = messageDisplayInfo.frame.origin.y
         let minOrigin: CGFloat = 100
-        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin
+        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin - bottomOffset
         if originY < minOrigin {
             originY = minOrigin
         } else if originY > maxOrigin {
