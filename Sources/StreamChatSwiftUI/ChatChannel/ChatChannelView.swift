@@ -86,6 +86,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         .if(viewModel.reactionsShown, transform: { view in
                             view.navigationBarHidden(true)
                         })
+                        .if(!viewModel.reactionsShown, transform: { view in
+                            view.navigationBarHidden(false)
+                        })
                         .if(viewModel.channelHeaderType == .regular) { view in
                             view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
                         }
