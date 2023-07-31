@@ -88,6 +88,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             if threadMessageShown == false {
                 threadMessage = nil
             }
+            utils.messageCachingUtils.messageThreadShown = threadMessageShown
         }
     }
 

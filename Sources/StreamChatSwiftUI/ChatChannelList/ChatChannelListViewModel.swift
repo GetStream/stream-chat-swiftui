@@ -377,7 +377,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func updateChannelsIfNeeded() {
-        if utils.messageListConfig.updateChannelsFromMessageList && ((selectedChannelIndex ?? 0) < 8) {
+        if utils.messageListConfig.updateChannelsFromMessageList
+            && ((selectedChannelIndex ?? 0) < 8)
+            && !utils.messageCachingUtils.messageThreadShown {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 self?.handleChannelAppearance()
             }
