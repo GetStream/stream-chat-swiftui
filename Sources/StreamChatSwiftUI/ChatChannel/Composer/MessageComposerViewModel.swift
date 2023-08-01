@@ -471,7 +471,7 @@ open class MessageComposerViewModel: ObservableObject {
         
         messageController.editMessage(
             text: adjustedText,
-            attachments: message.allAttachments.toAnyAttachmentPayload()
+            attachments: utils.composerConfig.attachmentPayloadConverter(message)
         ) { [weak self] error in
             if error != nil {
                 self?.errorShown = true
