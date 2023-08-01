@@ -469,7 +469,10 @@ open class MessageComposerViewModel: ObservableObject {
             messageId: message.id
         )
         
-        messageController.editMessage(text: adjustedText) { [weak self] error in
+        messageController.editMessage(
+            text: adjustedText,
+            attachments: message.allAttachments.toAnyAttachmentPayload()
+        ) { [weak self] error in
             if error != nil {
                 self?.errorShown = true
             } else {

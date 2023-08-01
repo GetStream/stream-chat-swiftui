@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - `AttachmentTextView` respects configured body font
+- Attachments persisted after message editing
 
 ### ✅ Added
 - Option to specify bottom offset in `ReactionsOverlayView`
