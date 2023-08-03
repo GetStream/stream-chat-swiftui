@@ -23,7 +23,8 @@ public struct ComposerConfig {
         inputFont: UIFont = UIFont.preferredFont(forTextStyle: .body),
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
         adjustMessageOnRead: @escaping (String) -> (String) = { $0 },
-        attachmentPayloadConverter: @escaping (ChatMessage) -> [AnyAttachmentPayload] = ComposerConfig.defaultAttachmentPayloadConverter
+        attachmentPayloadConverter: @escaping (ChatMessage) -> [AnyAttachmentPayload]
+            = ComposerConfig.defaultAttachmentPayloadConverter
     ) {
         self.inputViewMinHeight = inputViewMinHeight
         self.inputViewMaxHeight = inputViewMaxHeight
