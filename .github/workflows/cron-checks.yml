@@ -19,7 +19,8 @@ jobs:
     name: Test E2E UI (Debug)
     strategy:
       matrix:
-        ios: [latest]
+        ios: [16.4]
+        setup_runtime: [false]
         device: ["iPhone SE (3rd generation)", "iPhone 14", "iPhone 14 Pro Max"]
       fail-fast: false
     runs-on: macos-13
@@ -35,7 +36,7 @@ jobs:
         INSTALL_ALLURE: true
         INSTALL_XCPARSE: true
     - name: Setup iOS ${{ matrix.ios }} Runtime
-      if: ${{ matrix.ios != 'latest' }}
+      if: ${{ matrix.setup_runtime }}
       run: sudo xcodes runtimes install 'iOS ${{ matrix.ios }}'
     - name: Launch Allure TestOps
       run: bundle exec fastlane allure_launch cron:true
