@@ -59,7 +59,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentSnapshot: UIImage? {
         didSet {
             withAnimation {
-                reactionsShown = currentSnapshot != nil && utils.messageListConfig.messagePopoverEnabled
+                reactionsShown = currentSnapshot != nil
+                    && utils.messageListConfig.messagePopoverEnabled
+                    && channel?.isFrozen == false
             }
         }
     }

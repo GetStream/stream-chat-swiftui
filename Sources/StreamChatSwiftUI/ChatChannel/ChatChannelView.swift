@@ -108,7 +108,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                     .opacity((
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
-                            .reactionsShown
+                            .reactionsShown && viewModel.channel?.isFrozen == false
                     ) ? 0 : 1)
 
                     NavigationLink(
