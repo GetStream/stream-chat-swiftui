@@ -1,17 +1,10 @@
 name: Smoke Checks
 
 on:
-  push:
-    branches:
-      - main
-
   pull_request:
     branches:
       - '**'
-
-  release:
-    types:
-      - created
+      - '!main'
 
   workflow_dispatch:
 
