@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add XCPrivacy manifest [#352](https://github.com/GetStream/stream-chat-swift/pull/352)
+
 ### 🔄 Changed
 - Reactions popup disabled if channel is frozen
 
@@ -274,7 +277,7 @@ _May 17, 2022_
 - Bug with reactions offset for large number of reactions
 - Text input cursor jump
 - Text message rendering issue with custom font
-- Tap enabled on fourth image in attachments if there's a number overlay 
+- Tap enabled on fourth image in attachments if there's a number overlay
 
 # [4.14.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.14.0)
 _April 26, 2022_
@@ -349,7 +352,7 @@ _February 16, 2022_
 ### ✅ Added
 - Slow mode
 - Copying of a message
-- Push notifications 
+- Push notifications
 - Message list config options
 
 ### 🐞 Fixed
