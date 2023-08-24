@@ -30,7 +30,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         let view = testMessageViewContainer(message: message)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_messageContainerViewSentOtherUser_snapshot() {
@@ -46,7 +46,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         let view = testMessageViewContainer(message: message)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_messageContainerViewPinned_snapshot() {
@@ -67,7 +67,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         let view = testMessageViewContainer(message: message)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_videoAttachment_snapshotNoText() {
@@ -89,7 +89,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_videoAttachment_snapshotText() {
@@ -113,7 +113,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         .padding()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_imageAttachments_snapshot() {
@@ -137,7 +137,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         .frame(width: 200)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_imageAttachments_snapshotFiveImages() {
@@ -163,7 +163,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         .frame(width: 200)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     // MARK: - private

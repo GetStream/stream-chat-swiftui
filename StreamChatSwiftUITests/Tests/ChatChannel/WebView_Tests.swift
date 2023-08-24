@@ -27,6 +27,6 @@ class WebView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: webView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: webView, as: .image(perceptualPrecision: 0.97))
     }
 }

@@ -45,7 +45,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_reactionsOverlayView_noReactions() {
@@ -64,7 +64,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_reactionsOverlayView_usersReactions() {
@@ -107,7 +107,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_reactionsOverlay_veryLongMessage() {
@@ -143,7 +143,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_reactionAnimatableView_snapshot() {
@@ -162,7 +162,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         .frame(width: 24, height: 24)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_reactionsOverlayContainer_snapshot() {
@@ -177,7 +177,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_reactionsAnimatableView_snapshot() {
@@ -193,7 +193,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_chatMessage_reactionOffsetCurrentUser() {

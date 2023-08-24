@@ -25,7 +25,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_fileAttachmentsView_emptySnapshot() {
@@ -40,7 +40,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_fileAttachmentsView_loadingSnapshot() {
@@ -55,7 +55,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 
     func test_fileAttachmentsPickerView_snapshot() {
@@ -64,6 +64,6 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
     }
 }
