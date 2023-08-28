@@ -37,6 +37,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
+    private var onlineIndicatorShown = false
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -274,6 +275,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkReadIndicators(for: channel)
         checkTypingIndicator()
         checkHeaderType()
+        checkOnlineIndicator()
     }
 
     public func showReactionOverlay(for view: AnyView) {
@@ -380,13 +382,29 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         if nameChanged {
-            // Toolbar is not updated unless there's a state change.
-            // Therefore, we manually need to update the state for a short period of time.
-            let headerType = channelHeaderType
-            channelHeaderType = .typingIndicator
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                self?.channelHeaderType = headerType
-            }
+            triggerHeaderChange()
+        }
+    }
+    
+    private func checkOnlineIndicator() {
+        guard let channel else { return }
+        let updated = !channel.lastActiveMembers.filter { member in
+            member.id != chatClient.currentUserId && member.isOnline
+        }.isEmpty
+        
+        if updated != onlineIndicatorShown {
+            onlineIndicatorShown = updated
+            triggerHeaderChange()
+        }
+    }
+    
+    private func triggerHeaderChange() {
+        // Toolbar is not updated unless there's a state change.
+        // Therefore, we manually need to update the state for a short period of time.
+        let headerType = channelHeaderType
+        channelHeaderType = .typingIndicator
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.channelHeaderType = headerType
         }
     }
     

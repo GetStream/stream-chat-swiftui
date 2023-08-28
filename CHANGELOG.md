@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Reactions popup disabled if channel is frozen
 
+### 🐞 Fixed
+- Online indicator updates in the header view
+
 # [4.35.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.35.1)
 _August 10, 2023_
 
