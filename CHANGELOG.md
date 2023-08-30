@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Online indicator updates in the header view
+- Reactions overlay interface orientation updates
 
 # [4.35.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.35.1)
 _August 10, 2023_

@@ -14,6 +14,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var popIn = false
     @State private var willPopOut = false
     @State private var screenHeight = UIScreen.main.bounds.size.height
+    @State private var screenWidth: CGFloat?
+    @State private var initialWidth: CGFloat?
+    @State private var orientationChanged = false
+    @State private var initialOrigin: CGFloat?
 
     var factory: Factory
     var channel: ChatChannel
@@ -61,11 +65,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            factory.makeReactionsBackgroundView(
-                currentSnapshot: currentSnapshot,
-                popInAnimationInProgress: !popIn
-            )
-            .offset(y: spacing > 0 ? screenHeight - currentSnapshot.size.height : 0)
+            ZStack {
+                if !orientationChanged {
+                    factory.makeReactionsBackgroundView(
+                        currentSnapshot: currentSnapshot,
+                        popInAnimationInProgress: !popIn
+                    )
+                    .offset(y: spacing > 0 ? screenHeight - currentSnapshot.size.height : 0)
+                } else {
+                    Color.gray.opacity(0.4)
+                }
+            }
             .transition(.opacity)
             .onTapGesture {
                 dismissReactionsOverlay() { /* No additional handling. */ }
@@ -90,7 +100,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             GeometryReader { reader in
                 let frame = reader.frame(in: .local)
                 let height = frame.height
+                let width = frame.width
                 Color.clear.preference(key: HeightPreferenceKey.self, value: height)
+                Color.clear.preference(key: WidthPreferenceKey.self, value: width)
+                
                 VStack(alignment: .leading) {
                     Group {
                         if messageDisplayInfo.frame.height > messageContainerHeight {
@@ -116,7 +129,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     .offset(
-                        x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
+                        x: messageOriginX(proxy: reader)
                     )
                     .overlay(
                         channel.config.reactionsEnabled ?
@@ -133,7 +146,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             .opacity(willPopOut ? 0 : 1)
                             .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                             .offset(
-                                x: messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader),
+                                x: messageOriginX(proxy: reader),
                                 y: popIn ? -24 : -messageContainerHeight / 2
                             )
                             .accessibilityElement(children: .contain)
@@ -182,6 +195,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     }
                 }
                 .offset(y: !popIn ? (messageDisplayInfo.frame.origin.y - spacing) : originY)
+                .onAppear {
+                    self.initialOrigin = messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
+                }
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
@@ -189,13 +205,24 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 self.screenHeight = value
             }
         }
+        .onPreferenceChange(WidthPreferenceKey.self) { value in
+            if initialWidth == nil {
+                initialWidth = value
+            }
+            self.screenWidth = value
+        }
         .edgesIgnoringSafeArea(.all)
-        .background(Color(colors.background))
+        .background(orientationChanged ? nil : Color(colors.background))
         .onAppear {
             popIn = true
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsOverlayView")
+        .onRotate { orientation in
+            if isIPad {
+                self.orientationChanged = true
+            }
+        }
     }
 
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {
@@ -215,10 +242,20 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         if popIn {
             return originX
         } else if willPopOut {
-            return messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
+            return messageOriginX(proxy: reader)
         } else {
             return sentByCurrentUser ? messageActionsWidth : 0
         }
+    }
+        
+    private func messageOriginX(proxy: GeometryProxy) -> CGFloat {
+        let origin = messageDisplayInfo.frame.origin.x - diffWidth(proxy: proxy)
+        if let initialWidth, let initialOrigin, let screenWidth, abs(initialWidth - screenWidth) > 5 {
+            let diff = initialWidth - initialOrigin
+            let newOrigin = screenWidth - diff
+            return newOrigin
+        }
+        return initialOrigin ?? origin
     }
 
     private var messageContainerHeight: CGFloat {
@@ -308,5 +345,23 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
 
         return width
+    }
+}
+
+struct DeviceRotationViewModifier: ViewModifier {
+    let action: (UIDeviceOrientation) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear()
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                action(UIDevice.current.orientation)
+            }
+    }
+}
+
+extension View {
+    func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
+        self.modifier(DeviceRotationViewModifier(action: action))
     }
 }
