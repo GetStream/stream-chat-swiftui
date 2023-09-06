@@ -23,7 +23,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .frame(width: defaultScreenSize.width, height: 100)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_instantCommandsContainerViewEmpty_snapshot() {
@@ -35,7 +35,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_instantCommandsContainerView_snapshot() {
@@ -47,7 +47,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_instantCommandsContainerMaxSize_snapshot() {
@@ -62,7 +62,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     private func defaultCommands(suffix: String = "") -> [CommandHandler] {

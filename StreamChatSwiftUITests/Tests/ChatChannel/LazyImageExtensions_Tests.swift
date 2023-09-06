@@ -18,7 +18,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
             .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: snapshotPrecision))
     }
     
     func test_imageURL_nonEmpty() {
@@ -29,7 +29,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
         .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: snapshotPrecision))
     }
     
     func test_imageRequest_emptyURL() {
@@ -40,6 +40,6 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
         .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: snapshotPrecision))
     }
 }

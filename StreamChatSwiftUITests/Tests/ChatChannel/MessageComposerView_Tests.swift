@@ -36,7 +36,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 100)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_composerInputView_slowMode() {
@@ -60,7 +60,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 100)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_trailingComposerView_snapshot() {
@@ -76,7 +76,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .frame(width: 40, height: 40)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_trailingComposerView_slowMode() {
@@ -92,7 +92,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .frame(width: 40, height: 40)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_composerInputView_inputTextView() {
@@ -106,7 +106,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         view.selectedRange.location = 3
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_composerInputView_composerInputTextView() {
@@ -122,7 +122,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 50)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_composerInputView_rangeSelection() {
@@ -187,7 +187,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             .frame(width: defaultScreenSize.width, height: 36)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_composerInputView_snapshot() {
@@ -210,7 +210,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         coordinator.updateHeight(inputView, shouldAnimate: false)
 
         // Then
-        assertSnapshot(matching: viewWithSize, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: viewWithSize, as: .image(perceptualPrecision: snapshotPrecision))
         XCTAssert(coordinator.textInput.height == 100)
     }
 
@@ -243,7 +243,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             .background(.black)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_videoDurationIndicatorView_snapshot() {
@@ -253,7 +253,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             .background(.black)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_photosPickerView_snapshot() {
@@ -266,6 +266,6 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.97))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 }
