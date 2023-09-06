@@ -120,7 +120,7 @@ class ChannelHeaderLoader_Tests: StreamChatTestCase {
             expectation.fulfill()
         }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: defaultTimeout, handler: nil)
 
         // Then
         XCTAssert(firstImage == expectedInitialImage)
