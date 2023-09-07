@@ -6,7 +6,7 @@ import SnapshotTesting
 @testable import StreamChatSwiftUI
 import XCTest
 
-class TypingIndicatorView_Tests: XCTestCase {
+class TypingIndicatorView_Tests: StreamChatTestCase {
 
     func test_typingIndicatorView_snapshot() {
         // Given
@@ -14,6 +14,6 @@ class TypingIndicatorView_Tests: XCTestCase {
             .frame(width: 20, height: 16)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 }

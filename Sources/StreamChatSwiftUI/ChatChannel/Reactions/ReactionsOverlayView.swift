@@ -218,7 +218,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsOverlayView")
-        .onRotate { orientation in
+        .onRotate { _ in
             if isIPad {
                 self.orientationChanged = true
             }
@@ -362,6 +362,6 @@ struct DeviceRotationViewModifier: ViewModifier {
 
 extension View {
     func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
-        self.modifier(DeviceRotationViewModifier(action: action))
+        modifier(DeviceRotationViewModifier(action: action))
     }
 }

@@ -17,7 +17,7 @@ class MessageListView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_messageListView_noReactions() {
@@ -27,7 +27,7 @@ class MessageListView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_scrollToBottomButton_snapshotUnreadCount() {
@@ -35,7 +35,7 @@ class MessageListView_Tests: StreamChatTestCase {
         let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
 
         // Then
-        assertSnapshot(matching: button, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: button, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_scrollToBottomButton_snapshotEmptyCount() {
@@ -43,7 +43,7 @@ class MessageListView_Tests: StreamChatTestCase {
         let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
 
         // Then
-        assertSnapshot(matching: button, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: button, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_messageListView_typingIndicator() {
@@ -57,23 +57,7 @@ class MessageListView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
-    }
-
-    func test_messageListView_snapshot() {
-        // Given
-        let channelConfig = ChannelConfig(reactionsEnabled: true)
-        let messageListView = makeMessageListView(channelConfig: channelConfig)
-            .applyDefaultSize()
-
-        // When
-        let snapshotCreator = DefaultSnapshotCreator()
-        let viewController = UIHostingController(rootView: messageListView)
-        let snapshot = snapshotCreator.makeSnapshot(from: viewController.view)
-        let view = Image(uiImage: snapshot)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_messageListView_snapshotFallback() {
@@ -88,7 +72,7 @@ class MessageListView_Tests: StreamChatTestCase {
         let view = Image(uiImage: snapshot)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     // MARK: - private

@@ -30,7 +30,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
     
     func test_messageListViewNewMessages_moreMessages() {
@@ -48,7 +48,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
     
     func test_messageListViewNewMessages_moreMessagesInBetween() {
@@ -66,7 +66,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
     
     func test_messageListViewNewMessages_noMessages() {
@@ -84,7 +84,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: snapshotPrecision))
     }
     
     // MARK: - private

@@ -18,7 +18,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_messageListView_defaultGroupsChannel() {
@@ -30,7 +30,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_messageListView_dmChannelAvatarsOff() {
@@ -42,7 +42,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     func test_messageListView_groupsChannelAvatarsOff() {
@@ -54,7 +54,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
     private func setupConfig(showAvatars: Bool, showAvatarsInGroups: Bool?) {

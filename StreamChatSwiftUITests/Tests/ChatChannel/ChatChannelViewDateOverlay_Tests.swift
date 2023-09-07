@@ -62,6 +62,6 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 }
