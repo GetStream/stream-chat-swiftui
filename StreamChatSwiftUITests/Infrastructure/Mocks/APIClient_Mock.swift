@@ -62,9 +62,7 @@ class APIClientMock: APIClient, Spy {
             sessionConfiguration: sessionConfiguration,
             requestEncoder: requestEncoder,
             requestDecoder: requestDecoder,
-            attachmentUploader: attachmentUploader,
-            tokenRefresher: tokenRefresher,
-            queueOfflineRequest: queueOfflineRequest
+            attachmentUploader: attachmentUploader
         )
     }
 
