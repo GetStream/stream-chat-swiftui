@@ -8,6 +8,8 @@ import SwiftUI
 
 /// Image picker for loading images.
 struct ImagePickerView: UIViewControllerRepresentable {
+    @Injected(\.utils) var utils
+    
     let sourceType: UIImagePickerController.SourceType
 
     var onAssetPicked: (AddedAsset) -> Void
@@ -19,8 +21,15 @@ struct ImagePickerView: UIViewControllerRepresentable {
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
             pickerController.sourceType = sourceType
         }
-        pickerController.mediaTypes = ["public.image", "public.movie"]
-
+        let gallerySupportedTypes = utils.composerConfig.gallerySupportedTypes
+        if gallerySupportedTypes == .images {
+            pickerController.mediaTypes = ["public.image"]
+        } else if gallerySupportedTypes == .videos {
+            pickerController.mediaTypes = ["public.movie"]
+        } else {
+            pickerController.mediaTypes = ["public.image", "public.movie"]
+        }
+        
         return pickerController
     }
 
