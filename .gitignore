@@ -83,3 +83,5 @@ reports/
 .scannerwork/
 push_payload.json
 sinatra_log.txt
+derived_data/
+spm_cache/
