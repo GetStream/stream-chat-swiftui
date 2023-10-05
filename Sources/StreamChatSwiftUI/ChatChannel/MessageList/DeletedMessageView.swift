@@ -7,6 +7,7 @@ import SwiftUI
 
 /// View displayed when a message is deleted.
 public struct DeletedMessageView: View {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -14,6 +15,10 @@ public struct DeletedMessageView: View {
 
     private var dateFormatter: DateFormatter {
         utils.dateFormatter
+    }
+    
+    private var deletedMessageVisibility: ChatClientConfig.DeletedMessageVisibility {
+        chatClient.config.deletedMessagesVisibility
     }
 
     var message: ChatMessage
@@ -35,14 +40,16 @@ public struct DeletedMessageView: View {
                 HStack {
                     Spacer()
 
-                    Image(uiImage: images.eye)
-                        .customizable()
-                        .frame(maxWidth: 12)
-                        .accessibilityIdentifier("onlyVisibleToYouImageView")
+                    if deletedMessageVisibility == .visibleForCurrentUser {
+                        Image(uiImage: images.eye)
+                            .customizable()
+                            .frame(maxWidth: 12)
+                            .accessibilityIdentifier("onlyVisibleToYouImageView")
 
-                    Text(L10n.Message.onlyVisibleToYou)
-                        .font(fonts.footnote)
-                        .accessibilityIdentifier("onlyVisibleToYouLabel")
+                        Text(L10n.Message.onlyVisibleToYou)
+                            .font(fonts.footnote)
+                            .accessibilityIdentifier("onlyVisibleToYouLabel")
+                    }
 
                     Text(dateFormatter.string(from: message.createdAt))
                         .font(fonts.footnote)
