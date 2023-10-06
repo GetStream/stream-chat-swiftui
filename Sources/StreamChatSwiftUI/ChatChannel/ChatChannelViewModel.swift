@@ -38,6 +38,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var disableDateIndicator = false
     private var channelName = ""
     private var onlineIndicatorShown = false
+    private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -343,7 +344,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func maybeSendReadEvent(for message: ChatMessage) {
         if message.id != lastMessageRead {
             lastMessageRead = message.id
-            channelController.markRead()
+            throttler.throttle { [weak self] in
+                self?.channelController.markRead()
+            }
         }
     }
     
