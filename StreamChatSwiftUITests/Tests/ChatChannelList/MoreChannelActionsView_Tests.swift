@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import XCTest
 
 class MoreChannelActionsView_Tests: StreamChatTestCase {
@@ -29,6 +30,6 @@ class MoreChannelActionsView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.98))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

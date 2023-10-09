@@ -5,6 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import XCTest
 
 class InstantCommandsView_Tests: StreamChatTestCase {
@@ -23,7 +24,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .frame(width: defaultScreenSize.width, height: 100)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_instantCommandsContainerViewEmpty_snapshot() {
@@ -35,7 +36,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_instantCommandsContainerView_snapshot() {
@@ -47,7 +48,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_instantCommandsContainerMaxSize_snapshot() {
@@ -62,7 +63,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     private func defaultCommands(suffix: String = "") -> [CommandHandler] {

@@ -4,15 +4,14 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-@_exported import StreamChatTestHelpers
 @_exported import StreamChatTestTools
+@_exported import StreamSwiftTestHelpers
 import XCTest
 
 /// Base class that sets up the `StreamChat` object.
 open class StreamChatTestCase: XCTestCase {
 
     public static var currentUserId: String = .unique
-    public let snapshotPrecision: Float = 0.97
 
     public var chatClient: ChatClient = {
         let client = ChatClient.mock(isLocalStorageEnabled: false)

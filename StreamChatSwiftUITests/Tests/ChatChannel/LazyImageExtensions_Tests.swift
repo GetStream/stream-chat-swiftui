@@ -6,6 +6,7 @@ import NukeUI
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -18,7 +19,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
             .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
     }
     
     func test_imageURL_nonEmpty() {
@@ -29,7 +30,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
         .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
     }
     
     func test_imageRequest_emptyURL() {
@@ -40,6 +41,6 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
         .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
     }
 }
