@@ -10,3 +10,5 @@ ignore:
   - "**/*_Mock.swift"
   - "**/*_Vendor.swift"
   - "**/Generated/*.swift"
+  - "Sources/StreamChatSwiftUI/StreamNuke"
+  - "Sources/StreamChatSwiftUI/StreamSwiftyGif"
