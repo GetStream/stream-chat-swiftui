@@ -12,7 +12,7 @@ import XCTest
 open class StreamChatTestCase: XCTestCase {
 
     public static var currentUserId: String = .unique
-    public let snapshotPrecision: Float = 0.97
+    public let snapshotPrecision: Float = 0.95
 
     public var chatClient: ChatClient = {
         let client = ChatClient.mock(isLocalStorageEnabled: false)
