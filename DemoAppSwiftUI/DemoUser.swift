@@ -8,7 +8,7 @@ public let apiKeyString = "zcgvnykxsfm8"
 public let applicationGroupIdentifier = "group.io.getstream.iOS.ChatDemoAppSwiftUI"
 public let currentUserIdRegisteredForPush = "currentUserIdRegisteredForPush"
 
-public struct UserCredentials {
+public struct UserCredentials: Codable {
     public let id: String
     public let name: String
     public let avatarURL: URL
