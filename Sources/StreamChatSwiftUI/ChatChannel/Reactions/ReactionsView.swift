@@ -73,19 +73,22 @@ struct ReactionsView: View {
     var body: some View {
         HStack {
             ForEach(reactions) { reaction in
-                if let image = iconProvider(for: reaction) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(color(for: reaction))
-                        .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
-                        .gesture(
-                            useLargeIcons ?
-                                TapGesture().onEnded {
-                                    onReactionTap(reaction)
-                                } : nil
+                if let image = ReactionsIconProvider.icon(for: reaction, useLargeIcons: useLargeIcons) {
+                    ReactionIcon(
+                        icon: image,
+                        color: ReactionsIconProvider.color(
+                            for: reaction,
+                            userReactionIDs: userReactionIDs
                         )
-                        .accessibilityIdentifier("reaction-\(reaction.id)")
+                    )
+                    .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
+                    .gesture(
+                        useLargeIcons ?
+                            TapGesture().onEnded {
+                                onReactionTap(reaction)
+                            } : nil
+                    )
+                    .accessibilityIdentifier("reaction-\(reaction.id)")
                 }
             }
         }
@@ -93,28 +96,21 @@ struct ReactionsView: View {
         .reactionsBubble(for: message)
     }
 
-    private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
-        if useLargeIcons {
-            return images.availableReactions[reaction]?.largeIcon
-        } else {
-            return images.availableReactions[reaction]?.smallIcon
-        }
-    }
-
-    private func color(for reaction: MessageReactionType) -> Color? {
-        var colors = colors
-        let containsUserReaction = userReactionIDs.contains(reaction)
-        let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-
-        if let color = color {
-            return Color(color)
-        } else {
-            return nil
-        }
-    }
-
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
+    }
+}
+
+struct ReactionIcon: View {
+    
+    var icon: UIImage
+    var color: Color?
+    
+    var body: some View {
+        Image(uiImage: icon)
+            .resizable()
+            .scaledToFit()
+            .foregroundColor(color)
     }
 }
 

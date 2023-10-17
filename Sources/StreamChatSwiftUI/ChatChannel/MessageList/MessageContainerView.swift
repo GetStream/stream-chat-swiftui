@@ -176,7 +176,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                     
                     if bottomReactionsShown {
-                        BottomReactionsView {
+                        BottomReactionsView(message: message) {
                             handleGestureForMessage(showsMessageActions: false)
                         }
                     }
