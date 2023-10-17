@@ -79,7 +79,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     if isMessagePinned {
                         MessagePinDetailsView(
                             message: message,
-                            reactionsShown: reactionsShown
+                            reactionsShown: topReactionsShown
                         )
                     }
 
@@ -92,7 +92,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                     .overlay(
                         ZStack {
-                            reactionsShown ?
+                            topReactionsShown ?
                                 factory.makeMessageReactionView(
                                     message: message,
                                     onTapGesture: {
@@ -174,6 +174,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .accessibilityElement(children: .contain)
                         .accessibility(identifier: "MessageRepliesView")
                     }
+                    
+                    if bottomReactionsShown {
+                        BottomReactionsView {
+                            handleGestureForMessage(showsMessageActions: false)
+                        }
+                    }
 
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
@@ -212,7 +218,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         }
         .padding(
             .top,
-            reactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
+            topReactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
         )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
@@ -249,6 +255,16 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         messageListConfig.messageDisplayOptions.spacerWidth(width ?? 0)
     }
 
+    private var topReactionsShown: Bool {
+        //TODO: this.
+        false
+    }
+    
+    private var bottomReactionsShown: Bool {
+        //TODO: this.
+        reactionsShown
+    }
+    
     private var reactionsShown: Bool {
         !message.reactionScores.isEmpty
             && !message.isDeleted

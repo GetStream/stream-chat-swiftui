@@ -179,19 +179,19 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
                         .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     } else {
-                        factory.makeReactionsUsersView(
-                            message: viewModel.message,
-                            maxHeight: userReactionsHeight
-                        )
-                        .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
-                        .offset(
-                            x: userReactionsOriginX(availableWidth: reader.size.width)
-                        )
-                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
-                        .padding(.trailing, paddingValue)
-                        .scaleEffect(popIn ? 1 : 0)
-                        .opacity(willPopOut ? 0 : 1)
-                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+//                        factory.makeReactionsUsersView(
+//                            message: viewModel.message,
+//                            maxHeight: userReactionsHeight
+//                        )
+//                        .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
+//                        .offset(
+//                            x: userReactionsOriginX(availableWidth: reader.size.width)
+//                        )
+//                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
+//                        .padding(.trailing, paddingValue)
+//                        .scaleEffect(popIn ? 1 : 0)
+//                        .opacity(willPopOut ? 0 : 1)
+//                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     }
                 }
                 .offset(y: !popIn ? (messageDisplayInfo.frame.origin.y - spacing) : originY)
@@ -307,7 +307,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var userReactionsPopupHeight: CGFloat {
-        userReactionsHeight + 3 * paddingValue
+//        userReactionsHeight + 3 * paddingValue
+        return 0
     }
 
     private func diffWidth(proxy: GeometryProxy) -> CGFloat {
