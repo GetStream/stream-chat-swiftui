@@ -29,13 +29,38 @@ do
 	if [[ $directory == *"Nuke"* ]]; then
 		replaceDeclaration 'var log' 'var nukeLog' $f
 		replaceDeclaration 'log =' 'nukeLog =' $f
+		replaceDeclaration 'log: log' 'log: nukeLog' $f
 		replaceDeclaration 'signpost(log' 'signpost(nukeLog' $f
 		replaceDeclaration ' Cache(' ' NukeCache(' $f
 		replaceDeclaration ' Cache<' ' NukeCache<' $f
+		replaceDeclaration ' Image?' ' NukeImage?' $f
+		replaceDeclaration ' Image(' ' NukeImage(' $f
+		replaceDeclaration 'struct Image:' 'struct NukeImage:' $f
+		replaceDeclaration 'extension Image {' 'extension NukeImage {' $f
+		replaceDeclaration 'Content == Image' 'Content == NukeImage' $f
+		replaceDeclaration ' VideoPlayerView' ' NukeVideoPlayerView' $f
+		replaceDeclaration 'typealias Color' 'typealias NukeColor' $f
+		replaceDeclaration 'extension Color' 'extension NukeColor' $f
+		replaceDeclaration 'AssetType' 'NukeAssetType' $f
+		replaceDeclaration 'typealias ImageRequest = Nuke.ImageRequest' '' $f
+		replaceDeclaration 'typealias ImageResponse = Nuke.ImageResponse' '' $f
+		replaceDeclaration 'typealias ImagePipeline = Nuke.ImagePipeline' '' $f
+		replaceDeclaration 'typealias ImageContainer = Nuke.ImageContainer' '' $f
+		replaceDeclaration 'open class ' '' $f
+		replaceDeclaration 'import Nuke' '' $f
 
 		# Remove Cancellable interface duplicate
 		if [[ $f == *"DataLoader"* && `head -10 $f` == *"protocol Cancellable"* ]]; then
 			`sed -i '' -e '7,11d' $f`
+		fi
+
+		# Rename files
+		if [[ $f == *"Cache.swift"* ]]; then
+			new_f="${f/Cache.swift/NukeCache.swift}"
+			mv $f $new_f
+		elif [[ $f == *"VideoPlayerView.swift"* ]]; then
+			new_f="${f/VideoPlayerView.swift/NukeVideoPlayerView.swift}"
+			mv $f $new_f
 		fi
 	fi
 done

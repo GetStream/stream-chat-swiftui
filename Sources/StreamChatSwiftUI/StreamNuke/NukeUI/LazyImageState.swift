@@ -3,7 +3,7 @@
 // Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
-import Nuke
+
 import SwiftUI
 import Combine
 
@@ -22,13 +22,13 @@ struct LazyImageState {
 
     /// Returns an image view.
     @MainActor
-    var image: Image? {
+    var image: NukeImage? {
 #if os(macOS)
-        return imageContainer.map { Image($0) }
+        return imageContainer.map { NukeImage($0) }
 #elseif os(watchOS)
-        return imageContainer.map { Image(uiImage: $0.image) }
+        return imageContainer.map { NukeImage(uiImage: $0.image) }
 #else
-        return imageContainer.map { Image($0) }
+        return imageContainer.map { NukeImage($0) }
 #endif
     }
 

@@ -5,7 +5,7 @@
 import Foundation
 
 /// A uniform type identifier (UTI).
-struct AssetType: ExpressibleByStringLiteral, Hashable, Sendable {
+struct NukeAssetType: ExpressibleByStringLiteral, Hashable, Sendable {
     let rawValue: String
 
     init(rawValue: String) {
@@ -16,42 +16,42 @@ struct AssetType: ExpressibleByStringLiteral, Hashable, Sendable {
         self.rawValue = value
     }
 
-    static let png: AssetType = "public.png"
-    static let jpeg: AssetType = "public.jpeg"
-    static let gif: AssetType = "com.compuserve.gif"
+    static let png: NukeAssetType = "public.png"
+    static let jpeg: NukeAssetType = "public.jpeg"
+    static let gif: NukeAssetType = "com.compuserve.gif"
     /// HEIF (High Efficiency Image Format) by Apple.
-    static let heic: AssetType = "public.heic"
+    static let heic: NukeAssetType = "public.heic"
 
     /// WebP
     ///
     /// Native decoding support only available on the following platforms: macOS 11,
     /// iOS 14, watchOS 7, tvOS 14.
-    static let webp: AssetType = "public.webp"
+    static let webp: NukeAssetType = "public.webp"
 
-    static let mp4: AssetType = "public.mpeg4"
+    static let mp4: NukeAssetType = "public.mpeg4"
 
     /// The M4V file format is a video container format developed by Apple and
     /// is very similar to the MP4 format. The primary difference is that M4V
     /// files may optionally be protected by DRM copy protection.
-    static let m4v: AssetType = "public.m4v"
+    static let m4v: NukeAssetType = "public.m4v"
 
-    static let mov: AssetType = "public.mov"
+    static let mov: NukeAssetType = "public.mov"
 
     var isVideo: Bool {
         self == .mp4 || self == .m4v || self == .mov
     }
 }
 
-extension AssetType {
+extension NukeAssetType {
     /// Determines a type of the image based on the given data.
     init?(_ data: Data) {
-        guard let type = AssetType.make(data) else {
+        guard let type = NukeAssetType.make(data) else {
             return nil
         }
         self = type
     }
 
-    private static func make(_ data: Data) -> AssetType? {
+    private static func make(_ data: Data) -> NukeAssetType? {
         func _match(_ numbers: [UInt8?], offset: Int = 0) -> Bool {
             guard data.count >= numbers.count else {
                 return false

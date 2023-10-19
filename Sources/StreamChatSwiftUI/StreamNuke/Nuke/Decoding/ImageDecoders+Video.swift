@@ -10,13 +10,13 @@ import AVKit
 extension ImageDecoders {
     final class Video: ImageDecoding, @unchecked Sendable {
         private var didProducePreview = false
-        private let type: AssetType
+        private let type: NukeAssetType
         var isAsynchronous: Bool { true }
 
         private let lock = NSLock()
 
         init?(context: ImageDecodingContext) {
-            guard let type = AssetType(context.data), type.isVideo else { return nil }
+            guard let type = NukeAssetType(context.data), type.isVideo else { return nil }
             self.type = type
         }
 
@@ -28,7 +28,7 @@ extension ImageDecoders {
             lock.lock()
             defer { lock.unlock() }
 
-            guard let type = AssetType(data), type.isVideo else { return nil }
+            guard let type = NukeAssetType(data), type.isVideo else { return nil }
             guard !didProducePreview else {
                 return nil // We only need one preview
             }
@@ -41,7 +41,7 @@ extension ImageDecoders {
     }
 }
 
-private func makePreview(for data: Data, type: AssetType) -> PlatformImage? {
+private func makePreview(for data: Data, type: NukeAssetType) -> PlatformImage? {
     let asset = AVDataAsset(data: data, type: type)
     let generator = AVAssetImageGenerator(asset: asset)
     guard let cgImage = try? generator.copyCGImage(at: CMTime(value: 0, timescale: 1), actualTime: nil) else {

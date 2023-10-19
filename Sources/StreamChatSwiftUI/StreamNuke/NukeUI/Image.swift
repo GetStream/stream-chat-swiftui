@@ -13,7 +13,7 @@ import UIKit
 #if os(macOS)
 /// Displays images. Supports animated images and video playback.
 @MainActor
-struct Image: NSViewRepresentable {
+struct NukeImage: NSViewRepresentable {
     let imageContainer: ImageContainer
     let onCreated: ((ImageView) -> Void)?
     var isAnimatedImageRenderingEnabled: Bool?
@@ -43,7 +43,7 @@ struct Image: NSViewRepresentable {
 #elseif os(iOS) || os(tvOS)
 /// Displays images. Supports animated images and video playback.
 @MainActor
-struct Image: UIViewRepresentable {
+struct NukeImage: UIViewRepresentable {
     let imageContainer: ImageContainer
     let onCreated: ((ImageView) -> Void)?
     var isAnimatedImageRenderingEnabled: Bool?
@@ -73,7 +73,7 @@ struct Image: UIViewRepresentable {
 #endif
 
 #if os(macOS) || os(iOS) || os(tvOS)
-extension Image {
+extension NukeImage {
     func updateImageView(_ imageView: ImageView) {
         if imageView.imageContainer?.image !== imageContainer.image {
             imageView.imageContainer = imageContainer

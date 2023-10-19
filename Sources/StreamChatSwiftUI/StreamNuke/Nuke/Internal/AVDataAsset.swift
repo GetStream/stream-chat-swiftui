@@ -7,7 +7,7 @@ import Foundation
 
 #if !os(watchOS)
 
-private extension AssetType {
+private extension NukeAssetType {
     var avFileType: AVFileType? {
         switch self {
         case .mp4: return .mp4
@@ -22,7 +22,7 @@ private extension AssetType {
 final class AVDataAsset: AVURLAsset {
     private let resourceLoaderDelegate: DataAssetResourceLoader
 
-    init(data: Data, type: AssetType?) {
+    init(data: Data, type: NukeAssetType?) {
         self.resourceLoaderDelegate = DataAssetResourceLoader(
             data: data,
             contentType: type?.avFileType?.rawValue ?? AVFileType.mp4.rawValue

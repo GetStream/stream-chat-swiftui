@@ -302,12 +302,12 @@ enum Screen {
 }
 
 #if os(macOS)
-typealias Color = NSColor
+typealias NukeColor = NSColor
 #else
-typealias Color = UIColor
+typealias NukeColor = UIColor
 #endif
 
-extension Color {
+extension NukeColor {
     /// Returns a hex representation of the color, e.g. "#FFFFAA".
     var hex: String {
         var (r, g, b, a) = (CGFloat(0), CGFloat(0), CGFloat(0), CGFloat(0))

@@ -14,7 +14,7 @@ extension ImageEncoding where Self == ImageEncoders.Default {
 }
 
 extension ImageEncoding where Self == ImageEncoders.ImageIO {
-    static func imageIO(type: AssetType, compressionRatio: Float = 0.8) -> ImageEncoders.ImageIO {
+    static func imageIO(type: NukeAssetType, compressionRatio: Float = 0.8) -> ImageEncoders.ImageIO {
         ImageEncoders.ImageIO(type: type, compressionRatio: compressionRatio)
     }
 }

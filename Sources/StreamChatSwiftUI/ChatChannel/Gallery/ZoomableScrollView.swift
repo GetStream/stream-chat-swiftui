@@ -89,14 +89,14 @@ private struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresenta
             updateConstraintsCancellable = scrollView.publisher(for: \.bounds).map(\.size).removeDuplicates()
                 .sink { [unowned self] _ in
                     view.setNeedsUpdateConstraints()
-                }
-            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() }
+                } as! any Cancellable // FIXME
+            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() } as! any Cancellable // FIXME
         }
 
         func update(content: Content, doubleTap: AnyPublisher<Void, Never>) {
             coordinator.hostingController.rootView = content
             scrollView.setNeedsUpdateConstraints()
-            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() }
+            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() } as! any Cancellable // FIXME
         }
 
         func handleDoubleTap() {

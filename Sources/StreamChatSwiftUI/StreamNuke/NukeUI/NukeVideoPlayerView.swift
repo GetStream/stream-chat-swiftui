@@ -8,7 +8,7 @@ import Foundation
 #if !os(watchOS)
 
 @MainActor
-final class VideoPlayerView: _PlatformBaseView {
+final class NukeVideoPlayerView: _PlatformBaseView {
     // MARK: Configuration
 
     /// `.resizeAspectFill` by default.

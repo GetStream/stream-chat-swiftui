@@ -29,7 +29,7 @@ struct ImageContainer: @unchecked Sendable {
     #endif
 
     /// An image type.
-    var type: AssetType?
+    var type: NukeAssetType?
 
     /// Returns `true` if the image in the container is a preview of the image.
     var isPreview: Bool
@@ -53,7 +53,7 @@ struct ImageContainer: @unchecked Sendable {
     var userInfo: [UserInfoKey: Any]
 
     /// Initializes the container with the given image.
-    init(image: PlatformImage, type: AssetType? = nil, isPreview: Bool = false, data: Data? = nil, userInfo: [UserInfoKey: Any] = [:]) {
+    init(image: PlatformImage, type: NukeAssetType? = nil, isPreview: Bool = false, data: Data? = nil, userInfo: [UserInfoKey: Any] = [:]) {
         self.image = image
         self.type = type
         self.isPreview = isPreview

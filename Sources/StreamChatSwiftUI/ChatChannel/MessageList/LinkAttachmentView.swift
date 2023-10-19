@@ -2,8 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 

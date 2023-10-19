@@ -22,7 +22,7 @@ extension ImageEncoders {
             guard let cgImage = image.cgImage else {
                 return nil
             }
-            let type: AssetType
+            let type: NukeAssetType
             if cgImage.isOpaque {
                 if isHEIFPreferred && ImageEncoders.ImageIO.isSupported(type: .heic) {
                     type = .heic

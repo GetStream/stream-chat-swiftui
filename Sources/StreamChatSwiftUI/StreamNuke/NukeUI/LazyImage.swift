@@ -3,14 +3,8 @@
 // Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
-import Nuke
 import SwiftUI
 import Combine
-
-typealias ImageRequest = Nuke.ImageRequest
-typealias ImageResponse = Nuke.ImageResponse
-typealias ImagePipeline = Nuke.ImagePipeline
-typealias ImageContainer = Nuke.ImageContainer
 
 private struct HashableRequest: Hashable {
     let request: ImageRequest
@@ -70,7 +64,7 @@ struct LazyImage<Content: View>: View {
     /// - Parameters:
     ///   - url: The image URL.
     ///   - resizingMode: The displayed image resizing mode.
-    init(url: URL?, resizingMode: ImageResizingMode = .aspectFill) where Content == Image {
+    init(url: URL?, resizingMode: ImageResizingMode = .aspectFill) where Content == NukeImage {
         self.init(request: url.map { ImageRequest(url: $0) }, resizingMode: resizingMode)
     }
 
@@ -79,14 +73,14 @@ struct LazyImage<Content: View>: View {
     /// - Parameters:
     ///   - request: The image request.
     ///   - resizingMode: The displayed image resizing mode.
-    init(request: ImageRequest?, resizingMode: ImageResizingMode = .aspectFill) where Content == Image {
+    init(request: ImageRequest?, resizingMode: ImageResizingMode = .aspectFill) where Content == NukeImage {
         self.request = request.map { HashableRequest(request: $0) }
         self.resizingMode = resizingMode
     }
 
     // Deprecated in Nuke 11.0
     @available(*, deprecated, message: "Please use init(request:) or init(url).")
-    init(source: (any ImageRequestConvertible)?, resizingMode: ImageResizingMode = .aspectFill) where Content == Image {
+    init(source: (any ImageRequestConvertible)?, resizingMode: ImageResizingMode = .aspectFill) where Content == NukeImage {
         self.init(request: source?.asImageRequest(), resizingMode: resizingMode)
     }
 #else
@@ -94,7 +88,7 @@ struct LazyImage<Content: View>: View {
     ///
     /// - Parameters:
     ///   - url: The image URL.
-    init(url: URL?) where Content == Image {
+    init(url: URL?) where Content == NukeImage {
         self.init(request: url.map { ImageRequest(url: $0) })
     }
 
@@ -102,13 +96,13 @@ struct LazyImage<Content: View>: View {
     ///
     /// - Parameters:
     ///   - request: The image request.
-    init(request: ImageRequest?) where Content == Image {
+    init(request: ImageRequest?) where Content == NukeImage {
         self.request = request.map { HashableRequest(request: $0) }
     }
 
     // Deprecated in Nuke 11.0
     @available(*, deprecated, message: "Please use init(request:) or init(url).")
-    init(source: (any ImageRequestConvertible)?) where Content == Image {
+    init(source: (any ImageRequestConvertible)?) where Content == NukeImage {
         self.request = source.map { HashableRequest(request: $0.asImageRequest()) }
     }
 #endif
@@ -269,7 +263,7 @@ struct LazyImage<Content: View>: View {
                 model.view
             }
 #else
-            Image(imageContainer) {
+            NukeImage(imageContainer) {
 #if os(iOS) || os(tvOS)
                 if let resizingMode = self.resizingMode {
                     $0.resizingMode = resizingMode

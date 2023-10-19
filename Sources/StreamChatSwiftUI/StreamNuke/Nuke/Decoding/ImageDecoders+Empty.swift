@@ -9,7 +9,7 @@ extension ImageDecoders {
     /// data to the image container.
     struct Empty: ImageDecoding, Sendable {
         let isProgressive: Bool
-        private let assetType: AssetType?
+        private let assetType: NukeAssetType?
 
         var isAsynchronous: Bool { false }
 
@@ -20,7 +20,7 @@ extension ImageDecoders {
         ///   `nil` by default.
         ///   - isProgressive: If `false`, returns nil for every progressive
         ///   scan. `false` by default.
-        init(assetType: AssetType? = nil, isProgressive: Bool = false) {
+        init(assetType: NukeAssetType? = nil, isProgressive: Bool = false) {
             self.assetType = assetType
             self.isProgressive = isProgressive
         }

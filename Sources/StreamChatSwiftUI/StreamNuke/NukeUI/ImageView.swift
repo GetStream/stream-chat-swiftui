@@ -3,7 +3,7 @@
 // Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
-import Nuke
+
 
 #if !os(watchOS)
 
@@ -60,7 +60,7 @@ class ImageView: _PlatformBaseView {
 #endif
 
     /// Returns an underlying video player view.
-    var videoPlayerView: VideoPlayerView {
+    var videoPlayerView: NukeVideoPlayerView {
         if let view = _videoPlayerView {
             return view
         }
@@ -70,8 +70,8 @@ class ImageView: _PlatformBaseView {
         return view
     }
 
-    private func makeVideoPlayerView() -> VideoPlayerView {
-        let view = VideoPlayerView()
+    private func makeVideoPlayerView() -> NukeVideoPlayerView {
+        let view = NukeVideoPlayerView()
 #if os(macOS)
         view.videoGravity = .resizeAspect
 #else
@@ -80,7 +80,7 @@ class ImageView: _PlatformBaseView {
         return view
     }
 
-    private var _videoPlayerView: VideoPlayerView?
+    private var _videoPlayerView: NukeVideoPlayerView?
 
     private(set) var customContentView: _PlatformBaseView? {
         get { _customContentView }

@@ -59,7 +59,7 @@ extension ImageDecoders {
             guard let image = makeImage() else {
                 throw ImageDecodingError.unknown
             }
-            let type = AssetType(data)
+            let type = NukeAssetType(data)
             var container = ImageContainer(image: image)
             container.type = type
             if type == .gif {
@@ -78,7 +78,7 @@ extension ImageDecoders {
             lock.lock()
             defer { lock.unlock() }
 
-            let assetType = AssetType(data)
+            let assetType = NukeAssetType(data)
             if assetType == .gif { // Special handling for GIF
                 if !isPreviewForGIFGenerated, let image = ImageDecoders.Default._decode(data, scale: scale) {
                     isPreviewForGIFGenerated = true
@@ -99,7 +99,7 @@ extension ImageDecoders {
 }
 
 private func isProgressiveDecodingAllowed(for data: Data) -> Bool {
-   let assetType = AssetType(data)
+   let assetType = NukeAssetType(data)
 
    // Determined whether the image supports progressive decoding or not
    // (only proressive JPEG is allowed for now, but you can add support

@@ -31,7 +31,7 @@
 		82D64BCD2AD7E5B700C5C79E /* ImageLoadingOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B6E2AD7E5B600C5C79E /* ImageLoadingOptions.swift */; };
 		82D64BCE2AD7E5B700C5C79E /* ImageViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B6F2AD7E5B600C5C79E /* ImageViewExtensions.swift */; };
 		82D64BCF2AD7E5B700C5C79E /* LazyImageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B712AD7E5B600C5C79E /* LazyImageState.swift */; };
-		82D64BD02AD7E5B700C5C79E /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B722AD7E5B600C5C79E /* VideoPlayerView.swift */; };
+		82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B722AD7E5B600C5C79E /* NukeVideoPlayerView.swift */; };
 		82D64BD12AD7E5B700C5C79E /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B732AD7E5B600C5C79E /* Image.swift */; };
 		82D64BD22AD7E5B700C5C79E /* FetchImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B742AD7E5B600C5C79E /* FetchImage.swift */; };
 		82D64BD32AD7E5B700C5C79E /* FrameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B772AD7E5B600C5C79E /* FrameStore.swift */; };
@@ -105,7 +105,7 @@
 		82D64C172AD7E5B700C5C79E /* ImageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC62AD7E5B700C5C79E /* ImageResponse.swift */; };
 		82D64C182AD7E5B700C5C79E /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC82AD7E5B700C5C79E /* ImageCache.swift */; };
 		82D64C192AD7E5B700C5C79E /* DataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC92AD7E5B700C5C79E /* DataCache.swift */; };
-		82D64C1A2AD7E5B700C5C79E /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCA2AD7E5B700C5C79E /* Cache.swift */; };
+		82D64C1A2AD7E5B700C5C79E /* NukeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCA2AD7E5B700C5C79E /* NukeCache.swift */; };
 		82D64C1B2AD7E5B700C5C79E /* ImageCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */; };
 		82D64C1C2AD7E5B700C5C79E /* DataCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
@@ -526,7 +526,7 @@
 		82D64B6E2AD7E5B600C5C79E /* ImageLoadingOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoadingOptions.swift; sourceTree = "<group>"; };
 		82D64B6F2AD7E5B600C5C79E /* ImageViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewExtensions.swift; sourceTree = "<group>"; };
 		82D64B712AD7E5B600C5C79E /* LazyImageState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyImageState.swift; sourceTree = "<group>"; };
-		82D64B722AD7E5B600C5C79E /* VideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		82D64B722AD7E5B600C5C79E /* NukeVideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NukeVideoPlayerView.swift; sourceTree = "<group>"; };
 		82D64B732AD7E5B600C5C79E /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		82D64B742AD7E5B600C5C79E /* FetchImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchImage.swift; sourceTree = "<group>"; };
 		82D64B772AD7E5B600C5C79E /* FrameStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameStore.swift; sourceTree = "<group>"; };
@@ -600,7 +600,7 @@
 		82D64BC62AD7E5B700C5C79E /* ImageResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageResponse.swift; sourceTree = "<group>"; };
 		82D64BC82AD7E5B700C5C79E /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		82D64BC92AD7E5B700C5C79E /* DataCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
-		82D64BCA2AD7E5B700C5C79E /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		82D64BCA2AD7E5B700C5C79E /* NukeCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NukeCache.swift; sourceTree = "<group>"; };
 		82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCaching.swift; sourceTree = "<group>"; };
 		82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataCaching.swift; sourceTree = "<group>"; };
 		82E8D79C2902B949008A8F78 /* StreamChatSwiftUITestsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StreamChatSwiftUITestsApp.entitlements; sourceTree = "<group>"; };
@@ -1043,7 +1043,7 @@
 			isa = PBXGroup;
 			children = (
 				82D64B712AD7E5B600C5C79E /* LazyImageState.swift */,
-				82D64B722AD7E5B600C5C79E /* VideoPlayerView.swift */,
+				82D64B722AD7E5B600C5C79E /* NukeVideoPlayerView.swift */,
 				82D64B732AD7E5B600C5C79E /* Image.swift */,
 				82D64B742AD7E5B600C5C79E /* FetchImage.swift */,
 				82D64B752AD7E5B600C5C79E /* Gifu */,
@@ -1228,7 +1228,7 @@
 			children = (
 				82D64BC82AD7E5B700C5C79E /* ImageCache.swift */,
 				82D64BC92AD7E5B700C5C79E /* DataCache.swift */,
-				82D64BCA2AD7E5B700C5C79E /* Cache.swift */,
+				82D64BCA2AD7E5B700C5C79E /* NukeCache.swift */,
 				82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */,
 				82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */,
 			);
@@ -2311,7 +2311,7 @@
 				82D64C032AD7E5B700C5C79E /* RateLimiter.swift in Sources */,
 				82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */,
 				82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */,
-				82D64BD02AD7E5B700C5C79E /* VideoPlayerView.swift in Sources */,
+				82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */,
 				84AB7B262773619F00631A10 /* MentionUsersView.swift in Sources */,
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
 				8465FDBE2746A95700AF091E /* MoreChannelActionsView.swift in Sources */,
@@ -2447,7 +2447,7 @@
 				846608E5278C865200D3D7B3 /* TypingIndicatorPlacement.swift in Sources */,
 				82D64B6B2AD7E5AC00C5C79E /* NSImageView+SwiftyGif.swift in Sources */,
 				8465FDA72746A95700AF091E /* KeyboardHandling.swift in Sources */,
-				82D64C1A2AD7E5B700C5C79E /* Cache.swift in Sources */,
+				82D64C1A2AD7E5B700C5C79E /* NukeCache.swift in Sources */,
 				8465FDD72746A95800AF091E /* Appearance.swift in Sources */,
 				82D64BE22AD7E5B700C5C79E /* ImagePipeline.swift in Sources */,
 				82D64BF42AD7E5B700C5C79E /* ImageProcessors.swift in Sources */,

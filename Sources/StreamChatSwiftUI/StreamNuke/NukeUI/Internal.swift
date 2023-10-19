@@ -13,7 +13,7 @@ import UIKit
 #endif
 
 import SwiftUI
-import Nuke
+
 
 #if os(macOS)
 typealias _PlatformBaseView = NSView

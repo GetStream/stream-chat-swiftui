@@ -8,15 +8,15 @@ import os
 func signpost(_ object: AnyObject, _ name: StaticString, _ type: OSSignpostType) {
     guard ImagePipeline.Configuration.isSignpostLoggingEnabled else { return }
 
-    let signpostId = OSSignpostID(log: log, object: object)
-    os_signpost(type, log: log, name: name, signpostID: signpostId)
+    let signpostId = OSSignpostID(log: nukeLog, object: object)
+    os_signpost(type, log: nukeLog, name: name, signpostID: signpostId)
 }
 
 func signpost(_ object: AnyObject, _ name: StaticString, _ type: OSSignpostType, _ message: @autoclosure () -> String) {
     guard ImagePipeline.Configuration.isSignpostLoggingEnabled else { return }
 
-    let signpostId = OSSignpostID(log: log, object: object)
-    os_signpost(type, log: log, name: name, signpostID: signpostId, "%{public}s", message())
+    let signpostId = OSSignpostID(log: nukeLog, object: object)
+    os_signpost(type, log: nukeLog, name: name, signpostID: signpostId, "%{public}s", message())
 }
 
 func signpost<T>(_ name: StaticString, _ work: () throws -> T) rethrows -> T {
@@ -26,15 +26,15 @@ func signpost<T>(_ name: StaticString, _ work: () throws -> T) rethrows -> T {
 func signpost<T>(_ name: StaticString, _ message: @autoclosure () -> String, _ work: () throws -> T) rethrows -> T {
     guard ImagePipeline.Configuration.isSignpostLoggingEnabled else { return try work() }
 
-    let signpostId = OSSignpostID(log: log)
+    let signpostId = OSSignpostID(log: nukeLog)
     let message = message()
     if !message.isEmpty {
-        os_signpost(.begin, log: log, name: name, signpostID: signpostId, "%{public}s", message)
+        os_signpost(.begin, log: nukeLog, name: name, signpostID: signpostId, "%{public}s", message)
     } else {
-        os_signpost(.begin, log: log, name: name, signpostID: signpostId)
+        os_signpost(.begin, log: nukeLog, name: name, signpostID: signpostId)
     }
     let result = try work()
-    os_signpost(.end, log: log, name: name, signpostID: signpostId)
+    os_signpost(.end, log: nukeLog, name: name, signpostID: signpostId)
     return result
 }
 
