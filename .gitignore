@@ -57,6 +57,9 @@ Pods/
 Carthage/
 !Sample/Carthage/
 
+# Ignore Products folder
+Products/
+
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
