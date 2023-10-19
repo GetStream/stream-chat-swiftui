@@ -55,12 +55,12 @@ do
 		fi
 
 		# Rename files
-		if [[ $f == *"Cache.swift"* ]]; then
+		if [[ $f == *"Caching/Cache.swift" ]]; then
 			new_f="${f/Cache.swift/NukeCache.swift}"
-			mv $f $new_f
-		elif [[ $f == *"VideoPlayerView.swift"* ]]; then
+			mv "$f" "$new_f"
+		elif [[ $f == *"NukeUI/VideoPlayerView.swift" ]]; then
 			new_f="${f/VideoPlayerView.swift/NukeVideoPlayerView.swift}"
-			mv $f $new_f
+			mv "$f" "$new_f"
 		fi
 	fi
 done
