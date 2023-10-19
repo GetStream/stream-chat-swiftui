@@ -50,8 +50,8 @@ private struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresenta
         let coordinator: Coordinator
         let scrollView = UIScrollView()
 
-        var doubleTapCancellable: Cancellable?
-        var updateConstraintsCancellable: Cancellable?
+        var doubleTapCancellable: Combine.Cancellable?
+        var updateConstraintsCancellable: Combine.Cancellable?
 
         private var hostedView: UIView { coordinator.hostingController.view! }
 
@@ -89,14 +89,14 @@ private struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresenta
             updateConstraintsCancellable = scrollView.publisher(for: \.bounds).map(\.size).removeDuplicates()
                 .sink { [unowned self] _ in
                     view.setNeedsUpdateConstraints()
-                } as! any Cancellable // FIXME
-            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() } as! any Cancellable // FIXME
+                }
+            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() }
         }
 
         func update(content: Content, doubleTap: AnyPublisher<Void, Never>) {
             coordinator.hostingController.rootView = content
             scrollView.setNeedsUpdateConstraints()
-            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() } as! any Cancellable // FIXME
+            doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() }
         }
 
         func handleDoubleTap() {
