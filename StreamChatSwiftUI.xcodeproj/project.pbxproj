@@ -22,6 +22,92 @@
 		82A1814428FD69AE005F9D43 /* SlowMode_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814328FD69AE005F9D43 /* SlowMode_Tests.swift */; };
 		82A1814728FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814628FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift */; };
 		82A1814928FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A1814828FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift */; };
+		82D64B662AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B602AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift */; };
+		82D64B672AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B612AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift */; };
+		82D64B682AD7E5AC00C5C79E /* ObjcAssociatedWeakObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B622AD7E5AC00C5C79E /* ObjcAssociatedWeakObject.swift */; };
+		82D64B692AD7E5AC00C5C79E /* UIImage+SwiftyGif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B632AD7E5AC00C5C79E /* UIImage+SwiftyGif.swift */; };
+		82D64B6A2AD7E5AC00C5C79E /* SwiftyGifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B642AD7E5AC00C5C79E /* SwiftyGifManager.swift */; };
+		82D64B6B2AD7E5AC00C5C79E /* NSImageView+SwiftyGif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B652AD7E5AC00C5C79E /* NSImageView+SwiftyGif.swift */; };
+		82D64BCD2AD7E5B700C5C79E /* ImageLoadingOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B6E2AD7E5B600C5C79E /* ImageLoadingOptions.swift */; };
+		82D64BCE2AD7E5B700C5C79E /* ImageViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B6F2AD7E5B600C5C79E /* ImageViewExtensions.swift */; };
+		82D64BCF2AD7E5B700C5C79E /* LazyImageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B712AD7E5B600C5C79E /* LazyImageState.swift */; };
+		82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B722AD7E5B600C5C79E /* NukeVideoPlayerView.swift */; };
+		82D64BD12AD7E5B700C5C79E /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B732AD7E5B600C5C79E /* Image.swift */; };
+		82D64BD22AD7E5B700C5C79E /* FetchImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B742AD7E5B600C5C79E /* FetchImage.swift */; };
+		82D64BD32AD7E5B700C5C79E /* FrameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B772AD7E5B600C5C79E /* FrameStore.swift */; };
+		82D64BD42AD7E5B700C5C79E /* GIFAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B782AD7E5B600C5C79E /* GIFAnimatable.swift */; };
+		82D64BD52AD7E5B700C5C79E /* AnimatedFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B792AD7E5B600C5C79E /* AnimatedFrame.swift */; };
+		82D64BD62AD7E5B700C5C79E /* Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B7A2AD7E5B600C5C79E /* Animator.swift */; };
+		82D64BD72AD7E5B700C5C79E /* GIFImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B7B2AD7E5B600C5C79E /* GIFImageView.swift */; };
+		82D64BD82AD7E5B700C5C79E /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B7D2AD7E5B600C5C79E /* Array.swift */; };
+		82D64BD92AD7E5B700C5C79E /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B7E2AD7E5B600C5C79E /* CGSize.swift */; };
+		82D64BDA2AD7E5B700C5C79E /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B7F2AD7E5B600C5C79E /* UIImage.swift */; };
+		82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B802AD7E5B600C5C79E /* UIImageView.swift */; };
+		82D64BDC2AD7E5B700C5C79E /* ImageSourceHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B822AD7E5B600C5C79E /* ImageSourceHelpers.swift */; };
+		82D64BDD2AD7E5B700C5C79E /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B832AD7E5B600C5C79E /* AnimatedImageView.swift */; };
+		82D64BDE2AD7E5B700C5C79E /* Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B842AD7E5B600C5C79E /* Internal.swift */; };
+		82D64BDF2AD7E5B700C5C79E /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B852AD7E5B600C5C79E /* ImageView.swift */; };
+		82D64BE02AD7E5B700C5C79E /* LazyImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B862AD7E5B600C5C79E /* LazyImage.swift */; };
+		82D64BE12AD7E5B700C5C79E /* LazyImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B872AD7E5B600C5C79E /* LazyImageView.swift */; };
+		82D64BE22AD7E5B700C5C79E /* ImagePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B8A2AD7E5B600C5C79E /* ImagePipeline.swift */; };
+		82D64BE32AD7E5B700C5C79E /* ImagePipelineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B8B2AD7E5B600C5C79E /* ImagePipelineError.swift */; };
+		82D64BE42AD7E5B700C5C79E /* ImagePipelineConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B8C2AD7E5B600C5C79E /* ImagePipelineConfiguration.swift */; };
+		82D64BE52AD7E5B700C5C79E /* ImagePipelineCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B8D2AD7E5B600C5C79E /* ImagePipelineCache.swift */; };
+		82D64BE62AD7E5B700C5C79E /* ImagePipelineDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B8E2AD7E5B600C5C79E /* ImagePipelineDelegate.swift */; };
+		82D64BE72AD7E5B700C5C79E /* ImageTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B8F2AD7E5B600C5C79E /* ImageTask.swift */; };
+		82D64BE82AD7E5B700C5C79E /* TaskFetchDecodedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B912AD7E5B600C5C79E /* TaskFetchDecodedImage.swift */; };
+		82D64BE92AD7E5B700C5C79E /* TaskLoadData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B922AD7E5B600C5C79E /* TaskLoadData.swift */; };
+		82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B932AD7E5B600C5C79E /* TaskFetchOriginalImageData.swift */; };
+		82D64BEB2AD7E5B700C5C79E /* ImagePipelineTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B942AD7E5B600C5C79E /* ImagePipelineTask.swift */; };
+		82D64BEC2AD7E5B700C5C79E /* OperationTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B952AD7E5B600C5C79E /* OperationTask.swift */; };
+		82D64BED2AD7E5B700C5C79E /* TaskLoadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B962AD7E5B600C5C79E /* TaskLoadImage.swift */; };
+		82D64BEE2AD7E5B700C5C79E /* AsyncTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B972AD7E5B600C5C79E /* AsyncTask.swift */; };
+		82D64BEF2AD7E5B700C5C79E /* TaskFetchWithPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B982AD7E5B600C5C79E /* TaskFetchWithPublisher.swift */; };
+		82D64BF02AD7E5B700C5C79E /* DataLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B9A2AD7E5B600C5C79E /* DataLoading.swift */; };
+		82D64BF12AD7E5B700C5C79E /* DataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B9B2AD7E5B600C5C79E /* DataLoader.swift */; };
+		82D64BF22AD7E5B700C5C79E /* ImageProcessors+RoundedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B9D2AD7E5B600C5C79E /* ImageProcessors+RoundedCorners.swift */; };
+		82D64BF32AD7E5B700C5C79E /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B9E2AD7E5B600C5C79E /* ImageProcessing.swift */; };
+		82D64BF42AD7E5B700C5C79E /* ImageProcessors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64B9F2AD7E5B600C5C79E /* ImageProcessors.swift */; };
+		82D64BF52AD7E5B700C5C79E /* ImageProcessors+GaussianBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA02AD7E5B600C5C79E /* ImageProcessors+GaussianBlur.swift */; };
+		82D64BF62AD7E5B700C5C79E /* ImageProcessors+CoreImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA12AD7E5B600C5C79E /* ImageProcessors+CoreImage.swift */; };
+		82D64BF72AD7E5B700C5C79E /* ImageProcessingOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA22AD7E5B600C5C79E /* ImageProcessingOptions.swift */; };
+		82D64BF82AD7E5B700C5C79E /* ImageProcessors+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA32AD7E5B700C5C79E /* ImageProcessors+Circle.swift */; };
+		82D64BF92AD7E5B700C5C79E /* ImageProcessors+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA42AD7E5B700C5C79E /* ImageProcessors+Resize.swift */; };
+		82D64BFA2AD7E5B700C5C79E /* ImageProcessors+Anonymous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA52AD7E5B700C5C79E /* ImageProcessors+Anonymous.swift */; };
+		82D64BFB2AD7E5B700C5C79E /* ImageProcessors+Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA62AD7E5B700C5C79E /* ImageProcessors+Composition.swift */; };
+		82D64BFC2AD7E5B700C5C79E /* ImageDecompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA72AD7E5B700C5C79E /* ImageDecompression.swift */; };
+		82D64BFD2AD7E5B700C5C79E /* ImagePrefetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BA92AD7E5B700C5C79E /* ImagePrefetcher.swift */; };
+		82D64BFE2AD7E5B700C5C79E /* ResumableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BAB2AD7E5B700C5C79E /* ResumableData.swift */; };
+		82D64BFF2AD7E5B700C5C79E /* Allocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BAC2AD7E5B700C5C79E /* Allocations.swift */; };
+		82D64C002AD7E5B700C5C79E /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BAD2AD7E5B700C5C79E /* Log.swift */; };
+		82D64C012AD7E5B700C5C79E /* DataPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BAE2AD7E5B700C5C79E /* DataPublisher.swift */; };
+		82D64C022AD7E5B700C5C79E /* AVDataAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BAF2AD7E5B700C5C79E /* AVDataAsset.swift */; };
+		82D64C032AD7E5B700C5C79E /* RateLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB02AD7E5B700C5C79E /* RateLimiter.swift */; };
+		82D64C042AD7E5B700C5C79E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB12AD7E5B700C5C79E /* Extensions.swift */; };
+		82D64C052AD7E5B700C5C79E /* Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB22AD7E5B700C5C79E /* Deprecated.swift */; };
+		82D64C062AD7E5B700C5C79E /* Graphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB32AD7E5B700C5C79E /* Graphics.swift */; };
+		82D64C072AD7E5B700C5C79E /* ImagePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB42AD7E5B700C5C79E /* ImagePublisher.swift */; };
+		82D64C082AD7E5B700C5C79E /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB52AD7E5B700C5C79E /* Operation.swift */; };
+		82D64C092AD7E5B700C5C79E /* ImageRequestKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB62AD7E5B700C5C79E /* ImageRequestKeys.swift */; };
+		82D64C0A2AD7E5B700C5C79E /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB72AD7E5B700C5C79E /* LinkedList.swift */; };
+		82D64C0B2AD7E5B700C5C79E /* ImageEncoders+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BB92AD7E5B700C5C79E /* ImageEncoders+Default.swift */; };
+		82D64C0C2AD7E5B700C5C79E /* ImageEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BBA2AD7E5B700C5C79E /* ImageEncoders.swift */; };
+		82D64C0D2AD7E5B700C5C79E /* ImageEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BBB2AD7E5B700C5C79E /* ImageEncoding.swift */; };
+		82D64C0E2AD7E5B700C5C79E /* ImageEncoders+ImageIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BBC2AD7E5B700C5C79E /* ImageEncoders+ImageIO.swift */; };
+		82D64C0F2AD7E5B700C5C79E /* ImageDecoders+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BBE2AD7E5B700C5C79E /* ImageDecoders+Video.swift */; };
+		82D64C102AD7E5B700C5C79E /* ImageDecoders+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BBF2AD7E5B700C5C79E /* ImageDecoders+Default.swift */; };
+		82D64C112AD7E5B700C5C79E /* AssetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC02AD7E5B700C5C79E /* AssetType.swift */; };
+		82D64C122AD7E5B700C5C79E /* ImageDecoders+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC12AD7E5B700C5C79E /* ImageDecoders+Empty.swift */; };
+		82D64C132AD7E5B700C5C79E /* ImageDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC22AD7E5B700C5C79E /* ImageDecoding.swift */; };
+		82D64C142AD7E5B700C5C79E /* ImageDecoderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC32AD7E5B700C5C79E /* ImageDecoderRegistry.swift */; };
+		82D64C152AD7E5B700C5C79E /* ImageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC42AD7E5B700C5C79E /* ImageContainer.swift */; };
+		82D64C162AD7E5B700C5C79E /* ImageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC52AD7E5B700C5C79E /* ImageRequest.swift */; };
+		82D64C172AD7E5B700C5C79E /* ImageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC62AD7E5B700C5C79E /* ImageResponse.swift */; };
+		82D64C182AD7E5B700C5C79E /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC82AD7E5B700C5C79E /* ImageCache.swift */; };
+		82D64C192AD7E5B700C5C79E /* DataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BC92AD7E5B700C5C79E /* DataCache.swift */; };
+		82D64C1A2AD7E5B700C5C79E /* NukeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCA2AD7E5B700C5C79E /* NukeCache.swift */; };
+		82D64C1B2AD7E5B700C5C79E /* ImageCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */; };
+		82D64C1C2AD7E5B700C5C79E /* DataCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
 		8400A34A282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */; };
 		8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A34B282C081E0067D3A0 /* OHHTTPStubs */; };
@@ -433,6 +519,92 @@
 		82A1814328FD69AE005F9D43 /* SlowMode_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowMode_Tests.swift; sourceTree = "<group>"; };
 		82A1814628FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDeliveryStatus_Tests.swift; sourceTree = "<group>"; };
 		82A1814828FD6A0C005F9D43 /* MessageDeliveryStatus+ChannelList_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessageDeliveryStatus+ChannelList_Tests.swift"; sourceTree = "<group>"; };
+		82D64B602AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+SwiftyGif.swift"; sourceTree = "<group>"; };
+		82D64B612AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+SwiftyGif.swift"; sourceTree = "<group>"; };
+		82D64B622AD7E5AC00C5C79E /* ObjcAssociatedWeakObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjcAssociatedWeakObject.swift; sourceTree = "<group>"; };
+		82D64B632AD7E5AC00C5C79E /* UIImage+SwiftyGif.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SwiftyGif.swift"; sourceTree = "<group>"; };
+		82D64B642AD7E5AC00C5C79E /* SwiftyGifManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyGifManager.swift; sourceTree = "<group>"; };
+		82D64B652AD7E5AC00C5C79E /* NSImageView+SwiftyGif.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImageView+SwiftyGif.swift"; sourceTree = "<group>"; };
+		82D64B6E2AD7E5B600C5C79E /* ImageLoadingOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoadingOptions.swift; sourceTree = "<group>"; };
+		82D64B6F2AD7E5B600C5C79E /* ImageViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewExtensions.swift; sourceTree = "<group>"; };
+		82D64B712AD7E5B600C5C79E /* LazyImageState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyImageState.swift; sourceTree = "<group>"; };
+		82D64B722AD7E5B600C5C79E /* NukeVideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NukeVideoPlayerView.swift; sourceTree = "<group>"; };
+		82D64B732AD7E5B600C5C79E /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		82D64B742AD7E5B600C5C79E /* FetchImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchImage.swift; sourceTree = "<group>"; };
+		82D64B772AD7E5B600C5C79E /* FrameStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameStore.swift; sourceTree = "<group>"; };
+		82D64B782AD7E5B600C5C79E /* GIFAnimatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIFAnimatable.swift; sourceTree = "<group>"; };
+		82D64B792AD7E5B600C5C79E /* AnimatedFrame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedFrame.swift; sourceTree = "<group>"; };
+		82D64B7A2AD7E5B600C5C79E /* Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animator.swift; sourceTree = "<group>"; };
+		82D64B7B2AD7E5B600C5C79E /* GIFImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIFImageView.swift; sourceTree = "<group>"; };
+		82D64B7D2AD7E5B600C5C79E /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		82D64B7E2AD7E5B600C5C79E /* CGSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
+		82D64B7F2AD7E5B600C5C79E /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		82D64B802AD7E5B600C5C79E /* UIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
+		82D64B822AD7E5B600C5C79E /* ImageSourceHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSourceHelpers.swift; sourceTree = "<group>"; };
+		82D64B832AD7E5B600C5C79E /* AnimatedImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
+		82D64B842AD7E5B600C5C79E /* Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Internal.swift; sourceTree = "<group>"; };
+		82D64B852AD7E5B600C5C79E /* ImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		82D64B862AD7E5B600C5C79E /* LazyImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyImage.swift; sourceTree = "<group>"; };
+		82D64B872AD7E5B600C5C79E /* LazyImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyImageView.swift; sourceTree = "<group>"; };
+		82D64B8A2AD7E5B600C5C79E /* ImagePipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
+		82D64B8B2AD7E5B600C5C79E /* ImagePipelineError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePipelineError.swift; sourceTree = "<group>"; };
+		82D64B8C2AD7E5B600C5C79E /* ImagePipelineConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePipelineConfiguration.swift; sourceTree = "<group>"; };
+		82D64B8D2AD7E5B600C5C79E /* ImagePipelineCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePipelineCache.swift; sourceTree = "<group>"; };
+		82D64B8E2AD7E5B600C5C79E /* ImagePipelineDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePipelineDelegate.swift; sourceTree = "<group>"; };
+		82D64B8F2AD7E5B600C5C79E /* ImageTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTask.swift; sourceTree = "<group>"; };
+		82D64B912AD7E5B600C5C79E /* TaskFetchDecodedImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskFetchDecodedImage.swift; sourceTree = "<group>"; };
+		82D64B922AD7E5B600C5C79E /* TaskLoadData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskLoadData.swift; sourceTree = "<group>"; };
+		82D64B932AD7E5B600C5C79E /* TaskFetchOriginalImageData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskFetchOriginalImageData.swift; sourceTree = "<group>"; };
+		82D64B942AD7E5B600C5C79E /* ImagePipelineTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePipelineTask.swift; sourceTree = "<group>"; };
+		82D64B952AD7E5B600C5C79E /* OperationTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationTask.swift; sourceTree = "<group>"; };
+		82D64B962AD7E5B600C5C79E /* TaskLoadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskLoadImage.swift; sourceTree = "<group>"; };
+		82D64B972AD7E5B600C5C79E /* AsyncTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTask.swift; sourceTree = "<group>"; };
+		82D64B982AD7E5B600C5C79E /* TaskFetchWithPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskFetchWithPublisher.swift; sourceTree = "<group>"; };
+		82D64B9A2AD7E5B600C5C79E /* DataLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoading.swift; sourceTree = "<group>"; };
+		82D64B9B2AD7E5B600C5C79E /* DataLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoader.swift; sourceTree = "<group>"; };
+		82D64B9D2AD7E5B600C5C79E /* ImageProcessors+RoundedCorners.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+RoundedCorners.swift"; sourceTree = "<group>"; };
+		82D64B9E2AD7E5B600C5C79E /* ImageProcessing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageProcessing.swift; sourceTree = "<group>"; };
+		82D64B9F2AD7E5B600C5C79E /* ImageProcessors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageProcessors.swift; sourceTree = "<group>"; };
+		82D64BA02AD7E5B600C5C79E /* ImageProcessors+GaussianBlur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+GaussianBlur.swift"; sourceTree = "<group>"; };
+		82D64BA12AD7E5B600C5C79E /* ImageProcessors+CoreImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+CoreImage.swift"; sourceTree = "<group>"; };
+		82D64BA22AD7E5B600C5C79E /* ImageProcessingOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageProcessingOptions.swift; sourceTree = "<group>"; };
+		82D64BA32AD7E5B700C5C79E /* ImageProcessors+Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+Circle.swift"; sourceTree = "<group>"; };
+		82D64BA42AD7E5B700C5C79E /* ImageProcessors+Resize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+Resize.swift"; sourceTree = "<group>"; };
+		82D64BA52AD7E5B700C5C79E /* ImageProcessors+Anonymous.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+Anonymous.swift"; sourceTree = "<group>"; };
+		82D64BA62AD7E5B700C5C79E /* ImageProcessors+Composition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageProcessors+Composition.swift"; sourceTree = "<group>"; };
+		82D64BA72AD7E5B700C5C79E /* ImageDecompression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDecompression.swift; sourceTree = "<group>"; };
+		82D64BA92AD7E5B700C5C79E /* ImagePrefetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePrefetcher.swift; sourceTree = "<group>"; };
+		82D64BAB2AD7E5B700C5C79E /* ResumableData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumableData.swift; sourceTree = "<group>"; };
+		82D64BAC2AD7E5B700C5C79E /* Allocations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Allocations.swift; sourceTree = "<group>"; };
+		82D64BAD2AD7E5B700C5C79E /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		82D64BAE2AD7E5B700C5C79E /* DataPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPublisher.swift; sourceTree = "<group>"; };
+		82D64BAF2AD7E5B700C5C79E /* AVDataAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVDataAsset.swift; sourceTree = "<group>"; };
+		82D64BB02AD7E5B700C5C79E /* RateLimiter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RateLimiter.swift; sourceTree = "<group>"; };
+		82D64BB12AD7E5B700C5C79E /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		82D64BB22AD7E5B700C5C79E /* Deprecated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deprecated.swift; sourceTree = "<group>"; };
+		82D64BB32AD7E5B700C5C79E /* Graphics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graphics.swift; sourceTree = "<group>"; };
+		82D64BB42AD7E5B700C5C79E /* ImagePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePublisher.swift; sourceTree = "<group>"; };
+		82D64BB52AD7E5B700C5C79E /* Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
+		82D64BB62AD7E5B700C5C79E /* ImageRequestKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageRequestKeys.swift; sourceTree = "<group>"; };
+		82D64BB72AD7E5B700C5C79E /* LinkedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
+		82D64BB92AD7E5B700C5C79E /* ImageEncoders+Default.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageEncoders+Default.swift"; sourceTree = "<group>"; };
+		82D64BBA2AD7E5B700C5C79E /* ImageEncoders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageEncoders.swift; sourceTree = "<group>"; };
+		82D64BBB2AD7E5B700C5C79E /* ImageEncoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageEncoding.swift; sourceTree = "<group>"; };
+		82D64BBC2AD7E5B700C5C79E /* ImageEncoders+ImageIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageEncoders+ImageIO.swift"; sourceTree = "<group>"; };
+		82D64BBE2AD7E5B700C5C79E /* ImageDecoders+Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageDecoders+Video.swift"; sourceTree = "<group>"; };
+		82D64BBF2AD7E5B700C5C79E /* ImageDecoders+Default.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageDecoders+Default.swift"; sourceTree = "<group>"; };
+		82D64BC02AD7E5B700C5C79E /* AssetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetType.swift; sourceTree = "<group>"; };
+		82D64BC12AD7E5B700C5C79E /* ImageDecoders+Empty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageDecoders+Empty.swift"; sourceTree = "<group>"; };
+		82D64BC22AD7E5B700C5C79E /* ImageDecoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDecoding.swift; sourceTree = "<group>"; };
+		82D64BC32AD7E5B700C5C79E /* ImageDecoderRegistry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDecoderRegistry.swift; sourceTree = "<group>"; };
+		82D64BC42AD7E5B700C5C79E /* ImageContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainer.swift; sourceTree = "<group>"; };
+		82D64BC52AD7E5B700C5C79E /* ImageRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageRequest.swift; sourceTree = "<group>"; };
+		82D64BC62AD7E5B700C5C79E /* ImageResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageResponse.swift; sourceTree = "<group>"; };
+		82D64BC82AD7E5B700C5C79E /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		82D64BC92AD7E5B700C5C79E /* DataCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
+		82D64BCA2AD7E5B700C5C79E /* NukeCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NukeCache.swift; sourceTree = "<group>"; };
+		82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCaching.swift; sourceTree = "<group>"; };
+		82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataCaching.swift; sourceTree = "<group>"; };
 		82E8D79C2902B949008A8F78 /* StreamChatSwiftUITestsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StreamChatSwiftUITestsApp.entitlements; sourceTree = "<group>"; };
 		840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions_Tests.swift; sourceTree = "<group>"; };
 		8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatWrapper.swift; sourceTree = "<group>"; };
@@ -838,6 +1010,235 @@
 			path = "Message Delivery Status";
 			sourceTree = "<group>";
 		};
+		82D64B5F2AD7E5AC00C5C79E /* StreamSwiftyGif */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B602AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift */,
+				82D64B612AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift */,
+				82D64B622AD7E5AC00C5C79E /* ObjcAssociatedWeakObject.swift */,
+				82D64B632AD7E5AC00C5C79E /* UIImage+SwiftyGif.swift */,
+				82D64B642AD7E5AC00C5C79E /* SwiftyGifManager.swift */,
+				82D64B652AD7E5AC00C5C79E /* NSImageView+SwiftyGif.swift */,
+			);
+			path = StreamSwiftyGif;
+			sourceTree = "<group>";
+		};
+		82D64B6C2AD7E5B600C5C79E /* StreamNuke */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B6D2AD7E5B600C5C79E /* NukeExtensions */,
+				82D64B702AD7E5B600C5C79E /* NukeUI */,
+				82D64B882AD7E5B600C5C79E /* Nuke */,
+			);
+			name = StreamNuke;
+			path = Sources/StreamChatSwiftUI/StreamNuke;
+			sourceTree = SOURCE_ROOT;
+		};
+		82D64B6D2AD7E5B600C5C79E /* NukeExtensions */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B6E2AD7E5B600C5C79E /* ImageLoadingOptions.swift */,
+				82D64B6F2AD7E5B600C5C79E /* ImageViewExtensions.swift */,
+			);
+			path = NukeExtensions;
+			sourceTree = "<group>";
+		};
+		82D64B702AD7E5B600C5C79E /* NukeUI */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B712AD7E5B600C5C79E /* LazyImageState.swift */,
+				82D64B722AD7E5B600C5C79E /* NukeVideoPlayerView.swift */,
+				82D64B732AD7E5B600C5C79E /* Image.swift */,
+				82D64B742AD7E5B600C5C79E /* FetchImage.swift */,
+				82D64B752AD7E5B600C5C79E /* Gifu */,
+				82D64B832AD7E5B600C5C79E /* AnimatedImageView.swift */,
+				82D64B842AD7E5B600C5C79E /* Internal.swift */,
+				82D64B852AD7E5B600C5C79E /* ImageView.swift */,
+				82D64B862AD7E5B600C5C79E /* LazyImage.swift */,
+				82D64B872AD7E5B600C5C79E /* LazyImageView.swift */,
+			);
+			path = NukeUI;
+			sourceTree = "<group>";
+		};
+		82D64B752AD7E5B600C5C79E /* Gifu */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B762AD7E5B600C5C79E /* Classes */,
+				82D64B7C2AD7E5B600C5C79E /* Extensions */,
+				82D64B812AD7E5B600C5C79E /* Helpers */,
+			);
+			path = Gifu;
+			sourceTree = "<group>";
+		};
+		82D64B762AD7E5B600C5C79E /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B772AD7E5B600C5C79E /* FrameStore.swift */,
+				82D64B782AD7E5B600C5C79E /* GIFAnimatable.swift */,
+				82D64B792AD7E5B600C5C79E /* AnimatedFrame.swift */,
+				82D64B7A2AD7E5B600C5C79E /* Animator.swift */,
+				82D64B7B2AD7E5B600C5C79E /* GIFImageView.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		82D64B7C2AD7E5B600C5C79E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B7D2AD7E5B600C5C79E /* Array.swift */,
+				82D64B7E2AD7E5B600C5C79E /* CGSize.swift */,
+				82D64B7F2AD7E5B600C5C79E /* UIImage.swift */,
+				82D64B802AD7E5B600C5C79E /* UIImageView.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		82D64B812AD7E5B600C5C79E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B822AD7E5B600C5C79E /* ImageSourceHelpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		82D64B882AD7E5B600C5C79E /* Nuke */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B892AD7E5B600C5C79E /* Pipeline */,
+				82D64B8F2AD7E5B600C5C79E /* ImageTask.swift */,
+				82D64B902AD7E5B600C5C79E /* Tasks */,
+				82D64B992AD7E5B600C5C79E /* Loading */,
+				82D64B9C2AD7E5B600C5C79E /* Processing */,
+				82D64BA82AD7E5B700C5C79E /* Prefetching */,
+				82D64BAA2AD7E5B700C5C79E /* Internal */,
+				82D64BB82AD7E5B700C5C79E /* Encoding */,
+				82D64BBD2AD7E5B700C5C79E /* Decoding */,
+				82D64BC42AD7E5B700C5C79E /* ImageContainer.swift */,
+				82D64BC52AD7E5B700C5C79E /* ImageRequest.swift */,
+				82D64BC62AD7E5B700C5C79E /* ImageResponse.swift */,
+				82D64BC72AD7E5B700C5C79E /* Caching */,
+			);
+			path = Nuke;
+			sourceTree = "<group>";
+		};
+		82D64B892AD7E5B600C5C79E /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B8A2AD7E5B600C5C79E /* ImagePipeline.swift */,
+				82D64B8B2AD7E5B600C5C79E /* ImagePipelineError.swift */,
+				82D64B8C2AD7E5B600C5C79E /* ImagePipelineConfiguration.swift */,
+				82D64B8D2AD7E5B600C5C79E /* ImagePipelineCache.swift */,
+				82D64B8E2AD7E5B600C5C79E /* ImagePipelineDelegate.swift */,
+			);
+			path = Pipeline;
+			sourceTree = "<group>";
+		};
+		82D64B902AD7E5B600C5C79E /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B912AD7E5B600C5C79E /* TaskFetchDecodedImage.swift */,
+				82D64B922AD7E5B600C5C79E /* TaskLoadData.swift */,
+				82D64B932AD7E5B600C5C79E /* TaskFetchOriginalImageData.swift */,
+				82D64B942AD7E5B600C5C79E /* ImagePipelineTask.swift */,
+				82D64B952AD7E5B600C5C79E /* OperationTask.swift */,
+				82D64B962AD7E5B600C5C79E /* TaskLoadImage.swift */,
+				82D64B972AD7E5B600C5C79E /* AsyncTask.swift */,
+				82D64B982AD7E5B600C5C79E /* TaskFetchWithPublisher.swift */,
+			);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+		82D64B992AD7E5B600C5C79E /* Loading */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B9A2AD7E5B600C5C79E /* DataLoading.swift */,
+				82D64B9B2AD7E5B600C5C79E /* DataLoader.swift */,
+			);
+			path = Loading;
+			sourceTree = "<group>";
+		};
+		82D64B9C2AD7E5B600C5C79E /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				82D64B9D2AD7E5B600C5C79E /* ImageProcessors+RoundedCorners.swift */,
+				82D64B9E2AD7E5B600C5C79E /* ImageProcessing.swift */,
+				82D64B9F2AD7E5B600C5C79E /* ImageProcessors.swift */,
+				82D64BA02AD7E5B600C5C79E /* ImageProcessors+GaussianBlur.swift */,
+				82D64BA12AD7E5B600C5C79E /* ImageProcessors+CoreImage.swift */,
+				82D64BA22AD7E5B600C5C79E /* ImageProcessingOptions.swift */,
+				82D64BA32AD7E5B700C5C79E /* ImageProcessors+Circle.swift */,
+				82D64BA42AD7E5B700C5C79E /* ImageProcessors+Resize.swift */,
+				82D64BA52AD7E5B700C5C79E /* ImageProcessors+Anonymous.swift */,
+				82D64BA62AD7E5B700C5C79E /* ImageProcessors+Composition.swift */,
+				82D64BA72AD7E5B700C5C79E /* ImageDecompression.swift */,
+			);
+			path = Processing;
+			sourceTree = "<group>";
+		};
+		82D64BA82AD7E5B700C5C79E /* Prefetching */ = {
+			isa = PBXGroup;
+			children = (
+				82D64BA92AD7E5B700C5C79E /* ImagePrefetcher.swift */,
+			);
+			path = Prefetching;
+			sourceTree = "<group>";
+		};
+		82D64BAA2AD7E5B700C5C79E /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				82D64BAB2AD7E5B700C5C79E /* ResumableData.swift */,
+				82D64BAC2AD7E5B700C5C79E /* Allocations.swift */,
+				82D64BAD2AD7E5B700C5C79E /* Log.swift */,
+				82D64BAE2AD7E5B700C5C79E /* DataPublisher.swift */,
+				82D64BAF2AD7E5B700C5C79E /* AVDataAsset.swift */,
+				82D64BB02AD7E5B700C5C79E /* RateLimiter.swift */,
+				82D64BB12AD7E5B700C5C79E /* Extensions.swift */,
+				82D64BB22AD7E5B700C5C79E /* Deprecated.swift */,
+				82D64BB32AD7E5B700C5C79E /* Graphics.swift */,
+				82D64BB42AD7E5B700C5C79E /* ImagePublisher.swift */,
+				82D64BB52AD7E5B700C5C79E /* Operation.swift */,
+				82D64BB62AD7E5B700C5C79E /* ImageRequestKeys.swift */,
+				82D64BB72AD7E5B700C5C79E /* LinkedList.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		82D64BB82AD7E5B700C5C79E /* Encoding */ = {
+			isa = PBXGroup;
+			children = (
+				82D64BB92AD7E5B700C5C79E /* ImageEncoders+Default.swift */,
+				82D64BBA2AD7E5B700C5C79E /* ImageEncoders.swift */,
+				82D64BBB2AD7E5B700C5C79E /* ImageEncoding.swift */,
+				82D64BBC2AD7E5B700C5C79E /* ImageEncoders+ImageIO.swift */,
+			);
+			path = Encoding;
+			sourceTree = "<group>";
+		};
+		82D64BBD2AD7E5B700C5C79E /* Decoding */ = {
+			isa = PBXGroup;
+			children = (
+				82D64BBE2AD7E5B700C5C79E /* ImageDecoders+Video.swift */,
+				82D64BBF2AD7E5B700C5C79E /* ImageDecoders+Default.swift */,
+				82D64BC02AD7E5B700C5C79E /* AssetType.swift */,
+				82D64BC12AD7E5B700C5C79E /* ImageDecoders+Empty.swift */,
+				82D64BC22AD7E5B700C5C79E /* ImageDecoding.swift */,
+				82D64BC32AD7E5B700C5C79E /* ImageDecoderRegistry.swift */,
+			);
+			path = Decoding;
+			sourceTree = "<group>";
+		};
+		82D64BC72AD7E5B700C5C79E /* Caching */ = {
+			isa = PBXGroup;
+			children = (
+				82D64BC82AD7E5B700C5C79E /* ImageCache.swift */,
+				82D64BC92AD7E5B700C5C79E /* DataCache.swift */,
+				82D64BCA2AD7E5B700C5C79E /* NukeCache.swift */,
+				82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */,
+				82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */,
+			);
+			path = Caching;
+			sourceTree = "<group>";
+		};
 		8400A352282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1057,6 +1458,8 @@
 				8465FD312746A95600AF091E /* Utils */,
 				8465FCEC2746A95600AF091E /* Generated */,
 				8465FCF32746A95600AF091E /* Resources */,
+				82D64B6C2AD7E5B600C5C79E /* StreamNuke */,
+				82D64B5F2AD7E5AC00C5C79E /* StreamSwiftyGif */,
 				8465FD5D2746A95700AF091E /* README.md */,
 				8465FD602746A95700AF091E /* StreamChatSwiftUI.h */,
 				8465FD682746A95700AF091E /* Info.plist */,
@@ -1880,30 +2283,48 @@
 			buildActionMask = 2147483647;
 			files = (
 				8465FD962746A95700AF091E /* ReactionsOverlayViewModel.swift in Sources */,
+				82D64BE92AD7E5B700C5C79E /* TaskLoadData.swift in Sources */,
 				847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */,
+				82D64BF62AD7E5B700C5C79E /* ImageProcessors+CoreImage.swift in Sources */,
 				8465FD792746A95700AF091E /* DeletedMessageView.swift in Sources */,
 				8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */,
+				82D64B662AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift in Sources */,
 				84AB7B242773528300631A10 /* CommandsContainerView.swift in Sources */,
 				8465FDB72746A95700AF091E /* ChatMessageReactionAppeareance.swift in Sources */,
 				8465FDBF2746A95700AF091E /* DefaultChannelActions.swift in Sources */,
 				8465FD772746A95700AF091E /* FileAttachmentPreview.swift in Sources */,
+				82D64BD82AD7E5B700C5C79E /* Array.swift in Sources */,
 				8465FD862746A95700AF091E /* MessageComposerViewModel.swift in Sources */,
 				84289BE72807214200282ABE /* PinnedMessagesViewModel.swift in Sources */,
 				8465FD7C2746A95700AF091E /* MessageContainerView.swift in Sources */,
+				82D64BD92AD7E5B700C5C79E /* CGSize.swift in Sources */,
 				841B64D8277B14440016FF3B /* MuteCommandHandler.swift in Sources */,
 				8465FDB42746A95700AF091E /* ChatMessage+Extensions.swift in Sources */,
+				82D64C0D2AD7E5B700C5C79E /* ImageEncoding.swift in Sources */,
+				82D64BCE2AD7E5B700C5C79E /* ImageViewExtensions.swift in Sources */,
 				8465FD8C2746A95700AF091E /* ImagePickerView.swift in Sources */,
+				82D64BFB2AD7E5B700C5C79E /* ImageProcessors+Composition.swift in Sources */,
+				82D64BD32AD7E5B700C5C79E /* FrameStore.swift in Sources */,
 				8465FDB22746A95700AF091E /* InputTextView.swift in Sources */,
 				8465FDB32746A95700AF091E /* NSLayoutConstraint+Extensions.swift in Sources */,
+				82D64BCF2AD7E5B700C5C79E /* LazyImageState.swift in Sources */,
 				8465FD912746A95700AF091E /* MessageComposerView.swift in Sources */,
+				82D64BE52AD7E5B700C5C79E /* ImagePipelineCache.swift in Sources */,
 				8465FD6A2746A95700AF091E /* L10n.swift in Sources */,
+				82D64BED2AD7E5B700C5C79E /* TaskLoadImage.swift in Sources */,
 				8465FD922746A95700AF091E /* AttachmentPickerView.swift in Sources */,
 				8465FD952746A95700AF091E /* ReactionsOverlayContainer.swift in Sources */,
+				82D64C032AD7E5B700C5C79E /* RateLimiter.swift in Sources */,
+				82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */,
+				82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */,
+				82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */,
 				84AB7B262773619F00631A10 /* MentionUsersView.swift in Sources */,
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
 				8465FDBE2746A95700AF091E /* MoreChannelActionsView.swift in Sources */,
 				84289BEB2807239B00282ABE /* MediaAttachmentsViewModel.swift in Sources */,
 				8465FD902746A95700AF091E /* ComposerHelperViews.swift in Sources */,
+				82D64C142AD7E5B700C5C79E /* ImageDecoderRegistry.swift in Sources */,
+				82D64C182AD7E5B700C5C79E /* ImageCache.swift in Sources */,
 				849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */,
 				84F2908E276B92A40045472D /* GalleryHeaderView.swift in Sources */,
 				8465FD7B2746A95700AF091E /* GiphyBadgeView.swift in Sources */,
@@ -1911,30 +2332,51 @@
 				8465FD8D2746A95700AF091E /* AddedImageAttachmentsView.swift in Sources */,
 				8465FDAA2746A95700AF091E /* DateFormatter+Extensions.swift in Sources */,
 				841B64D42775F5540016FF3B /* GiphyCommandHandler.swift in Sources */,
+				82D64BDD2AD7E5B700C5C79E /* AnimatedImageView.swift in Sources */,
 				8434E58127707F19001E1B83 /* GridPhotosView.swift in Sources */,
 				84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */,
+				82D64BE72AD7E5B700C5C79E /* ImageTask.swift in Sources */,
 				8465FD742746A95700AF091E /* ViewFactory.swift in Sources */,
 				8465FDC12746A95700AF091E /* NoChannelsView.swift in Sources */,
+				82D64BDC2AD7E5B700C5C79E /* ImageSourceHelpers.swift in Sources */,
+				82D64BD22AD7E5B700C5C79E /* FetchImage.swift in Sources */,
+				82D64C042AD7E5B700C5C79E /* Extensions.swift in Sources */,
 				C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */,
+				82D64C122AD7E5B700C5C79E /* ImageDecoders+Empty.swift in Sources */,
 				8465FDA32746A95700AF091E /* ViewExtensions.swift in Sources */,
+				82D64BFE2AD7E5B700C5C79E /* ResumableData.swift in Sources */,
+				82D64BE62AD7E5B700C5C79E /* ImagePipelineDelegate.swift in Sources */,
 				8465FDA22746A95700AF091E /* ChatChannelViewModel.swift in Sources */,
 				8465FD982746A95700AF091E /* ReactionsOverlayView.swift in Sources */,
 				8465FDCD2746A95700AF091E /* Fonts.swift in Sources */,
+				82D64C022AD7E5B700C5C79E /* AVDataAsset.swift in Sources */,
 				8465FD9A2746A95700AF091E /* ReactionsHelperViews.swift in Sources */,
 				8465FDC02746A95700AF091E /* ChatChannelList.swift in Sources */,
+				82D64B682AD7E5AC00C5C79E /* ObjcAssociatedWeakObject.swift in Sources */,
+				82D64BE02AD7E5B700C5C79E /* LazyImage.swift in Sources */,
+				82D64C052AD7E5B700C5C79E /* Deprecated.swift in Sources */,
 				84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */,
+				82D64BD12AD7E5B700C5C79E /* Image.swift in Sources */,
+				82D64BD52AD7E5B700C5C79E /* AnimatedFrame.swift in Sources */,
 				8465FD9F2746A95700AF091E /* ChatChannelExtensions.swift in Sources */,
 				844D1D6628510304000CCCB9 /* ChannelControllerFactory.swift in Sources */,
 				8465FD882746A95700AF091E /* SendMessageButton.swift in Sources */,
 				8465FDC82746A95700AF091E /* ChatChannelListItem.swift in Sources */,
 				8465FDA62746A95700AF091E /* LazyView.swift in Sources */,
 				A3D7B0DF2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift in Sources */,
+				82D64C002AD7E5B700C5C79E /* Log.swift in Sources */,
+				82D64BFF2AD7E5B700C5C79E /* Allocations.swift in Sources */,
+				82D64BF12AD7E5B700C5C79E /* DataLoader.swift in Sources */,
 				8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */,
+				82D64BD62AD7E5B700C5C79E /* Animator.swift in Sources */,
 				8465FDB52746A95700AF091E /* Cache.swift in Sources */,
 				84A1CAD12816C6900046595A /* AddUsersViewModel.swift in Sources */,
+				82D64BDA2AD7E5B700C5C79E /* UIImage.swift in Sources */,
 				84289BEF2807246E00282ABE /* FileAttachmentsViewModel.swift in Sources */,
+				82D64C192AD7E5B700C5C79E /* DataCache.swift in Sources */,
 				84AB7B2A2773D97E00631A10 /* MentionsCommandHandler.swift in Sources */,
 				84DEC8EA2761089A00172876 /* MessageThreadHeaderViewModifier.swift in Sources */,
+				82D64C012AD7E5B700C5C79E /* DataPublisher.swift in Sources */,
 				8465FD9B2746A95700AF091E /* DefaultMessageActions.swift in Sources */,
 				84F2908C276B91700045472D /* ZoomableScrollView.swift in Sources */,
 				842383E427678A4D00888CFC /* QuotedMessageView.swift in Sources */,
@@ -1945,9 +2387,11 @@
 				8465FD7F2746A95700AF091E /* MessageTypeResolver.swift in Sources */,
 				8465FDA42746A95700AF091E /* NukeImageLoader.swift in Sources */,
 				8465FD842746A95700AF091E /* MessageAvatarView.swift in Sources */,
+				82D64B672AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift in Sources */,
 				8465FDC72746A95700AF091E /* ChatChannelListViewModel.swift in Sources */,
 				8465FDD02746A95700AF091E /* DefaultViewFactory.swift in Sources */,
 				8465FD822746A95700AF091E /* LinkTextView.swift in Sources */,
+				82D64C172AD7E5B700C5C79E /* ImageResponse.swift in Sources */,
 				84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */,
 				8421BCF027A44EAE000F977D /* SearchResultsView.swift in Sources */,
 				841B64CC2775C6300016FF3B /* CommandsConfig.swift in Sources */,
@@ -1963,12 +2407,19 @@
 				8465FD892746A95700AF091E /* ComposerTextInputView.swift in Sources */,
 				8465FDBC2746A95700AF091E /* ChannelAvatarsMerger.swift in Sources */,
 				8465FDB82746A95700AF091E /* ImageMerger.swift in Sources */,
+				82D64BF22AD7E5B700C5C79E /* ImageProcessors+RoundedCorners.swift in Sources */,
 				841B64C427744DB60016FF3B /* ComposerModels.swift in Sources */,
 				8465FD752746A95700AF091E /* ImageAttachmentView.swift in Sources */,
+				82D64C0C2AD7E5B700C5C79E /* ImageEncoders.swift in Sources */,
 				8465FD832746A95700AF091E /* LinkAttachmentView.swift in Sources */,
+				82D64C082AD7E5B700C5C79E /* Operation.swift in Sources */,
+				82D64BEB2AD7E5B700C5C79E /* ImagePipelineTask.swift in Sources */,
+				82D64BF92AD7E5B700C5C79E /* ImageProcessors+Resize.swift in Sources */,
 				8465FDC22746A95700AF091E /* ChatChannelNavigatableListItem.swift in Sources */,
 				8465FDAD2746A95700AF091E /* ImageCDN.swift in Sources */,
+				82D64C0B2AD7E5B700C5C79E /* ImageEncoders+Default.swift in Sources */,
 				84289BE12807190500282ABE /* ChatChannelInfoView.swift in Sources */,
+				82D64BF72AD7E5B700C5C79E /* ImageProcessingOptions.swift in Sources */,
 				841B64D02775EDFE0016FF3B /* InstantCommandsView.swift in Sources */,
 				8465FD762746A95700AF091E /* MessageListView.swift in Sources */,
 				8465FDAB2746A95700AF091E /* StringExtensions.swift in Sources */,
@@ -1976,24 +2427,40 @@
 				8465FDBB2746A95700AF091E /* LoadingView.swift in Sources */,
 				846608E3278C303800D3D7B3 /* TypingIndicatorView.swift in Sources */,
 				84A1CACF2816BCF00046595A /* AddUsersView.swift in Sources */,
+				82D64BF02AD7E5B700C5C79E /* DataLoading.swift in Sources */,
 				8465FD9C2746A95700AF091E /* MessageActionsView.swift in Sources */,
+				82D64C092AD7E5B700C5C79E /* ImageRequestKeys.swift in Sources */,
 				8465FD6E2746A95700AF091E /* DependencyInjection.swift in Sources */,
 				841B64D62775FDA00016FF3B /* InstantCommandsHandler.swift in Sources */,
 				8465FDC92746A95700AF091E /* ChatChannelSwipeableListItem.swift in Sources */,
+				82D64C1C2AD7E5B700C5C79E /* DataCaching.swift in Sources */,
+				82D64B6A2AD7E5AC00C5C79E /* SwiftyGifManager.swift in Sources */,
+				82D64C162AD7E5B700C5C79E /* ImageRequest.swift in Sources */,
+				82D64BF82AD7E5B700C5C79E /* ImageProcessors+Circle.swift in Sources */,
 				8465FDD32746A95800AF091E /* ColorPalette.swift in Sources */,
 				8465FD782746A95700AF091E /* FileAttachmentView.swift in Sources */,
+				82D64C152AD7E5B700C5C79E /* ImageContainer.swift in Sources */,
+				82D64C0F2AD7E5B700C5C79E /* ImageDecoders+Video.swift in Sources */,
+				82D64B692AD7E5AC00C5C79E /* UIImage+SwiftyGif.swift in Sources */,
 				84AB7B1D2771F4AA00631A10 /* DiscardButtonView.swift in Sources */,
 				849FD5112811B05C00952934 /* ChatInfoParticipantsView.swift in Sources */,
 				8465FDAE2746A95700AF091E /* UIColor+Extensions.swift in Sources */,
 				8465FD6F2746A95700AF091E /* StreamChat.swift in Sources */,
 				8465FD8F2746A95700AF091E /* AttachmentUploadingStateView.swift in Sources */,
 				8465FD732746A95700AF091E /* ActionItemView.swift in Sources */,
+				82D64BD42AD7E5B700C5C79E /* GIFAnimatable.swift in Sources */,
 				844CC60E2811378D0006548D /* ComposerConfig.swift in Sources */,
 				846608E5278C865200D3D7B3 /* TypingIndicatorPlacement.swift in Sources */,
+				82D64B6B2AD7E5AC00C5C79E /* NSImageView+SwiftyGif.swift in Sources */,
 				8465FDA72746A95700AF091E /* KeyboardHandling.swift in Sources */,
+				82D64C1A2AD7E5B700C5C79E /* NukeCache.swift in Sources */,
 				8465FDD72746A95800AF091E /* Appearance.swift in Sources */,
+				82D64BE22AD7E5B700C5C79E /* ImagePipeline.swift in Sources */,
+				82D64BF42AD7E5B700C5C79E /* ImageProcessors.swift in Sources */,
 				8465FD8A2746A95700AF091E /* DiscardAttachmentButton.swift in Sources */,
 				8482094E2ACFFCD900EF3261 /* Throttler.swift in Sources */,
+				82D64C1B2AD7E5B700C5C79E /* ImageCaching.swift in Sources */,
+				82D64C062AD7E5B700C5C79E /* Graphics.swift in Sources */,
 				8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */,
 				841B2EF4278DB9E500ED619E /* MessageListHelperViews.swift in Sources */,
 				84C0C9A328CF18F700CD0136 /* SnapshotCreator.swift in Sources */,
@@ -2009,33 +2476,55 @@
 				91B79FD7284E21E0005B6E4F /* ChatUserNamer.swift in Sources */,
 				84F29090276CC1280045472D /* ShareButtonView.swift in Sources */,
 				84AB7B282773D4FE00631A10 /* TypingSuggester.swift in Sources */,
+				82D64BFD2AD7E5B700C5C79E /* ImagePrefetcher.swift in Sources */,
 				91B763A4283EB19900B458A9 /* MoreChannelActionsFullScreenWrappingView.swift in Sources */,
 				8465FD852746A95700AF091E /* MessageView.swift in Sources */,
 				8465FDCA2746A95700AF091E /* MoreChannelActionsViewModel.swift in Sources */,
+				82D64BEE2AD7E5B700C5C79E /* AsyncTask.swift in Sources */,
 				8465FDD12746A95700AF091E /* Images.swift in Sources */,
 				844EF8ED2809AACD00CC82F9 /* NoContentView.swift in Sources */,
+				82D64C0E2AD7E5B700C5C79E /* ImageEncoders+ImageIO.swift in Sources */,
 				84A1CACD2816BC420046595A /* ChatChannelInfoHelperViews.swift in Sources */,
+				82D64BEF2AD7E5B700C5C79E /* TaskFetchWithPublisher.swift in Sources */,
+				82D64BD72AD7E5B700C5C79E /* GIFImageView.swift in Sources */,
+				82D64BF32AD7E5B700C5C79E /* ImageProcessing.swift in Sources */,
+				82D64BE32AD7E5B700C5C79E /* ImagePipelineError.swift in Sources */,
 				8465FD992746A95700AF091E /* ReactionsBubbleView.swift in Sources */,
+				82D64BDF2AD7E5B700C5C79E /* ImageView.swift in Sources */,
+				82D64BE82AD7E5B700C5C79E /* TaskFetchDecodedImage.swift in Sources */,
 				8465FDB02746A95700AF091E /* DateUtils.swift in Sources */,
 				84DEC8E12760D24100172876 /* MessageRepliesView.swift in Sources */,
 				8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */,
 				8421BCEE27A43E14000F977D /* SearchBar.swift in Sources */,
 				841B64CA2775BBC10016FF3B /* Errors.swift in Sources */,
 				8465FD7A2746A95700AF091E /* VideoPlayerView.swift in Sources */,
+				82D64BFC2AD7E5B700C5C79E /* ImageDecompression.swift in Sources */,
+				82D64BFA2AD7E5B700C5C79E /* ImageProcessors+Anonymous.swift in Sources */,
+				82D64C102AD7E5B700C5C79E /* ImageDecoders+Default.swift in Sources */,
 				84289BE5280720E700282ABE /* PinnedMessagesView.swift in Sources */,
 				8465FD8B2746A95700AF091E /* FilePickerView.swift in Sources */,
 				84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */,
+				82D64C0A2AD7E5B700C5C79E /* LinkedList.swift in Sources */,
 				84E6EC27279B0C930017207B /* ReactionsUsersView.swift in Sources */,
+				82D64BEC2AD7E5B700C5C79E /* OperationTask.swift in Sources */,
+				82D64C132AD7E5B700C5C79E /* ImageDecoding.swift in Sources */,
 				8465FDA92746A95700AF091E /* AutoLayoutHelpers.swift in Sources */,
 				8465FDC32746A95700AF091E /* ChatChannelListHeader.swift in Sources */,
 				84289BED2807244E00282ABE /* FileAttachmentsView.swift in Sources */,
+				82D64C072AD7E5B700C5C79E /* ImagePublisher.swift in Sources */,
 				8465FD9D2746A95700AF091E /* MessageActionsViewModel.swift in Sources */,
+				82D64BE12AD7E5B700C5C79E /* LazyImageView.swift in Sources */,
 				8465FD7E2746A95700AF091E /* VideoAttachmentView.swift in Sources */,
+				82D64BF52AD7E5B700C5C79E /* ImageProcessors+GaussianBlur.swift in Sources */,
+				82D64BDE2AD7E5B700C5C79E /* Internal.swift in Sources */,
 				8465FD8E2746A95700AF091E /* PhotoAssetsUtils.swift in Sources */,
 				8465FDB92746A95700AF091E /* NukeImageProcessor.swift in Sources */,
+				82D64BCD2AD7E5B700C5C79E /* ImageLoadingOptions.swift in Sources */,
 				8465FD972746A95700AF091E /* ReactionsView.swift in Sources */,
+				82D64BE42AD7E5B700C5C79E /* ImagePipelineConfiguration.swift in Sources */,
 				8465FDB62746A95700AF091E /* VideoPreviewLoader.swift in Sources */,
 				84289BE92807238C00282ABE /* MediaAttachmentsView.swift in Sources */,
+				82D64C112AD7E5B700C5C79E /* AssetType.swift in Sources */,
 				8465FDAF2746A95700AF091E /* UIImage+Extensions.swift in Sources */,
 				8465FDCE2746A95700AF091E /* InjectedValuesExtensions.swift in Sources */,
 				8465FDAC2746A95700AF091E /* UIFont+Extensions.swift in Sources */,
