@@ -177,11 +177,13 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                     
                     if bottomReactionsShown {
-                        BottomReactionsView(message: message) {
+                        BottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
                             handleGestureForMessage(
                                 showsMessageActions: false,
                                 showsBottomContainer: false
                             )
+                        } onLongPress: {
+                            handleGestureForMessage(showsMessageActions: false)
                         }
                     }
 

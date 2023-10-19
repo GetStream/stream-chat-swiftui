@@ -11,12 +11,21 @@ struct BottomReactionsView: View {
     @Injected(\.utils) var utils
     @Injected(\.colors) var colors
     
+    var showsAllInfo: Bool
     var onTap: () -> ()
+    var onLongPress: () -> ()
     
     @StateObject var viewModel: ReactionsOverlayViewModel
     
-    init(message: ChatMessage, onTap: @escaping () -> ()) {
+    init(
+        message: ChatMessage,
+        showsAllInfo: Bool,
+        onTap: @escaping () -> (),
+        onLongPress: @escaping () -> ()
+    ) {
+        self.showsAllInfo = showsAllInfo
         self.onTap = onTap
+        self.onLongPress = onLongPress
         _viewModel = StateObject(wrappedValue: ReactionsOverlayViewModel(message: message))
     }
     
@@ -24,30 +33,32 @@ struct BottomReactionsView: View {
         HStack {
             ForEach(reactions) { reaction in
                 if let image = ReactionsIconProvider.icon(for: reaction, useLargeIcons: false) {
-                    Button(action: {
-                        viewModel.reactionTapped(reaction)
-                    }, label: {
-                        HStack(spacing: 4) {
-                            ReactionIcon(
-                                icon: image,
-                                color: ReactionsIconProvider.color(
-                                    for: reaction,
-                                    userReactionIDs: userReactionIDs
-                                )
-                            )
-                            .frame(width: 20, height: 20)
-                            Text("\(count(for: reaction))")
-                        }
-                        .padding(.all, 8)
-                        .background(Color(colors.background1))
-                        .modifier(
-                            BubbleModifier(
-                                corners: corners(for: reaction),
-                                backgroundColors: [Color(colors.background1)],
-                                cornerRadius: 16
+                    HStack(spacing: 4) {
+                        ReactionIcon(
+                            icon: image,
+                            color: ReactionsIconProvider.color(
+                                for: reaction,
+                                userReactionIDs: userReactionIDs
                             )
                         )
-                    })
+                        .frame(width: 20, height: 20)
+                        Text("\(count(for: reaction))")
+                    }
+                    .padding(.all, 8)
+                    .background(Color(colors.background1))
+                    .modifier(
+                        BubbleModifier(
+                            corners: corners(for: reaction),
+                            backgroundColors: [Color(colors.background1)],
+                            cornerRadius: 16
+                        )
+                    )
+                    .onTapGesture {
+                        viewModel.reactionTapped(reaction)
+                    }
+                    .onLongPressGesture {
+                        onLongPress()
+                    }
                 }
             }
             Button(
@@ -57,7 +68,7 @@ struct BottomReactionsView: View {
                         .padding(.all, 8)
                         .modifier(
                             BubbleModifier(
-                                corners: message.isSentByCurrentUser ? [.bottomLeft, .bottomRight, .topLeft] : .allCorners,
+                                corners: (message.isSentByCurrentUser && showsAllInfo) ? [.bottomLeft, .bottomRight, .topLeft] : .allCorners,
                                 backgroundColors: [Color(colors.background1)],
                                 cornerRadius: 16
                             )
@@ -73,7 +84,7 @@ struct BottomReactionsView: View {
     }
     
     private func corners(for reaction: MessageReactionType) -> UIRectCorner {
-        if message.isSentByCurrentUser || reaction != reactions.first {
+        if message.isSentByCurrentUser || reaction != reactions.first || !showsAllInfo {
             return .allCorners
         }
         return [.bottomLeft, .bottomRight, .topRight]
