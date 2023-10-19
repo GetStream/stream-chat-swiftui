@@ -230,6 +230,13 @@ extension ChatChannel {
             currentUserId: InjectedValues[\.chatClient].currentUserId
         ).isEmpty && config.typingEventsEnabled
     }
+    
+    public var shouldShowOnlineIndicator: Bool {
+        !lastActiveMembers.filter { member in
+            member.isOnline && member.id != InjectedValues[\.chatClient].currentUserId
+        }
+        .isEmpty
+    }
 
     public var subtitleText: String {
         if isMuted {

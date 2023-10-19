@@ -26,6 +26,7 @@ public class Utils {
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
     public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
+    public var channelHeaderLoader: ChannelHeaderLoader
 
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
@@ -48,6 +49,7 @@ public class Utils {
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
+        channelHeaderLoader: ChannelHeaderLoader = ChannelHeaderLoader(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
@@ -69,6 +71,7 @@ public class Utils {
         self.messageIdBuilder = messageIdBuilder
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         self.sortReactions = sortReactions
+        self.channelHeaderLoader = channelHeaderLoader
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }
     

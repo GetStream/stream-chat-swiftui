@@ -176,7 +176,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
-    @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
+    @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
     private var onItemTap: (ChatChannel) -> Void
 
     public init(
