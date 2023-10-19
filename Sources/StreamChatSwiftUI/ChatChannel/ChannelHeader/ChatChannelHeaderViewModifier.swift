@@ -93,7 +93,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
 
 /// The default header modifier.
 public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
-    @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
+    @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
     @State private var isActive: Bool = false
 
     public var channel: ChatChannel
