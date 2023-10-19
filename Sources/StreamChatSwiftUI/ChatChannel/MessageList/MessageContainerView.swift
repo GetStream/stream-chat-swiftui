@@ -72,6 +72,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             for: utils.messageCachingUtils.authorInfo(from: message)
                         )
                         .opacity(showsAllInfo ? 1 : 0)
+                        .offset(y: bottomReactionsShown ? -44 : 0)
                     }
                 }
 
@@ -177,7 +178,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     
                     if bottomReactionsShown {
                         BottomReactionsView(message: message) {
-                            handleGestureForMessage(showsMessageActions: false)
+                            handleGestureForMessage(
+                                showsMessageActions: false,
+                                showsBottomContainer: false
+                            )
                         }
                     }
 
@@ -256,13 +260,17 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
 
     private var topReactionsShown: Bool {
-        //TODO: this.
-        false
+        if messageListConfig.messageDisplayOptions.reactionsPlacement == .bottom {
+            return false
+        }
+        return reactionsShown
     }
     
     private var bottomReactionsShown: Bool {
-        //TODO: this.
-        reactionsShown
+        if messageListConfig.messageDisplayOptions.reactionsPlacement == .top {
+            return false
+        }
+        return reactionsShown
     }
     
     private var reactionsShown: Bool {
@@ -307,7 +315,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         }
     }
 
-    private func handleGestureForMessage(showsMessageActions: Bool) {
+    private func handleGestureForMessage(
+        showsMessageActions: Bool,
+        showsBottomContainer: Bool = true
+    ) {
         computeFrame = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             computeFrame = false
@@ -318,7 +329,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     frame: frame,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
-                    showsMessageActions: showsMessageActions
+                    showsMessageActions: showsMessageActions,
+                    showsBottomContainer: showsBottomContainer
                 )
             )
         }
@@ -349,6 +361,7 @@ public struct MessageDisplayInfo {
     public let contentWidth: CGFloat
     public let isFirst: Bool
     public var showsMessageActions: Bool = true
+    public var showsBottomContainer: Bool = true
     public var keyboardWasShown: Bool = false
 
     public init(
@@ -357,6 +370,7 @@ public struct MessageDisplayInfo {
         contentWidth: CGFloat,
         isFirst: Bool,
         showsMessageActions: Bool = true,
+        showsBottomContainer: Bool = true,
         keyboardWasShown: Bool = false
     ) {
         self.message = message
@@ -365,5 +379,6 @@ public struct MessageDisplayInfo {
         self.isFirst = isFirst
         self.showsMessageActions = showsMessageActions
         self.keyboardWasShown = keyboardWasShown
+        self.showsBottomContainer = showsBottomContainer
     }
 }
