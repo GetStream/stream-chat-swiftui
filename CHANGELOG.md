@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add message preview with attachments in channel list
 
 ### 🐞 Fixed
-- Made some `ChannelList` parameters optional
+- Made some `ChannelList` and `MessageListView` parameters optional
 
 # [4.39.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.39.0)
 _October 06, 2023_

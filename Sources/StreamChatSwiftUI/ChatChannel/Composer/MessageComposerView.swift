@@ -25,7 +25,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         viewFactory: Factory,
         viewModel: MessageComposerViewModel? = nil,
         channelController: ChatChannelController,
-        messageController: ChatMessageController?,
+        messageController: ChatMessageController? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void

@@ -97,6 +97,10 @@ public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
     @State private var isActive: Bool = false
 
     public var channel: ChatChannel
+    
+    public init(channel: ChatChannel) {
+        self.channel = channel
+    }
 
     public func body(content: Content) -> some View {
         content.toolbar {
