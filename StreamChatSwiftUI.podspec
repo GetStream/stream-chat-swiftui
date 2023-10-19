@@ -13,7 +13,7 @@ Pod::Spec.new do |spec|
     spec.source = { :git => "https://github.com/GetStream/stream-chat-swiftui.git" }
     spec.requires_arc = true
 
-    spec.source_files  = ["Sources/StreamChatSwiftUI/**/*.swift", "Sources/StreamNuke/**/*.swift", "Sources/StreamSwiftyGif/**/*.swift"]
+    spec.source_files  = ["Sources/StreamChatSwiftUI/**/*.swift"]
     spec.exclude_files = ["Sources/StreamChatSwiftUI/**/*_Tests.swift", "Sources/StreamChatSwiftUI/**/*_Mock.swift"]
     spec.resource_bundles = { "StreamChatSwiftUI" => ["Sources/StreamChatSwiftUI/Resources/**/*"] }
 
