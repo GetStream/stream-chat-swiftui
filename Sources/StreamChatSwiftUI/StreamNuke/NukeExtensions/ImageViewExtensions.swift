@@ -172,11 +172,16 @@ private final class ImageViewController {
 
     // Lazily create a controller for a given view and associate it with a view.
     static func controller(for view: ImageDisplayingView) -> ImageViewController {
-        if let controller = objc_getAssociatedObject(view, &ImageViewController.controllerAK) as? ImageViewController {
+        if let controller = withUnsafePointer(to: &ImageViewController.controllerAK, { keyPointer in
+            objc_getAssociatedObject(view, keyPointer) as? ImageViewController
+        }) {
             return controller
         }
+        
         let controller = ImageViewController(view: view)
-        objc_setAssociatedObject(view, &ImageViewController.controllerAK, controller, .OBJC_ASSOCIATION_RETAIN)
+        withUnsafePointer(to: &ImageViewController.controllerAK) { keyPointer in
+            objc_setAssociatedObject(view, keyPointer, controller, .OBJC_ASSOCIATION_RETAIN)
+        }
         return controller
     }
 
