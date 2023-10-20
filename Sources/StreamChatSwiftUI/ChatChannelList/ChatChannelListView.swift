@@ -21,7 +21,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private var handleTabBarVisibility: Bool
 
     public init(
-        viewFactory: Factory,
+        viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelListViewModel? = nil,
         channelListController: ChatChannelListController? = nil,
         title: String = "Stream Chat",
