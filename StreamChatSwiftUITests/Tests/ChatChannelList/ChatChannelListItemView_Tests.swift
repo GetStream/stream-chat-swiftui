@@ -105,7 +105,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
     }
 
-    //MARK: - private
+    // MARK: - private
     
     private func mockAudioMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
         .mock(
