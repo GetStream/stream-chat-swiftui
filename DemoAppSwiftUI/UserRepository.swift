@@ -2,8 +2,8 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import StreamChat
 import Foundation
+import StreamChat
 
 protocol UserRepository {
     
@@ -14,7 +14,7 @@ protocol UserRepository {
     func removeCurrentUser()
 }
 
-//NOTE: This is just for simplicity. User data shouldn't be kept in `UserDefaults`.
+// NOTE: This is just for simplicity. User data shouldn't be kept in `UserDefaults`.
 final class UnsecureRepository: UserRepository {
     enum Key: String, CaseIterable {
         case user = "stream.chat.user"

@@ -68,20 +68,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         
         let credentials = UnsecureRepository.shared.loadCurrentUser()
-        if let credentials, let token = try? Token(rawValue: credentials.token)  {
+        if let credentials, let token = try? Token(rawValue: credentials.token) {
             chatClient.connectUser(
                 userInfo: .init(
                     id: credentials.id,
                     name: credentials.name,
                     imageURL: credentials.avatarURL
                 ),
-                token:  token
+                token: token
             )
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             withAnimation {
-                if AppState.shared.userState == .launchAnimation {                    
+                if AppState.shared.userState == .launchAnimation {
                     AppState.shared.userState = credentials == nil ? .notLoggedIn : .loggedIn
                 }
             }

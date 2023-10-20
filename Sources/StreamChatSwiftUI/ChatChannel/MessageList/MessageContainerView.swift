@@ -3,8 +3,6 @@
 //
 
 import AVKit
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
