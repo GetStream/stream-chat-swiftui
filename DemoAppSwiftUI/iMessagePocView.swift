@@ -146,11 +146,8 @@ class iMessageViewFactory: ViewFactory {
 
 @available(iOS 15.0, *)
 struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
-    
-    @State var options = [ComposerOption]()
-    
+        
     @State var text = ""
-    @State var composerPopupShown = false
     @State var shouldShow = false
     
     @Injected(\.colors) private var colors
@@ -166,6 +163,10 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
+    
+    @State private var state: AnimationState = .initial
+    @State private var buttonScale: CGFloat = 1
+    @State private var listScale: CGFloat = 0
 
     public init(
         viewFactory: Factory,
@@ -198,7 +199,18 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         VStack(spacing: 0) {
             HStack(alignment: .bottom) {
                 Button {
-                    composerPopupShown = true
+                    withAnimation(.bouncy) {
+                        switch state {
+                        case .initial:
+                            buttonScale = 1
+                            listScale = 1
+                            state = .expanded
+                        case .expanded:
+                            buttonScale = 1
+                            listScale = 0
+                            state = .initial
+                        }
+                    }
                 } label: {
                     Image(systemName: "plus")
                         .padding(.all, 8)
@@ -207,6 +219,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                         .clipShape(Circle())
                 }
                 .padding(.bottom, 4)
+                .scaleEffect(CGSize(width: buttonScale, height: buttonScale))
 
                 ComposerInputView(
                     factory: DefaultViewFactory.shared,
@@ -311,93 +324,18 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
             if editedMessage != nil {
-//                becomeFirstResponder()
                 editedMessageWillShow = true
                 viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
         .accessibilityElement(children: .contain)
-        .onAppear {
-            let imageAction: () -> () = {
-                viewModel.pickerTypeState = .expanded(.media)
-                viewModel.pickerState = .photos
-            }
-            let commandsAction: () -> () = {
-                viewModel.pickerTypeState = .expanded(.instantCommands)
-            }
-            let filesAction: () -> () = {
-                viewModel.pickerTypeState = .expanded(.media)
-                viewModel.pickerState = .files
-            }
-            let cameraAction: () -> () = {
-                viewModel.pickerTypeState = .expanded(.media)
-                viewModel.pickerState = .camera
-            }
-            self.options = [
-                ComposerOption(id: "images", title: "Images", imageName: "photo.circle.fill", action: imageAction),
-                ComposerOption(id: "commands", title: "Instant Commands", imageName: "command.circle.fill", action: commandsAction),
-                ComposerOption(id: "files", title: "Files", imageName: "folder.circle", action: filesAction),
-                ComposerOption(id: "camera", title: "Camera", imageName: "camera.circle.fill", action: cameraAction)
-            ]
-        }
         .overlay(
-            composerPopupShown ?
-            ZStack {
-                BlurredBackground()
-                    .offset(y: viewModel.overlayShown ? -popupSize / 2 : -popupSize - 36)
-                    .onTapGesture {
-                        withAnimation {
-                            shouldShow = false
-                            composerPopupShown = false
-                        }
-                    }
-                    .onAppear {
-                        withAnimation {
-                            shouldShow = true
-                        }
-                    }
-                
-                if shouldShow {
-                    VStack {
-                        ForEach(options) { option in
-                            HStack(spacing: 16) {
-                                Button {
-                                    option.action()
-                                    shouldShow = false
-                                    composerPopupShown = false
-                                } label: {
-                                    HStack {
-                                        Image(systemName: option.imageName)
-                                        Text(option.title)
-                                            .foregroundColor(.black)
-                                    }
-                                    .padding()
-                                }
-                                Spacer()
-                            }
-
-                        }
-                    }
-                    .offset(y: viewModel.overlayShown ? 0 : -120)
-                    .transition(
-                        AnyTransition.scale
-                            .combined(with: AnyTransition.offset(x: -UIScreen.main.bounds.width / 2.0,
-                                                                 y: 0))
-                    )
-                    .animation(.spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0.2))
-                }
-            }
-            : nil
+            AnimatingElement(viewModel: viewModel, state: $state, buttonScale: $buttonScale, listScale: $listScale)
+                .offset(y: viewModel.overlayShown ? -popupSize / 2 : -popupSize + 83)
+                .allowsHitTesting(state == .expanded)
         )
     }
     
-}
-
-struct ComposerOption: Identifiable {
-    let id: String
-    let title: String
-    let imageName: String
-    var action: () -> ()
 }
 
 @available(iOS 15.0, *)
@@ -416,5 +354,120 @@ struct HeightPreferenceKey: PreferenceKey {
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
+    }
+}
+
+enum AnimationState {
+    case initial, expanded
+}
+
+struct ListElement: Equatable, Identifiable {
+    static func == (lhs: ListElement, rhs: ListElement) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    var imageName: String
+    var text: String
+    var color: Color
+    var action: () -> ()
+    var id: String {
+        "\(imageName)-\(text)"
+    }
+}
+
+@available(iOS 15.0, *)
+struct AnimatingElement: View {
+    
+    @ObservedObject var viewModel: MessageComposerViewModel
+    
+    @State var contentElements: [ListElement] = []
+    
+    @Binding var state: AnimationState
+    @Binding var buttonScale: CGFloat
+    @Binding var listScale: CGFloat
+    
+    let imageSize: CGFloat = 34
+    
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            Color.white.opacity(state == .initial ? 0.2 : 0.5)
+            
+            BlurredBackground()
+                .opacity(state == .initial ? 0.0 : 1)
+            
+            VStack(alignment: .leading, spacing: 30) {
+                ForEach(contentElements) { contentElement in
+                    Button {
+                        withAnimation {
+                            state = .initial
+                            contentElement.action()
+                        }
+                    } label: {
+                        HStack(spacing: 20) {
+                            Image(systemName: contentElement.imageName)
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(contentElement.color)
+                                .frame(width: imageSize, height: imageSize)
+                            
+                            Text(contentElement.text)
+                                .foregroundColor(.primary)
+                                .font(.title2)
+                        }
+                    }
+                }
+            }
+            .padding(.leading, 40)
+            .padding(.bottom, 80)
+            .scaleEffect(
+                CGSize(
+                    width: state == .initial ? 0 : 1,
+                    height: state == .initial ? 0 : 1
+                )
+            )
+            .offset(
+                x: state == .initial ? -75 : 0,
+                y: state == .initial ? -10 : -100
+            )
+        }
+        .onAppear {
+            let imageAction: () -> () = {
+                viewModel.pickerTypeState = .expanded(.media)
+                viewModel.pickerState = .photos
+            }
+            let commandsAction: () -> () = {
+                viewModel.pickerTypeState = .expanded(.instantCommands)
+            }
+            let filesAction: () -> () = {
+                viewModel.pickerTypeState = .expanded(.media)
+                viewModel.pickerState = .files
+            }
+            let cameraAction: () -> () = {
+                viewModel.pickerTypeState = .expanded(.media)
+                viewModel.pickerState = .camera
+            }
+
+            self.contentElements = [
+                ListElement(imageName: "photo.on.rectangle", text: "Photos", color: .purple, action: imageAction),
+                ListElement(imageName: "camera.circle.fill", text: "Camera", color: .gray, action: cameraAction),
+                ListElement(imageName: "folder.circle", text: "Files", color: .indigo, action: filesAction),
+                ListElement(imageName: "command.circle.fill", text: "Commands", color: .orange, action: commandsAction)
+            ]
+        }
+        .edgesIgnoringSafeArea(.all)
+        .onTapGesture {
+            withAnimation(.bouncy) {
+                switch state {
+                case .initial:
+                    buttonScale = 10
+                    listScale = 1
+                    state = .expanded
+                case .expanded:
+                    buttonScale = 1
+                    listScale = 0
+                    state = .initial
+                }
+            }
+        }
     }
 }
