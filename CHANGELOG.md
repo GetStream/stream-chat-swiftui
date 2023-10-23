@@ -5,10 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ⚠️ Important
 
-- Dependencies are no longer exposed (this includes Nuke and SwiftyGif). If you were using those dependencies we were exposing, you would need to import them manually. If you encounter any SPM-related problems, be sure to reset the package caches.
+- Dependencies are no longer exposed (this includes Nuke and SwiftyGif). If you were using those dependencies we were exposing, you would need to import them manually. This is due to our newest addition supporting Module Stable XCFramework, see more below in the "Added" section. If you encounter any SPM-related problems, be sure to reset the package caches.
 
 ### ✅ Added
 - Add message preview with attachments in channel list
+- Add support for pre-built XCFramework
 
 ### 🐞 Fixed
 - Made some `ChannelList` and `MessageListView` parameters optional

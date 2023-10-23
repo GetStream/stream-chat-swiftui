@@ -36,6 +36,8 @@ You can learn more about [our Module Stable XCFrameworks here](#xcframeworks)
   - `https://github.com/getstream/stream-chat-swift-spm`
 - For the UIKit components (**StreamChatUI**, which depends on **StreamChat**) use:
   - `https://github.com/getstream/stream-chat-swift-spm`
+- For the SwiftUI components (**StreamChatSwiftUI**, which depends on **StreamChat**) use:
+  - `https://github.com/getstream/stream-chat-swiftui-spm`
 
 </p>
 </details>
