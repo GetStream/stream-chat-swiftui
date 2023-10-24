@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add message preview with attachments in channel list
 - Add support for pre-built XCFramework
 - Config for composer text input paddings
+- Config for left alignment of messages
 
 ### 🐞 Fixed
 - Made some `ChannelList` and `MessageListView` parameters optional

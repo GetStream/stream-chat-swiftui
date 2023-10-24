@@ -26,7 +26,7 @@ public struct DeletedMessageView: View {
 
     public var body: some View {
         VStack(
-            alignment: message.isSentByCurrentUser ? .trailing : .leading,
+            alignment: message.isRightAligned ? .trailing : .leading,
             spacing: 4
         ) {
             Text(L10n.Message.deletedMessagePlaceholder)
@@ -38,7 +38,9 @@ public struct DeletedMessageView: View {
 
             if message.isSentByCurrentUser {
                 HStack {
-                    Spacer()
+                    if message.isRightAligned {
+                        Spacer()
+                    }
 
                     if deletedMessageVisibility == .visibleForCurrentUser {
                         Image(uiImage: images.eye)

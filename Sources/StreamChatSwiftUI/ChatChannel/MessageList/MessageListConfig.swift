@@ -25,7 +25,8 @@ public struct MessageListConfig {
         iPadSplitViewEnabled: Bool = true,
         scrollingAnchor: UnitPoint = .bottom,
         showNewMessagesSeparator: Bool = false,
-        handleTabBarVisibility: Bool = true
+        handleTabBarVisibility: Bool = true,
+        messageListAlignment: MessageListAlignment = .standard
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -44,6 +45,7 @@ public struct MessageListConfig {
         self.scrollingAnchor = scrollingAnchor
         self.showNewMessagesSeparator = showNewMessagesSeparator
         self.handleTabBarVisibility = handleTabBarVisibility
+        self.messageListAlignment = messageListAlignment
     }
 
     public let messageListType: MessageListType
@@ -63,6 +65,7 @@ public struct MessageListConfig {
     public let scrollingAnchor: UnitPoint
     public let showNewMessagesSeparator: Bool
     public let handleTabBarVisibility: Bool
+    public let messageListAlignment: MessageListAlignment
 }
 
 /// Contains information about the message paddings.
@@ -186,4 +189,14 @@ public enum MessageListType {
     case team
     case livestream
     case commerce
+}
+
+/// The alignment of the messages in the message list.
+public enum MessageListAlignment {
+    /// Standard message alignment.
+    /// The current user's messages are on the right.
+    /// The other users' messages are on the left.
+    case standard
+    /// Everything is left aligned.
+    case leftAligned
 }
