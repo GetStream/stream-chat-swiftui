@@ -17,28 +17,6 @@ class DemoAppFactory: ViewFactory {
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
-    
-    func makeMessageComposerViewType(with channelController: ChatChannelController, messageController: ChatMessageController?, quotedMessage: Binding<ChatMessage?>, editedMessage: Binding<ChatMessage?>, onMessageSent: @escaping () -> Void) -> some View {
-        if #available(iOS 15.0, *) {
-            return AppleMessageComposerView(
-                viewFactory: self,
-                channelController: channelController,
-                messageController: messageController,
-                quotedMessage: quotedMessage,
-                editedMessage: editedMessage,
-                onMessageSent: onMessageSent
-            )
-        } else {
-            return MessageComposerView(
-                viewFactory: self,
-                channelController: channelController,
-                messageController: messageController,
-                quotedMessage: quotedMessage,
-                editedMessage: editedMessage,
-                onMessageSent: onMessageSent
-            )
-        }
-    }
 }
 
 struct CustomChannelDestination: View {
