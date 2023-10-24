@@ -95,21 +95,21 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .overlay(
                     viewModel.sendButtonEnabled ?
-                    BottomRightView {
-                        Button {
-                            viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {
-                                onMessageSent()
+                        BottomRightView {
+                            Button {
+                                viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {
+                                    onMessageSent()
+                                }
+                            } label: {
+                                Image(systemName: "arrow.up.circle.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24)
+                                    .foregroundColor(.blue)
                             }
-                        } label: {
-                            Image(systemName: "arrow.up.circle.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 24)
-                                .foregroundColor(.blue)
+                            .padding(.trailing, 4)
+                            .padding(.bottom, viewModel.addedAssets.count > 0 ? 16 : 8)
                         }
-                        .padding(.trailing, 4)
-                        .padding(.bottom, viewModel.addedAssets.count > 0 ? 16 : 8)
-                    }
                     : nil
                 )
             }
@@ -193,16 +193,19 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 .allowsHitTesting(state == .expanded)
         )
     }
-    
 }
 
 @available(iOS 15.0, *)
 struct BlurredBackground: View {
     var body: some View {
         Color.clear
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-            .background (.ultraThinMaterial, in:
-                RoundedRectangle (cornerRadius: 16.0)
+            .frame(
+                width: UIScreen.main.bounds.width,
+                height: UIScreen.main.bounds.height
+            )
+            .background(
+                .ultraThinMaterial,
+                in: RoundedRectangle(cornerRadius: 16.0)
             )
     }
 }
@@ -227,7 +230,7 @@ struct ComposerAction: Equatable, Identifiable {
     var imageName: String
     var text: String
     var color: Color
-    var action: () -> ()
+    var action: () -> Void
     var id: String {
         "\(imageName)-\(text)"
     }
@@ -294,23 +297,23 @@ struct ComposerActionsView: View {
     }
     
     private func setupComposerActions() {
-        let imageAction: () -> () = {
+        let imageAction: () -> Void = {
             viewModel.pickerTypeState = .expanded(.media)
             viewModel.pickerState = .photos
         }
-        let commandsAction: () -> () = {
+        let commandsAction: () -> Void = {
             viewModel.pickerTypeState = .expanded(.instantCommands)
         }
-        let filesAction: () -> () = {
+        let filesAction: () -> Void = {
             viewModel.pickerTypeState = .expanded(.media)
             viewModel.pickerState = .files
         }
-        let cameraAction: () -> () = {
+        let cameraAction: () -> Void = {
             viewModel.pickerTypeState = .expanded(.media)
             viewModel.pickerState = .camera
         }
 
-        self.composerActions = [
+        composerActions = [
             ComposerAction(
                 imageName: "photo.on.rectangle",
                 text: "Photos",
@@ -359,4 +362,3 @@ struct ComposerActionView: View {
         }
     }
 }
-
