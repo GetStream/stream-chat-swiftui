@@ -94,23 +94,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
                 .overlay(
-                    viewModel.sendButtonEnabled ?
-                        BottomRightView {
-                            Button {
-                                viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {
-                                    onMessageSent()
-                                }
-                            } label: {
-                                Image(systemName: "arrow.up.circle.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 24)
-                                    .foregroundColor(.blue)
-                            }
-                            .padding(.trailing, 4)
-                            .padding(.bottom, viewModel.addedAssets.count > 0 ? 16 : 8)
-                        }
-                    : nil
+                    viewModel.sendButtonEnabled ? sendButton : nil
                 )
             }
             .padding(.all, 8)
@@ -192,6 +176,24 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 .offset(y: -(UIScreen.main.bounds.height - composerHeight) / 2 + 80)
                 .allowsHitTesting(state == .expanded)
         )
+    }
+    
+    private var sendButton: some View {
+        BottomRightView {
+            Button {
+                viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {
+                    onMessageSent()
+                }
+            } label: {
+                Image(systemName: "arrow.up.circle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24)
+                    .foregroundColor(.blue)
+            }
+            .padding(.trailing, 4)
+            .padding(.bottom, !viewModel.addedAssets.isEmpty ? 16 : 8)
+        }
     }
 }
 
