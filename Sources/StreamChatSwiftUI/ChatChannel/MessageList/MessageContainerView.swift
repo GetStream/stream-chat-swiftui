@@ -3,8 +3,6 @@
 //
 
 import AVKit
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
@@ -64,7 +62,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             if message.type == .system || message.type == .error {
                 factory.makeSystemMessageView(message: message)
             } else {
-                if message.isSentByCurrentUser {
+                if message.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
                     if messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
@@ -76,7 +74,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                 }
 
-                VStack(alignment: message.isSentByCurrentUser ? .trailing : .leading) {
+                VStack(alignment: message.isRightAligned ? .trailing : .leading) {
                     if isMessagePinned {
                         MessagePinDetailsView(
                             message: message,
@@ -199,7 +197,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                     factory.makeMessageDateView(for: message)
                                 }
                             }
-                        } else if !message.isSentByCurrentUser
+                        } else if !message.isRightAligned
                             && !channel.isDirectMessageChannel
                             && messageListConfig.messageDisplayOptions.showAuthorName {
                             factory.makeMessageAuthorAndDateView(for: message)
@@ -217,7 +215,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         : nil
                 )
 
-                if !message.isSentByCurrentUser {
+                if !message.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 }
             }
@@ -253,7 +251,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         let minimumWidth: CGFloat = 240
         let available = max(minimumWidth, (width ?? 0) - spacerWidth) - 2 * padding
         let avatarSize: CGFloat = CGSize.messageAvatarSize.width + padding
-        let totalWidth = message.isSentByCurrentUser ? available : available - avatarSize
+        let totalWidth = message.isRightAligned ? available : available - avatarSize
         return totalWidth
     }
 

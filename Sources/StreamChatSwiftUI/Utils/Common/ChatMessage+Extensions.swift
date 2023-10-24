@@ -85,4 +85,13 @@ public extension ChatMessage {
     var adjustedText: String {
         InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
     }
+    
+    var isRightAligned: Bool {
+        let config = InjectedValues[\.utils].messageListConfig
+        let messageListAlignment = config.messageListAlignment
+        if messageListAlignment == .leftAligned {
+            return false
+        }
+        return isSentByCurrentUser
+    }
 }

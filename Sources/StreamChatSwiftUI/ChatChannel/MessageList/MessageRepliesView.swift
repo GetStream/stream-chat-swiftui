@@ -41,7 +41,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             )
         } label: {
             HStack {
-                if !message.isSentByCurrentUser {
+                if !message.isRightAligned {
                     MessageAvatarView(
                         avatarURL: message.threadParticipants.first?.imageURL,
                         size: .init(width: 16, height: 16)
@@ -49,7 +49,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 }
                 Text("\(replyCount) \(repliesText)")
                     .font(fonts.footnoteBold)
-                if message.isSentByCurrentUser {
+                if message.isRightAligned {
                     MessageAvatarView(
                         avatarURL: message.threadParticipants.first?.imageURL,
                         size: .init(width: 16, height: 16)
@@ -81,7 +81,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 )
                 .offset(y: -24)
                 .rotation3DEffect(
-                    .degrees(message.isSentByCurrentUser ? 180 : 0),
+                    .degrees(message.isRightAligned ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
                 )
             )

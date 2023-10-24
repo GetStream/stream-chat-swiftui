@@ -2,8 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
@@ -106,7 +104,7 @@ struct LazyGiphyView: View {
     var body: some View {
         LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {
-                Image(imageContainer)
+                NukeImage(imageContainer)
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
             } else {

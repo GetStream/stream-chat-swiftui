@@ -57,7 +57,7 @@ struct ReactionsContainer: View {
         if message.reactionScores.count == 1 {
             offset = 16
         }
-        return message.isSentByCurrentUser ? -offset : offset
+        return message.isRightAligned ? -offset : offset
     }
 }
 

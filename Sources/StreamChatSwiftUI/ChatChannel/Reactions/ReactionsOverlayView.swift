@@ -85,7 +85,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 Alert.defaultErrorAlert
             }
 
-            if !messageDisplayInfo.message.isSentByCurrentUser &&
+            if !messageDisplayInfo.message.isRightAligned &&
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                 factory.makeMessageAvatarView(
                     for: utils.messageCachingUtils.authorInfo(from: messageDisplayInfo.message)
@@ -238,13 +238,12 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     private func messageActionsOffsetX(reader: GeometryProxy) -> CGFloat {
         let originX = messageActionsOriginX(availableWidth: reader.size.width)
-        let sentByCurrentUser = messageDisplayInfo.message.isSentByCurrentUser
         if popIn {
             return originX
         } else if willPopOut {
             return messageOriginX(proxy: reader)
         } else {
-            return sentByCurrentUser ? messageActionsWidth : 0
+            return messageDisplayInfo.message.isRightAligned ? messageActionsWidth : 0
         }
     }
         
@@ -324,7 +323,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private func messageActionsOriginX(availableWidth: CGFloat) -> CGFloat {
-        if messageDisplayInfo.message.isSentByCurrentUser {
+        if messageDisplayInfo.message.isRightAligned {
             return availableWidth - messageActionsWidth - paddingValue / 2
         } else {
             return CGSize.messageAvatarSize.width + paddingValue
@@ -332,7 +331,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private func userReactionsOriginX(availableWidth: CGFloat) -> CGFloat {
-        if messageDisplayInfo.message.isSentByCurrentUser {
+        if messageDisplayInfo.message.isRightAligned {
             return availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
         } else {
             return paddingValue
@@ -341,7 +340,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     private var messageActionsWidth: CGFloat {
         var width = messageDisplayInfo.contentWidth + 2 * paddingValue
-        if messageDisplayInfo.message.isSentByCurrentUser {
+        if messageDisplayInfo.message.isRightAligned {
             width -= 2 * paddingValue
         }
 

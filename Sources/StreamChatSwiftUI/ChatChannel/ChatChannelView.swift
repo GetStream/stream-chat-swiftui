@@ -22,7 +22,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     private var factory: Factory
 
     public init(
-        viewFactory: Factory,
+        viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelViewModel? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,

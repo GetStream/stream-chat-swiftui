@@ -2,7 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import NukeUI
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI

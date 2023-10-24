@@ -50,8 +50,8 @@ private struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresenta
         let coordinator: Coordinator
         let scrollView = UIScrollView()
 
-        var doubleTapCancellable: Cancellable?
-        var updateConstraintsCancellable: Cancellable?
+        var doubleTapCancellable: Combine.Cancellable?
+        var updateConstraintsCancellable: Combine.Cancellable?
 
         private var hostedView: UIView { coordinator.hostingController.view! }
 
