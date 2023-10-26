@@ -36,7 +36,7 @@ open class ChannelHeaderLoader: ObservableObject {
         willSet {
             if !scheduledUpdate {
                 scheduledUpdate = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                     self?.objectWillChange.send()
                     self?.scheduledUpdate = false
                 }

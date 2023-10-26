@@ -181,10 +181,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// - Parameter channel: the provided channel.
     /// - Returns: Boolean whether the indicator is shown.
     public func onlineIndicatorShown(for channel: ChatChannel) -> Bool {
-        !channel.lastActiveMembers.filter { member in
-            member.isOnline && member.id != chatClient.currentUserId
-        }
-        .isEmpty
+        channel.shouldShowOnlineIndicator
     }
 
     public func onDeleteTapped(channel: ChatChannel) {

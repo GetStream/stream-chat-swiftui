@@ -10,7 +10,7 @@ import SwiftUI
 public struct ChannelList<Factory: ViewFactory>: View {
 
     @Injected(\.colors) private var colors
-
+    
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
@@ -32,24 +32,41 @@ public struct ChannelList<Factory: ViewFactory>: View {
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         scrollable: Bool = true,
-        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
-        imageLoader: @escaping (ChatChannel) -> UIImage,
+        onlineIndicatorShown: ((ChatChannel) -> Bool)? = nil,
+        imageLoader: ((ChatChannel) -> UIImage)? = nil,
         onItemTap: @escaping (ChatChannel) -> Void,
         onItemAppear: @escaping (Int) -> Void,
-        channelNaming: @escaping (ChatChannel) -> String,
+        channelNaming: ((ChatChannel) -> String)? = nil,
         channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
-        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void = { _ in }
     ) {
         self.factory = factory
         self.channels = channels
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
-        self.channelNaming = channelNaming
+        if let channelNaming = channelNaming {
+            self.channelNaming = channelNaming
+        } else {
+            let channelNamer = InjectedValues[\.utils].channelNamer
+            self.channelNaming = { channel in
+                channelNamer(channel, InjectedValues[\.chatClient].currentUserId) ?? ""
+            }
+        }
         self.channelDestination = channelDestination
-        self.imageLoader = imageLoader
-        self.onlineIndicatorShown = onlineIndicatorShown
+        if let imageLoader = imageLoader {
+            self.imageLoader = imageLoader
+        } else {
+            self.imageLoader = InjectedValues[\.utils].channelHeaderLoader.image(for:)
+        }
+        if let onlineIndicatorShown = onlineIndicatorShown {
+            self.onlineIndicatorShown = onlineIndicatorShown
+        } else {
+            self.onlineIndicatorShown = { channel in
+                channel.shouldShowOnlineIndicator
+            }
+        }
         self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped

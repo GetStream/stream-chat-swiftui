@@ -17,13 +17,12 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.39.0"),        
-        .package(url: "https://github.com/kean/Nuke.git", .exact("11.3.1"))
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.40.0"),
     ],
     targets: [
         .target(
             name: "StreamChatSwiftUI",
-            dependencies: [.product(name: "StreamChat", package: "stream-chat-swift"), "Nuke", .product(name: "NukeUI", package: "Nuke")],
+            dependencies: [.product(name: "StreamChat", package: "stream-chat-swift")],
             exclude: ["README.md", "Info.plist", "Generated/L10n_template.stencil"],
             resources: [.process("Resources")]
         )

@@ -3,7 +3,6 @@
 //
 
 import Combine
-import Nuke
 import StreamChat
 import SwiftUI
 
@@ -163,7 +162,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @objc
     private func didReceiveMemoryWarning() {
-        Nuke.ImageCache.shared.removeAll()
+        ImageCache.shared.removeAll()
         messageCachingUtils.clearCache()
     }
     
@@ -511,7 +510,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messageCachingUtils.clearCache()
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
-            Nuke.ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+            ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
         }
     }
 }

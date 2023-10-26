@@ -16,13 +16,13 @@ public struct ReactionsHStack<Content: View>: View {
 
     public var body: some View {
         HStack {
-            if !message.isSentByCurrentUser {
+            if !message.isRightAligned {
                 Spacer()
             }
 
             content()
 
-            if message.isSentByCurrentUser {
+            if message.isRightAligned {
                 Spacer()
             }
         }

@@ -65,7 +65,7 @@ public extension ChatMessage {
         availableWidth: CGFloat = UIScreen.main.bounds.width,
         reactionsSize: CGFloat
     ) -> CGFloat {
-        if isSentByCurrentUser {
+        if isRightAligned {
             var originX = contentRect.origin.x - reactionsSize / 2
             let total = originX + reactionsSize
             if total > availableWidth {
