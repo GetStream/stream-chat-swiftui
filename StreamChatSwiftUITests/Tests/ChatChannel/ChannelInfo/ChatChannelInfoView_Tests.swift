@@ -5,6 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -26,7 +27,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_directChannelOnlineSnapshot() {
@@ -46,7 +47,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_directChannelMutedSnapshot() {
@@ -66,7 +67,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_groupCollapsedSnapshot() {
@@ -89,7 +90,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_smallGroupSnapshot() {
@@ -112,7 +113,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_groupExpandedSnapshot() {
@@ -137,7 +138,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_navBarSnapshot() {
@@ -166,7 +167,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: navigationView, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: navigationView, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelInfoView_addUsersShownSnapshot() {
@@ -191,6 +192,6 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

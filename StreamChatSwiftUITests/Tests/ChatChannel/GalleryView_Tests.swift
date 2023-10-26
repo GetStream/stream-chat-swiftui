@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -30,7 +31,7 @@ class GalleryView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_galleryHeader_snapshot() {
@@ -43,7 +44,7 @@ class GalleryView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 44)
 
         // Then
-        assertSnapshot(matching: header, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: header, as: .image(perceptualPrecision: precision))
     }
 
     func test_gridView_snapshotLoading() {
@@ -55,6 +56,6 @@ class GalleryView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

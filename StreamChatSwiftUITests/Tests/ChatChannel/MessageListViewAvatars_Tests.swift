@@ -5,6 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import XCTest
 
 class MessageListViewAvatars_Tests: StreamChatTestCase {
@@ -18,7 +19,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_messageListView_defaultGroupsChannel() {
@@ -30,7 +31,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_messageListView_dmChannelAvatarsOff() {
@@ -42,7 +43,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_messageListView_groupsChannelAvatarsOff() {
@@ -54,7 +55,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     private func setupConfig(showAvatars: Bool, showAvatarsInGroups: Bool?) {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */; };
+		8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */; };
 		820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */; };
 		825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AADF3283CCDB000237498 /* ThreadPage.swift */; };
 		827352FD290BE91100A87385 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
@@ -151,8 +153,6 @@
 		84289BEB2807239B00282ABE /* MediaAttachmentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84289BEA2807239B00282ABE /* MediaAttachmentsViewModel.swift */; };
 		84289BED2807244E00282ABE /* FileAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84289BEC2807244E00282ABE /* FileAttachmentsView.swift */; };
 		84289BEF2807246E00282ABE /* FileAttachmentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84289BEE2807246E00282ABE /* FileAttachmentsViewModel.swift */; };
-		842ADEA428EADC6600F2BE36 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 842ADEA328EADC6600F2BE36 /* Nuke */; };
-		842ADEA628EADC6600F2BE36 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 842ADEA528EADC6600F2BE36 /* NukeUI */; };
 		842ADEA928EB018C00F2BE36 /* LazyImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */; };
 		842F036D288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F036C288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift */; };
 		842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */; };
@@ -308,7 +308,6 @@
 		847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */; };
 		847F7949282A91AD0009F74C /* ChatChannelView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847F7948282A91AD0009F74C /* ChatChannelView_Tests.swift */; };
 		8482094E2ACFFCD900EF3261 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8482094D2ACFFCD900EF3261 /* Throttler.swift */; };
-		848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 848399E9275FB3E9003075E4 /* SnapshotTesting */; };
 		848399EC275FB41B003075E4 /* ChatChannelListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */; };
 		848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */; };
 		8492974B27ABDDCB00A8EEB0 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
@@ -425,6 +424,7 @@
 		84E95A77284A486600699FD3 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 84E95A76284A486600699FD3 /* StreamChat */; };
 		84E95A7D284A491000699FD3 /* StreamChatTestTools in Frameworks */ = {isa = PBXBuildFile; productRef = 84E95A7C284A491000699FD3 /* StreamChatTestTools */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
+		84F130C12AEAA957006E7B52 /* StreamLazyImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */; };
 		84F2908A276B90610045472D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F29089276B90610045472D /* GalleryView.swift */; };
 		84F2908C276B91700045472D /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908B276B91700045472D /* ZoomableScrollView.swift */; };
 		84F2908E276B92A40045472D /* GalleryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908D276B92A40045472D /* GalleryHeaderView.swift */; };
@@ -934,6 +934,7 @@
 		84E6EC24279AEE9F0017207B /* StreamChatTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamChatTestCase.swift; sourceTree = "<group>"; };
 		84E6EC26279B0C930017207B /* ReactionsUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersView.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamLazyImage.swift; sourceTree = "<group>"; };
 		84F29089276B90610045472D /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		84F2908B276B91700045472D /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		84F2908D276B92A40045472D /* GalleryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryHeaderView.swift; sourceTree = "<group>"; };
@@ -967,6 +968,7 @@
 			files = (
 				A3571603283E9D9F0014E3B0 /* Swifter in Frameworks */,
 				846AD4D2284F89B10074A0DD /* StreamChatTestTools in Frameworks */,
+				8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */,
 				846AD4D0284F89B10074A0DD /* StreamChatTestMockServer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -984,9 +986,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				842ADEA628EADC6600F2BE36 /* NukeUI in Frameworks */,
 				84E95A77284A486600699FD3 /* StreamChat in Frameworks */,
-				842ADEA428EADC6600F2BE36 /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -995,8 +995,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */,
+				8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */,
 				84E95A7D284A491000699FD3 /* StreamChatTestTools in Frameworks */,
-				848399EA275FB3E9003075E4 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1658,6 +1658,7 @@
 				841B64C92775BBC10016FF3B /* Errors.swift */,
 				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
 				84733EC527FDBF82006926E0 /* NetworkReachability.swift */,
+				84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */,
 				842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */,
 				8465FD382746A95600AF091E /* Common */,
 			);
@@ -2022,6 +2023,7 @@
 				A3571602283E9D9F0014E3B0 /* Swifter */,
 				846AD4CF284F89B10074A0DD /* StreamChatTestMockServer */,
 				846AD4D1284F89B10074A0DD /* StreamChatTestTools */,
+				8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */,
 			);
 			productName = StreamChatSwiftUITestsAppTests;
 			productReference = 8400A351282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests.xctest */;
@@ -2067,8 +2069,6 @@
 			name = StreamChatSwiftUI;
 			packageProductDependencies = (
 				84E95A76284A486600699FD3 /* StreamChat */,
-				842ADEA328EADC6600F2BE36 /* Nuke */,
-				842ADEA528EADC6600F2BE36 /* NukeUI */,
 			);
 			productName = StreamChatSwiftUI;
 			productReference = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */;
@@ -2089,8 +2089,8 @@
 			);
 			name = StreamChatSwiftUITests;
 			packageProductDependencies = (
-				848399E9275FB3E9003075E4 /* SnapshotTesting */,
 				84E95A7C284A491000699FD3 /* StreamChatTestTools */,
+				8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */,
 			);
 			productName = StreamChatSwiftUITests;
 			productReference = 8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */;
@@ -2159,12 +2159,11 @@
 			);
 			mainGroup = 8465FBAB2746873A00AF091E;
 			packageReferences = (
-				848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				A3571601283E9D9F0014E3B0 /* XCRemoteSwiftPackageReference "swifter" */,
 				84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
-				842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */,
+				82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */,
 			);
 			productRefGroup = 8465FBB62746873A00AF091E /* Products */;
 			projectDirPath = "";
@@ -2375,6 +2374,7 @@
 				82D64BE02AD7E5B700C5C79E /* LazyImage.swift in Sources */,
 				82D64C052AD7E5B700C5C79E /* Deprecated.swift in Sources */,
 				84DEC8EC27611CAE00172876 /* SendInChannelView.swift in Sources */,
+				84F130C12AEAA957006E7B52 /* StreamLazyImage.swift in Sources */,
 				82D64BD12AD7E5B700C5C79E /* Image.swift in Sources */,
 				82D64BD52AD7E5B700C5C79E /* AnimatedFrame.swift in Sources */,
 				8465FD9F2746A95700AF091E /* ChatChannelExtensions.swift in Sources */,
@@ -3229,20 +3229,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GetStream/stream-chat-swift-test-helpers.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.3.1;
+			};
+		};
 		8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AliSoftware/OHHTTPStubs.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 9.0.0;
-			};
-		};
-		842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kean/Nuke.git";
-			requirement = {
-				kind = exactVersion;
-				version = 11.3.1;
 			};
 		};
 		8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
@@ -3253,20 +3253,12 @@
 				version = 4.10.1;
 			};
 		};
-		848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.11.0;
-			};
-		};
 		84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.39.0;
+				minimumVersion = 4.40.0;
 			};
 		};
 		A3571601283E9D9F0014E3B0 /* XCRemoteSwiftPackageReference "swifter" */ = {
@@ -3288,20 +3280,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
+			productName = StreamSwiftTestHelpers;
+		};
+		8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
+			productName = StreamSwiftTestHelpers;
+		};
 		8400A34B282C081E0067D3A0 /* OHHTTPStubs */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
 			productName = OHHTTPStubs;
-		};
-		842ADEA328EADC6600F2BE36 /* Nuke */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = Nuke;
-		};
-		842ADEA528EADC6600F2BE36 /* NukeUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 842ADEA228EADC6600F2BE36 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = NukeUI;
 		};
 		8465FCE32746954F00AF091E /* StreamChat */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3317,11 +3309,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
 			productName = StreamChatTestTools;
-		};
-		848399E9275FB3E9003075E4 /* SnapshotTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 848399E6275FB3BE003075E4 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
-			productName = SnapshotTesting;
 		};
 		84B87F222861C0C900959CBE /* StreamChat */ = {
 			isa = XCSwiftPackageProductDependency;

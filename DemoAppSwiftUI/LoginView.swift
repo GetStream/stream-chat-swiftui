@@ -2,7 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import NukeUI
 import StreamChatSwiftUI
 import SwiftUI
 
@@ -57,13 +56,10 @@ struct DemoUserView: View {
 
     var body: some View {
         HStack {
-            LazyImage(url: user.avatarURL)
-                .onDisappear(.cancel)
-                .clipShape(Circle())
-                .frame(
-                    width: imageSize,
-                    height: imageSize
-                )
+            StreamLazyImage(
+                url: user.avatarURL,
+                size: CGSize(width: imageSize, height: imageSize)
+            )
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(user.name)
