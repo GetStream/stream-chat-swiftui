@@ -16,7 +16,7 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
 
     public init(message: ChatMessage) {
         self.message = message
-        makeMessageController()
+        makeMessageController(for: message)
     }
 
     public func reactionTapped(_ reaction: MessageReactionType) {
@@ -46,16 +46,18 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
 
     // MARK: - private
 
-    private func makeMessageController() {
+    private func makeMessageController(for message: ChatMessage) {
+        let controllerFactory = InjectedValues[\.utils].channelControllerFactory
         if let channelId = message.cid {
-            messageController = chatClient.messageController(
-                cid: channelId,
-                messageId: message.id
+            messageController = controllerFactory.makeMessageController(
+                for: message.id,
+                channelId: channelId
             )
-            messageController?.synchronize()
             messageController?.delegate = self
             if let message = messageController?.message {
-                self.message = message
+                withAnimation {
+                    self.message = message
+                }
             }
         }
     }
