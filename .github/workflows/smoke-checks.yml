@@ -17,24 +17,24 @@ env:
   IOS_SIMULATOR_DEVICE: "iPhone 14 Pro"
 
 jobs:
-  # automated-code-review:
-  #   name: Automated Code Review
-  #   runs-on: macos-13
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     GITHUB_PR_NUM: ${{ github.event.number }}
-  #   if: ${{ github.event_name != 'push' }}
-  #   steps:
-  #   - uses: actions/checkout@v3.1.0
-  #   - uses: ./.github/actions/bootstrap
-  #   - name: Run Danger
-  #     run: bundle exec danger
-  #   - name: Run Fastlane Linting
-  #     run: bundle exec fastlane rubocop
-  #   - name: Run SwiftFormat Linting
-  #     run: ./Scripts/run-linter.sh
-  #   - name: Run Podspec Linting
-  #     run: bundle exec fastlane pod_lint
+  automated-code-review:
+    name: Automated Code Review
+    runs-on: macos-13
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PR_NUM: ${{ github.event.number }}
+    if: ${{ github.event_name != 'push' }}
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/bootstrap
+    - name: Run Danger
+      run: bundle exec danger
+    - name: Run Fastlane Linting
+      run: bundle exec fastlane rubocop
+    - name: Run SwiftFormat Linting
+      run: ./Scripts/run-linter.sh
+    - name: Run Podspec Linting
+      run: bundle exec fastlane pod_lint
 
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
@@ -107,92 +107,92 @@ jobs:
         path: |
           fastlane/test_output/snapshots
 
-  # test-e2e-debug:
-  #   name: Test E2E UI (Debug)
-  #   runs-on: macos-13
-  #   if: ${{ github.event_name != 'push' }}
-  #   needs:
-  #     - allure_testops_launch
-  #     - build-test-app-and-frameworks
-  #   env:
-  #     LAUNCH_ID: ${{ needs.allure_testops_launch.outputs.launch_id }}
-  #   strategy:
-  #     matrix:
-  #       batch: [0, 1]
-  #     fail-fast: false
-  #   steps:
-  #   - uses: actions/checkout@v3.1.0
-  #   - uses: actions/download-artifact@v3
-  #     with:
-  #       name: cache-derived-data
-  #       path: derived_data/Build/
-  #   - uses: ./.github/actions/bootstrap
-  #     env:
-  #       INSTALL_ALLURE: true
-  #   - name: Run UI Tests (Debug)
-  #     run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       GITHUB_PR_NUM: ${{ github.event.number }}
-  #       MATRIX_SIZE: ${{ strategy.job-total }}
-  #       IOS_SIMULATOR_DEVICE: "iPhone 14 Pro (16.4)" # TODO: delete this line as soon as Xcode 15 is stable on CI
-  #       XCODE_VERSION: "14.3.1" # TODO: delete this line as soon as Xcode 15 is stable on CI
-  #   - name: Allure TestOps Upload
-  #     if: env.LAUNCH_ID != '' && (success() || failure())
-  #     run: bundle exec fastlane allure_upload launch_id:$LAUNCH_ID
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-  #   - name: Allure TestOps Launch Removal
-  #     if: env.LAUNCH_ID != '' && cancelled()
-  #     run: bundle exec fastlane allure_launch_removal launch_id:$LAUNCH_ID
-  #     env:
-  #       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-  #   - name: Parse xcresult
-  #     if: failure()
-  #     run: |
-  #       brew install chargepoint/xcparse/xcparse
-  #       xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
-  #   - uses: actions/upload-artifact@v3
-  #     if: failure()
-  #     with:
-  #       name: Test Data
-  #       path: |
-  #         fastlane/recordings
-  #         fastlane/sinatra_log.txt
-  #         fastlane/test_output/logs/*/Diagnostics/StreamChatSwiftUITestsAppUITests-*/*/*.txt
+  test-e2e-debug:
+    name: Test E2E UI (Debug)
+    runs-on: macos-13
+    if: ${{ github.event_name != 'push' }}
+    needs:
+      - allure_testops_launch
+      - build-test-app-and-frameworks
+    env:
+      LAUNCH_ID: ${{ needs.allure_testops_launch.outputs.launch_id }}
+    strategy:
+      matrix:
+        batch: [0, 1]
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: actions/download-artifact@v3
+      with:
+        name: cache-derived-data
+        path: derived_data/Build/
+    - uses: ./.github/actions/bootstrap
+      env:
+        INSTALL_ALLURE: true
+    - name: Run UI Tests (Debug)
+      run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_PR_NUM: ${{ github.event.number }}
+        MATRIX_SIZE: ${{ strategy.job-total }}
+        IOS_SIMULATOR_DEVICE: "iPhone 14 Pro (16.4)" # TODO: delete this line as soon as Xcode 15 is stable on CI
+        XCODE_VERSION: "14.3.1" # TODO: delete this line as soon as Xcode 15 is stable on CI
+    - name: Allure TestOps Upload
+      if: env.LAUNCH_ID != '' && (success() || failure())
+      run: bundle exec fastlane allure_upload launch_id:$LAUNCH_ID
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+    - name: Allure TestOps Launch Removal
+      if: env.LAUNCH_ID != '' && cancelled()
+      run: bundle exec fastlane allure_launch_removal launch_id:$LAUNCH_ID
+      env:
+        ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+    - name: Parse xcresult
+      if: failure()
+      run: |
+        brew install chargepoint/xcparse/xcparse
+        xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: Test Data
+        path: |
+          fastlane/recordings
+          fastlane/sinatra_log.txt
+          fastlane/test_output/logs/*/Diagnostics/StreamChatSwiftUITestsAppUITests-*/*/*.txt
 
-  # allure_testops_launch:
-  #   name: Launch Allure TestOps
-  #   runs-on: macos-13
-  #   if: ${{ github.event_name != 'push' }}
-  #   outputs:
-  #     launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
-  #   steps:
-  #   - uses: actions/checkout@v3.1.0
-  #   - uses: ./.github/actions/ruby-cache
-  #   - name: Launch Allure TestOps
-  #     run: bundle exec fastlane allure_launch
-  #     env:
-  #       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       GITHUB_EVENT: ${{ toJson(github.event) }}
-  #   - id: get_launch_id
-  #     run: echo "launch_id=${{env.LAUNCH_ID}}" >> $GITHUB_OUTPUT
-  #     if: env.LAUNCH_ID != ''
+  allure_testops_launch:
+    name: Launch Allure TestOps
+    runs-on: macos-13
+    if: ${{ github.event_name != 'push' }}
+    outputs:
+      launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/ruby-cache
+    - name: Launch Allure TestOps
+      run: bundle exec fastlane allure_launch
+      env:
+        ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_EVENT: ${{ toJson(github.event) }}
+    - id: get_launch_id
+      run: echo "launch_id=${{env.LAUNCH_ID}}" >> $GITHUB_OUTPUT
+      if: env.LAUNCH_ID != ''
 
-  # build-apps:
-  #   name: Build Demo App
-  #   runs-on: macos-13
-  #   needs: build-test-app-and-frameworks
-  #   if: ${{ github.event_name != 'push' }}
-  #   steps:
-  #   - uses: actions/checkout@v3.1.0
-  #   - uses: actions/download-artifact@v3
-  #     with:
-  #       name: cache-derived-data
-  #       path: derived_data/Build/
-  #   - uses: ./.github/actions/ruby-cache
-  #   - uses: ./.github/actions/xcode-cache
-  #   - name: Build Demo App
-  #     run: bundle exec fastlane build_demo
+  build-apps:
+    name: Build Demo App
+    runs-on: macos-13
+    needs: build-test-app-and-frameworks
+    if: ${{ github.event_name != 'push' }}
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: actions/download-artifact@v3
+      with:
+        name: cache-derived-data
+        path: derived_data/Build/
+    - uses: ./.github/actions/ruby-cache
+    - uses: ./.github/actions/xcode-cache
+    - name: Build Demo App
+      run: bundle exec fastlane build_demo
