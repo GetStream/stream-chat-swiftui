@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -45,7 +46,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlayView_noReactions() {
@@ -64,7 +65,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlayView_usersReactions() {
@@ -107,7 +108,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlay_veryLongMessage() {
@@ -143,7 +144,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionAnimatableView_snapshot() {
@@ -162,7 +163,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         .frame(width: 24, height: 24)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlayContainer_snapshot() {
@@ -177,7 +178,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsAnimatableView_snapshot() {
@@ -193,7 +194,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatMessage_reactionOffsetCurrentUser() {

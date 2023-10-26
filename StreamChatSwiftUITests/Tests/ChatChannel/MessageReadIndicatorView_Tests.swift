@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import XCTest
 
 class MessageReadIndicatorView_Tests: StreamChatTestCase {
@@ -18,7 +19,7 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         .frame(width: 50, height: 16)
      
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_messageReadIndicatorView_snapshotMessageReadDirect() {
@@ -30,7 +31,7 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         .frame(width: 50, height: 16)
      
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_messageReadIndicatorView_snapshotMessageReadGroup() {
@@ -42,7 +43,7 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         .frame(width: 50, height: 16)
      
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_messageReadIndicatorView_snapshotPendingSend() {
@@ -55,6 +56,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         .frame(width: 50, height: 16)
      
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

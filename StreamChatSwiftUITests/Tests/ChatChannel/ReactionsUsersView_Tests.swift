@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -34,7 +35,7 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             .frame(width: 250)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsUsersView_snapshotTwoRows() {
@@ -66,6 +67,6 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             .frame(width: defaultScreenSize.width, height: 320)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

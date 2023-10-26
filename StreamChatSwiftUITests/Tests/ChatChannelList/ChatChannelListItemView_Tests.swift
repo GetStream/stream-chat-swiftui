@@ -6,6 +6,7 @@ import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
+@testable import StreamSwiftTestHelpers
 import XCTest
 
 final class ChatChannelListItemView_Tests: StreamChatTestCase {
@@ -26,7 +27,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_channelListItem_imageMessage() throws {
@@ -45,7 +46,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_channelListItem_videoMessage() throws {
@@ -64,7 +65,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_channelListItem_fileMessage() throws {
@@ -83,7 +84,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_channelListItem_giphyMessage() throws {
@@ -102,7 +103,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: snapshotPrecision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     // MARK: - private

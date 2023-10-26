@@ -58,7 +58,7 @@ public struct MessageBubbleModifier: ViewModifier {
         if utils.messageListConfig.messageListAlignment == .leftAligned {
             self.forceLeftToRight = true
         } else {
-            self.forceLeftToRight = forceLeftToRight            
+            self.forceLeftToRight = forceLeftToRight
         }
         self.topPadding = topPadding
         self.bottomPadding = bottomPadding
