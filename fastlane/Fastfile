@@ -22,7 +22,7 @@ before_all do |lane|
     setup_ci
     ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '180'
     ENV['FASTLANE_XCODEBUILD_SETTINGS_RETRIES'] = '10'
-    xcversion(version: xcode_version) unless [:publish_release, :allure_launch].include?(lane)
+    xcversion(version: xcode_version) unless [:publish_release, :allure_launch, :pod_lint].include?(lane)
   end
 end
 
