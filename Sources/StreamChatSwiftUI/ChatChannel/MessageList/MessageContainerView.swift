@@ -28,6 +28,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
     @State private var offsetX: CGFloat = 0
+    @State private var offsetYAvatar: CGFloat = 0
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
@@ -70,7 +71,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             for: utils.messageCachingUtils.authorInfo(from: message)
                         )
                         .opacity(showsAllInfo ? 1 : 0)
-                        .offset(y: bottomReactionsShown ? -44 : 0)
+                        .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
                     }
                 }
 
@@ -182,6 +183,18 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             )
                         } onLongPress: {
                             handleGestureForMessage(showsMessageActions: false)
+                        }
+                        .background(
+                            GeometryReader { proxy in
+                                let frame = proxy.frame(in: .local)
+                                let height = frame.height
+                                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
+                            }
+                        )
+                        .onPreferenceChange(HeightPreferenceKey.self) { value in
+                            if value != 0 {
+                                self.offsetYAvatar = -(value ?? 0)
+                            }
                         }
                     }
 
