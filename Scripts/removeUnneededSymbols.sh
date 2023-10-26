@@ -44,7 +44,7 @@ function removeUnneededSymbols() {
 	    fi
 	done
 
-	cd - >/dev/null
+	cd / >/dev/null
 }
 
 removeUnneededSymbols "ios-arm64"
