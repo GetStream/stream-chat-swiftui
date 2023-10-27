@@ -13,8 +13,8 @@ struct BottomReactionsView: View {
     
     var showsAllInfo: Bool
     var reactionsPerRow: Int
-    var onTap: () -> ()
-    var onLongPress: () -> ()
+    var onTap: () -> Void
+    var onLongPress: () -> Void
     
     @StateObject var viewModel: ReactionsOverlayViewModel
     
@@ -25,8 +25,8 @@ struct BottomReactionsView: View {
         message: ChatMessage,
         showsAllInfo: Bool,
         reactionsPerRow: Int = 4,
-        onTap: @escaping () -> (),
-        onLongPress: @escaping () -> ()
+        onTap: @escaping () -> Void,
+        onLongPress: @escaping () -> Void
     ) {
         self.showsAllInfo = showsAllInfo
         self.onTap = onTap

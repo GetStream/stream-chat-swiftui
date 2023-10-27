@@ -752,8 +752,8 @@ public protocol ViewFactory: AnyObject {
     func makeBottomReactionsView(
         message: ChatMessage,
         showsAllInfo: Bool,
-        onTap: @escaping () -> (),
-        onLongPress: @escaping () -> ()
+        onTap: @escaping () -> Void,
+        onLongPress: @escaping () -> Void
     ) -> ReactionsBottomViewType
 
     associatedtype MessageReactionViewType: View

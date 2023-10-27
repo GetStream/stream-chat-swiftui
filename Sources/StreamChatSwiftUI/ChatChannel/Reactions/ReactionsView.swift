@@ -101,12 +101,17 @@ struct ReactionsView: View {
     }
 }
 
-struct ReactionIcon: View {
+public struct ReactionIcon: View {
     
     var icon: UIImage
     var color: Color?
     
-    var body: some View {
+    public init(icon: UIImage, color: Color? = nil) {
+        self.icon = icon
+        self.color = color
+    }
+    
+    public var body: some View {
         Image(uiImage: icon)
             .resizable()
             .scaledToFit()
