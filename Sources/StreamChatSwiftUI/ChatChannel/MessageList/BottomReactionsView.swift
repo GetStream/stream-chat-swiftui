@@ -41,7 +41,8 @@ struct BottomReactionsView: View {
             VStack {
                 ForEach(0..<numberOfRows, id: \.self) { row in
                     let start = row * reactionsPerRow
-                    let end = start + (reactionsPerRow - 1) >= reactions.count ? reactions.count - 1 : start + (reactionsPerRow - 1)
+                    let end = start + (reactionsPerRow - 1) >= reactions.count ?
+                        reactions.count - 1 : start + (reactionsPerRow - 1)
                     let slice = end < start ? [] : Array(reactions[start...end])
                     let isEndRow = slice.isEmpty ? true : end == (reactions.count - 1)
                     HStack {
@@ -117,7 +118,7 @@ struct BottomReactionsView: View {
                             .padding(.horizontal, 2)
                             .modifier(
                                 BubbleModifier(
-                                    corners: (message.isSentByCurrentUser && showsAllInfo) ? [.bottomLeft, .bottomRight, .topLeft] : .allCorners,
+                                    corners: cornersForAddReactionButton,
                                     backgroundColors: [Color(colors.background1)],
                                     cornerRadius: cornerRadius
                                 )
@@ -130,6 +131,11 @@ struct BottomReactionsView: View {
     
     private var message: ChatMessage {
         viewModel.message
+    }
+    
+    private var cornersForAddReactionButton: UIRectCorner {
+        (message.isSentByCurrentUser && showsAllInfo) ?
+            [.bottomLeft, .bottomRight, .topLeft] : .allCorners
     }
     
     private func corners(

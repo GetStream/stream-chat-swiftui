@@ -306,8 +306,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var userReactionsPopupHeight: CGFloat {
-//        userReactionsHeight + 3 * paddingValue
-        return 0
+        userReactionsHeight + 3 * paddingValue
     }
 
     private func diffWidth(proxy: GeometryProxy) -> CGFloat {
