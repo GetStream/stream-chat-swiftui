@@ -18,6 +18,9 @@ struct BottomReactionsView: View {
     
     @StateObject var viewModel: ReactionsOverlayViewModel
     
+    private let cornerRadius: CGFloat = 12
+    private let reactionSize: CGFloat = 20
+    
     init(
         message: ChatMessage,
         showsAllInfo: Bool,
@@ -72,7 +75,7 @@ struct BottomReactionsView: View {
                                 userReactionIDs: userReactionIDs
                             )
                         )
-                        .frame(width: 20, height: 20)
+                        .frame(width: reactionSize, height: reactionSize)
                         Text("\(count(for: reaction))")
                     }
                     .padding(.all, 8)
@@ -81,7 +84,7 @@ struct BottomReactionsView: View {
                         BubbleModifier(
                             corners: corners(for: reaction, in: reactions, isEndRow: isEndRow),
                             backgroundColors: [Color(colors.background1)],
-                            cornerRadius: 16
+                            cornerRadius: cornerRadius
                         )
                     )
                     .onTapGesture {
@@ -98,12 +101,25 @@ struct BottomReactionsView: View {
                     action: onTap,
                     label: {
                         Image(systemName: "face.smiling.inverse")
+                            .overlay(
+                                TopRightView {
+                                    Image(systemName: "plus")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 6)
+                                        .padding(.all, 2)
+                                        .background(Color(colors.background1))
+                                        .clipShape(Circle())
+                                        .offset(x: 4, y: -3)
+                                }
+                            )
                             .padding(.all, 8)
+                            .padding(.horizontal, 2)
                             .modifier(
                                 BubbleModifier(
                                     corners: (message.isSentByCurrentUser && showsAllInfo) ? [.bottomLeft, .bottomRight, .topLeft] : .allCorners,
                                     backgroundColors: [Color(colors.background1)],
-                                    cornerRadius: 16
+                                    cornerRadius: cornerRadius
                                 )
                             )
                     }

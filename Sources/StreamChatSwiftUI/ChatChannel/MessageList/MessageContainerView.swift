@@ -72,6 +72,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
+                        .animation(bottomReactionsShown ? nil : .default)
                     }
                 }
 
@@ -176,7 +177,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                     
                     if bottomReactionsShown {
-                        BottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
+                        factory.makeBottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
                             handleGestureForMessage(
                                 showsMessageActions: false,
                                 showsBottomContainer: false
