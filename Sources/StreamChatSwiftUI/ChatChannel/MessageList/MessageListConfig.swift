@@ -120,7 +120,7 @@ public struct MessageDisplayOptions {
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
-        reactionsPlacement: ReactionsPlacement = .bottom, //TODO: change to top
+        reactionsPlacement: ReactionsPlacement = .top,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
