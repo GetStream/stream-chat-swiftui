@@ -6,7 +6,7 @@ import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
-@testable import StreamSwiftTestHelpers
+import StreamSwiftTestHelpers
 import XCTest
 
 final class ChatChannelListItemView_Tests: StreamChatTestCase {
