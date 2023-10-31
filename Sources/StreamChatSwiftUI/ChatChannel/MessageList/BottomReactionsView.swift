@@ -133,6 +133,10 @@ struct BottomReactionsView: View {
         viewModel.message
     }
     
+    private var reactions: [MessageReactionType] {
+        viewModel.reactions
+    }
+    
     private var cornersForAddReactionButton: UIRectCorner {
         (message.isSentByCurrentUser && showsAllInfo) ?
             [.bottomLeft, .bottomRight, .topLeft] : .allCorners
@@ -151,13 +155,6 @@ struct BottomReactionsView: View {
         } else {
             return .allCorners
         }
-    }
-    
-    private var reactions: [MessageReactionType] {
-        message.reactionScores.keys.filter { reactionType in
-            (message.reactionScores[reactionType] ?? 0) > 0
-        }
-        .sorted(by: utils.sortReactions)
     }
     
     private var userReactionIDs: Set<MessageReactionType> {

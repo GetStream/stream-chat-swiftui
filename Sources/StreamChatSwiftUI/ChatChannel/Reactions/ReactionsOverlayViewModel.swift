@@ -8,9 +8,18 @@ import SwiftUI
 
 open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
 
-    @Published public var message: ChatMessage
+    @Published public var message: ChatMessage {
+        didSet {
+            self.reactions = message.reactionScores.keys.filter { reactionType in
+                (message.reactionScores[reactionType] ?? 0) > 0
+            }
+            .sorted(by: utils.sortReactions)
+        }
+    }
     @Published public var errorShown = false
+    @Published public var reactions = [MessageReactionType]()
 
     private var messageController: ChatMessageController?
 
@@ -36,10 +45,8 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
         if let message = controller.message {
-            if message.reactionScoresId != self.message.reactionScoresId {
-                withAnimation {
-                    self.message = message
-                }
+            withAnimation {
+                self.message = message
             }
         }
     }
