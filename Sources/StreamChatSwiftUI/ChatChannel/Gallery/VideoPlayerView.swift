@@ -52,7 +52,7 @@ public struct VideoPlayerView: View {
             avPlayer.play()
         }
         .onDisappear {
-             avPlayer.replaceCurrentItem(with: nil)
+            avPlayer.replaceCurrentItem(with: nil)
         }
     }
 }

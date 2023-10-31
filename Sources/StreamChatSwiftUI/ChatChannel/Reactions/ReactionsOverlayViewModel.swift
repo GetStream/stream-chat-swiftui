@@ -12,12 +12,13 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
 
     @Published public var message: ChatMessage {
         didSet {
-            self.reactions = message.reactionScores.keys.filter { reactionType in
+            reactions = message.reactionScores.keys.filter { reactionType in
                 (message.reactionScores[reactionType] ?? 0) > 0
             }
             .sorted(by: utils.sortReactions)
         }
     }
+    
     @Published public var errorShown = false
     @Published public var reactions = [MessageReactionType]()
 

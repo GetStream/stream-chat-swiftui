@@ -79,6 +79,7 @@ struct BottomReactionsView: View {
                         .frame(width: reactionSize, height: reactionSize)
                         Text("\(count(for: reaction))")
                     }
+                    .animation(nil)
                     .padding(.all, 8)
                     .background(Color(colors.background1))
                     .modifier(
