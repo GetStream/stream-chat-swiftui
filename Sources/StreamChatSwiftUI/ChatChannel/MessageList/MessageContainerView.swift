@@ -72,7 +72,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
-                        .animation(bottomReactionsShown ? nil : .default)
+                        .animation(nil)
                     }
                 }
 
