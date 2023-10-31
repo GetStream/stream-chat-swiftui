@@ -4,7 +4,7 @@
 
 import SnapshotTesting
 @testable import StreamChatSwiftUI
-@testable import StreamSwiftTestHelpers
+import StreamSwiftTestHelpers
 import XCTest
 
 class TypingIndicatorView_Tests: StreamChatTestCase {
