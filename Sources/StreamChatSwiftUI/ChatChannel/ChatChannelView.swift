@@ -98,6 +98,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         .if(viewModel.channelHeaderType == .messageThread) { view in
                             view.modifier(factory.makeMessageThreadHeaderViewModifier())
                         }
+                        .animation(nil)
 
                     factory.makeMessageComposerViewType(
                         with: viewModel.channelController,

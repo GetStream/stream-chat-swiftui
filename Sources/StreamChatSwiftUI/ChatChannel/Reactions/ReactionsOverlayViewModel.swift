@@ -55,9 +55,7 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
             )
             messageController?.delegate = self
             if let message = messageController?.message {
-                withAnimation {
-                    self.message = message
-                }
+                self.message = message
             }
         }
     }
