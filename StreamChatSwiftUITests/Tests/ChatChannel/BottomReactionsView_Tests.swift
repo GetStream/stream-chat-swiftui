@@ -8,14 +8,13 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-
 final class BottomReactionsView_Tests: StreamChatTestCase {
 
     func test_bottomReactions_singleRow_otherUser() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [
-            .init(rawValue: "like") : 2,
-            .init(rawValue: "love") : 1
+            .init(rawValue: "like"): 2,
+            .init(rawValue: "love"): 1
         ]
         let message = ChatMessage.mock(reactionScores: reactionScores)
         
@@ -36,8 +35,8 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
     func test_bottomReactions_singleRow_currentUser() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [
-            .init(rawValue: "like") : 2,
-            .init(rawValue: "love") : 1
+            .init(rawValue: "like"): 2,
+            .init(rawValue: "love"): 1
         ]
         let message = ChatMessage.mock(
             reactionScores: reactionScores,
@@ -61,8 +60,8 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
     func test_bottomReactions_singleRow_currentUserReaction() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [
-            .init(rawValue: "like") : 2,
-            .init(rawValue: "love") : 1
+            .init(rawValue: "like"): 2,
+            .init(rawValue: "love"): 1
         ]
         let message = ChatMessage.mock(
             reactionScores: reactionScores,
@@ -86,11 +85,11 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
     func test_bottomReactions_multipleRows_currentUserReaction() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [
-            .init(rawValue: "like") : 2,
-            .init(rawValue: "love") : 1,
-            .init(rawValue: "haha") : 1,
-            .init(rawValue: "sad") : 1,
-            .init(rawValue: "wow") : 10
+            .init(rawValue: "like"): 2,
+            .init(rawValue: "love"): 1,
+            .init(rawValue: "haha"): 1,
+            .init(rawValue: "sad"): 1,
+            .init(rawValue: "wow"): 10
         ]
         let message = ChatMessage.mock(
             reactionScores: reactionScores,
@@ -114,11 +113,11 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
     func test_bottomReactions_multipleRows_twoPerRow() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [
-            .init(rawValue: "like") : 2,
-            .init(rawValue: "love") : 1,
-            .init(rawValue: "haha") : 1,
-            .init(rawValue: "sad") : 1,
-            .init(rawValue: "wow") : 10
+            .init(rawValue: "like"): 2,
+            .init(rawValue: "love"): 1,
+            .init(rawValue: "haha"): 1,
+            .init(rawValue: "sad"): 1,
+            .init(rawValue: "wow"): 10
         ]
         let message = ChatMessage.mock(
             reactionScores: reactionScores,
@@ -143,10 +142,10 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
     func test_bottomReactions_multipleRows_buttonNewRow() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [
-            .init(rawValue: "like") : 2,
-            .init(rawValue: "love") : 1,
-            .init(rawValue: "haha") : 1,
-            .init(rawValue: "sad") : 1
+            .init(rawValue: "like"): 2,
+            .init(rawValue: "love"): 1,
+            .init(rawValue: "haha"): 1,
+            .init(rawValue: "sad"): 1
         ]
         let message = ChatMessage.mock(
             reactionScores: reactionScores,
