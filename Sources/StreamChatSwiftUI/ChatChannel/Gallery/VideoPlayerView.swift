@@ -51,6 +51,9 @@ public struct VideoPlayerView: View {
             try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
             avPlayer.play()
         }
+        .onDisappear {
+             avPlayer.replaceCurrentItem(with: nil)
+        }
     }
 }
 

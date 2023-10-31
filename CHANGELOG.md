@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Video playing after being dismissed on iOS 17.1
 
 # [4.40.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.40.0)
 _October 26, 2023_
