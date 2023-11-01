@@ -745,6 +745,20 @@ extension ViewFactory {
         )
     }
     
+    public func makeBottomReactionsView(
+        message: ChatMessage,
+        showsAllInfo: Bool,
+        onTap: @escaping () -> Void,
+        onLongPress: @escaping () -> Void
+    ) -> some View {
+        BottomReactionsView(
+            message: message,
+            showsAllInfo: showsAllInfo,
+            onTap: onTap,
+            onLongPress: onLongPress
+        )
+    }
+    
     public func makeMessageReactionView(
         message: ChatMessage,
         onTapGesture: @escaping () -> Void,

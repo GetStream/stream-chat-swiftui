@@ -178,7 +178,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .opacity(willPopOut ? 0 : 1)
                         .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
                         .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
-                    } else {
+                    } else if messageDisplayInfo.showsBottomContainer {
                         factory.makeReactionsUsersView(
                             message: viewModel.message,
                             maxHeight: userReactionsHeight

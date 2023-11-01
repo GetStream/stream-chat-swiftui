@@ -8,15 +8,23 @@ import SwiftUI
 
 open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
 
-    @Published public var message: ChatMessage
+    @Published public var message: ChatMessage {
+        didSet {
+            reactions = Self.reactions(from: message)
+        }
+    }
+    
     @Published public var errorShown = false
+    @Published public var reactions: [MessageReactionType]
 
     private var messageController: ChatMessageController?
 
     public init(message: ChatMessage) {
         self.message = message
-        makeMessageController()
+        reactions = Self.reactions(from: message)
+        makeMessageController(for: message)
     }
 
     public func reactionTapped(_ reaction: MessageReactionType) {
@@ -43,14 +51,21 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
     }
 
     // MARK: - private
+    
+    private static func reactions(from message: ChatMessage) -> [MessageReactionType] {
+        message.reactionScores.keys.filter { reactionType in
+            (message.reactionScores[reactionType] ?? 0) > 0
+        }
+        .sorted(by: InjectedValues[\.utils].sortReactions)
+    }
 
-    private func makeMessageController() {
+    private func makeMessageController(for message: ChatMessage) {
+        let controllerFactory = InjectedValues[\.utils].channelControllerFactory
         if let channelId = message.cid {
-            messageController = chatClient.messageController(
-                cid: channelId,
-                messageId: message.id
+            messageController = controllerFactory.makeMessageController(
+                for: message.id,
+                channelId: channelId
             )
-            messageController?.synchronize()
             messageController?.delegate = self
             if let message = messageController?.message {
                 self.message = message

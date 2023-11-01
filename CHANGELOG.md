@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Config for bottom placement of reactions
+
 ### 🐞 Fixed
 - Video playing after being dismissed on iOS 17.1
 

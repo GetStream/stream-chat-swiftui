@@ -101,6 +101,7 @@ public struct MessageDisplayOptions {
     public let currentUserMessageTransition: AnyTransition
     public let otherUserMessageTransition: AnyTransition
     public let shouldAnimateReactions: Bool
+    public let reactionsPlacement: ReactionsPlacement
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
@@ -119,6 +120,7 @@ public struct MessageDisplayOptions {
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
+        reactionsPlacement: ReactionsPlacement = .top,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
@@ -141,6 +143,7 @@ public struct MessageDisplayOptions {
         self.reactionsTopPadding = reactionsTopPadding
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
         self.dateSeparator = dateSeparator
+        self.reactionsPlacement = reactionsPlacement
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {
@@ -189,6 +192,11 @@ public enum MessageListType {
     case team
     case livestream
     case commerce
+}
+
+public enum ReactionsPlacement {
+    case top
+    case bottom
 }
 
 /// The alignment of the messages in the message list.

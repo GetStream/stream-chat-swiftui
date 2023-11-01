@@ -739,6 +739,22 @@ public protocol ViewFactory: AnyObject {
         message: ChatMessage,
         maxHeight: CGFloat
     ) -> ReactionsUsersViewType
+    
+    associatedtype ReactionsBottomViewType: View
+    /// Creates a reactions view displayed below the message.
+    /// This method is called only if `ReactionsPlacement` is set to `bottom`.
+    /// - Parameters:
+    ///  - message: the message for which reactions will be shown.
+    ///  - showsAllInfo: whether all info is shown for this message.
+    ///  - onTap: method called when the user taps on a reaction.
+    ///  - onLongPress: method called when the user long presses on a reaction.
+    /// - Returns: view displayed at the bottom reactions slot.
+    func makeBottomReactionsView(
+        message: ChatMessage,
+        showsAllInfo: Bool,
+        onTap: @escaping () -> Void,
+        onLongPress: @escaping () -> Void
+    ) -> ReactionsBottomViewType
 
     associatedtype MessageReactionViewType: View
     /// Creates the reactions view shown above the message.
