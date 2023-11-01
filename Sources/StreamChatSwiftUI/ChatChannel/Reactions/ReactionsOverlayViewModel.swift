@@ -12,20 +12,18 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
 
     @Published public var message: ChatMessage {
         didSet {
-            reactions = message.reactionScores.keys.filter { reactionType in
-                (message.reactionScores[reactionType] ?? 0) > 0
-            }
-            .sorted(by: utils.sortReactions)
+            reactions = Self.reactions(from: message)
         }
     }
     
     @Published public var errorShown = false
-    @Published public var reactions = [MessageReactionType]()
+    @Published public var reactions: [MessageReactionType]
 
     private var messageController: ChatMessageController?
 
     public init(message: ChatMessage) {
         self.message = message
+        reactions = Self.reactions(from: message)
         makeMessageController(for: message)
     }
 
@@ -53,6 +51,13 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
     }
 
     // MARK: - private
+    
+    private static func reactions(from message: ChatMessage) -> [MessageReactionType] {
+        message.reactionScores.keys.filter { reactionType in
+            (message.reactionScores[reactionType] ?? 0) > 0
+        }
+        .sorted(by: InjectedValues[\.utils].sortReactions)
+    }
 
     private func makeMessageController(for message: ChatMessage) {
         let controllerFactory = InjectedValues[\.utils].channelControllerFactory

@@ -66,7 +66,7 @@ struct WhatsAppChannelHeader: ToolbarContent {
                 }
             }
         }
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .navigationBarTrailing) {
             HStack {
                 Button(action: {
                     print("tapped on video")
