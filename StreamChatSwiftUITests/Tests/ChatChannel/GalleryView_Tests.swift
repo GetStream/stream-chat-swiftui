@@ -16,7 +16,7 @@ class GalleryView_Tests: StreamChatTestCase {
         let imageMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
-            text: "test message",
+            text: "--------------------------------------------------------- I am testing a PR creation on CI ---------------------------------------------------------",
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
