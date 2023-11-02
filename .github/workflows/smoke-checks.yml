@@ -29,7 +29,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_PR_NUM: ${{ github.event.number }}
-    if: ${{ github.event_name != 'push' }} && github.event.inputs.snapshots != 'true'
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/bootstrap
@@ -116,7 +116,7 @@ jobs:
   test-e2e-debug:
     name: Test E2E UI (Debug)
     runs-on: macos-13
-    if: ${{ github.event_name != 'push' }} && github.event.inputs.snapshots != 'true'
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     needs:
       - allure_testops_launch
       - build-test-app-and-frameworks
@@ -171,7 +171,7 @@ jobs:
   allure_testops_launch:
     name: Launch Allure TestOps
     runs-on: macos-13
-    if: ${{ github.event_name != 'push' }} && github.event.inputs.snapshots != 'true'
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
     steps:
@@ -191,7 +191,7 @@ jobs:
     name: Build Demo App
     runs-on: macos-13
     needs: build-test-app-and-frameworks
-    if: ${{ github.event_name != 'push' }} && github.event.inputs.snapshots != 'true'
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: actions/download-artifact@v3
