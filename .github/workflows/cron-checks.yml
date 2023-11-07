@@ -47,7 +47,7 @@ jobs:
         include:
           # TODO: uncomment this block as soon as Xcode 15 is stable on CI
           # - ios: 17.0
-          #   xcode: 15.0
+          #   xcode: 15.0.1
           #   os: macos-13
           #   device: "iPhone 14 Pro Max"
           #   setup_runtime: false
@@ -122,7 +122,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - xcode: 15.0
+          - xcode: 15.0.1
             os: macos-13
           - xcode: 14.3.1
             os: macos-13
