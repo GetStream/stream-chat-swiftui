@@ -140,7 +140,7 @@ lane :test_ui do |options|
     devices: options[:device],
     build_for_testing: options[:build_for_testing],
     skip_build: options[:skip_build],
-    number_of_retries: 1,
+    number_of_retries: options[:record].to_s.empty? ? 1 : nil,
     xcargs: buildcache_xcargs,
     fail_build: options[:record].to_s.empty?
   )
