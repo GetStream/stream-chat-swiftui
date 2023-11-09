@@ -60,7 +60,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         VStack(spacing: 0) {
             HStack(alignment: .bottom) {
                 Button {
-                    withAnimation(.bouncy) {
+                    withAnimation(.interpolatingSpring(stiffness: 170, damping: 25)) {
                         switch state {
                         case .initial:
                             listScale = 1
@@ -285,7 +285,7 @@ struct ComposerActionsView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .onTapGesture {
-            withAnimation(.bouncy) {
+            withAnimation(.interpolatingSpring(stiffness: 170, damping: 25)) {
                 switch state {
                 case .initial:
                     listScale = 1
