@@ -139,6 +139,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -166,6 +173,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messageCachingUtils.clearCache()
     }
     
+    @objc
+    private func applicationWillEnterForeground() {
+        guard let first = messages.first else { return }
+        maybeSendReadEvent(for: first)
+    }
+    
     public func scrollToLastMessage() {
         if scrolledId != nil {
             scrolledId = nil
@@ -184,7 +197,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             save(lastDate: message.createdAt)
         }
         if index == 0 {
-            maybeSendReadEvent(for: message)
+            let isActive = UIApplication.shared.applicationState == .active
+            if isActive {
+                maybeSendReadEvent(for: message)
+            }
         }
     }
     
