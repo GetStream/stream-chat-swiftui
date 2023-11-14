@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add factory method for custom attachments in quoted messages
+
 ### 🐞 Fixed
 - Fix marked read while the app is in the background
 - Fix recently saved images to camera roll don't show up

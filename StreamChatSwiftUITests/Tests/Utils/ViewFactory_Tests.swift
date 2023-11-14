@@ -819,6 +819,17 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is BottomReactionsView)
     }
+    
+    func test_viewFactory_makeCustomAttachmentQuotedView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeCustomAttachmentQuotedView(for: .mock())
+        
+        // Then
+        XCTAssert(view is EmptyView)
+    }
 }
 
 extension ChannelAction: Equatable {

@@ -830,6 +830,10 @@ extension ViewFactory {
         )
     }
     
+    public func makeCustomAttachmentQuotedView(for message: ChatMessage) -> some View {
+        EmptyView()
+    }
+    
     public func makeEditedMessageHeaderView(
         editedMessage: Binding<ChatMessage?>
     ) -> some View {

@@ -822,6 +822,12 @@ public protocol ViewFactory: AnyObject {
         isInComposer: Bool,
         scrolledId: Binding<String?>
     ) -> QuotedMessageViewType
+    
+    associatedtype CustomAttachmentQuotedViewType: View
+    /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
+    /// - Parameter message: the quoted message.
+    /// - Returns: view shown in quoted messages with custom attachments.
+    func makeCustomAttachmentQuotedView(for message: ChatMessage) -> CustomAttachmentQuotedViewType
 
     associatedtype EditedMessageHeaderViewType: View
     /// Creates the edited message header view in the composer.
