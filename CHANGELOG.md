@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.42.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.42.0)
+_November 15, 2023_
+
 ### ✅ Added
 - Add factory method for custom attachments in quoted messages
 
