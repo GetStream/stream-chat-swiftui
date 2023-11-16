@@ -32,7 +32,7 @@ struct ReactionsUsersView: View {
 
     var body: some View {
         HStack {
-            if message.isSentByCurrentUser {
+            if message.isRightAligned {
                 Spacer()
             }
 
@@ -70,7 +70,7 @@ struct ReactionsUsersView: View {
             .background(Color(colors.background))
             .cornerRadius(16)
 
-            if !message.isSentByCurrentUser {
+            if !message.isRightAligned {
                 Spacer()
             }
         }

@@ -6,14 +6,14 @@ import StreamChat
 import SwiftUI
 
 /// View displaying file attachments.
-struct FileAttachmentsView: View {
+public struct FileAttachmentsView: View {
 
     @StateObject private var viewModel: FileAttachmentsViewModel
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
-    init(channel: ChatChannel) {
+    public init(channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: FileAttachmentsViewModel(channel: channel)
         )
@@ -23,7 +23,7 @@ struct FileAttachmentsView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if viewModel.loading {
                 LoadingView()

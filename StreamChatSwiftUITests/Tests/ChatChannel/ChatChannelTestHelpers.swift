@@ -54,7 +54,6 @@ class ChatChannelTestHelpers {
                 payload: ImageAttachmentPayload(
                     title: "test",
                     imageRemoteURL: testURL,
-                    imagePreviewRemoteURL: testURL,
                     extraData: [:]
                 ),
                 uploadingState: uploadingState

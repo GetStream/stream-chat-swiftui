@@ -103,7 +103,7 @@ open class TwoStepMentionCommand: CommandHandler {
             return resolve(
                 with: SuggestionInfo(
                     key: "mentions",
-                    value: []
+                    value: [Any]()
                 )
             )
         }

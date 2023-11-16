@@ -66,11 +66,23 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        
+        let credentials = UnsecureRepository.shared.loadCurrentUser()
+        if let credentials, let token = try? Token(rawValue: credentials.token) {
+            chatClient.connectUser(
+                userInfo: .init(
+                    id: credentials.id,
+                    name: credentials.name,
+                    imageURL: credentials.avatarURL
+                ),
+                token: token
+            )
+        }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             withAnimation {
                 if AppState.shared.userState == .launchAnimation {
-                    AppState.shared.userState = .notLoggedIn
+                    AppState.shared.userState = credentials == nil ? .notLoggedIn : .loggedIn
                 }
             }
         }

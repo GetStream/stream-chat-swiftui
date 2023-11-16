@@ -358,7 +358,12 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let channelController = makeChannelController()
         let viewModel = ChatChannelViewModel(channelController: channelController)
         let channel = ChatChannel.mockDMChannel()
-        let read = ChatChannelRead.mock(lastReadAt: Date(), unreadMessagesCount: 1, user: .mock(id: .unique))
+        let read = ChatChannelRead.mock(
+            lastReadAt: Date(),
+            lastReadMessageId: nil,
+            unreadMessagesCount: 1,
+            user: .mock(id: .unique)
+        )
         let newChannel = ChatChannel.mockDMChannel(reads: [read])
 
         // When

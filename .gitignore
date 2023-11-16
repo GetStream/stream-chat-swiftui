@@ -57,6 +57,9 @@ Pods/
 Carthage/
 !Sample/Carthage/
 
+# Ignore Products folder
+Products/
+
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
@@ -74,6 +77,7 @@ fastlane/recordings
 StreamChatCore.framework.coverage.txt
 StreamChatCoreTests.xctest.coverage.txt
 vendor/bundle/
+.bundle/
 .swiftpm
 Example/Carthage/.env
 Example/Carthage/fastlane/report.xml
@@ -83,3 +87,7 @@ reports/
 .scannerwork/
 push_payload.json
 sinatra_log.txt
+derived_data/
+spm_cache/
+.buildcache
+buildcache

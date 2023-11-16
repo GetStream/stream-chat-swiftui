@@ -3,8 +3,6 @@
 //
 
 import AVKit
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
@@ -30,6 +28,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
     @State private var offsetX: CGFloat = 0
+    @State private var offsetYAvatar: CGFloat = 0
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
@@ -64,7 +63,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             if message.type == .system || message.type == .error {
                 factory.makeSystemMessageView(message: message)
             } else {
-                if message.isSentByCurrentUser {
+                if message.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
                     if messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
@@ -72,14 +71,16 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             for: utils.messageCachingUtils.authorInfo(from: message)
                         )
                         .opacity(showsAllInfo ? 1 : 0)
+                        .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
+                        .animation(nil)
                     }
                 }
 
-                VStack(alignment: message.isSentByCurrentUser ? .trailing : .leading) {
+                VStack(alignment: message.isRightAligned ? .trailing : .leading) {
                     if isMessagePinned {
                         MessagePinDetailsView(
                             message: message,
-                            reactionsShown: reactionsShown
+                            reactionsShown: topReactionsShown
                         )
                     }
 
@@ -92,7 +93,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                     .overlay(
                         ZStack {
-                            reactionsShown ?
+                            topReactionsShown ?
                                 factory.makeMessageReactionView(
                                     message: message,
                                     onTapGesture: {
@@ -174,6 +175,29 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .accessibilityElement(children: .contain)
                         .accessibility(identifier: "MessageRepliesView")
                     }
+                    
+                    if bottomReactionsShown {
+                        factory.makeBottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
+                            handleGestureForMessage(
+                                showsMessageActions: false,
+                                showsBottomContainer: false
+                            )
+                        } onLongPress: {
+                            handleGestureForMessage(showsMessageActions: false)
+                        }
+                        .background(
+                            GeometryReader { proxy in
+                                let frame = proxy.frame(in: .local)
+                                let height = frame.height
+                                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
+                            }
+                        )
+                        .onPreferenceChange(HeightPreferenceKey.self) { value in
+                            if value != 0 {
+                                self.offsetYAvatar = -(value ?? 0)
+                            }
+                        }
+                    }
 
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
@@ -187,7 +211,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                     factory.makeMessageDateView(for: message)
                                 }
                             }
-                        } else if !message.isSentByCurrentUser
+                        } else if !message.isRightAligned
                             && !channel.isDirectMessageChannel
                             && messageListConfig.messageDisplayOptions.showAuthorName {
                             factory.makeMessageAuthorAndDateView(for: message)
@@ -205,14 +229,14 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         : nil
                 )
 
-                if !message.isSentByCurrentUser {
+                if !message.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 }
             }
         }
         .padding(
             .top,
-            reactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
+            topReactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
         )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
@@ -241,7 +265,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         let minimumWidth: CGFloat = 240
         let available = max(minimumWidth, (width ?? 0) - spacerWidth) - 2 * padding
         let avatarSize: CGFloat = CGSize.messageAvatarSize.width + padding
-        let totalWidth = message.isSentByCurrentUser ? available : available - avatarSize
+        let totalWidth = message.isRightAligned ? available : available - avatarSize
         return totalWidth
     }
 
@@ -249,6 +273,20 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         messageListConfig.messageDisplayOptions.spacerWidth(width ?? 0)
     }
 
+    private var topReactionsShown: Bool {
+        if messageListConfig.messageDisplayOptions.reactionsPlacement == .bottom {
+            return false
+        }
+        return reactionsShown
+    }
+    
+    private var bottomReactionsShown: Bool {
+        if messageListConfig.messageDisplayOptions.reactionsPlacement == .top {
+            return false
+        }
+        return reactionsShown
+    }
+    
     private var reactionsShown: Bool {
         !message.reactionScores.isEmpty
             && !message.isDeleted
@@ -291,7 +329,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         }
     }
 
-    private func handleGestureForMessage(showsMessageActions: Bool) {
+    private func handleGestureForMessage(
+        showsMessageActions: Bool,
+        showsBottomContainer: Bool = true
+    ) {
         computeFrame = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             computeFrame = false
@@ -302,7 +343,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     frame: frame,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
-                    showsMessageActions: showsMessageActions
+                    showsMessageActions: showsMessageActions,
+                    showsBottomContainer: showsBottomContainer
                 )
             )
         }
@@ -333,6 +375,7 @@ public struct MessageDisplayInfo {
     public let contentWidth: CGFloat
     public let isFirst: Bool
     public var showsMessageActions: Bool = true
+    public var showsBottomContainer: Bool = true
     public var keyboardWasShown: Bool = false
 
     public init(
@@ -341,6 +384,7 @@ public struct MessageDisplayInfo {
         contentWidth: CGFloat,
         isFirst: Bool,
         showsMessageActions: Bool = true,
+        showsBottomContainer: Bool = true,
         keyboardWasShown: Bool = false
     ) {
         self.message = message
@@ -349,5 +393,6 @@ public struct MessageDisplayInfo {
         self.isFirst = isFirst
         self.showsMessageActions = showsMessageActions
         self.keyboardWasShown = keyboardWasShown
+        self.showsBottomContainer = showsBottomContainer
     }
 }

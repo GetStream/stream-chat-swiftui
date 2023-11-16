@@ -2,8 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
@@ -62,13 +60,18 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-
+    @Injected(\.utils) private var utils
+    
     private let attachmentWidth: CGFloat = 36
 
     public var factory: Factory
     public var quotedMessage: ChatMessage
     public var fillAvailableSpace: Bool
     public var forceLeftToRight: Bool
+    
+    private var messageTypeResolver: MessageTypeResolving {
+        utils.messageTypeResolver
+    }
 
     public init(
         factory: Factory,
@@ -86,7 +89,9 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         HStack(alignment: .top) {
             if !quotedMessage.attachmentCounts.isEmpty {
                 ZStack {
-                    if !quotedMessage.imageAttachments.isEmpty {
+                    if messageTypeResolver.hasCustomAttachment(message: quotedMessage) {
+                        factory.makeCustomAttachmentQuotedView(for: quotedMessage)
+                    } else if !quotedMessage.imageAttachments.isEmpty {
                         LazyLoadingImage(
                             source: quotedMessage.imageAttachments[0].imageURL,
                             width: attachmentWidth,

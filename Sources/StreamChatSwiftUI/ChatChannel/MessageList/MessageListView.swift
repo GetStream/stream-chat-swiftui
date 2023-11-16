@@ -69,8 +69,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         quotedMessage: Binding<ChatMessage?>,
         currentDateString: String? = nil,
         listId: String,
-        isMessageThread: Bool,
-        shouldShowTypingIndicator: Bool,
+        isMessageThread: Bool = false,
+        shouldShowTypingIndicator: Bool = false,
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
@@ -174,7 +174,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                         showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
                                                 newMessagesStartId: $newMessagesStartId,
-                                                count: newMessagesCount(for: index)
+                                                count: newMessagesCount(for: index, message: message)
                                             )
                                             : nil
 
@@ -279,6 +279,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 pendingKeyboardUpdate = nil
             }
         })
+        .modifier(factory.makeMessageListContainerModifier())
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
@@ -301,8 +302,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         return offset
     }
     
-    private func newMessagesCount(for index: Int?) -> Int {
+    private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
         if let index = index {
+            return index + 1
+        } else if let index = messageListDateUtils.index(for: message, in: messages) {
             return index + 1
         } else {
             return channel.unreadCount.messages

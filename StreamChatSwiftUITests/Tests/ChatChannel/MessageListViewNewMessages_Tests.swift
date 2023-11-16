@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -30,7 +31,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image)
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
     func test_messageListViewNewMessages_moreMessages() {
@@ -48,7 +49,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image)
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
     func test_messageListViewNewMessages_moreMessagesInBetween() {
@@ -66,7 +67,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image)
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
     func test_messageListViewNewMessages_noMessages() {
@@ -84,7 +85,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: messageListView, as: .image)
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
     // MARK: - private

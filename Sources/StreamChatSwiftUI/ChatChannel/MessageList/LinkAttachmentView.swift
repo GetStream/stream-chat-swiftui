@@ -2,8 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
@@ -20,6 +18,20 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
 
     private let padding: CGFloat = 8
+    
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        width: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) {
+        self.factory = factory
+        self.message = message
+        self.width = width
+        self.isFirst = isFirst
+        _scrolledId = scrolledId
+    }
 
     public var body: some View {
         VStack(

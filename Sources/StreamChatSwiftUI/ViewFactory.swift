@@ -200,6 +200,10 @@ public protocol ViewFactory: AnyObject {
     associatedtype MessageListModifier: ViewModifier
     /// Returns a view modifier applied to the message list.
     func makeMessageListModifier() -> MessageListModifier
+    
+    associatedtype MessageListContainerModifier: ViewModifier
+    /// Returns a view modifier applied to the message list container.
+    func makeMessageListContainerModifier() -> MessageListContainerModifier
 
     associatedtype MessageViewModifier: ViewModifier
     /// Returns a view modifier applied to the message view.
@@ -536,6 +540,27 @@ public protocol ViewFactory: AnyObject {
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
     ) -> ComposerInputViewType
+    
+    associatedtype ComposerTextInputViewType: View
+    /// Creates the composer input view.
+    /// - Parameters:
+    ///  - text: the text displayed in the input view.
+    ///  - height: the height of the view.
+    ///  - selectedRangeLocation: the selected range location of a text.
+    ///  - placeholder: the placeholder shown when there's no text.
+    ///  - editable: whether the text view should be editable.
+    ///  - maxMessageLength: the maximum allowed message length.
+    ///  - currentHeight: the current height of the view.
+    /// - Returns: View shown in the composer text input slot.
+    func makeComposerTextInputView(
+        text: Binding<String>,
+        height: Binding<CGFloat>,
+        selectedRangeLocation: Binding<Int>,
+        placeholder: String,
+        editable: Bool,
+        maxMessageLength: Int?,
+        currentHeight: CGFloat
+    ) -> ComposerTextInputViewType
 
     associatedtype TrailingComposerViewType: View
     /// Creates the trailing composer view.
@@ -714,6 +739,22 @@ public protocol ViewFactory: AnyObject {
         message: ChatMessage,
         maxHeight: CGFloat
     ) -> ReactionsUsersViewType
+    
+    associatedtype ReactionsBottomViewType: View
+    /// Creates a reactions view displayed below the message.
+    /// This method is called only if `ReactionsPlacement` is set to `bottom`.
+    /// - Parameters:
+    ///  - message: the message for which reactions will be shown.
+    ///  - showsAllInfo: whether all info is shown for this message.
+    ///  - onTap: method called when the user taps on a reaction.
+    ///  - onLongPress: method called when the user long presses on a reaction.
+    /// - Returns: view displayed at the bottom reactions slot.
+    func makeBottomReactionsView(
+        message: ChatMessage,
+        showsAllInfo: Bool,
+        onTap: @escaping () -> Void,
+        onLongPress: @escaping () -> Void
+    ) -> ReactionsBottomViewType
 
     associatedtype MessageReactionViewType: View
     /// Creates the reactions view shown above the message.
@@ -781,6 +822,12 @@ public protocol ViewFactory: AnyObject {
         isInComposer: Bool,
         scrolledId: Binding<String?>
     ) -> QuotedMessageViewType
+    
+    associatedtype CustomAttachmentQuotedViewType: View
+    /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
+    /// - Parameter message: the quoted message.
+    /// - Returns: view shown in quoted messages with custom attachments.
+    func makeCustomAttachmentQuotedView(for message: ChatMessage) -> CustomAttachmentQuotedViewType
 
     associatedtype EditedMessageHeaderViewType: View
     /// Creates the edited message header view in the composer.

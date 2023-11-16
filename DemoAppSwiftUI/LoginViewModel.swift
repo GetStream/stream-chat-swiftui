@@ -34,6 +34,7 @@ class LoginViewModel: ObservableObject {
             DispatchQueue.main.async { [weak self] in
                 withAnimation {
                     self?.loading = false
+                    UnsecureRepository.shared.save(user: credentials)
                     AppState.shared.userState = .loggedIn
                 }
             }

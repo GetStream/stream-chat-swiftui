@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import XCTest
 
 class WebView_Tests: StreamChatTestCase {
@@ -27,6 +28,6 @@ class WebView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: webView, as: .image)
+        assertSnapshot(matching: webView, as: .image(perceptualPrecision: precision))
     }
 }

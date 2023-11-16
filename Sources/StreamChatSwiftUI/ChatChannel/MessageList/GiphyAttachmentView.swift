@@ -2,8 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
-import NukeUI
 import StreamChat
 import SwiftUI
 
@@ -68,7 +66,14 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .messageBubble(for: message, isFirst: isFirst)
+        .modifier(
+            factory.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: message,
+                    isFirst: isFirst
+                )
+            )
+        )
         .frame(maxWidth: width)
         .accessibilityIdentifier("GiphyAttachmentView")
     }
@@ -99,7 +104,7 @@ struct LazyGiphyView: View {
     var body: some View {
         LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {
-                Image(imageContainer)
+                NukeImage(imageContainer)
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
             } else {

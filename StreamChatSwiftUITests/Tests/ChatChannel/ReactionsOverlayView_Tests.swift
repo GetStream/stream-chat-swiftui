@@ -5,10 +5,13 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
 class ReactionsOverlayView_Tests: StreamChatTestCase {
+    
+    private static let screenSize = CGSize(width: 393, height: 852)
 
     private let testMessage = ChatMessage.mock(
         id: "test",
@@ -27,7 +30,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
     private let overlayImage = UIColor
         .black
         .withAlphaComponent(0.2)
-        .image(defaultScreenSize)
+        .image(screenSize)
 
     func test_reactionsOverlayView_snapshot() {
         // Given
@@ -40,11 +43,10 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlayView_noReactions() {
@@ -60,11 +62,10 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlayView_usersReactions() {
@@ -104,11 +105,10 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlay_veryLongMessage() {
@@ -141,11 +141,10 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .applyDefaultSize()
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionAnimatableView_snapshot() {
@@ -164,7 +163,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         .frame(width: 24, height: 24)
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsOverlayContainer_snapshot() {
@@ -179,7 +178,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_reactionsAnimatableView_snapshot() {
@@ -195,7 +194,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         )
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatMessage_reactionOffsetCurrentUser() {

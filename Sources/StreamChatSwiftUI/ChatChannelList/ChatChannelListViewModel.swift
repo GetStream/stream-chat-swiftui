@@ -181,10 +181,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// - Parameter channel: the provided channel.
     /// - Returns: Boolean whether the indicator is shown.
     public func onlineIndicatorShown(for channel: ChatChannel) -> Bool {
-        !channel.lastActiveMembers.filter { member in
-            member.isOnline && member.id != chatClient.currentUserId
-        }
-        .isEmpty
+        channel.shouldShowOnlineIndicator
     }
 
     public func onDeleteTapped(channel: ChatChannel) {
@@ -197,7 +194,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     public func delete(channel: ChatChannel) {
         let controller = chatClient.channelController(
-            for: .init(type: .messaging, id: channel.cid.id)
+            for: .init(type: channel.type, id: channel.cid.id)
         )
 
         controller.deleteChannel { [weak self] error in
@@ -377,7 +374,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func updateChannelsIfNeeded() {
-        if utils.messageListConfig.updateChannelsFromMessageList && ((selectedChannelIndex ?? 0) < 8) {
+        if utils.messageListConfig.updateChannelsFromMessageList
+            && ((selectedChannelIndex ?? 0) < 8)
+            && !utils.messageCachingUtils.messageThreadShown {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 self?.handleChannelAppearance()
             }

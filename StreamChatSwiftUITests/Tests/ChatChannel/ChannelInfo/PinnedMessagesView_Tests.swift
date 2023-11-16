@@ -5,6 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -27,7 +28,7 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_pinnedMessagesView_emptySnapshot() {
@@ -39,7 +40,7 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }
 

@@ -4,8 +4,8 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-@_exported import StreamChatTestHelpers
 @_exported import StreamChatTestTools
+@_exported import StreamSwiftTestHelpers
 import XCTest
 
 /// Base class that sets up the `StreamChat` object.

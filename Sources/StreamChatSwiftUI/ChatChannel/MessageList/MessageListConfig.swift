@@ -25,7 +25,8 @@ public struct MessageListConfig {
         iPadSplitViewEnabled: Bool = true,
         scrollingAnchor: UnitPoint = .bottom,
         showNewMessagesSeparator: Bool = false,
-        handleTabBarVisibility: Bool = true
+        handleTabBarVisibility: Bool = true,
+        messageListAlignment: MessageListAlignment = .standard
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -44,6 +45,7 @@ public struct MessageListConfig {
         self.scrollingAnchor = scrollingAnchor
         self.showNewMessagesSeparator = showNewMessagesSeparator
         self.handleTabBarVisibility = handleTabBarVisibility
+        self.messageListAlignment = messageListAlignment
     }
 
     public let messageListType: MessageListType
@@ -63,6 +65,7 @@ public struct MessageListConfig {
     public let scrollingAnchor: UnitPoint
     public let showNewMessagesSeparator: Bool
     public let handleTabBarVisibility: Bool
+    public let messageListAlignment: MessageListAlignment
 }
 
 /// Contains information about the message paddings.
@@ -98,9 +101,11 @@ public struct MessageDisplayOptions {
     public let currentUserMessageTransition: AnyTransition
     public let otherUserMessageTransition: AnyTransition
     public let shouldAnimateReactions: Bool
+    public let reactionsPlacement: ReactionsPlacement
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
+    public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
 
     public init(
         showAvatars: Bool = true,
@@ -115,10 +120,12 @@ public struct MessageDisplayOptions {
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
+        reactionsPlacement: ReactionsPlacement = .top,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
-        reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding
+        reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
+        dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
@@ -135,10 +142,25 @@ public struct MessageDisplayOptions {
         self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
         self.reactionsTopPadding = reactionsTopPadding
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
+        self.dateSeparator = dateSeparator
+        self.reactionsPlacement = reactionsPlacement
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {
         channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
+    }
+    
+    public static func defaultDateSeparator(message: ChatMessage, previous: ChatMessage) -> Date? {
+        let isDifferentDay = !Calendar.current.isDate(
+            message.createdAt,
+            equalTo: previous.createdAt,
+            toGranularity: .day
+        )
+        if isDifferentDay {
+            return message.createdAt
+        } else {
+            return nil
+        }
     }
 
     public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
@@ -170,4 +192,19 @@ public enum MessageListType {
     case team
     case livestream
     case commerce
+}
+
+public enum ReactionsPlacement {
+    case top
+    case bottom
+}
+
+/// The alignment of the messages in the message list.
+public enum MessageListAlignment {
+    /// Standard message alignment.
+    /// The current user's messages are on the right.
+    /// The other users' messages are on the left.
+    case standard
+    /// Everything is left aligned.
+    case leftAligned
 }

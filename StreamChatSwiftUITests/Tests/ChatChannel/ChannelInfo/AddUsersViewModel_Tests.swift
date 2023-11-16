@@ -46,7 +46,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         }
         .store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: defaultTimeout)
     }
 
     func test_addUsersViewModel_onUserAppear() {

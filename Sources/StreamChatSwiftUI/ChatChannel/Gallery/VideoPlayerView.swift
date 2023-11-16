@@ -48,7 +48,11 @@ public struct VideoPlayerView: View {
             .foregroundColor(Color(colors.text))
         }
         .onAppear {
+            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
             avPlayer.play()
+        }
+        .onDisappear {
+            avPlayer.replaceCurrentItem(with: nil)
         }
     }
 }

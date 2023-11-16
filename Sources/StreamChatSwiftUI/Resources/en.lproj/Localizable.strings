@@ -140,3 +140,7 @@
 
 "chat-info.rename.name" = "NAME";
 "chat-info.rename.placeholder" = "Add a group name";
+
+"channel.item.audio" = "Audio";
+"channel.item.photo" = "Photo";
+"channel.item.video" = "Video";

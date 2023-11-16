@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import XCTest
 
 class LoadingView_Tests: StreamChatTestCase {
@@ -18,7 +19,7 @@ class LoadingView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_loadingView_snapshot() {
@@ -27,6 +28,6 @@ class LoadingView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

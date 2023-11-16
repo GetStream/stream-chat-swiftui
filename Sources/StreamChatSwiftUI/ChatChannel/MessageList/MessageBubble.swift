@@ -32,6 +32,7 @@ public struct MessageModifierInfo {
 /// Modifier that enables message bubble container.
 public struct MessageBubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
 
     public var message: ChatMessage
     public var isFirst: Bool
@@ -54,7 +55,11 @@ public struct MessageBubbleModifier: ViewModifier {
         self.isFirst = isFirst
         self.injectedBackgroundColor = injectedBackgroundColor
         self.cornerRadius = cornerRadius
-        self.forceLeftToRight = forceLeftToRight
+        if utils.messageListConfig.messageListAlignment == .leftAligned {
+            self.forceLeftToRight = true
+        } else {
+            self.forceLeftToRight = forceLeftToRight
+        }
         self.topPadding = topPadding
         self.bottomPadding = bottomPadding
     }

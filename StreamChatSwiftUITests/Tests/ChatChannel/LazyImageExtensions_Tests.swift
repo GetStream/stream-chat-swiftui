@@ -2,10 +2,10 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import NukeUI
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -18,7 +18,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
             .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image)
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
     }
     
     func test_imageURL_nonEmpty() {
@@ -29,7 +29,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
         .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image)
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
     }
     
     func test_imageRequest_emptyURL() {
@@ -40,6 +40,6 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
         .applyDefaultSize()
                 
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image)
+        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
     }
 }

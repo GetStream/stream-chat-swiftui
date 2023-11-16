@@ -5,6 +5,11 @@ on:
     # Runs "At 02:00 every night"
     - cron: '0 2 * * *'
 
+  # TODO: commented until `develop` branch is in place
+  # pull_request:
+  #   branches:
+  #     - 'main'
+
   workflow_dispatch:
 
 concurrency:
@@ -15,32 +20,72 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
 
 jobs:
-  build-and-test-e2e-debug:
+  build-test-app-and-frameworks:
+    name: Build Test App and Frameworks
+    runs-on: macos-13
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/ruby-cache
+    - uses: ./.github/actions/xcode-cache
+    - name: Build
+      run: bundle exec fastlane build_test_app_and_frameworks
+      timeout-minutes: 60
+    - uses: actions/upload-artifact@v3
+      if: success()
+      with:
+        name: cache-derived-data
+        path: |
+          derived_data/Build/**/*.app
+          derived_data/Build/**/*.xctestrun
+          derived_data/Build/**/*.framework
+
+  test-e2e-debug:
     name: Test E2E UI (Debug)
+    needs: build-test-app-and-frameworks
     strategy:
       matrix:
-        ios: [latest]
-        device: ["iPhone 8", "iPhone SE (3rd generation)", "iPhone 14 Pro Max"]
+        include:
+          # TODO: uncomment this block as soon as Xcode 15 is stable on CI
+          # - ios: 17.0
+          #   xcode: 15.0.1
+          #   os: macos-13
+          #   device: "iPhone 14 Pro Max"
+          #   setup_runtime: false
+          - ios: 16.4
+            xcode: 14.3.1
+            os: macos-13
+            device: "iPhone 14 Pro Max"
+            setup_runtime: false
       fail-fast: false
-    runs-on: macos-12
+    runs-on: ${{ matrix.os }}
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-      IOS_SIMULATOR_DEVICE: "${{ matrix.device }} (${{ matrix.ios }})"
+      XCODE_VERSION: ${{ matrix.xcode }}
     steps:
     - uses: actions/checkout@v3.1.0
+    - uses: actions/download-artifact@v3
+      with:
+        name: cache-derived-data
+        path: derived_data/Build/
     - uses: ./.github/actions/bootstrap
       env:
         INSTALL_ALLURE: true
-        INSTALL_XCPARSE: true
+    - name: Cache iOS Simulator Runtime
+      uses: actions/cache@v3
+      id: runtime-cache
+      with:
+        path: ~/Library/Caches/XcodeInstall/
+        key: runtime-ios-${{ matrix.ios }}
+        restore-keys: runtime-ios-${{ matrix.ios }}
     - name: Setup iOS ${{ matrix.ios }} Runtime
-      if: ${{ matrix.ios != 'latest' }}
-      run: sudo xcodes runtimes install 'iOS ${{ matrix.ios }}'
+      if: ${{ matrix.setup_runtime }}
+      run: bundle exec fastlane install_sim ios:"${{ matrix.ios }}"
     - name: Launch Allure TestOps
       run: bundle exec fastlane allure_launch cron:true
     - name: Run UI Tests (Debug)
-      run: bundle exec fastlane test_e2e_mock cron:true device:"${{ matrix.device }}" ios:"${{ matrix.ios }}"
+      run: bundle exec fastlane test_e2e_mock device:"${{ matrix.device }} (${{ matrix.ios }})" cron:true test_without_building:true
       timeout-minutes: 90
     - name: Allure TestOps Upload
       if: success() || failure()
@@ -57,10 +102,12 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
-      if: failure()
+      if: failure() && github.event_name == 'schedule'
     - name: Parse xcresult
       if: failure()
-      run: xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
+      run: |
+        brew install chargepoint/xcparse/xcparse
+        xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
@@ -70,20 +117,27 @@ jobs:
           fastlane/sinatra_log.txt
           fastlane/test_output/logs/*/Diagnostics/StreamChatSwiftUITestsAppUITests-*/*/*.txt
 
-
   build-apps:
     name: Build Demo App
     strategy:
       matrix:
-        xcode: [13.1, 13.4.1, 14.2]
-        os: [macos-12]
+        include:
+          - xcode: 15.0.1
+            os: macos-13
+          - xcode: 14.3.1
+            os: macos-13
+          - xcode: 14.2
+            os: macos-12
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3.1.0
-    - uses: ./.github/actions/bootstrap
+    - uses: ./.github/actions/ruby-cache
+    - uses: ./.github/actions/xcode-cache
     - name: Build Demo App
       run: bundle exec fastlane build_demo
+      env:
+        XCODE_VERSION: ${{ matrix.xcode }}
     - uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
@@ -93,13 +147,14 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
-      if: failure()
+      if: failure() && github.event_name == 'schedule'
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/bootstrap
     - run: bundle exec fastlane rubocop
     - run: ./Scripts/run-linter.sh
+    - run: bundle exec fastlane pod_lint

@@ -2,13 +2,11 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
-import NukeUI
 import SwiftUI
 
 extension LazyImage {
 
-    public init(imageURL: URL?) where Content == NukeUI.Image {
+    init(imageURL: URL?) where Content == NukeImage {
         let imageCDN = InjectedValues[\.utils].imageCDN
         guard let imageURL = imageURL else {
             #if COCOAPODS
@@ -27,7 +25,7 @@ extension LazyImage {
         #endif
     }
 
-    public init(imageURL: URL?, @ViewBuilder content: @escaping (LazyImageState) -> Content) {
+    init(imageURL: URL?, @ViewBuilder content: @escaping (LazyImageState) -> Content) {
         let imageCDN = InjectedValues[\.utils].imageCDN
         guard let imageURL = imageURL else {
             #if COCOAPODS

@@ -40,8 +40,8 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
 
         var combinedImage: UIImage?
 
-        let avatarImages = avatars.map {
-            imageProcessor.scale(image: $0, to: .avatarThumbnailSize)
+        let avatarImages = avatars.compactMap { [weak self] in
+            self?.imageProcessor.scale(image: $0, to: .avatarThumbnailSize)
         }
 
         // The half of the width of the avatar

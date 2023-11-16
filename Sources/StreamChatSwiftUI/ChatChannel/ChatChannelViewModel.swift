@@ -3,7 +3,6 @@
 //
 
 import Combine
-import Nuke
 import StreamChat
 import SwiftUI
 
@@ -41,6 +40,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var disableDateIndicator = false
     private var channelName = ""
     private let messageJumpQueue = DispatchQueue(label: "io.getstream.messageJump")
+    private var onlineIndicatorShown = false
+    private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -63,7 +64,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var currentSnapshot: UIImage? {
         didSet {
             withAnimation {
-                reactionsShown = currentSnapshot != nil && utils.messageListConfig.messagePopoverEnabled
+                reactionsShown = currentSnapshot != nil
+                    && utils.messageListConfig.messagePopoverEnabled
+                    && channel?.isFrozen == false
             }
         }
     }
@@ -92,6 +95,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             if threadMessageShown == false {
                 threadMessage = nil
             }
+            utils.messageCachingUtils.messageThreadShown = threadMessageShown
         }
     }
 
@@ -139,6 +143,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -162,8 +173,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @objc
     private func didReceiveMemoryWarning() {
-        Nuke.ImageCache.shared.removeAll()
+        ImageCache.shared.removeAll()
         messageCachingUtils.clearCache()
+    }
+    
+    @objc
+    private func applicationWillEnterForeground() {
+        guard let first = messages.first else { return }
+        maybeSendReadEvent(for: first)
     }
     
     public func scrollToLastMessage() {
@@ -227,7 +244,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             save(lastDate: message.createdAt)
         }
         if index == 0 {
-            maybeSendReadEvent(for: message)
+            let isActive = UIApplication.shared.applicationState == .active
+            if isActive {
+                maybeSendReadEvent(for: message)
+            }
         }
     }
     
@@ -318,6 +338,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkReadIndicators(for: channel)
         checkTypingIndicator()
         checkHeaderType()
+        checkOnlineIndicator()
     }
 
     public func showReactionOverlay(for view: AnyView) {
@@ -399,7 +420,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func maybeSendReadEvent(for message: ChatMessage) {
         if message.id != lastMessageRead {
             lastMessageRead = message.id
-            channelController.markRead()
+            throttler.throttle { [weak self] in
+                self?.channelController.markRead()
+            }
         }
     }
     
@@ -438,13 +461,29 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         if nameChanged {
-            // Toolbar is not updated unless there's a state change.
-            // Therefore, we manually need to update the state for a short period of time.
-            let headerType = channelHeaderType
-            channelHeaderType = .typingIndicator
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                self?.channelHeaderType = headerType
-            }
+            triggerHeaderChange()
+        }
+    }
+    
+    private func checkOnlineIndicator() {
+        guard let channel else { return }
+        let updated = !channel.lastActiveMembers.filter { member in
+            member.id != chatClient.currentUserId && member.isOnline
+        }.isEmpty
+        
+        if updated != onlineIndicatorShown {
+            onlineIndicatorShown = updated
+            triggerHeaderChange()
+        }
+    }
+    
+    private func triggerHeaderChange() {
+        // Toolbar is not updated unless there's a state change.
+        // Therefore, we manually need to update the state for a short period of time.
+        let headerType = channelHeaderType
+        channelHeaderType = .typingIndicator
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.channelHeaderType = headerType
         }
     }
     
@@ -548,7 +587,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messageCachingUtils.clearCache()
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
-            Nuke.ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+            ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
         }
     }
 }

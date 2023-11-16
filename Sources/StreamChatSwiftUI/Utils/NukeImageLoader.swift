@@ -2,13 +2,13 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import Nuke
 import StreamChat
 import UIKit
 
 /// The class which is resposible for loading images from URLs.
 /// Internally uses `Nuke`'s shared object of `ImagePipeline` to load the image.
 open class NukeImageLoader: ImageLoading {
+    
     public init() {
         // Public init.
     }
@@ -16,7 +16,6 @@ open class NukeImageLoader: ImageLoading {
     open func loadImage(
         using urlRequest: URLRequest,
         cachingKey: String?,
-        priority: ImageRequest.Priority = .normal,
         completion: @escaping ((Result<UIImage, Error>) -> Void)
     ) {
         var userInfo: [ImageRequest.UserInfoKey: Any]?
@@ -60,7 +59,7 @@ open class NukeImageLoader: ImageLoading {
 
             group.enter()
 
-            loadImage(using: imageRequest, cachingKey: cachingKey, priority: .low) { result in
+            loadImage(using: imageRequest, cachingKey: cachingKey) { result in
                 switch result {
                 case let .success(image):
                     images.append(image)

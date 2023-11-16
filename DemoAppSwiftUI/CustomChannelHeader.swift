@@ -2,7 +2,6 @@
 // Copyright © 2023 Stream.io Inc. All rights reserved.
 //
 
-import NukeUI
 import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
@@ -42,13 +41,7 @@ public struct CustomChannelHeader: ToolbarContent {
             Button {
                 logoutAlertShown = true
             } label: {
-                LazyImage(url: currentUserController.currentUser?.imageURL)
-                    .onDisappear(.cancel)
-                    .clipShape(Circle())
-                    .frame(
-                        width: 30,
-                        height: 30
-                    )
+                StreamLazyImage(url: currentUserController.currentUser?.imageURL)
             }
         }
     }
@@ -86,8 +79,12 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     message: Text("Are you sure you want to sign out?"),
                     primaryButton: .destructive(Text("Sign out")) {
                         withAnimation {
-                            chatClient.disconnect {}
-                            AppState.shared.userState = .notLoggedIn
+                            chatClient.disconnect {
+                                UnsecureRepository.shared.removeCurrentUser()
+                                DispatchQueue.main.async {
+                                    AppState.shared.userState = .notLoggedIn
+                                }
+                            }
                         }
                     },
                     secondaryButton: .cancel()

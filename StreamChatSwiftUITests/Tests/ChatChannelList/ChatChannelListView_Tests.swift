@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
@@ -19,7 +20,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelListView_snapshot() {
@@ -34,7 +35,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_chatChannelListViewSansNavigation_snapshot() {
@@ -52,7 +53,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_trailingSwipeActionsView_snapshot() {
@@ -67,7 +68,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     private func makeChannelListController() -> ChatChannelListController_Mock {

@@ -44,6 +44,16 @@ public extension ChatClient {
     }
 }
 
+extension ChatClient {
+    convenience init(config: ChatClientConfig, environment: ChatClient.Environment) {
+        self.init(
+            config: config,
+            environment: environment,
+            factory: ChatClientFactory(config: config, environment: environment)
+        )
+    }
+}
+
 // ===== TEMP =====
 
 class APIClient_Mock: APIClient {

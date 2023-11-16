@@ -81,13 +81,13 @@ class InputTextView: UITextView, AccessibilityView {
     open func setUpAppearance() {
         backgroundColor = .clear
         textContainer.lineFragmentPadding = 8
-        font = utils.composerConfig.inputFont
-        textColor = colors.text
+        font = InjectedValues[\.utils].composerConfig.inputFont
+        textColor = InjectedValues[\.colors].text
         textAlignment = .natural
 
         placeholderLabel.font = font
         placeholderLabel.textAlignment = .center
-        placeholderLabel.textColor = colors.composerPlaceholderColor
+        placeholderLabel.textColor = InjectedValues[\.colors].composerPlaceholderColor
     }
 
     open func setUpLayout() {
