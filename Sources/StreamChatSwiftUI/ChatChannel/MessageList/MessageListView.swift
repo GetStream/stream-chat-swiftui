@@ -18,6 +18,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var scrolledId: String?
     @Binding var showScrollToLatestButton: Bool
     @Binding var quotedMessage: ChatMessage?
+    @Binding var scrollPosition: String?
+    var loadingNextMessages: Bool
     var currentDateString: String?
     var listId: String
     var isMessageThread: Bool
@@ -71,6 +73,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         listId: String,
         isMessageThread: Bool = false,
         shouldShowTypingIndicator: Bool = false,
+        scrollPosition: Binding<String?> = .constant(nil),
+        loadingNextMessages: Bool,
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
@@ -88,9 +92,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onLongPress = onLongPress
         self.onJumpToMessage = onJumpToMessage
         self.shouldShowTypingIndicator = shouldShowTypingIndicator
+        self.loadingNextMessages = loadingNextMessages
         _scrolledId = scrolledId
         _showScrollToLatestButton = showScrollToLatestButton
         _quotedMessage = quotedMessage
+        _scrollPosition = scrollPosition
         if !messageRenderingUtil.hasPreviousMessageSet
             || self.showScrollToLatestButton == false
             || self.scrolledId != nil
@@ -193,7 +199,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         .id(listId)
                     }
                     .modifier(factory.makeMessageListModifier())
+                    .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
                 }
+                .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
                     factory.makeMessageListBackground(
                         colors: colors,
@@ -354,6 +362,34 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             onLongPress(updatedDisplayInfo)
         } else {
             onLongPress(messageDisplayInfo)
+        }
+    }
+}
+
+struct ScrollPositionModifier: ViewModifier {
+    @Binding var scrollPosition: String?
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 17, *) {
+            content.scrollPosition(id: $scrollPosition, anchor: .top)
+        } else {
+            content
+        }
+    }
+}
+
+struct ScrollTargetLayoutModifier: ViewModifier {
+    
+    var enabled: Bool
+    
+    func body(content: Content) -> some View {
+        if !enabled {
+            return content
+        }
+        if #available(iOS 17, *) {
+            return content.scrollTargetLayout(isEnabled: enabled)
+        } else {
+            return content
         }
     }
 }

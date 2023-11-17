@@ -17,6 +17,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
+    private let newerMessagesLimit = 4
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -33,7 +34,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private lazy var messageCachingUtils = utils.messageCachingUtils
     
     private var loadingPreviousMessages: Bool = false
-    private var loadingNextMessages: Bool = false
     private var loadingMessagesAround: Bool = false
     private var jumpedToOtherPage: Bool = false
     private var lastMessageRead: String?
@@ -100,6 +100,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
 
     @Published public var shouldShowTypingIndicator = false
+    @Published public var scrollPosition: String?
+    @Published public private(set)var loadingNextMessages: Bool = false
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -325,7 +327,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         maybeRefreshMessageList()
         
-        if !showScrollToLatestButton && scrolledId == nil {
+        if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             scrollToLastMessage()
         }
     }
@@ -386,13 +388,18 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             )
         }
     }
-    
+        
     private func checkForNewerMessages(index: Int) {
-        if loadingNextMessages {
+        if loadingNextMessages || (index != 0) {
             return
         }
         loadingNextMessages = true
-        channelDataSource.loadNextMessages(limit: 3) { [weak self] _ in
+        
+        if scrollPosition != self.messages.first?.messageId {
+            scrollPosition = self.messages.first?.messageId
+        }
+
+        channelDataSource.loadNextMessages(limit: newerMessagesLimit) { [weak self] _ in
             guard let self = self else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.loadingNextMessages = false
@@ -530,7 +537,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
-        if !utils.messageListConfig.messageDisplayOptions.animateChanges {
+        if !utils.messageListConfig.messageDisplayOptions.animateChanges || loadingNextMessages {
             return .notAnimated
         }
         

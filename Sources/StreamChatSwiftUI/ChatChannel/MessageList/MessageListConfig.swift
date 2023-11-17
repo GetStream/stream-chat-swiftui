@@ -15,7 +15,7 @@ public struct MessageListConfig {
         messageDisplayOptions: MessageDisplayOptions = MessageDisplayOptions(),
         messagePaddings: MessagePaddings = MessagePaddings(),
         dateIndicatorPlacement: DateIndicatorPlacement = .overlay,
-        pageSize: Int = 50,
+        pageSize: Int = 25,
         messagePopoverEnabled: Bool = true,
         doubleTapOverlayEnabled: Bool = false,
         becomesFirstResponderOnOpen: Bool = false,
