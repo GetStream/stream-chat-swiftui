@@ -445,7 +445,7 @@ open class MessageComposerViewModel: ObservableObject {
     
     private func fetchAssets() {
         let fetchOptions = PHFetchOptions()
-        let supportedTypes = self.utils.composerConfig.gallerySupportedTypes
+        let supportedTypes = utils.composerConfig.gallerySupportedTypes
         var predicate: NSPredicate?
         if supportedTypes == .images {
             predicate = NSPredicate(format: "mediaType = \(PHAssetMediaType.image.rawValue)")
@@ -625,7 +625,7 @@ open class MessageComposerViewModel: ObservableObject {
     @objc
     private func applicationWillEnterForeground() {
         if (imageAssets?.count ?? 0) > 0 {
-            self.fetchAssets()
+            fetchAssets()
         }
     }
 }
