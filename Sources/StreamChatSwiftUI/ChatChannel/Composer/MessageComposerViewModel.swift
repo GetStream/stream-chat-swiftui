@@ -130,6 +130,9 @@ open class MessageComposerViewModel: ObservableObject {
     
     private var timer: Timer?
     private var cooldownPeriod = 0
+    private var isSlowModeDisabled: Bool {
+        channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true
+    }
     
     private var cancellables = Set<AnyCancellable>()
     private lazy var commandsHandler = utils
@@ -557,6 +560,7 @@ open class MessageComposerViewModel: ObservableObject {
     
     private func listenToCooldownUpdates() {
         channelController.channelChangePublisher.sink { [weak self] _ in
+            guard self?.isSlowModeDisabled == false else { return }
             let cooldownDuration = self?.channelController.channel?.cooldownDuration ?? 0
             if self?.cooldownPeriod == cooldownDuration {
                 return
@@ -569,7 +573,7 @@ open class MessageComposerViewModel: ObservableObject {
     
     private func checkChannelCooldown() {
         let duration = channelController.channel?.cooldownDuration ?? 0
-        if duration > 0 && timer == nil {
+        if duration > 0 && timer == nil && !isSlowModeDisabled {
             cooldownDuration = duration
             timer = Timer.scheduledTimer(
                 withTimeInterval: 1,
