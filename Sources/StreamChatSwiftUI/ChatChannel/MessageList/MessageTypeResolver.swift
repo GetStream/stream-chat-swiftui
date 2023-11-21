@@ -62,7 +62,9 @@ extension MessageTypeResolving {
     }
 
     public func hasLinkAttachment(message: ChatMessage) -> Bool {
-        !message.linkAttachments.isEmpty
+        message.allAttachments.contains(where: { attachment in
+            attachment.type == .linkPreview
+        })
     }
 
     public func hasFileAttachment(message: ChatMessage) -> Bool {
