@@ -17,7 +17,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private let newerMessagesLimit = 4
+    private let newerMessagesLimit = 25
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -390,13 +390,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     private func checkForNewerMessages(index: Int) {
-        if loadingNextMessages || (index != 0) {
+        if loadingNextMessages || (index > 5) {
             return
         }
         loadingNextMessages = true
         
         if scrollPosition != self.messages.first?.messageId {
-            scrollPosition = self.messages.first?.messageId
+            scrollPosition = self.messages[index].messageId
         }
 
         channelDataSource.loadNextMessages(limit: newerMessagesLimit) { [weak self] _ in

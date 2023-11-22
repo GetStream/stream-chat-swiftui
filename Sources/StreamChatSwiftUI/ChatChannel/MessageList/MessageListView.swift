@@ -371,7 +371,8 @@ struct ScrollPositionModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         if #available(iOS 17, *) {
-            content.scrollPosition(id: $scrollPosition, anchor: .top)
+            content
+                .scrollPosition(id: $scrollPosition, anchor: .top)
         } else {
             content
         }
@@ -387,7 +388,9 @@ struct ScrollTargetLayoutModifier: ViewModifier {
             return content
         }
         if #available(iOS 17, *) {
-            return content.scrollTargetLayout(isEnabled: enabled)
+            return content
+                .scrollTargetLayout(isEnabled: enabled)
+                .scrollTargetBehavior(.paging)
         } else {
             return content
         }
