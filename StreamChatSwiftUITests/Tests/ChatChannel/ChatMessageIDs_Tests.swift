@@ -6,13 +6,13 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class ChatMessageIDs_Tests: XCTestCase {
+class ChatMessageIDs_Tests: StreamChatTestCase {
 
     func test_chatMessage_reactionScoresId() {
         // Given
         let id: String = .unique
         let reaction = "like"
-        let expectedId = id + "empty" + "\(reaction)\(3)"
+        let expectedId = id + "$empty" + "\(reaction)\(3)"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -33,7 +33,7 @@ class ChatMessageIDs_Tests: XCTestCase {
     func test_chatMessage_DeletedId() {
         // Given
         let id: String = .unique
-        let expectedId = "\(id)-deleted"
+        let expectedId = "\(id)$deleted"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -53,7 +53,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Given
         let id: String = .unique
         let state = "pendingUpload"
-        let expectedId = "\(id)\(state)"
+        let expectedId = "\(id)$\(state)"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -76,7 +76,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Given
         let id: String = .unique
         let reaction = "like"
-        let expectedId = "\(id)pendingUploadlike3"
+        let expectedId = "\(id)$pendingUploadlike3"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -99,7 +99,7 @@ class ChatMessageIDs_Tests: XCTestCase {
     func test_chatMessage_sendingState() {
         // Given
         let id: String = .unique
-        let expectedId = "\(id)sending"
+        let expectedId = "\(id)$sending"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
@@ -119,7 +119,7 @@ class ChatMessageIDs_Tests: XCTestCase {
         // Given
         let id: String = .unique
         let reaction = "like"
-        let expectedId = id + "empty" + "\(reaction)\(3)"
+        let expectedId = id + "$empty" + "\(reaction)\(3)"
         let message = ChatMessage.mock(
             id: id,
             cid: .unique,
