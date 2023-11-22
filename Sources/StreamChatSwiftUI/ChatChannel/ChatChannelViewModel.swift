@@ -617,7 +617,7 @@ extension ChatMessage: Identifiable {
     }
     
     var baseId: String {
-        isDeleted ? "\(id)$deleted" : "\(id)$"
+        isDeleted ? "\(id)-deleted" : id
     }
     
     var pinStateId: String {

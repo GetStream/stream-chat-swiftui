@@ -39,6 +39,7 @@ protocol ChannelDataSource: AnyObject {
     /// List of the messages.
     var messages: LazyCachedMapCollection<ChatMessage> { get }
     
+    /// Determines whether all new messages have been fetched.
     var hasLoadedAllNextMessages: Bool { get }
 
     /// Loads the previous messages.
