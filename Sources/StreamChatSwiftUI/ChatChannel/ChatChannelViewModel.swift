@@ -17,7 +17,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private let newerMessagesLimit = 25
+    private let newerMessagesLimit: Int = {
+        if #available(iOS 17, *) {
+            // On iOS 17 we can maintain the scroll position.
+            return 25
+        } else {
+            return 5
+        }
+    }()
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -39,7 +46,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
-    private let messageJumpQueue = DispatchQueue(label: "io.getstream.messageJump")
     private var onlineIndicatorShown = false
     private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
     
@@ -193,40 +199,38 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     public func jumpToMessage(messageId: String) -> Bool {
-        messageJumpQueue.sync {
-            if messageId == messages.first?.messageId {
+        if messageId == messages.first?.messageId {
+            scrolledId = nil
+            return true
+        } else {
+            guard let baseId = messageId.components(separatedBy: "$").first else {
                 scrolledId = nil
                 return true
-            } else {
-                guard let baseId = messageId.components(separatedBy: "$").first else {
-                    scrolledId = nil
-                    return true
+            }
+            let alreadyLoaded = messages.map(\.id).contains(baseId)
+            if alreadyLoaded {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self.scrolledId = nil
                 }
-                let alreadyLoaded = messages.map(\.id).contains(baseId)
-                if alreadyLoaded {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        self.scrolledId = nil
-                    }
-                    return true
-                } else {
-                    scrolledId = nil
-                    if loadingMessagesAround {
-                        return false
-                    }
-                    loadingMessagesAround = true
-                    channelController.loadPageAroundMessageId(baseId) { [weak self] error in
-                        if error != nil {
-                            log.error("Error loading messages around message \(messageId)")
-                            return
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self?.scrolledId = messageId
-                            self?.jumpedToOtherPage = true
-                            self?.loadingMessagesAround = false
-                        }
-                    }
+                return true
+            } else {
+                scrolledId = nil
+                if loadingMessagesAround {
                     return false
                 }
+                loadingMessagesAround = true
+                channelDataSource.loadPageAroundMessageId(baseId) { [weak self] error in
+                    if error != nil {
+                        log.error("Error loading messages around message \(messageId)")
+                        return
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        self?.scrolledId = messageId
+                        self?.jumpedToOtherPage = true
+                        self?.loadingMessagesAround = false
+                    }
+                }
+                return false
             }
         }
     }
@@ -390,6 +394,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     private func checkForNewerMessages(index: Int) {
+        if channelController.hasLoadedAllNextMessages {
+            return
+        }
         if loadingNextMessages || (index > 5) {
             return
         }

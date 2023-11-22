@@ -81,7 +81,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
         // When
         viewModel.showScrollToLatestButton = true
-        viewModel.handleMessageAppear(index: 0)
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .up)
 
         // Then
         let dateString = viewModel.currentDateString

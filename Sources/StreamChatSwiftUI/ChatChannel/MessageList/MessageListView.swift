@@ -28,7 +28,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: () -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
-    var onJumpToMessage: (String) -> Bool
+    var onJumpToMessage: ((String) -> Bool)?
     
     @State private var width: CGFloat?
     @State private var keyboardShown = false
@@ -74,11 +74,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         isMessageThread: Bool = false,
         shouldShowTypingIndicator: Bool = false,
         scrollPosition: Binding<String?> = .constant(nil),
-        loadingNextMessages: Bool,
+        loadingNextMessages: Bool = false,
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        onJumpToMessage: @escaping (String) -> Bool
+        onJumpToMessage: ((String) -> Bool)? = nil
     ) {
         self.factory = factory
         self.channel = channel
@@ -246,7 +246,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .clipped()
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId = scrolledId {
-                        let shouldJump = onJumpToMessage(scrolledId)
+                        let shouldJump = onJumpToMessage?(scrolledId) ?? false
                         if !shouldJump {
                             return
                         }

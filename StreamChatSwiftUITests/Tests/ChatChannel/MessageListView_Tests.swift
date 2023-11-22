@@ -107,7 +107,7 @@ class MessageListView_Tests: StreamChatTestCase {
             listId: "listId",
             isMessageThread: false,
             shouldShowTypingIndicator: !currentlyTypingUsers.isEmpty,
-            onMessageAppear: { _ in },
+            onMessageAppear: { _, _ in },
             onScrollToBottom: {},
             onLongPress: { _ in }
         )

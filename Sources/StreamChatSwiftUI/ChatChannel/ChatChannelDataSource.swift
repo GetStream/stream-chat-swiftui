@@ -38,6 +38,8 @@ protocol ChannelDataSource: AnyObject {
 
     /// List of the messages.
     var messages: LazyCachedMapCollection<ChatMessage> { get }
+    
+    var hasLoadedAllNextMessages: Bool { get }
 
     /// Loads the previous messages.
     /// - Parameters:
@@ -50,8 +52,21 @@ protocol ChannelDataSource: AnyObject {
         completion: ((Error?) -> Void)?
     )
     
+    /// Loads newer messages.
+    /// - Parameters:
+    ///  - limit: the max number of messages to be retrieved.
+    ///  - completion: called when the messages are loaded.
     func loadNextMessages(
         limit: Int,
+        completion: ((Error?) -> Void)?
+    )
+    
+    /// Loads a page around the provided message id.
+    /// - Parameters:
+    ///  - messageId: the id of the message.
+    ///  - completion: called when the messages are loaded.
+    func loadPageAroundMessageId(
+        _ messageId: MessageId,
         completion: ((Error?) -> Void)?
     )
 }
@@ -63,6 +78,9 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     weak var delegate: MessagesDataSource?
     var messages: LazyCachedMapCollection<ChatMessage> {
         controller.messages
+    }
+    var hasLoadedAllNextMessages: Bool {
+        controller.hasLoadedAllNextMessages
     }
 
     init(controller: ChatChannelController) {
@@ -107,6 +125,13 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
         controller.loadNextMessages(limit: limit, completion: completion)
     }
+    
+    func loadPageAroundMessageId(
+        _ messageId: MessageId,
+        completion: ((Error?) -> Void)?
+    ) {
+        controller.loadPageAroundMessageId(messageId, completion: completion)
+    }
 }
 
 /// Implementation of the `ChannelDataSource`. Loads the messages in a reply thread.
@@ -117,6 +142,9 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     weak var delegate: MessagesDataSource?
     var messages: LazyCachedMapCollection<ChatMessage> {
         messageController.replies
+    }
+    var hasLoadedAllNextMessages: Bool {
+        messageController.hasLoadedAllNextReplies
     }
 
     init(
@@ -171,6 +199,13 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     }
     
     func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
-        // TODO: implement
+        messageController.loadNextReplies(limit: limit, completion: completion)
+    }
+    
+    func loadPageAroundMessageId(
+        _ messageId: MessageId,
+        completion: ((Error?) -> Void)?
+    ) {
+        messageController.loadPageAroundReplyId(messageId, completion: completion)
     }
 }
