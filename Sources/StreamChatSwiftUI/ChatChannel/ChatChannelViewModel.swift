@@ -42,7 +42,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private var loadingPreviousMessages: Bool = false
     private var loadingMessagesAround: Bool = false
-    private var jumpedToOtherPage: Bool = false
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
@@ -141,7 +140,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelDataSource.messages
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.scrolledId = scrollToMessage?.messageId
+            if let scrollToMessage, scrollToMessage.parentMessageId != nil, messageController == nil {
+                self?.threadMessage = scrollToMessage
+                self?.threadMessageShown = true
+            } else {
+                self?.scrolledId = scrollToMessage?.messageId
+            }
         }
               
         NotificationCenter.default.addObserver(
@@ -214,6 +218,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 }
                 return true
             } else {
+                if messageCachingUtils.isQuotedMessage(with: messageId) && !isMessageThread {
+                    return false
+                }
                 scrolledId = nil
                 if loadingMessagesAround {
                     return false
@@ -226,7 +233,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self?.scrolledId = messageId
-                        self?.jumpedToOtherPage = true
                         self?.loadingMessagesAround = false
                     }
                 }
