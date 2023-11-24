@@ -150,7 +150,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
                 self?.scrolledId = jumpToReplyId
                 self?.messageCachingUtils.jumpToReplyId = nil
-            } else {
+            } else if messageController == nil {
                 self?.scrolledId = scrollToMessage?.messageId
             }
         }
@@ -203,10 +203,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func scrollToLastMessage() {
-        if scrolledId != nil {
-            scrolledId = nil
+        if channelDataSource.hasLoadedAllNextMessages {
+            updateScrolledIdToNewestMessage()
+        } else {
+            channelDataSource.loadFirstPage { [weak self] error in
+                self?.scrolledId = self?.messages.first?.messageId
+            }
         }
-        scrolledId = messages.first?.messageId
     }
         
     public func jumpToMessage(messageId: String) -> Bool {
@@ -351,7 +354,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         maybeRefreshMessageList()
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
-            scrollToLastMessage()
+            updateScrolledIdToNewestMessage()
         }
     }
     
@@ -614,6 +617,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if shouldShow != shouldShowTypingIndicator {
             shouldShowTypingIndicator = shouldShow
         }
+    }
+    
+    private func updateScrolledIdToNewestMessage() {
+        if scrolledId != nil {
+            scrolledId = nil
+        }
+        scrolledId = messages.first?.messageId
     }
     
     deinit {

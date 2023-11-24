@@ -70,6 +70,8 @@ protocol ChannelDataSource: AnyObject {
         _ messageId: MessageId,
         completion: ((Error?) -> Void)?
     )
+    
+    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?)
 }
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
@@ -132,6 +134,10 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
         completion: ((Error?) -> Void)?
     ) {
         controller.loadPageAroundMessageId(messageId, completion: completion)
+    }
+    
+    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+        controller.loadFirstPage(completion)
     }
 }
 
@@ -208,5 +214,9 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         completion: ((Error?) -> Void)?
     ) {
         messageController.loadPageAroundReplyId(messageId, completion: completion)
+    }
+    
+    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+        messageController.loadFirstPage(completion)
     }
 }
