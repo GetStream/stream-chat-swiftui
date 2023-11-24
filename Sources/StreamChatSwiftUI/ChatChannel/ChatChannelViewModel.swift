@@ -225,9 +225,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 }
                 return true
             } else {
-                if messageCachingUtils.isQuotedMessage(with: messageId) && !isMessageThread {
+                let message = channelController.dataStore.message(id: baseId)
+                if let parentMessageId = message?.parentMessageId, !isMessageThread {
+                    let parentMessage = channelController.dataStore.message(id: parentMessageId)
+                    threadMessage = parentMessage
+                    threadMessageShown = true
+                    messageCachingUtils.jumpToReplyId = message?.messageId
                     return false
                 }
+                
                 scrolledId = nil
                 if loadingMessagesAround {
                     return false

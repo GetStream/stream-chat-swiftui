@@ -80,16 +80,6 @@ class MessageCachingUtils {
 
         return quoted
     }
-    
-    func isQuotedMessage(with id: String) -> Bool {
-        for (_, value) in quotedMessageMapping {
-            if value.messageId == id {
-                return true
-            }
-        }
-        
-        return false
-    }
 
     func userDisplayInfo(with id: String) -> UserDisplayInfo? {
         for userInfo in messageAuthors.values {
