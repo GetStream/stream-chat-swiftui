@@ -140,9 +140,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelDataSource.messages
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            if let scrollToMessage, scrollToMessage.parentMessageId != nil, messageController == nil {
-                self?.threadMessage = scrollToMessage
+            if let scrollToMessage,
+                let parentMessageId = scrollToMessage.parentMessageId,
+                messageController == nil {
+                let message = channelController.dataStore.message(id: parentMessageId)
+                self?.threadMessage = message
                 self?.threadMessageShown = true
+                self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
+            } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
+                self?.scrolledId = jumpToReplyId
+                self?.messageCachingUtils.jumpToReplyId = nil
             } else {
                 self?.scrolledId = scrollToMessage?.messageId
             }
@@ -242,7 +249,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     open func handleMessageAppear(index: Int, scrollDirection: ScrollDirection) {
-        if index >= messages.count || loadingMessagesAround {
+        if index >= channelDataSource.messages.count || loadingMessagesAround {
             return
         }
         
@@ -400,7 +407,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     private func checkForNewerMessages(index: Int) {
-        if channelController.hasLoadedAllNextMessages {
+        if channelDataSource.hasLoadedAllNextMessages {
             return
         }
         if loadingNextMessages || (index > 5) {
