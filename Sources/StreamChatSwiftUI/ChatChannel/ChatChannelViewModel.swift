@@ -25,6 +25,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return 5
         }
     }()
+    
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -106,7 +107,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     @Published public var shouldShowTypingIndicator = false
     @Published public var scrollPosition: String?
-    @Published public private(set)var loadingNextMessages: Bool = false
+    @Published public private(set) var loadingNextMessages: Bool = false
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -140,9 +141,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelDataSource.messages
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            if let scrollToMessage,
-                let parentMessageId = scrollToMessage.parentMessageId,
-                messageController == nil {
+            if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
                 let message = channelController.dataStore.message(id: parentMessageId)
                 self?.threadMessage = message
                 self?.threadMessageShown = true
@@ -206,7 +205,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if channelDataSource.hasLoadedAllNextMessages {
             updateScrolledIdToNewestMessage()
         } else {
-            channelDataSource.loadFirstPage { [weak self] error in
+            channelDataSource.loadFirstPage { [weak self] _ in
                 self?.scrolledId = self?.messages.first?.messageId
             }
         }
@@ -424,8 +423,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         loadingNextMessages = true
         
-        if scrollPosition != self.messages.first?.messageId {
-            scrollPosition = self.messages[index].messageId
+        if scrollPosition != messages.first?.messageId {
+            scrollPosition = messages[index].messageId
         }
 
         channelDataSource.loadNextMessages(limit: newerMessagesLimit) { [weak self] _ in

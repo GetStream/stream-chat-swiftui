@@ -71,6 +71,8 @@ protocol ChannelDataSource: AnyObject {
         completion: ((Error?) -> Void)?
     )
     
+    /// Loads the first page of the channel.
+    ///  - Parameter completion: called when the initial page is loaded.
     func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?)
 }
 
@@ -79,9 +81,11 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
 
     let controller: ChatChannelController
     weak var delegate: MessagesDataSource?
+    
     var messages: LazyCachedMapCollection<ChatMessage> {
         controller.messages
     }
+    
     var hasLoadedAllNextMessages: Bool {
         controller.hasLoadedAllNextMessages
     }
@@ -146,10 +150,13 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
 
     let channelController: ChatChannelController
     let messageController: ChatMessageController
+    
     weak var delegate: MessagesDataSource?
+    
     var messages: LazyCachedMapCollection<ChatMessage> {
         messageController.replies
     }
+    
     var hasLoadedAllNextMessages: Bool {
         messageController.hasLoadedAllNextReplies
     }

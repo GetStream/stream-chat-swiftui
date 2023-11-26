@@ -81,6 +81,37 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(channelCall == true)
         XCTAssert(noChannelCall == false)
     }
+    
+    func test_channelDataSource_hasLoadedAllNextMessages() {
+        // Given
+        let expected: [ChatMessage] = [message]
+        let channelDataSource = makeChannelDataSource(messages: expected)
+        
+        // When
+        let messages = channelDataSource.messages
+        channelDataSource.loadFirstPage(nil)
+        
+        // Then
+        XCTAssert(messages[0] == expected[0])
+        XCTAssert(messages.count == expected.count)
+        XCTAssert(channelDataSource.hasLoadedAllNextMessages == true)
+    }
+    
+    func test_channelDataSource_loadPageAroundMessageId() {
+        // Given
+        let handler = MockMessagesDataSourceHandler()
+        let expected: [ChatMessage] = [message]
+        let controller = makeChannelController(messages: expected)
+        let channelDataSource = ChatChannelDataSource(controller: controller)
+        channelDataSource.delegate = handler
+
+        // When
+        channelDataSource.loadPageAroundMessageId(.unique, completion: nil)
+        let loadPageCall = controller.loadPageAroundMessageIdCallCount
+
+        // Then
+        XCTAssert(loadPageCall == 1)
+    }
 
     func test_messageThreadDataSource_messages() {
         // Given

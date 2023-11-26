@@ -24,6 +24,7 @@ class MessageCachingUtils {
             }
         }
     }
+    
     var jumpToReplyId: String?
 
     func authorId(for message: ChatMessage) -> String {
