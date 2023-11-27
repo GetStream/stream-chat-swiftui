@@ -413,6 +413,48 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssert(viewModel.threadMessage == nil)
     }
+    
+    func test_chatChannelVM_jumpToInitialMessage() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let shouldJump = viewModel.jumpToMessage(messageId: message.messageId)
+    
+        // Then
+        XCTAssert(shouldJump == true)
+    }
+    
+    func test_chatChannelVM_jumpToAvailableMessage() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let shouldJump = viewModel.jumpToMessage(messageId: message2.messageId)
+    
+        // Then
+        XCTAssert(shouldJump == true)
+    }
+    
+    func test_chatChannelVM_jumpToUnavailableMessage() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let message3 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let shouldJump = viewModel.jumpToMessage(messageId: message3.messageId)
+    
+        // Then
+        XCTAssert(shouldJump == false)
+    }
 
     // MARK: - private
 
