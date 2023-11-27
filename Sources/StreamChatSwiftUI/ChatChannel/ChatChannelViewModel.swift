@@ -17,6 +17,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
+    private let newerMessagesLimit: Int = {
+        if #available(iOS 17, *) {
+            // On iOS 17 we can maintain the scroll position.
+            return 25
+        } else {
+            return 5
+        }
+    }()
+    
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -33,6 +42,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private lazy var messageCachingUtils = utils.messageCachingUtils
     
     private var loadingPreviousMessages: Bool = false
+    private var loadingMessagesAround: Bool = false
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
@@ -96,6 +106,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
 
     @Published public var shouldShowTypingIndicator = false
+    @Published public var scrollPosition: String?
+    @Published public private(set) var loadingNextMessages: Bool = false
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -129,7 +141,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelDataSource.messages
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.scrolledId = scrollToMessage?.messageId
+            if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
+                let message = channelController.dataStore.message(id: parentMessageId)
+                self?.threadMessage = message
+                self?.threadMessageShown = true
+                self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
+            } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
+                self?.scrolledId = jumpToReplyId
+                self?.messageCachingUtils.jumpToReplyId = nil
+            } else if messageController == nil {
+                self?.scrolledId = scrollToMessage?.messageId
+            }
         }
               
         NotificationCenter.default.addObserver(
@@ -180,19 +202,71 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func scrollToLastMessage() {
-        if scrolledId != nil {
-            scrolledId = nil
+        if channelDataSource.hasLoadedAllNextMessages {
+            updateScrolledIdToNewestMessage()
+        } else {
+            channelDataSource.loadFirstPage { [weak self] _ in
+                self?.scrolledId = self?.messages.first?.messageId
+            }
         }
-        scrolledId = messages.first?.messageId
+    }
+        
+    public func jumpToMessage(messageId: String) -> Bool {
+        if messageId == messages.first?.messageId {
+            scrolledId = nil
+            return true
+        } else {
+            guard let baseId = messageId.components(separatedBy: "$").first else {
+                scrolledId = nil
+                return true
+            }
+            let alreadyLoaded = messages.map(\.id).contains(baseId)
+            if alreadyLoaded {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self.scrolledId = nil
+                }
+                return true
+            } else {
+                let message = channelController.dataStore.message(id: baseId)
+                if let parentMessageId = message?.parentMessageId, !isMessageThread {
+                    let parentMessage = channelController.dataStore.message(id: parentMessageId)
+                    threadMessage = parentMessage
+                    threadMessageShown = true
+                    messageCachingUtils.jumpToReplyId = message?.messageId
+                    return false
+                }
+                
+                scrolledId = nil
+                if loadingMessagesAround {
+                    return false
+                }
+                loadingMessagesAround = true
+                channelDataSource.loadPageAroundMessageId(baseId) { [weak self] error in
+                    if error != nil {
+                        log.error("Error loading messages around message \(messageId)")
+                        return
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        self?.scrolledId = messageId
+                        self?.loadingMessagesAround = false
+                    }
+                }
+                return false
+            }
+        }
     }
     
-    open func handleMessageAppear(index: Int) {
-        if index >= messages.count {
+    open func handleMessageAppear(index: Int, scrollDirection: ScrollDirection) {
+        if index >= channelDataSource.messages.count || loadingMessagesAround {
             return
         }
         
         let message = messages[index]
-        checkForNewMessages(index: index)
+        if scrollDirection == .up {
+            checkForOlderMessages(index: index)
+        } else {
+            checkForNewerMessages(index: index)
+        }
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
             save(lastDate: message.createdAt)
         }
@@ -278,8 +352,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         maybeRefreshMessageList()
         
-        if !showScrollToLatestButton && scrolledId == nil {
-            scrollToLastMessage()
+        if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
+            updateScrolledIdToNewestMessage()
         }
     }
     
@@ -321,11 +395,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     // MARK: - private
     
-    private func checkForNewMessages(index: Int) {
+    private func checkForOlderMessages(index: Int) {
         if index < channelDataSource.messages.count - 25 {
             return
         }
 
+        log.debug("Loading previous messages")
         if !loadingPreviousMessages {
             loadingPreviousMessages = true
             channelDataSource.loadPreviousMessages(
@@ -336,6 +411,27 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     self.loadingPreviousMessages = false
                 }
             )
+        }
+    }
+        
+    private func checkForNewerMessages(index: Int) {
+        if channelDataSource.hasLoadedAllNextMessages {
+            return
+        }
+        if loadingNextMessages || (index > 5) {
+            return
+        }
+        loadingNextMessages = true
+        
+        if scrollPosition != messages.first?.messageId {
+            scrollPosition = messages[index].messageId
+        }
+
+        channelDataSource.loadNextMessages(limit: newerMessagesLimit) { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.loadingNextMessages = false
+            }
         }
     }
     
@@ -469,7 +565,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
-        if !utils.messageListConfig.messageDisplayOptions.animateChanges {
+        if !utils.messageListConfig.messageDisplayOptions.animateChanges || loadingNextMessages {
             return .notAnimated
         }
         
@@ -522,6 +618,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
+    private func updateScrolledIdToNewestMessage() {
+        if scrolledId != nil {
+            scrolledId = nil
+        }
+        scrolledId = messages.first?.messageId
+    }
+    
     deinit {
         messageCachingUtils.clearCache()
         if messageController == nil {
@@ -542,7 +645,7 @@ extension ChatMessage: Identifiable {
     }
     
     var baseId: String {
-        isDeleted ? "\(id)-deleted" : id
+        isDeleted ? "\(id)$deleted" : "\(id)$"
     }
     
     var pinStateId: String {

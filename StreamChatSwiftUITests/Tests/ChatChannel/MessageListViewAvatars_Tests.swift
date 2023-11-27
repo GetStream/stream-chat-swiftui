@@ -88,7 +88,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
             listId: "listId",
             isMessageThread: false,
             shouldShowTypingIndicator: false,
-            onMessageAppear: { _ in },
+            onMessageAppear: { _, _ in },
             onScrollToBottom: {},
             onLongPress: { _ in }
         )

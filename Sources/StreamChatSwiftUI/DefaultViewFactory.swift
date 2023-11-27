@@ -198,7 +198,8 @@ extension ViewFactory {
             return ChatChannelView(
                 viewFactory: self,
                 channelController: channelController,
-                messageController: messageController
+                messageController: messageController,
+                scrollToMessage: message
             )
         }
     }

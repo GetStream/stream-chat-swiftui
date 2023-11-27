@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Jump to a message that is not on the first page
+- Jump to a message in a thread
+- Bi-directional scrolling of the message list
+
 ### 🐞 Fixed
 - Some links not being rendered correctly
 

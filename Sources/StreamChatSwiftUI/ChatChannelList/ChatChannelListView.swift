@@ -79,8 +79,14 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @ViewBuilder
     private func container() -> some View {
         if embedInNavigationView == true {
-            NavigationView {
-                content()
+            if #available(iOS 16, *), isIphone {
+                NavigationStack {
+                    content()
+                }
+            } else {
+                NavigationView {
+                    content()
+                }
             }
         } else {
             content()
