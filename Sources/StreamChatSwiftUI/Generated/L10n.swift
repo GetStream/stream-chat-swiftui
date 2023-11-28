@@ -300,6 +300,10 @@ internal enum L10n {
         internal static var confirmationTitle: String { L10n.tr("Localizable", "message.actions.flag.confirmation-title") }
       }
     }
+    internal enum Bounce {
+      /// Message was bounced
+      internal static var title: String { L10n.tr("Localizable", "message.bounce.title") }
+    }
     internal enum Cell {
       /// Pinned by
       internal static var pinnedBy: String { L10n.tr("Localizable", "message.cell.pinnedBy") }

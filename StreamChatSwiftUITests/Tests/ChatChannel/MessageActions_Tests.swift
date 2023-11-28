@@ -174,4 +174,39 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[0].title == "Edit Message")
         XCTAssert(messageActions[1].title == "Delete Message")
     }
+    
+    func test_messageActions_bouncedMessage() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let moderationDetails = MessageModerationDetails(
+            originalText: "Some text",
+            action: .bounce
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: chatClient.currentUserId!),
+            isBounced: true,
+            moderationsDetails: moderationDetails
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssert(messageActions.count == 4)
+        XCTAssert(messageActions[0].title == "Message was bounced")
+        XCTAssert(messageActions[1].title == "Resend")
+        XCTAssert(messageActions[2].title == "Edit Message")
+        XCTAssert(messageActions[3].title == "Delete Message")
+    }
 }

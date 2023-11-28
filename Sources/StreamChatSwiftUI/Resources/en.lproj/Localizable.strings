@@ -106,6 +106,8 @@
 "message.search.title" = "Search";
 "message.search.cancel" = "Cancel";
 
+"message.bounce.title" = "Message was bounced";
+
 "current-selection" = "%d of %d";
 
 "attachment.max-size-exceeded" = "Attachment size exceed the limit.";
