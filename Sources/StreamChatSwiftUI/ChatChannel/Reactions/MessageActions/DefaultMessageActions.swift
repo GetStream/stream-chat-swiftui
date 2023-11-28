@@ -42,6 +42,23 @@ extension MessageAction {
                 onError: onError
             )
             return messageActions
+        } else if message.isBounced {
+            let title = MessageAction(
+                title: L10n.Message.Bounce.title,
+                iconName: "exclamationmark.octagon.fill",
+                action: {},
+                confirmationPopup: nil,
+                isDestructive: false
+            )
+            messageActions = messageNotSentActions(
+                for: message,
+                channel: channel,
+                chatClient: chatClient,
+                onFinish: onFinish,
+                onError: onError
+            )
+            messageActions.insert(title, at: 0)
+            return messageActions
         }
 
         if channel.config.quotesEnabled {

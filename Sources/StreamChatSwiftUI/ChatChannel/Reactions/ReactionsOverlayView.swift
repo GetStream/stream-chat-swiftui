@@ -132,7 +132,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         x: messageOriginX(proxy: reader)
                     )
                     .overlay(
-                        channel.config.reactionsEnabled ?
+                        (channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced) ?
                             factory.makeReactionsContentView(
                                 message: viewModel.message,
                                 contentRect: messageDisplayInfo.frame,
