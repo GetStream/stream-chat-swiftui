@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.44.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.44.0)
+_December 01, 2023_
+
 ### ✅ Added
 - Jump to a message that is not on the first page
 - Jump to a message in a thread
