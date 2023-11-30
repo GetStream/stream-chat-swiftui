@@ -4,10 +4,11 @@
 
 import Foundation
 @testable import StreamChat
+import StreamChatTestTools
 import XCTest
 
 /// Mock implementation of APIClient allowing easy control and simulation of responses.
-class APIClientMock: APIClient, Spy {
+class APIClientMock: APIClient, StreamChatTestTools.Spy {
     var recordedFunctions: [String] = []
 
     /// The last endpoint `request` function was called with.
