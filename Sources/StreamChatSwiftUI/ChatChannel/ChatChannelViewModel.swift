@@ -47,6 +47,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var disableDateIndicator = false
     private var channelName = ""
     private var onlineIndicatorShown = false
+    private var lastReadMessageId: String?
     private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
     
     public var channelController: ChatChannelController
@@ -108,6 +109,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var shouldShowTypingIndicator = false
     @Published public var scrollPosition: String?
     @Published public private(set) var loadingNextMessages: Bool = false
+    @Published public var firstUnreadMessageId: String? {
+        didSet {
+            print("===== this changed to \(firstUnreadMessageId)")
+        }
+    }
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -179,6 +185,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 
         channelName = channel?.name ?? ""
         checkHeaderType()
+        if channelController.channel?.unreadCount.messages ?? 0 > 0 {
+            if channelController.firstUnreadMessageId != nil {
+                firstUnreadMessageId = channelController.firstUnreadMessageId
+            } else {
+                lastReadMessageId = channelController.lastReadMessageId
+            }
+        }
     }
     
     @objc
@@ -212,6 +225,24 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     public func jumpToMessage(messageId: String) -> Bool {
+        if messageId == "unknown" {
+            if firstUnreadMessageId == nil, let lastReadMessageId {
+                channelDataSource.loadPageAroundMessageId(lastReadMessageId) { [weak self] error in
+                    if error != nil {
+                        log.error("Error loading messages around message \(messageId)")
+                        return
+                    }
+                    //TODO: change to data source.
+                    if let firstUnread = self?.channelController.firstUnreadMessageId,
+                       let message = self?.channelController.dataStore.message(id: firstUnread) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            self?.scrolledId = message.messageId
+                        }
+                    }
+                }
+            }
+            return false
+        }
         if messageId == messages.first?.messageId {
             scrolledId = nil
             return true
@@ -221,9 +252,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 return true
             }
             let alreadyLoaded = messages.map(\.id).contains(baseId)
-            if alreadyLoaded {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    self.scrolledId = nil
+            if alreadyLoaded && baseId != messageId {
+                if scrolledId == nil {
+                    scrolledId = messageId
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.scrolledId = nil
                 }
                 return true
             } else {
@@ -246,8 +280,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                         log.error("Error loading messages around message \(messageId)")
                         return
                     }
+                    var toJumpId = messageId
+                    if toJumpId == baseId, let message = self?.channelController.dataStore.message(id: toJumpId) {
+                        toJumpId = message.messageId
+                    }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self?.scrolledId = messageId
+                        self?.scrolledId = toJumpId
                         self?.loadingMessagesAround = false
                     }
                 }
@@ -273,7 +311,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if index == 0 {
             let isActive = UIApplication.shared.applicationState == .active
             if isActive {
-                maybeSendReadEvent(for: message)
+                //maybeSendReadEvent(for: message)
             }
         }
     }

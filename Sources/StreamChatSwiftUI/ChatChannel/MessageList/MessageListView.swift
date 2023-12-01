@@ -19,6 +19,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var showScrollToLatestButton: Bool
     @Binding var quotedMessage: ChatMessage?
     @Binding var scrollPosition: String?
+    @Binding var firstUnreadMessageId: MessageId?
     var loadingNextMessages: Bool
     var currentDateString: String?
     var listId: String
@@ -34,7 +35,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
     @State private var scrollDirection = ScrollDirection.up
-    @State private var newMessagesStartId: String?
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -75,6 +75,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         shouldShowTypingIndicator: Bool = false,
         scrollPosition: Binding<String?> = .constant(nil),
         loadingNextMessages: Bool = false,
+        firstUnreadMessageId: Binding<MessageId?> = .constant(nil),
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
@@ -97,6 +98,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         _showScrollToLatestButton = showScrollToLatestButton
         _quotedMessage = quotedMessage
         _scrollPosition = scrollPosition
+        _firstUnreadMessageId = firstUnreadMessageId
         if !messageRenderingUtil.hasPreviousMessageSet
             || self.showScrollToLatestButton == false
             || self.scrolledId != nil
@@ -109,14 +111,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 source: messages.filter { !skipRenderingMessageIds.contains($0.id) },
                 map: { $0 }
             )
-        }
-        if messageListConfig.showNewMessagesSeparator && channel.unreadCount.messages > 0 {
-            let index = channel.unreadCount.messages - 1
-            if index < messages.count {
-                _newMessagesStartId = .init(wrappedValue: messages[index].id)
-            }
-        } else {
-            _newMessagesStartId = .init(wrappedValue: nil)
         }
     }
 
@@ -136,7 +130,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
-                            let showUnreadSeparator = message.id == newMessagesStartId
+                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator && message.id == firstUnreadMessageId
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
@@ -179,7 +173,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                         
                                         showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
-                                                newMessagesStartId: $newMessagesStartId,
+                                                newMessagesStartId: $firstUnreadMessageId,
                                                 count: newMessagesCount(for: index, message: message)
                                             )
                                             : nil
@@ -287,6 +281,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 pendingKeyboardUpdate = nil
             }
         })
+        .overlay(
+            channel.unreadCount.messages > 0 ? VStack {
+                JumpToUnreadButton(unreadCount: channel.unreadCount.messages) {
+                    _ = onJumpToMessage?(firstUnreadMessageId ?? "unknown")
+                } onClose: {
+                    firstUnreadMessageId = nil
+                }
+
+                Spacer()
+            } : nil
+        )
         .modifier(factory.makeMessageListContainerModifier())
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
         .onDisappear {
@@ -424,9 +429,6 @@ public struct NewMessagesIndicator: View {
         .frame(maxWidth: .infinity)
         .background(Color(colors.background8))
         .padding(.top, 4)
-        .onDisappear {
-            newMessagesStartId = nil
-        }
     }
 }
 

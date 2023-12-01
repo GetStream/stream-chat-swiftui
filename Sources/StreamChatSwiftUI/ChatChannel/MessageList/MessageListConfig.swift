@@ -24,7 +24,7 @@ public struct MessageListConfig {
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
         iPadSplitViewEnabled: Bool = true,
         scrollingAnchor: UnitPoint = .bottom,
-        showNewMessagesSeparator: Bool = false,
+        showNewMessagesSeparator: Bool = true,
         handleTabBarVisibility: Bool = true,
         messageListAlignment: MessageListAlignment = .standard
     ) {

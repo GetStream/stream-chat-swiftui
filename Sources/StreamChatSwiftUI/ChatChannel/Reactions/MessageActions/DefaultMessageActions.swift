@@ -128,6 +128,16 @@ extension MessageAction {
 
             messageActions.append(deleteAction)
         } else {
+            let markUnreadAction = markAsUnreadAction(
+                for: message,
+                channel: channel,
+                chatClient: chatClient,
+                onFinish: onFinish,
+                onError: onError
+            )
+            
+            messageActions.append(markUnreadAction)
+            
             let flagAction = flagMessageAction(
                 for: message,
                 channel: channel,
@@ -432,6 +442,41 @@ extension MessageAction {
         )
 
         return flagMessage
+    }
+    
+    private static func markAsUnreadAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let channelController = chatClient.channelController(for: channel.cid)
+        let action = {
+            channelController.markUnread(from: message.id) { result in
+                switch result {
+                case .success(_):
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "markUnread"
+                        )
+                    )
+                case .failure(let error):
+                    onError(error)
+                }
+            }
+        }
+        let unreadAction = MessageAction(
+            id: "markUnread",
+            title: "Mark Unread",
+            iconName: "message.badge",
+            action: action,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return unreadAction
     }
 
     private static func muteAction(
