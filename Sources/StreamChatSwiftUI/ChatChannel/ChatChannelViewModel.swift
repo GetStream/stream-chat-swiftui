@@ -188,15 +188,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 
         channelName = channel?.name ?? ""
         checkHeaderType()
-        if channelController.channel?.unreadCount.messages ?? 0 > 0 {
-            if channelController.firstUnreadMessageId != nil {
-                firstUnreadMessageId = channelController.firstUnreadMessageId
-                canMarkRead = false
-            } else if channelController.lastReadMessageId != nil {
-                lastReadMessageId = channelController.lastReadMessageId
-                canMarkRead = false
-            }
-        }
+        checkUnreadCount()
     }
     
     @objc
@@ -216,7 +208,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @objc
     private func applicationWillEnterForeground() {
         guard let first = messages.first else { return }
-        maybeSendReadEvent(for: first)
+        if canMarkRead {
+            maybeSendReadEvent(for: first)
+        }
     }
     
     public func scrollToLastMessage() {
@@ -237,8 +231,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                         log.error("Error loading messages around message \(messageId)")
                         return
                     }
-                    //TODO: change to data source.
-                    if let firstUnread = self?.channelController.firstUnreadMessageId,
+                    if let firstUnread = self?.channelDataSource.firstUnreadMessageId,
                        let message = self?.channelController.dataStore.message(id: firstUnread) {
                         self?.firstUnreadMessageId = message.messageId
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -404,8 +397,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         if lastMessageRead != nil && firstUnreadMessageId == nil {
-            //TODO: data source
-            self.firstUnreadMessageId = channelController.firstUnreadMessageId
+            self.firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         }
     }
     
@@ -434,6 +426,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func onViewAppear() {
         setActive()
         messages = channelDataSource.messages
+        firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         checkNameChange()
     }
     
@@ -603,6 +596,19 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             channelHeaderType = .regular
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                 self?.channelHeaderType = .typingIndicator
+            }
+        }
+    }
+    
+    private func checkUnreadCount() {
+        guard !isMessageThread else { return }
+        if channelController.channel?.unreadCount.messages ?? 0 > 0 {
+            if channelController.firstUnreadMessageId != nil {
+                firstUnreadMessageId = channelController.firstUnreadMessageId
+                canMarkRead = false
+            } else if channelController.lastReadMessageId != nil {
+                lastReadMessageId = channelController.lastReadMessageId
+                canMarkRead = false
             }
         }
     }

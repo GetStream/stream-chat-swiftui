@@ -870,4 +870,17 @@ public protocol ViewFactory: AnyObject {
         newMessagesStartId: Binding<String?>,
         count: Int
     ) -> NewMessagesIndicatorViewType
+    
+    associatedtype JumpToUnreadButtonType: View
+    /// Creates a jump to unread button.
+    /// - Parameters:
+    ///  - channel: the current channel.
+    ///  - onJumpToMessage: called when jump to message is tapped.
+    ///  - onClose: called when the jump to unread should be dismissed.
+    /// - Returns: view shown in the jump to unread slot.
+    func makeJumpToUnreadButton(
+        channel: ChatChannel,
+        onJumpToMessage: @escaping () -> (),
+        onClose: @escaping () -> ()
+    ) -> JumpToUnreadButtonType
 }

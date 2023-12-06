@@ -5,8 +5,9 @@
 import StreamChat
 import SwiftUI
 
-//TODO: improve this
 struct JumpToUnreadButton: View {
+    
+    @Injected(\.colors) var colors
     
     var unreadCount: Int
     var onTap: () -> ()
@@ -17,18 +18,19 @@ struct JumpToUnreadButton: View {
             Button {
                 onTap()
             } label: {
-                Text("\(unreadCount) unread ")
+                Text(L10n.Message.Unread.count(unreadCount))
                     .font(.caption)
             }
             Button {
                 onClose()
             } label: {
                 Image(systemName: "xmark")
+                    .font(.caption.weight(.bold))
             }
         }
-        .padding()
+        .padding(.all, 10)
         .foregroundColor(.white)
-        .background(Color.gray)
+        .background(Color(colors.textLowEmphasis))
         .cornerRadius(16)
     }
 }

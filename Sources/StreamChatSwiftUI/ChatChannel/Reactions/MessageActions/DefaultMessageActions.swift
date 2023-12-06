@@ -128,15 +128,17 @@ extension MessageAction {
 
             messageActions.append(deleteAction)
         } else {
-            let markUnreadAction = markAsUnreadAction(
-                for: message,
-                channel: channel,
-                chatClient: chatClient,
-                onFinish: onFinish,
-                onError: onError
-            )
-            
-            messageActions.append(markUnreadAction)
+            if !message.isPartOfThread {
+                let markUnreadAction = markAsUnreadAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                
+                messageActions.append(markUnreadAction)
+            }
             
             let flagAction = flagMessageAction(
                 for: message,

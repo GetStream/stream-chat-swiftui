@@ -289,15 +289,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .overlay(
-            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown) ? VStack {
-                JumpToUnreadButton(unreadCount: channel.unreadCount.messages) {
+            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown) ? 
+            factory.makeJumpToUnreadButton(
+                channel: channel,
+                onJumpToMessage: {
                     _ = onJumpToMessage?(firstUnreadMessageId ?? "unknown")
-                } onClose: {
+                }, 
+                onClose: {
                     firstUnreadMessageId = nil
                 }
-
-                Spacer()
-            } : nil
+            ) : nil
         )
         .modifier(factory.makeMessageListContainerModifier())
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
