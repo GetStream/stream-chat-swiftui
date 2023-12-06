@@ -191,10 +191,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if channelController.channel?.unreadCount.messages ?? 0 > 0 {
             if channelController.firstUnreadMessageId != nil {
                 firstUnreadMessageId = channelController.firstUnreadMessageId
-            } else {
+                canMarkRead = false
+            } else if channelController.lastReadMessageId != nil {
                 lastReadMessageId = channelController.lastReadMessageId
+                canMarkRead = false
             }
-            canMarkRead = false
         }
     }
     
@@ -239,6 +240,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     //TODO: change to data source.
                     if let firstUnread = self?.channelController.firstUnreadMessageId,
                        let message = self?.channelController.dataStore.message(id: firstUnread) {
+                        self?.firstUnreadMessageId = message.messageId
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             self?.scrolledId = message.messageId
                         }
@@ -399,6 +401,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
+        }
+        
+        if lastMessageRead != nil && firstUnreadMessageId == nil {
+            //TODO: data source
+            self.firstUnreadMessageId = channelController.firstUnreadMessageId
         }
     }
     

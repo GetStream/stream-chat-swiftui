@@ -35,6 +35,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
     @State private var scrollDirection = ScrollDirection.up
+    @State private var unreadMessagesBannerShown = false
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -176,6 +177,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                                 newMessagesStartId: $firstUnreadMessageId,
                                                 count: newMessagesCount(for: index, message: message)
                                             )
+                                            .onAppear {
+                                                unreadMessagesBannerShown = true
+                                            }
+                                            .onDisappear {
+                                                unreadMessagesBannerShown = false
+                                            }
                                             : nil
 
                                         showsLastInGroupInfo ?
@@ -282,7 +289,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .overlay(
-            channel.unreadCount.messages > 0 ? VStack {
+            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown) ? VStack {
                 JumpToUnreadButton(unreadCount: channel.unreadCount.messages) {
                     _ = onJumpToMessage?(firstUnreadMessageId ?? "unknown")
                 } onClose: {
