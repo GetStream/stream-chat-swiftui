@@ -109,4 +109,6 @@ extension String {
 
         return false
     }
+    
+    static let unknownMessageId = "unknown"
 }

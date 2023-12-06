@@ -271,6 +271,8 @@ internal enum L10n {
       internal static var flag: String { L10n.tr("Localizable", "message.actions.flag") }
       /// Reply
       internal static var inlineReply: String { L10n.tr("Localizable", "message.actions.inline-reply") }
+      /// Mark Unread
+      internal static var markUnread: String { L10n.tr("Localizable", "message.actions.mark-unread") }
       /// Pin to conversation
       internal static var pin: String { L10n.tr("Localizable", "message.actions.pin") }
       /// Resend

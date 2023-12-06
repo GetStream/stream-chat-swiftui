@@ -10,8 +10,8 @@ struct JumpToUnreadButton: View {
     @Injected(\.colors) var colors
     
     var unreadCount: Int
-    var onTap: () -> ()
-    var onClose: () -> ()
+    var onTap: () -> Void
+    var onClose: () -> Void
     
     var body: some View {
         HStack {

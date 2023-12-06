@@ -880,7 +880,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the jump to unread slot.
     func makeJumpToUnreadButton(
         channel: ChatChannel,
-        onJumpToMessage: @escaping () -> (),
-        onClose: @escaping () -> ()
+        onJumpToMessage: @escaping () -> Void,
+        onClose: @escaping () -> Void
     ) -> JumpToUnreadButtonType
 }

@@ -456,22 +456,21 @@ extension MessageAction {
         let channelController = chatClient.channelController(for: channel.cid)
         let action = {
             channelController.markUnread(from: message.id) { result in
-                switch result {
-                case .success(_):
+                if case let .failure(error) = result {
+                    onError(error)
+                } else {
                     onFinish(
                         MessageActionInfo(
                             message: message,
-                            identifier: "markUnread"
+                            identifier: MessageActionId.markUnread
                         )
                     )
-                case .failure(let error):
-                    onError(error)
                 }
             }
         }
         let unreadAction = MessageAction(
-            id: "markUnread",
-            title: "Mark Unread",
+            id: MessageActionId.markUnread,
+            title: L10n.Message.Actions.markUnread,
             iconName: "message.badge",
             action: action,
             confirmationPopup: nil,
@@ -665,4 +664,5 @@ public enum MessageActionId {
     public static let pin = "pin_message_action"
     public static let unpin = "unpin_message_action"
     public static let resend = "resend_message_action"
+    public static let markUnread = "mark_unread_action"
 }

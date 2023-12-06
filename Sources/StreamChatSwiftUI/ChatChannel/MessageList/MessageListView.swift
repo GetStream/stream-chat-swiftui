@@ -131,7 +131,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
-                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator && (message.messageId == firstUnreadMessageId || message.id == firstUnreadMessageId)
+                            let messageIsFirstUnread = message.messageId == firstUnreadMessageId ||
+                                message.id == firstUnreadMessageId
+                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator && messageIsFirstUnread
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
@@ -289,16 +291,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .overlay(
-            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown) ? 
-            factory.makeJumpToUnreadButton(
-                channel: channel,
-                onJumpToMessage: {
-                    _ = onJumpToMessage?(firstUnreadMessageId ?? "unknown")
-                }, 
-                onClose: {
-                    firstUnreadMessageId = nil
-                }
-            ) : nil
+            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown) ?
+                factory.makeJumpToUnreadButton(
+                    channel: channel,
+                    onJumpToMessage: {
+                        _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
+                    },
+                    onClose: {
+                        firstUnreadMessageId = nil
+                    }
+                ) : nil
         )
         .modifier(factory.makeMessageListContainerModifier())
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))

@@ -209,7 +209,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func applicationWillEnterForeground() {
         guard let first = messages.first else { return }
         if canMarkRead {
-            maybeSendReadEvent(for: first)
+            sendReadEventIfNeeded(for: first)
         }
     }
     
@@ -224,7 +224,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     public func jumpToMessage(messageId: String) -> Bool {
-        if messageId == "unknown" {
+        if messageId == .unknownMessageId {
             if firstUnreadMessageId == nil, let lastReadMessageId {
                 channelDataSource.loadPageAroundMessageId(lastReadMessageId) { [weak self] error in
                     if error != nil {
@@ -313,7 +313,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if index == 0 {
             let isActive = UIApplication.shared.applicationState == .active
             if isActive && canMarkRead {
-                maybeSendReadEvent(for: message)
+                sendReadEventIfNeeded(for: message)
             }
         }
     }
@@ -390,14 +390,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
         
-        maybeRefreshMessageList()
+        refreshMessageListIfNeeded()
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
         }
         
         if lastMessageRead != nil && firstUnreadMessageId == nil {
-            self.firstUnreadMessageId = channelDataSource.firstUnreadMessageId
+            firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         }
     }
     
@@ -497,7 +497,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         )
     }
     
-    private func maybeSendReadEvent(for message: ChatMessage) {
+    private func sendReadEventIfNeeded(for message: ChatMessage) {
         if message.id != lastMessageRead {
             lastMessageRead = message.id
             throttler.throttle { [weak self] in
@@ -509,7 +509,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func maybeRefreshMessageList() {
+    private func refreshMessageListIfNeeded() {
         let count = messages.count
         if count > lastRefreshThreshold {
             lastRefreshThreshold = lastRefreshThreshold + refreshThreshold

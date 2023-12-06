@@ -879,8 +879,8 @@ extension ViewFactory {
     
     public func makeJumpToUnreadButton(
         channel: ChatChannel,
-        onJumpToMessage: @escaping () -> (),
-        onClose: @escaping () -> ()
+        onJumpToMessage: @escaping () -> Void,
+        onClose: @escaping () -> Void
     ) -> some View {
         VStack {
             JumpToUnreadButton(
