@@ -35,6 +35,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     private var isActive = true
     private var readsString = ""
+    private var canMarkRead = true
     
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
@@ -109,11 +110,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var shouldShowTypingIndicator = false
     @Published public var scrollPosition: String?
     @Published public private(set) var loadingNextMessages: Bool = false
-    @Published public var firstUnreadMessageId: String? {
-        didSet {
-            print("===== this changed to \(firstUnreadMessageId)")
-        }
-    }
+    @Published public var firstUnreadMessageId: String?
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -191,6 +188,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             } else {
                 lastReadMessageId = channelController.lastReadMessageId
             }
+            canMarkRead = false
         }
     }
     
@@ -305,13 +303,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         } else {
             checkForNewerMessages(index: index)
         }
+        if let firstUnreadMessageId, firstUnreadMessageId.contains(message.id) {
+            canMarkRead = true
+        }
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
             save(lastDate: message.createdAt)
         }
         if index == 0 {
             let isActive = UIApplication.shared.applicationState == .active
-            if isActive {
-                //maybeSendReadEvent(for: message)
+            if isActive && canMarkRead {
+                maybeSendReadEvent(for: message)
             }
         }
     }

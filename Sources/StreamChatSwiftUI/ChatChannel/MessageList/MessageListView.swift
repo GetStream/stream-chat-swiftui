@@ -171,7 +171,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
                                             : nil
                                         
-                                        showUnreadSeparator ?
+                                        shouldShowSeparator(for: message) ?
                                             factory.makeNewMessagesIndicatorView(
                                                 newMessagesStartId: $firstUnreadMessageId,
                                                 count: newMessagesCount(for: index, message: message)
@@ -300,6 +300,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
     }
+    
+    private func shouldShowSeparator(for message: ChatMessage) -> Bool {
+        messageListConfig.showNewMessagesSeparator && message.id == firstUnreadMessageId && channel.unreadCount.messages > 0
+    }
 
     private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
         var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
@@ -316,13 +320,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
     
     private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
-        if let index = index {
-            return index + 1
-        } else if let index = messageListDateUtils.index(for: message, in: messages) {
-            return index + 1
-        } else {
-            return channel.unreadCount.messages
-        }
+        channel.unreadCount.messages
     }
 
     private func showsAllData(for message: ChatMessage) -> Bool {
@@ -421,7 +419,7 @@ public struct NewMessagesIndicator: View {
     
     public var body: some View {
         HStack {
-            Text("\(L10n.MessageList.newMessages(count))")
+            Text("Unread messages")
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .font(.headline)
                 .padding(.all, 8)
