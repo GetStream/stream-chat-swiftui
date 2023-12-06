@@ -67,11 +67,11 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>zero</key>
-			<string>%d new messages</string>
+			<string>New messages</string>
 			<key>one</key>
-			<string>%d new message</string>
+			<string>New messages</string>
 			<key>other</key>
-			<string>%d new messages</string>
+			<string>New messages</string>
 		</dict>
 	</dict>
 	<key>messageList.typingIndicator.users</key>

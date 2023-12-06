@@ -423,7 +423,7 @@ public struct NewMessagesIndicator: View {
     
     public var body: some View {
         HStack {
-            Text("Unread messages")
+            Text("\(L10n.MessageList.newMessages(count))")
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .font(.headline)
                 .padding(.all, 8)

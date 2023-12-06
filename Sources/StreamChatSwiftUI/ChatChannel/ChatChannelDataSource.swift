@@ -42,6 +42,7 @@ protocol ChannelDataSource: AnyObject {
     /// Determines whether all new messages have been fetched.
     var hasLoadedAllNextMessages: Bool { get }
     
+    /// Returns the first unread message id.
     var firstUnreadMessageId: String? { get }
 
     /// Loads the previous messages.
