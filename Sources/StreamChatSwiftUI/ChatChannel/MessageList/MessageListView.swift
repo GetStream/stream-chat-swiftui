@@ -130,7 +130,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
-                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator && message.id == firstUnreadMessageId
+                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator && (message.messageId == firstUnreadMessageId || message.id == firstUnreadMessageId)
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
@@ -171,7 +171,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
                                             : nil
                                         
-                                        shouldShowSeparator(for: message) ?
+                                        showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
                                                 newMessagesStartId: $firstUnreadMessageId,
                                                 count: newMessagesCount(for: index, message: message)
@@ -301,10 +301,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityIdentifier("MessageListView")
     }
     
-    private func shouldShowSeparator(for message: ChatMessage) -> Bool {
-        messageListConfig.showNewMessagesSeparator && message.id == firstUnreadMessageId && channel.unreadCount.messages > 0
-    }
-
     private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
         var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
         if showUnreadSeparator {

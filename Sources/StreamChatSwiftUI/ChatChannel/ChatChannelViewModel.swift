@@ -17,7 +17,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private let newerMessagesLimit: Int = {
+    private static let newerMessagesLimit: Int = {
         if #available(iOS 17, *) {
             // On iOS 17 we can maintain the scroll position.
             return 25
@@ -110,7 +110,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var shouldShowTypingIndicator = false
     @Published public var scrollPosition: String?
     @Published public private(set) var loadingNextMessages: Bool = false
-    @Published public var firstUnreadMessageId: String?
+    @Published public var firstUnreadMessageId: String? {
+        didSet {
+            if firstUnreadMessageId == nil && (channel?.unreadCount.messages ?? 0) > 0 {
+                channelController.markRead()
+            }
+        }
+    }
     
     public var channel: ChatChannel? {
         channelController.channel
@@ -466,7 +472,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             scrollPosition = messages[index].messageId
         }
 
-        channelDataSource.loadNextMessages(limit: newerMessagesLimit) { [weak self] _ in
+        channelDataSource.loadNextMessages(limit: Self.newerMessagesLimit) { [weak self] _ in
             guard let self = self else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.loadingNextMessages = false
@@ -496,6 +502,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             lastMessageRead = message.id
             throttler.throttle { [weak self] in
                 self?.channelController.markRead()
+                DispatchQueue.main.async {
+                    self?.firstUnreadMessageId = nil
+                }
             }
         }
     }
