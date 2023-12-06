@@ -24,7 +24,7 @@ class MessageActionsViewModel_Tests: StreamChatTestCase {
             onError: { _ in }
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
-        let action = actions[4]
+        let action = actions[5]
 
         // When
         viewModel.alertAction = action
