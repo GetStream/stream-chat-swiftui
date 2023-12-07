@@ -112,7 +112,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public private(set) var loadingNextMessages: Bool = false
     @Published public var firstUnreadMessageId: String? {
         didSet {
-            if firstUnreadMessageId == nil && (channel?.unreadCount.messages ?? 0) > 0 {
+            if oldValue != nil && firstUnreadMessageId == nil && (channel?.unreadCount.messages ?? 0) > 0 {
                 channelController.markRead()
             }
         }
