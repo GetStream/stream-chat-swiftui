@@ -68,7 +68,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[1].title == "Thread Reply")
         XCTAssert(messageActions[2].title == "Pin to conversation")
         XCTAssert(messageActions[3].title == "Copy Message")
-        XCTAssert(messageActions[4].title == "Mark Unread")        
+        XCTAssert(messageActions[4].title == "Mark Unread")  
         XCTAssert(messageActions[5].title == "Flag Message")
         XCTAssert(messageActions[6].title == "Mute User")
     }
