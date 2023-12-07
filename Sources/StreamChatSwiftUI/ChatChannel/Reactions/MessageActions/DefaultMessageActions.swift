@@ -128,7 +128,7 @@ extension MessageAction {
 
             messageActions.append(deleteAction)
         } else {
-            if !message.isPartOfThread {
+            if !message.isPartOfThread || message.showReplyInChannel {
                 let markUnreadAction = markAsUnreadAction(
                     for: message,
                     channel: channel,

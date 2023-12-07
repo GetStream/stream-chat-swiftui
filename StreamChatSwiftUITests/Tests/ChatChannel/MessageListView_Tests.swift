@@ -99,7 +99,7 @@ class MessageListView_Tests: StreamChatTestCase {
         let reactions = [MessageReactionType(rawValue: "like"): 2]
         let channel = ChatChannel.mockDMChannel(
             config: channelConfig,
-            currentlyTypingUsers: currentlyTypingUsers, 
+            currentlyTypingUsers: currentlyTypingUsers,
             unreadCount: unreadCount
         )
         let temp = [ChatMessage.mock(

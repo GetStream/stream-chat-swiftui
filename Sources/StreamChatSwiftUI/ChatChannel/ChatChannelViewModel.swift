@@ -396,7 +396,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             updateScrolledIdToNewestMessage()
         }
         
-        if lastMessageRead != nil && firstUnreadMessageId == nil {
+        if lastReadMessageId != nil && firstUnreadMessageId == nil {
             firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         }
     }
@@ -691,6 +691,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+            if !channelDataSource.hasLoadedAllNextMessages {
+                channelDataSource.loadFirstPage { _ in }
+            }
         }
     }
 }

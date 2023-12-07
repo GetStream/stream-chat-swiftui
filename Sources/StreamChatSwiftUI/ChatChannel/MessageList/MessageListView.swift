@@ -131,9 +131,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
-                            let messageIsFirstUnread = message.messageId == firstUnreadMessageId ||
-                                message.id == firstUnreadMessageId
-                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator && messageIsFirstUnread
+                            let messageIsFirstUnread = firstUnreadMessageId?.contains(message.id) == true
+                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator &&
+                                messageIsFirstUnread &&
+                                !isMessageThread
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
                                 channel: channel,
@@ -291,7 +292,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .overlay(
-            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown) ?
+            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread) ?
                 factory.makeJumpToUnreadButton(
                     channel: channel,
                     onJumpToMessage: {
