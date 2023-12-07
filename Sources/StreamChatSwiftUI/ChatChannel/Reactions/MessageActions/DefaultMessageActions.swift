@@ -453,7 +453,9 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let channelController = chatClient.channelController(for: channel.cid)
+        let channelController = InjectedValues[\.utils]
+            .channelControllerFactory
+            .makeChannelController(for: channel.cid)
         let action = {
             channelController.markUnread(from: message.id) { result in
                 if case let .failure(error) = result {
