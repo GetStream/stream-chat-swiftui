@@ -3,7 +3,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Mark message as unread
+- Jump to first unread message
+- Factory method to swap jump to unread button
 
 # [4.44.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.44.0)
 _December 01, 2023_
