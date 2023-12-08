@@ -41,6 +41,9 @@ protocol ChannelDataSource: AnyObject {
     
     /// Determines whether all new messages have been fetched.
     var hasLoadedAllNextMessages: Bool { get }
+    
+    /// Returns the first unread message id.
+    var firstUnreadMessageId: String? { get }
 
     /// Loads the previous messages.
     /// - Parameters:
@@ -88,6 +91,10 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     
     var hasLoadedAllNextMessages: Bool {
         controller.hasLoadedAllNextMessages
+    }
+    
+    var firstUnreadMessageId: String? {
+        controller.firstUnreadMessageId
     }
 
     init(controller: ChatChannelController) {
@@ -159,6 +166,10 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     
     var hasLoadedAllNextMessages: Bool {
         messageController.hasLoadedAllNextReplies
+    }
+    
+    var firstUnreadMessageId: String? {
+        channelController.firstUnreadMessageId
     }
 
     init(

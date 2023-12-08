@@ -271,6 +271,8 @@ internal enum L10n {
       internal static var flag: String { L10n.tr("Localizable", "message.actions.flag") }
       /// Reply
       internal static var inlineReply: String { L10n.tr("Localizable", "message.actions.inline-reply") }
+      /// Mark Unread
+      internal static var markUnread: String { L10n.tr("Localizable", "message.actions.mark-unread") }
       /// Pin to conversation
       internal static var pin: String { L10n.tr("Localizable", "message.actions.pin") }
       /// Resend
@@ -365,6 +367,12 @@ internal enum L10n {
       internal static var offline: String { L10n.tr("Localizable", "message.title.offline") }
       /// Online
       internal static var online: String { L10n.tr("Localizable", "message.title.online") }
+    }
+    internal enum Unread {
+      /// Plural format key: "%#@unread@"
+      internal static func count(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.unread.count", p1)
+      }
     }
   }
 

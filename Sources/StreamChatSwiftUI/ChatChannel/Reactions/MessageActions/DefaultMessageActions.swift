@@ -128,6 +128,18 @@ extension MessageAction {
 
             messageActions.append(deleteAction)
         } else {
+            if !message.isPartOfThread || message.showReplyInChannel {
+                let markUnreadAction = markAsUnreadAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                
+                messageActions.append(markUnreadAction)
+            }
+            
             let flagAction = flagMessageAction(
                 for: message,
                 channel: channel,
@@ -433,6 +445,42 @@ extension MessageAction {
 
         return flagMessage
     }
+    
+    private static func markAsUnreadAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let channelController = InjectedValues[\.utils]
+            .channelControllerFactory
+            .makeChannelController(for: channel.cid)
+        let action = {
+            channelController.markUnread(from: message.id) { result in
+                if case let .failure(error) = result {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: MessageActionId.markUnread
+                        )
+                    )
+                }
+            }
+        }
+        let unreadAction = MessageAction(
+            id: MessageActionId.markUnread,
+            title: L10n.Message.Actions.markUnread,
+            iconName: "message.badge",
+            action: action,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        
+        return unreadAction
+    }
 
     private static func muteAction(
         for message: ChatMessage,
@@ -618,4 +666,5 @@ public enum MessageActionId {
     public static let pin = "pin_message_action"
     public static let unpin = "unpin_message_action"
     public static let resend = "resend_message_action"
+    public static let markUnread = "mark_unread_action"
 }

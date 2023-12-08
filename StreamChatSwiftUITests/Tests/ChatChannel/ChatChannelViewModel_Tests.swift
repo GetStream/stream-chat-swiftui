@@ -455,6 +455,20 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssert(shouldJump == false)
     }
+    
+    func test_chatChannelVM_jumpToUnknownMessage() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        // When
+        let shouldJump = viewModel.jumpToMessage(messageId: .unknownMessageId)
+    
+        // Then
+        XCTAssert(shouldJump == false)
+    }
 
     // MARK: - private
 

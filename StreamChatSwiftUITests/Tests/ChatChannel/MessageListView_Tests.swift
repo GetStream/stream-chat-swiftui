@@ -75,17 +75,32 @@ class MessageListView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_messageListView_jumpToUnreadButton() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let view = makeMessageListView(
+            channelConfig: channelConfig,
+            unreadCount: .mock(messages: 3)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     // MARK: - private
 
     func makeMessageListView(
         channelConfig: ChannelConfig,
+        unreadCount: ChannelUnreadCount = .noUnread,
         currentlyTypingUsers: Set<ChatUser> = []
     ) -> MessageListView<DefaultViewFactory> {
         let reactions = [MessageReactionType(rawValue: "like"): 2]
         let channel = ChatChannel.mockDMChannel(
             config: channelConfig,
-            currentlyTypingUsers: currentlyTypingUsers
+            currentlyTypingUsers: currentlyTypingUsers,
+            unreadCount: unreadCount
         )
         let temp = [ChatMessage.mock(
             id: .unique,

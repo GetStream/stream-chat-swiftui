@@ -876,6 +876,23 @@ extension ViewFactory {
             count: count
         )
     }
+    
+    public func makeJumpToUnreadButton(
+        channel: ChatChannel,
+        onJumpToMessage: @escaping () -> Void,
+        onClose: @escaping () -> Void
+    ) -> some View {
+        VStack {
+            JumpToUnreadButton(
+                unreadCount: channel.unreadCount.messages,
+                onTap: onJumpToMessage,
+                onClose: onClose
+            )
+            .padding(.all, 8)
+
+            Spacer()
+        }
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

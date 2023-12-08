@@ -194,7 +194,7 @@ extension ChatChannel: Identifiable {
     }
 
     public var id: String {
-        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(typingUsersString)-\(readUsersId)"
+        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(typingUsersString)-\(readUsersId)-\(unreadCount.messages)"
     }
 
     private var readUsersId: String {

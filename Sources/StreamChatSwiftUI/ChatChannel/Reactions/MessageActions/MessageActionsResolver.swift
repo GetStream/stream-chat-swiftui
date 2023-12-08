@@ -39,6 +39,8 @@ public class MessageActionsResolver: MessageActionsResolving {
                 viewModel.editedMessage = info.message
                 viewModel.quotedMessage = nil
             }
+        } else if info.identifier == MessageActionId.markUnread {
+            viewModel.firstUnreadMessageId = info.message.messageId
         }
 
         viewModel.reactionsShown = false
