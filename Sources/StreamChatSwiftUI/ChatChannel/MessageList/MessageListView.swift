@@ -380,12 +380,16 @@ struct ScrollPositionModifier: ViewModifier {
     @Binding var scrollPosition: String?
     
     func body(content: Content) -> some View {
+        #if swift(>=5.9)
         if #available(iOS 17, *) {
             content
                 .scrollPosition(id: $scrollPosition, anchor: .top)
         } else {
             content
         }
+        #else
+        content
+        #endif
     }
 }
 
@@ -397,6 +401,7 @@ struct ScrollTargetLayoutModifier: ViewModifier {
         if !enabled {
             return content
         }
+        #if swift(>=5.9)
         if #available(iOS 17, *) {
             return content
                 .scrollTargetLayout(isEnabled: enabled)
@@ -404,6 +409,9 @@ struct ScrollTargetLayoutModifier: ViewModifier {
         } else {
             return content
         }
+        #else
+        return content
+        #endif
     }
 }
 
