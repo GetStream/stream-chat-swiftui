@@ -27,6 +27,9 @@ public class Utils {
     public var messageIdBuilder: MessageIdBuilder
     public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
     public var channelHeaderLoader: ChannelHeaderLoader
+    public var videoDurationFormatter: VideoDurationFormatter
+    public var audioRecordingNameFormatter: AudioRecordingNameFormatter
+    public lazy var audioPlayer: AudioPlaying = StreamAudioPlayer()
 
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
@@ -50,6 +53,8 @@ public class Utils {
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
         channelHeaderLoader: ChannelHeaderLoader = ChannelHeaderLoader(),
+        videoDurationFormatter: VideoDurationFormatter = DefaultVideoDurationFormatter(),
+        audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
@@ -72,6 +77,8 @@ public class Utils {
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         self.sortReactions = sortReactions
         self.channelHeaderLoader = channelHeaderLoader
+        self.videoDurationFormatter = videoDurationFormatter
+        self.audioRecordingNameFormatter = audioRecordingNameFormatter
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }
     

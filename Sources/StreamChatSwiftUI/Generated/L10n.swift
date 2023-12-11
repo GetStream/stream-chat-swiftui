@@ -399,6 +399,15 @@ internal enum L10n {
       }
     }
   }
+
+  internal enum Recording {
+    internal enum Presentation {
+      /// Plural format key: "%#@recording@"
+      internal static func name(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "recording.presentation.name", p1)
+      }
+    }
+  }
 }
 
 // MARK: - Implementation Details

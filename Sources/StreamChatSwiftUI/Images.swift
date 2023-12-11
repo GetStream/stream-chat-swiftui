@@ -115,6 +115,7 @@ public class Images {
     // MARK: - FileIcons
 
     public var file7z: UIImage = loadImageSafely(with: "7z")
+    public var fileAac: UIImage = loadImageSafely(with: "aac")
     public var fileCsv: UIImage = loadImageSafely(with: "csv")
     public var fileDoc: UIImage = loadImageSafely(with: "doc")
     public var fileDocx: UIImage = loadImageSafely(with: "docx")

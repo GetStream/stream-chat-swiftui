@@ -408,6 +408,14 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>,
         isFirst: Bool
     ) -> EmojiTextViewType
+    
+    associatedtype VoiceRecordingViewType: View
+    func makeVoiceRecordingView(
+        for message: ChatMessage,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
+    ) -> VoiceRecordingViewType
 
     associatedtype CustomAttachmentViewType: View
     /// Creates custom attachment view.

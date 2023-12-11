@@ -630,6 +630,20 @@ extension ViewFactory {
         .animation(.spring())
     }
     
+    public func makeVoiceRecordingView(
+        for message: ChatMessage,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
+    ) -> some View {
+        VoiceRecordingContainerView(
+            message: message,
+            width: availableWidth,
+            isFirst: isFirst,
+            scrolledId: scrolledId
+        )
+    }
+    
     public func makeCustomAttachmentView(
         addedCustomAttachments: [CustomAttachment],
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void

@@ -4,7 +4,7 @@
 
 import Foundation
 
-public let apiKeyString = "zcgvnykxsfm8"
+public let apiKeyString = "8br4watad788"
 public let applicationGroupIdentifier = "group.io.getstream.iOS.ChatDemoAppSwiftUI"
 public let currentUserIdRegisteredForPush = "currentUserIdRegisteredForPush"
 
@@ -34,7 +34,7 @@ extension UserCredentials: Identifiable {
             "leia_organa",
             "Leia Organa",
             "https://vignette.wikia.nocookie.net/starwars/images/f/fc/Leia_Organa_TLJ.png",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibGVpYV9vcmdhbmEifQ.Z5jwZggIKuspn1Z76MJHF9AY_VdAFg_jnTS6CP5ZZN0",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibGVpYV9vcmdhbmEifQ.IzwBuaYwX5dRvnDDnJN2AyW3wwfYwgQm3w-1RD4BLPU",
             "Polis Massa"
         ),
         (
