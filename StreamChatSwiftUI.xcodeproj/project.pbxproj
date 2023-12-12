@@ -429,6 +429,8 @@
 		84EADEA22B2735D80046B50C /* VoiceRecordingContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA12B2735D80046B50C /* VoiceRecordingContainerView.swift */; };
 		84EADEA42B2746B70046B50C /* VideoDurationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA32B2746B70046B50C /* VideoDurationFormatter.swift */; };
 		84EADEA62B2748AD0046B50C /* AudioRecordingNameFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA52B2748AD0046B50C /* AudioRecordingNameFormatter.swift */; };
+		84EADEA82B27637A0046B50C /* AudioVisualizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA72B27637A0046B50C /* AudioVisualizationView.swift */; };
+		84EADEAA2B2767E20046B50C /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA92B2767E20046B50C /* WaveformView.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 		84F130C12AEAA957006E7B52 /* StreamLazyImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */; };
 		84F2908A276B90610045472D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F29089276B90610045472D /* GalleryView.swift */; };
@@ -944,6 +946,8 @@
 		84EADEA12B2735D80046B50C /* VoiceRecordingContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecordingContainerView.swift; sourceTree = "<group>"; };
 		84EADEA32B2746B70046B50C /* VideoDurationFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDurationFormatter.swift; sourceTree = "<group>"; };
 		84EADEA52B2748AD0046B50C /* AudioRecordingNameFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecordingNameFormatter.swift; sourceTree = "<group>"; };
+		84EADEA72B27637A0046B50C /* AudioVisualizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizationView.swift; sourceTree = "<group>"; };
+		84EADEA92B2767E20046B50C /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamLazyImage.swift; sourceTree = "<group>"; };
 		84F29089276B90610045472D /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
@@ -1956,6 +1960,8 @@
 				84EADEA12B2735D80046B50C /* VoiceRecordingContainerView.swift */,
 				84EADEA32B2746B70046B50C /* VideoDurationFormatter.swift */,
 				84EADEA52B2748AD0046B50C /* AudioRecordingNameFormatter.swift */,
+				84EADEA72B27637A0046B50C /* AudioVisualizationView.swift */,
+				84EADEA92B2767E20046B50C /* WaveformView.swift */,
 			);
 			path = AsyncVoiceMessages;
 			sourceTree = "<group>";
@@ -2408,6 +2414,7 @@
 				82D64C002AD7E5B700C5C79E /* Log.swift in Sources */,
 				82D64BFF2AD7E5B700C5C79E /* Allocations.swift in Sources */,
 				82D64BF12AD7E5B700C5C79E /* DataLoader.swift in Sources */,
+				84EADEAA2B2767E20046B50C /* WaveformView.swift in Sources */,
 				8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */,
 				82D64BD62AD7E5B700C5C79E /* Animator.swift in Sources */,
 				8465FDB52746A95700AF091E /* Cache.swift in Sources */,
@@ -2463,6 +2470,7 @@
 				82D64BF72AD7E5B700C5C79E /* ImageProcessingOptions.swift in Sources */,
 				841B64D02775EDFE0016FF3B /* InstantCommandsView.swift in Sources */,
 				8465FD762746A95700AF091E /* MessageListView.swift in Sources */,
+				84EADEA82B27637A0046B50C /* AudioVisualizationView.swift in Sources */,
 				8465FDAB2746A95700AF091E /* StringExtensions.swift in Sources */,
 				8465FDA52746A95700AF091E /* Modifiers.swift in Sources */,
 				8465FDBB2746A95700AF091E /* LoadingView.swift in Sources */,

@@ -64,6 +64,10 @@ public class Images {
     public var gallery: UIImage = UIImage(systemName: "square.grid.3x3.fill")!
     public var photoDefault: UIImage = UIImage(systemName: "photo")!
     public var pin: UIImage = loadImageSafely(with: "icn_pin")
+    
+    // MARK: - Recording
+    
+    public var sliderThumb: UIImage = loadImageSafely(with: "sliderThumb")
 
     // MARK: - Reactions
 

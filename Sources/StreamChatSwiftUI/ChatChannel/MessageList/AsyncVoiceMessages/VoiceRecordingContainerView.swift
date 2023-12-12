@@ -116,6 +116,8 @@ struct VoiceRecordingView: View {
                             .font(.caption)
                             .foregroundColor(Color(colors.textLowEmphasis))
                     }
+                    WaveformViewSwiftUI(audioContext: handler.context, attachment: attachment.payload)
+                        .frame(height: 30)
                     Spacer()
                 }
             }
