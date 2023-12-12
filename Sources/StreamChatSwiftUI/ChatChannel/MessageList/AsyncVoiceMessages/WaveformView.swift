@@ -43,7 +43,6 @@ open class WaveformView: UIView {
             self.duration = duration
             self.currentTime = currentTime
             self.waveform = waveform
-            print("====== \(waveform.count)")
         }
     }
 
@@ -111,7 +110,7 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     var attachment: VoiceRecordingAttachmentPayload
     
     func makeUIView(context: Context) -> WaveformView {
-        let view = WaveformView().withoutAutoresizingMaskConstraints
+        let view = WaveformView()
         updateContent(for: view)
         return view
     }

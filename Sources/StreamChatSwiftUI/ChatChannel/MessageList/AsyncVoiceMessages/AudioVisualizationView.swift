@@ -20,7 +20,6 @@ open class AudioVisualizationView: UIView {
 
     public var content: [Float]? {
         didSet {
-            print("====== \(content?.count)")
             updateContent()
         }
     }
