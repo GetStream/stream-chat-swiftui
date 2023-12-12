@@ -81,12 +81,7 @@ struct VoiceRecordingView: View {
     var body: some View {
         HStack {
             Button(action: {
-                if isPlaying {
-                    player.pause()
-                } else {
-                    player.loadAsset(from: attachment.voiceRecordingURL)
-                }
-                isPlaying.toggle()
+                handlePlayTap()
             }, label: {
                 Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                     .padding(.all, 8)
@@ -116,8 +111,22 @@ struct VoiceRecordingView: View {
                             .font(.caption)
                             .foregroundColor(Color(colors.textLowEmphasis))
                     }
-                    WaveformViewSwiftUI(audioContext: handler.context, attachment: attachment.payload)
-                        .frame(height: 30)
+                    WaveformViewSwiftUI(
+                        audioContext: handler.context,
+                        attachment: attachment.payload,
+                        onSliderChanged: { timeInterval in
+                            if handler.context.assetLocation == attachment.voiceRecordingURL {
+                                player.seek(to: timeInterval)
+                            } else {
+                                player.loadAsset(from: attachment.voiceRecordingURL)
+                                player.seek(to: timeInterval)
+                            }
+                        },
+                        onSliderTapped: {
+                            handlePlayTap()
+                        }
+                    )
+                    .frame(height: 30)
                     Spacer()
                 }
             }
@@ -137,6 +146,15 @@ struct VoiceRecordingView: View {
                 isPlaying = true
             }
         })
+    }
+    
+    private func handlePlayTap() {
+        if isPlaying {
+            player.pause()
+        } else {
+            player.loadAsset(from: attachment.voiceRecordingURL)
+        }
+        isPlaying.toggle()
     }
 }
 

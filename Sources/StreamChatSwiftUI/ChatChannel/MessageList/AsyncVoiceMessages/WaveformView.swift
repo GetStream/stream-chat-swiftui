@@ -12,6 +12,9 @@ open class WaveformView: UIView {
     
     @Injected(\.images) var images
     
+    var onSliderChanged: ((TimeInterval) -> ())?
+    var onSliderTapped: (() -> ())?
+    
     public struct Content: Equatable {
         /// When set to `true` the waveform will be updating with the data live (scrolling to the trailing side
         /// as new data arrive).
@@ -61,6 +64,7 @@ open class WaveformView: UIView {
         setUpLayout()
         setUpAppearance()
         updateContent()
+        setupSlider()
     }
 
     // MARK: - UI Components
@@ -103,14 +107,47 @@ open class WaveformView: UIView {
         audioVisualizationView.setNeedsLayout()
         audioVisualizationView.setNeedsDisplay()
     }
+    
+    // MARK: - Slider
+    
+    private func setupSlider() {
+        slider.addTarget(
+            self,
+            action: #selector(didSlide),
+            for: .valueChanged
+        )
+
+        slider.addTarget(
+            self,
+            action: #selector(didTouchUpSlider),
+            for: .touchUpInside
+        )
+    }
+    
+    @objc internal func didSlide(
+        _ sender: UISlider
+    ) {
+        let value = TimeInterval(sender.value)
+        onSliderChanged?(value)
+    }
+
+    @objc internal func didTouchUpSlider(
+        _ sender: UISlider
+    ) {
+        onSliderTapped?()
+    }
 }
 
 struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var attachment: VoiceRecordingAttachmentPayload
+    var onSliderChanged: (TimeInterval) -> ()
+    var onSliderTapped: () -> ()
     
     func makeUIView(context: Context) -> WaveformView {
         let view = WaveformView()
+        view.onSliderTapped = onSliderTapped
+        view.onSliderChanged = onSliderChanged
         updateContent(for: view)
         return view
     }
