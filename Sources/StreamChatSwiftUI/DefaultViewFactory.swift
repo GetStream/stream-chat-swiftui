@@ -573,19 +573,7 @@ extension ViewFactory {
         cooldownDuration: Int,
         onTap: @escaping () -> Void
     ) -> some View {
-        Group {
-            if cooldownDuration == 0 {
-                SendMessageButton(
-                    enabled: enabled,
-                    onTap: onTap
-                )
-                .padding(.bottom, 8)
-            } else {
-                SlowModeView(
-                    cooldownDuration: cooldownDuration
-                )
-            }
-        }
+        TrailingComposerView(onTap: onTap)
     }
     
     public func makeComposerViewModifier() -> some ViewModifier {

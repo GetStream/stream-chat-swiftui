@@ -431,6 +431,12 @@
 		84EADEA62B2748AD0046B50C /* AudioRecordingNameFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA52B2748AD0046B50C /* AudioRecordingNameFormatter.swift */; };
 		84EADEA82B27637A0046B50C /* AudioVisualizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA72B27637A0046B50C /* AudioVisualizationView.swift */; };
 		84EADEAA2B2767E20046B50C /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEA92B2767E20046B50C /* WaveformView.swift */; };
+		84EADEB22B2883C60046B50C /* TrailingComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEB12B2883C60046B50C /* TrailingComposerView.swift */; };
+		84EADEB52B28935B0046B50C /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEB42B28935B0046B50C /* RecordingView.swift */; };
+		84EADEB72B28A17B0046B50C /* RecordingConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEB62B28A17B0046B50C /* RecordingConstants.swift */; };
+		84EADEB92B28B05C0046B50C /* LockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEB82B28B05C0046B50C /* LockedView.swift */; };
+		84EADEBB2B28BAE40046B50C /* RecordingWaveform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEBA2B28BAE40046B50C /* RecordingWaveform.swift */; };
+		84EADEBD2B28C2EC0046B50C /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEBC2B28C2EC0046B50C /* RecordingState.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 		84F130C12AEAA957006E7B52 /* StreamLazyImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */; };
 		84F2908A276B90610045472D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F29089276B90610045472D /* GalleryView.swift */; };
@@ -948,6 +954,12 @@
 		84EADEA52B2748AD0046B50C /* AudioRecordingNameFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecordingNameFormatter.swift; sourceTree = "<group>"; };
 		84EADEA72B27637A0046B50C /* AudioVisualizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizationView.swift; sourceTree = "<group>"; };
 		84EADEA92B2767E20046B50C /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+		84EADEB12B2883C60046B50C /* TrailingComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailingComposerView.swift; sourceTree = "<group>"; };
+		84EADEB42B28935B0046B50C /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
+		84EADEB62B28A17B0046B50C /* RecordingConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingConstants.swift; sourceTree = "<group>"; };
+		84EADEB82B28B05C0046B50C /* LockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedView.swift; sourceTree = "<group>"; };
+		84EADEBA2B28BAE40046B50C /* RecordingWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingWaveform.swift; sourceTree = "<group>"; };
+		84EADEBC2B28C2EC0046B50C /* RecordingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingState.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamLazyImage.swift; sourceTree = "<group>"; };
 		84F29089276B90610045472D /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
@@ -1587,8 +1599,10 @@
 		8465FD0F2746A95600AF091E /* Composer */ = {
 			isa = PBXGroup;
 			children = (
+				84EADEB32B2893420046B50C /* VoiceRecording */,
 				84AB7B222773526D00631A10 /* Suggestions */,
 				8465FD1B2746A95600AF091E /* MessageComposerView.swift */,
+				84EADEB12B2883C60046B50C /* TrailingComposerView.swift */,
 				8465FD102746A95600AF091E /* MessageComposerViewModel.swift */,
 				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
 				8465FD1C2746A95600AF091E /* AttachmentPickerView.swift */,
@@ -1966,6 +1980,18 @@
 			path = AsyncVoiceMessages;
 			sourceTree = "<group>";
 		};
+		84EADEB32B2893420046B50C /* VoiceRecording */ = {
+			isa = PBXGroup;
+			children = (
+				84EADEBC2B28C2EC0046B50C /* RecordingState.swift */,
+				84EADEB42B28935B0046B50C /* RecordingView.swift */,
+				84EADEB62B28A17B0046B50C /* RecordingConstants.swift */,
+				84EADEB82B28B05C0046B50C /* LockedView.swift */,
+				84EADEBA2B28BAE40046B50C /* RecordingWaveform.swift */,
+			);
+			path = VoiceRecording;
+			sourceTree = "<group>";
+		};
 		84F29088276B90410045472D /* Gallery */ = {
 			isa = PBXGroup;
 			children = (
@@ -2327,6 +2353,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84EADEB92B28B05C0046B50C /* LockedView.swift in Sources */,
 				8465FD962746A95700AF091E /* ReactionsOverlayViewModel.swift in Sources */,
 				82D64BE92AD7E5B700C5C79E /* TaskLoadData.swift in Sources */,
 				847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */,
@@ -2363,6 +2390,7 @@
 				82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */,
 				82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */,
 				82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */,
+				84EADEB52B28935B0046B50C /* RecordingView.swift in Sources */,
 				84AB7B262773619F00631A10 /* MentionUsersView.swift in Sources */,
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
 				8465FDBE2746A95700AF091E /* MoreChannelActionsView.swift in Sources */,
@@ -2371,6 +2399,7 @@
 				82D64C142AD7E5B700C5C79E /* ImageDecoderRegistry.swift in Sources */,
 				82D64C182AD7E5B700C5C79E /* ImageCache.swift in Sources */,
 				849CDD942768E0E1003C7A51 /* MessageActionsResolver.swift in Sources */,
+				84EADEB72B28A17B0046B50C /* RecordingConstants.swift in Sources */,
 				84F2908E276B92A40045472D /* GalleryHeaderView.swift in Sources */,
 				8465FD7B2746A95700AF091E /* GiphyBadgeView.swift in Sources */,
 				8465FDBD2746A95700AF091E /* ChatChannelHelperViews.swift in Sources */,
@@ -2511,10 +2540,12 @@
 				82D64BF42AD7E5B700C5C79E /* ImageProcessors.swift in Sources */,
 				8465FD8A2746A95700AF091E /* DiscardAttachmentButton.swift in Sources */,
 				8482094E2ACFFCD900EF3261 /* Throttler.swift in Sources */,
+				84EADEBD2B28C2EC0046B50C /* RecordingState.swift in Sources */,
 				82D64C1B2AD7E5B700C5C79E /* ImageCaching.swift in Sources */,
 				82D64C062AD7E5B700C5C79E /* Graphics.swift in Sources */,
 				8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */,
 				841B2EF4278DB9E500ED619E /* MessageListHelperViews.swift in Sources */,
+				84EADEB22B2883C60046B50C /* TrailingComposerView.swift in Sources */,
 				84C0C9A328CF18F700CD0136 /* SnapshotCreator.swift in Sources */,
 				8465FDD22746A95800AF091E /* Utils.swift in Sources */,
 				8465FDA12746A95700AF091E /* ChatChannelHeaderViewModifier.swift in Sources */,
@@ -2551,6 +2582,7 @@
 				84DEC8E12760D24100172876 /* MessageRepliesView.swift in Sources */,
 				8423C33F277C9A5F0092DCF1 /* UnmuteCommandHandler.swift in Sources */,
 				8421BCEE27A43E14000F977D /* SearchBar.swift in Sources */,
+				84EADEBB2B28BAE40046B50C /* RecordingWaveform.swift in Sources */,
 				841B64CA2775BBC10016FF3B /* Errors.swift in Sources */,
 				8465FD7A2746A95700AF091E /* VideoPlayerView.swift in Sources */,
 				82D64BFC2AD7E5B700C5C79E /* ImageDecompression.swift in Sources */,

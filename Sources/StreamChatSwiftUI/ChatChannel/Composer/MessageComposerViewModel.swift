@@ -124,6 +124,17 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
     @Published public var attachmentSizeExceeded: Bool = false
+    @Published public var recordingState: RecordingState = .initial {
+        didSet {
+            if case let .recording(location) = recordingState {
+                if location.y < RecordingConstants.lockMaxDistance {
+                    recordingState = .locked
+                } else if location.x < RecordingConstants.cancelMaxDistance {
+                    recordingState = .initial
+                }
+            }            
+        }
+    }
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?

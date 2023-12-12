@@ -102,11 +102,25 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         onMessageSent()
                     }
                 }
+                .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.errorShown) {
                     Alert.defaultErrorAlert
                 }
             }
             .padding(.all, 8)
+            .opacity(viewModel.recordingState == .initial ? 1 : 0)
+            .overlay(
+                ZStack {
+                    if case let .recording(location) = viewModel.recordingState {
+                        RecordingView(location: location)
+                    } else if viewModel.recordingState == .locked || 
+                                viewModel.recordingState == .stopped {
+                        LockedView(recordingState: $viewModel.recordingState)
+                    } else {
+                        EmptyView()
+                    }
+                }                
+            )
 
             if viewModel.sendInChannelShown {
                 factory.makeSendInChannelView(
