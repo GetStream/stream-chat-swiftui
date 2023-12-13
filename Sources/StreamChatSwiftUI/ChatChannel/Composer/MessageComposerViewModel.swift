@@ -135,9 +135,12 @@ open class MessageComposerViewModel: ObservableObject {
             }            
         }
     }
+    @Published public var audioRecordingContext: AudioRecordingContext = .initial
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
+    
+    private lazy var audioRecorder: AudioRecording = StreamAudioRecorder()
     
     private var timer: Timer?
     private var cooldownPeriod = 0
@@ -638,5 +641,28 @@ open class MessageComposerViewModel: ObservableObject {
         if (imageAssets?.count ?? 0) > 0 {
             fetchAssets()
         }
+    }
+}
+
+extension MessageComposerViewModel: AudioRecordingDelegate {
+    public func audioRecorder(
+        _ audioRecorder: AudioRecording,
+        didUpdateContext: AudioRecordingContext
+    ) {
+        self.audioRecordingContext = didUpdateContext
+    }
+    
+    public func audioRecorder(
+        _ audioRecorder: AudioRecording,
+        didFinishRecordingAtURL: URL
+    ) {
+        
+    }
+    
+    public func audioRecorder(
+        _ audioRecorder: AudioRecording,
+        didFailWithError: Error
+    ) {
+        
     }
 }
