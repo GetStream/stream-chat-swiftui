@@ -112,10 +112,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .overlay(
                 ZStack {
                     if case let .recording(location) = viewModel.recordingState {
-                        RecordingView(location: location)
-                    } else if viewModel.recordingState == .locked || 
+                        RecordingView(
+                            location: location,
+                            audioRecordingInfo: viewModel.audioRecordingInfo
+                        )
+                    } else if viewModel.recordingState == .locked ||
                                 viewModel.recordingState == .stopped {
-                        LockedView(recordingState: $viewModel.recordingState)
+                        LockedView(viewModel: viewModel)
                     } else {
                         EmptyView()
                     }

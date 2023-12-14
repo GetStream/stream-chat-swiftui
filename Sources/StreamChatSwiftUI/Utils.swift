@@ -30,6 +30,7 @@ public class Utils {
     public var videoDurationFormatter: VideoDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
     public lazy var audioPlayer: AudioPlaying = StreamAudioPlayer()
+    public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils

@@ -52,6 +52,7 @@ struct VoiceRecordingButton: View {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
                                 if longPressed {
                                     viewModel.recordingState = .recording(value.location)
+                                    viewModel.startRecording()
                                 } else {
                                     //TODO: show a message
                                     viewModel.recordingState = .initial

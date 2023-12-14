@@ -10,7 +10,7 @@ import SwiftUI
 /// View model for the `MessageComposerView`.
 open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
-    @Injected(\.utils) private var utils
+    @Injected(\.utils) internal var utils
     
     @Published public var pickerState: AttachmentPickerState = .photos {
         didSet {
@@ -135,12 +135,16 @@ open class MessageComposerViewModel: ObservableObject {
             }            
         }
     }
-    @Published public var audioRecordingContext: AudioRecordingContext = .initial
+    @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
     
-    private lazy var audioRecorder: AudioRecording = StreamAudioRecorder()
+    internal lazy var audioRecorder: AudioRecording = {
+        let audioRecorder = StreamAudioRecorder()
+        audioRecorder.subscribe(self)
+        return audioRecorder
+    }()
     
     private var timer: Timer?
     private var cooldownPeriod = 0
@@ -232,9 +236,24 @@ open class MessageComposerViewModel: ObservableObject {
         
         do {
             var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
-            attachments += try addedFileURLs.map { url in
+            attachments += try addedFileURLs.filter { url in
+                !url.lastPathComponent.contains("aac")
+            }.map { url in
                 _ = url.startAccessingSecurityScopedResource()
                 return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
+            }
+            attachments += try addedFileURLs.filter { url in
+                url.lastPathComponent.contains("aac")
+            }.map { url in
+                _ = url.startAccessingSecurityScopedResource()
+                var localMetadata = AnyAttachmentLocalMetadata()
+                localMetadata.duration = audioRecordingInfo.duration
+                localMetadata.waveformData = audioRecordingInfo.waveform
+                return try AnyAttachmentPayload(
+                    localFileURL: url,
+                    attachmentType: .voiceRecording,
+                    localMetadata: localMetadata
+                )
             }
             
             attachments += addedCustomAttachments.map { attachment in
@@ -641,28 +660,5 @@ open class MessageComposerViewModel: ObservableObject {
         if (imageAssets?.count ?? 0) > 0 {
             fetchAssets()
         }
-    }
-}
-
-extension MessageComposerViewModel: AudioRecordingDelegate {
-    public func audioRecorder(
-        _ audioRecorder: AudioRecording,
-        didUpdateContext: AudioRecordingContext
-    ) {
-        self.audioRecordingContext = didUpdateContext
-    }
-    
-    public func audioRecorder(
-        _ audioRecorder: AudioRecording,
-        didFinishRecordingAtURL: URL
-    ) {
-        
-    }
-    
-    public func audioRecorder(
-        _ audioRecorder: AudioRecording,
-        didFailWithError: Error
-    ) {
-        
     }
 }

@@ -8,8 +8,10 @@ import SwiftUI
 struct RecordingView: View {
     
     @Injected(\.colors) var colors
+    @Injected(\.utils) var utils
     
     var location: CGPoint
+    var audioRecordingInfo: AudioRecordingInfo
     
     private let initialLockOffset: CGFloat = -70
     
@@ -17,7 +19,7 @@ struct RecordingView: View {
         HStack {
             Image(systemName: "mic")
                 .foregroundColor(.red)
-            Text("00:00")
+            Text(utils.videoDurationFormatter.format(audioRecordingInfo.duration) ?? "")
                 .font(.caption)
                 .foregroundColor(Color(colors.textLowEmphasis))
             
