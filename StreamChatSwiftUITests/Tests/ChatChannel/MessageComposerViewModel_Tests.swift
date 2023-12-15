@@ -577,21 +577,63 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         try! FileManager.default.removeItem(at: url)
     }
     
+    // MARK: - Recording
+    
+    func test_messageComposer_discardRecording() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording(.zero)
+        
+        // When
+        viewModel.discardRecording()
+        
+        // Then
+        XCTAssert(viewModel.recordingState == .initial)
+        XCTAssert(viewModel.audioRecordingInfo == .initial)
+    }
+    
+    func test_messageComposer_confirmStoppedRecording() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .stopped
+        viewModel.pendingAudioRecording = AddedVoiceRecording(
+            url: .localYodaImage,
+            duration: 1,
+            waveform: [0, 1]
+        )
+        
+        // When
+        viewModel.confirmRecording()
+        
+        // Then
+        XCTAssert(viewModel.recordingState == .initial)
+        XCTAssert(viewModel.audioRecordingInfo == .initial)
+        XCTAssert(viewModel.addedVoiceRecordings.count == 1)
+        XCTAssert(viewModel.pendingAudioRecording == nil)
+    }
+    
+    func test_messageComposer_previewRecording() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording(.zero)
+        
+        // When
+        viewModel.previewRecording()
+        
+        // Then
+        XCTAssert(viewModel.recordingState == .stopped)
+    }
+    
     // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {
-        let channelController = makeChannelController()
-        let viewModel = MessageComposerViewModel(
-            channelController: channelController,
-            messageController: nil
-        )
-        return viewModel
+        MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
     }
     
     private func makeChannelController(
         messages: [ChatMessage] = []
     ) -> ChatChannelController_Mock {
-        ChatChannelTestHelpers.makeChannelController(
+        MessageComposerTestUtils.makeChannelController(
             chatClient: chatClient,
             messages: messages
         )
@@ -606,5 +648,26 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     private func writeMockData(for url: URL) {
         let data = UIImage(systemName: "checkmark")?.pngData()
         try? data?.write(to: url)
+    }
+}
+
+class MessageComposerTestUtils {
+    static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
+        let channelController = makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        return viewModel
+    }
+    
+    static func makeChannelController(
+        chatClient: ChatClient,
+        messages: [ChatMessage] = []
+    ) -> ChatChannelController_Mock {
+        ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient,
+            messages: messages
+        )
     }
 }

@@ -58,6 +58,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in }
         )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: defaultScreenSize.width, height: 100)
 
         // Then
@@ -74,6 +75,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             cooldownDuration: 0,
             onTap: {}
         )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: 40, height: 40)
 
         // Then
@@ -90,6 +92,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             cooldownDuration: 15,
             onTap: {}
         )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: 40, height: 40)
 
         // Then
