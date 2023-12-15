@@ -26,9 +26,12 @@ struct RecordingView: View {
             
             Spacer()
             
-            Text("Slide to cancel <")
-                .foregroundColor(Color(colors.textLowEmphasis))
-                .opacity(opacityForSlideToCancel)
+            HStack {
+                Text("Slide to cancel")
+                Image(systemName: "chevron.left")
+            }
+            .foregroundColor(Color(colors.textLowEmphasis))
+            .opacity(opacityForSlideToCancel)
             
             Spacer()
             

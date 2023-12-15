@@ -109,7 +109,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .padding(.all, 8)
-            .opacity(viewModel.recordingState == .initial ? 1 : 0)
+            .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
                     if case let .recording(location) = viewModel.recordingState {
@@ -123,12 +123,20 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                                 viewModel.recordingState == .stopped {
                         LockedView(viewModel: viewModel)
                             .frame(height: 80)
+                    } else if viewModel.recordingState == .showingTip {
+                        Text("Hold to record, release to send")
+                            .font(.caption)
+                            .bold()
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity)
+                            .background(Color(colors.background6))
+                            .offset(y: -composerHeight + 12)
                     } else {
                         EmptyView()
                     }
-                }                
+                }
             )
-            .frame(height: viewModel.recordingState == .initial ? nil : 80)
+            .frame(height: viewModel.recordingState.showsComposer ? nil : 80)
 
             if viewModel.sendInChannelShown {
                 factory.makeSendInChannelView(

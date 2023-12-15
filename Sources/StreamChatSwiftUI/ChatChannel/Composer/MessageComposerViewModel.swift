@@ -135,9 +135,15 @@ open class MessageComposerViewModel: ObservableObject {
                 if location.y < RecordingConstants.lockMaxDistance {
                     recordingState = .locked
                 } else if location.x < RecordingConstants.cancelMaxDistance {
+                    audioRecordingInfo = .initial
                     recordingState = .initial
+                    stopRecording()
                 }
-            }            
+            } else if recordingState == .showingTip {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: { [weak self] in
+                    self?.recordingState = .initial
+                })
+            }
         }
     }
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial

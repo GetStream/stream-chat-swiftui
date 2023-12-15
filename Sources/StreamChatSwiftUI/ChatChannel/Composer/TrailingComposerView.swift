@@ -40,6 +40,7 @@ struct VoiceRecordingButton: View {
     @ObservedObject var viewModel: MessageComposerViewModel
     
     @State private var longPressed = false
+    @State private var longPressStarted: Date?
 
     var body: some View {
         Image(systemName: "mic")
@@ -48,14 +49,12 @@ struct VoiceRecordingButton: View {
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         if !longPressed {
+                            longPressStarted = Date()
                             longPressed = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
                                 if longPressed {
                                     viewModel.recordingState = .recording(value.location)
                                     viewModel.startRecording()
-                                } else {
-                                    //TODO: show a message
-                                    viewModel.recordingState = .initial
                                 }
                             })
                         } else {
@@ -64,6 +63,13 @@ struct VoiceRecordingButton: View {
                     }
                     .onEnded { _ in
                         longPressed = false
+                        if let longPressStarted, Date().timeIntervalSince(longPressStarted) <= 1 {
+                            if viewModel.recordingState != .showingTip {
+                                viewModel.recordingState = .showingTip                                
+                            }
+                            self.longPressStarted = nil
+                            return
+                        }
                         if viewModel.recordingState != .locked {
                             viewModel.stopRecording()
                         }
