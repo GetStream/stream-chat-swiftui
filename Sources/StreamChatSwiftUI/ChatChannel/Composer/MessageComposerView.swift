@@ -81,6 +81,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     shouldScroll: viewModel.inputComposerShouldScroll,
                     removeAttachmentWithId: viewModel.removeAttachment(with:)
                 )
+                .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
                     Alert(
                         title: Text(L10n.Attachment.MaxSize.title),
@@ -119,11 +120,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     } else if viewModel.recordingState == .locked ||
                                 viewModel.recordingState == .stopped {
                         LockedView(viewModel: viewModel)
+                            .frame(height: 80)
                     } else {
                         EmptyView()
                     }
                 }                
             )
+            .frame(height: viewModel.recordingState == .initial ? nil : 80)
 
             if viewModel.sendInChannelShown {
                 factory.makeSendInChannelView(
@@ -211,6 +214,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View {
 
+    @EnvironmentObject var viewModel: MessageComposerViewModel
+    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
@@ -308,6 +313,15 @@ public struct ComposerInputView<Factory: ViewFactory>: View {
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .padding(.trailing, 8)
+            }
+            
+            if !viewModel.addedVoiceRecordings.isEmpty {
+                AddedVoiceRecordingsView(
+                    addedVoiceRecordings: viewModel.addedVoiceRecordings,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+                .padding(.top, 8)
             }
 
             if !addedCustomAttachments.isEmpty {

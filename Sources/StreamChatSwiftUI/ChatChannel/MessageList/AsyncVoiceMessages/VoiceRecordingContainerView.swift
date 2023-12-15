@@ -39,7 +39,11 @@ public struct VoiceRecordingContainerView: View {
             ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
                 VoiceRecordingView(
                     handler: handler,
-                    attachment: attachment,
+                    addedVoiceRecording:  AddedVoiceRecording(
+                        url: attachment.payload.voiceRecordingURL,
+                        duration: attachment.payload.duration ?? 0,
+                        waveform: attachment.payload.waveformData ?? []
+                    ),
                     index: index(for: attachment)
                 )
             }
@@ -71,7 +75,7 @@ struct VoiceRecordingView: View {
     @State var isPlaying: Bool = false
     @ObservedObject var handler: VoiceRecordingHandler
     
-    let attachment: ChatMessageVoiceRecordingAttachment
+    let addedVoiceRecording: AddedVoiceRecording
     let index: Int
     
     private var player: AudioPlaying {
@@ -98,7 +102,7 @@ struct VoiceRecordingView: View {
             VStack(alignment: .leading) {
                 Text(
                     utils.audioRecordingNameFormatter.title(
-                        forItemAtURL: attachment.voiceRecordingURL,
+                        forItemAtURL: addedVoiceRecording.url,
                         index: index
                     )
                 )
@@ -106,19 +110,17 @@ struct VoiceRecordingView: View {
                 .lineLimit(1)
                 
                 HStack {
-                    if let duration = attachment.duration {
-                        Text(utils.videoDurationFormatter.format(duration) ?? "")
-                            .font(.caption)
-                            .foregroundColor(Color(colors.textLowEmphasis))
-                    }
+                    Text(utils.videoDurationFormatter.format(addedVoiceRecording.duration) ?? "")
+                        .font(.caption)
+                        .foregroundColor(Color(colors.textLowEmphasis))
                     WaveformViewSwiftUI(
                         audioContext: handler.context,
-                        attachment: attachment.payload,
+                        addedVoiceRecording: addedVoiceRecording,
                         onSliderChanged: { timeInterval in
-                            if handler.context.assetLocation == attachment.voiceRecordingURL {
+                            if handler.context.assetLocation == addedVoiceRecording.url {
                                 player.seek(to: timeInterval)
                             } else {
-                                player.loadAsset(from: attachment.voiceRecordingURL)
+                                player.loadAsset(from: addedVoiceRecording.url)
                                 player.seek(to: timeInterval)
                             }
                         },
@@ -139,7 +141,7 @@ struct VoiceRecordingView: View {
                 .frame(width: 32)
         }
         .onReceive(handler.$context, perform: { value in
-            guard value.assetLocation == attachment.voiceRecordingURL else { return }
+            guard value.assetLocation == addedVoiceRecording.url else { return }
             if value.state == .stopped || value.state == .paused {
                 isPlaying = false
             } else if value.state == .playing {
@@ -152,7 +154,7 @@ struct VoiceRecordingView: View {
         if isPlaying {
             player.pause()
         } else {
-            player.loadAsset(from: attachment.voiceRecordingURL)
+            player.loadAsset(from: addedVoiceRecording.url)
         }
         isPlaying.toggle()
     }

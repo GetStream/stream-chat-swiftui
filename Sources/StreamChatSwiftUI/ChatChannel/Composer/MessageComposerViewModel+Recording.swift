@@ -32,11 +32,31 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
     
     public func audioRecorder(
         _ audioRecorder: AudioRecording,
-        didFinishRecordingAtURL: URL
+        didFinishRecordingAtURL location: URL
     ) {
         //TODO: handle this better
-        addedFileURLs.append(didFinishRecordingAtURL)
-        recordingState = .initial
+        audioAnalysisFactory?.waveformVisualisation(
+            fromAudioURL: location,
+            for: waveformTargetSamples,
+            completionHandler: { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let waveform):
+                    DispatchQueue.main.async {
+                        let recording = AddedVoiceRecording(
+                            url: location,
+                            duration: self.audioRecordingInfo.duration,
+                            waveform: waveform
+                        )
+                        self.addedVoiceRecordings.append(recording)
+                        self.audioRecordingInfo = .initial
+                        self.recordingState = .initial
+                    }
+                case .failure(let error):
+                    log.error(error)
+                }
+        })
+
     }
     
     public func audioRecorder(

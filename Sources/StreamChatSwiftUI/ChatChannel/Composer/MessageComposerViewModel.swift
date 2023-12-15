@@ -69,6 +69,11 @@ open class MessageComposerViewModel: ObservableObject {
             checkPickerSelectionState()
         }
     }
+    @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
+        didSet {
+            checkPickerSelectionState()
+        }
+    }
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
@@ -139,12 +144,17 @@ open class MessageComposerViewModel: ObservableObject {
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
+    public var waveformTargetSamples: Int = 100
     
     internal lazy var audioRecorder: AudioRecording = {
         let audioRecorder = StreamAudioRecorder()
         audioRecorder.subscribe(self)
         return audioRecorder
     }()
+    
+    internal lazy var audioAnalysisFactory: AudioAnalysisEngine? = try? .init(
+        assetPropertiesLoader: StreamAssetPropertyLoader()
+    )
     
     private var timer: Timer?
     private var cooldownPeriod = 0
@@ -236,21 +246,17 @@ open class MessageComposerViewModel: ObservableObject {
         
         do {
             var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
-            attachments += try addedFileURLs.filter { url in
-                !url.lastPathComponent.contains("aac")
-            }.map { url in
+            attachments += try addedFileURLs.map { url in
                 _ = url.startAccessingSecurityScopedResource()
                 return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
             }
-            attachments += try addedFileURLs.filter { url in
-                url.lastPathComponent.contains("aac")
-            }.map { url in
-                _ = url.startAccessingSecurityScopedResource()
+            attachments += try addedVoiceRecordings.map { recording in
+                _ = recording.url.startAccessingSecurityScopedResource()
                 var localMetadata = AnyAttachmentLocalMetadata()
-                localMetadata.duration = audioRecordingInfo.duration
-                localMetadata.waveformData = audioRecordingInfo.waveform
+                localMetadata.duration = recording.duration
+                localMetadata.waveformData = recording.waveform
                 return try AnyAttachmentPayload(
-                    localFileURL: url,
+                    localFileURL: recording.url,
                     attachmentType: .voiceRecording,
                     localMetadata: localMetadata
                 )
@@ -380,7 +386,17 @@ open class MessageComposerViewModel: ObservableObject {
                     urls.append(added)
                 }
             }
-            addedFileURLs = urls
+            if addedFileURLs.count == urls.count {
+                var addedRecordings = [AddedVoiceRecording]()
+                for added in addedVoiceRecordings {
+                    if added.url != url {
+                        addedRecordings.append(added)
+                    }
+                }
+                addedVoiceRecordings = addedRecordings
+            } else {
+                addedFileURLs = urls
+            }
         } else {
             var images = [AddedAsset]()
             for image in addedAssets {

@@ -140,7 +140,7 @@ open class WaveformView: UIView {
 
 struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
-    var attachment: VoiceRecordingAttachmentPayload
+    var addedVoiceRecording: AddedVoiceRecording
     var onSliderChanged: (TimeInterval) -> ()
     var onSliderTapped: () -> ()
     
@@ -157,19 +157,19 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     }
     
     private func updateContent(for view: WaveformView) {
-        if let audioContext, attachment.voiceRecordingURL == audioContext.assetLocation {
+        if let audioContext, addedVoiceRecording.url == audioContext.assetLocation {
             view.content = .init(
                 isRecording: false,
                 duration: audioContext.duration,
                 currentTime: audioContext.currentTime,
-                waveform: attachment.waveformData ?? []
+                waveform: addedVoiceRecording.waveform
             )
         } else {
             view.content = .init(
                 isRecording: false,
-                duration: attachment.duration ?? 0,
+                duration: addedVoiceRecording.duration,
                 currentTime: 0,
-                waveform: attachment.waveformData ?? []
+                waveform: addedVoiceRecording.waveform
             )
         }
     }
