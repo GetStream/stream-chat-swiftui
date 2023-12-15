@@ -116,7 +116,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         RecordingView(
                             location: location,
                             audioRecordingInfo: viewModel.audioRecordingInfo
-                        )
+                        ) {
+                            viewModel.stopRecording()
+                        }
                     } else if viewModel.recordingState == .locked ||
                                 viewModel.recordingState == .stopped {
                         LockedView(viewModel: viewModel)

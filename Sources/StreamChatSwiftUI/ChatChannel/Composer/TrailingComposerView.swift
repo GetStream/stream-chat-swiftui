@@ -17,7 +17,7 @@ public struct TrailingComposerView: View {
     public var body: some View {
         Group {
             if viewModel.cooldownDuration == 0 {
-                HStack {
+                HStack(spacing: 16) {
                     SendMessageButton(
                         enabled: viewModel.sendButtonEnabled,
                         onTap: onTap
@@ -64,6 +64,9 @@ struct VoiceRecordingButton: View {
                     }
                     .onEnded { _ in
                         longPressed = false
+                        if viewModel.recordingState != .locked {
+                            viewModel.stopRecording()
+                        }
                     }
             )
     }

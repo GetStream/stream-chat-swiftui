@@ -145,6 +145,7 @@ open class MessageComposerViewModel: ObservableObject {
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
     public var waveformTargetSamples: Int = 100
+    public internal(set) var pendingAudioRecording: AddedVoiceRecording?
     
     internal lazy var audioRecorder: AudioRecording = {
         let audioRecorder = StreamAudioRecorder()
@@ -321,7 +322,8 @@ open class MessageComposerViewModel: ObservableObject {
         return !addedAssets.isEmpty ||
             !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
             !addedFileURLs.isEmpty ||
-            !addedCustomAttachments.isEmpty
+            !addedCustomAttachments.isEmpty ||
+            !addedVoiceRecordings.isEmpty
     }
     
     public var sendInChannelShown: Bool {

@@ -12,6 +12,7 @@ struct RecordingView: View {
     
     var location: CGPoint
     var audioRecordingInfo: AudioRecordingInfo
+    var onMicTap: () -> ()
     
     private let initialLockOffset: CGFloat = -70
     
@@ -31,8 +32,12 @@ struct RecordingView: View {
             
             Spacer()
             
-            Image(systemName: "mic")
-                .foregroundColor(.blue)
+            Button {
+                onMicTap()
+            } label: {
+                Image(systemName: "mic")
+                
+            }
         }
         .padding(.all, 12)
         .overlay(

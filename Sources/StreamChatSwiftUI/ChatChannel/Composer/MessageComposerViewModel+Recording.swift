@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct AudioRecordingInfo {
+public struct AudioRecordingInfo: Equatable {
     public var waveform: [Float]
     public var duration: TimeInterval
     
@@ -34,7 +34,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         _ audioRecorder: AudioRecording,
         didFinishRecordingAtURL location: URL
     ) {
-        //TODO: handle this better
+        if audioRecordingInfo == .initial { return }
         audioAnalysisFactory?.waveformVisualisation(
             fromAudioURL: location,
             for: waveformTargetSamples,
@@ -48,12 +48,17 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                             duration: self.audioRecordingInfo.duration,
                             waveform: waveform
                         )
-                        self.addedVoiceRecordings.append(recording)
-                        self.audioRecordingInfo = .initial
-                        self.recordingState = .initial
+                        if self.recordingState == .stopped {
+                            self.pendingAudioRecording = recording
+                        } else {
+                            self.addedVoiceRecordings.append(recording)
+                            self.recordingState = .initial
+                            self.audioRecordingInfo = .initial
+                        }
                     }
                 case .failure(let error):
                     log.error(error)
+                    self.recordingState = .initial
                 }
         })
 
@@ -61,9 +66,10 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
     
     public func audioRecorder(
         _ audioRecorder: AudioRecording,
-        didFailWithError: Error
+        didFailWithError error: Error
     ) {
-        
+        log.error(error)
+        recordingState = .initial
     }
 }
 
