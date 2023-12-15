@@ -568,6 +568,7 @@ open class MessageComposerViewModel: ObservableObject {
         text = ""
         addedAssets = []
         addedFileURLs = []
+        addedVoiceRecordings = []
         addedCustomAttachments = []
         composerCommand = nil
         mentionedUsers = Set<ChatUser>()
