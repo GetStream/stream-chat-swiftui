@@ -20,14 +20,12 @@ struct RecordingView: View {
         HStack {
             Image(systemName: "mic")
                 .foregroundColor(.red)
-            Text(utils.videoDurationFormatter.format(audioRecordingInfo.duration) ?? "")
-                .font(.caption)
-                .foregroundColor(Color(colors.textLowEmphasis))
+            RecordingDurationView(duration: audioRecordingInfo.duration)
             
             Spacer()
             
             HStack {
-                Text("Slide to cancel")
+                Text(L10n.Composer.Recording.slideToCancel)
                 Image(systemName: "chevron.left")
             }
             .foregroundColor(Color(colors.textLowEmphasis))

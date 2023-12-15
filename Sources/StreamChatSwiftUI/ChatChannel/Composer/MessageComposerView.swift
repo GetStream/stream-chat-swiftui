@@ -124,12 +124,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         LockedView(viewModel: viewModel)
                             .frame(height: 80)
                     } else if viewModel.recordingState == .showingTip {
-                        Text("Hold to record, release to send")
-                            .font(.caption)
-                            .bold()
-                            .padding(.vertical, 8)
-                            .frame(maxWidth: .infinity)
-                            .background(Color(colors.background6))
+                        RecordingTipView()
                             .offset(y: -composerHeight + 12)
                     } else {
                         EmptyView()

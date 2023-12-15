@@ -202,6 +202,12 @@ internal enum L10n {
       /// Video
       internal static var video: String { L10n.tr("Localizable", "composer.quoted.video") }
     }
+    internal enum Recording {
+      /// Slide to cancel
+      internal static var slideToCancel: String { L10n.tr("Localizable", "composer.recording.slide-to-cancel") }
+      /// Hold to record, release to send
+      internal static var tip: String { L10n.tr("Localizable", "composer.recording.tip") }
+    }
     internal enum Suggestions {
       internal enum Commands {
         /// Instant Commands

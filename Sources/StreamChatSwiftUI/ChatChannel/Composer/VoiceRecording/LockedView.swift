@@ -31,9 +31,7 @@ struct LockedView: View {
                         Image(systemName: isPlaying ? "pause" : "play")
                     }
                 }
-                Text(utils.videoDurationFormatter.format(viewModel.audioRecordingInfo.duration) ?? "")
-                    .font(.caption)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                RecordingDurationView(duration: viewModel.audioRecordingInfo.duration)
                 RecordingWaveform(
                     duration: viewModel.audioRecordingInfo.duration,
                     currentTime: viewModel.recordingState == .stopped ?
@@ -47,9 +45,9 @@ struct LockedView: View {
 
             HStack {
                 Button {
-                    viewModel.recordingState = .initial
-                    viewModel.audioRecordingInfo = .initial
-                    viewModel.stopRecording()
+                    withAnimation {
+                        viewModel.discardRecording()
+                    }
                 } label: {
                     Image(systemName: "trash")
                 }
@@ -58,8 +56,9 @@ struct LockedView: View {
                 
                 if viewModel.recordingState == .locked {
                     Button {
-                        viewModel.recordingState = .stopped
-                        viewModel.stopRecording()
+                        withAnimation {
+                            viewModel.previewRecording()
+                        }
                     } label: {
                         Image(systemName: "stop.circle")
                             .foregroundColor(.red)
@@ -69,15 +68,8 @@ struct LockedView: View {
                 }
                 
                 Button {
-                    if viewModel.recordingState == .stopped {
-                        if let pending = viewModel.pendingAudioRecording {
-                            viewModel.addedVoiceRecordings.append(pending)
-                            viewModel.pendingAudioRecording = nil
-                            viewModel.audioRecordingInfo = .initial
-                            viewModel.recordingState = .initial
-                        }
-                    } else {
-                        viewModel.stopRecording()
+                    withAnimation {
+                        viewModel.confirmRecording()
                     }
                 } label: {
                     Image(systemName: "checkmark.circle.fill")
@@ -89,13 +81,7 @@ struct LockedView: View {
         .offset(y: -20)
         .overlay(
             viewModel.recordingState == .locked ? TopRightView {
-                Image(systemName: "lock")
-                    .padding(.all, 8)
-                    .background(Color(colors.background6))
-                    .foregroundColor(.blue)
-                    .clipShape(Circle())
-                    .offset(y: -66)
-                    .padding(.all, 4)
+                LockedRecordIndicator()
             }
             : nil
         )
@@ -118,5 +104,19 @@ struct LockedView: View {
             player.loadAsset(from: url)
         }
         isPlaying.toggle()
+    }
+}
+
+struct LockedRecordIndicator: View {
+    @Injected(\.colors) var colors
+    
+    var body: some View {
+        Image(systemName: "lock")
+            .padding(.all, 8)
+            .background(Color(colors.background6))
+            .foregroundColor(.blue)
+            .clipShape(Circle())
+            .offset(y: -66)
+            .padding(.all, 4)
     }
 }

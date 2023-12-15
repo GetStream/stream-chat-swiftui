@@ -96,3 +96,29 @@ extension MessageComposerViewModel {
         audioRecorder.pauseRecording()
     }
 }
+
+extension MessageComposerViewModel {
+    public func discardRecording() {
+        recordingState = .initial
+        audioRecordingInfo = .initial
+        stopRecording()
+    }
+    
+    public func confirmRecording() {
+        if recordingState == .stopped {
+            if let pending = pendingAudioRecording {
+                addedVoiceRecordings.append(pending)
+                pendingAudioRecording = nil
+                audioRecordingInfo = .initial
+                recordingState = .initial
+            }
+        } else {
+            stopRecording()
+        }
+    }
+    
+    public func previewRecording() {
+        recordingState = .stopped
+        stopRecording()
+    }
+}

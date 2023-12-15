@@ -110,9 +110,7 @@ struct VoiceRecordingView: View {
                 .lineLimit(1)
                 
                 HStack {
-                    Text(utils.videoDurationFormatter.format(addedVoiceRecording.duration) ?? "")
-                        .font(.caption)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                    RecordingDurationView(duration: addedVoiceRecording.duration)
                     WaveformViewSwiftUI(
                         audioContext: handler.context,
                         addedVoiceRecording: addedVoiceRecording,

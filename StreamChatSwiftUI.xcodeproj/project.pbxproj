@@ -392,6 +392,8 @@
 		84CC3734290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CC3733290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift */; };
 		84D419BA28EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D419B928EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift */; };
 		84D6B55A27DF6EC7009C6D07 /* LoadingView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */; };
+		84D6E4F62B2CA4E300D0056C /* RecordingTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6E4F52B2CA4E300D0056C /* RecordingTipView.swift */; };
+		84D6E4F82B2CA61000D0056C /* RecordingDurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6E4F72B2CA61000D0056C /* RecordingDurationView.swift */; };
 		84D77B58289D3CF800C241CE /* MessageListViewAvatars_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */; };
 		84DA1C282837B73D000E4B6A /* MessageListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA1C272837B73D000E4B6A /* MessageListPage.swift */; };
 		84DEC8DB27609FA200172876 /* MoreChannelActionsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */; };
@@ -931,6 +933,8 @@
 		84CC3733290B0C2900689B73 /* ChatMessageControllerSUI_Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageControllerSUI_Mock.swift; sourceTree = "<group>"; };
 		84D419B928EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageBubbles_Tests.swift; sourceTree = "<group>"; };
 		84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView_Tests.swift; sourceTree = "<group>"; };
+		84D6E4F52B2CA4E300D0056C /* RecordingTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingTipView.swift; sourceTree = "<group>"; };
+		84D6E4F72B2CA61000D0056C /* RecordingDurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingDurationView.swift; sourceTree = "<group>"; };
 		84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewAvatars_Tests.swift; sourceTree = "<group>"; };
 		84DA1C272837B73D000E4B6A /* MessageListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListPage.swift; sourceTree = "<group>"; };
 		84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreChannelActionsView_Tests.swift; sourceTree = "<group>"; };
@@ -1997,6 +2001,8 @@
 				84EADEBA2B28BAE40046B50C /* RecordingWaveform.swift */,
 				84EADEC22B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift */,
 				84EADEC42B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift */,
+				84D6E4F52B2CA4E300D0056C /* RecordingTipView.swift */,
+				84D6E4F72B2CA61000D0056C /* RecordingDurationView.swift */,
 			);
 			path = VoiceRecording;
 			sourceTree = "<group>";
@@ -2514,6 +2520,7 @@
 				8465FDAB2746A95700AF091E /* StringExtensions.swift in Sources */,
 				8465FDA52746A95700AF091E /* Modifiers.swift in Sources */,
 				8465FDBB2746A95700AF091E /* LoadingView.swift in Sources */,
+				84D6E4F62B2CA4E300D0056C /* RecordingTipView.swift in Sources */,
 				846608E3278C303800D3D7B3 /* TypingIndicatorView.swift in Sources */,
 				84A1CACF2816BCF00046595A /* AddUsersView.swift in Sources */,
 				82D64BF02AD7E5B700C5C79E /* DataLoading.swift in Sources */,
@@ -2598,6 +2605,7 @@
 				841B64CA2775BBC10016FF3B /* Errors.swift in Sources */,
 				8465FD7A2746A95700AF091E /* VideoPlayerView.swift in Sources */,
 				82D64BFC2AD7E5B700C5C79E /* ImageDecompression.swift in Sources */,
+				84D6E4F82B2CA61000D0056C /* RecordingDurationView.swift in Sources */,
 				82D64BFA2AD7E5B700C5C79E /* ImageProcessors+Anonymous.swift in Sources */,
 				82D64C102AD7E5B700C5C79E /* ImageDecoders+Default.swift in Sources */,
 				84289BE5280720E700282ABE /* PinnedMessagesView.swift in Sources */,
