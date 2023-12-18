@@ -410,6 +410,13 @@ public protocol ViewFactory: AnyObject {
     ) -> EmojiTextViewType
     
     associatedtype VoiceRecordingViewType: View
+    /// Creates a view that displays voice recordings.
+    /// - Parameters:
+    ///   - message: the message that will be displayed.
+    ///   - isFirst: whether it is first in the group (latest creation date).
+    ///   - availableWidth: the available width for the view.
+    ///   - scrolledId: Identifier for the message that should be scrolled to.
+    ///  - Returns: view shown in the voice recording slot.
     func makeVoiceRecordingView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -582,6 +589,30 @@ public protocol ViewFactory: AnyObject {
         cooldownDuration: Int,
         onTap: @escaping () -> Void
     ) -> TrailingComposerViewType
+    
+    associatedtype ComposerRecordingViewType: View
+    /// Creates a view shown when the composer is recording a voice message.
+    /// - Parameters:
+    ///  - viewModel: the composer view model.
+    ///  - gestureLocation: the current gesture location point.
+    /// - Returns: view shown when the composer is recording.
+    func makeComposerRecordingView(
+        viewModel: MessageComposerViewModel,
+        gestureLocation: CGPoint
+    ) -> ComposerRecordingViewType
+    
+    associatedtype ComposerRecordingLockedViewType: View
+    /// Creates a view shown when a voice recording is locked.
+    ///  - Parameter viewModel: the composer view model.
+    ///  - Returns: view shown in the locked recording slot.
+    func makeComposerRecordingLockedView(
+        viewModel: MessageComposerViewModel
+    ) -> ComposerRecordingLockedViewType
+    
+    associatedtype ComposerRecordingTipViewType: View
+    /// Creates a view shown when a recording tip is displayed.
+    /// - Returns: view shown in the recording tip slot.
+    func makeComposerRecordingTipView() -> ComposerRecordingTipViewType
 
     associatedtype ComposerViewModifier: ViewModifier
     /// Creates the composer view modifier, that's applied to the whole composer view.

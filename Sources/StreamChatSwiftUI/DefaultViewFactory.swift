@@ -576,6 +576,25 @@ extension ViewFactory {
         TrailingComposerView(onTap: onTap)
     }
     
+    public func makeComposerRecordingView(
+        viewModel: MessageComposerViewModel,
+        gestureLocation: CGPoint
+    ) -> some View {
+        RecordingView(location: gestureLocation, audioRecordingInfo: viewModel.audioRecordingInfo) {
+            viewModel.stopRecording()
+        }
+    }
+    
+    public func makeComposerRecordingLockedView(
+        viewModel: MessageComposerViewModel
+    ) -> some View {
+        LockedView(viewModel: viewModel)
+    }
+    
+    public func makeComposerRecordingTipView() -> some View {
+        RecordingTipView()
+    }
+    
     public func makeComposerViewModifier() -> some ViewModifier {
         EmptyViewModifier()
     }

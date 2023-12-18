@@ -113,18 +113,16 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .overlay(
                 ZStack {
                     if case let .recording(location) = viewModel.recordingState {
-                        RecordingView(
-                            location: location,
-                            audioRecordingInfo: viewModel.audioRecordingInfo
-                        ) {
-                            viewModel.stopRecording()
-                        }
+                        factory.makeComposerRecordingView(
+                            viewModel: viewModel,
+                            gestureLocation: location
+                        )
                     } else if viewModel.recordingState == .locked ||
                                 viewModel.recordingState == .stopped {
-                        LockedView(viewModel: viewModel)
+                        factory.makeComposerRecordingLockedView(viewModel: viewModel)
                             .frame(height: 80)
                     } else if viewModel.recordingState == .showingTip {
-                        RecordingTipView()
+                        factory.makeComposerRecordingTipView()
                             .offset(y: -composerHeight + 12)
                     } else {
                         EmptyView()
