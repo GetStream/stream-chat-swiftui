@@ -100,13 +100,7 @@ struct VoiceRecordingView: View {
                 Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                     .padding(.all, 8)
                     .foregroundColor(.primary)
-                    .overlay(
-                        Circle()
-                            .stroke(
-                                Color(colors.innerBorder),
-                                lineWidth: 0.5
-                            )
-                    )
+                    .modifier(ShadowViewModifier(firstRadius: 2, firstY: 4))
             })
             
             VStack(alignment: .leading, spacing: 4) {
@@ -140,9 +134,7 @@ struct VoiceRecordingView: View {
                     Spacer()
                 }
             }
-            
-            Spacer()
-            
+                        
             if isPlaying {
                 Button(action: {
                     if rate == .normal {
@@ -157,20 +149,15 @@ struct VoiceRecordingView: View {
                     Text(rateTitle)
                         .font(.caption)
                         .padding(.all, 8)
+                        .padding(.horizontal, 2)
                         .foregroundColor(.primary)
-                        .overlay(
-                            Circle()
-                                .stroke(
-                                    Color(colors.innerBorder),
-                                    lineWidth: 0.5
-                                )
-                        )
+                        .modifier(ShadowViewModifier(firstRadius: 2, firstY: 4))
                 })
             } else {
                 Image(uiImage: images.fileAac)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 32)
+                    .frame(height: 36)
             }
         }
         .onReceive(handler.$context, perform: { value in
