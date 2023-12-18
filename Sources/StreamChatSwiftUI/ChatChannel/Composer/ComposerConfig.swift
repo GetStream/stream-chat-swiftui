@@ -8,6 +8,7 @@ import SwiftUI
 /// Config for customizing the composer.
 public struct ComposerConfig {
 
+    public var isVoiceRecordingEnabled: Bool
     public var inputViewMinHeight: CGFloat
     public var inputViewMaxHeight: CGFloat
     public var inputViewCornerRadius: CGFloat
@@ -19,6 +20,7 @@ public struct ComposerConfig {
     public var attachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload]
 
     public init(
+        isVoiceRecordingEnabled: Bool = false,
         inputViewMinHeight: CGFloat = 38,
         inputViewMaxHeight: CGFloat = 76,
         inputViewCornerRadius: CGFloat = 20,
@@ -39,6 +41,7 @@ public struct ComposerConfig {
         self.attachmentPayloadConverter = attachmentPayloadConverter
         self.gallerySupportedTypes = gallerySupportedTypes
         self.inputPaddingsConfig = inputPaddingsConfig
+        self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
     }
     
     public static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { message in

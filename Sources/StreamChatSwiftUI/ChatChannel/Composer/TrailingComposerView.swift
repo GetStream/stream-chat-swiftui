@@ -6,6 +6,8 @@ import StreamChat
 import SwiftUI
 
 public struct TrailingComposerView: View {
+    
+    @Injected(\.utils) private var utils
         
     @EnvironmentObject var viewModel: MessageComposerViewModel
     var onTap: () -> ()
@@ -22,7 +24,9 @@ public struct TrailingComposerView: View {
                         enabled: viewModel.sendButtonEnabled,
                         onTap: onTap
                     )
-                    VoiceRecordingButton(viewModel: viewModel)
+                    if utils.composerConfig.isVoiceRecordingEnabled {
+                        VoiceRecordingButton(viewModel: viewModel)
+                    }
                 }
                 .padding(.bottom, 8)
             } else {
