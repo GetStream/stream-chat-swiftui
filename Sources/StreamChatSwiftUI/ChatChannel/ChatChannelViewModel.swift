@@ -690,6 +690,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messageCachingUtils.clearCache()
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
+            utils.audioPlayer.seek(to: 0)
+            utils.audioPlayer.updateRate(.normal)
+            utils.audioPlayer.stop()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
             if !channelDataSource.hasLoadedAllNextMessages {
                 channelDataSource.loadFirstPage { _ in }

@@ -73,6 +73,7 @@ struct VoiceRecordingView: View {
     @Injected(\.images) var images
     
     @State var isPlaying: Bool = false
+    @State var rate: AudioPlaybackRate = .normal
     @ObservedObject var handler: VoiceRecordingHandler
     
     let addedVoiceRecording: AddedVoiceRecording
@@ -80,6 +81,15 @@ struct VoiceRecordingView: View {
     
     private var player: AudioPlaying {
         utils.audioPlayer
+    }
+    
+    private var rateTitle: String {
+        switch rate {
+        case .half:
+            "x0.5"
+        default:
+            "x\(Int(rate.rawValue))"
+        }
     }
     
     var body: some View {
@@ -99,7 +109,7 @@ struct VoiceRecordingView: View {
                     )
             })
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(
                     utils.audioRecordingNameFormatter.title(
                         forItemAtURL: addedVoiceRecording.url,
@@ -133,10 +143,35 @@ struct VoiceRecordingView: View {
             
             Spacer()
             
-            Image(uiImage: images.fileAac)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 32)
+            if isPlaying {
+                Button(action: {
+                    if rate == .normal {
+                        rate = .double
+                    } else if rate == .double {
+                        rate = .half
+                    } else {
+                        rate = .normal
+                    }
+                    player.updateRate(rate)
+                }, label: {
+                    Text(rateTitle)
+                        .font(.caption)
+                        .padding(.all, 8)
+                        .foregroundColor(.primary)
+                        .overlay(
+                            Circle()
+                                .stroke(
+                                    Color(colors.innerBorder),
+                                    lineWidth: 0.5
+                                )
+                        )
+                })
+            } else {
+                Image(uiImage: images.fileAac)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32)
+            }
         }
         .onReceive(handler.$context, perform: { value in
             guard value.assetLocation == addedVoiceRecording.url else { return }

@@ -14,6 +14,7 @@ struct RecordingDurationView: View {
     var body: some View {
         Text(utils.videoDurationFormatter.format(duration) ?? "")
             .font(.caption)
+            .fontWeight(.semibold)
             .foregroundColor(Color(colors.textLowEmphasis))
     }
 }
