@@ -394,6 +394,8 @@
 		84D6B55A27DF6EC7009C6D07 /* LoadingView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */; };
 		84D6E4F62B2CA4E300D0056C /* RecordingTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6E4F52B2CA4E300D0056C /* RecordingTipView.swift */; };
 		84D6E4F82B2CA61000D0056C /* RecordingDurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6E4F72B2CA61000D0056C /* RecordingDurationView.swift */; };
+		84D6E52A2B3077A500D0056C /* VideoDurationFormatter_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6E5292B3077A500D0056C /* VideoDurationFormatter_Tests.swift */; };
+		84D6E52C2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6E52B2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift */; };
 		84D77B58289D3CF800C241CE /* MessageListViewAvatars_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */; };
 		84DA1C282837B73D000E4B6A /* MessageListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA1C272837B73D000E4B6A /* MessageListPage.swift */; };
 		84DEC8DB27609FA200172876 /* MoreChannelActionsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */; };
@@ -935,6 +937,8 @@
 		84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView_Tests.swift; sourceTree = "<group>"; };
 		84D6E4F52B2CA4E300D0056C /* RecordingTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingTipView.swift; sourceTree = "<group>"; };
 		84D6E4F72B2CA61000D0056C /* RecordingDurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingDurationView.swift; sourceTree = "<group>"; };
+		84D6E5292B3077A500D0056C /* VideoDurationFormatter_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDurationFormatter_Tests.swift; sourceTree = "<group>"; };
+		84D6E52B2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecordingNameFormatter_Tests.swift; sourceTree = "<group>"; };
 		84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewAvatars_Tests.swift; sourceTree = "<group>"; };
 		84DA1C272837B73D000E4B6A /* MessageListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListPage.swift; sourceTree = "<group>"; };
 		84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreChannelActionsView_Tests.swift; sourceTree = "<group>"; };
@@ -1964,6 +1968,8 @@
 				84E1D8272976CCAF00060491 /* SortReactions_Tests.swift */,
 				849988AF2AE6BE4800CC95C9 /* PaddingsConfig_Tests.swift */,
 				84779C762AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift */,
+				84D6E5292B3077A500D0056C /* VideoDurationFormatter_Tests.swift */,
+				84D6E52B2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2668,6 +2674,7 @@
 				846B15F42817E7630017F7A1 /* ChatChannelInfoViewModel_Tests.swift in Sources */,
 				91B79FD9284E7E9C005B6E4F /* ChatUserNamer_Tests.swift in Sources */,
 				84C94D58275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift in Sources */,
+				84D6E52C2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift in Sources */,
 				84D77B58289D3CF800C241CE /* MessageListViewAvatars_Tests.swift in Sources */,
 				84C94D60275A45D2007FE2B9 /* ViewFactory_Tests.swift in Sources */,
 				84C94D442757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift in Sources */,
@@ -2698,6 +2705,7 @@
 				84E0478B284A444E00BAFA17 /* VirtualTimer.swift in Sources */,
 				84E6EC25279AEE9F0017207B /* StreamChatTestCase.swift in Sources */,
 				842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */,
+				84D6E52A2B3077A500D0056C /* VideoDurationFormatter_Tests.swift in Sources */,
 				84B2B5CE281961E200479CEE /* ChannelInfoMockUtils.swift in Sources */,
 				8492975427B1725B00A8EEB0 /* MessageComposerView_Tests.swift in Sources */,
 				84BB4C50284122E600CBE004 /* ChatChannelViewDateOverlay_Tests.swift in Sources */,
