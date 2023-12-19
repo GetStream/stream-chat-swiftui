@@ -37,6 +37,9 @@ public protocol MessageTypeResolving {
     /// - Returns: bool, whether the condition is satisfied.
     func hasFileAttachment(message: ChatMessage) -> Bool
     
+    /// Checks whether the message has voice recording.
+    /// - Parameter message: the message being checked.
+    /// - Returns: bool, whether the condition is satisfied.
     func hasVoiceRecording(message: ChatMessage) -> Bool
 
     /// Checks whether the message has custom attachment.

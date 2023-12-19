@@ -686,13 +686,18 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         scrolledId = messages.first?.messageId
     }
     
+    private func cleanupAudioPlayer() {
+        utils.audioPlayer.seek(to: 0)
+        utils.audioPlayer.updateRate(.normal)
+        utils.audioPlayer.stop()
+        utils._audioPlayer = nil
+    }
+    
     deinit {
         messageCachingUtils.clearCache()
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
-            utils.audioPlayer.seek(to: 0)
-            utils.audioPlayer.updateRate(.normal)
-            utils.audioPlayer.stop()
+            cleanupAudioPlayer()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
             if !channelDataSource.hasLoadedAllNextMessages {
                 channelDataSource.loadFirstPage { _ in }

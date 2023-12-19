@@ -624,6 +624,55 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.recordingState == .stopped)
     }
     
+    func test_messageComposer_lockRecording() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // Then
+        viewModel.recordingState = .recording(.init(x: 0, y: RecordingConstants.lockMaxDistance - 1))
+        
+        // Then
+        XCTAssert(viewModel.recordingState == .locked)
+    }
+    
+    func test_messageComposer_cancelRecording() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // Then
+        viewModel.recordingState = .recording(.init(x: RecordingConstants.cancelMaxDistance - 1, y: 0))
+        
+        // Then
+        XCTAssert(viewModel.recordingState == .initial)
+        XCTAssert(viewModel.recordingState.showsComposer == true)
+    }
+    
+    func test_messageComposer_updateRecordingInfo() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        
+        // Then
+        let context = AudioRecordingContext(state: .recording, duration: 2.0, averagePower: 1.0)
+        viewModel.audioRecorder(viewModel.audioRecorder, didUpdateContext: context)
+        
+        // Then
+        XCTAssert(viewModel.audioRecordingInfo.duration == 2.0)
+        XCTAssert(viewModel.audioRecordingInfo.waveform == [1.0])
+    }
+    
+    func test_messageComposer_recordingError() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording(.zero)
+        
+        // Then
+        viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
+        
+        // Then
+        XCTAssert(viewModel.recordingState == .initial)
+        XCTAssert(viewModel.audioRecordingInfo == .initial)
+    }
+    
     // MARK: - private
     
     private func makeComposerViewModel() -> MessageComposerViewModel {

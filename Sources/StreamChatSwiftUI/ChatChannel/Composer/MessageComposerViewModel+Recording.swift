@@ -6,7 +6,9 @@ import StreamChat
 import SwiftUI
 
 public struct AudioRecordingInfo: Equatable {
+    /// The waveform of the recording.
     public var waveform: [Float]
+    /// The duration of the recording.
     public var duration: TimeInterval
     
     mutating func update(with entry: Float, duration: TimeInterval) {
@@ -70,6 +72,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
     ) {
         log.error(error)
         recordingState = .initial
+        audioRecordingInfo = .initial
     }
 }
 

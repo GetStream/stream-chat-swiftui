@@ -29,12 +29,22 @@ public class Utils {
     public var channelHeaderLoader: ChannelHeaderLoader
     public var videoDurationFormatter: VideoDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
-    public lazy var audioPlayer: AudioPlaying = StreamAudioPlayer()
+    public var audioPlayer: AudioPlaying {
+        if let _audioPlayer {
+            return _audioPlayer
+        } else {
+            let player = StreamAudioPlayer()
+            self._audioPlayer = player
+            return player
+        }
+    }
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
+    
+    internal var _audioPlayer: AudioPlaying?
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
