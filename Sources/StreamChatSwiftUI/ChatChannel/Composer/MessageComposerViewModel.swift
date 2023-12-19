@@ -69,6 +69,7 @@ open class MessageComposerViewModel: ObservableObject {
             checkPickerSelectionState()
         }
     }
+    
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
             checkPickerSelectionState()
@@ -140,12 +141,13 @@ open class MessageComposerViewModel: ObservableObject {
                     stopRecording()
                 }
             } else if recordingState == .showingTip {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.recordingState = .initial
-                })
+                }
             }
         }
     }
+    
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     
     public let channelController: ChatChannelController

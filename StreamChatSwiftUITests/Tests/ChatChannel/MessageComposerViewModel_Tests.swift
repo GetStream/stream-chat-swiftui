@@ -700,7 +700,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     }
 }
 
-class MessageComposerTestUtils {
+enum MessageComposerTestUtils {
     static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
         let channelController = makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(

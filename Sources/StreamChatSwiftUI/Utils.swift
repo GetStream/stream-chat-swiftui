@@ -34,10 +34,11 @@ public class Utils {
             return _audioPlayer
         } else {
             let player = StreamAudioPlayer()
-            self._audioPlayer = player
+            _audioPlayer = player
             return player
         }
     }
+    
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     var messageCachingUtils = MessageCachingUtils()

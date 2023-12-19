@@ -3,17 +3,17 @@
 //
 
 import Foundation
-import UIKit
-import SwiftUI
 import StreamChat
+import SwiftUI
+import UIKit
 
 /// Displays an interactive waveform visualisation of an audio file.
 open class WaveformView: UIView {
     
     @Injected(\.images) var images
     
-    var onSliderChanged: ((TimeInterval) -> ())?
-    var onSliderTapped: (() -> ())?
+    var onSliderChanged: ((TimeInterval) -> Void)?
+    var onSliderTapped: (() -> Void)?
     
     public struct Content: Equatable {
         /// When set to `true` the waveform will be updating with the data live (scrolling to the trailing side
@@ -141,8 +141,8 @@ open class WaveformView: UIView {
 struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var addedVoiceRecording: AddedVoiceRecording
-    var onSliderChanged: (TimeInterval) -> ()
-    var onSliderTapped: () -> ()
+    var onSliderChanged: (TimeInterval) -> Void
+    var onSliderTapped: () -> Void
     
     func makeUIView(context: Context) -> WaveformView {
         let view = WaveformView()

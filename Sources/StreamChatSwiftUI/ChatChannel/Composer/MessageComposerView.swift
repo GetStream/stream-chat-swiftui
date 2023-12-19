@@ -117,8 +117,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                             viewModel: viewModel,
                             gestureLocation: location
                         )
-                    } else if viewModel.recordingState == .locked ||
-                                viewModel.recordingState == .stopped {
+                    } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
                         factory.makeComposerRecordingLockedView(viewModel: viewModel)
                             .frame(height: 80)
                     } else if viewModel.recordingState == .showingTip {

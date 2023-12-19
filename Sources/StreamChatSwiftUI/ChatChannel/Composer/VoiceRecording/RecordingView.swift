@@ -12,7 +12,7 @@ struct RecordingView: View {
     
     var location: CGPoint
     var audioRecordingInfo: AudioRecordingInfo
-    var onMicTap: () -> ()
+    var onMicTap: () -> Void
     
     private let initialLockOffset: CGFloat = -70
     
@@ -37,7 +37,6 @@ struct RecordingView: View {
                 onMicTap()
             } label: {
                 Image(systemName: "mic")
-                
             }
         }
         .padding(.all, 12)

@@ -10,9 +10,9 @@ public struct TrailingComposerView: View {
     @Injected(\.utils) private var utils
         
     @EnvironmentObject var viewModel: MessageComposerViewModel
-    var onTap: () -> ()
+    var onTap: () -> Void
     
-    public init(onTap: @escaping () -> ()) {
+    public init(onTap: @escaping () -> Void) {
         self.onTap = onTap
     }
     
@@ -40,6 +40,7 @@ public struct TrailingComposerView: View {
 
 struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
+    @Injected(\.utils) var utils
     
     @ObservedObject var viewModel: MessageComposerViewModel
     
@@ -55,13 +56,13 @@ struct VoiceRecordingButton: View {
                         if !longPressed {
                             longPressStarted = Date()
                             longPressed = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 if longPressed {
                                     viewModel.recordingState = .recording(value.location)
                                     viewModel.startRecording()
                                 }
-                            })
-                        } else {
+                            }
+                        } else if case .recording = viewModel.recordingState {
                             viewModel.recordingState = .recording(value.location)
                         }
                     }
@@ -69,7 +70,7 @@ struct VoiceRecordingButton: View {
                         longPressed = false
                         if let longPressStarted, Date().timeIntervalSince(longPressStarted) <= 1 {
                             if viewModel.recordingState != .showingTip {
-                                viewModel.recordingState = .showingTip                                
+                                viewModel.recordingState = .showingTip
                             }
                             self.longPressStarted = nil
                             return

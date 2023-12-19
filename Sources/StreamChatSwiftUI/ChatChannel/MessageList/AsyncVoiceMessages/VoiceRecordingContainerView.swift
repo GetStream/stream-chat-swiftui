@@ -39,7 +39,7 @@ public struct VoiceRecordingContainerView: View {
             ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
                 VoiceRecordingView(
                     handler: handler,
-                    addedVoiceRecording:  AddedVoiceRecording(
+                    addedVoiceRecording: AddedVoiceRecording(
                         url: attachment.payload.voiceRecordingURL,
                         duration: attachment.payload.duration ?? 0,
                         waveform: attachment.payload.waveformData ?? []
@@ -176,7 +176,6 @@ struct VoiceRecordingView: View {
         } else {
             player.loadAsset(from: addedVoiceRecording.url)
         }
-        isPlaying.toggle()
     }
 }
 

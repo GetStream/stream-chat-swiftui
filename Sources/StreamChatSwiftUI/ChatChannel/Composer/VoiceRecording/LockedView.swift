@@ -79,11 +79,12 @@ struct LockedView: View {
         }
         .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
         .offset(y: -20)
+        .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
         .overlay(
             viewModel.recordingState == .locked ? TopRightView {
                 LockedRecordIndicator()
             }
-            : nil
+                : nil
         )
         .onAppear {
             player.subscribe(voiceRecordingHandler)

@@ -43,7 +43,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
             completionHandler: { [weak self] result in
                 guard let self else { return }
                 switch result {
-                case .success(let waveform):
+                case let .success(waveform):
                     DispatchQueue.main.async {
                         let recording = AddedVoiceRecording(
                             url: location,
@@ -58,12 +58,12 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                             self.audioRecordingInfo = .initial
                         }
                     }
-                case .failure(let error):
+                case let .failure(error):
                     log.error(error)
                     self.recordingState = .initial
                 }
-        })
-
+            }
+        )
     }
     
     public func audioRecorder(
@@ -95,7 +95,7 @@ extension MessageComposerViewModel {
     }
     
     public func pauseRecording() {
-        utils.audioSessionFeedbackGenerator.feedbackForPause()        
+        utils.audioSessionFeedbackGenerator.feedbackForPause()
         audioRecorder.pauseRecording()
     }
 }

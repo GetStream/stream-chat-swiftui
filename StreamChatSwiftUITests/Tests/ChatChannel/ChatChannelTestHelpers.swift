@@ -195,7 +195,7 @@ class ChatChannelTestHelpers {
             voiceRecordingRemoteURL: .localYodaImage,
             file: try! .init(url: .localYodaImage),
             duration: 5,
-            waveformData: [0,0.1,0.5,1],
+            waveformData: [0, 0.1, 0.5, 1],
             extraData: nil
         )
         let attachment = ChatMessageVoiceRecordingAttachment(
