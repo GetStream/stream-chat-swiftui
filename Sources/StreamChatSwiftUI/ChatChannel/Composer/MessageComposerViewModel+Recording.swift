@@ -52,6 +52,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                         )
                         if self.recordingState == .stopped {
                             self.pendingAudioRecording = recording
+                            self.audioRecordingInfo.waveform = waveform
                         } else {
                             self.addedVoiceRecordings.append(recording)
                             self.recordingState = .initial

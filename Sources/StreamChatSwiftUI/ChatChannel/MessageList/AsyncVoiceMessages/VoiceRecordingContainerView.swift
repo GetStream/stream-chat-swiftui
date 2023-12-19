@@ -73,6 +73,7 @@ struct VoiceRecordingView: View {
     @Injected(\.images) var images
     
     @State var isPlaying: Bool = false
+    @State var loading: Bool = false
     @State var rate: AudioPlaybackRate = .normal
     @ObservedObject var handler: VoiceRecordingHandler
     
@@ -102,6 +103,10 @@ struct VoiceRecordingView: View {
                     .foregroundColor(.primary)
                     .modifier(ShadowViewModifier(firstRadius: 2, firstY: 4))
             })
+            .opacity(loading ? 0 : 1)
+            .overlay(
+                loading ? ProgressView() : nil
+            )
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(
@@ -162,6 +167,12 @@ struct VoiceRecordingView: View {
         }
         .onReceive(handler.$context, perform: { value in
             guard value.assetLocation == addedVoiceRecording.url else { return }
+            if value.state == .loading {
+                loading = true
+                return
+            } else if loading {
+                loading = false
+            }
             if value.state == .stopped || value.state == .paused {
                 isPlaying = false
             } else if value.state == .playing {
