@@ -20,6 +20,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
+    
+    private let recordingViewHeight: CGFloat = 80
 
     public init(
         viewFactory: Factory,
@@ -119,7 +121,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         )
                     } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
                         factory.makeComposerRecordingLockedView(viewModel: viewModel)
-                            .frame(height: 80)
+                            .frame(height: recordingViewHeight)
                     } else if viewModel.recordingState == .showingTip {
                         factory.makeComposerRecordingTipView()
                             .offset(y: -composerHeight + 12)
@@ -128,7 +130,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     }
                 }
             )
-            .frame(height: viewModel.recordingState.showsComposer ? nil : 80)
+            .frame(height: viewModel.recordingState.showsComposer ? nil : recordingViewHeight)
 
             if viewModel.sendInChannelShown {
                 factory.makeSendInChannelView(

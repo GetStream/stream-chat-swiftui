@@ -169,7 +169,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onTap: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
-        .frame(width: 40, height: 40)
+        .frame(width: 100, height: 40)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -186,7 +186,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onTap: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
-        .frame(width: 40, height: 40)
+        .frame(width: 100, height: 40)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
