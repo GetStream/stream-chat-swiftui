@@ -86,9 +86,9 @@ struct VoiceRecordingView: View {
     private var rateTitle: String {
         switch rate {
         case .half:
-            "x0.5"
+            return "x0.5"
         default:
-            "x\(Int(rate.rawValue))"
+            return "x\(Int(rate.rawValue))"
         }
     }
     
