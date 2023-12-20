@@ -64,6 +64,10 @@ public class Images {
     public var gallery: UIImage = UIImage(systemName: "square.grid.3x3.fill")!
     public var photoDefault: UIImage = UIImage(systemName: "photo")!
     public var pin: UIImage = loadImageSafely(with: "icn_pin")
+    
+    // MARK: - Recording
+    
+    public var sliderThumb: UIImage = loadImageSafely(with: "sliderThumb")
 
     // MARK: - Reactions
 
@@ -115,6 +119,7 @@ public class Images {
     // MARK: - FileIcons
 
     public var file7z: UIImage = loadImageSafely(with: "7z")
+    public var fileAac: UIImage = loadImageSafely(with: "aac")
     public var fileCsv: UIImage = loadImageSafely(with: "csv")
     public var fileDoc: UIImage = loadImageSafely(with: "doc")
     public var fileDocx: UIImage = loadImageSafely(with: "docx")

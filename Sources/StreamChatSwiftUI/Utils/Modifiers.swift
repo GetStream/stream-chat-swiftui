@@ -9,11 +9,13 @@ struct ShadowViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
 
     var cornerRadius: CGFloat = 16
-
+    var firstRadius: CGFloat = 10
+    var firstY: CGFloat = 12
+    
     func body(content: Content) -> some View {
         content.background(Color(UIColor.systemBackground))
             .cornerRadius(cornerRadius)
-            .modifier(ShadowModifier())
+            .modifier(ShadowModifier(firstRadius: firstRadius, firstY: firstY))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(
@@ -26,11 +28,20 @@ struct ShadowViewModifier: ViewModifier {
 
 /// Modifier for adding shadow to a view.
 public struct ShadowModifier: ViewModifier {
-    public init() {}
+    public init(
+        firstRadius: CGFloat = 10,
+        firstY: CGFloat = 12
+    ) {
+        self.firstRadius = firstRadius
+        self.firstY = firstY
+    }
+    
+    var firstRadius: CGFloat
+    var firstY: CGFloat
 
     public func body(content: Content) -> some View {
         content
-            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 12)
+            .shadow(color: Color.black.opacity(0.1), radius: firstRadius, x: 0, y: firstY)
             .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
     }
 }

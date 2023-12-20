@@ -86,6 +86,15 @@ public struct MessageView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 }
+                
+                if messageTypeResolver.hasVoiceRecording(message: message) {
+                    factory.makeVoiceRecordingView(
+                        for: message,
+                        isFirst: isFirst,
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
+                    )
+                }
             } else {
                 if message.shouldRenderAsJumbomoji {
                     factory.makeEmojiTextView(

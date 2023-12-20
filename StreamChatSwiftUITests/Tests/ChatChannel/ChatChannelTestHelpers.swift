@@ -17,7 +17,7 @@ class ChatChannelTestHelpers {
         let config = ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")])
         let channel = chatChannel ?? ChatChannel.mockDMChannel(config: config, lastActiveWatchers: lastActiveWatchers)
         let channelQuery = ChannelQuery(cid: channel.cid)
-        let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId!]))
+        let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId ?? .unique]))
         let channelController = ChatChannelController_Mock.mock(
             channelQuery: channelQuery,
             channelListQuery: channelListQuery,
@@ -29,7 +29,7 @@ class ChatChannelTestHelpers {
                 id: .unique,
                 cid: channel.cid,
                 text: "Test message",
-                author: ChatUser.mock(id: chatClient.currentUserId!)
+                author: ChatUser.mock(id: chatClient.currentUserId ?? .unique)
             )
             channelMessages = [message]
         }
@@ -187,5 +187,24 @@ class ChatChannelTestHelpers {
         ]
 
         return fileAttachments
+    }
+    
+    static var voiceRecordingAttachments: [AnyChatMessageAttachment] {
+        let payload = VoiceRecordingAttachmentPayload(
+            title: "Recording",
+            voiceRecordingRemoteURL: .localYodaImage,
+            file: try! .init(url: .localYodaImage),
+            duration: 5,
+            waveformData: [0, 0.1, 0.5, 1],
+            extraData: nil
+        )
+        let attachment = ChatMessageVoiceRecordingAttachment(
+            id: .unique,
+            type: .voiceRecording,
+            payload: payload,
+            uploadingState: nil
+        ).asAnyAttachment
+        
+        return [attachment]
     }
 }

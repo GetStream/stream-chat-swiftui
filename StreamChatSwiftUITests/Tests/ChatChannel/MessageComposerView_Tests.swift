@@ -15,7 +15,8 @@ class MessageComposerView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
         let utils = Utils(
-            messageListConfig: MessageListConfig(becomesFirstResponderOnOpen: true)
+            messageListConfig: MessageListConfig(becomesFirstResponderOnOpen: true),
+            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
@@ -39,6 +40,98 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_messageComposerView_recording() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.recordingState = .recording(.zero)
+        
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: defaultScreenSize.width, height: 250)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageComposerView_recordingLocked() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.recordingState = .locked
+        
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: defaultScreenSize.width, height: 120)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageComposerView_recordingTip() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.recordingState = .showingTip
+        
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: defaultScreenSize.width, height: 120)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageComposerView_addedVoiceRecording() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: .localYodaImage, duration: 5, waveform: [0, 0.1, 0.6, 1.0])]
+        
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: defaultScreenSize.width, height: 200)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_composerInputView_slowMode() {
         // Given
@@ -58,6 +151,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in }
         )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: defaultScreenSize.width, height: 100)
 
         // Then
@@ -74,7 +168,8 @@ class MessageComposerView_Tests: StreamChatTestCase {
             cooldownDuration: 0,
             onTap: {}
         )
-        .frame(width: 40, height: 40)
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
+        .frame(width: 100, height: 40)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -83,14 +178,17 @@ class MessageComposerView_Tests: StreamChatTestCase {
     func test_trailingComposerView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
-
+        let viewModel = MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
+        viewModel.cooldownDuration = 15
+        
         // When
         let view = factory.makeTrailingComposerView(
             enabled: true,
             cooldownDuration: 15,
             onTap: {}
         )
-        .frame(width: 40, height: 40)
+        .environmentObject(viewModel)
+        .frame(width: 36, height: 36)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))

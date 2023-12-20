@@ -830,6 +830,47 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is EmptyView)
     }
+    
+    func test_viewFactory_makeComposerRecordingView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let controller = ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient
+        )
+        let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
+        
+        // When
+        let view = viewFactory.makeComposerRecordingView(viewModel: viewModel, gestureLocation: .zero)
+        
+        // Then
+        XCTAssert(view is RecordingView)
+    }
+    
+    func test_viewFactory_makeComposerRecordingTipView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeComposerRecordingTipView()
+        
+        // Then
+        XCTAssert(view is RecordingTipView)
+    }
+    
+    func test_viewFactory_makeComposerRecordingLockedView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let controller = ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient
+        )
+        let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
+        
+        // When
+        let view = viewFactory.makeComposerRecordingLockedView(viewModel: viewModel)
+        
+        // Then
+        XCTAssert(view is LockedView)
+    }
 }
 
 extension ChannelAction: Equatable {

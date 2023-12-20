@@ -10,7 +10,7 @@ import SwiftUI
 /// View model for the `MessageComposerView`.
 open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
-    @Injected(\.utils) private var utils
+    @Injected(\.utils) internal var utils
     
     @Published public var pickerState: AttachmentPickerState = .photos {
         didSet {
@@ -69,6 +69,12 @@ open class MessageComposerViewModel: ObservableObject {
             checkPickerSelectionState()
         }
     }
+    
+    @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
+        didSet {
+            checkPickerSelectionState()
+        }
+    }
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
@@ -124,9 +130,40 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
     @Published public var attachmentSizeExceeded: Bool = false
+    @Published public var recordingState: RecordingState = .initial {
+        didSet {
+            if case let .recording(location) = recordingState {
+                if location.y < RecordingConstants.lockMaxDistance {
+                    recordingState = .locked
+                } else if location.x < RecordingConstants.cancelMaxDistance {
+                    audioRecordingInfo = .initial
+                    recordingState = .initial
+                    stopRecording()
+                }
+            } else if recordingState == .showingTip {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.recordingState = .initial
+                }
+            }
+        }
+    }
+    
+    @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
+    public var waveformTargetSamples: Int = 100
+    public internal(set) var pendingAudioRecording: AddedVoiceRecording?
+    
+    internal lazy var audioRecorder: AudioRecording = {
+        let audioRecorder = StreamAudioRecorder()
+        audioRecorder.subscribe(self)
+        return audioRecorder
+    }()
+    
+    internal lazy var audioAnalysisFactory: AudioAnalysisEngine? = try? .init(
+        assetPropertiesLoader: StreamAssetPropertyLoader()
+    )
     
     private var timer: Timer?
     private var cooldownPeriod = 0
@@ -222,6 +259,17 @@ open class MessageComposerViewModel: ObservableObject {
                 _ = url.startAccessingSecurityScopedResource()
                 return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
             }
+            attachments += try addedVoiceRecordings.map { recording in
+                _ = recording.url.startAccessingSecurityScopedResource()
+                var localMetadata = AnyAttachmentLocalMetadata()
+                localMetadata.duration = recording.duration
+                localMetadata.waveformData = recording.waveform
+                return try AnyAttachmentPayload(
+                    localFileURL: recording.url,
+                    attachmentType: .voiceRecording,
+                    localMetadata: localMetadata
+                )
+            }
             
             attachments += addedCustomAttachments.map { attachment in
                 attachment.content
@@ -282,7 +330,8 @@ open class MessageComposerViewModel: ObservableObject {
         return !addedAssets.isEmpty ||
             !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
             !addedFileURLs.isEmpty ||
-            !addedCustomAttachments.isEmpty
+            !addedCustomAttachments.isEmpty ||
+            !addedVoiceRecordings.isEmpty
     }
     
     public var sendInChannelShown: Bool {
@@ -318,6 +367,10 @@ open class MessageComposerViewModel: ObservableObject {
             return true
         }
         
+        if addedVoiceRecordings.count > 2 {
+            return true
+        }
+        
         return false
     }
     
@@ -347,7 +400,17 @@ open class MessageComposerViewModel: ObservableObject {
                     urls.append(added)
                 }
             }
-            addedFileURLs = urls
+            if addedFileURLs.count == urls.count {
+                var addedRecordings = [AddedVoiceRecording]()
+                for added in addedVoiceRecordings {
+                    if added.url != url {
+                        addedRecordings.append(added)
+                    }
+                }
+                addedVoiceRecordings = addedRecordings
+            } else {
+                addedFileURLs = urls
+            }
         } else {
             var images = [AddedAsset]()
             for image in addedAssets {
@@ -511,6 +574,7 @@ open class MessageComposerViewModel: ObservableObject {
         text = ""
         addedAssets = []
         addedFileURLs = []
+        addedVoiceRecordings = []
         addedCustomAttachments = []
         composerCommand = nil
         mentionedUsers = Set<ChatUser>()

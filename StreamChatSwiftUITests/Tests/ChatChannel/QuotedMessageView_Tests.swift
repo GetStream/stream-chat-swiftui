@@ -45,4 +45,22 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_quotedMessageView_voiceAttachmentSnapshot() {
+        // Given
+        let payload = VoiceRecordingAttachmentPayload(
+            title: "Recording",
+            voiceRecordingRemoteURL: .localYodaImage,
+            file: try! .init(url: .localYodaImage),
+            duration: 3,
+            waveformData: [0, 0.3, 0.6, 1],
+            extraData: nil
+        )
+        let view = VoiceRecordingPreview(voiceAttachment: payload)
+            .frame(width: defaultScreenSize.width, height: 120)
+            .padding()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }

@@ -71,3 +71,17 @@ public struct CustomAttachment: Identifiable, Equatable {
         self.content = content
     }
 }
+
+/// Represents an added voice recording.
+public struct AddedVoiceRecording: Identifiable, Equatable {
+    public var id: String {
+        url.absoluteString
+    }
+    
+    /// The URL of the recording.
+    public let url: URL
+    /// The duration of the recording.
+    public let duration: TimeInterval
+    /// The waveform of the recording.
+    public let waveform: [Float]
+}

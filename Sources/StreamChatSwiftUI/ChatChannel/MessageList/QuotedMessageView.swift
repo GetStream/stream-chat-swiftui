@@ -91,6 +91,8 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 ZStack {
                     if messageTypeResolver.hasCustomAttachment(message: quotedMessage) {
                         factory.makeCustomAttachmentQuotedView(for: quotedMessage)
+                    } else if hasVoiceAttachments {
+                        VoiceRecordingPreview(voiceAttachment: quotedMessage.voiceRecordingAttachments[0].payload)
                     } else if !quotedMessage.imageAttachments.isEmpty {
                         LazyLoadingImage(
                             source: quotedMessage.imageAttachments[0].imageURL,
@@ -123,7 +125,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                         .priority(.high)
                     }
                 }
-                .frame(width: attachmentWidth, height: attachmentWidth)
+                .frame(width: hasVoiceAttachments ? nil : attachmentWidth, height: attachmentWidth)
                 .aspectRatio(1, contentMode: .fill)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .allowsHitTesting(false)
@@ -140,7 +142,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             }
         }
         .id(quotedMessage.messageId)
-        .padding(.all, 8)
+        .padding(hasVoiceAttachments ? [.leading, .top, .bottom] : .all, 8)
         .modifier(
             factory.makeMessageViewModifier(
                 for: MessageModifierInfo(
@@ -187,5 +189,41 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         }
 
         return ""
+    }
+    
+    private var hasVoiceAttachments: Bool {
+        !quotedMessage.voiceRecordingAttachments.isEmpty
+    }
+}
+
+struct VoiceRecordingPreview: View {
+    
+    @Injected(\.images) var images
+    @Injected(\.utils) var utils
+    
+    let voiceAttachment: VoiceRecordingAttachmentPayload
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(
+                    utils.audioRecordingNameFormatter.title(
+                        forItemAtURL: voiceAttachment.voiceRecordingURL,
+                        index: 0
+                    )
+                )
+                .bold()
+                .lineLimit(1)
+                
+                RecordingDurationView(duration: voiceAttachment.duration ?? 0)
+            }
+            
+            Spacer()
+            
+            Image(uiImage: images.fileAac)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 36)
+        }
     }
 }

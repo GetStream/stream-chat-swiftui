@@ -573,19 +573,26 @@ extension ViewFactory {
         cooldownDuration: Int,
         onTap: @escaping () -> Void
     ) -> some View {
-        Group {
-            if cooldownDuration == 0 {
-                SendMessageButton(
-                    enabled: enabled,
-                    onTap: onTap
-                )
-                .padding(.bottom, 8)
-            } else {
-                SlowModeView(
-                    cooldownDuration: cooldownDuration
-                )
-            }
+        TrailingComposerView(onTap: onTap)
+    }
+    
+    public func makeComposerRecordingView(
+        viewModel: MessageComposerViewModel,
+        gestureLocation: CGPoint
+    ) -> some View {
+        RecordingView(location: gestureLocation, audioRecordingInfo: viewModel.audioRecordingInfo) {
+            viewModel.stopRecording()
         }
+    }
+    
+    public func makeComposerRecordingLockedView(
+        viewModel: MessageComposerViewModel
+    ) -> some View {
+        LockedView(viewModel: viewModel)
+    }
+    
+    public func makeComposerRecordingTipView() -> some View {
+        RecordingTipView()
     }
     
     public func makeComposerViewModifier() -> some ViewModifier {
@@ -628,6 +635,21 @@ extension ViewFactory {
         )
         .offset(y: isDisplayed ? 0 : popupHeight)
         .animation(.spring())
+    }
+    
+    public func makeVoiceRecordingView(
+        for message: ChatMessage,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
+    ) -> some View {
+        VoiceRecordingContainerView(
+            factory: self,
+            message: message,
+            width: availableWidth,
+            isFirst: isFirst,
+            scrolledId: scrolledId
+        )
     }
     
     public func makeCustomAttachmentView(

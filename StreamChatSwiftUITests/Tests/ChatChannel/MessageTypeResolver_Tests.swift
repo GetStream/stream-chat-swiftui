@@ -146,4 +146,22 @@ class MessageTypeResolver_Tests: XCTestCase {
         // Then
         XCTAssert(hasFileAttachments == true)
     }
+    
+    func test_messageTypeResolver_hasVoiceRecordingAttachment() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Voice attachment",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments
+        )
+        let messageTypeResolver = MessageTypeResolver()
+
+        // When
+        let hasVoiceRecording = messageTypeResolver.hasVoiceRecording(message: message)
+
+        // Then
+        XCTAssert(hasVoiceRecording == true)
+    }
 }

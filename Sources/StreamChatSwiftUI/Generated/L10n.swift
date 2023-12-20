@@ -75,6 +75,8 @@ internal enum L10n {
       internal static var unmute: String { L10n.tr("Localizable", "channel.item.unmute") }
       /// Video
       internal static var video: String { L10n.tr("Localizable", "channel.item.video") }
+      /// Voice Message
+      internal static var voiceMessage: String { L10n.tr("Localizable", "channel.item.voice-message") }
     }
     internal enum Name {
       /// and
@@ -201,6 +203,12 @@ internal enum L10n {
       internal static var photo: String { L10n.tr("Localizable", "composer.quoted.photo") }
       /// Video
       internal static var video: String { L10n.tr("Localizable", "composer.quoted.video") }
+    }
+    internal enum Recording {
+      /// Slide to cancel
+      internal static var slideToCancel: String { L10n.tr("Localizable", "composer.recording.slide-to-cancel") }
+      /// Hold to record, release to send
+      internal static var tip: String { L10n.tr("Localizable", "composer.recording.tip") }
     }
     internal enum Suggestions {
       internal enum Commands {
@@ -396,6 +404,15 @@ internal enum L10n {
       /// Plural format key: "%#@reactions@"
       internal static func numberOfReactions(_ p1: Int) -> String {
         return L10n.tr("Localizable", "reaction.authors.number-of-reactions", p1)
+      }
+    }
+  }
+
+  internal enum Recording {
+    internal enum Presentation {
+      /// Plural format key: "%#@recording@"
+      internal static func name(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "recording.presentation.name", p1)
       }
     }
   }
