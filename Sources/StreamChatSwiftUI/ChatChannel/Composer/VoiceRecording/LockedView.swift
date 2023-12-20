@@ -32,7 +32,10 @@ struct LockedView: View {
                         Image(systemName: isPlaying ? "pause" : "play")
                     }
                 }
-                RecordingDurationView(duration: viewModel.audioRecordingInfo.duration)
+                RecordingDurationView(
+                    duration: showContextTime ?
+                        voiceRecordingHandler.context.currentTime : viewModel.audioRecordingInfo.duration
+                )
                 RecordingWaveform(
                     duration: viewModel.audioRecordingInfo.duration,
                     currentTime: viewModel.recordingState == .stopped ?
@@ -97,6 +100,10 @@ struct LockedView: View {
                 isPlaying = true
             }
         })
+    }
+    
+    private var showContextTime: Bool {
+        voiceRecordingHandler.context.currentTime > 0
     }
     
     private func handlePlayTap() {

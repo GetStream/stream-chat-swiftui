@@ -644,6 +644,7 @@ extension ViewFactory {
         scrolledId: Binding<String?>
     ) -> some View {
         VoiceRecordingContainerView(
+            factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,

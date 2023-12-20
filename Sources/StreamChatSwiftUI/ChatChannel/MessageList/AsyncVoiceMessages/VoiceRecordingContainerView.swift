@@ -5,12 +5,13 @@
 import StreamChat
 import SwiftUI
 
-public struct VoiceRecordingContainerView: View {
+public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
 
     @Injected(\.colors) var colors
     @Injected(\.images) var images
     @Injected(\.utils) var utils
     
+    let factory: Factory
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
@@ -24,11 +25,13 @@ public struct VoiceRecordingContainerView: View {
     }
     
     public init(
+        factory: Factory,
         message: ChatMessage,
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
+        self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
@@ -37,6 +40,15 @@ public struct VoiceRecordingContainerView: View {
     
     public var body: some View {
         VStack {
+            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+                factory.makeQuotedMessageView(
+                    quotedMessage: quotedMessage,
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    isInComposer: false,
+                    scrolledId: $scrolledId
+                )
+            }
+            
             ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
                 VoiceRecordingView(
                     handler: handler,
@@ -138,13 +150,13 @@ struct VoiceRecordingView: View {
                 
                 HStack {
                     RecordingDurationView(
-                        duration: isPlaying ? handler.context.currentTime : addedVoiceRecording.duration
+                        duration: showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration
                     )
                     WaveformViewSwiftUI(
                         audioContext: handler.context,
                         addedVoiceRecording: addedVoiceRecording,
                         onSliderChanged: { timeInterval in
-                            if handler.context.assetLocation == addedVoiceRecording.url {
+                            if isCurrentRecordingActive {
                                 player.seek(to: timeInterval)
                             } else {
                                 player.loadAsset(from: addedVoiceRecording.url)
@@ -199,6 +211,14 @@ struct VoiceRecordingView: View {
                 isPlaying = true
             }
         })
+    }
+    
+    private var showContextDuration: Bool {
+        isCurrentRecordingActive && handler.context.currentTime > 0
+    }
+    
+    private var isCurrentRecordingActive: Bool {
+        handler.context.assetLocation == addedVoiceRecording.url
     }
     
     private func handlePlayTap() {

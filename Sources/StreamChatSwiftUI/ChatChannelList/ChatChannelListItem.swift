@@ -272,7 +272,7 @@ extension ChatChannel {
     /// - Parameter previewMessage: The preview message of the channel.
     /// - Returns: A string representing the message preview text.
     private func attachmentPreviewText(for previewMessage: ChatMessage) -> String? {
-        guard let attachment = previewMessage.allAttachments.first else {
+        guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
             return nil
         }
         let text = previewMessage.textContent ?? previewMessage.text
