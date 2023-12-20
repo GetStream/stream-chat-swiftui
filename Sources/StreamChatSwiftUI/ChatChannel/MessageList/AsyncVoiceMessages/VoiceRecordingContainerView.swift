@@ -17,6 +17,7 @@ public struct VoiceRecordingContainerView: View {
     @Binding var scrolledId: String?
     
     @StateObject var handler = VoiceRecordingHandler()
+    @State var playingIndex: Int?
     
     private var player: AudioPlaying {
         utils.audioPlayer
@@ -53,6 +54,24 @@ public struct VoiceRecordingContainerView: View {
                     .cornerRadius(16)
             }
         }
+        .onReceive(handler.$context, perform: { value in
+            guard message.voiceRecordingAttachments.count > 1 else { return }
+            if value.state == .playing {
+                let index = message.voiceRecordingAttachments.firstIndex { payload in
+                    payload.voiceRecordingURL == value.assetLocation
+                }
+                if index != playingIndex {
+                    playingIndex = index
+                }
+            } else if value.state == .stopped, let playingIndex {
+                if playingIndex < (message.voiceRecordingAttachments.count - 1) {
+                    let next = playingIndex + 1
+                    let nextURL = message.voiceRecordingAttachments[next].voiceRecordingURL
+                    player.loadAsset(from: nextURL)
+                }
+                self.playingIndex = nil
+            }
+        })
         .onAppear {
             player.subscribe(handler)
         }
