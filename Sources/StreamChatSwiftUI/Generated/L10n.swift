@@ -75,6 +75,8 @@ internal enum L10n {
       internal static var unmute: String { L10n.tr("Localizable", "channel.item.unmute") }
       /// Video
       internal static var video: String { L10n.tr("Localizable", "channel.item.video") }
+      /// Voice Message
+      internal static var voiceMessage: String { L10n.tr("Localizable", "channel.item.voice-message") }
     }
     internal enum Name {
       /// and

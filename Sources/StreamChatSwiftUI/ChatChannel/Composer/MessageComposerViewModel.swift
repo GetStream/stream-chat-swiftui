@@ -367,6 +367,10 @@ open class MessageComposerViewModel: ObservableObject {
             return true
         }
         
+        if addedVoiceRecordings.count > 2 {
+            return true
+        }
+        
         return false
     }
     

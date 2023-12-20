@@ -49,7 +49,8 @@ public struct VoiceRecordingContainerView: View {
             }
             if !message.text.isEmpty {
                 AttachmentTextView(message: message)
-                    .frame(width: width)
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(16)
             }
         }
         .onAppear {
@@ -117,7 +118,9 @@ struct VoiceRecordingView: View {
                 .lineLimit(1)
                 
                 HStack {
-                    RecordingDurationView(duration: addedVoiceRecording.duration)
+                    RecordingDurationView(
+                        duration: isPlaying ? handler.context.currentTime : addedVoiceRecording.duration
+                    )
                     WaveformViewSwiftUI(
                         audioContext: handler.context,
                         addedVoiceRecording: addedVoiceRecording,

@@ -294,6 +294,9 @@ extension ChatChannel {
             return "📹 \(text.isEmpty ? defaultVideoText : text)"
         case .giphy:
             return "/giphy"
+        case .voiceRecording:
+            let defaultVoiceMessageText = L10n.Channel.Item.voiceMessage
+            return "🎧 \(text.isEmpty ? defaultVoiceMessageText : text)"
         default:
             return nil
         }
