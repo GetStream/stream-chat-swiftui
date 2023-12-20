@@ -119,6 +119,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                             viewModel: viewModel,
                             gestureLocation: location
                         )
+                        .frame(height: 60)
                     } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
                         factory.makeComposerRecordingLockedView(viewModel: viewModel)
                             .frame(height: recordingViewHeight)

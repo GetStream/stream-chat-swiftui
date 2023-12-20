@@ -29,11 +29,12 @@ public class Utils {
     public var channelHeaderLoader: ChannelHeaderLoader
     public var videoDurationFormatter: VideoDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
+    public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
         if let _audioPlayer {
             return _audioPlayer
         } else {
-            let player = StreamAudioPlayer()
+            let player = audioPlayerBuilder()
             _audioPlayer = player
             return player
         }

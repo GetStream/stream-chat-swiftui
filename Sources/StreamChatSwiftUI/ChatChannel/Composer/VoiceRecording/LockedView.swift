@@ -11,6 +11,7 @@ struct LockedView: View {
     
     @ObservedObject var viewModel: MessageComposerViewModel
     @State var isPlaying = false
+    @State var showLockedIndicator = true
     @StateObject var voiceRecordingHandler = VoiceRecordingHandler()
     
     private var player: AudioPlaying {
@@ -81,10 +82,13 @@ struct LockedView: View {
         .offset(y: -20)
         .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
         .overlay(
-            viewModel.recordingState == .locked ? TopRightView { LockedRecordIndicator() } : nil
+            showLockedIndicator ? TopRightView { LockedRecordIndicator() } : nil
         )
         .onAppear {
             player.subscribe(voiceRecordingHandler)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showLockedIndicator = false
+            }
         }
         .onReceive(voiceRecordingHandler.$context, perform: { value in
             if value.state == .stopped || value.state == .paused {
