@@ -178,15 +178,17 @@ class MessageComposerView_Tests: StreamChatTestCase {
     func test_trailingComposerView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
-
+        let viewModel = MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
+        viewModel.cooldownDuration = 15
+        
         // When
         let view = factory.makeTrailingComposerView(
             enabled: true,
             cooldownDuration: 15,
             onTap: {}
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
-        .frame(width: 100, height: 40)
+        .environmentObject(viewModel)
+        .frame(width: 36, height: 36)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
