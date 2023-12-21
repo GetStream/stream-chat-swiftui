@@ -19,6 +19,6 @@ Pod::Spec.new do |spec|
 
     spec.framework = "Foundation", "UIKit", "SwiftUI"
 
-    spec.dependency "StreamChat", "~> 4.45.0"
+    spec.dependency "StreamChat", "~> 4.46.0"
   end
 
