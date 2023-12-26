@@ -388,7 +388,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         .background(composerInputBackground)
         .overlay(
             RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-                .stroke(Color(keyboardShown ? colors.composerInputHighlightedBorder : colors.innerBorder))
+                .stroke(Color(keyboardShown ? highlightedBorder : colors.innerBorder))
         )
         .clipShape(
             RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
@@ -402,6 +402,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     private var composerInputBackground: Color {
         var colors = colors
         return Color(colors.composerInputBackground)
+    }
+    
+    private var highlightedBorder: UIColor {
+        var colors = colors
+        return colors.composerInputHighlightedBorder
     }
 
     private var shouldAddVerticalPadding: Bool {
