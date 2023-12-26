@@ -21,7 +21,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
 
         let options = PHImageRequestOptions()
         options.version = .current
-        options.deliveryMode = .opportunistic
+        options.deliveryMode = .highQualityFormat
 
         PHImageManager.default().requestImage(
             for: asset,

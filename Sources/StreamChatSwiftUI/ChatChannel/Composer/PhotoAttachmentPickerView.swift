@@ -138,6 +138,8 @@ public struct PhotoAttachmentCell: View {
             }
         )
         .onAppear {
+            self.loading = false
+            
             assetLoader.loadImage(from: asset)
             
             if self.assetURL != nil {
@@ -170,6 +172,7 @@ public struct PhotoAttachmentCell: View {
             if let requestId = requestId {
                 asset.cancelContentEditingInputRequest(requestId)
                 self.requestId = nil
+                loading = false
             }
         }
     }
