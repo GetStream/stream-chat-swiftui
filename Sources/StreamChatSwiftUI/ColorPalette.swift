@@ -84,6 +84,7 @@ public struct ColorPalette {
 
     public lazy var composerPlaceholderColor: UIColor = subtitleText
     public lazy var composerInputBackground: UIColor = background
+    public var composerInputHighlightedBorder: UIColor = .streamInnerBorder
 }
 
 // Those colors are default defined stream constants, which are fallback values if you don't implement your color theme.
