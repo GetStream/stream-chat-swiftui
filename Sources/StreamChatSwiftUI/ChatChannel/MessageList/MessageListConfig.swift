@@ -26,7 +26,8 @@ public struct MessageListConfig {
         scrollingAnchor: UnitPoint = .bottom,
         showNewMessagesSeparator: Bool = true,
         handleTabBarVisibility: Bool = true,
-        messageListAlignment: MessageListAlignment = .standard
+        messageListAlignment: MessageListAlignment = .standard,
+        uniqueReactionsEnabled: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -46,6 +47,7 @@ public struct MessageListConfig {
         self.showNewMessagesSeparator = showNewMessagesSeparator
         self.handleTabBarVisibility = handleTabBarVisibility
         self.messageListAlignment = messageListAlignment
+        self.uniqueReactionsEnabled = uniqueReactionsEnabled
     }
 
     public let messageListType: MessageListType
@@ -66,6 +68,7 @@ public struct MessageListConfig {
     public let showNewMessagesSeparator: Bool
     public let handleTabBarVisibility: Bool
     public let messageListAlignment: MessageListAlignment
+    public let uniqueReactionsEnabled: Bool
 }
 
 /// Contains information about the message paddings.

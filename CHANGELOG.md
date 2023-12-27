@@ -4,7 +4,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Configuration for highlighted composer border color
+- Config for highlighted composer border color
+- Config for enforcing unique reactions
 
 ### 🐞 Fixed
 - Improved loading of gallery images
