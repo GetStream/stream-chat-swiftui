@@ -17,6 +17,77 @@ class DemoAppFactory: ViewFactory {
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
+    
+    func supportedMoreChannelActions(
+        for channel: ChatChannel,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> [ChannelAction] {
+        var actions = ChannelAction.defaultActions(
+            for: channel,
+            chatClient: chatClient,
+            onDismiss: onDismiss,
+            onError: onError
+        )
+        let pinChannel = ChannelAction(
+            title: channel.isPinned ? "Unpin Channel" : "Pin Channel",
+            iconName: "pin.fill",
+            action: { [weak self] in
+                guard let self else { return }
+                let channelController = self.chatClient.channelController(for: channel.cid)
+                let userId = channelController.channel?.membership?.id ?? ""
+                let pinnedKey = ChatChannel.isPinnedBy(keyForUserId: userId)
+                let newState = !channel.isPinned
+                channelController.partialChannelUpdate(extraData: [pinnedKey: .bool(newState)]) { error in
+                    if let error = error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
+                }
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        actions.insert(pinChannel, at: actions.count - 2)
+        return actions
+    }
+    
+    func makeChannelListItem(
+        channel: ChatChannel,
+        channelName: String,
+        avatar: UIImage,
+        onlineIndicatorShown: Bool,
+        disabled: Bool,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        swipedChannelId: Binding<String?>,
+        channelDestination: @escaping (ChannelSelectionInfo) -> ChatChannelView<DemoAppFactory>,
+        onItemTap: @escaping (ChatChannel) -> Void,
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
+    ) -> some View {
+        let listItem = DemoAppChatChannelNavigatableListItem(
+            channel: channel,
+            channelName: channelName,
+            avatar: avatar,
+            onlineIndicatorShown: onlineIndicatorShown,
+            disabled: disabled,
+            selectedChannel: selectedChannel,
+            channelDestination: channelDestination,
+            onItemTap: onItemTap
+        )
+        return ChatChannelSwipeableListItem(
+            factory: self,
+            channelListItem: listItem,
+            swipedChannelId: swipedChannelId,
+            channel: channel,
+            numberOfTrailingItems: channel.ownCapabilities.contains(.deleteChannel) ? 2 : 1,
+            trailingRightButtonTapped: trailingSwipeRightButtonTapped,
+            trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
+            leadingSwipeButtonTapped: leadingSwipeButtonTapped
+        )
+    }
 }
 
 struct CustomChannelDestination: View {
