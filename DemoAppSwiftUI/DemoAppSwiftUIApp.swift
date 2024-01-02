@@ -1,5 +1,5 @@
 //
-// Copyright © 2023 Stream.io Inc. All rights reserved.
+// Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -14,6 +14,8 @@ struct DemoAppSwiftUIApp: App {
 
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
+    
+    @State var channelListController: ChatChannelListController?
 
     var body: some Scene {
         WindowGroup {
@@ -26,17 +28,31 @@ struct DemoAppSwiftUIApp: App {
                 if notificationsHandler.notificationChannelId != nil {
                     ChatChannelListView(
                         viewFactory: DemoAppFactory.shared,
+                        channelListController: channelListController,
                         selectedChannelId: notificationsHandler.notificationChannelId
                     )
                 } else {
                     ChatChannelListView(
-                        viewFactory: DemoAppFactory.shared
+                        viewFactory: DemoAppFactory.shared,
+                        channelListController: channelListController
                     )
                 }
             }
         }
         .onChange(of: appState.userState) { newValue in
             if newValue == .loggedIn {
+                if let currentUserId = chatClient.currentUserId {
+                    let pinnedByKey = ChatChannel.isPinnedBy(keyForUserId: currentUserId)
+                    let channelListQuery = ChannelListQuery(
+                        filter: .containMembers(userIds: [currentUserId]),
+                        sort: [
+                            .init(key: .custom(keyPath: \.isPinned, key: pinnedByKey), isAscending: true),
+                            .init(key: .lastMessageAt),
+                            .init(key: .updatedAt)
+                        ]
+                    )
+                    channelListController = chatClient.channelListController(query: channelListQuery)
+                }
                 notificationsHandler.setupRemoteNotifications()
             }
         }

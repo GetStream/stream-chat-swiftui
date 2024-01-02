@@ -120,6 +120,7 @@
 		8402EAD2282BFC8700CCA696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8402EAD1282BFC8700CCA696 /* AppDelegate.swift */; };
 		8402EAD4282BFCCA00CCA696 /* UserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8402EAD3282BFCCA00CCA696 /* UserCredentials.swift */; };
 		840A3F3828193AB20084E9CC /* ChatChannelInfoView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840A3F3728193AB20084E9CC /* ChatChannelInfoView_Tests.swift */; };
+		8413C4552B4409B600190AF4 /* PinChannelHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413C4542B4409B600190AF4 /* PinChannelHelpers.swift */; };
 		8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */; };
 		8417AAB82ADEC3E300445021 /* BottomReactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8417AAB72ADEC3E300445021 /* BottomReactionsView.swift */; };
 		8417AE902ADED28800445021 /* ReactionsIconProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8417AE8F2ADED28800445021 /* ReactionsIconProvider.swift */; };
@@ -644,6 +645,7 @@
 		8402EAD1282BFC8700CCA696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8402EAD3282BFCCA00CCA696 /* UserCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentials.swift; sourceTree = "<group>"; };
 		840A3F3728193AB20084E9CC /* ChatChannelInfoView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelInfoView_Tests.swift; sourceTree = "<group>"; };
+		8413C4542B4409B600190AF4 /* PinChannelHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinChannelHelpers.swift; sourceTree = "<group>"; };
 		8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView_Tests.swift; sourceTree = "<group>"; };
 		8417AAB72ADEC3E300445021 /* BottomReactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomReactionsView.swift; sourceTree = "<group>"; };
 		8417AE8F2ADED28800445021 /* ReactionsIconProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsIconProvider.swift; sourceTree = "<group>"; };
@@ -1468,6 +1470,7 @@
 				8451617D2AE7B093000A9230 /* AppleMessageComposerView.swift */,
 				8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */,
 				8417AE912ADEDB6400445021 /* UserRepository.swift */,
+				8413C4542B4409B600190AF4 /* PinChannelHelpers.swift */,
 				84EDBC36274FE5CD0057218D /* Localizable.strings */,
 				8465FCCA27468B7500AF091E /* Info.plist */,
 				8465FCC227468B6A00AF091E /* Assets.xcassets */,
@@ -2784,6 +2787,7 @@
 				84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */,
 				8465FCDE274694D200AF091E /* CustomChannelHeader.swift in Sources */,
 				8451617E2AE7B093000A9230 /* AppleMessageComposerView.swift in Sources */,
+				8413C4552B4409B600190AF4 /* PinChannelHelpers.swift in Sources */,
 				84B288D3274D23AF00DD090B /* LoginView.swift in Sources */,
 				84B288D5274D286500DD090B /* LoginViewModel.swift in Sources */,
 				8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */,
