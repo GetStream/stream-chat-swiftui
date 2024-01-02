@@ -29,26 +29,7 @@ class DemoAppFactory: ViewFactory {
             onDismiss: onDismiss,
             onError: onError
         )
-        let pinChannel = ChannelAction(
-            title: channel.isPinned ? "Unpin Channel" : "Pin Channel",
-            iconName: "pin.fill",
-            action: { [weak self] in
-                guard let self else { return }
-                let channelController = self.chatClient.channelController(for: channel.cid)
-                let userId = channelController.channel?.membership?.id ?? ""
-                let pinnedKey = ChatChannel.isPinnedBy(keyForUserId: userId)
-                let newState = !channel.isPinned
-                channelController.partialChannelUpdate(extraData: [pinnedKey: .bool(newState)]) { error in
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onDismiss()
-                    }
-                }
-            },
-            confirmationPopup: nil,
-            isDestructive: false
-        )
+        let pinChannel = pinChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
         actions.insert(pinChannel, at: actions.count - 2)
         return actions
     }
@@ -87,6 +68,34 @@ class DemoAppFactory: ViewFactory {
             trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
         )
+    }
+    
+    private func pinChannelAction(
+        for channel: ChatChannel,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ChannelAction {
+        let pinChannel = ChannelAction(
+            title: channel.isPinned ? "Unpin Channel" : "Pin Channel",
+            iconName: "pin.fill",
+            action: { [weak self] in
+                guard let self else { return }
+                let channelController = self.chatClient.channelController(for: channel.cid)
+                let userId = channelController.channel?.membership?.id ?? ""
+                let pinnedKey = ChatChannel.isPinnedBy(keyForUserId: userId)
+                let newState = !channel.isPinned
+                channelController.partialChannelUpdate(extraData: [pinnedKey: .bool(newState)]) { error in
+                    if let error = error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
+                }
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        return pinChannel
     }
 }
 
