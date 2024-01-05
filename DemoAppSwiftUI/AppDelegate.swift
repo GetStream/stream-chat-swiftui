@@ -53,6 +53,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
          streamChat = StreamChat(chatClient: chatClient, utils: utils)
          */
+        
+        StreamRuntimeCheck._isBackgroundMappingEnabled = true
 
         #if RELEASE
         // We're tracking Crash Reports / Issues from the Demo App to keep improving the SDK
