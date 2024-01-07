@@ -21,7 +21,7 @@ struct WhatsAppChannelHeaderModifier: ChatChannelHeaderViewModifier {
 
 struct WhatsAppChannelHeader: ToolbarContent {
     
-    @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
+    private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
     
     @Injected(\.chatClient) var chatClient
     @Injected(\.utils) var utils

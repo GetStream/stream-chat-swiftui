@@ -64,11 +64,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         #endif
 
-        let utils = Utils(
-            messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList),
-            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
-        )
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+//        let utils = Utils(
+//            messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList),
+//            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
+//        )
+        let chatClient = self.chatClient
+        streamChat = StreamChat(chatClient: chatClient)
         
         let credentials = UnsecureRepository.shared.loadCurrentUser()
         if let credentials, let token = try? Token(rawValue: credentials.token) {

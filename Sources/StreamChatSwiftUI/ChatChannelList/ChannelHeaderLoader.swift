@@ -6,11 +6,7 @@ import Foundation
 import StreamChat
 import UIKit
 
-open class ChannelHeaderLoader: ObservableObject {
-    @Injected(\.images) private var images
-    @Injected(\.utils) private var utils
-    @Injected(\.chatClient) private var chatClient
-
+@Observable open class ChannelHeaderLoader {
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
 
@@ -21,28 +17,18 @@ open class ChannelHeaderLoader: ObservableObject {
     private var scheduledUpdate = false
 
     /// Context provided utils.
-    internal lazy var imageLoader = utils.imageLoader
-    internal lazy var imageCDN = utils.imageCDN
-    internal lazy var channelAvatarsMerger = utils.channelAvatarsMerger
-    internal lazy var channelNamer = utils.channelNamer
+//    internal var imageLoader = InjectedValues[\.utils].imageLoader
+//    internal var imageCDN = InjectedValues[\.utils].imageCDN
+//    internal var channelAvatarsMerger = InjectedValues[\.utils].channelAvatarsMerger
+//    internal var channelNamer = InjectedValues[\.utils].channelNamer
+//
+//    /// Placeholder images.
+//    internal var placeholder1 = InjectedValues[\.images].userAvatarPlaceholder1
+//    internal var placeholder2 = InjectedValues[\.images].userAvatarPlaceholder2
+//    internal var placeholder3 = InjectedValues[\.images].userAvatarPlaceholder3
+//    internal var placeholder4 = InjectedValues[\.images].userAvatarPlaceholder4
 
-    /// Placeholder images.
-    internal lazy var placeholder1 = images.userAvatarPlaceholder1
-    internal lazy var placeholder2 = images.userAvatarPlaceholder2
-    internal lazy var placeholder3 = images.userAvatarPlaceholder3
-    internal lazy var placeholder4 = images.userAvatarPlaceholder4
-
-    var loadedImages = [String: UIImage]() {
-        willSet {
-            if !scheduledUpdate {
-                scheduledUpdate = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                    self?.objectWillChange.send()
-                    self?.scheduledUpdate = false
-                }
-            }
-        }
-    }
+    var loadedImages = [String: UIImage]()
 
     public init() {
         // Public init.
@@ -59,22 +45,22 @@ open class ChannelHeaderLoader: ObservableObject {
 
         if let url = channel.imageURL {
             loadChannelThumbnail(for: channel, from: url)
-            return placeholder4
+            return InjectedValues[\.images].userAvatarPlaceholder4
         }
 
         if channel.isDirectMessageChannel {
             let lastActiveMembers = self.lastActiveMembers(for: channel)
             if let otherMember = lastActiveMembers.first, let url = otherMember.imageURL {
                 loadChannelThumbnail(for: channel, from: url)
-                return placeholder3
+                return InjectedValues[\.images].userAvatarPlaceholder3
             } else {
-                return placeholder4
+                return InjectedValues[\.images].userAvatarPlaceholder4
             }
         } else {
             let activeMembers = lastActiveMembers(for: channel)
 
             if activeMembers.isEmpty {
-                return placeholder4
+                return InjectedValues[\.images].userAvatarPlaceholder4
             }
 
             let urls = activeMembers
@@ -82,10 +68,10 @@ open class ChannelHeaderLoader: ObservableObject {
                 .prefix(maxNumberOfImagesInCombinedAvatar)
 
             if urls.isEmpty {
-                return placeholder3
+                return InjectedValues[\.images].userAvatarPlaceholder3
             } else {
                 loadMergedAvatar(from: channel, urls: Array(urls))
-                return placeholder4
+                return InjectedValues[\.images].userAvatarPlaceholder4
             }
         }
     }
@@ -97,16 +83,16 @@ open class ChannelHeaderLoader: ObservableObject {
             return
         }
 
-        imageLoader.loadImages(
+        InjectedValues[\.utils].imageLoader.loadImages(
             from: urls,
             placeholders: [],
             loadThumbnails: true,
             thumbnailSize: .avatarThumbnailSize,
-            imageCDN: imageCDN
+            imageCDN: InjectedValues[\.utils].imageCDN
         ) { [weak self] images in
             guard let self = self else { return }
             DispatchQueue.global(qos: .userInteractive).async {
-                let image = self.channelAvatarsMerger.createMergedAvatar(from: images)
+                let image = InjectedValues[\.utils].channelAvatarsMerger.createMergedAvatar(from: images)
                 DispatchQueue.main.async {
                     if let image = image {
                         self.loadedImages[channel.cid.rawValue] = image
@@ -126,9 +112,9 @@ open class ChannelHeaderLoader: ObservableObject {
             return
         }
 
-        imageLoader.loadImage(
+        InjectedValues[\.utils].imageLoader.loadImage(
             url: url,
-            imageCDN: imageCDN,
+            imageCDN: InjectedValues[\.utils].imageCDN,
             resize: true,
             preferredSize: .avatarThumbnailSize
         ) { [weak self] result in
@@ -148,6 +134,6 @@ open class ChannelHeaderLoader: ObservableObject {
     private func lastActiveMembers(for channel: ChatChannel) -> [ChatChannelMember] {
         channel.lastActiveMembers
             .sorted { $0.memberCreatedAt < $1.memberCreatedAt }
-            .filter { $0.id != chatClient.currentUserId }
+            .filter { $0.id != InjectedValues[\.chatClient].currentUserId }
     }
 }

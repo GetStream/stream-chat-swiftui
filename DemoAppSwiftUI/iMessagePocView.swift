@@ -11,7 +11,7 @@ struct iMessagePocView: View {
     @Injected(\.colors) var colors
 
     @StateObject var viewModel: iMessageChatChannelListViewModel
-    @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
+    private var channelHeaderLoader = ChannelHeaderLoader()
 
     private var factory = iMessageViewFactory.shared
 
