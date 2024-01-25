@@ -150,7 +150,9 @@ lane :test_ui do |options|
     png_files = git_status(ext: '.png').map { |_, png| png }.flatten
     next if png_files.empty?
 
+    # Discard all files apart from the snapshots
     png_files.each { |png| sh("git add #{png}") || true }
+    sh('git restore .')
 
     create_pr(
       title: '[CI] Snapshots',
