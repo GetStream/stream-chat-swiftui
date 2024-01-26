@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Cleanup of audio session only when voice recording is enabled
 
 # [4.47.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.47.0)
 _January 09, 2024_

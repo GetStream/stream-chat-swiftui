@@ -687,6 +687,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func cleanupAudioPlayer() {
+        guard utils.composerConfig.isVoiceRecordingEnabled else { return }
         utils.audioPlayer.seek(to: 0)
         utils.audioPlayer.updateRate(.normal)
         utils.audioPlayer.stop()
