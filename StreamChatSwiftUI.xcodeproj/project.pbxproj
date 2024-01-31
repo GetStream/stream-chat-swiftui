@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		402C54482B6AAC0100672BFB /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
+		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */; };
 		8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */; };
 		820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */; };
@@ -111,6 +113,7 @@
 		82D64C1B2AD7E5B700C5C79E /* ImageCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCB2AD7E5B700C5C79E /* ImageCaching.swift */; };
 		82D64C1C2AD7E5B700C5C79E /* DataCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D64BCC2AD7E5B700C5C79E /* DataCaching.swift */; };
 		82FA42442AE67FF900C7390B /* SystemEnvironment+Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FA42432AE67FF900C7390B /* SystemEnvironment+Version.swift */; };
+		82FF61EC2B6AB789007185B6 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 82FF61EB2B6AB789007185B6 /* StreamChat */; };
 		8400A345282C05F60067D3A0 /* StreamChatWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A344282C05F60067D3A0 /* StreamChatWrapper.swift */; };
 		8400A34A282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8400A349282C07D60067D3A0 /* InternetConnectionMonitor_Mock.swift */; };
 		8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A34B282C081E0067D3A0 /* OHHTTPStubs */; };
@@ -506,6 +509,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		402C544A2B6AAC0100672BFB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8465FCEA274695B400AF091E /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1011,6 +1025,7 @@
 			files = (
 				846AD4D2284F89B10074A0DD /* StreamChatTestTools in Frameworks */,
 				8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */,
+				402C54482B6AAC0100672BFB /* StreamChatSwiftUI.framework in Frameworks */,
 				846AD4D0284F89B10074A0DD /* StreamChatTestMockServer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1019,6 +1034,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82FF61EC2B6AB789007185B6 /* StreamChat in Frameworks */,
 				A35D803B283E89F50084FE25 /* StreamChatSwiftUI.framework in Frameworks */,
 				8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */,
 			);
@@ -2092,6 +2108,7 @@
 				8400A34D282E6BE30067D3A0 /* Sources */,
 				8400A34E282E6BE30067D3A0 /* Frameworks */,
 				8400A34F282E6BE30067D3A0 /* Resources */,
+				402C544A2B6AAC0100672BFB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2125,6 +2142,7 @@
 			name = StreamChatSwiftUITestsApp;
 			packageProductDependencies = (
 				8400A34B282C081E0067D3A0 /* OHHTTPStubs */,
+				82FF61EB2B6AB789007185B6 /* StreamChat */,
 			);
 			productName = StreamChatSwiftUITestsApp;
 			productReference = 8402EAC3282BF69900CCA696 /* StreamChatSwiftUITestsApp.app */;
@@ -3381,6 +3399,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
 			productName = StreamSwiftTestHelpers;
+		};
+		82FF61EB2B6AB789007185B6 /* StreamChat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
+			productName = StreamChat;
 		};
 		8400A34B282C081E0067D3A0 /* OHHTTPStubs */ = {
 			isa = XCSwiftPackageProductDependency;
