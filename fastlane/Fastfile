@@ -125,7 +125,8 @@ desc 'Runs tests in Debug config'
 lane :test_ui do |options|
   next unless is_check_required(sources: sources_matrix[:ui], force_check: @force_check)
 
-  remove_snapshots unless options[:record].to_s.empty?
+  record_mode = !options[:record].to_s.empty?
+  remove_snapshots if record_mode
 
   update_testplan_on_ci(path: 'StreamChatSwiftUITests/Tests/StreamChatSwiftUI.xctestplan')
 
@@ -143,10 +144,10 @@ lane :test_ui do |options|
     skip_build: options[:skip_build],
     number_of_retries: options[:record].to_s.empty? ? 1 : nil,
     xcargs: buildcache_xcargs,
-    fail_build: options[:record].to_s.empty?
+    fail_build: !record_mode
   )
 
-  if options[:record] && is_ci
+  if record_mode && is_ci
     png_files = git_status(ext: '.png').map { |_, png| png }.flatten
     next if png_files.empty?
 
