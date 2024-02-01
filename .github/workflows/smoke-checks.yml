@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - '**'
-      # - '!main' TODO: commented until `develop` branch is in place
 
   workflow_dispatch:
     inputs:
@@ -20,15 +19,16 @@ concurrency:
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
-  IOS_SIMULATOR_DEVICE: "iPhone 14 Pro"
+  IOS_SIMULATOR_DEVICE: "iPhone 15 Pro (17.2)"
 
 jobs:
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-13
+    runs-on: macos-12
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_PR_NUM: ${{ github.event.number }}
+      XCODE_VERSION: "14.0.1"
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v3.1.0
@@ -44,7 +44,7 @@ jobs:
 
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
-    runs-on: macos-13
+    runs-on: macos-14
     if: ${{ github.event_name != 'push' }}
     steps:
     - uses: actions/checkout@v3.1.0
@@ -64,7 +64,7 @@ jobs:
 
   test-ui-debug:
     name: Test SwiftUI (Debug)
-    runs-on: macos-13
+    runs-on: macos-14
     needs: build-test-app-and-frameworks
     steps:
     - uses: actions/checkout@v3.1.0
@@ -116,7 +116,7 @@ jobs:
 
   test-e2e-debug:
     name: Test E2E UI (Debug)
-    runs-on: macos-13
+    runs-on: macos-14
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     needs:
       - allure_testops_launch
@@ -142,8 +142,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_PR_NUM: ${{ github.event.number }}
         MATRIX_SIZE: ${{ strategy.job-total }}
-        IOS_SIMULATOR_DEVICE: "iPhone 14 Pro (16.4)" # TODO: delete this line as soon as Xcode 15 is stable on CI
-        XCODE_VERSION: "14.3.1" # TODO: delete this line as soon as Xcode 15 is stable on CI
     - name: Allure TestOps Upload
       if: env.LAUNCH_ID != '' && (success() || failure())
       run: bundle exec fastlane allure_upload launch_id:$LAUNCH_ID
@@ -190,7 +188,7 @@ jobs:
 
   build-apps:
     name: Build Demo App
-    runs-on: macos-13
+    runs-on: macos-14
     needs: build-test-app-and-frameworks
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:

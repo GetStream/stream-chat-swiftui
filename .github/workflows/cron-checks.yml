@@ -5,11 +5,6 @@ on:
     # Runs "At 02:00 every night"
     - cron: '0 2 * * *'
 
-  # TODO: commented until `develop` branch is in place
-  # pull_request:
-  #   branches:
-  #     - 'main'
-
   workflow_dispatch:
 
 concurrency:
@@ -22,7 +17,7 @@ env:
 jobs:
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/ruby-cache
@@ -45,12 +40,11 @@ jobs:
     strategy:
       matrix:
         include:
-          # TODO: uncomment this block as soon as Xcode 15 is stable on CI
-          # - ios: 17.0
-          #   xcode: 15.0.1
-          #   os: macos-13
-          #   device: "iPhone 14 Pro Max"
-          #   setup_runtime: false
+          - ios: 17.2
+            xcode: 15.2
+            os: macos-14
+            device: "iPhone 15 Pro"
+            setup_runtime: false
           - ios: 16.4
             xcode: 14.3.1
             os: macos-13
@@ -122,8 +116,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - xcode: 15.0.1
-            os: macos-13
+          - xcode: 15.2
+            os: macos-14
           - xcode: 14.3.1
             os: macos-13
           - xcode: 14.2
@@ -151,7 +145,9 @@ jobs:
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-13
+    runs-on: macos-12
+    env:
+      XCODE_VERSION: "14.0.1"
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/bootstrap
