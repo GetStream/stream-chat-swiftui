@@ -99,6 +99,26 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is MoreChannelActionsView)
     }
+    
+    func test_viewFactory_makeSearchResultsView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeSearchResultsView(
+            selectedChannel: .constant(nil),
+            searchResults: [],
+            loadingSearchResults: false,
+            onlineIndicatorShown: { _ in true },
+            channelNaming: { _ in "Test" },
+            imageLoader: { _ in UIImage(systemName: "person")! },
+            onSearchResultTap: { _ in },
+            onItemAppear: { _ in }
+        )
+        
+        // Then
+        XCTAssert(view is SearchResultsView<DefaultViewFactory>)
+    }
 
     func test_viewFactory_makeMessageAvatarView() {
         // Given

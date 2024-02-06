@@ -145,6 +145,29 @@ extension ViewFactory {
         EmptyView()
     }
     
+    public func makeSearchResultsView(
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        searchResults: [ChannelSelectionInfo],
+        loadingSearchResults: Bool,
+        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
+        channelNaming: @escaping (ChatChannel) -> String,
+        imageLoader: @escaping (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping (Int) -> Void
+    ) -> some View {
+        SearchResultsView(
+            factory: self,
+            selectedChannel: selectedChannel,
+            searchResults: searchResults,
+            loadingSearchResults: loadingSearchResults,
+            onlineIndicatorShown: onlineIndicatorShown,
+            channelNaming: channelNaming,
+            imageLoader: imageLoader,
+            onSearchResultTap: onSearchResultTap,
+            onItemAppear: onItemAppear
+        )
+    }
+    
     public func makeChannelListSearchResultItem(
         searchResult: ChannelSelectionInfo,
         onlineIndicatorShown: Bool,
