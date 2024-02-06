@@ -379,9 +379,7 @@ extension UserRobot {
     @discardableResult
     func tapOnSendGiphyButton(messageCellIndex: Int = 0) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex)
-        MessageListPage.Attributes.giphySendButton(in: messageCell).wait()
-        sleep(5) // FIXME
-        MessageListPage.Attributes.giphySendButton(in: messageCell).safeTap()
+        MessageListPage.Attributes.giphySendButton(in: messageCell).wait().safeTap()
         return self
     }
 
@@ -390,6 +388,12 @@ extension UserRobot {
         for i in 1...count {
             MessageListPage.Composer.attachmentButton.wait().safeTap()
             MessageListPage.AttachmentMenu.photoOrVideoButton.wait().safeTap()
+            
+            // Wait for privacy message to appear before proceed on iOS 17, otherwise XCTest crashes
+            if #available(iOS 17.0, *) {
+                app.otherElements["PXGSingleViewContainerView_AX"].wait()
+            }
+            
             MessageListPage.AttachmentMenu.images.waitCount(1).allElementsBoundByIndex[i].safeTap()
         }
         if send { sendMessage("", waitForAppearance: false) }
