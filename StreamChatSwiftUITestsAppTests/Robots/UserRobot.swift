@@ -379,7 +379,9 @@ extension UserRobot {
     @discardableResult
     func tapOnSendGiphyButton(messageCellIndex: Int = 0) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex)
-        MessageListPage.Attributes.giphySendButton(in: messageCell).wait().safeTap()
+        MessageListPage.Attributes.giphySendButton(in: messageCell).wait()
+        sleep(5) // FIXME
+        MessageListPage.Attributes.giphySendButton(in: messageCell).safeTap()
         return self
     }
 
