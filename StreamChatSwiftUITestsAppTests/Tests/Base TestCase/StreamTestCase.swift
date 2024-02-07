@@ -67,7 +67,7 @@ extension StreamTestCase {
     private func alertHandler() {
         let title = "Notification Alert"
         _ = addUIInterruptionMonitor(withDescription: title) { (alert: XCUIElement) -> Bool in
-            let allowButton = alert.buttons.matching(NSPredicate(format: "label LIKE 'Allow' or label LIKE 'Allow Access to All Photos'")).firstMatch
+            let allowButton = alert.buttons.matching(NSPredicate(format: "label LIKE 'Allow' or label LIKE 'Allow Full Access' or label LIKE 'Allow Access to All Photos'")).firstMatch
             if allowButton.exists {
                 allowButton.tap()
                 return true

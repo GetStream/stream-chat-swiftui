@@ -78,7 +78,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(buttonEnabled == true)
-        XCTAssert(viewModel.addedAssets.count == 1)
+        XCTAssertEqual(viewModel.addedAssets.count, 1)
     }
     
     func test_messageComposerVM_sendButtonEnabled_addedFile() {
@@ -91,7 +91,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(buttonEnabled == true)
-        XCTAssert(viewModel.addedFileURLs.count == 1)
+        XCTAssertEqual(viewModel.addedFileURLs.count, 1)
     }
     
     func test_messageComposerVM_sendButtonEnabled_addedCustomAttachment() {
@@ -105,7 +105,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(buttonEnabled == true)
-        XCTAssert(viewModel.addedCustomAttachments.count == 1)
+        XCTAssertEqual(viewModel.addedCustomAttachments.count, 1)
     }
     
     func test_messageComposerVM_changePickerState() {
@@ -208,7 +208,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         viewModel.cameraImageAdded(defaultAsset)
         
         // Then
-        XCTAssert(viewModel.addedAssets.count == 1)
+        XCTAssertEqual(viewModel.addedAssets.count, 1)
         XCTAssert(viewModel.pickerState == .photos)
     }
     
@@ -442,7 +442,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
 
         // Then
-        XCTAssert(viewModel.addedAssets.count == 10)
+        XCTAssertEqual(viewModel.addedAssets.count, 10)
     }
     
     func test_messageComposerVM_maxAttachmentsCombined() {
@@ -468,7 +468,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         
         // Then
         let total = viewModel.addedAssets.count + viewModel.addedFileURLs.count
-        XCTAssert(total == 10)
+        XCTAssertEqual(total, 10)
         for url in urls {
             try? FileManager.default.removeItem(at: url)
         }
@@ -511,7 +511,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         )
         
         // Then
-        XCTAssert(viewModel.mentionedUsers.count == 1)
+        XCTAssertEqual(viewModel.mentionedUsers.count, 1)
         XCTAssert(viewModel.mentionedUsers.first?.name == "Martin")
     }
     
@@ -608,7 +608,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssert(viewModel.recordingState == .initial)
         XCTAssert(viewModel.audioRecordingInfo == .initial)
-        XCTAssert(viewModel.addedVoiceRecordings.count == 1)
+        XCTAssertEqual(viewModel.addedVoiceRecordings.count, 1)
         XCTAssert(viewModel.pendingAudioRecording == nil)
     }
     
@@ -656,7 +656,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         viewModel.audioRecorder(viewModel.audioRecorder, didUpdateContext: context)
         
         // Then
-        XCTAssert(viewModel.audioRecordingInfo.duration == 2.0)
+        XCTAssertEqual(viewModel.audioRecordingInfo.duration, 2.0)
         XCTAssert(viewModel.audioRecordingInfo.waveform == [1.0])
     }
     
