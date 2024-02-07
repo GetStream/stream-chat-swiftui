@@ -228,6 +228,10 @@ public protocol ViewFactory: AnyObject {
     /// Returns a view modifier applied to the message list container.
     func makeMessageListContainerModifier() -> MessageListContainerModifier
 
+    associatedtype MessageListContainerWithChannelModifier: ViewModifier
+    /// Returns a view modifier applied to the message list container.
+    func makeMessageListContainerModifier(channel: ChatChannel) -> MessageListContainerWithChannelModifier
+    
     associatedtype MessageViewModifier: ViewModifier
     /// Returns a view modifier applied to the message view.
     /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
