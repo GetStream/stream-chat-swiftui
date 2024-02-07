@@ -148,6 +148,29 @@ public protocol ViewFactory: AnyObject {
     /// Creates the view always visible at the bottom of the channel list.
     /// - Returns: view shown at the bottom of the channel list.
     func makeChannelListStickyFooterView() -> ChannelListStickyFooterViewType
+    
+    associatedtype ChannelListSearchResultsViewType: View
+    /// Creates the view shown when the user is searching the channel list.
+    /// - Parameters:
+    ///  - selectedChannel - binding of the selected channel.
+    ///  - searchResults - the search results matching the user query.
+    ///  - loadingSearchResults - whether search results are being loaded.
+    ///  - onlineIndicatorShown - whether the online indicator is shown.
+    ///  - channelNaming - closure for determining the channel name.
+    ///  - imageLoader - closure for loading images for channels.
+    ///  - onSearchResultTap - call when a search result is tapped.
+    ///  - onItemAppear - call when an item appears on the screen.
+    /// - Returns: view shown in the channel list search results slot.
+    func makeSearchResultsView(
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        searchResults: [ChannelSelectionInfo],
+        loadingSearchResults: Bool,
+        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
+        channelNaming: @escaping (ChatChannel) -> String,
+        imageLoader: @escaping (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping (Int) -> Void
+    ) -> ChannelListSearchResultsViewType
 
     associatedtype ChannelListSearchResultItem: View
     /// Creates the search result item in the channel list.

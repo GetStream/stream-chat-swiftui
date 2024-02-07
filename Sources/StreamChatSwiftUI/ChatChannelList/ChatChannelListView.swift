@@ -208,8 +208,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
             )
 
             if viewModel.isSearching {
-                SearchResultsView(
-                    factory: viewFactory,
+                viewFactory.makeSearchResultsView(
                     selectedChannel: $viewModel.selectedChannel,
                     searchResults: viewModel.searchResults,
                     loadingSearchResults: viewModel.loadingSearchResults,
