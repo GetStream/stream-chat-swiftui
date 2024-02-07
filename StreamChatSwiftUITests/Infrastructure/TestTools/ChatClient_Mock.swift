@@ -15,6 +15,7 @@ public extension ChatClient {
         config.customCDNClient = customCDNClient
         config.isLocalStorageEnabled = isLocalStorageEnabled
         config.isClientInActiveMode = false
+        config.maxAttachmentCountPerMessage = 10
 
         return .init(
             config: config,
