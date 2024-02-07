@@ -434,15 +434,15 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         let viewModel = makeComposerViewModel()
         
         // When
-        for _ in 0..<30 {
+        for _ in 0..<10 {
             let newAsset = defaultAsset
             viewModel.imageTapped(newAsset)
         }
         let newAsset = defaultAsset
-        viewModel.imageTapped(newAsset) // This one will not be added, default limit is 30.
+        viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
 
         // Then
-        XCTAssertEqual(viewModel.addedAssets.count, 30)
+        XCTAssertEqual(viewModel.addedAssets.count, 10)
     }
     
     func test_messageComposerVM_maxAttachmentsCombined() {
@@ -451,24 +451,24 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         var urls = [URL]()
         
         // When
-        for _ in 0..<15 {
+        for _ in 0..<5 {
             let newAsset = defaultAsset
             viewModel.imageTapped(newAsset)
         }
-        for _ in 0..<15 {
+        for _ in 0..<5 {
             let newURL = generateURL()
             writeMockData(for: newURL)
             urls.append(newURL)
             viewModel.addedFileURLs.append(newURL)
         }
         let newAsset = defaultAsset
-        viewModel.imageTapped(newAsset) // This one will not be added, default limit is 30.
+        viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
         let newURL = generateURL()
         viewModel.addedFileURLs.append(newURL)
         
         // Then
         let total = viewModel.addedAssets.count + viewModel.addedFileURLs.count
-        XCTAssertEqual(total, 30)
+        XCTAssertEqual(total, 10)
         for url in urls {
             try? FileManager.default.removeItem(at: url)
         }
