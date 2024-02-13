@@ -10,6 +10,7 @@
   ],
   "defaultOptions" : {
     "codeCoverage" : false,
+    "preferredScreenCaptureFormat" : "screenshot",
     "targetForVariableExpansion" : {
       "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
       "identifier" : "8402EAC2282BF69900CCA696",
