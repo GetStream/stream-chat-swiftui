@@ -69,19 +69,21 @@ lane :release do |options|
   end
 
   pod_lint
-  version_number = release_ios_sdk(
+  release_ios_sdk(
     version: options[:version],
     bump_type: options[:type],
     sdk_names: sdk_names,
     podspec_names: ['StreamChatSwiftUI', 'StreamChatSwiftUI-XCFramework'],
     github_repo: github_repo,
-    extra_changes: extra_changes
+    extra_changes: extra_changes,
+    create_pull_request: true
   )
-  publish_release(version: version_number)
 end
 
 desc "Publish a new release to GitHub and CocoaPods"
 lane :publish_release do |options|
+  xcversion(version: '15.0.1')
+
   clean_products
   build_xcframeworks
   compress_frameworks
