@@ -146,6 +146,32 @@ jobs:
         MATRIX_CONTEXT: ${{ toJson(matrix) }}
       if: failure() && github.event_name == 'schedule'
 
+  build-xcode15:
+    name: Build SDKs (Xcode 15.0)
+    runs-on: macos-13
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
+    env:
+      XCODE_VERSION: "15.0.1"
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/ruby-cache
+    - name: List Xcode versions xcversion sees
+      run: mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode'"
+      timeout-minutes: 25
+    - name: Build SwiftUI
+      run: bundle exec fastlane test_ui device:"iPhone 15" build_for_testing:true
+      timeout-minutes: 25
+    - name: Install Bot SSH Key
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
+    - name: Build XCFrameworks
+      run: bundle exec fastlane build_xcframeworks
+      timeout-minutes: 25
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
+
   automated-code-review:
     name: Automated Code Review
     runs-on: macos-12
