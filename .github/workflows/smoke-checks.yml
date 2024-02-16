@@ -22,26 +22,6 @@ env:
   IOS_SIMULATOR_DEVICE: "iPhone 15 Pro (17.2)"
 
 jobs:
-  automated-code-review:
-    name: Automated Code Review
-    runs-on: macos-12
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_PR_NUM: ${{ github.event.number }}
-      XCODE_VERSION: "14.0.1"
-    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
-    steps:
-    - uses: actions/checkout@v4.1.1
-    - uses: ./.github/actions/bootstrap
-    - name: Run Danger
-      run: bundle exec danger
-    - name: Run Fastlane Linting
-      run: bundle exec fastlane rubocop
-    - name: Run SwiftFormat Linting
-      run: ./Scripts/run-linter.sh
-    - name: Run Podspec Linting
-      run: bundle exec fastlane pod_lint
-
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
     runs-on: macos-14
@@ -204,3 +184,49 @@ jobs:
     - uses: ./.github/actions/xcode-cache
     - name: Build Demo App
       run: bundle exec fastlane build_demo
+
+  build-xcode15:
+    name: Build SDKs (Xcode 15.0)
+    runs-on: macos-13
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
+    env:
+      XCODE_VERSION: "15.0.1"
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/ruby-cache
+    - name: List Xcode versions xcversion sees
+      run: mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode'"
+      timeout-minutes: 25
+    - name: Build SwiftUI
+      run: bundle exec fastlane test_ui device:"iPhone 15" build_for_testing:true
+      timeout-minutes: 25
+    - name: Install Bot SSH Key
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
+    - name: Build XCFrameworks
+      run: bundle exec fastlane build_xcframeworks
+      timeout-minutes: 25
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
+
+  automated-code-review:
+    name: Automated Code Review
+    runs-on: macos-12
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PR_NUM: ${{ github.event.number }}
+      XCODE_VERSION: "14.0.1"
+    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/bootstrap
+    - name: Run Danger
+      run: bundle exec danger
+    - name: Run Fastlane Linting
+      run: bundle exec fastlane rubocop
+    - name: Run SwiftFormat Linting
+      run: ./Scripts/run-linter.sh
+    - name: Run Podspec Linting
+      run: bundle exec fastlane pod_lint
