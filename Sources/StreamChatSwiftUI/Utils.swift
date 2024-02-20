@@ -39,6 +39,7 @@ public class Utils {
             return player
         }
     }
+    
     public var audioRecorderBuilder: () -> AudioRecording = { StreamAudioRecorder() }
     public var audioRecorder: AudioRecording {
         if let _audioRecorder {
