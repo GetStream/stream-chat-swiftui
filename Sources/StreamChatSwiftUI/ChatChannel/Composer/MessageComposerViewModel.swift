@@ -156,7 +156,7 @@ open class MessageComposerViewModel: ObservableObject {
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
     
     internal lazy var audioRecorder: AudioRecording = {
-        let audioRecorder = StreamAudioRecorder()
+        let audioRecorder = utils.audioRecorder
         audioRecorder.subscribe(self)
         return audioRecorder
     }()
