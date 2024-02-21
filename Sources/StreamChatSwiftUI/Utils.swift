@@ -40,6 +40,17 @@ public class Utils {
         }
     }
     
+    public var audioRecorderBuilder: () -> AudioRecording = { StreamAudioRecorder() }
+    public var audioRecorder: AudioRecording {
+        if let _audioRecorder {
+            return _audioRecorder
+        } else {
+            let recorder = audioRecorderBuilder()
+            _audioRecorder = recorder
+            return recorder
+        }
+    }
+
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     var messageCachingUtils = MessageCachingUtils()
@@ -47,6 +58,7 @@ public class Utils {
     var channelControllerFactory = ChannelControllerFactory()
     
     internal var _audioPlayer: AudioPlaying?
+    internal var _audioRecorder: AudioRecording?
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
