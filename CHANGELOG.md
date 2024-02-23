@@ -4,7 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Config the audioRecorder that is used when sending async voice messages.
+- Config the audioRecorder that is used when sending async voice messages
+
+### 🔄 Changed
+- Author name display now depends on number of participants, not channel type
 
 ### 🔄 Changed
 

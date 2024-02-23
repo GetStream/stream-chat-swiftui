@@ -212,7 +212,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 }
                             }
                         } else if !message.isRightAligned
-                            && !channel.isDirectMessageChannel
+                            && channel.memberCount > 2
                             && messageListConfig.messageDisplayOptions.showAuthorName {
                             factory.makeMessageAuthorAndDateView(for: message)
                         } else if messageListConfig.messageDisplayOptions.showMessageDate {
