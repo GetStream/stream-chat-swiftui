@@ -93,11 +93,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         .padding(.all, 4)
         .modifier(
             factory.makeMessageViewModifier(
-                for: 
-                    MessageModifierInfo(
-                        message: message,
-                        isFirst: isFirst
-                    )
+                for: MessageModifierInfo(message: message, isFirst: isFirst)
             )
         )
     }
