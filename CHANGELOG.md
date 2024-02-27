@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Author name display now depends on number of participants, not channel type
 
+### 🐞 Fixed
+- Voice recording messages now use the standard message modifier
+
 ### 🔄 Changed
 
 # [4.48.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.48.0)
