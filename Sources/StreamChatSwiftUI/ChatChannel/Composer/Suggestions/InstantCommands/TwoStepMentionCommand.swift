@@ -16,7 +16,7 @@ open class TwoStepMentionCommand: CommandHandler {
     private let mentionsCommandHandler: MentionsCommandHandler
     private let mentionSymbol: String
 
-    internal var selectedUser: ChatUser?
+    public var selectedUser: ChatUser?
 
     public let id: String
     public var displayInfo: CommandDisplayInfo?
@@ -130,7 +130,7 @@ open class TwoStepMentionCommand: CommandHandler {
         true
     }
 
-    public func executeOnMessageSent(
+    open func executeOnMessageSent(
         composerCommand: ComposerCommand,
         completion: @escaping (Error?) -> Void
     ) {
