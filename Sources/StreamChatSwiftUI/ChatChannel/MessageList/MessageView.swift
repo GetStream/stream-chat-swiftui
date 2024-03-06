@@ -224,12 +224,13 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
 
 struct StreamTextView: View {
     
+    @Injected(\.utils) var utils
     @Injected(\.fonts) var fonts
     
     var message: ChatMessage
     
     var body: some View {
-        if #available(iOS 15, *) {
+        if #available(iOS 15, *), utils.messageListConfig.localLinkDetectionEnabled {
             LinkDetectionTextView(message: message)
         } else {
             Text(message.adjustedText)
