@@ -163,14 +163,12 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 )
             }
 
-            Text(message.adjustedText)
+            StreamTextView(message: message)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)
                 .padding(.bottom, bottomPadding)
                 .fixedSize(horizontal: false, vertical: true)
-                .foregroundColor(textColor(for: message))
-                .font(fonts.body)
         }
         .modifier(
             factory.makeMessageViewModifier(
@@ -221,5 +219,63 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             }
         }
         .accessibilityIdentifier("MessageTextView")
+    }
+}
+
+struct StreamTextView: View {
+    
+    @Injected(\.fonts) var fonts
+    
+    var message: ChatMessage
+    
+    var body: some View {
+        if #available(iOS 15, *) {
+            LinkDetectionTextView(message: message)
+        } else {
+            Text(message.adjustedText)
+                .foregroundColor(textColor(for: message))
+                .font(fonts.body)
+        }
+    }
+}
+
+@available(iOS 15, *)
+struct LinkDetectionTextView: View {
+    
+    @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
+    
+    var message: ChatMessage
+    
+    var text: String {
+        message.adjustedText
+    }
+    
+    @State var displayedText: AttributedString
+    
+    @State var linkDetector = TextLinkDetector()
+    
+    init(message: ChatMessage) {
+        self.message = message
+        _displayedText = State(initialValue: AttributedString(message.adjustedText))
+    }
+    
+    var body: some View {
+        Text(displayedText)
+            .onAppear {
+                let attributedText = NSMutableAttributedString(
+                    string: text,
+                    attributes: [
+                        .foregroundColor: textColor(for: message),
+                        .font: fonts.body
+                    ]
+                )
+
+                linkDetector.links(in: text).forEach { textLink in
+                    attributedText.addAttribute(.link, value: textLink.url, range: textLink.range)
+                }
+                
+                self.displayedText = AttributedString(attributedText)
+            }
     }
 }
