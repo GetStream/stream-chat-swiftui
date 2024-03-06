@@ -63,3 +63,14 @@ if [[ ${INSTALL_YEETD-default} == true ]]; then
   puts "Running yeetd daemon"
   yeetd &
 fi
+
+if [[ ${INSTALL_GCLOUD-default} == true ]]; then
+  puts "Install gcloud"
+  brew install --cask google-cloud-sdk
+
+  # Editor access required: https://console.cloud.google.com/iam-admin/iam
+  printf "%s" "$GOOGLE_APPLICATION_CREDENTIALS" > ./fastlane/gcloud-service-account-key.json
+  gcloud auth activate-service-account --key-file="./fastlane/gcloud-service-account-key.json"
+  gcloud config set project stream-chat-swiftui
+  gcloud services enable toolresults.googleapis.com
+fi

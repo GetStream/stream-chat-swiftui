@@ -57,6 +57,11 @@ Pods/
 Carthage/
 !Sample/Carthage/
 
+# gcloud
+google-cloud-sdk
+gcloud.tar.gz
+gcloud-service-account-key.json
+
 # Ignore Products folder
 Products/
 
@@ -74,6 +79,7 @@ fastlane/test_output
 fastlane/allurectl
 fastlane/xcresults
 fastlane/recordings
+fastlane/performance
 StreamChatCore.framework.coverage.txt
 StreamChatCoreTests.xctest.coverage.txt
 vendor/bundle/
