@@ -248,8 +248,6 @@ lane :xcmetrics do |options|
     xcodebuild_output = File.read('xcodebuild_output.log')
   end
 
-  next # FIXME
-
   sh("git clone git@github.com:GetStream/stream-swift-performance-benchmarks.git #{File.dirname(performance_path)}")
   branch_performance = xcmetrics_log_parser(log: xcodebuild_output)
   previous_release_branch = "release/#{last_git_tag}"
