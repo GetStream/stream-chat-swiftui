@@ -15,8 +15,10 @@ struct DemoAppSwiftUIApp: App {
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
     
-    @State var channelListController: ChatChannelListController?
-
+    var channelListController: ChatChannelListController? {
+        appState.channelListController
+    }
+    
     var body: some Scene {
         WindowGroup {
             switch appState.userState {
@@ -51,11 +53,9 @@ struct DemoAppSwiftUIApp: App {
                             .init(key: .updatedAt)
                         ]
                     )
-                    channelListController = chatClient.channelListController(query: channelListQuery)
+                    appState.channelListController = chatClient.channelListController(query: channelListQuery)
                 }
                 notificationsHandler.setupRemoteNotifications()
-            } else if newValue == .notLoggedIn {
-                channelListController = nil
             }
         }
     }
@@ -63,7 +63,14 @@ struct DemoAppSwiftUIApp: App {
 
 class AppState: ObservableObject {
 
-    @Published var userState: UserState = .launchAnimation
+    @Published var userState: UserState = .launchAnimation {
+        willSet {
+            if newValue == .notLoggedIn && userState == .loggedIn {
+                channelListController = nil
+            }
+        }
+    }
+    var channelListController: ChatChannelListController?
 
     static let shared = AppState()
 
