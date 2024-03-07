@@ -70,6 +70,7 @@ class AppState: ObservableObject {
             }
         }
     }
+    
     var channelListController: ChatChannelListController?
 
     static let shared = AppState()
