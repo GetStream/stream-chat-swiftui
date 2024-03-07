@@ -79,7 +79,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     message: Text("Are you sure you want to sign out?"),
                     primaryButton: .destructive(Text("Sign out")) {
                         withAnimation {
-                            chatClient.disconnect {
+                            chatClient.logout {
                                 UnsecureRepository.shared.removeCurrentUser()
                                 DispatchQueue.main.async {
                                     AppState.shared.userState = .notLoggedIn
