@@ -54,6 +54,8 @@ struct DemoAppSwiftUIApp: App {
                     channelListController = chatClient.channelListController(query: channelListQuery)
                 }
                 notificationsHandler.setupRemoteNotifications()
+            } else if newValue == .notLoggedIn {
+                channelListController = nil
             }
         }
     }
