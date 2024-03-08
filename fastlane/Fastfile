@@ -250,40 +250,40 @@ lane :xcmetrics do |options|
 
   sh("git clone git@github.com:GetStream/stream-swift-performance-benchmarks.git #{File.dirname(performance_path)}")
   branch_performance = xcmetrics_log_parser(log: xcodebuild_output)
-  previous_release_branch = "release/#{last_git_tag}"
   performance_benchmarks = JSON.parse(File.read(performance_path))
-  previous_release_performance = performance_benchmarks[previous_release_branch]
+  expected_performance = performance_benchmarks['benchmark']
 
-  markdown_table = "## StreamChat XCMetrics\n| `target` | `metric` | `#{previous_release_branch}` | `branch` | `performance` | `status` |\n| - | - | - | - | - | - |\n"
+  markdown_table = "## StreamChat XCMetrics\n| `target` | `metric` | `benchmark` | `branch` | `performance` | `status` |\n| - | - | - | - | - | - |\n"
   ['testMessageListScrollTime', 'testChannelListScrollTime'].each do |test_name|
     index = 0
     ['hitches_total_duration', 'duration', 'hitch_time_ratio', 'frame_rate', 'number_of_hitches'].each do |metric|
-      release_value = previous_release_performance[test_name][metric]['value']
+      benchmark_value = expected_performance[test_name][metric]['value']
       branch_value = branch_performance[test_name][metric]['value']
       value_extension = branch_performance[test_name][metric]['ext']
 
       max_stddev = 0.1 # Default Xcode Max STDDEV is 10%
       status_emoji =
-        if branch_value > release_value && branch_value < release_value + (release_value * max_stddev)
-          '🟡' # Warning if a branch is 10% less performant than the previous release
-        elsif branch_value > release_value
-          '🔴' # Failure if a branch is more than 10% less performant than the previous release
+        if branch_value > benchmark_value && branch_value < benchmark_value + (benchmark_value * max_stddev)
+          '🟡' # Warning if a branch is 10% less performant than the benchmark
+        elsif branch_value > benchmark_value
+          '🔴' # Failure if a branch is more than 10% less performant than the benchmark
         else
-          '🟢' # Success if a branch is more performant or equals to the previous release
+          '🟢' # Success if a branch is more performant or equals to the benchmark
         end
 
-      diff = ((release_value - branch_value) * 100 / release_value.to_f).to_f.round(1)
+      benchmark_value_avoids_zero_division = benchmark_value == 0 ? 1 : benchmark_value
+      diff = ((benchmark_value - branch_value) * 100.0 / benchmark_value_avoids_zero_division).round(2)
       diff_emoji = diff > 0 ? '🔼' : '🔽'
 
       title = metric.to_s.gsub('_', ' ').capitalize
       target = index.zero? ? test_name.match(/(?<=test)(.*?)(?=ScrollTime)/).to_s : ''
       index += 1
 
-      markdown_table << "| #{target} | #{title} | #{release_value} #{value_extension} | #{branch_value} #{value_extension} | #{diff}% #{diff_emoji} | #{status_emoji} |\n"
+      markdown_table << "| #{target} | #{title} | #{benchmark_value} #{value_extension} | #{branch_value} #{value_extension} | #{diff}% #{diff_emoji} | #{status_emoji} |\n"
       FastlaneCore::PrintTable.print_values(
         title: "⏳ #{title} ⏳",
         config: {
-          "#{previous_release_branch}": "#{release_value} #{value_extension}",
+          benchmark: "#{benchmark_value} #{value_extension}",
           branch: "#{branch_value} #{value_extension}",
           diff: "#{diff}% #{diff_emoji}",
           status: status_emoji
@@ -335,19 +335,19 @@ private_lane :xcmetrics_log_parser do |options|
         'ext' => 'ms'
       },
       'duration' => {
-        'value' => duration ? duration[1].to_f.round(1) : '?',
+        'value' => duration ? duration[1].to_f.round(2) : '?',
         'ext' => 's'
       },
       'hitch_time_ratio' => {
-        'value' => hitch_time_ratio ? hitch_time_ratio[1].to_f.round(1) : '?',
+        'value' => hitch_time_ratio ? hitch_time_ratio[1].to_f.round(2) : '?',
         'ext' => 'ms per s'
       },
       'frame_rate' => {
-        'value' => frame_rate ? frame_rate[1].to_f.round(1) : '?',
+        'value' => frame_rate ? frame_rate[1].to_f.round(2) : '?',
         'ext' => 'fps'
       },
       'number_of_hitches' => {
-        'value' => number_of_hitches ? number_of_hitches[1].to_i : '?',
+        'value' => number_of_hitches ? number_of_hitches[1].to_f.round(2) : '?',
         'ext' => ''
       }
     }
