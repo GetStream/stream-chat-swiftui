@@ -350,8 +350,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
 
             let delay = previousMessage.createdAt.timeIntervalSince(date)
+            let showMessageEditedLabel = utils.messageListConfig.isMessageEditedLabelEnabled
+                && message.textUpdatedAt != nil
 
-            if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup {
+            if delay > utils.messageListConfig.maxTimeIntervalBetweenMessagesInGroup
+                || showMessageEditedLabel {
                 temp[message.id]?.append(firstMessageKey)
                 var prevInfo = temp[previousMessage.id] ?? []
                 prevInfo.append(lastMessageKey)
