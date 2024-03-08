@@ -15,7 +15,11 @@ class ChannelListScrollTime: StreamTestCase {
     func testChannelListScrollTime() {
         WHEN("user opens the channel list") {
             backendRobot.generateChannels(count: 100, messagesCount: 1)
-            userRobot.login().waitForChannelListToLoad()
+            userRobot
+                .login()
+                .waitForChannelListToLoad()
+                .scrollChannelListDown() // to load the channels
+                .scrollChannelListUp()
         }
         THEN("user scrolls the channel list") {
             let measureOptions = XCTMeasureOptions()
