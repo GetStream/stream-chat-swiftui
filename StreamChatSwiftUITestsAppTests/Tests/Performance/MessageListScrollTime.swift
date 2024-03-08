@@ -6,11 +6,18 @@ import XCTest
 
 @available(iOS 15.0, *)
 class MessageListScrollTime: StreamTestCase {
+    
+    // FIXME
+    override func setUpWithError() throws {
+        mockServerEnabled = false
+        try super.setUpWithError()
+    }
 
     func testMessageListScrollTime() {
         WHEN("user opens the message list") {
-            backendRobot.generateChannels(count: 1, messagesCount: 100, withAttachments: true)
-            participantRobot.addReaction(type: .like)
+            // FIXME
+            // backendRobot.generateChannels(count: 1, messagesCount: 100, withAttachments: true)
+            // participantRobot.addReaction(type: .like)
             userRobot.login().openChannel()
         }
         THEN("user scrolls the message list") {

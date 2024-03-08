@@ -47,6 +47,7 @@
 "message.gallery.photos" = "Photos";
 "message.cell.pinnedBy" = "Pinned by";
 "message.cell.unknownPin" = "unknown";
+"message.cell.edited" = "Edited";
 "message.reactions.currentUser" = "You";
 
 "alert.actions.cancel" = "Cancel";
