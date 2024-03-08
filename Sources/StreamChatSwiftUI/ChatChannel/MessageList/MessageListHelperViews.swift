@@ -64,8 +64,19 @@ struct MessageDateView: View {
     
     var message: ChatMessage
     
+    var text: String {
+        var text = dateFormatter.string(from: message.createdAt)
+        let showMessageEditedLabel = utils.messageListConfig.isMessageEditedLabelEnabled
+            && message.textUpdatedAt != nil
+            && !message.isDeleted
+        if showMessageEditedLabel {
+            text = text + " • " + L10n.Message.Cell.edited
+        }
+        return text
+    }
+    
     var body: some View {
-        Text(dateFormatter.string(from: message.createdAt))
+        Text(text)
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
             .animation(nil)

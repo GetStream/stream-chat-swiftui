@@ -315,6 +315,8 @@ internal enum L10n {
       internal static var title: String { L10n.tr("Localizable", "message.bounce.title") }
     }
     internal enum Cell {
+      /// Edited
+      internal static var edited: String { L10n.tr("Localizable", "message.cell.edited") }
       /// Pinned by
       internal static var pinnedBy: String { L10n.tr("Localizable", "message.cell.pinnedBy") }
       /// unknown

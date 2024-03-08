@@ -4,8 +4,6 @@
 # In general, you can use the options available
 # fastlane scan --help
 
-devices(["iPhone 12"])
-
 # Needed for Sonar
 code_coverage(true)
 

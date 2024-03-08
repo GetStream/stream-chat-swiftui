@@ -3,11 +3,13 @@
 //
 
 import SwiftUI
+import StreamChat
 
 class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        StreamRuntimeCheck._isBackgroundMappingEnabled = true
         disableAnimations()
         registerForPushNotifications()
         UNUserNotificationCenter.current().delegate = NotificationsHandler.shared
