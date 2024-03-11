@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageComposerView`.
-open class MessageComposerViewModel: ObservableObject {
+@MainActor open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) internal var utils
     

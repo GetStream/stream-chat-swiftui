@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Chat channel cell that is swipeable.
-public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem: View>: View {
+@MainActor public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem: View>: View {
     @Injected(\.colors) private var colors
 
     @State private var offsetX: CGFloat = 0
