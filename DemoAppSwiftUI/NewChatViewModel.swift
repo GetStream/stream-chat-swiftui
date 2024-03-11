@@ -44,7 +44,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private var loadingNextUsers: Bool = false
     private var updatingSelectedUsers: Bool = false
 
-    var channelController: ChatChannelController?
+    var chat: Chat?
 
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
@@ -129,22 +129,17 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
 
     private func makeChannelController() throws {
-        let selectedUserIds = Set(selectedUsers.map(\.id))
-        channelController = try chatClient.channelController(
-            createDirectMessageChannelWith: selectedUserIds,
-            name: nil,
-            imageURL: nil,
-            extraData: [:]
-        )
-        channelController?.synchronize { [weak self] error in
-            if error != nil {
-                self?.state = .error
-                self?.updatingSelectedUsers = false
-            } else {
+        let selectedUserIds = selectedUsers.map(\.id)
+        Task {
+            do {
+                chat = try await chatClient.makeDirectMessageChat(with: selectedUserIds, extraData: [:])
                 withAnimation {
-                    self?.state = .channel
-                    self?.updatingSelectedUsers = false
+                    state = .channel
+                    updatingSelectedUsers = false
                 }
+            } catch {
+                state = .error
+                updatingSelectedUsers = false
             }
         }
     }

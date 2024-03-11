@@ -10,19 +10,19 @@ class ChannelControllerFactory {
 
     @Injected(\.chatClient) var chatClient
 
-    private var currentChannelController: ChatChannelController?
+    private var currentChat: Chat?
     private var messageControllers = [String: ChatMessageController]()
 
     /// Creates a channel controller with the provided channel id.
     /// - Parameter channelId: the channel's id.
     /// - Returns: `ChatChannelController`
-    func makeChannelController(for channelId: ChannelId) -> ChatChannelController {
-        if let currentChannelController = currentChannelController, channelId == currentChannelController.cid {
-            return currentChannelController
+    func makeChat(for channelId: ChannelId) -> Chat {
+        if let currentChat, channelId == currentChat.cid {
+            return currentChat
         }
-        let controller = chatClient.channelController(for: channelId)
-        currentChannelController = controller
-        return controller
+        let chat = chatClient.makeChat(for: channelId)
+        currentChat = chat
+        return chat
     }
     
     /// Creates a message controller with the provided channel and message id.
@@ -48,7 +48,7 @@ class ChannelControllerFactory {
 
     /// Clears the current active channel controller.
     func clearCurrentController() {
-        currentChannelController = nil
+        currentChat = nil
         messageControllers = [:]
     }
 }

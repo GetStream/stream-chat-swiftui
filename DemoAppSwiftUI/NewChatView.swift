@@ -86,11 +86,11 @@ struct NewChatView: View, KeyboardReadable {
                         .font(.title2)
                         .foregroundColor(Color(colors.textLowEmphasis))
                 }
-            } else if viewModel.state == .channel, let controller = viewModel.channelController {
+            } else if viewModel.state == .channel, let chat = viewModel.chat {
                 Divider()
                 ChatChannelView(
                     viewFactory: DemoAppFactory.shared,
-                    channelController: controller
+                    chat: chat
                 )
             } else {
                 Spacer()

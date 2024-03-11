@@ -46,7 +46,9 @@ open class MessageComposerViewModel: ObservableObject {
                         pickerTypeState = .collapsed
                     }
                 }
-                channelController.sendKeystrokeEvent()
+                Task {
+                    try await chat.keystroke()
+                }
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
                     composerCommand = nil
@@ -150,7 +152,7 @@ open class MessageComposerViewModel: ObservableObject {
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     
-    public let channelController: ChatChannelController
+    public let chat: Chat
     public var messageController: ChatMessageController?
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
@@ -168,14 +170,14 @@ open class MessageComposerViewModel: ObservableObject {
     private var timer: Timer?
     private var cooldownPeriod = 0
     private var isSlowModeDisabled: Bool {
-        channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true
+        chat.state.channel?.ownCapabilities.contains("skip-slow-mode") == true
     }
     
     private var cancellables = Set<AnyCancellable>()
     private lazy var commandsHandler = utils
         .commandsConfig
         .makeCommandsHandler(
-            with: channelController
+            with: chat
         )
     
     public var mentionedUsers = Set<ChatUser>()
@@ -205,10 +207,10 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public init(
-        channelController: ChatChannelController,
+        chat: Chat,
         messageController: ChatMessageController?
     ) {
-        self.channelController = channelController
+        self.chat = chat
         self.messageController = messageController
         listenToCooldownUpdates()
         NotificationCenter.default.addObserver(
@@ -295,22 +297,25 @@ open class MessageComposerViewModel: ObservableObject {
                     }
                 }
             } else {
-                channelController.createNewMessage(
-                    text: messageText,
-                    isSilent: isSilent,
-                    attachments: attachments,
-                    mentionedUserIds: mentionedUserIds,
-                    quotedMessageId: quotedMessage?.id,
-                    skipPush: skipPush,
-                    skipEnrichUrl: skipEnrichUrl,
-                    extraData: extraData
-                ) { [weak self] in
-                    switch $0 {
-                    case .success:
+                let attachments = attachments
+                Task {
+                    do {
+                        try await chat.sendMessage(
+                            with: messageText,
+                            attachments: attachments,
+                            replyTo: quotedMessage?.id,
+                            mentions: mentionedUserIds,
+                            pinning: nil,
+                            extraData: extraData,
+                            silent: isSilent,
+                            skipPushNotification: skipPush,
+                            skipEnrichURL: skipEnrichUrl
+                        )
                         completion()
-                    case .failure:
-                        self?.errorShown = true
+                    } catch {
+                        errorShown = true
                     }
+                    
                 }
             }
             
@@ -339,12 +344,12 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public var isDirectChannel: Bool {
-        channelController.channel?.isDirectMessageChannel ?? false
+        chat.state.channel?.isDirectMessageChannel ?? false
     }
     
     public var showCommandsOverlay: Bool {
         let commandAvailable = composerCommand != nil
-        let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
+        let configuredCommandsAvailable = chat.state.channel?.config.commands.count ?? 0 > 0
         return commandAvailable && configuredCommandsAvailable
     }
     
@@ -548,7 +553,7 @@ open class MessageComposerViewModel: ObservableObject {
         message: ChatMessage,
         completion: @escaping () -> Void
     ) {
-        guard let channelId = channelController.channel?.cid else {
+        guard let channelId = chat.state.channel?.cid else {
             return
         }
         let messageController = chatClient.messageController(
@@ -623,9 +628,9 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private func listenToCooldownUpdates() {
-        channelController.channelChangePublisher.sink { [weak self] _ in
+        chat.state.$channel.sink { [weak self] value in
             guard self?.isSlowModeDisabled == false else { return }
-            let cooldownDuration = self?.channelController.channel?.cooldownDuration ?? 0
+            let cooldownDuration = value?.cooldownDuration ?? 0
             if self?.cooldownPeriod == cooldownDuration {
                 return
             }
@@ -636,7 +641,7 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private func checkChannelCooldown() {
-        let duration = channelController.channel?.cooldownDuration ?? 0
+        let duration = chat.state.channel?.cooldownDuration ?? 0
         if duration > 0 && timer == nil && !isSlowModeDisabled {
             cooldownDuration = duration
             timer = Timer.scheduledTimer(

@@ -13,12 +13,12 @@ public class MuteCommandHandler: TwoStepMentionCommand {
     @Injected(\.chatClient) private var chatClient
 
     public init(
-        channelController: ChatChannelController,
+        chat: Chat,
         commandSymbol: String,
         id: String = "/mute"
     ) {
         super.init(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: commandSymbol,
             id: id
         )

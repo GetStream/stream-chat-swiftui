@@ -24,13 +24,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelViewModel? = nil,
-        channelController: ChatChannelController,
+        chat: Chat,
         messageController: ChatMessageController? = nil,
         scrollToMessage: ChatMessage? = nil
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeChannelViewModel(
-                with: channelController,
+                with: chat,
                 messageController: messageController,
                 scrollToMessage: scrollToMessage
             )
@@ -105,7 +105,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         .animation(nil)
 
                     factory.makeMessageComposerViewType(
-                        with: viewModel.channelController,
+                        with: viewModel.chat,
                         messageController: viewModel.messageController,
                         quotedMessage: $viewModel.quotedMessage,
                         editedMessage: $viewModel.editedMessage,

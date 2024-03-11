@@ -453,28 +453,27 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let channelController = InjectedValues[\.utils]
+        let chat = InjectedValues[\.utils]
             .channelControllerFactory
-            .makeChannelController(for: channel.cid)
-        let action = {
-            channelController.markUnread(from: message.id) { result in
-                if case let .failure(error) = result {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: MessageActionId.markUnread
-                        )
+            .makeChat(for: channel.cid)
+        let action = Task {
+            do {
+                try await chat.markUnread(from: message.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: MessageActionId.markUnread
                     )
-                }
+                )
+            } catch {
+                onError(error)
             }
         }
         let unreadAction = MessageAction(
             id: MessageActionId.markUnread,
             title: L10n.Message.Actions.markUnread,
             iconName: "message.badge",
-            action: action,
+            action: { _ = action },
             confirmationPopup: nil,
             isDestructive: false
         )

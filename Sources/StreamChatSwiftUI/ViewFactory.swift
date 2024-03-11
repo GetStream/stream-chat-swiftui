@@ -531,7 +531,7 @@ public protocol ViewFactory: AnyObject {
     ///  - onMessageSent: Called when a message is sent.
     /// - Returns: view displayed in the message composer slot.
     func makeMessageComposerViewType(
-        with channelController: ChatChannelController,
+        with chat: Chat,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,

@@ -103,10 +103,10 @@ struct GroupControlsView: View {
             NavigationLink(
                 isActive: $viewModel.showGroupConversation,
                 destination: {
-                    if let controller = viewModel.channelController {
+                    if let chat = viewModel.chat {
                         ChatChannelView(
                             viewFactory: DemoAppFactory.shared,
-                            channelController: controller
+                            chat: chat
                         )
                         .onDisappear {
                             isNewChatShown = false

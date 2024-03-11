@@ -12,7 +12,7 @@ open class TwoStepMentionCommand: CommandHandler {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
 
-    private let channelController: ChatChannelController
+    private let chat: Chat
     private let mentionsCommandHandler: MentionsCommandHandler
     private let mentionSymbol: String
 
@@ -23,17 +23,17 @@ open class TwoStepMentionCommand: CommandHandler {
     public let replacesMessageSending: Bool = true
 
     public init(
-        channelController: ChatChannelController,
+        chat: Chat,
         commandSymbol: String,
         id: String,
         displayInfo: CommandDisplayInfo? = nil,
         mentionSymbol: String = "@"
     ) {
-        self.channelController = channelController
+        self.chat = chat
         self.id = id
         self.mentionSymbol = mentionSymbol
         mentionsCommandHandler = MentionsCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: mentionSymbol,
             mentionAllAppUsers: false
         )

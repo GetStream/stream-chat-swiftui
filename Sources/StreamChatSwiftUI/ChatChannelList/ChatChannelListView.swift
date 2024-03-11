@@ -23,7 +23,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelListViewModel? = nil,
-        channelListController: ChatChannelListController? = nil,
+        channelList: ChannelList? = nil,
         title: String = "Stream Chat",
         onItemTap: ((ChatChannel) -> Void)? = nil,
         selectedChannelId: String? = nil,
@@ -31,7 +31,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         embedInNavigationView: Bool = true
     ) {
         let channelListVM = viewModel ?? ViewModelsFactory.makeChannelListViewModel(
-            channelListController: channelListController,
+            channelList: channelList,
             selectedChannelId: selectedChannelId
         )
         _viewModel = StateObject(
@@ -221,7 +221,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     onItemAppear: viewModel.loadAdditionalSearchResults(index:)
                 )
             } else {
-                ChannelList(
+                ChannelListContainer(
                     factory: viewFactory,
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,

@@ -6,7 +6,7 @@ import Foundation
 import StreamChat
 
 /// Factory used to create view models.
-public class ViewModelsFactory {
+@MainActor public class ViewModelsFactory {
     private init() { /* Private init */ }
 
     /// Creates the `ChannelListViewModel`.
@@ -16,11 +16,11 @@ public class ViewModelsFactory {
     ///    - selectedChannelId: pre-selected channel id (used for deeplinking).
     /// - Returns: `ChatChannelListViewModel`.
     public static func makeChannelListViewModel(
-        channelListController: ChatChannelListController? = nil,
+        channelList: ChannelList? = nil,
         selectedChannelId: String? = nil
     ) -> ChatChannelListViewModel {
         ChatChannelListViewModel(
-            channelListController: channelListController,
+            channelList: channelList,
             selectedChannelId: selectedChannelId
         )
     }
@@ -30,12 +30,12 @@ public class ViewModelsFactory {
     ///    - channelController: the channel controller.
     ///    - messageController: optional message controller (used in threads).
     public static func makeChannelViewModel(
-        with channelController: ChatChannelController,
+        with chat: Chat,
         messageController: ChatMessageController?,
         scrollToMessage: ChatMessage?
     ) -> ChatChannelViewModel {
         let viewModel = ChatChannelViewModel(
-            channelController: channelController,
+            chat: chat,
             messageController: messageController,
             scrollToMessage: scrollToMessage
         )
@@ -65,11 +65,11 @@ public class ViewModelsFactory {
     ///  - messageController: optional message controller (used in threads).
     /// - Returns: `MessageComposerViewModel`.
     public static func makeMessageComposerViewModel(
-        with channelController: ChatChannelController,
+        with chat: Chat,
         messageController: ChatMessageController?
     ) -> MessageComposerViewModel {
         MessageComposerViewModel(
-            channelController: channelController,
+            chat: chat,
             messageController: messageController
         )
     }

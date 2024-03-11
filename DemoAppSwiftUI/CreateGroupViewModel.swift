@@ -10,7 +10,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     @Injected(\.chatClient) var chatClient
 
-    var channelController: ChatChannelController!
+    var chat: Chat!
 
     @Published var searchText = "" {
         didSet {
@@ -65,25 +65,20 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
 
     func showChannelView() {
-        do {
-            channelController = try chatClient.channelController(
-                createChannelWithId: .init(
-                    type: .messaging,
-                    id: String(UUID().uuidString.prefix(10))
-                ),
-                name: groupName,
-                members: Set(selectedUsers.map(\.id))
-            )
-            channelController.synchronize { [weak self] error in
-                if error != nil {
-                    self?.errorShown = true
-                } else {
-                    self?.showGroupConversation = true
-                }
+        Task {
+            do {
+                chat = try await chatClient.makeChat(
+                    with: .init(
+                        type: .messaging,
+                        id: String(UUID().uuidString.prefix(10))
+                    ),
+                    name: groupName,
+                    members: selectedUsers.map(\.id)
+                )
+                showGroupConversation = true
+            } catch {
+                errorShown = true
             }
-
-        } catch {
-            errorShown = true
         }
     }
 

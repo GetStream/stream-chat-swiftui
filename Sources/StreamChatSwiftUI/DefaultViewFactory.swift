@@ -198,12 +198,12 @@ extension ViewFactory {
     
     public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
-            let controller = InjectedValues[\.utils]
+            let chat = InjectedValues[\.utils]
                 .channelControllerFactory
-                .makeChannelController(for: selectionInfo.channel.cid)
+                .makeChat(for: selectionInfo.channel.cid)
             return ChatChannelView(
                 viewFactory: self,
-                channelController: controller,
+                chat: chat,
                 scrollToMessage: selectionInfo.message
             )
         }
@@ -211,16 +211,16 @@ extension ViewFactory {
     
     public func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
-            let channelController = InjectedValues[\.utils]
+            let chat = InjectedValues[\.utils]
                 .channelControllerFactory
-                .makeChannelController(for: channel.cid)
+                .makeChat(for: channel.cid)
             let messageController = chatClient.messageController(
                 cid: channel.cid,
                 messageId: message.id
             )
             return ChatChannelView(
                 viewFactory: self,
-                channelController: channelController,
+                chat: chat,
                 messageController: messageController,
                 scrollToMessage: message
             )
@@ -493,7 +493,7 @@ extension ViewFactory {
     }
     
     public func makeMessageComposerViewType(
-        with channelController: ChatChannelController,
+        with chat: Chat,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
@@ -501,7 +501,7 @@ extension ViewFactory {
     ) -> MessageComposerView<Self> {
         MessageComposerView(
             viewFactory: self,
-            channelController: channelController,
+            chat: chat,
             messageController: messageController,
             quotedMessage: quotedMessage,
             editedMessage: editedMessage,

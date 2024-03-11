@@ -7,12 +7,12 @@ import SwiftUI
 
 /// Stateless component for the channel list.
 /// If used directly, you should provide the channel list.
-public struct ChannelList<Factory: ViewFactory>: View {
+public struct ChannelListContainer<Factory: ViewFactory>: View {
 
     @Injected(\.colors) private var colors
     
     private var factory: Factory
-    var channels: LazyCachedMapCollection<ChatChannel>
+    var channels: StreamCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
     private var scrollable: Bool
@@ -28,7 +28,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        channels: LazyCachedMapCollection<ChatChannel>,
+        channels: StreamCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         scrollable: Bool = true,
@@ -110,7 +110,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
     private var factory: Factory
-    var channels: LazyCachedMapCollection<ChatChannel>
+    var channels: StreamCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
     private var onlineIndicatorShown: (ChatChannel) -> Bool
@@ -125,7 +125,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        channels: LazyCachedMapCollection<ChatChannel>,
+        channels: StreamCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         onlineIndicatorShown: @escaping (ChatChannel) -> Bool,

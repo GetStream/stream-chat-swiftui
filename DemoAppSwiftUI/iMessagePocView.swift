@@ -19,7 +19,6 @@ struct iMessagePocView: View {
         _viewModel = StateObject(
             wrappedValue:
             iMessageChatChannelListViewModel(
-                channelListController: nil,
                 selectedChannelId: nil
             )
         )
@@ -42,7 +41,7 @@ struct iMessagePocView: View {
                     }
                     .frame(height: 60)
                 }
-                ChannelList(
+                ChannelListContainer(
                     factory: factory,
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,

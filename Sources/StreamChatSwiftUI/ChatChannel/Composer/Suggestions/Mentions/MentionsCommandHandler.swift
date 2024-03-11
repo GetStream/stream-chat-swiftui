@@ -8,6 +8,8 @@ import SwiftUI
 
 /// Handles the mention command and provides suggestions.
 public struct MentionsCommandHandler: CommandHandler {
+    
+    @Injected(\.chatClient) var chatClient
 
     public let id: String
     public var displayInfo: CommandDisplayInfo?
@@ -15,24 +17,24 @@ public struct MentionsCommandHandler: CommandHandler {
     private let mentionAllAppUsers: Bool
     private let typingSuggester: TypingSuggester
 
-    private let channelController: ChatChannelController
+    private let chat: Chat
     private let userSearchController: ChatUserSearchController
 
     public init(
-        channelController: ChatChannelController,
+        chat: Chat,
         userSearchController: ChatUserSearchController? = nil,
         commandSymbol: String,
         mentionAllAppUsers: Bool,
         id: String = "mentions"
     ) {
         self.id = id
-        self.channelController = channelController
+        self.chat = chat
         self.mentionAllAppUsers = mentionAllAppUsers
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
         if let userSearchController = userSearchController {
             self.userSearchController = userSearchController
         } else {
-            self.userSearchController = channelController.client.userSearchController()
+            self.userSearchController = InjectedValues[\.chatClient].userSearchController()
         }
     }
 
@@ -94,8 +96,8 @@ public struct MentionsCommandHandler: CommandHandler {
         for typingMention: String,
         mentionRange: NSRange
     ) -> Future<SuggestionInfo, Error> {
-        guard let channel = channelController.channel,
-              let currentUserId = channelController.client.currentUserId else {
+        guard let channel = chat.state.channel,
+              let currentUserId = chatClient.currentUserId else {
             return StreamChatError.missingData.asFailedPromise()
         }
 

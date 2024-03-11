@@ -2,13 +2,14 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Foundation
 import StreamChat
 import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate {
+@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate {
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
     @Injected(\.images) private var images: Images
@@ -20,13 +21,21 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
 
-    private var controller: ChatChannelListController?
+    private var channelList: ChannelList? {
+        didSet {
+            if channelList != nil {
+                subscribeToChannelListChanges()
+            }
+        }
+    }
+    
+    private var cancellables = Set<AnyCancellable>()
 
     /// Used when screen is shown from a deeplink.
     private var selectedChannelId: String?
 
     /// Temporarly holding changes while message list is shown.
-    private var queuedChannelsChanges = LazyCachedMapCollection<ChatChannel>()
+    private var queuedChannelsChanges = StreamCollection<ChatChannel>([])
 
     private var messageSearchController: ChatMessageSearchController?
 
@@ -45,10 +54,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private var selectedChannelIndex: Int?
 
     /// Published variables.
-    @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
+    @Published public var channels = StreamCollection<ChatChannel>([]) {
         didSet {
             if !markDirty {
-                queuedChannelsChanges = []
+                queuedChannelsChanges = StreamCollection<ChatChannel>([])
             } else {
                 markDirty = false
             }
@@ -116,16 +125,11 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     public init(
-        channelListController: ChatChannelListController? = nil,
+        channelList: ChannelList? = nil,
         selectedChannelId: String? = nil
     ) {
         self.selectedChannelId = selectedChannelId
-        if let channelListController = channelListController {
-            controller = channelListController
-        } else {
-            makeDefaultChannelListController()
-        }
-        setupChannelListController()
+        setupChannelList(channelList)
         observeChannelDismiss()
         observeHideTabBar()
     }
@@ -144,14 +148,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     public func checkForChannels(index: Int) {
         handleChannelAppearance()
 
-        if index < (controller?.channels.count ?? 0) - 15 {
+        if index < (channelList?.state.channels.count ?? 0) - 15 {
             return
         }
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            controller?.loadNextChannels(limit: 30) { [weak self] _ in
-                guard let self = self else { return }
+            Task {
+                _ = try? await channelList?.loadNextChannels(with: 30)
                 self.loadingNextChannels = false
             }
         }
@@ -208,30 +212,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     public func showErrorPopup(_ error: Error?) {
         channelAlertType = .error
     }
-
-    // MARK: - ChatChannelListControllerDelegate
-
-    public func controller(
-        _ controller: ChatChannelListController,
-        didChangeChannels changes: [ListChange<ChatChannel>]
-    ) {
-        handleChannelListChanges(controller)
-    }
-
-    open func controller(
-        _ controller: ChatChannelListController,
-        shouldAddNewChannelToList channel: ChatChannel
-    ) -> Bool {
-        channel.membership != nil
-    }
-
-    open func controller(
-        _ controller: ChatChannelListController,
-        shouldListUpdatedChannel channel: ChatChannel
-    ) -> Bool {
-        channel.membership != nil
-    }
-
+    
     func checkTabBarAppearance() {
         guard #available(iOS 15, *) else { return }
         if hideTabBar != false {
@@ -246,13 +227,22 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     // MARK: - private
+    
+    private func subscribeToChannelListChanges() {
+        channelList?.state.$channels
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] channels in
+            self?.handleChannelListChanges(channels)
+        })
+        .store(in: &cancellables)
+    }
 
-    private func handleChannelListChanges(_ controller: ChatChannelListController) {
+    private func handleChannelListChanges(_ channels: StreamCollection<ChatChannel>) {
         if selectedChannel != nil || !searchText.isEmpty {
-            queuedChannelsChanges = controller.channels
+            queuedChannelsChanges = channels
             updateChannelsIfNeeded()
         } else {
-            channels = controller.channels
+            self.channels = channels
         }
     }
 
@@ -268,37 +258,28 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    private func makeDefaultChannelListController() {
+    private func setupChannelList(_ list: ChannelList? = nil) {
         guard let currentUserId = chatClient.currentUserId else {
             observeClientIdChange()
             return
         }
-        controller = chatClient.channelListController(
-            query: .init(filter: .containMembers(userIds: [currentUserId]))
-        )
-    }
-
-    private func setupChannelListController() {
-        controller?.delegate = self
-
-        updateChannels()
-
-        if channels.isEmpty {
-            loading = networkReachability.isNetworkAvailable()
-        }
-
-        controller?.synchronize { [weak self] error in
-            guard let self = self else { return }
-            self.loading = false
-            if error != nil {
-                // handle error
-                self.channelAlertType = .error
-            } else {
+        Task {
+            do {
+                if let list {
+                    channelList = list
+                } else {
+                    let query = ChannelListQuery(filter: .containMembers(userIds: [currentUserId]))
+                    channelList = try await chatClient.makeChannelList(with: query)
+                }
+                self.loading = false
                 // access channels
                 if self.selectedChannel == nil {
                     self.updateChannels()
                 }
                 self.checkForDeeplinks()
+            } catch {
+                self.loading = false
+                self.channelAlertType = .error
             }
         }
     }
@@ -346,8 +327,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             guard let self = self else { return }
             if self.chatClient.currentUserId != nil {
                 self.stopTimer()
-                self.makeDefaultChannelListController()
-                self.setupChannelListController()
+                self.setupChannelList()
             }
         })
     }
@@ -358,7 +338,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func updateChannels() {
-        channels = controller?.channels ?? LazyCachedMapCollection<ChatChannel>()
+        channels = channelList?.state.channels ?? StreamCollection<ChatChannel>([])
     }
 
     private func handleChannelAppearance() {
@@ -405,7 +385,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             temp[index] = selected
         }
         markDirty = true
-        channels = LazyCachedMapCollection(source: temp, map: { $0 })
+        channels = StreamCollection(temp)
     }
 
     private func observeChannelDismiss() {

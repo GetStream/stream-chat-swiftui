@@ -15,8 +15,8 @@ struct DemoAppSwiftUIApp: App {
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
     
-    var channelListController: ChatChannelListController? {
-        appState.channelListController
+    var channelList: ChannelList? {
+        appState.channelList
     }
     
     var body: some Scene {
@@ -30,13 +30,13 @@ struct DemoAppSwiftUIApp: App {
                 if notificationsHandler.notificationChannelId != nil {
                     ChatChannelListView(
                         viewFactory: DemoAppFactory.shared,
-                        channelListController: channelListController,
+                        channelList: channelList,
                         selectedChannelId: notificationsHandler.notificationChannelId
                     )
                 } else {
                     ChatChannelListView(
                         viewFactory: DemoAppFactory.shared,
-                        channelListController: channelListController
+                        channelList: channelList
                     )
                 }
             }
@@ -53,7 +53,9 @@ struct DemoAppSwiftUIApp: App {
                             .init(key: .updatedAt)
                         ]
                     )
-                    appState.channelListController = chatClient.channelListController(query: channelListQuery)
+                    Task {
+                        appState.channelList = try await chatClient.makeChannelList(with: channelListQuery)
+                    }
                 }
                 notificationsHandler.setupRemoteNotifications()
             }
@@ -66,12 +68,12 @@ class AppState: ObservableObject {
     @Published var userState: UserState = .launchAnimation {
         willSet {
             if newValue == .notLoggedIn && userState == .loggedIn {
-                channelListController = nil
+                channelList = nil
             }
         }
     }
     
-    var channelListController: ChatChannelListController?
+    var channelList: ChannelList?
 
     static let shared = AppState()
 
