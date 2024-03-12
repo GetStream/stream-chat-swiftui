@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Link detection in the text views
+- Indicator when a message was edited
 
 # [4.49.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.49.0)
 _February 28, 2024_

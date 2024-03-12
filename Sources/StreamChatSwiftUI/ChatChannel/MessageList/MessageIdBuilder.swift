@@ -20,6 +20,9 @@ public class DefaultMessageIdBuilder: MessageIdBuilder {
         if message.localState != nil {
             statesId = message.uploadingStatesId
         }
+        if message.textUpdatedAt != nil {
+            statesId = "edited"
+        }
         return message.baseId + statesId + message.reactionScoresId
             + message.repliesCountId + "\(message.updatedAt)" + message.pinStateId
     }
