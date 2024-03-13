@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Message text color when using link detection
 
 # [4.50.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.50.0)
 _March 12, 2024_
