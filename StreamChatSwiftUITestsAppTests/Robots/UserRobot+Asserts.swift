@@ -547,12 +547,30 @@ extension UserRobot {
             MessageListPage.list.swipeDown()
         }
 
-        let paginationLimit = 20
-        let penultimateMessageСellIndex = MessageListPage.cells.count - 2
-        let penultimateMessageСell = MessageListPage.cells.element(boundBy: penultimateMessageСellIndex)
-        let lastLoadedMessage = Int(MessageListPage.Attributes.text(in: penultimateMessageСell).text) ?? paginationLimit
+        let oldestMessage = MessageListPage.cells.lastMatch!
+        XCTAssertEqual(attributes.text(in: oldestMessage).text, "1", file: file, line: line)
+        return self
+    }
+    
+    @discardableResult
+    func assertThreadListPagination(
+        messagesCount expectedCount: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let endTime = Date().timeIntervalSince1970 * 1000 + XCUIElement.waitTimeout * 2000
+        let actualCount = ThreadPage.cells.count
+        XCTAssertNotEqual(expectedCount, actualCount, file: file, line: line)
 
-        XCTAssertLessThan(lastLoadedMessage, paginationLimit, file: file, line: line)
+        while endTime > Date().timeIntervalSince1970 * 1000 {
+            ThreadPage.list.swipeDown()
+        }
+
+        let parentMessage = MessageListPage.cells.lastMatch! // parent message
+        XCTAssertEqual(attributes.text(in: parentMessage).text, "1", file: file, line: line)
+        
+        let firstThreadReply = MessageListPage.cells.allElementsBoundByIndex[MessageListPage.cells.count - 2]
+        XCTAssertEqual(attributes.text(in: firstThreadReply).text, "1", file: file, line: line)
         return self
     }
 

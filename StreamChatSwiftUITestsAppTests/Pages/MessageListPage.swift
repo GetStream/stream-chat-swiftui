@@ -133,7 +133,7 @@ class MessageListPage {
         }
 
         static func text(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["MessageView"].staticTexts["MessageTextView"]
+            messageCell.staticTexts["MessageTextView"]
         }
 
         static func systemMessage(in messageCell: XCUIElement) -> XCUIElement {

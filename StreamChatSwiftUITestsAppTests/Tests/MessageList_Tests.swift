@@ -516,7 +516,7 @@ extension MessageList_Tests {
             userRobot.openThread()
         }
         THEN("user makes sure that thread history is loaded") {
-            userRobot.assertMessageListPagination(messagesCount: replyCount + 1)
+            userRobot.assertThreadListPagination(messagesCount: replyCount + 1)
         }
     }
 }
