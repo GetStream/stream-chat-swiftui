@@ -646,14 +646,23 @@ import SwiftUI
                 withTimeInterval: 1,
                 repeats: true,
                 block: { [weak self] _ in
-                    self?.cooldownDuration -= 1
-                    if self?.cooldownDuration == 0 {
-                        self?.timer?.invalidate()
-                        self?.timer = nil
+                    guard let self else { return }
+                    Task {
+                        await MainActor.run {
+                            self.handleChannelCooldown()
+                        }
                     }
                 }
             )
             timer?.fire()
+        }
+    }
+    
+    private func handleChannelCooldown() {
+        cooldownDuration -= 1
+        if cooldownDuration == 0 {
+            timer?.invalidate()
+            timer = nil
         }
     }
     

@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View for the chat channel.
-public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
+@MainActor public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient

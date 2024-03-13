@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View for the chat channel list.
-public struct ChatChannelListView<Factory: ViewFactory>: View {
+@MainActor public struct ChatChannelListView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
