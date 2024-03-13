@@ -263,6 +263,8 @@ struct LinkDetectionTextView: View {
     
     var body: some View {
         Text(displayedText)
+            .foregroundColor(textColor(for: message))
+            .font(fonts.body)
             .onAppear {
                 let attributedText = NSMutableAttributedString(
                     string: text,
