@@ -89,7 +89,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             cid: .unique,
             text: "Message sent by other user",
             author: .mock(id: Self.currentUserId, name: "Martin"),
-            isSentByCurrentUser: true,
+            isSentByCurrentUser: false,
             textUpdatedAt: Date()
         )
 
