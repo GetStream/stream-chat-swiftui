@@ -315,11 +315,9 @@ import SwiftUI
                     } catch {
                         errorShown = true
                     }
-                    
+                    clearInputData()
                 }
             }
-            
-            clearInputData()
         } catch {
             errorShown = true
         }

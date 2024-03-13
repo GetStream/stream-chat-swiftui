@@ -93,8 +93,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     }
     
     var firstUnreadMessageId: String? {
-//        chat.state.firstUnreadMessageId
-        return nil
+        chat.state.firstUnreadMessageId
     }
 
     init(chat: Chat) {

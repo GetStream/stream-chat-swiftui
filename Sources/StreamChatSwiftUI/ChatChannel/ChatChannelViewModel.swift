@@ -147,19 +147,19 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelDataSource.delegate = self
         messages = channelDataSource.messages
         
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-//            if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
-//                let message = channelController.dataStore.message(id: parentMessageId)
-//                self?.threadMessage = message
-//                self?.threadMessageShown = true
-//                self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
-//            } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
-//                self?.scrolledId = jumpToReplyId
-//                self?.messageCachingUtils.jumpToReplyId = nil
-//            } else if messageController == nil {
-//                self?.scrolledId = scrollToMessage?.messageId
-//            }
-//        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
+                let message = chat.message(id: parentMessageId)
+                self?.threadMessage = message
+                self?.threadMessageShown = true
+                self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
+            } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
+                self?.scrolledId = jumpToReplyId
+                self?.messageCachingUtils.jumpToReplyId = nil
+            } else if messageController == nil {
+                self?.scrolledId = scrollToMessage?.messageId
+            }
+        }
               
         NotificationCenter.default.addObserver(
             self,
@@ -223,74 +223,68 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
         
     public func jumpToMessage(messageId: String) -> Bool {
-//        if messageId == .unknownMessageId {
-//            if firstUnreadMessageId == nil, let lastReadMessageId {
-//                channelDataSource.loadPageAroundMessageId(lastReadMessageId) { [weak self] error in
-//                    if error != nil {
-//                        log.error("Error loading messages around message \(messageId)")
-//                        return
-//                    }
-//                    if let firstUnread = self?.channelDataSource.firstUnreadMessageId,
-//                       let message = self?.channelController.dataStore.message(id: firstUnread) {
-//                        self?.firstUnreadMessageId = message.messageId
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                            self?.scrolledId = message.messageId
-//                        }
-//                    }
-//                }
-//            }
-//            return false
-//        }
-//        if messageId == messages.first?.messageId {
-//            scrolledId = nil
-//            return true
-//        } else {
-//            guard let baseId = messageId.components(separatedBy: "$").first else {
-//                scrolledId = nil
-//                return true
-//            }
-//            let alreadyLoaded = messages.map(\.id).contains(baseId)
-//            if alreadyLoaded && baseId != messageId {
-//                if scrolledId == nil {
-//                    scrolledId = messageId
-//                }
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-//                    self?.scrolledId = nil
-//                }
-//                return true
-//            } else {
-//                let message = channelController.dataStore.message(id: baseId)
-//                if let parentMessageId = message?.parentMessageId, !isMessageThread {
-//                    let parentMessage = channelController.dataStore.message(id: parentMessageId)
-//                    threadMessage = parentMessage
-//                    threadMessageShown = true
-//                    messageCachingUtils.jumpToReplyId = message?.messageId
-//                    return false
-//                }
-//                
-//                scrolledId = nil
-//                if loadingMessagesAround {
-//                    return false
-//                }
-//                loadingMessagesAround = true
-//                channelDataSource.loadPageAroundMessageId(baseId) { [weak self] error in
-//                    if error != nil {
-//                        log.error("Error loading messages around message \(messageId)")
-//                        return
-//                    }
-//                    var toJumpId = messageId
-//                    if toJumpId == baseId, let message = self?.channelController.dataStore.message(id: toJumpId) {
-//                        toJumpId = message.messageId
-//                    }
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                        self?.scrolledId = toJumpId
-//                        self?.loadingMessagesAround = false
-//                    }
-//                }
-//                return false
-//            }
-//        }
-        return false
+        if messageId == .unknownMessageId {
+            if firstUnreadMessageId == nil, let lastReadMessageId {
+                Task {
+                    try await channelDataSource.loadPageAroundMessageId(lastReadMessageId)
+                    if let firstUnread = channelDataSource.firstUnreadMessageId,
+                       let message = chat.message(id: firstUnread) {
+                        firstUnreadMessageId = message.messageId
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                            self?.scrolledId = message.messageId
+                        }
+                    }
+                }
+            }
+            return false
+        }
+        if messageId == messages.first?.messageId {
+            scrolledId = nil
+            return true
+        } else {
+            guard let baseId = messageId.components(separatedBy: "$").first else {
+                scrolledId = nil
+                return true
+            }
+            let alreadyLoaded = messages.map(\.id).contains(baseId)
+            if alreadyLoaded && baseId != messageId {
+                if scrolledId == nil {
+                    scrolledId = messageId
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.scrolledId = nil
+                }
+                return true
+            } else {
+                let message = chat.message(id: baseId)
+                if let parentMessageId = message?.parentMessageId, !isMessageThread {
+                    let parentMessage = chat.message(id: parentMessageId)
+                    threadMessage = parentMessage
+                    threadMessageShown = true
+                    messageCachingUtils.jumpToReplyId = message?.messageId
+                    return false
+                }
+                
+                scrolledId = nil
+                if loadingMessagesAround {
+                    return false
+                }
+                loadingMessagesAround = true
+                Task {
+                    try await channelDataSource.loadPageAroundMessageId(baseId)
+                    var toJumpId = messageId
+                    if toJumpId == baseId, let message = chat.message(id: toJumpId) {
+                        toJumpId = message.messageId
+                    }
+                    let scrolledId = toJumpId
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                        self?.scrolledId = scrolledId
+                        self?.loadingMessagesAround = false
+                    }
+                }
+                return false
+            }
+        }
     }
     
     open func handleMessageAppear(index: Int, scrollDirection: ScrollDirection) {
@@ -601,16 +595,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func checkUnreadCount() {
-//        guard !isMessageThread else { return }
-//        if chat.state.channel?.unreadCount.messages ?? 0 > 0 {
-//            if channelController.firstUnreadMessageId != nil {
-//                firstUnreadMessageId = channelController.firstUnreadMessageId
-//                canMarkRead = false
-//            } else if chat.lastReadMessageId != nil {
-//                lastReadMessageId = channelController.lastReadMessageId
-//                canMarkRead = false
-//            }
-//        }
+        guard !isMessageThread else { return }
+        if chat.state.channel?.unreadCount.messages ?? 0 > 0 {
+            if chat.state.firstUnreadMessageId != nil {
+                firstUnreadMessageId = chat.state.firstUnreadMessageId
+                canMarkRead = false
+            } else if chat.state.lastReadMessageId != nil {
+                lastReadMessageId = chat.state.lastReadMessageId
+                canMarkRead = false
+            }
+        }
     }
     
     private func handleDateChange() {
