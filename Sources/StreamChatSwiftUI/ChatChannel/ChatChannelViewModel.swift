@@ -149,7 +149,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
-                let message = chat.message(id: parentMessageId)
+                let message = chat.state.localMessage(for: parentMessageId)
                 self?.threadMessage = message
                 self?.threadMessageShown = true
                 self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
@@ -228,7 +228,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 Task {
                     try await channelDataSource.loadPageAroundMessageId(lastReadMessageId)
                     if let firstUnread = channelDataSource.firstUnreadMessageId,
-                       let message = chat.message(id: firstUnread) {
+                       let message = chat.state.localMessage(for: firstUnread) {
                         firstUnreadMessageId = message.messageId
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                             self?.scrolledId = message.messageId
@@ -256,9 +256,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 }
                 return true
             } else {
-                let message = chat.message(id: baseId)
+                let message = chat.state.localMessage(for: baseId)
                 if let parentMessageId = message?.parentMessageId, !isMessageThread {
-                    let parentMessage = chat.message(id: parentMessageId)
+                    let parentMessage = chat.state.localMessage(for: parentMessageId)
                     threadMessage = parentMessage
                     threadMessageShown = true
                     messageCachingUtils.jumpToReplyId = message?.messageId
@@ -273,7 +273,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 Task {
                     try await channelDataSource.loadPageAroundMessageId(baseId)
                     var toJumpId = messageId
-                    if toJumpId == baseId, let message = chat.message(id: toJumpId) {
+                    if toJumpId == baseId, let message = chat.state.localMessage(for: toJumpId) {
                         toJumpId = message.messageId
                     }
                     let scrolledId = toJumpId
