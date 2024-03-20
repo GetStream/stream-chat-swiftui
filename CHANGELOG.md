@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Role value in the user display info
+
 ### 🐞 Fixed
 - Reactions picker for large messages sometimes goes in the safe area
 
