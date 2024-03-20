@@ -118,7 +118,7 @@ class MessageCachingUtils {
         let userDisplayInfo = UserDisplayInfo(
             id: user.id,
             name: user.name ?? user.id,
-            imageURL: user.imageURL, 
+            imageURL: user.imageURL,
             role: user.userRole
         )
         messageAuthorMapping[message.id] = user.id
