@@ -141,7 +141,7 @@ public struct UserDisplayInfo {
     public let imageURL: URL?
     public let role: UserRole?
 
-    public init(id: String, name: String, imageURL: URL?, role: UserRole?) {
+    public init(id: String, name: String, imageURL: URL?, role: UserRole? = nil) {
         self.id = id
         self.name = name
         self.imageURL = imageURL
