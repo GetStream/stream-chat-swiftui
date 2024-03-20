@@ -456,7 +456,7 @@ extension MessageAction {
         let chat = InjectedValues[\.utils]
             .channelControllerFactory
             .makeChat(for: channel.cid)
-        let action = Task {
+        let action = {
             do {
                 try await chat.markUnread(from: message.id)
                 onFinish(

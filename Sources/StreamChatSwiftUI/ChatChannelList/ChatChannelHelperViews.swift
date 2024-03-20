@@ -93,7 +93,7 @@ extension CGSize {
 }
 
 /// Provides access to the the app's tab bar (if present).
-struct TabBarAccessor: UIViewControllerRepresentable {
+@MainActor struct TabBarAccessor: UIViewControllerRepresentable {
     var callback: (UITabBar) -> Void
     private let proxyController = ViewController()
 

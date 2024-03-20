@@ -155,7 +155,7 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             Task {
-                _ = try? await channelList?.loadNextChannels(with: 30)
+                _ = try? await channelList?.loadNextChannels()
                 self.loadingNextChannels = false
             }
         }
