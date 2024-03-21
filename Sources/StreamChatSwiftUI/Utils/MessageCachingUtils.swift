@@ -118,7 +118,8 @@ class MessageCachingUtils {
         let userDisplayInfo = UserDisplayInfo(
             id: user.id,
             name: user.name ?? user.id,
-            imageURL: user.imageURL
+            imageURL: user.imageURL,
+            role: user.userRole
         )
         messageAuthorMapping[message.id] = user.id
         messageAuthors[user.id] = userDisplayInfo
@@ -138,11 +139,13 @@ public struct UserDisplayInfo {
     public let id: String
     public let name: String
     public let imageURL: URL?
+    public let role: UserRole?
 
-    public init(id: String, name: String, imageURL: URL?) {
+    public init(id: String, name: String, imageURL: URL?, role: UserRole? = nil) {
         self.id = id
         self.name = name
         self.imageURL = imageURL
+        self.role = role
     }
 }
 
