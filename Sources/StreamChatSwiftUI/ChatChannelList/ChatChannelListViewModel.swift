@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate {
+@MainActor open class ChatChannelListViewModel: ObservableObject {
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
     @Injected(\.images) private var images: Images
@@ -37,7 +37,7 @@ import UIKit
     /// Temporarly holding changes while message list is shown.
     private var queuedChannelsChanges = StreamCollection<ChatChannel>([])
 
-    private var messageSearchController: ChatMessageSearchController?
+    private var messageSearch: MessageSearch?
 
     private var timer: Timer?
 
@@ -162,20 +162,24 @@ import UIKit
     }
 
     public func loadAdditionalSearchResults(index: Int) {
-        guard let messageSearchController = messageSearchController else {
+        guard let messageSearch = messageSearch else {
             return
         }
 
-        if index < messageSearchController.messages.count - 10 {
+        if index < messageSearch.state.messages.count - 10 {
             return
         }
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
+            Task {
+                do {
+                    try await messageSearch.loadNextMessages()
+                    updateSearchResults()
+                } catch {
+                    log.error("Error loading search results")
+                }
                 self.loadingNextChannels = false
-                self.updateSearchResults()
             }
         }
     }
@@ -291,11 +295,11 @@ import UIKit
     }
 
     private func updateSearchResults() {
-        guard let messageSearchController = messageSearchController else {
+        guard let messageSearch = messageSearch else {
             return
         }
 
-        searchResults = messageSearchController.messages
+        searchResults = messageSearch.state.messages
             .compactMap { message in
                 message.makeChannelSelectionInfo(with: chatClient)
             }
@@ -304,18 +308,23 @@ import UIKit
     private func handleSearchTextChange() {
         if !searchText.isEmpty {
             guard let userId = chatClient.currentUserId else { return }
-            messageSearchController = chatClient.messageSearchController()
+            messageSearch = chatClient.makeMessageSearch()
             let query = MessageSearchQuery(
                 channelFilter: .containMembers(userIds: [userId]),
                 messageFilter: .autocomplete(.text, text: searchText)
             )
             loadingSearchResults = true
-            messageSearchController?.search(query: query, completion: { [weak self] _ in
-                self?.loadingSearchResults = false
-                self?.updateSearchResults()
-            })
+            Task {
+                do {
+                    try await messageSearch?.search(query: query)
+                } catch {
+                    log.error("Error loading search results")
+                }
+                loadingSearchResults = false
+                updateSearchResults()
+            }
         } else {
-            messageSearchController = nil
+            messageSearch = nil
             searchResults = []
             updateChannels()
         }
@@ -325,9 +334,11 @@ import UIKit
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
             guard let self = self else { return }
-            if self.chatClient.currentUserId != nil {
-                self.stopTimer()
-                self.setupChannelList()
+            runOnMainActor {
+                if self.chatClient.currentUserId != nil {
+                    self.stopTimer()
+                    self.setupChannelList()
+                }
             }
         })
     }

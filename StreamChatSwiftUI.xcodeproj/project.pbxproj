@@ -447,6 +447,7 @@
 		84EADEC32B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEC22B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift */; };
 		84EADEC52B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEC42B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
+		84EFC6AA2BADB920002ECD4A /* ConcurrencyHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EFC6A92BADB920002ECD4A /* ConcurrencyHelpers.swift */; };
 		84F130C12AEAA957006E7B52 /* StreamLazyImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */; };
 		84F2908A276B90610045472D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F29089276B90610045472D /* GalleryView.swift */; };
 		84F2908C276B91700045472D /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908B276B91700045472D /* ZoomableScrollView.swift */; };
@@ -987,6 +988,7 @@
 		84EADEC22B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionFeedbackGenerator.swift; sourceTree = "<group>"; };
 		84EADEC42B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddedVoiceRecordingsView.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		84EFC6A92BADB920002ECD4A /* ConcurrencyHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrencyHelpers.swift; sourceTree = "<group>"; };
 		84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamLazyImage.swift; sourceTree = "<group>"; };
 		84F29089276B90610045472D /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		84F2908B276B91700045472D /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
@@ -1688,6 +1690,7 @@
 				8465FD2C2746A95600AF091E /* ChatChannelExtensions.swift */,
 				91CC2039283C3E7F0049A146 /* URLExtensions.swift */,
 				8482094D2ACFFCD900EF3261 /* Throttler.swift */,
+				84EFC6A92BADB920002ECD4A /* ConcurrencyHelpers.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2396,6 +2399,7 @@
 				847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */,
 				82D64BF62AD7E5B700C5C79E /* ImageProcessors+CoreImage.swift in Sources */,
 				8465FD792746A95700AF091E /* DeletedMessageView.swift in Sources */,
+				84EFC6AA2BADB920002ECD4A /* ConcurrencyHelpers.swift in Sources */,
 				8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */,
 				82D64B662AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift in Sources */,
 				84AB7B242773528300631A10 /* CommandsContainerView.swift in Sources */,
