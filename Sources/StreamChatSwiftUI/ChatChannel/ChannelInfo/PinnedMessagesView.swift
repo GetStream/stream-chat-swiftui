@@ -10,9 +10,12 @@ public struct PinnedMessagesView: View {
 
     @StateObject private var viewModel: PinnedMessagesViewModel
 
-    public init(channel: ChatChannel) {
+    public init(channel: ChatChannel, channelController: ChatChannelController? = nil) {
         _viewModel = StateObject(
-            wrappedValue: PinnedMessagesViewModel(channel: channel)
+            wrappedValue: PinnedMessagesViewModel(
+                channel: channel,
+                channelController: channelController
+            )
         )
     }
 
