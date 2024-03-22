@@ -36,6 +36,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
+        chat: Chat,
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
@@ -45,6 +46,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     ) {
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory.makeReactionsOverlayViewModel(
+                chat: chat,
                 message: messageDisplayInfo.message
             )
         )

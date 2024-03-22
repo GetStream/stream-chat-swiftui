@@ -176,28 +176,29 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .accessibility(identifier: "MessageRepliesView")
                     }
                     
-                    if bottomReactionsShown {
-                        factory.makeBottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
-                            handleGestureForMessage(
-                                showsMessageActions: false,
-                                showsBottomContainer: false
-                            )
-                        } onLongPress: {
-                            handleGestureForMessage(showsMessageActions: false)
-                        }
-                        .background(
-                            GeometryReader { proxy in
-                                let frame = proxy.frame(in: .local)
-                                let height = frame.height
-                                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
-                            }
-                        )
-                        .onPreferenceChange(HeightPreferenceKey.self) { value in
-                            if value != 0 {
-                                self.offsetYAvatar = -(value ?? 0)
-                            }
-                        }
-                    }
+                    //TODO: fix this.
+//                    if bottomReactionsShown {
+//                        factory.makeBottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
+//                            handleGestureForMessage(
+//                                showsMessageActions: false,
+//                                showsBottomContainer: false
+//                            )
+//                        } onLongPress: {
+//                            handleGestureForMessage(showsMessageActions: false)
+//                        }
+//                        .background(
+//                            GeometryReader { proxy in
+//                                let frame = proxy.frame(in: .local)
+//                                let height = frame.height
+//                                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
+//                            }
+//                        )
+//                        .onPreferenceChange(HeightPreferenceKey.self) { value in
+//                            if value != 0 {
+//                                self.offsetYAvatar = -(value ?? 0)
+//                            }
+//                        }
+//                    }
 
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {

@@ -792,12 +792,14 @@ extension ViewFactory {
     }
     
     public func makeBottomReactionsView(
+        chat: Chat,
         message: ChatMessage,
         showsAllInfo: Bool,
         onTap: @escaping () -> Void,
         onLongPress: @escaping () -> Void
     ) -> some View {
         BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: showsAllInfo,
             onTap: onTap,
@@ -818,6 +820,7 @@ extension ViewFactory {
     }
     
     public func makeReactionsOverlayView(
+        chat: Chat,
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
@@ -826,6 +829,7 @@ extension ViewFactory {
     ) -> some View {
         ReactionsOverlayView(
             factory: self,
+            chat: chat,
             channel: channel,
             currentSnapshot: currentSnapshot,
             messageDisplayInfo: messageDisplayInfo,

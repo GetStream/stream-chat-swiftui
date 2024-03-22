@@ -812,6 +812,7 @@ import SwiftUI
     ///  - onLongPress: method called when the user long presses on a reaction.
     /// - Returns: view displayed at the bottom reactions slot.
     func makeBottomReactionsView(
+        chat: Chat,
         message: ChatMessage,
         showsAllInfo: Bool,
         onTap: @escaping () -> Void,
@@ -838,6 +839,7 @@ import SwiftUI
     ///  - onActionExecuted: called when a message action is executed.
     /// - Returns: view displayed in the reactions overlay slot.
     func makeReactionsOverlayView(
+        chat: Chat,
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,

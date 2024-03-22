@@ -78,9 +78,13 @@ import StreamChat
     /// - Parameter message: the chat message.
     /// - Returns: `ReactionsOverlayViewModel`.
     public static func makeReactionsOverlayViewModel(
+        chat: Chat,
         message: ChatMessage
     ) -> ReactionsOverlayViewModel {
-        ReactionsOverlayViewModel(message: message)
+        ReactionsOverlayViewModel(
+            chat: chat,
+            message: message
+        )
     }
 
     /// Makes the message actions view model.

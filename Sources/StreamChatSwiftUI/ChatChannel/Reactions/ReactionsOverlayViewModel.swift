@@ -19,36 +19,46 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
     @Published public var errorShown = false
     @Published public var reactions: [MessageReactionType]
 
-    private var messageController: ChatMessageController?
-
-    public init(message: ChatMessage) {
+    private let chat: Chat
+    
+    private var messageState: MessageState?
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    public init(chat: Chat, message: ChatMessage) {
         self.message = message
+        self.chat = chat
         reactions = Self.reactions(from: message)
-        makeMessageController(for: message)
+        Task {
+            self.messageState = try await chat.makeMessageState(for: message.id)
+            self.messageState?.$message
+                .receive(on: RunLoop.main)
+                .sink(receiveValue: { [weak self] message in
+                    withAnimation {
+                        self?.message = message
+                    }
+                }
+            )
+            .store(in: &cancellables)
+        }
     }
 
     public func reactionTapped(_ reaction: MessageReactionType) {
         if userReactionIDs.contains(reaction) {
             // reaction should be removed
-            messageController?.deleteReaction(reaction)
+            Task {
+                try await chat.deleteReaction(from: message.id, with: reaction)
+            }
         } else {
             // reaction should be added
-            messageController?.addReaction(
-                reaction,
-                enforceUnique: utils.messageListConfig.uniqueReactionsEnabled
-            )
-        }
-    }
-
-    // MARK: - ChatMessageControllerDelegate
-
-    public func messageController(
-        _ controller: ChatMessageController,
-        didChangeMessage change: EntityChange<ChatMessage>
-    ) {
-        if let message = controller.message {
-            withAnimation {
-                self.message = message
+            Task {
+                try await chat.sendReaction(
+                    to: message.id,
+                    with: reaction,
+                    score: 1,
+                    enforceUnique: utils.messageListConfig.uniqueReactionsEnabled,
+                    extraData: [:]
+                )
             }
         }
     }
@@ -60,20 +70,6 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
             (message.reactionScores[reactionType] ?? 0) > 0
         }
         .sorted(by: InjectedValues[\.utils].sortReactions)
-    }
-
-    private func makeMessageController(for message: ChatMessage) {
-        let controllerFactory = InjectedValues[\.utils].channelControllerFactory
-        if let channelId = message.cid {
-            messageController = controllerFactory.makeMessageController(
-                for: message.id,
-                channelId: channelId
-            )
-            messageController?.delegate = self
-            if let message = messageController?.message {
-                self.message = message
-            }
-        }
     }
 
     private var userReactionIDs: Set<MessageReactionType> {

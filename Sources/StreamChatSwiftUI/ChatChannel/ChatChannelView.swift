@@ -133,6 +133,7 @@ import SwiftUI
                 .overlay(
                     viewModel.reactionsShown ?
                         factory.makeReactionsOverlayView(
+                            chat: viewModel.chat,
                             channel: channel,
                             currentSnapshot: viewModel.currentSnapshot!,
                             messageDisplayInfo: messageDisplayInfo!,

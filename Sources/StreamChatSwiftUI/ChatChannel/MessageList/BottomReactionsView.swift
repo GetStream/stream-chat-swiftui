@@ -22,6 +22,7 @@ struct BottomReactionsView: View {
     private let reactionSize: CGFloat = 20
     
     init(
+        chat: Chat,
         message: ChatMessage,
         showsAllInfo: Bool,
         reactionsPerRow: Int = 4,
@@ -32,7 +33,7 @@ struct BottomReactionsView: View {
         self.onTap = onTap
         self.reactionsPerRow = reactionsPerRow
         self.onLongPress = onLongPress
-        _viewModel = StateObject(wrappedValue: ReactionsOverlayViewModel(message: message))
+        _viewModel = StateObject(wrappedValue: ReactionsOverlayViewModel(chat: chat, message: message))
     }
     
     var body: some View {
