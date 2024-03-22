@@ -26,7 +26,7 @@ public class PinnedMessagesViewModel: ObservableObject {
         loadPinnedMessages()
     }
     
-    //MARK: - private
+    // MARK: - private
     
     private func loadPinnedMessages() {
         channelController?.loadPinnedMessages(completion: { [weak self] result in
