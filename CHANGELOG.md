@@ -4,7 +4,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Role value in the user display info
+
+### 🐞 Fixed
+- Reactions picker for large messages sometimes goes in the safe area
+
+# [4.50.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.50.1)
+_March 14, 2024_
+
+### 🐞 Fixed
+- Message text color when using link detection
+
+# [4.50.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.50.0)
+_March 12, 2024_
+
+### ✅ Added
 - Link detection in the text views
+- Indicator when a message was edited
 
 # [4.49.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.49.0)
 _February 28, 2024_

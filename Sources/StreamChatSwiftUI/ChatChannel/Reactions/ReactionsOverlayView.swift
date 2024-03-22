@@ -258,7 +258,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var messageContainerHeight: CGFloat {
-        let maxAllowed = screenHeight / 2
+        let maxAllowed = screenHeight / 2 - topSafeArea
         let containerHeight = messageDisplayInfo.frame.height
         return containerHeight > maxAllowed ? maxAllowed : containerHeight
     }
@@ -281,7 +281,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
         var originY = messageDisplayInfo.frame.origin.y
         let minOrigin: CGFloat = 100
-        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin - bottomOffset
+        let maxOrigin: CGFloat = screenHeight + topSafeArea - messageContainerHeight - bottomPopupOffset - minOrigin - bottomOffset
         if originY < minOrigin {
             originY = minOrigin
         } else if originY > maxOrigin {

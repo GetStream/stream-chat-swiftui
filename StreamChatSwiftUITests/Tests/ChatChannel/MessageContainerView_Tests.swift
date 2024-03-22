@@ -33,6 +33,72 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_messageContainerEdited_snapshot() {
+        // Given
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message sent by current user",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            isSentByCurrentUser: true,
+            textUpdatedAt: Date()
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageContainerCurrentUserColor_snapshot() {
+        // Given
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        var colors = ColorPalette()
+        colors.messageCurrentUserTextColor = .red
+        let appearance = Appearance(colors: colors)
+        streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message sent by current user",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            isSentByCurrentUser: true,
+            textUpdatedAt: Date()
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageContainerOtherUserColor_snapshot() {
+        // Given
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        var colors = ColorPalette()
+        colors.messageOtherUserTextColor = .red
+        let appearance = Appearance(colors: colors)
+        streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message sent by other user",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            isSentByCurrentUser: false,
+            textUpdatedAt: Date()
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_messageContainerViewSentOtherUser_snapshot() {
         // Given

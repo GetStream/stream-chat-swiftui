@@ -123,7 +123,12 @@ class ViewFactory_Tests: StreamChatTestCase {
     func test_viewFactory_makeMessageAvatarView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        let userInfo = UserDisplayInfo(id: .unique, name: .unique, imageURL: URL(string: "https://example.com"))
+        let userInfo = UserDisplayInfo(
+            id: .unique,
+            name: .unique,
+            imageURL: URL(string: "https://example.com"),
+            role: .user
+        )
 
         // When
         let view = viewFactory.makeMessageAvatarView(for: userInfo)
@@ -135,7 +140,12 @@ class ViewFactory_Tests: StreamChatTestCase {
     func test_viewFactory_makeQuotedMessageAvatarView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        let userInfo = UserDisplayInfo(id: .unique, name: .unique, imageURL: URL(string: "https://example.com"))
+        let userInfo = UserDisplayInfo(
+            id: .unique,
+            name: .unique,
+            imageURL: URL(string: "https://example.com"),
+            role: .user
+        )
 
         // When
         let view = viewFactory.makeQuotedMessageAvatarView(

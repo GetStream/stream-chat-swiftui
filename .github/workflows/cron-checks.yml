@@ -49,7 +49,7 @@ jobs:
             setup_runtime: false
           - ios: 16.4
             xcode: 14.3.1
-            os: macos-13
+            os: macos-14
             device: "iPhone 14 Pro Max"
             setup_runtime: false
       fail-fast: false
@@ -122,7 +122,7 @@ jobs:
           - xcode: 15.2
             os: macos-14
           - xcode: 14.3.1
-            os: macos-13
+            os: macos-14
           - xcode: 14.2
             os: macos-12
       fail-fast: false
