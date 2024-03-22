@@ -201,14 +201,12 @@ import UIKit
     }
 
     public func delete(channel: ChatChannel) {
-        let controller = chatClient.channelController(
-            for: .init(type: channel.type, id: channel.cid.id)
-        )
-
-        controller.deleteChannel { [weak self] error in
-            if error != nil {
-                // handle error
-                self?.channelAlertType = .error
+        let chat = chatClient.makeChat(for: channel.cid)
+        Task {
+            do {
+                try await chat.delete()
+            } catch {
+                channelAlertType = .error
             }
         }
     }
@@ -253,11 +251,8 @@ import UIKit
     private func checkForDeeplinks() {
         if let selectedChannelId = selectedChannelId,
            let channelId = try? ChannelId(cid: selectedChannelId) {
-            let chatController = chatClient.channelController(
-                for: channelId,
-                messageOrdering: .topToBottom
-            )
-            selectedChannel = chatController.channel?.channelSelectionInfo
+            let chat = chatClient.makeChat(for: channelId)
+            selectedChannel = chat.state.channel?.channelSelectionInfo
             self.selectedChannelId = nil
         }
     }

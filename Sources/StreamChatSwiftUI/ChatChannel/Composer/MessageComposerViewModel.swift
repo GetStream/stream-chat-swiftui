@@ -551,26 +551,21 @@ import SwiftUI
         message: ChatMessage,
         completion: @escaping () -> Void
     ) {
-        guard let channelId = chat.state.channel?.cid else {
-            return
-        }
-        let messageController = chatClient.messageController(
-            cid: channelId,
-            messageId: message.id
-        )
-        
-        messageController.editMessage(
-            text: adjustedText,
-            attachments: utils.composerConfig.attachmentPayloadConverter(message)
-        ) { [weak self] error in
-            if error != nil {
-                self?.errorShown = true
-            } else {
+        Task {
+            do {
+                try await chat.updateMessage(
+                    message.id,
+                    with: adjustedText,
+                    attachments: utils.composerConfig.attachmentPayloadConverter(message),
+                    extraData: message.extraData,
+                    skipEnrichURL: false
+                )
                 completion()
+            } catch {
+                errorShown = true
             }
+            clearInputData()
         }
-        
-        clearInputData()
     }
     
     private func clearInputData() {

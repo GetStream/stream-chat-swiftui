@@ -22,7 +22,6 @@ public class Utils {
     public var commandsConfig: CommandsConfig
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
-    public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
     public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
@@ -80,8 +79,7 @@ public class Utils {
         channelHeaderLoader: ChannelHeaderLoader = ChannelHeaderLoader(),
         videoDurationFormatter: VideoDurationFormatter = DefaultVideoDurationFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
-        sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
-        shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
+        sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions
     ) {
         self.dateFormatter = dateFormatter
         self.videoPreviewLoader = videoPreviewLoader
@@ -99,7 +97,6 @@ public class Utils {
         self.composerConfig = composerConfig
         self.snapshotCreator = snapshotCreator
         self.messageIdBuilder = messageIdBuilder
-        self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         self.sortReactions = sortReactions
         self.channelHeaderLoader = channelHeaderLoader
         self.videoDurationFormatter = videoDurationFormatter
