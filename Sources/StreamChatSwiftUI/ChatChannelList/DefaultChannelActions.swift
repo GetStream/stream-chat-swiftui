@@ -87,13 +87,12 @@ extension ChannelAction {
         onError: @escaping (Error) -> Void
     ) -> ChannelAction {
         let muteAction = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.muteChannel { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
-                }
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.mute()
+                onDismiss()
+            } catch {
+                onError(error)
             }
         }
         let confirmationPopup = ConfirmationPopup(
@@ -104,7 +103,11 @@ extension ChannelAction {
         let muteUser = ChannelAction(
             title: "\(L10n.Channel.Item.mute) \(naming(for: channel))",
             iconName: "speaker.slash",
-            action: muteAction,
+            action: {
+                Task {
+                    await muteAction()
+                }
+            },
             confirmationPopup: confirmationPopup,
             isDestructive: false
         )
@@ -118,13 +121,12 @@ extension ChannelAction {
         onError: @escaping (Error) -> Void
     ) -> ChannelAction {
         let unMuteAction = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.unmuteChannel { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
-                }
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.unmute()
+                onDismiss()
+            } catch {
+                onError(error)
             }
         }
         let confirmationPopup = ConfirmationPopup(
@@ -135,7 +137,11 @@ extension ChannelAction {
         let unmuteUser = ChannelAction(
             title: "\(L10n.Channel.Item.unmute) \(naming(for: channel))",
             iconName: "speaker.wave.1",
-            action: unMuteAction,
+            action: {
+                Task {
+                    await unMuteAction()
+                }
+            },
             confirmationPopup: confirmationPopup,
             isDestructive: false
         )
@@ -150,13 +156,12 @@ extension ChannelAction {
         onError: @escaping (Error) -> Void
     ) -> ChannelAction {
         let deleteConversationAction = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.deleteChannel { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
-                }
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.delete()
+                onDismiss()
+            } catch {
+                onError(error)
             }
         }
         let confirmationPopup = ConfirmationPopup(
@@ -167,7 +172,11 @@ extension ChannelAction {
         let deleteConversation = ChannelAction(
             title: L10n.Alert.Actions.deleteChannelTitle,
             iconName: "trash",
-            action: deleteConversationAction,
+            action: {
+                Task {
+                    await deleteConversationAction()
+                }
+            },
             confirmationPopup: confirmationPopup,
             isDestructive: true
         )
@@ -183,13 +192,12 @@ extension ChannelAction {
         onError: @escaping (Error) -> Void
     ) -> ChannelAction {
         let leaveAction = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.removeMembers(userIds: [userId]) { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
-                }
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.removeMembers([userId])
+                onDismiss()
+            } catch {
+                onError(error)
             }
         }
         let confirmationPopup = ConfirmationPopup(
@@ -200,7 +208,11 @@ extension ChannelAction {
         let leaveConversation = ChannelAction(
             title: L10n.Alert.Actions.leaveGroupTitle,
             iconName: "person.fill.xmark",
-            action: leaveAction,
+            action: {
+                Task {
+                    await leaveAction()
+                }
+            },
             confirmationPopup: confirmationPopup,
             isDestructive: false
         )
