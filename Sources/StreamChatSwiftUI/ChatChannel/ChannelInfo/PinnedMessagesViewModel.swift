@@ -26,15 +26,17 @@ public class PinnedMessagesViewModel: ObservableObject {
         loadPinnedMessages()
     }
     
+    //MARK: - private
+    
     private func loadPinnedMessages() {
         channelController?.loadPinnedMessages(completion: { [weak self] result in
             switch result {
-            case .success(let messages):
+            case let .success(messages):
                 withAnimation {
                     self?.pinnedMessages = messages
                 }
                 log.debug("Successfully loaded pinned messages")
-            case .failure(let error):
+            case let .failure(error):
                 self?.pinnedMessages = self?.channel.pinnedMessages ?? []
                 log.error("Error loading pinned messages \(error.localizedDescription)")
             }
