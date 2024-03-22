@@ -45,7 +45,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         channel.ownCapabilities.contains(.updateChannel)
     }
 
-    private var channelController: ChatChannelController!
+    var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
 

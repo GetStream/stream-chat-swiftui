@@ -88,7 +88,10 @@ public struct ChatInfoOptionsView: View {
                 icon: images.pin,
                 title: L10n.ChatInfo.PinnedMessages.title
             ) {
-                PinnedMessagesView(channel: viewModel.channel)
+                PinnedMessagesView(
+                    channel: viewModel.channel,
+                    channelController: viewModel.channelController
+                )
             }
 
             Divider()
