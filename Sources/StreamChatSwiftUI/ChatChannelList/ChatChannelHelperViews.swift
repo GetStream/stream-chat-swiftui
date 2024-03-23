@@ -112,8 +112,8 @@ extension CGSize {
 
     typealias UIViewControllerType = UIViewController
 
-    private class ViewController: UIViewController {
-        var callback: (UITabBar) -> Void = { _ in
+    @MainActor private class ViewController: UIViewController {
+        @MainActor var callback: (UITabBar) -> Void = { _ in
             // Default implementation.
         }
 

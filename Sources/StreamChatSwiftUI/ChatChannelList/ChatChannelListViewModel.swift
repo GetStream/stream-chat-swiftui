@@ -16,7 +16,7 @@ import UIKit
     @Injected(\.utils) private var utils: Utils
 
     /// Context provided utils.
-    internal lazy var channelNamer = utils.channelNamer
+    internal let channelNamer = InjectedValues[\.utils].channelNamer
 
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4

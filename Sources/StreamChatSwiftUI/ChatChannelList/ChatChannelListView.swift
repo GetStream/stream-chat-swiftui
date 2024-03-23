@@ -157,8 +157,10 @@ import SwiftUI
                 swipedChannelId: $viewModel.swipedChannelId
             ) {
                 withAnimation {
-                    viewModel.customChannelPopupType = nil
-                    viewModel.swipedChannelId = nil
+                    runOnMainActor {
+                        viewModel.customChannelPopupType = nil
+                        viewModel.swipedChannelId = nil
+                    }
                 }
             } onError: { error in
                 viewModel.showErrorPopup(error)
