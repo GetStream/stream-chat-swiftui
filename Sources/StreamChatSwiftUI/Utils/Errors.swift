@@ -48,15 +48,6 @@ extension StreamChatError: Equatable {
     }
 }
 
-extension StreamChatError {
-
-    public func asFailedPromise<T>() -> Future<T, Error> {
-        Future { promise in
-            promise(.failure(self))
-        }
-    }
-}
-
 /// Error codes for errors happening in the app.
 public enum StreamChatErrorCode: Int {
     case unknown = 101_000

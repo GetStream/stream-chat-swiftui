@@ -68,7 +68,7 @@ public struct GiphyCommandHandler: CommandHandler {
 
     public func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Error> {
-        StreamChatError.noSuggestionsAvailable.asFailedPromise()
+    ) async throws -> SuggestionInfo {
+        throw StreamChatError.noSuggestionsAvailable
     }
 }

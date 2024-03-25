@@ -67,12 +67,12 @@ public class InstantCommandsHandler: CommandHandler {
         return command.id == id ? self : nil
     }
 
-    public func showSuggestions(for command: ComposerCommand) -> Future<SuggestionInfo, Error> {
+    public func showSuggestions(for command: ComposerCommand) async throws -> SuggestionInfo {
         if let handler = commandHandler(for: command), handler.id != id {
-            return handler.showSuggestions(for: command)
+            return try await handler.showSuggestions(for: command)
         }
         let suggestionInfo = SuggestionInfo(key: id, value: commands)
-        return resolve(with: suggestionInfo)
+        return suggestionInfo
     }
 
     public func handleCommand(

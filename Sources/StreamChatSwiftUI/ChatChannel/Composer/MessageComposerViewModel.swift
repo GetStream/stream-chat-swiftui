@@ -612,15 +612,12 @@ import SwiftUI
     
     private func showTypingSuggestions() {
         if let composerCommand = composerCommand {
-            commandsHandler.showSuggestions(for: composerCommand)
-                .sink { _ in
-                    log.debug("Finished showing suggestions")
-                } receiveValue: { [weak self] suggestionInfo in
-                    withAnimation {
-                        self?.suggestions[suggestionInfo.key] = suggestionInfo.value
-                    }
-                }
-                .store(in: &cancellables)
+            Task {
+                let suggestions = try await commandsHandler.showSuggestions(for: composerCommand)
+                withAnimation {
+                    self.suggestions[suggestions.key] = suggestions.value
+                }                
+            }
         }
     }
     

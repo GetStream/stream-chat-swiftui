@@ -98,13 +98,11 @@ open class TwoStepMentionCommand: CommandHandler {
 
     public func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Error> {
+    ) async throws -> SuggestionInfo {
         if selectedUser != nil {
-            return resolve(
-                with: SuggestionInfo(
-                    key: "mentions",
-                    value: [Any]()
-                )
+            return SuggestionInfo(
+                key: "mentions",
+                value: [Any]()
             )
         }
         let oldText = command.typingSuggestion.text
@@ -123,7 +121,7 @@ open class TwoStepMentionCommand: CommandHandler {
             typingSuggestion: typingSuggestion,
             displayInfo: command.displayInfo
         )
-        return mentionsCommandHandler.showSuggestions(for: updated)
+        return try await mentionsCommandHandler.showSuggestions(for: updated)
     }
 
     public var replacesMessageSent: Bool {

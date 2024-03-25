@@ -18,11 +18,11 @@ public struct MentionsCommandHandler: CommandHandler {
     private let typingSuggester: TypingSuggester
 
     private let chat: Chat
-    private let userSearchController: ChatUserSearchController
+    private let userSearch: UserSearch
 
     public init(
         chat: Chat,
-        userSearchController: ChatUserSearchController? = nil,
+        userSearch: UserSearch? = nil,
         commandSymbol: String,
         mentionAllAppUsers: Bool,
         id: String = "mentions"
@@ -31,10 +31,10 @@ public struct MentionsCommandHandler: CommandHandler {
         self.chat = chat
         self.mentionAllAppUsers = mentionAllAppUsers
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        if let userSearchController = userSearchController {
-            self.userSearchController = userSearchController
+        if let userSearch {
+            self.userSearch = userSearch
         } else {
-            self.userSearchController = InjectedValues[\.chatClient].userSearchController()
+            self.userSearch = InjectedValues[\.chatClient].makeUserSearch()
         }
     }
 
@@ -83,8 +83,8 @@ public struct MentionsCommandHandler: CommandHandler {
 
     public func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Error> {
-        showMentionSuggestions(
+    ) async throws -> SuggestionInfo {
+        try await showMentionSuggestions(
             for: command.typingSuggestion.text,
             mentionRange: command.typingSuggestion.locationRange
         )
@@ -95,14 +95,14 @@ public struct MentionsCommandHandler: CommandHandler {
     private func showMentionSuggestions(
         for typingMention: String,
         mentionRange: NSRange
-    ) -> Future<SuggestionInfo, Error> {
+    ) async throws -> SuggestionInfo {
         guard let channel = chat.state.channel,
               let currentUserId = chatClient.currentUserId else {
-            return StreamChatError.missingData.asFailedPromise()
+            throw StreamChatError.missingData
         }
 
         if mentionAllAppUsers {
-            return searchAllUsers(for: typingMention)
+            return try await searchAllUsers(for: typingMention)
         } else {
             let users = searchUsers(
                 channel.lastActiveWatchers.map { $0 } + channel.lastActiveMembers.map { $0 },
@@ -110,7 +110,7 @@ public struct MentionsCommandHandler: CommandHandler {
                 excludingId: currentUserId
             )
             let suggestionInfo = SuggestionInfo(key: id, value: users)
-            return resolve(with: suggestionInfo)
+            return suggestionInfo
         }
     }
 
@@ -152,24 +152,11 @@ public struct MentionsCommandHandler: CommandHandler {
         )
     }
 
-    private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
-        Future { promise in
-            let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
-            userSearchController.search(query: query) { error in
-                if let error = error {
-                    promise(.failure(error))
-                    return
-                }
-                let users = userSearchController.userArray
-                let suggestionInfo = SuggestionInfo(key: id, value: users)
-                promise(.success(suggestionInfo))
-            }
-        }
-    }
-}
-
-func resolve<Content>(with content: Content) -> Future<Content, Error> {
-    Future { promise in
-        promise(.success(content))
+    private func searchAllUsers(for typingMention: String) async throws -> SuggestionInfo {
+        let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
+        try await userSearch.search(query: query)
+        let users = userSearch.state.users
+        let suggestionInfo = SuggestionInfo(key: id, value: users)
+        return suggestionInfo
     }
 }

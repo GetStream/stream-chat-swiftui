@@ -35,10 +35,10 @@ public protocol CommandHandler {
 
     /// Shows suggestions for the provided command.
     /// - Parameter command: the command whose suggestions will be shown.
-    /// - Returns: `Future` with the suggestions, or an error.
+    /// - Returns: `SuggestionInfo` with the suggestions, or an error.
     func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Error>
+    ) async throws -> SuggestionInfo
 
     /// Handles the provided command.
     /// - Parameters:
@@ -181,12 +181,12 @@ public class CommandsHandler: CommandHandler {
 
     public func showSuggestions(
         for command: ComposerCommand
-    ) -> Future<SuggestionInfo, Error> {
+    ) async throws -> SuggestionInfo {
         if let handler = commandHandler(for: command) {
-            return handler.showSuggestions(for: command)
+            return try await handler.showSuggestions(for: command)
         }
 
-        return StreamChatError.noSuggestionsAvailable.asFailedPromise()
+        throw StreamChatError.noSuggestionsAvailable
     }
 
     public func handleCommand(

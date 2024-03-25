@@ -10,12 +10,23 @@ struct CommandsContainerView: View {
 
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
+    
+    var suggestedUsers: [ChatUser]? {
+        if let suggestedUsers = suggestions["mentions"] as? StreamCollection<ChatUser> {
+            return Array(suggestedUsers)
+        }
+        if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
+            return suggestedUsers
+        }
+        
+        return nil
+    }
 
     var body: some View {
         ZStack {
-            if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
+            if let suggestedUsers {
                 MentionUsersView(
-                    users: suggestedUsers,
+                    users: Array(suggestedUsers),
                     userSelected: { user in
                         handleCommand(["chatUser": user])
                     }
