@@ -239,7 +239,9 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let pinMessage = { @MainActor in
-            let chat = chatClient.makeChat(for: channel.cid)
+            let chat = InjectedValues[\.utils]
+                .chatCache
+                .chat(for: channel.cid)
             do {
                 try await chat.pinMessage(message.id, pinning: .noExpiration)
                 onFinish(
@@ -278,7 +280,9 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let unpinMessage = { @MainActor in
-            let chat = chatClient.makeChat(for: channel.cid)
+            let chat = InjectedValues[\.utils]
+                .chatCache
+                .chat(for: channel.cid)
             do {
                 try await chat.unpinMessage(message.id)
                 onFinish(
@@ -364,7 +368,9 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let deleteAction = { @MainActor in
-            let chat = chatClient.makeChat(for: channel.cid)
+            let chat = InjectedValues[\.utils]
+                .chatCache
+                .chat(for: channel.cid)
             do {
                 try await chat.deleteMessage(message.id)
                 onFinish(
@@ -408,23 +414,21 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let messageController = chatClient.messageController(
-            cid: channel.cid,
-            messageId: message.id
-        )
-
-        let flagAction = {
-            messageController.flag { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "flag"
-                        )
+        let flagAction = { @MainActor in
+            let chat = InjectedValues[\.utils]
+                .chatCache
+                .chat(for: channel.cid)
+            do {
+                try await chat.flagMessage(message.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "flag"
                     )
-                }
+                )
+            } catch {
+                log.error("Error flagging a message: \(error.localizedDescription)")
+                onError(error)
             }
         }
 
@@ -438,7 +442,11 @@ extension MessageAction {
             id: MessageActionId.flag,
             title: L10n.Message.Actions.flag,
             iconName: "flag",
-            action: flagAction,
+            action: {
+                Task {
+                    await flagAction()
+                }
+            },
             confirmationPopup: confirmationPopup,
             isDestructive: false
         )
@@ -494,19 +502,19 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let muteController = chatClient.userController(userId: userToMute.id)
-        let muteAction = {
-            muteController.mute { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "mute"
-                        )
+        let muteAction = { @MainActor in
+            do {
+                let currentUser = try await chatClient.makeConnectedUser()
+                try await currentUser.muteUser(userToMute.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "mute"
                     )
-                }
+                )
+            } catch {
+                log.error("Error muting user: \(error.localizedDescription)")
+                onError(error)
             }
         }
 
@@ -514,7 +522,11 @@ extension MessageAction {
             id: MessageActionId.mute,
             title: L10n.Message.Actions.userMute,
             iconName: "speaker.slash",
-            action: muteAction,
+            action: {
+                Task {
+                    await muteAction()
+                }
+            },
             confirmationPopup: nil,
             isDestructive: false
         )
@@ -530,19 +542,19 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let unmuteController = chatClient.userController(userId: userToUnmute.id)
-        let unmuteAction = {
-            unmuteController.unmute { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "unmute"
-                        )
+        let unmuteAction = { @MainActor in
+            do {
+                let currentUser = try await chatClient.makeConnectedUser()
+                try await currentUser.unmuteUser(userToUnmute.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "unmute"
                     )
-                }
+                )
+            } catch {
+                log.error("Error unmuting user: \(error.localizedDescription)")
+                onError(error)
             }
         }
 
@@ -550,7 +562,11 @@ extension MessageAction {
             id: MessageActionId.unmute,
             title: L10n.Message.Actions.userUnmute,
             iconName: "speaker.wave.1",
-            action: unmuteAction,
+            action: {
+                Task {
+                    await unmuteAction()
+                }
+            },
             confirmationPopup: nil,
             isDestructive: false
         )
@@ -565,23 +581,21 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let messageController = chatClient.messageController(
-            cid: channel.cid,
-            messageId: message.id
-        )
+        let chat = InjectedValues[\.utils]
+            .chatCache
+            .chat(for: channel.cid)
 
         let resendAction = {
-            messageController.resendMessage { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "resend"
-                        )
+            do {
+                try await chat.resendMessage(message.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "resend"
                     )
-                }
+                )
+            } catch {
+                onError(error)
             }
         }
 
@@ -589,7 +603,11 @@ extension MessageAction {
             id: MessageActionId.resend,
             title: L10n.Message.Actions.resend,
             iconName: "icn_resend",
-            action: resendAction,
+            action: {
+                Task {
+                    await resendAction()
+                }
+            },
             confirmationPopup: nil,
             isDestructive: false
         )
