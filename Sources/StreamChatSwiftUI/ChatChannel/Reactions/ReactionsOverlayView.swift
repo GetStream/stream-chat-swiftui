@@ -283,7 +283,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
         var originY = messageDisplayInfo.frame.origin.y
         let minOrigin: CGFloat = 100
-        let maxOrigin: CGFloat = screenHeight + topSafeArea - messageContainerHeight - bottomPopupOffset - minOrigin - bottomOffset
+        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOrigin - bottomOffset
         if originY < minOrigin {
             originY = minOrigin
         } else if originY > maxOrigin {
