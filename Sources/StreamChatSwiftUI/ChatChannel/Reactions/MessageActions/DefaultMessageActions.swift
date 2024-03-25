@@ -454,8 +454,8 @@ extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let chat = InjectedValues[\.utils]
-            .channelControllerFactory
-            .makeChat(for: channel.cid)
+            .chatCache
+            .chat(for: channel.cid)
         let action = {
             do {
                 try await chat.markUnread(from: message.id)

@@ -10,7 +10,7 @@ class ChannelControllerFactory_Tests: StreamChatTestCase {
 
     func test_channelControllerFactory_creation() {
         // Given
-        let factory = ChannelControllerFactory()
+        let factory = ChatCache()
         let channelId = ChannelId.unique
 
         // When
@@ -23,12 +23,12 @@ class ChannelControllerFactory_Tests: StreamChatTestCase {
 
     func test_channelControllerFactory_removal() {
         // Given
-        let factory = ChannelControllerFactory()
+        let factory = ChatCache()
         let channelId = ChannelId.unique
 
         // When
         let controller1 = factory.makeChannelController(for: channelId)
-        factory.clearCurrentController()
+        factory.clearCurrentChat()
         let controller2 = factory.makeChannelController(for: channelId)
 
         // Then

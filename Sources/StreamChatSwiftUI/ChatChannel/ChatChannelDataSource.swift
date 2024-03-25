@@ -23,7 +23,6 @@ protocol MessagesDataSource: AnyObject {
     /// - Parameters:
     ///  - channelDataSource: the channel's data source.
     ///  - channel: the updated channel.
-    ///  - channelController: the channel's controller.
     func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateChannel channel: EntityChange<ChatChannel>
@@ -77,7 +76,7 @@ protocol ChannelDataSource: AnyObject {
 }
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
-class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
+class ChatChannelDataSource: ChannelDataSource {
     
     private var cancellables = Set<AnyCancellable>()
 

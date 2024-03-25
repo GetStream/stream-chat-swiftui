@@ -12,7 +12,7 @@ import StreamChat
     /// Creates the `ChannelListViewModel`.
     ///
     /// - Parameters:
-    ///    - channelListController: possibility to inject custom channel list controller.
+    ///    - channelList: possibility to inject custom channel list object.
     ///    - selectedChannelId: pre-selected channel id (used for deeplinking).
     /// - Returns: `ChatChannelListViewModel`.
     public static func makeChannelListViewModel(
@@ -27,8 +27,9 @@ import StreamChat
 
     /// Creates the `ChatChannelViewModel`.
     /// - Parameters:
-    ///    - channelController: the channel controller.
-    ///    - messageController: optional message controller (used in threads).
+    ///    - chat: the `Chat` object.
+    ///    - messageId: optional message id (used in threads).
+    ///    - scrollToMessage: if the channel should scroll to a particular message.
     public static func makeChannelViewModel(
         with chat: Chat,
         messageId: MessageId?,
@@ -61,8 +62,8 @@ import StreamChat
 
     /// Makes the message composer view model.
     /// - Parameters:
-    ///  -  channelController: the channel controller.
-    ///  - messageController: optional message controller (used in threads).
+    ///  -  chat: the chat object.
+    ///  - messageId: optional message id (used in threads).
     /// - Returns: `MessageComposerViewModel`.
     public static func makeMessageComposerViewModel(
         with chat: Chat,

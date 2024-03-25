@@ -54,7 +54,7 @@ public class Utils {
 
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
-    var channelControllerFactory = ChannelControllerFactory()
+    var chatCache = ChatCache()
     
     internal var _audioPlayer: AudioPlaying?
     internal var _audioRecorder: AudioRecording?

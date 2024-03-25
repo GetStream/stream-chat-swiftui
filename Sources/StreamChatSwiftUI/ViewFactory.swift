@@ -524,8 +524,8 @@ import SwiftUI
     associatedtype MessageComposerViewType: View
     /// Creates the message composer view.
     /// - Parameters:
-    ///  - channelController: The `ChatChannelController` for the channel.
-    ///  - messageController: Optional `ChatMessageController`, if used in a thread.
+    ///  - chat: The `Chat` object for the channel.
+    ///  - messageId: Optional `MessageId`, if used in a thread.
     ///  - quotedMessage: Optional quoted message, shown in the composer input.
     ///  - editedMessage: Optional message that's being edited.
     ///  - onMessageSent: Called when a message is sent.

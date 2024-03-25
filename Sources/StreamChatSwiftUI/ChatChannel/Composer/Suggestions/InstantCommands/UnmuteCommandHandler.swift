@@ -36,13 +36,20 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
         completion: @escaping (Error?) -> Void
     ) {
         if let mutedUser = selectedUser {
-            chatClient
-                .userController(userId: mutedUser.id)
-                .unmute { [weak self] error in
-                    self?.selectedUser = nil
-                    completion(error)
+            Task { @MainActor in
+                var unmuteError: Error?
+                do {
+                    try await chatClient
+                        .makeConnectedUser()
+                        .unmuteUser(mutedUser.id)
+                } catch {
+                    log.error("Error unmuting user \(error.localizedDescription)")
+                    unmuteError = error
                 }
-
+                selectedUser = nil
+                completion(unmuteError)
+            }
+            
             return
         }
     }

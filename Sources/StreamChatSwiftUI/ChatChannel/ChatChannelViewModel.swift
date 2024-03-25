@@ -695,7 +695,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     deinit {
         messageCachingUtils.clearCache()
         if messageId == nil {
-            utils.channelControllerFactory.clearCurrentController()
+            utils.chatCache.clearCurrentChat()
             cleanupAudioPlayer()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
             if !channelDataSource.hasLoadedAllNextMessages {

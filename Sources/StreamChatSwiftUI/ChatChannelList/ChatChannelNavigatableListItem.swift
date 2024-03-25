@@ -108,7 +108,7 @@ extension ChatMessage {
 
     func makeChannelSelectionInfo(with chatClient: ChatClient) -> ChannelSelectionInfo? {
         if let channelId = cid,
-           let channel = chatClient.channelController(for: channelId).channel {
+           let channel = chatClient.makeChat(for: channelId).state.channel {
             let searchResult = ChannelSelectionInfo(
                 channel: channel,
                 message: self

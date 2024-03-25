@@ -199,8 +199,8 @@ extension ViewFactory {
     public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
             let chat = InjectedValues[\.utils]
-                .channelControllerFactory
-                .makeChat(for: selectionInfo.channel.cid)
+                .chatCache
+                .chat(for: selectionInfo.channel.cid)
             return ChatChannelView(
                 viewFactory: self,
                 chat: chat,
@@ -212,8 +212,8 @@ extension ViewFactory {
     public func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
             let chat = InjectedValues[\.utils]
-                .channelControllerFactory
-                .makeChat(for: channel.cid)
+                .chatCache
+                .chat(for: channel.cid)
             return ChatChannelView(
                 viewFactory: self,
                 chat: chat,
