@@ -25,13 +25,13 @@ import SwiftUI
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelViewModel? = nil,
         chat: Chat,
-        messageController: ChatMessageController? = nil,
+        messageId: MessageId? = nil,
         scrollToMessage: ChatMessage? = nil
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeChannelViewModel(
                 with: chat,
-                messageController: messageController,
+                messageId: messageId,
                 scrollToMessage: scrollToMessage
             )
         )
@@ -106,7 +106,7 @@ import SwiftUI
 
                     factory.makeMessageComposerViewType(
                         with: viewModel.chat,
-                        messageController: viewModel.messageController,
+                        messageId: viewModel.messageId,
                         quotedMessage: $viewModel.quotedMessage,
                         editedMessage: $viewModel.editedMessage,
                         onMessageSent: viewModel.scrollToLastMessage

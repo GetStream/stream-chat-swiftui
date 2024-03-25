@@ -33,7 +33,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         viewFactory: Factory,
         viewModel: MessageComposerViewModel? = nil,
         chat: Chat,
-        messageController: ChatMessageController? = nil,
+        messageId: MessageId? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
@@ -42,7 +42,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         channelConfig = chat.state.channel?.config
         let vm = viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
             with: chat,
-            messageController: messageController
+            messageId: messageId
         )
         _viewModel = StateObject(
             wrappedValue: vm

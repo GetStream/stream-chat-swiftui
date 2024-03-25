@@ -214,14 +214,10 @@ extension ViewFactory {
             let chat = InjectedValues[\.utils]
                 .channelControllerFactory
                 .makeChat(for: channel.cid)
-            let messageController = chatClient.messageController(
-                cid: channel.cid,
-                messageId: message.id
-            )
             return ChatChannelView(
                 viewFactory: self,
                 chat: chat,
-                messageController: messageController,
+                messageId: message.id,
                 scrollToMessage: message
             )
         }
@@ -494,7 +490,7 @@ extension ViewFactory {
     
     public func makeMessageComposerViewType(
         with chat: Chat,
-        messageController: ChatMessageController?,
+        messageId: MessageId?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
@@ -502,7 +498,7 @@ extension ViewFactory {
         MessageComposerView(
             viewFactory: self,
             chat: chat,
-            messageController: messageController,
+            messageId: messageId,
             quotedMessage: quotedMessage,
             editedMessage: editedMessage,
             onMessageSent: onMessageSent

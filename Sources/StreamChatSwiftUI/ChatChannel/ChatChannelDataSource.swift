@@ -150,126 +150,71 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
 }
 
 /// Implementation of the `ChannelDataSource`. Loads the messages in a reply thread.
-class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate {
+class MessageThreadDataSource: ChannelDataSource {
 
     let chat: Chat
-    let messageController: ChatMessageController
+    let messageId: MessageId
+    var messageState: MessageState?
     
     weak var delegate: MessagesDataSource?
     
     var messages: StreamCollection<ChatMessage> {
-//        messageController.replies
-        StreamCollection(messageController.replies)
+        self.messageState?.replies ?? StreamCollection([])
     }
     
     var hasLoadedAllNextMessages: Bool {
-        messageController.hasLoadedAllNextReplies
+        self.messageState?.hasLoadedAllNextReplies ?? false
     }
     
     var firstUnreadMessageId: String? {
-//        channelController.firstUnreadMessageId
+        //TODO: fix
         return nil
     }
+    
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         chat: Chat,
-        messageController: ChatMessageController
+        messageId: MessageId
     ) {
         self.chat = chat
-        self.messageController = messageController
-        self.messageController.delegate = self
-        self.messageController.loadPreviousReplies { [weak self] _ in
-            guard let self = self else { return }
-            self.delegate?.dataSource(
-                channelDataSource: self,
-                didUpdateMessages: self.messages,
-                changes: []
-            )
+        self.messageId = messageId
+        Task {
+            self.messageState = try await chat.makeMessageState(for: messageId)
+            self.messageState?.$replies
+                .receive(on: RunLoop.main)
+                .sink(receiveValue: { [weak self] messages in
+                guard let self else { return }
+                //TODO: changes
+                delegate?.dataSource(
+                    channelDataSource: self,
+                    didUpdateMessages: StreamCollection(messages),
+                    changes: []
+                )
+            })
+            .store(in: &cancellables)
+            try await self.loadFirstPage()
         }
-    }
-
-    func messageController(
-        _ controller: ChatMessageController,
-        didChangeReplies changes: [ListChange<ChatMessage>]
-    ) {
-        delegate?.dataSource(
-            channelDataSource: self,
-            didUpdateMessages: StreamCollection(controller.replies),
-            changes: changes
-        )
-    }
-
-    func messageController(
-        _ controller: ChatMessageController,
-        didChangeMessage change: EntityChange<ChatMessage>
-    ) {
-        delegate?.dataSource(
-            channelDataSource: self,
-            didUpdateMessages: StreamCollection(controller.replies),
-            changes: []
-        )
     }
 
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int
     ) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            messageController.loadPreviousReplies(
-                before: messageId,
-                limit: limit,
-                completion: { error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume(returning: ())
-                    }
-                }
-            )
-        }
+        try await chat.loadReplies(before: messageId, of: self.messageId)
     }
     
     func loadNextMessages(limit: Int) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            messageController.loadNextReplies(
-                limit: limit,
-                completion: { error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume(returning: ())
-                    }
-                }
-            )
-        }
+        try await chat.loadReplies(after: nil, of: messageId, limit: limit)
     }
     
     func loadPageAroundMessageId(
         _ messageId: MessageId
     ) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            messageController.loadPageAroundReplyId(
-                messageId,
-                completion: { error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume(returning: ())
-                    }
-                }
-            )
-        }
+        try await chat.loadMessages(around: messageId)
     }
     
     func loadFirstPage() async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            messageController.loadFirstPage() { error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume(returning: ())
-                    }
-                }
-            }
+        try await chat.loadRepliesFirstPage(of: messageId)
     }
 }

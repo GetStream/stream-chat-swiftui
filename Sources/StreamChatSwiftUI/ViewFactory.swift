@@ -532,7 +532,7 @@ import SwiftUI
     /// - Returns: view displayed in the message composer slot.
     func makeMessageComposerViewType(
         with chat: Chat,
-        messageController: ChatMessageController?,
+        messageId: MessageId?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void

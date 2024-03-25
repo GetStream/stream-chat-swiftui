@@ -27,7 +27,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         viewFactory: Factory,
         viewModel: MessageComposerViewModel? = nil,
         chat: Chat,
-        messageController: ChatMessageController? = nil,
+        messageId: MessageId? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
@@ -37,7 +37,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
                 with: chat,
-                messageController: messageController
+                messageId: messageId
             )
         )
         _quotedMessage = quotedMessage

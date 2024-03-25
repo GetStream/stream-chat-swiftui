@@ -31,12 +31,12 @@ import StreamChat
     ///    - messageController: optional message controller (used in threads).
     public static func makeChannelViewModel(
         with chat: Chat,
-        messageController: ChatMessageController?,
+        messageId: MessageId?,
         scrollToMessage: ChatMessage?
     ) -> ChatChannelViewModel {
         let viewModel = ChatChannelViewModel(
             chat: chat,
-            messageController: messageController,
+            messageId: messageId,
             scrollToMessage: scrollToMessage
         )
         return viewModel
@@ -66,11 +66,11 @@ import StreamChat
     /// - Returns: `MessageComposerViewModel`.
     public static func makeMessageComposerViewModel(
         with chat: Chat,
-        messageController: ChatMessageController?
+        messageId: MessageId?
     ) -> MessageComposerViewModel {
         MessageComposerViewModel(
             chat: chat,
-            messageController: messageController
+            messageId: messageId
         )
     }
 

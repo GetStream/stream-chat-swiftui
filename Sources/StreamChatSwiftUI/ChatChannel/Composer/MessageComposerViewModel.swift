@@ -153,7 +153,7 @@ import SwiftUI
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     
     public let chat: Chat
-    public var messageController: ChatMessageController?
+    public var messageId: MessageId?
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
     
@@ -208,10 +208,10 @@ import SwiftUI
     
     public init(
         chat: Chat,
-        messageController: ChatMessageController?
+        messageId: MessageId?
     ) {
         self.chat = chat
-        self.messageController = messageController
+        self.messageId = messageId
         listenToCooldownUpdates()
         NotificationCenter.default.addObserver(
             self,
@@ -277,24 +277,28 @@ import SwiftUI
                 attachment.content
             }
             
-            if let messageController = messageController {
-                messageController.createNewReply(
-                    text: messageText,
-                    attachments: attachments,
-                    mentionedUserIds: mentionedUserIds,
-                    showReplyInChannel: showReplyInChannel,
-                    isSilent: isSilent,
-                    quotedMessageId: quotedMessage?.id,
-                    skipPush: skipPush,
-                    skipEnrichUrl: skipEnrichUrl,
-                    extraData: extraData
-                ) { [weak self] in
-                    switch $0 {
-                    case .success:
+            if let messageId {
+                Task {
+                    do {
+                        try await chat.reply(
+                            to: messageId,
+                            text: messageText,
+                            showReplyInChannel: showReplyInChannel,
+                            attachments: attachments,
+                            quote: quotedMessage?.id,
+                            mentions: mentionedUserIds,
+                            pinning: nil,
+                            extraData: extraData,
+                            silent: isSilent,
+                            skipPushNotification: skipPush,
+                            skipEnrichURL: skipEnrichUrl,
+                            messageId: nil
+                        )
                         completion()
-                    case .failure:
-                        self?.errorShown = true
+                    } catch {
+                        errorShown = true
                     }
+                    clearInputData()
                 }
             } else {
                 let attachments = attachments
@@ -303,7 +307,7 @@ import SwiftUI
                         try await chat.sendMessage(
                             with: messageText,
                             attachments: attachments,
-                            replyTo: quotedMessage?.id,
+                            quote: quotedMessage?.id,
                             mentions: mentionedUserIds,
                             pinning: nil,
                             extraData: extraData,
@@ -338,7 +342,7 @@ import SwiftUI
     }
     
     public var sendInChannelShown: Bool {
-        messageController != nil
+        messageId != nil
     }
     
     public var isDirectChannel: Bool {

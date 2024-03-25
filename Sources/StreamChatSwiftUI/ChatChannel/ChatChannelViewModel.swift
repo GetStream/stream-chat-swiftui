@@ -52,7 +52,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
     
     public var chat: Chat
-    public var messageController: ChatMessageController?
+    public var messageId: MessageId?
     
     @Published public var scrolledId: String?
     @Published public var listId = UUID().uuidString
@@ -125,21 +125,20 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public var isMessageThread: Bool {
-        messageController != nil
+        messageId != nil
     }
             
     public init(
         chat: Chat,
-        messageController: ChatMessageController? = nil,
+        messageId: MessageId? = nil,
         scrollToMessage: ChatMessage? = nil
     ) {
         self.chat = chat
-        if let messageController = messageController {
-            self.messageController = messageController
-            messageController.synchronize()
+        if let messageId {
+            self.messageId = messageId
             channelDataSource = MessageThreadDataSource(
                 chat: chat,
-                messageController: messageController
+                messageId: messageId
             )
         } else {
             channelDataSource = ChatChannelDataSource(chat: chat)
@@ -148,15 +147,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelDataSource.messages
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
+            if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageId == nil {
                 let message = chat.state.localMessage(for: parentMessageId)
                 self?.threadMessage = message
                 self?.threadMessageShown = true
                 self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
-            } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
+            } else if messageId != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
                 self?.scrolledId = jumpToReplyId
                 self?.messageCachingUtils.jumpToReplyId = nil
-            } else if messageController == nil {
+            } else if messageId == nil {
                 self?.scrolledId = scrollToMessage?.messageId
             }
         }
@@ -175,7 +174,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
-        if messageController == nil {
+        if messageId == nil {
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(selectedMessageThread(notification:)),
@@ -372,7 +371,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        if let message = messageController?.message {
+        if let messageId, let message = chat.state.localMessage(for: messageId) {
             var array = Array(messages)
             array.append(message)
             self.messages = StreamCollection(array)
@@ -695,7 +694,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     deinit {
         messageCachingUtils.clearCache()
-        if messageController == nil {
+        if messageId == nil {
             utils.channelControllerFactory.clearCurrentController()
             cleanupAudioPlayer()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
