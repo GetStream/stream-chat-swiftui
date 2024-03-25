@@ -36,12 +36,17 @@ public class MuteCommandHandler: TwoStepMentionCommand {
         completion: @escaping (Error?) -> Void
     ) {
         if let mutedUser = selectedUser {
-            chatClient
-                .userController(userId: mutedUser.id)
-                .mute { [weak self] error in
-                    self?.selectedUser = nil
-                    completion(error)
+            Task { @MainActor in
+                var muteError: Error?
+                do {
+                    try await chatClient.makeConnectedUser().muteUser(mutedUser.id)
+                } catch {
+                    log.error("Error muting user \(error.localizedDescription)")
+                    muteError = error
                 }
+                self.selectedUser = nil
+                completion(muteError)
+            }
 
             return
         }

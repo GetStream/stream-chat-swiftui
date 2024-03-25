@@ -88,12 +88,12 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             return
         }
 
-        chatClient
-            .messageController(
-                cid: cid,
-                messageId: message.id
+        Task {
+            try await chatClient.makeChat(for: cid).sendMessageAction(
+                in: message.id,
+                action: action
             )
-            .dispatchEphemeralMessageAction(action)
+        }
     }
 }
 
