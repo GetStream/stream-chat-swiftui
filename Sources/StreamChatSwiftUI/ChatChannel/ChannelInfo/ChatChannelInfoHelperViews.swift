@@ -90,7 +90,7 @@ public struct ChatInfoOptionsView: View {
             ) {
                 PinnedMessagesView(
                     channel: viewModel.channel,
-                    channelController: viewModel.channelController
+                    chat: viewModel.chat
                 )
             }
 

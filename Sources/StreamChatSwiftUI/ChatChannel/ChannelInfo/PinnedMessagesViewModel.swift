@@ -13,33 +13,28 @@ public class PinnedMessagesViewModel: ObservableObject {
 
     @Published var pinnedMessages: [ChatMessage]
     
-    private var channelController: ChatChannelController?
+    private var chat: Chat?
     
-    public init(channel: ChatChannel, channelController: ChatChannelController? = nil) {
+    public init(channel: ChatChannel, chat: Chat? = nil) {
         self.channel = channel
-        if channelController != nil {
+        if chat != nil {
             pinnedMessages = []
         } else {
             pinnedMessages = channel.pinnedMessages
         }
-        self.channelController = channelController
+        self.chat = chat
         loadPinnedMessages()
     }
     
     // MARK: - private
     
     private func loadPinnedMessages() {
-        channelController?.loadPinnedMessages(completion: { [weak self] result in
-            switch result {
-            case let .success(messages):
-                withAnimation {
-                    self?.pinnedMessages = messages
-                }
-                log.debug("Successfully loaded pinned messages")
-            case let .failure(error):
-                self?.pinnedMessages = self?.channel.pinnedMessages ?? []
-                log.error("Error loading pinned messages \(error.localizedDescription)")
+        Task { @MainActor in
+            do {
+                pinnedMessages = try await chat?.loadPinnedMessages() ?? []
+            } catch {
+                pinnedMessages = channel.pinnedMessages
             }
-        })
+        }
     }
 }

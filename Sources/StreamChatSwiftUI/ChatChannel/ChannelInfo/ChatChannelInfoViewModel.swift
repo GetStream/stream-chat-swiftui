@@ -7,18 +7,21 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+public class ChatChannelInfoViewModel: ObservableObject {
 
     @Injected(\.chatClient) private var chatClient
 
     @Published public var participants = [ParticipantInfo]()
     @Published public var muted: Bool {
         didSet {
-            if muted {
-                channelController.muteChannel()
-            } else {
-                channelController.unmuteChannel()
+            Task {
+                if muted {
+                    try await chat.mute()
+                } else {
+                    try await chat.unmute()
+                }
             }
+            
         }
     }
 
@@ -45,8 +48,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         channel.ownCapabilities.contains(.updateChannel)
     }
 
-    var channelController: ChatChannelController!
-    private var memberListController: ChatChannelMemberListController!
+    let chat: Chat
+    private let memberList: MemberList
     private var loadingUsers = false
 
     public var displayedParticipants: [ParticipantInfo] {
@@ -103,11 +106,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         self.channel = channel
         channelName = channel.name ?? ""
         muted = channel.isMuted
-        channelController = chatClient.channelController(for: channel.cid)
-        channelController.delegate = self
-        memberListController = chatClient.memberListController(
-            query: .init(cid: channel.cid, filter: .none)
-        )
+        chat = InjectedValues[\.chatClient].makeChat(for: channel.cid)
+        memberList = InjectedValues[\.chatClient].makeMemberList(with: .init(cid: channel.cid, filter: .none))
 
         participants = channel.lastActiveMembers.map { member in
             ParticipantInfo(
@@ -168,12 +168,14 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     public func confirmGroupRenaming() {
         resignFirstResponder()
-        channelController.updateChannel(
-            name: channelName,
-            imageURL: channel.imageURL,
-            team: channel.team,
-            extraData: channel.extraData
-        )
+        Task {
+            try await chat.update(
+                name: channelName,
+                imageURL: channel.imageURL,
+                team: channel.team,
+                extraData: channel.extraData
+            )
+        }
     }
 
     public func channelController(
@@ -195,7 +197,9 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     }
 
     public func addUserTapped(_ user: ChatUser) {
-        channelController.addMembers(userIds: [user.id])
+        Task {
+            try await chat.addMembers([user.id])
+        }
         addUsersShown = false
     }
 
@@ -203,21 +207,25 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     private func removeUserFromConversation(completion: @escaping () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
-        channelController.removeMembers(userIds: [userId]) { [weak self] error in
-            if error != nil {
-                self?.errorShown = true
-            } else {
+        Task {
+            do {
+                try await chat.removeMembers([userId])
                 completion()
+            } catch {
+                log.error("Remove members failed: \(error.localizedDescription)")
+                errorShown = true
             }
         }
     }
 
     private func deleteChannel(completion: @escaping () -> Void) {
-        channelController.deleteChannel { [weak self] error in
-            if error != nil {
-                self?.errorShown = true
-            } else {
+        Task {
+            do {
+                try await chat.delete()
                 completion()
+            } catch {
+                log.error("Error deleting channel")
+                errorShown = false
             }
         }
     }
@@ -228,20 +236,18 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         }
 
         loadingUsers = true
-        memberListController.loadNextMembers { [weak self] error in
-            guard let self = self else { return }
-            self.loadingUsers = false
-            if error == nil {
-                let newMembers = self.memberListController.members.map { member in
-                    ParticipantInfo(
-                        chatUser: member,
-                        displayName: member.name ?? member.id,
-                        onlineInfoText: self.onlineInfo(for: member)
-                    )
-                }
-                if newMembers.count > self.participants.count {
-                    self.participants = newMembers
-                }
+        Task {
+            _ = try? await memberList.loadNextMembers()
+            loadingUsers = false
+            let newMembers = memberList.state.members.map { member in
+                ParticipantInfo(
+                    chatUser: member,
+                    displayName: member.name ?? member.id,
+                    onlineInfoText: self.onlineInfo(for: member)
+                )
+            }
+            if newMembers.count > self.participants.count {
+                self.participants = newMembers
             }
         }
     }
