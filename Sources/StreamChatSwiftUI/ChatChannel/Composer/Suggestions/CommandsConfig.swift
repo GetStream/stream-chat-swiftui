@@ -15,7 +15,7 @@ public protocol CommandsConfig {
     var instantCommandsSymbol: String { get }
 
     /// Creates the main commands handler.
-    /// - Parameter channelController: the controller of the channel.
+    /// - Parameter chat: the chat object.
     /// - Returns: `CommandsHandler`.
     func makeCommandsHandler(
         with chat: Chat

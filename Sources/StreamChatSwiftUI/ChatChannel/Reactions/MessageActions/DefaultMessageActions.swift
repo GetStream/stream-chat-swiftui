@@ -238,23 +238,19 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let messageController = chatClient.messageController(
-            cid: channel.cid,
-            messageId: message.id
-        )
-
-        let pinMessage = {
-            messageController.pin(MessagePinning.noExpiration) { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "pin"
-                        )
+        let pinMessage = { @MainActor in
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.pinMessage(message.id, pinning: .noExpiration)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "pin"
                     )
-                }
+                )
+            } catch {
+                log.error("Error pinning a message \(error.localizedDescription)")
+                onError(error)
             }
         }
 
@@ -262,7 +258,11 @@ extension MessageAction {
             id: MessageActionId.pin,
             title: L10n.Message.Actions.pin,
             iconName: "icn_pin",
-            action: pinMessage,
+            action: {
+                Task {
+                    await pinMessage()
+                }
+            },
             confirmationPopup: nil,
             isDestructive: false
         )
@@ -277,36 +277,36 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let messageController = chatClient.messageController(
-            cid: channel.cid,
-            messageId: message.id
-        )
-
-        let pinMessage = {
-            messageController.unpin { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "unpin"
-                        )
+        let unpinMessage = { @MainActor in
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.unpinMessage(message.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "unpin"
                     )
-                }
+                )
+            } catch {
+                log.error("Error unpinning a message \(error.localizedDescription)")
+                onError(error)
             }
         }
 
-        let pinAction = MessageAction(
+        let unpinAction = MessageAction(
             id: MessageActionId.unpin,
             title: L10n.Message.Actions.unpin,
             iconName: "pin.slash",
-            action: pinMessage,
+            action: {
+                Task {
+                    await unpinMessage()
+                }
+            },
             confirmationPopup: nil,
             isDestructive: false
         )
 
-        return pinAction
+        return unpinAction
     }
 
     private static func replyAction(
@@ -363,23 +363,19 @@ extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let messageController = chatClient.messageController(
-            cid: channel.cid,
-            messageId: message.id
-        )
-
-        let deleteAction = {
-            messageController.deleteMessage { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onFinish(
-                        MessageActionInfo(
-                            message: message,
-                            identifier: "delete"
-                        )
+        let deleteAction = { @MainActor in
+            let chat = chatClient.makeChat(for: channel.cid)
+            do {
+                try await chat.deleteMessage(message.id)
+                onFinish(
+                    MessageActionInfo(
+                        message: message,
+                        identifier: "delete"
                     )
-                }
+                )
+            } catch {
+                log.error("Error deleting a message \(error.localizedDescription)")
+                onError(error)
             }
         }
 
@@ -393,7 +389,11 @@ extension MessageAction {
             id: MessageActionId.delete,
             title: L10n.Message.Actions.delete,
             iconName: "trash",
-            action: deleteAction,
+            action: {
+                Task {
+                    await deleteAction()
+                }
+            },
             confirmationPopup: confirmationPopup,
             isDestructive: true
         )
@@ -456,7 +456,7 @@ extension MessageAction {
         let chat = InjectedValues[\.utils]
             .chatCache
             .chat(for: channel.cid)
-        let action = {
+        let action = { @MainActor in
             do {
                 try await chat.markUnread(from: message.id)
                 onFinish(
@@ -466,6 +466,7 @@ extension MessageAction {
                     )
                 )
             } catch {
+                log.error("Error marking message as unread \(error.localizedDescription)")
                 onError(error)
             }
         }
@@ -473,7 +474,11 @@ extension MessageAction {
             id: MessageActionId.markUnread,
             title: L10n.Message.Actions.markUnread,
             iconName: "message.badge",
-            action: { _ = action },
+            action: {
+                Task {
+                    await action()
+                }
+            },
             confirmationPopup: nil,
             isDestructive: false
         )
