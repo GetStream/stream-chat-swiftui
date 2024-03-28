@@ -16,7 +16,7 @@ class FileAttachmentsViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
 
     private let channel: ChatChannel
-    private var messageSearchController: ChatMessageSearchController!
+    private let messageSearch: MessageSearch
 
     private let calendar = Calendar.current
     private let dateFormatter = DateFormatter()
@@ -27,15 +27,15 @@ class FileAttachmentsViewModel: ObservableObject {
         self.channel = channel
 
         dateFormatter.dateFormat = "MMMM yyyy"
-        messageSearchController = chatClient.messageSearchController()
+        messageSearch = InjectedValues[\.chatClient].makeMessageSearch()
         loadMessages()
     }
 
-    init(channel: ChatChannel, messageSearchController: ChatMessageSearchController) {
+    init(channel: ChatChannel, messageSearch: MessageSearch) {
         self.channel = channel
 
         dateFormatter.dateFormat = "MMMM yyyy"
-        self.messageSearchController = messageSearchController
+        self.messageSearch = messageSearch
         loadMessages()
     }
 
@@ -66,10 +66,10 @@ class FileAttachmentsViewModel: ObservableObject {
 
         if !loadingNextMessages {
             loadingNextMessages = true
-            messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAttachments()
-                self.loadingNextMessages = false
+            Task { @MainActor in
+                _ = try? await messageSearch.loadNextMessages()
+                updateAttachments()
+                loadingNextMessages = false
             }
         }
     }
@@ -81,21 +81,21 @@ class FileAttachmentsViewModel: ObservableObject {
         )
 
         loading = true
-        messageSearchController.search(query: query, completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAttachments()
-            self.loading = false
-        })
+        Task { @MainActor in
+            _ = try? await messageSearch.search(query: query)
+            updateAttachments()
+            loading = false
+        }
     }
 
     private func updateAttachments() {
-        let messages = messageSearchController.messages
+        let messages = messageSearch.state.messages
         withAnimation {
             self.attachmentsDataSource = self.loadAttachments(from: messages)
         }
     }
 
-    private func loadAttachments(from messages: LazyCachedMapCollection<ChatMessage>) -> [MonthlyFileAttachments] {
+    private func loadAttachments(from messages: StreamCollection<ChatMessage>) -> [MonthlyFileAttachments] {
         var attachmentMappings = [String: [ChatMessageFileAttachment]]()
         var monthAndYearArray = [String]()
 

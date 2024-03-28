@@ -16,7 +16,7 @@ class MediaAttachmentsViewModel: ObservableObject {
     @Injected(\.chatClient) var chatClient
 
     private let channel: ChatChannel
-    private var messageSearchController: ChatMessageSearchController!
+    private let messageSearch: MessageSearch
 
     private var loadingNextMessages = false
 
@@ -26,16 +26,16 @@ class MediaAttachmentsViewModel: ObservableObject {
 
     init(channel: ChatChannel) {
         self.channel = channel
-        messageSearchController = chatClient.messageSearchController()
+        messageSearch = InjectedValues[\.chatClient].makeMessageSearch()
         loadMessages()
     }
 
     init(
         channel: ChatChannel,
-        messageSearchController: ChatMessageSearchController
+        messageSearch: MessageSearch
     ) {
         self.channel = channel
-        self.messageSearchController = messageSearchController
+        self.messageSearch = messageSearch
         loadMessages()
     }
 
@@ -46,10 +46,10 @@ class MediaAttachmentsViewModel: ObservableObject {
 
         if !loadingNextMessages {
             loadingNextMessages = true
-            messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAttachments()
-                self.loadingNextMessages = false
+            Task { @MainActor in
+                _ = try? await messageSearch.loadNextMessages()
+                updateAttachments()
+                loadingNextMessages = false
             }
         }
     }
@@ -61,16 +61,16 @@ class MediaAttachmentsViewModel: ObservableObject {
         )
 
         loading = true
-        messageSearchController.search(query: query, completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAttachments()
-            self.loading = false
-        })
+        Task { @MainActor in
+            _ = try? await messageSearch.search(query: query)
+            updateAttachments()
+            loading = false
+        }
     }
 
     private func updateAttachments() {
         var result = [MediaItem]()
-        for message in messageSearchController.messages {
+        for message in messageSearch.state.messages {
             let imageAttachments = message.imageAttachments
             let videoAttachments = message.videoAttachments
             for imageAttachment in imageAttachments {

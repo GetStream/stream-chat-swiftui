@@ -19,16 +19,16 @@ class AddUsersViewModel: ObservableObject {
 
     private var loadedUserIds: [String]
     private var loadingNextUsers = false
-    private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
+    private lazy var userSearch: UserSearch = chatClient.makeUserSearch()
 
     init(loadedUserIds: [String]) {
         self.loadedUserIds = loadedUserIds
         searchUsers()
     }
 
-    init(loadedUserIds: [String], searchController: ChatUserSearchController) {
+    init(loadedUserIds: [String], userSearch: UserSearch) {
         self.loadedUserIds = loadedUserIds
-        self.searchController = searchController
+        self.userSearch = userSearch
         searchUsers()
     }
 
@@ -45,10 +45,10 @@ class AddUsersViewModel: ObservableObject {
 
         if !loadingNextUsers {
             loadingNextUsers = true
-            searchController.loadNextUsers { [weak self] _ in
-                guard let self = self else { return }
-                self.users = self.searchController.userArray
-                self.loadingNextUsers = false
+            Task { @MainActor in
+                _ = try? await userSearch.loadNextUsers()
+                users = Array(userSearch.state.users)
+                loadingNextUsers = false
             }
         }
     }
@@ -56,16 +56,16 @@ class AddUsersViewModel: ObservableObject {
     private func searchUsers() {
         let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
         let query = UserListQuery(filter: filter)
-        searchController.search(query: query) { [weak self] error in
-            guard let self = self, error == nil else { return }
-            self.users = self.searchController.userArray
+        Task { @MainActor in
+            try await userSearch.search(query: query)
+            users = Array(userSearch.state.users)
         }
     }
 
     private func searchUsers(term: String) {
-        searchController.search(term: searchText) { [weak self] error in
-            guard let self = self, error == nil else { return }
-            self.users = self.searchController.userArray.filter { user in
+        Task { @MainActor in
+            try await userSearch.search(term: searchText)
+            users = self.userSearch.state.users.filter { user in
                 !self.loadedUserIds.contains(user.id)
             }
         }

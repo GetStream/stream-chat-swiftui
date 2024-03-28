@@ -2,6 +2,7 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Foundation
 import StreamChat
 import SwiftUI
@@ -51,6 +52,7 @@ public class ChatChannelInfoViewModel: ObservableObject {
     let chat: Chat
     private let memberList: MemberList
     private var loadingUsers = false
+    private var cancellables = Set<AnyCancellable>()
 
     public var displayedParticipants: [ParticipantInfo] {
         if channel.isDirectMessageChannel,
@@ -116,6 +118,8 @@ public class ChatChannelInfoViewModel: ObservableObject {
                 onlineInfoText: onlineInfo(for: member)
             )
         }
+        
+        subscribeToChannelUpdates()
     }
 
     public func onlineInfo(for user: ChatUser) -> String {
@@ -178,24 +182,6 @@ public class ChatChannelInfoViewModel: ObservableObject {
         }
     }
 
-    public func channelController(
-        _ channelController: ChatChannelController,
-        didUpdateChannel channel: EntityChange<ChatChannel>
-    ) {
-        if let channel = channelController.channel {
-            self.channel = channel
-            if self.channel.lastActiveMembers.count > participants.count {
-                participants = channel.lastActiveMembers.map { member in
-                    ParticipantInfo(
-                        chatUser: member,
-                        displayName: member.name ?? member.id,
-                        onlineInfoText: onlineInfo(for: member)
-                    )
-                }
-            }
-        }
-    }
-
     public func addUserTapped(_ user: ChatUser) {
         Task {
             try await chat.addMembers([user.id])
@@ -204,6 +190,25 @@ public class ChatChannelInfoViewModel: ObservableObject {
     }
 
     // MARK: - private
+    
+    private func subscribeToChannelUpdates() {
+        chat.state.$channel.sink { [weak self] channel in
+            guard let self else { return }
+            if let channel {
+                self.channel = channel
+                if self.channel.lastActiveMembers.count > participants.count {
+                    participants = channel.lastActiveMembers.map { member in
+                        ParticipantInfo(
+                            chatUser: member,
+                            displayName: member.name ?? member.id,
+                            onlineInfoText: self.onlineInfo(for: member)
+                        )
+                    }
+                }
+            }
+        }
+        .store(in: &cancellables)
+    }
 
     private func removeUserFromConversation(completion: @escaping () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
