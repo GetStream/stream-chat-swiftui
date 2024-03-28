@@ -6,7 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+class NewChatViewModel: ObservableObject {
 
     @Injected(\.chatClient) var chatClient
 
@@ -25,7 +25,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                 updatingSelectedUsers = true
                 if !selectedUsers.isEmpty {
                     do {
-                        try makeChannelController()
+                        try makeChat()
                     } catch {
                         state = .error
                         updatingSelectedUsers = false
@@ -46,12 +46,11 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     var chat: Chat?
 
-    private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
+    private lazy var userSearch: UserSearch = chatClient.makeUserSearch()
     private let lastSeenDateFormatter = DateUtils.timeAgo
 
     init() {
-        chatUsers = searchController.userArray
-        searchController.delegate = self
+        chatUsers = Array(userSearch.state.users)
         // Empty initial search to get all users
         searchUsers(with: nil)
     }
@@ -98,39 +97,32 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
         if !loadingNextUsers {
             loadingNextUsers = true
-            searchController.loadNextUsers(limit: 50) { [weak self] _ in
-                guard let self = self else { return }
-                self.chatUsers = self.searchController.userArray
-                self.loadingNextUsers = false
+            Task { @MainActor in
+                _ = try? await userSearch.loadNextUsers(limit: 50)
+                chatUsers = Array(userSearch.state.users)
+                loadingNextUsers = false
             }
         }
     }
-
-    // MARK: - ChatUserSearchControllerDelegate
-
-    func controller(
-        _ controller: ChatUserSearchController,
-        didChangeUsers changes: [ListChange<ChatUser>]
-    ) {
-        chatUsers = controller.userArray
-    }
-
+    
     // MARK: - private
 
     private func searchUsers(with term: String?) {
         state = .loading
-        searchController.search(term: term) { [weak self] error in
-            if error != nil {
-                self?.state = .error
-            } else {
-                self?.state = .loaded
+        Task { @MainActor in
+            do {
+                //TODO: workaround: why is term non-optional in search(term:)
+                chatUsers = try await userSearch.search(query: .search(term: term))
+                state = .loaded
+            } catch {
+                state = .error
             }
         }
     }
 
-    private func makeChannelController() throws {
+    private func makeChat() throws {
         let selectedUserIds = selectedUsers.map(\.id)
-        Task {
+        Task { @MainActor in
             do {
                 chat = try await chatClient.makeDirectMessageChat(with: selectedUserIds, extraData: [:])
                 withAnimation {

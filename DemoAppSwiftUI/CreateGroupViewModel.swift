@@ -2,11 +2,12 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+class CreateGroupViewModel: ObservableObject {
 
     @Injected(\.chatClient) var chatClient
 
@@ -25,14 +26,15 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     @Published var showGroupConversation = false
     @Published var errorShown = false
 
-    private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
+    private lazy var userSearch: UserSearch = chatClient.makeUserSearch()
     private let lastSeenDateFormatter = DateUtils.timeAgo
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
-        chatUsers = searchController.userArray
-        searchController.delegate = self
+        chatUsers = Array(userSearch.state.users)
         // Empty initial search to get all users
         searchUsers(with: nil)
+        subscribeToUserChanges()
     }
 
     var canCreateGroup: Bool {
@@ -65,7 +67,7 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     }
 
     func showChannelView() {
-        Task {
+        Task { @MainActor in
             do {
                 chat = try await chatClient.makeChat(
                     with: .init(
@@ -82,24 +84,23 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         }
     }
 
-    // MARK: - ChatUserSearchControllerDelegate
-
-    func controller(
-        _ controller: ChatUserSearchController,
-        didChangeUsers changes: [ListChange<ChatUser>]
-    ) {
-        chatUsers = controller.userArray
-    }
-
     // MARK: - private
+    
+    private func subscribeToUserChanges() {
+        userSearch.state.$users.sink { [weak self] users in
+            self?.chatUsers = Array(users)
+        }
+        .store(in: &cancellables)
+    }
 
     private func searchUsers(with term: String?) {
         state = .loading
-        searchController.search(term: term) { [weak self] error in
-            if error != nil {
-                self?.state = .error
-            } else {
-                self?.state = .loaded
+        Task { @MainActor in
+            do {
+                try await userSearch.search(query: .search(term: term))
+                state = .loaded
+            } catch {
+                state = .error
             }
         }
     }
