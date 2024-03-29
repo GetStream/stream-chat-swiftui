@@ -224,7 +224,7 @@ class MessageListPage {
 
         enum LinkPreview {
             static func link(in messageCell: XCUIElement) -> XCUIElement {
-                messageCell.links["LinkAttachmentContainer"]
+                messageCell.staticTexts["LinkAttachmentContainer"].firstMatch
             }
 
             static func image(in messageCell: XCUIElement) -> XCUIElement {
