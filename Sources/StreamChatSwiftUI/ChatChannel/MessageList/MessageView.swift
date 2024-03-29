@@ -281,7 +281,7 @@ struct LinkDetectionTextView: View {
         .tint(tintColor)
         .onAppear {
             guard utils.messageListConfig.localLinkDetectionEnabled else { return }
-            var attributes: [NSAttributedString.Key : Any] = [
+            var attributes: [NSAttributedString.Key: Any] = [
                 .foregroundColor: textColor(for: message),
                 .font: fonts.body
             ]
@@ -306,8 +306,8 @@ struct LinkDetectionTextView: View {
                 let pattern = "\\[([^\\]]+)\\]\\(\(textLink.originalText)\\)"
                 if let regex = try? NSRegularExpression(pattern: pattern) {
                     containsLinks = (regex.firstMatch(
-                        in: message.adjustedText, 
-                        options: [], 
+                        in: message.adjustedText,
+                        options: [],
                         range: range
                     ) == nil) || !markdownEnabled
                 } else {
