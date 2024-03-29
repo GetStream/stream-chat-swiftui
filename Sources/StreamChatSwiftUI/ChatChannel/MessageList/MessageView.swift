@@ -224,13 +224,12 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
 
 struct StreamTextView: View {
     
-    @Injected(\.utils) var utils
     @Injected(\.fonts) var fonts
     
     var message: ChatMessage
     
     var body: some View {
-        if #available(iOS 15, *), utils.messageListConfig.localLinkDetectionEnabled {
+        if #available(iOS 15, *) {
             LinkDetectionTextView(message: message)
         } else {
             Text(message.adjustedText)
@@ -245,40 +244,85 @@ struct LinkDetectionTextView: View {
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
+    @Injected(\.utils) var utils
     
     var message: ChatMessage
     
-    var text: String {
-        message.adjustedText
+    var text: LocalizedStringKey {
+        LocalizedStringKey(message.adjustedText)
     }
     
-    @State var displayedText: AttributedString
+    @State var displayedText: AttributedString?
     
     @State var linkDetector = TextLinkDetector()
     
+    @State var tintColor = InjectedValues[\.colors].tintColor
+        
     init(message: ChatMessage) {
         self.message = message
-        _displayedText = State(initialValue: AttributedString(message.adjustedText))
+    }
+    
+    private var markdownEnabled: Bool {
+        utils.messageListConfig.markdownSupportEnabled
     }
     
     var body: some View {
-        Text(displayedText)
-            .foregroundColor(textColor(for: message))
-            .font(fonts.body)
-            .onAppear {
-                let attributedText = NSMutableAttributedString(
-                    string: text,
-                    attributes: [
-                        .foregroundColor: textColor(for: message),
-                        .font: fonts.body
-                    ]
-                )
+        Group {
+            if let displayedText {
+                Text(displayedText)
+            } else if markdownEnabled {
+                Text(text)
+            } else {
+                Text(message.adjustedText)
+            }
+        }
+        .foregroundColor(textColor(for: message))
+        .font(fonts.body)
+        .tint(tintColor)
+        .onAppear {
+            guard utils.messageListConfig.localLinkDetectionEnabled else { return }
+            var attributes: [NSAttributedString.Key : Any] = [
+                .foregroundColor: textColor(for: message),
+                .font: fonts.body
+            ]
+            
+            let additional = utils.messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
+            for (key, value) in additional {
+                if key == .foregroundColor, let value = value as? UIColor {
+                    tintColor = Color(value)
+                } else {
+                    attributes[key] = value
+                }
+            }
+            
+            let attributedText = NSMutableAttributedString(
+                string: message.adjustedText,
+                attributes: attributes
+            )
 
-                linkDetector.links(in: text).forEach { textLink in
-                    attributedText.addAttribute(.link, value: textLink.url, range: textLink.range)
+            var containsLinks = false
+            let range = NSRange(location: 0, length: message.adjustedText.utf16.count)
+            linkDetector.links(in: message.adjustedText).forEach { textLink in
+                let pattern = "\\[([^\\]]+)\\]\\(\(textLink.originalText)\\)"
+                if let regex = try? NSRegularExpression(pattern: pattern) {
+                    containsLinks = (regex.firstMatch(
+                        in: message.adjustedText, 
+                        options: [], 
+                        range: range
+                    ) == nil) || !markdownEnabled
+                } else {
+                    containsLinks = true
                 }
                 
+                if !message.adjustedText.contains("](\(textLink.originalText))") {
+                    containsLinks = true
+                }
+                attributedText.addAttribute(.link, value: textLink.url, range: textLink.range)
+            }
+                
+            if containsLinks {
                 self.displayedText = AttributedString(attributedText)
             }
+        }
     }
 }
