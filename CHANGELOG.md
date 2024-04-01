@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Added markdown support (enabled by default)
 
 # [4.51.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.51.0)
 _March 26, 2024_
