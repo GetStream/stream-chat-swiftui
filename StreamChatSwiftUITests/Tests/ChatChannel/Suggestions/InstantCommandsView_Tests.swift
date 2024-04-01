@@ -67,10 +67,7 @@ class InstantCommandsView_Tests: StreamChatTestCase {
     }
 
     private func defaultCommands(suffix: String = "") -> [CommandHandler] {
-        let channelController = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient,
-            messages: []
-        )
+        let chat = chatClient.makeChat(for: .unique)
         var instantCommands = [CommandHandler]()
         let giphyCommand = GiphyCommandHandler(
             commandSymbol: "/giphy",
@@ -78,12 +75,12 @@ class InstantCommandsView_Tests: StreamChatTestCase {
         )
         instantCommands.append(giphyCommand)
         let muteCommand = MuteCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: "/mute",
             id: "/mute\(suffix)"
         )
         let unmuteCommand = UnmuteCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: "/unmute",
             id: "/unmute\(suffix)"
         )

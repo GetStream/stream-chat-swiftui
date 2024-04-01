@@ -21,16 +21,17 @@ class MessageComposerView_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_messageComposerView_snapshot() {
+    @MainActor func test_messageComposerView_snapshot() {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let chat = chatClient.makeChat(for: .unique)
 
         // When
         let view = MessageComposerView(
             viewFactory: factory,
-            channelController: channelController,
-            messageController: nil,
+            chat: chat,
+            messageId: .unique,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}
@@ -41,19 +42,20 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageComposerView_recording() {
+    @MainActor func test_messageComposerView_recording() {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let chat = chatClient.makeChat(for: .unique)
+        let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.recordingState = .recording(.zero)
         
         // When
         let view = MessageComposerView(
             viewFactory: factory,
             viewModel: viewModel,
-            channelController: channelController,
-            messageController: nil,
+            chat: chat,
+            messageId: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}
@@ -64,19 +66,20 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageComposerView_recordingLocked() {
+    @MainActor func test_messageComposerView_recordingLocked() {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let chat = chatClient.makeChat(for: .unique)
+        let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.recordingState = .locked
         
         // When
         let view = MessageComposerView(
             viewFactory: factory,
             viewModel: viewModel,
-            channelController: channelController,
-            messageController: nil,
+            chat: chat,
+            messageId: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}
@@ -87,19 +90,20 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageComposerView_recordingTip() {
+    @MainActor func test_messageComposerView_recordingTip() {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let chat = chatClient.makeChat(for: .unique)
+        let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.recordingState = .showingTip
         
         // When
         let view = MessageComposerView(
             viewFactory: factory,
             viewModel: viewModel,
-            channelController: channelController,
-            messageController: nil,
+            chat: chat,
+            messageId: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}
@@ -110,19 +114,20 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageComposerView_addedVoiceRecording() {
+    @MainActor func test_messageComposerView_addedVoiceRecording() {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let chat = chatClient.makeChat(for: .unique)
+        let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: .localYodaImage, duration: 5, waveform: [0, 0.1, 0.6, 1.0])]
         
         // When
         let view = MessageComposerView(
             viewFactory: factory,
             viewModel: viewModel,
-            channelController: channelController,
-            messageController: nil,
+            chat: chat,
+            messageId: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}
@@ -133,7 +138,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_composerInputView_slowMode() {
+    @MainActor func test_composerInputView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
 
@@ -158,7 +163,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_trailingComposerView_snapshot() {
+    @MainActor func test_trailingComposerView_snapshot() {
         // Given
         let factory = DefaultViewFactory.shared
 
@@ -175,7 +180,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_trailingComposerView_slowMode() {
+    @MainActor func test_trailingComposerView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
         let viewModel = MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
@@ -194,7 +199,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_composerInputView_inputTextView() {
+    @MainActor func test_composerInputView_inputTextView() {
         // Given
         let view = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
@@ -208,7 +213,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_composerInputView_composerInputTextView() {
+    @MainActor func test_composerInputView_composerInputTextView() {
         // Given
         let view = ComposerTextInputView(
             text: .constant("This is a sample text"),
@@ -224,7 +229,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_composerInputView_rangeSelection() {
+    @MainActor func test_composerInputView_rangeSelection() {
         // Given
         let view = ComposerTextInputView(
             text: .constant("This is a sample text"),
@@ -247,7 +252,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
     }
 
-    func test_composerInputView_textSelection() {
+    @MainActor func test_composerInputView_textSelection() {
         // Given
         let view = ComposerTextInputView(
             text: .constant("New text"),
@@ -272,7 +277,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         XCTAssert(coordinator.textInput.text == "New text")
     }
 
-    func test_quotedMessageHeaderView_snapshot() {
+    @MainActor func test_quotedMessageHeaderView_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -289,7 +294,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_composerInputView_snapshot() {
+    @MainActor func test_composerInputView_snapshot() {
         // Given
         let inputView = InputTextView()
         let view = ComposerTextInputView(
@@ -313,7 +318,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         XCTAssert(coordinator.textInput.height == 100)
     }
 
-    func test_photoAttachmentCell_loadingResource() {
+    @MainActor func test_photoAttachmentCell_loadingResource() {
         // Given
         let asset = PHAsset()
         let loader = PhotoAssetLoader()
@@ -335,7 +340,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         XCTAssert(newRequestId == nil)
     }
 
-    func test_videoIndicatorView_snapshot() {
+    @MainActor func test_videoIndicatorView_snapshot() {
         // Given
         let view = VideoIndicatorView()
             .frame(width: 100, height: 100)
@@ -345,7 +350,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_videoDurationIndicatorView_snapshot() {
+    @MainActor func test_videoDurationIndicatorView_snapshot() {
         // Given
         let view = VideoDurationIndicatorView(duration: "02:54")
             .frame(width: 100, height: 100)
@@ -355,7 +360,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_photosPickerView_snapshot() {
+    @MainActor func test_photosPickerView_snapshot() {
         // Given
         let view = PhotoAttachmentPickerView(
             assets: .init(fetchResult: .init()),

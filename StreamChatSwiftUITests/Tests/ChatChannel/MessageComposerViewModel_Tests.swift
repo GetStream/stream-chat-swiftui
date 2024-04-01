@@ -33,7 +33,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         }
     }
     
-    func test_messageComposerVM_sendButtonDisabled() {
+    @MainActor func test_messageComposerVM_sendButtonDisabled() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -44,7 +44,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(buttonEnabled == false)
     }
     
-    func test_messageComposerVM_emptySpaceButtonDisabled() {
+    @MainActor func test_messageComposerVM_emptySpaceButtonDisabled() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -55,7 +55,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.sendButtonEnabled == false)
     }
     
-    func test_messageComposerVM_sendButtonEnabled_textChange() {
+    @MainActor func test_messageComposerVM_sendButtonEnabled_textChange() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -68,7 +68,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.pickerTypeState == .collapsed)
     }
     
-    func test_messageComposerVM_sendButtonEnabled_addedAsset() {
+    @MainActor func test_messageComposerVM_sendButtonEnabled_addedAsset() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -81,7 +81,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.addedAssets.count, 1)
     }
     
-    func test_messageComposerVM_sendButtonEnabled_addedFile() {
+    @MainActor func test_messageComposerVM_sendButtonEnabled_addedFile() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -94,7 +94,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.addedFileURLs.count, 1)
     }
     
-    func test_messageComposerVM_sendButtonEnabled_addedCustomAttachment() {
+    @MainActor func test_messageComposerVM_sendButtonEnabled_addedCustomAttachment() {
         // Given
         let viewModel = makeComposerViewModel()
         let attachment = CustomAttachment(id: .unique, content: .mockFile)
@@ -108,7 +108,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.addedCustomAttachments.count, 1)
     }
     
-    func test_messageComposerVM_changePickerState() {
+    @MainActor func test_messageComposerVM_changePickerState() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -119,7 +119,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.pickerState == .custom)
     }
     
-    func test_messageComposerVM_inputComposerNotScrollable() {
+    @MainActor func test_messageComposerVM_inputComposerNotScrollable() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -131,7 +131,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(inputComposerScrollable == false)
     }
     
-    func test_messageComposerVM_inputComposerScrollableAttachments() {
+    @MainActor func test_messageComposerVM_inputComposerScrollableAttachments() {
         // Given
         let viewModel = makeComposerViewModel()
         let attachments = [
@@ -149,7 +149,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(inputComposerScrollable == true)
     }
     
-    func test_messageComposerVM_inputComposerScrollableFiles() {
+    @MainActor func test_messageComposerVM_inputComposerScrollableFiles() {
         // Given
         let viewModel = makeComposerViewModel()
         let attachments: [URL] = [mockURL, mockURL, mockURL]
@@ -162,7 +162,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(inputComposerScrollable == true)
     }
     
-    func test_messageComposerVM_imageRemovalByTappingTwice() {
+    @MainActor func test_messageComposerVM_imageRemovalByTappingTwice() {
         // Given
         let viewModel = makeComposerViewModel()
         let asset = defaultAsset
@@ -175,7 +175,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.addedAssets.isEmpty)
     }
     
-    func test_messageComposerVM_removeFileAttachment() {
+    @MainActor func test_messageComposerVM_removeFileAttachment() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -187,7 +187,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.addedFileURLs.isEmpty)
     }
     
-    func test_messageComposerVM_removeImageAttachment() {
+    @MainActor func test_messageComposerVM_removeImageAttachment() {
         // Given
         let viewModel = makeComposerViewModel()
         let asset = defaultAsset
@@ -200,7 +200,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.addedAssets.isEmpty)
     }
     
-    func test_messageComposerVM_cameraImageAdded() {
+    @MainActor func test_messageComposerVM_cameraImageAdded() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -212,7 +212,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.pickerState == .photos)
     }
     
-    func test_messageComposerVM_imageIsSelected() {
+    @MainActor func test_messageComposerVM_imageIsSelected() {
         // Given
         let viewModel = makeComposerViewModel()
         let asset = defaultAsset
@@ -225,7 +225,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(imageIsSelected == true)
     }
     
-    func test_messageComposerVM_imageIsNotSelected() {
+    @MainActor func test_messageComposerVM_imageIsNotSelected() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -237,7 +237,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(imageSelected == false)
     }
     
-    func test_messageComposerVM_customAttachmentSelected() {
+    @MainActor func test_messageComposerVM_customAttachmentSelected() {
         // Given
         let viewModel = makeComposerViewModel()
         let attachment = CustomAttachment(id: .unique, content: .mockFile)
@@ -250,7 +250,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(isSelected == true)
     }
     
-    func test_messageComposerVM_customAttachmentRemovalByTappingTwice() {
+    @MainActor func test_messageComposerVM_customAttachmentRemovalByTappingTwice() {
         // Given
         let viewModel = makeComposerViewModel()
         let attachment = CustomAttachment(id: .unique, content: .mockFile)
@@ -265,7 +265,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.addedCustomAttachments.isEmpty)
     }
     
-    func test_messageComposerVM_cameraPickerShown() {
+    @MainActor func test_messageComposerVM_cameraPickerShown() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -276,7 +276,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.cameraPickerShown == true)
     }
     
-    func test_messageComposerVM_filePickerShown() {
+    @MainActor func test_messageComposerVM_filePickerShown() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -287,7 +287,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.filePickerShown == true)
     }
     
-    func test_messageComposerVM_overlayNotShown() {
+    @MainActor func test_messageComposerVM_overlayNotShown() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -299,7 +299,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(overlayShown == false)
     }
     
-    func test_messageComposerVM_overlayShown() {
+    @MainActor func test_messageComposerVM_overlayShown() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -311,7 +311,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(overlayShown == true)
     }
     
-    func test_messageComposerVM_sendNewMessage() {
+    @MainActor func test_messageComposerVM_sendNewMessage() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -331,7 +331,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         }
     }
     
-    func test_messageComposerVM_notInThread() {
+    @MainActor func test_messageComposerVM_notInThread() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -344,7 +344,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(isDMChannel == true)
     }
     
-    func test_messageComposerVM_inThread() {
+    @MainActor func test_messageComposerVM_inThread() {
         // Given
         let channelController = makeChannelController()
         let messageController = ChatMessageControllerSUI_Mock.mock(
@@ -352,9 +352,10 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             cid: .unique,
             messageId: .unique
         )
+        let chat = chatClient.makeChat(for: .unique)
         let viewModel = MessageComposerViewModel(
-            channelController: channelController,
-            messageController: messageController
+            chat: chat,
+            messageId: .unique
         )
         
         // When
@@ -366,7 +367,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(isDMChannel == true)
     }
     
-    func test_messageComposerVM_settingComposerCommand() {
+    @MainActor func test_messageComposerVM_settingComposerCommand() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -378,7 +379,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.composerCommand?.id == "/giphy")
     }
     
-    func test_messageComposerVM_instantCommandsShown() {
+    @MainActor func test_messageComposerVM_instantCommandsShown() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -390,7 +391,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.composerCommand?.id == "instantCommands")
     }
     
-    func test_messageComposerVM_giphySendButtonEnabled() {
+    @MainActor func test_messageComposerVM_giphySendButtonEnabled() {
         // Given
         let viewModel = makeComposerViewModel()
         let command = ComposerCommand(
@@ -418,7 +419,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(finalSendButtonState == true)
     }
     
-    func test_messageComposerVM_suggestionsShown() {
+    @MainActor func test_messageComposerVM_suggestionsShown() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -429,7 +430,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(!viewModel.suggestions.isEmpty)
     }
     
-    func test_messageComposerVM_maxAttachmentsAssets() {
+    @MainActor func test_messageComposerVM_maxAttachmentsAssets() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -445,7 +446,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.addedAssets.count, 10)
     }
     
-    func test_messageComposerVM_maxAttachmentsCombined() {
+    @MainActor func test_messageComposerVM_maxAttachmentsCombined() {
         // Given
         let viewModel = makeComposerViewModel()
         var urls = [URL]()
@@ -474,7 +475,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         }
     }
     
-    func test_messageComposerVM_maxSizeExceeded() {
+    @MainActor func test_messageComposerVM_maxSizeExceeded() {
         // Given
         let viewModel = makeComposerViewModel()
         let cdnClient = CDNClient_Mock()
@@ -492,7 +493,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(alertShown == true)
     }
     
-    func test_messageComposerVM_mentionUsers() {
+    @MainActor func test_messageComposerVM_mentionUsers() {
         // Given
         let viewModel = makeComposerViewModel()
         let command = ComposerCommand(
@@ -515,7 +516,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.mentionedUsers.first?.name == "Martin")
     }
     
-    func test_messageComposerVM_noMentionedUsers() {
+    @MainActor func test_messageComposerVM_noMentionedUsers() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -531,7 +532,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.mentionedUsers.isEmpty)
     }
     
-    func test_messageComposerVM_mentionedUsersClearText() {
+    @MainActor func test_messageComposerVM_mentionedUsersClearText() {
         // Given
         let viewModel = makeComposerViewModel()
         let command = ComposerCommand(
@@ -554,7 +555,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.mentionedUsers.isEmpty)
     }
     
-    func test_addedAsset_extraData() {
+    @MainActor func test_addedAsset_extraData() {
         // Given
         let image = UIImage(systemName: "person")!
         let url = URL.newTemporaryFileURL()
@@ -579,7 +580,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     // MARK: - Recording
     
-    func test_messageComposer_discardRecording() {
+    @MainActor func test_messageComposer_discardRecording() {
         // Given
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .recording(.zero)
@@ -592,7 +593,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.audioRecordingInfo == .initial)
     }
     
-    func test_messageComposer_confirmStoppedRecording() {
+    @MainActor func test_messageComposer_confirmStoppedRecording() {
         // Given
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .stopped
@@ -612,7 +613,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.pendingAudioRecording == nil)
     }
     
-    func test_messageComposer_previewRecording() {
+    @MainActor func test_messageComposer_previewRecording() {
         // Given
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .recording(.zero)
@@ -624,7 +625,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.recordingState == .stopped)
     }
     
-    func test_messageComposer_lockRecording() {
+    @MainActor func test_messageComposer_lockRecording() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -635,7 +636,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.recordingState == .locked)
     }
     
-    func test_messageComposer_cancelRecording() {
+    @MainActor func test_messageComposer_cancelRecording() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -647,7 +648,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.recordingState.showsComposer == true)
     }
     
-    func test_messageComposer_updateRecordingInfo() {
+    @MainActor func test_messageComposer_updateRecordingInfo() {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -660,7 +661,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.audioRecordingInfo.waveform == [1.0])
     }
     
-    func test_messageComposer_recordingError() {
+    @MainActor func test_messageComposer_recordingError() {
         // Given
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .recording(.zero)
@@ -675,7 +676,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     // MARK: - private
     
-    private func makeComposerViewModel() -> MessageComposerViewModel {
+    @MainActor private func makeComposerViewModel() -> MessageComposerViewModel {
         MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
     }
     
@@ -701,11 +702,12 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
 }
 
 enum MessageComposerTestUtils {
-    static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
+    @MainActor static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
         let channelController = makeChannelController(chatClient: chatClient)
+        let chat = chatClient.makeChat(for: .unique)
         let viewModel = MessageComposerViewModel(
-            channelController: channelController,
-            messageController: nil
+            chat: chat,
+            messageId: nil
         )
         return viewModel
     }

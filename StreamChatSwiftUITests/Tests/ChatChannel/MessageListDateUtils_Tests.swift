@@ -30,9 +30,9 @@ class MessageListDateUtils_Tests: StreamChatTestCase {
         createdAt: Date(timeIntervalSince1970: -100_000)
     )
 
-    private lazy var messages = LazyCachedMapCollection(source: [testMessage], map: { $0 })
-    private lazy var messagesSameDay = LazyCachedMapCollection(source: [testMessage, testMessageSameDay], map: { $0 })
-    private lazy var messagesDifferentDay = LazyCachedMapCollection(source: [testMessage, testMessageOtherDay], map: { $0 })
+    private lazy var messages = StreamCollection([testMessage])
+    private lazy var messagesSameDay = StreamCollection([testMessage, testMessageSameDay])
+    private lazy var messagesDifferentDay = StreamCollection([testMessage, testMessageOtherDay])
 
     func test_indexForMessageDate_messageListConfig() {
         // Given

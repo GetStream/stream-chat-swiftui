@@ -35,7 +35,7 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
         XCTAssert(adjustedText == "bla bla Text")
     }
 
-    func test_composerVM_adjustMessageOnSend() {
+    @MainActor func test_composerVM_adjustMessageOnSend() {
         // Given
         let viewModel = makeComposerViewModel()
 
@@ -49,11 +49,11 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
 
     // MARK: - private
 
-    private func makeComposerViewModel() -> MessageComposerViewModel {
-        let channelController = makeChannelController()
+    @MainActor private func makeComposerViewModel() -> MessageComposerViewModel {
+        let chat = chatClient.makeChat(for: .unique)
         let viewModel = MessageComposerViewModel(
-            channelController: channelController,
-            messageController: nil
+            chat: chat,
+            messageId: nil
         )
         return viewModel
     }

@@ -20,6 +20,7 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // When
         let view = BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: true,
             onTap: {},
@@ -45,6 +46,7 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // When
         let view = BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: true,
             onTap: {},
@@ -70,6 +72,7 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // When
         let view = BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: true,
             onTap: {},
@@ -98,6 +101,7 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // When
         let view = BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: true,
             onTap: {},
@@ -126,6 +130,7 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // When
         let view = BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: true,
             reactionsPerRow: 2,
@@ -154,6 +159,7 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // When
         let view = BottomReactionsView(
+            chat: chat,
             message: message,
             showsAllInfo: true,
             reactionsPerRow: 2,
@@ -165,5 +171,11 @@ final class BottomReactionsView_Tests: StreamChatTestCase {
         
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: 0.95))
+    }
+    
+    // MARK: - private
+    
+    var chat: Chat {
+        chatClient.makeChat(for: .unique)
     }
 }

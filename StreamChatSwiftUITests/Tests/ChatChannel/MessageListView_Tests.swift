@@ -109,7 +109,7 @@ class MessageListView_Tests: StreamChatTestCase {
             author: .mock(id: .unique),
             reactionScores: reactions
         )]
-        let messages = LazyCachedMapCollection(source: temp, map: { $0 })
+        let messages = StreamCollection(temp)
         let messageListView = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,

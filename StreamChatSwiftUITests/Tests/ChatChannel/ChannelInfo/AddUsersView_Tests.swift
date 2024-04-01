@@ -18,7 +18,7 @@ class AddUsersView_Tests: StreamChatTestCase {
         searchController.users_mock = users
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
-            searchController: searchController
+            userSearch: chatClient.makeUserSearch()
         )
 
         // When

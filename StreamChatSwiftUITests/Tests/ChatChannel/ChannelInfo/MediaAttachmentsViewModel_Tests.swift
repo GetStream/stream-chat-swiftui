@@ -20,9 +20,11 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel()
         let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
         messageSearchController.messages_mock = messages
+        let messageSearch = chatClient.makeMessageSearch()
+        //TODO: set messages
         let viewModel = MediaAttachmentsViewModel(
             channel: channel,
-            messageSearchController: messageSearchController
+            messageSearch: messageSearch
         )
 
         // When
@@ -43,9 +45,12 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel()
         let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
         messageSearchController.messages_mock = messages
+        let messageSearch = chatClient.makeMessageSearch()
+        //TODO: set messages
+        
         let viewModel = MediaAttachmentsViewModel(
             channel: channel,
-            messageSearchController: messageSearchController
+            messageSearch: messageSearch
         )
 
         // When

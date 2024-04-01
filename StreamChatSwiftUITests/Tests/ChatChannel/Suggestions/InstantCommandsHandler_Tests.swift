@@ -10,7 +10,7 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
 
     private var muteCommandHandler: MuteCommandHandler {
         MuteCommandHandler(
-            channelController: ChatChannelTestHelpers.makeChannelController(chatClient: chatClient),
+            chat: chatClient.makeChat(for: .unique),
             commandSymbol: "/mute"
         )
     }
@@ -66,7 +66,7 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(muteCommandHandler.id == handler?.id)
     }
 
-    func test_instantCommandsHandler_showSuggestions() {
+    func test_instantCommandsHandler_showSuggestions() async throws {
         // Given
         let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
         let commandsHandler = InstantCommandsHandler(
@@ -80,23 +80,13 @@ class InstantCommandsHandler_Tests: StreamChatTestCase {
             ),
             displayInfo: nil
         )
-        let expectation = expectation(description: "suggestions")
 
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink(
-            receiveCompletion: { _ in
-                log.debug("finished loading suggestions")
-            }, receiveValue: { suggestionInfo in
-                // Then
-                let commands = suggestionInfo.value as! [CommandHandler]
-                XCTAssert(commands.count == 2)
-                XCTAssert(commands[0].id == giphyCommand.id)
-                XCTAssert(commands[1].id == self.muteCommandHandler.id)
-                expectation.fulfill()
-            }
-        )
-
-        waitForExpectations(timeout: 5, handler: nil)
+        let suggestionInfo = try await commandsHandler.showSuggestions(for: command)
+        let commands = suggestionInfo.value as! [CommandHandler]
+        XCTAssert(commands.count == 2)
+        XCTAssert(commands[0].id == giphyCommand.id)
+        XCTAssert(commands[1].id == self.muteCommandHandler.id)
     }
 
     func test_instantCommandsHandler_cantHandleCommand() {

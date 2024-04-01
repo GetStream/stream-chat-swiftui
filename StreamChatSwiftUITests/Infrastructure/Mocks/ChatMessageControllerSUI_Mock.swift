@@ -21,7 +21,12 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
         if channelId == nil {
             channelId = try! .init(cid: "mock:channel")
         }
-        return .init(client: chatClient, cid: channelId!, messageId: messageId)
+        return .init(
+            client: chatClient,
+            cid: channelId!,
+            messageId: messageId,
+            replyPaginationHandler: MessagesPaginationStateHandler_Mock()
+        )
     }
 
     public var message_mock: ChatMessage?

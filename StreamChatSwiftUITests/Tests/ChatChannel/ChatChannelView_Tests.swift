@@ -17,7 +17,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_chatChannelView_snapshot() {
+    @MainActor func test_chatChannelView_snapshot() {
         // Given
         let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
@@ -37,13 +37,15 @@ class ChatChannelView_Tests: StreamChatTestCase {
             )
         }
         controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
+        let chat = chatClient.makeChat(for: .unique)
+        //TODO: set messages
 
         // When
         let view = NavigationView {
             ScrollView {
                 ChatChannelView(
                     viewFactory: DefaultViewFactory.shared,
-                    channelController: controller
+                    chat: chat
                 )
                 .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
             }
@@ -55,7 +57,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_chatChannelView_snapshotEmpty() {
+    @MainActor func test_chatChannelView_snapshotEmpty() {
         // Given
         let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
@@ -68,13 +70,15 @@ class ChatChannelView_Tests: StreamChatTestCase {
             messages: messages,
             state: .remoteDataFetched
         )
+        let chat = chatClient.makeChat(for: .unique)
+        //TODO: set messages
 
         // When
         let view = NavigationView {
             ScrollView {
                 ChatChannelView(
                     viewFactory: DefaultViewFactory.shared,
-                    channelController: controller
+                    chat: chat
                 )
                 .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
             }
@@ -86,20 +90,22 @@ class ChatChannelView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_chatChannelView_snapshotLoading() {
+    @MainActor func test_chatChannelView_snapshotLoading() {
         // Given
         let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
             channelListQuery: nil,
             client: chatClient
         )
+        let chat = chatClient.makeChat(for: .unique)
+        //TODO: set messages
 
         // When
         let view = NavigationView {
             ScrollView {
                 ChatChannelView(
                     viewFactory: DefaultViewFactory.shared,
-                    channelController: controller
+                    chat: chat
                 )
                 .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
             }

@@ -36,7 +36,8 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         // Given
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
-                factory: DefaultViewFactory.shared,
+                factory: DefaultViewFactory.shared, 
+                chat: self.chat,
                 channel: .mockDMChannel(),
                 currentSnapshot: self.overlayImage,
                 messageDisplayInfo: self.messageDisplayInfo,
@@ -56,6 +57,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
+                chat: self.chat,
                 channel: channel,
                 currentSnapshot: self.overlayImage,
                 messageDisplayInfo: self.messageDisplayInfo,
@@ -99,6 +101,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
+                chat: self.chat,
                 channel: channel,
                 currentSnapshot: self.overlayImage,
                 messageDisplayInfo: messageDisplayInfo,
@@ -135,6 +138,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
+                chat: self.chat,
                 channel: .mockDMChannel(),
                 currentSnapshot: self.overlayImage,
                 messageDisplayInfo: messageDisplayInfo,
@@ -223,6 +227,12 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
 
         // Then
         XCTAssert(offset == 12.5)
+    }
+    
+    // MARK: - private
+    
+    private var chat: Chat {
+        chatClient.makeChat(for: .unique)
     }
 }
 

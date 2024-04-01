@@ -26,7 +26,7 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_chatChannelView_snapshot() {
+    @MainActor func test_chatChannelView_snapshot() {
         // Given
         let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
@@ -48,13 +48,15 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
             )
         }
         controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
+        let chat = chatClient.makeChat(for: .unique)
+        //TODO: set channels
 
         // When
         let view = NavigationView {
             ScrollView {
                 ChatChannelView(
                     viewFactory: DefaultViewFactory.shared,
-                    channelController: controller
+                    chat: chat
                 )
                 .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
             }

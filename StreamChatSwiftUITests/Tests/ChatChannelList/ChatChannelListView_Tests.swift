@@ -11,26 +11,14 @@ import XCTest
 
 class ChatChannelListView_Tests: StreamChatTestCase {
 
-    func test_chatChannelScreen_snapshot() {
+    @MainActor func test_chatChannelListView_snapshot() {
         // Given
-        let controller = makeChannelListController()
-
-        // When
-        let view = ChatChannelListScreen(channelListController: controller)
-            .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_chatChannelListView_snapshot() {
-        // Given
-        let controller = makeChannelListController()
+        let channelList = makeChannelList()
 
         // When
         let view = ChatChannelListView(
             viewFactory: DefaultViewFactory.shared,
-            channelListController: controller
+            channelList: channelList
         )
         .applyDefaultSize()
 
@@ -38,15 +26,15 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_chatChannelListViewSansNavigation_snapshot() {
+    @MainActor func test_chatChannelListViewSansNavigation_snapshot() {
         // Given
-        let controller = makeChannelListController()
+        let channelList = makeChannelList()
 
         // When
         let view = NavigationView {
             ChatChannelListView(
                 viewFactory: DefaultViewFactory.shared,
-                channelListController: controller,
+                channelList: channelList,
                 embedInNavigationView: false
             )
         }
@@ -71,10 +59,13 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    private func makeChannelListController() -> ChatChannelListController_Mock {
-        let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
-        channelListController.simulateInitial(channels: mockChannels(), state: .initialized)
-        return channelListController
+    private func makeChannelList() -> ChannelList_Mock {
+        let channelList = ChannelList_Mock(
+            channels: mockChannels(),
+            query: .init(filter: .nonEmpty),
+            client: chatClient
+        )
+        return channelList
     }
 
     private func mockChannels() -> [ChatChannel] {
@@ -84,5 +75,28 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             channels.append(channel)
         }
         return channels
+    }
+}
+
+class ChannelList_Mock: ChannelList {
+    init(
+        channels: [ChatChannel],
+        query: ChannelListQuery,
+        dynamicFilter: ((ChatChannel) -> Bool)? = nil,
+        client: ChatClient,
+        environment: ChannelList.Environment = .init()
+    ) {
+        let channelListUpdater = ChannelListUpdater(
+            database: .init(kind: .inMemory),
+            apiClient: APIClientMock()
+        )
+        super.init(
+            channels: channels,
+            query: query,
+            dynamicFilter: dynamicFilter,
+            channelListUpdater: channelListUpdater,
+            client: client,
+            environment: environment
+        )
     }
 }

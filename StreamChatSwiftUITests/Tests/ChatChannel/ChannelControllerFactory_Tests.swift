@@ -14,11 +14,11 @@ class ChannelControllerFactory_Tests: StreamChatTestCase {
         let channelId = ChannelId.unique
 
         // When
-        let controller1 = factory.makeChannelController(for: channelId)
-        let controller2 = factory.makeChannelController(for: channelId)
+        let chat1 = factory.chat(for: channelId)
+        let chat2 = factory.chat(for: channelId)
 
         // Then
-        XCTAssert(controller1 === controller2)
+        XCTAssert(chat1 === chat2)
     }
 
     func test_channelControllerFactory_removal() {
@@ -27,11 +27,11 @@ class ChannelControllerFactory_Tests: StreamChatTestCase {
         let channelId = ChannelId.unique
 
         // When
-        let controller1 = factory.makeChannelController(for: channelId)
+        let chat1 = factory.chat(for: channelId)
         factory.clearCurrentChat()
-        let controller2 = factory.makeChannelController(for: channelId)
+        let chat2 = factory.chat(for: channelId)
 
         // Then
-        XCTAssert(controller1 !== controller2)
+        XCTAssert(chat1 !== chat2)
     }
 }

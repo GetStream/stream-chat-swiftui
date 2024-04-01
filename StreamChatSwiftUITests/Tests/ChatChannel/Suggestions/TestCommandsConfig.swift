@@ -21,23 +21,25 @@ public class TestCommandsConfig: CommandsConfig {
     private let chatClient: ChatClient
 
     public func makeCommandsHandler(
-        with channelController: ChatChannelController
+        with chat: Chat
     ) -> CommandsHandler {
-        let userSearchController = ChatUserSearchController_Mock.mock(client: chatClient)
-        userSearchController.users_mock = Self.mockUsers
+        //TODO: set users
+//        let userSearchController = ChatUserSearchController_Mock.mock(client: chatClient)
+//        userSearchController.users_mock = Self.mockUsers
+        let userSearch = chatClient.makeUserSearch()
         let mentionsCommand = MentionsCommandHandler(
-            channelController: channelController,
-            userSearchController: userSearchController,
+            chat: chat,
+            userSearch: userSearch,
             commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
         let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
         let muteCommand = MuteCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: "/mute"
         )
         let unmuteCommand = UnmuteCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: "/unmute"
         )
         let mockCommand = MockCommandHandler()
@@ -91,11 +93,8 @@ class MockCommandHandler: CommandHandler {
         }
     }
 
-    func showSuggestions(for command: ComposerCommand) -> Future<SuggestionInfo, Error> {
-        let suggestionInfo = SuggestionInfo(key: "mock", value: [])
-        return Future { promise in
-            promise(.success(suggestionInfo))
-        }
+    func showSuggestions(for command: ComposerCommand) async throws -> SuggestionInfo {
+        return SuggestionInfo(key: "mock", value: [])
     }
 
     func handleCommand(

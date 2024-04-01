@@ -94,7 +94,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         messages: [ChatMessage],
         channel: ChatChannel
     ) -> some View {
-        let messages = LazyCachedMapCollection(source: messages, map: { $0 })
+        let messages = StreamCollection(messages)
         let messageListView = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,

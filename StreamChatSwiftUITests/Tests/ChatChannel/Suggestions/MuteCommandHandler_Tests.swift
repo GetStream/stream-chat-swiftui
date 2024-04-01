@@ -37,7 +37,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
         XCTAssert(canBeExecuted == true)
     }
 
-    func test_muteCommandHandler_showSuggestions() {
+    func test_muteCommandHandler_showSuggestions() async throws {
         // Given
         let muteCommandHandler = makeMuteCommandHandler()
         let command = ComposerCommand(
@@ -47,27 +47,21 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
                 locationRange: NSRange(location: 1, length: 0)
             ), displayInfo: nil
         )
-        let expectation = expectation(description: "suggestions")
 
         // When
-        _ = muteCommandHandler.showSuggestions(for: command).sink { _ in
-            log.debug("finished showing suggestions")
-        } receiveValue: { suggestionInfo in
-            // Then
-            let users = suggestionInfo.value as! [ChatUser]
-            XCTAssert(users.count == 3)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 5, handler: nil)
+        let suggestionInfo = try await muteCommandHandler.showSuggestions(for: command)
+        
+        // Then
+        let users = suggestionInfo.value as! [ChatUser]
+        XCTAssert(users.count == 3)
     }
 
     func test_unmuteCommandHandler_selectingUserToUnmute() {
         // Given
         let symbol = "/unmute"
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let chat = chatClient.makeChat(for: .unique)
         let unmuteCommandHandler = UnmuteCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: symbol
         )
         let command = ComposerCommand(
@@ -98,12 +92,15 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
     // MARK: - private
 
     private func makeMuteCommandHandler(symbol: String = "/mute") -> MuteCommandHandler {
-        let channelController = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient,
-            lastActiveWatchers: TestCommandsConfig.mockUsers
-        )
+//        let channelController = ChatChannelTestHelpers.makeChannelController(
+//            chatClient: chatClient,
+//            lastActiveWatchers: TestCommandsConfig.mockUsers
+//        )
+        let chat = chatClient.makeChat(for: .unique)
+        //TODO: set watchers.
+        
         let muteCommandHandler = MuteCommandHandler(
-            channelController: channelController,
+            chat: chat,
             commandSymbol: symbol
         )
         return muteCommandHandler

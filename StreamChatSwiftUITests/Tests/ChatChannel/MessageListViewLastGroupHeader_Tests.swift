@@ -23,7 +23,7 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_messageListView_headerOnTop() {
+    @MainActor func test_messageListView_headerOnTop() {
         // Given
         let controller = ChatChannelController_Mock.mock(
             channelQuery: .init(cid: .unique),
@@ -44,13 +44,15 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
             )
         }
         controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
+        let chat = chatClient.makeChat(for: .unique)
+        //TODO: set messages
 
         // When
         let view = NavigationView {
             ScrollView {
                 ChatChannelView(
                     viewFactory: CustomHeaderViewFactory(),
-                    channelController: controller
+                    chat: chat
                 )
                 .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
             }

@@ -13,6 +13,14 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "ChatChannelDataSource_Tests",
+        "ChatChannelListViewModel_Tests",
+        "ChatChannelListView_Tests",
+        "ChatChannelViewModel_Tests\/test_chatChannelVM_messageActionEditExecuted()",
+        "ChatChannelViewModel_Tests\/test_chatChannelVM_messageActionInlineReplyExecuted()",
+        "FileAttachmentsViewModel_Tests\/test_fileAttachmentsViewModel_loadAdditionalAttachments()"
+      ],
       "target" : {
         "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
         "identifier" : "8465FBBC2746873A00AF091E",

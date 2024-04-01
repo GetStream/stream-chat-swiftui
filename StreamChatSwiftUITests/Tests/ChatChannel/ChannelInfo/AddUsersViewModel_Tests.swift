@@ -15,9 +15,10 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 10)
+        let userSearch = chatClient.makeUserSearch()
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
-            searchController: searchController
+            userSearch: userSearch
         )
 
         // When
@@ -31,9 +32,10 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 12)
+        let userSearch = chatClient.makeUserSearch()
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
-            searchController: searchController
+            userSearch: userSearch
         )
         let expectation = self.expectation(description: "search")
 
@@ -54,9 +56,10 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         var users = ChannelInfoMockUtils.generateMockUsers(count: 20)
         searchController.users_mock = users
+        let userSearch = chatClient.makeUserSearch()
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
-            searchController: searchController
+            userSearch: userSearch
         )
 
         // When

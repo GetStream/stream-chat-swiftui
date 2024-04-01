@@ -50,53 +50,39 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(handler == nil)
     }
 
-    func test_commandsHandler_suggestionsAvailable() {
+    func test_commandsHandler_suggestionsAvailable() async throws {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "mar"
         let command = command(with: searchTerm)
 
-        let expectation = expectation(description: "suggestions")
-
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink { _ in
-            log.debug("completed suggestsions test")
-        } receiveValue: { info in
-            // Then
-            XCTAssert(info.key == "mentions")
-            let users = info.value as! [ChatUser]
-            let first = users[0]
-            XCTAssert(first.name!.lowercased().contains(searchTerm))
-            XCTAssert(users.count == 2)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 5, handler: nil)
+        let info = try await commandsHandler.showSuggestions(for: command)
+        
+        // Then
+        XCTAssert(info.key == "mentions")
+        let users = info.value as! [ChatUser]
+        let first = users[0]
+        XCTAssert(first.name!.lowercased().contains(searchTerm))
+        XCTAssert(users.count == 2)
     }
 
-    func test_commandsHandler_noSuggestionsAvailable() {
+    func test_commandsHandler_noSuggestionsAvailable() async throws {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "str"
         let command = command(with: searchTerm)
 
-        let expectation = expectation(description: "suggestions")
-
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink { _ in
-            log.debug("completed suggestsions test")
-        } receiveValue: { info in
-            // Then
-            XCTAssert(info.key == "mentions")
-            let users = info.value as! [ChatUser]
-            XCTAssert(users.isEmpty)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 5, handler: nil)
+        let info = try await commandsHandler.showSuggestions(for: command)
+        
+        // Then
+        XCTAssert(info.key == "mentions")
+        let users = info.value as! [ChatUser]
+        XCTAssert(users.isEmpty)
     }
 
-    func test_commandsHandler_allSuggestionsAvailable() {
+    func test_commandsHandler_allSuggestionsAvailable() async throws {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = ""
@@ -108,17 +94,12 @@ class CommandsHandler_Tests: StreamChatTestCase {
         let expectation = expectation(description: "suggestions")
 
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink { _ in
-            log.debug("completed suggestsions test")
-        } receiveValue: { info in
-            // Then
-            XCTAssert(info.key == "mentions")
-            let users = info.value as! [ChatUser]
-            XCTAssert(users.count == 3)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 5, handler: nil)
+        let info = try await commandsHandler.showSuggestions(for: command)
+        
+        // Then
+        XCTAssert(info.key == "mentions")
+        let users = info.value as! [ChatUser]
+        XCTAssert(users.count == 3)
     }
 
     func test_commandsHandler_handleCommandCalled() {
@@ -193,7 +174,8 @@ class CommandsHandler_Tests: StreamChatTestCase {
             chatClient: chatClient,
             lastActiveWatchers: TestCommandsConfig.mockUsers
         )
-        let commandsHandler = defaultCommandsConfig.makeCommandsHandler(with: channelController)
+        let chat = chatClient.makeChat(for: .unique)
+        let commandsHandler = defaultCommandsConfig.makeCommandsHandler(with: chat)
         return commandsHandler
     }
 }
