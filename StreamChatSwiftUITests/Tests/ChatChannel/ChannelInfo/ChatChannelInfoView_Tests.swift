@@ -59,7 +59,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
             lastActiveMembers: members,
-            muteDetails: MuteDetails(createdAt: Date(), updatedAt: Date())
+            muteDetails: MuteDetails(createdAt: Date(), updatedAt: Date(), expiresAt: nil)
         )
 
         // When

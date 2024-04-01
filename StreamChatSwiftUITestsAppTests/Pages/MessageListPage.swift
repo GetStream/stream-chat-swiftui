@@ -224,7 +224,7 @@ class MessageListPage {
 
         enum LinkPreview {
             static func link(in messageCell: XCUIElement) -> XCUIElement {
-                messageCell.links["LinkAttachmentContainer"]
+                messageCell.staticTexts["LinkAttachmentContainer"].firstMatch
             }
 
             static func image(in messageCell: XCUIElement) -> XCUIElement {
@@ -236,18 +236,18 @@ class MessageListPage {
             }
 
             static func serviceName(in messageCell: XCUIElement) -> XCUIElement {
-                let details = details(in: messageCell).waitCount(2)
-                if details.count > 2 {
-                    return details.firstMatch
+                let details = details(in: messageCell).waitCount(3)
+                if details.count > 3 {
+                    return details.element(boundBy: 1)
                 } else {
                     return messageCell.staticTexts["ServiceName is missing"]
                 }
             }
 
             static func title(in messageCell: XCUIElement) -> XCUIElement {
-                let details = details(in: messageCell).waitCount(2)
-                if details.count > 2 {
-                    return details.element(boundBy: 1)
+                let details = details(in: messageCell).waitCount(3)
+                if details.count > 3 {
+                    return details.element(boundBy: 2)
                 } else {
                     return details.firstMatch
                 }

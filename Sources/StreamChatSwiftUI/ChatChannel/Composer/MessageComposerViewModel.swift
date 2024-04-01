@@ -298,8 +298,10 @@ import SwiftUI
                     } catch {
                         errorShown = true
                     }
-                    clearInputData()
                 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+                    self?.clearInputData()
+                })
             } else {
                 let attachments = attachments
                 Task {
@@ -319,8 +321,10 @@ import SwiftUI
                     } catch {
                         errorShown = true
                     }
-                    clearInputData()
                 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+                    self?.clearInputData()
+                })
             }
         } catch {
             errorShown = true
