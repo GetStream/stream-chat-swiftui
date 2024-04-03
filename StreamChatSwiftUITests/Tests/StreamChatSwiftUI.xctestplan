@@ -14,7 +14,6 @@
   "testTargets" : [
     {
       "skippedTests" : [
-        "ChatChannelDataSource_Tests",
         "ChatChannelListViewModel_Tests",
         "ChatChannelListView_Tests",
         "ChatChannelViewModel_Tests\/test_chatChannelVM_messageActionEditExecuted()",

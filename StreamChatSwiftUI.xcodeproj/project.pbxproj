@@ -988,6 +988,7 @@
 		84EADEC22B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionFeedbackGenerator.swift; sourceTree = "<group>"; };
 		84EADEC42B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddedVoiceRecordingsView.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		84EE53B22BBC41B600FD2A13 /* stream-chat-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "stream-chat-swift"; path = "../stream-chat-swift"; sourceTree = "<group>"; };
 		84EFC6A92BADB920002ECD4A /* ConcurrencyHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrencyHelpers.swift; sourceTree = "<group>"; };
 		84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamLazyImage.swift; sourceTree = "<group>"; };
 		84F29089276B90610045472D /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
@@ -1416,6 +1417,7 @@
 		8465FBAB2746873A00AF091E = {
 			isa = PBXGroup;
 			children = (
+				84EE53B22BBC41B600FD2A13 /* stream-chat-swift */,
 				829EF8762A9362C00045D166 /* PrivacyInfo.xcprivacy */,
 				4A65451E274BA170003C5FA8 /* README.md */,
 				8465FBB72746873A00AF091E /* Sources */,
@@ -3371,7 +3373,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "feature/chat-state-layer";
+				branch = "feature/chat-state-layer-mocks";
 				kind = branch;
 			};
 		};

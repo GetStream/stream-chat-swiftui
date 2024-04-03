@@ -195,6 +195,31 @@ class MessageThreadDataSource: ChannelDataSource {
             try await self.loadFirstPage()
         }
     }
+    
+    init(
+        chat: Chat,
+        messageId: MessageId,
+        messageState: MessageState
+    ) {
+        self.chat = chat
+        self.messageId = messageId
+        self.messageState = messageState
+        self.messageState?.$replies
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] messages in
+            guard let self else { return }
+            //TODO: changes
+            delegate?.dataSource(
+                channelDataSource: self,
+                didUpdateMessages: StreamCollection(messages),
+                changes: []
+            )
+        })
+        .store(in: &cancellables)
+        Task {
+            try await self.loadFirstPage()
+        }
+    }
 
     func loadPreviousMessages(
         before messageId: MessageId?,

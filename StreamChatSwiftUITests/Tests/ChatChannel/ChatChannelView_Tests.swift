@@ -19,11 +19,6 @@ class ChatChannelView_Tests: StreamChatTestCase {
 
     @MainActor func test_chatChannelView_snapshot() {
         // Given
-        let controller = ChatChannelController_Mock.mock(
-            channelQuery: .init(cid: .unique),
-            channelListQuery: nil,
-            client: chatClient
-        )
         let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
         var messages = [ChatMessage]()
         for i in 0..<15 {
@@ -36,9 +31,8 @@ class ChatChannelView_Tests: StreamChatTestCase {
                 )
             )
         }
-        controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
-        let chat = chatClient.makeChat(for: .unique)
-        //TODO: set messages
+        let chat = Chat_Mock.mock(bundle: Bundle(for: Self.self))
+        chat.simulateInitial(channel: mockChannel, messages: messages)
 
         // When
         let view = NavigationView {
@@ -59,19 +53,12 @@ class ChatChannelView_Tests: StreamChatTestCase {
 
     @MainActor func test_chatChannelView_snapshotEmpty() {
         // Given
-        let controller = ChatChannelController_Mock.mock(
-            channelQuery: .init(cid: .unique),
-            channelListQuery: nil,
-            client: chatClient
-        )
         let messages = [ChatMessage]()
-        controller.simulateInitial(
+        let chat = Chat_Mock.mock(bundle: Bundle(for: Self.self))
+        chat.simulateInitial(
             channel: .mock(cid: .unique, name: "Test channel"),
-            messages: messages,
-            state: .remoteDataFetched
+            messages: messages
         )
-        let chat = chatClient.makeChat(for: .unique)
-        //TODO: set messages
 
         // When
         let view = NavigationView {
@@ -92,13 +79,7 @@ class ChatChannelView_Tests: StreamChatTestCase {
 
     @MainActor func test_chatChannelView_snapshotLoading() {
         // Given
-        let controller = ChatChannelController_Mock.mock(
-            channelQuery: .init(cid: .unique),
-            channelListQuery: nil,
-            client: chatClient
-        )
         let chat = chatClient.makeChat(for: .unique)
-        //TODO: set messages
 
         // When
         let view = NavigationView {
