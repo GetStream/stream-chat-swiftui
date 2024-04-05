@@ -69,7 +69,7 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 2,
-            currentUserId: chatClient.currentUserId!
+            currentUserId: Self.currentUserId
         )
         let channel = ChatChannel.mockDMChannel(
             lastActiveMembers: members,
@@ -256,7 +256,7 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         let cid: ChannelId = .unique
         let activeMembers = ChannelInfoMockUtils.setupMockMembers(
             count: memberCount,
-            currentUserId: chatClient.currentUserId!
+            currentUserId: Self.currentUserId
         )
         var capabilities = Set<ChannelCapability>()
         if updateCapabilities {

@@ -91,7 +91,7 @@ class ChannelList_Mock: ChannelList {
             apiClient: APIClientMock()
         )
         super.init(
-            channels: channels,
+            initialChannels: channels,
             query: query,
             dynamicFilter: dynamicFilter,
             channelListUpdater: channelListUpdater,

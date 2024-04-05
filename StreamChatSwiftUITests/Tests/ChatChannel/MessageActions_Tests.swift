@@ -15,7 +15,7 @@ class MessageActions_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Test",
-            author: .mock(id: chatClient.currentUserId!),
+            author: .mock(id: Self.currentUserId),
             isSentByCurrentUser: true
         )
         let factory = DefaultViewFactory.shared
@@ -80,7 +80,7 @@ class MessageActions_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Test",
-            author: .mock(id: chatClient.currentUserId!),
+            author: .mock(id: Self.currentUserId),
             isSentByCurrentUser: true,
             pinDetails:
             MessagePinDetails(
@@ -118,7 +118,7 @@ class MessageActions_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Test",
-            author: .mock(id: chatClient.currentUserId!),
+            author: .mock(id: Self.currentUserId),
             localState: .sendingFailed
         )
         let factory = DefaultViewFactory.shared
@@ -154,7 +154,7 @@ class MessageActions_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Test",
-            author: .mock(id: chatClient.currentUserId!),
+            author: .mock(id: Self.currentUserId),
             attachments: attachments,
             localState: .pendingSend
         )
@@ -187,7 +187,7 @@ class MessageActions_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Test",
-            author: .mock(id: chatClient.currentUserId!),
+            author: .mock(id: Self.currentUserId),
             isBounced: true,
             moderationsDetails: moderationDetails
         )

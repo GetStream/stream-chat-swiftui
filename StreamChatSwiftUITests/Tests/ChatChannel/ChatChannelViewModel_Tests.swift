@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import SwiftUI
 import XCTest
 
@@ -35,7 +36,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
                 id: .unique,
                 cid: .unique,
                 text: "Test Message \(i)",
-                author: ChatUser.mock(id: chatClient.currentUserId!),
+                author: ChatUser.mock(id: Self.currentUserId),
                 createdAt: createdAt
             )
 
@@ -61,7 +62,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
             id: messageId,
             cid: .unique,
             text: "Test message",
-            author: ChatUser.mock(id: chatClient.currentUserId!)
+            author: ChatUser.mock(id: Self.currentUserId)
         )
         let chat = makeChat(messages: [message])
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -109,7 +110,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
                 id: .unique,
                 cid: .unique,
                 text: "Test Message \(i)",
-                author: ChatUser.mock(id: chatClient.currentUserId!)
+                author: ChatUser.mock(id: Self.currentUserId)
             )
             messages.append(message)
         }
@@ -118,7 +119,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
         // When
         let initialListId = viewModel.listId
-//        channelController.simulate(messages: messages, changes: [])
+        chat.simulate(messages: messages, changes: [])
 
         // Then
         let newListId = viewModel.listId
@@ -133,7 +134,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
                 id: .unique,
                 cid: .unique,
                 text: "Test Message \(i)",
-                author: ChatUser.mock(id: chatClient.currentUserId!)
+                author: ChatUser.mock(id: Self.currentUserId)
             )
             messages.append(message)
         }
@@ -152,11 +153,6 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
     func test_chatChannelVM_messageThread() {
         // Given
         let chat = makeChat()
-        let messageController = ChatMessageControllerSUI_Mock.mock(
-            chatClient: chatClient,
-            cid: .unique,
-            messageId: .unique
-        )
         let viewModel = ChatChannelViewModel(
             chat: chat,
             messageId: .unique
@@ -228,11 +224,11 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
         // When
         let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
-//        channelController.simulate(
-//            channel: channel,
-//            change: .update(channel),
-//            typingUsers: Set(arrayLiteral: typingUser)
-//        )
+        chat.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
         let headerType = viewModel.channelHeaderType
 
         // Then
@@ -247,11 +243,11 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
         // When
         let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
-//        channelController.simulate(
-//            channel: channel,
-//            change: .update(channel),
-//            typingUsers: Set(arrayLiteral: typingUser)
-//        )
+        chat.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
 
         // Then
         XCTAssert(viewModel.shouldShowTypingIndicator == true)
@@ -270,15 +266,15 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         )
 
         // When
-//        channelController.simulate(
-//            messages: [message],
-//            changes: [.update(message, index: .init(row: 0, section: 0))]
-//        )
+        chat.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
         let initial = viewModel.messages
-//        channelController.simulate(
-//            messages: [message],
-//            changes: [.update(message, index: .init(row: 0, section: 0))]
-//        )
+        chat.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
         let after = viewModel.messages
 
         // Then
@@ -304,20 +300,20 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
             author: .mock(id: .unique)
         )
 
-//        // When
-//        channelController.simulate(
-//            messages: [message],
-//            changes: [.update(message, index: .init(row: 0, section: 0))]
-//        )
-//        let initial = viewModel.messages
-//        channelController.simulate(
-//            messages: [newMessage],
-//            changes: [.update(newMessage, index: .init(row: 0, section: 0))]
-//        )
-//        let after = viewModel.messages
-//
-//        // Then
-//        XCTAssert(initial[0].type != after[0].type)
+        // When
+        chat.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
+        let initial = viewModel.messages
+        chat.simulate(
+            messages: [newMessage],
+            changes: [.update(newMessage, index: .init(row: 0, section: 0))]
+        )
+        let after = viewModel.messages
+
+        // Then
+        XCTAssert(initial[0].type != after[0].type)
     }
 
     func test_chatChannelVM_animatedChanges() {
@@ -337,20 +333,20 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
             author: .mock(id: .unique)
         )
 
-//        // When
-//        channelController.simulate(
-//            messages: [message],
-//            changes: [.update(message, index: .init(row: 0, section: 0))]
-//        )
-//        let initial = viewModel.messages
-//        channelController.simulate(
-//            messages: [message, newMessage],
-//            changes: [.insert(newMessage, index: .init(row: 1, section: 0))]
-//        )
-//        let after = viewModel.messages
-//
-//        // Then
-//        XCTAssert(initial.count < after.count)
+        // When
+        chat.simulate(
+            messages: [message],
+            changes: [.update(message, index: .init(row: 0, section: 0))]
+        )
+        let initial = viewModel.messages
+        chat.simulate(
+            messages: [message, newMessage],
+            changes: [.insert(newMessage, index: .init(row: 1, section: 0))]
+        )
+        let after = viewModel.messages
+
+        // Then
+        XCTAssert(initial.count < after.count)
     }
 
     func test_chatChannelVM_updateReadIndicators() {
@@ -366,23 +362,23 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         )
         let newChannel = ChatChannel.mockDMChannel(reads: [read])
 
-//        // When
-//        channelController.simulate(
-//            channel: channel,
-//            change: .update(channel),
-//            typingUsers: nil
-//        )
-//        let readsString = channel.readsString
-//        channelController.simulate(
-//            channel: newChannel,
-//            change: .update(newChannel),
-//            typingUsers: nil
-//        )
-//        let newChannelReadsString = newChannel.readsString
-//
-//        // Then
-//        XCTAssert(viewModel.channel! == newChannel)
-//        XCTAssert(readsString != newChannelReadsString)
+        // When
+        chat.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: nil
+        )
+        let readsString = channel.readsString
+        chat.simulate(
+            channel: newChannel,
+            change: .update(newChannel),
+            typingUsers: nil
+        )
+        let newChannelReadsString = newChannel.readsString
+
+        // Then
+        XCTAssert(viewModel.channel! == newChannel)
+        XCTAssert(readsString != newChannelReadsString)
     }
 
     func test_chatChannelVM_threadMessage() {
@@ -474,11 +470,11 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
     private func makeChat(
         messages: [ChatMessage] = []
-    ) -> Chat {
-//        ChatChannelTestHelpers.makeChannelController(
-//            chatClient: chatClient,
-//            messages: messages
-//        )
-        chatClient.makeChat(for: .unique)
+    ) -> Chat_Mock {
+        let chat = ChatChannelTestHelpers.makeChat(
+            chatClient: ChatClient.mock(bundle: Bundle(for: Self.self)),
+            messages: messages
+        )
+        return chat
     }
 }

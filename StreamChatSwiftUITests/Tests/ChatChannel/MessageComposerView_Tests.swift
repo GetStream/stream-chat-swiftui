@@ -24,8 +24,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
     @MainActor func test_messageComposerView_snapshot() {
         // Given
         let factory = DefaultViewFactory.shared
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
 
         // When
         let view = MessageComposerView(
@@ -45,8 +44,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
     @MainActor func test_messageComposerView_recording() {
         // Given
         let factory = DefaultViewFactory.shared
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.recordingState = .recording(.zero)
         
@@ -69,8 +67,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
     @MainActor func test_messageComposerView_recordingLocked() {
         // Given
         let factory = DefaultViewFactory.shared
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.recordingState = .locked
         
@@ -93,8 +90,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
     @MainActor func test_messageComposerView_recordingTip() {
         // Given
         let factory = DefaultViewFactory.shared
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.recordingState = .showingTip
         
@@ -117,8 +113,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
     @MainActor func test_messageComposerView_addedVoiceRecording() {
         // Given
         let factory = DefaultViewFactory.shared
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(chat: chat, messageId: nil)
         viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: .localYodaImage, duration: 5, waveform: [0, 0.1, 0.6, 1.0])]
         

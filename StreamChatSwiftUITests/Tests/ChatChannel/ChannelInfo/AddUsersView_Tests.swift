@@ -13,12 +13,12 @@ class AddUsersView_Tests: StreamChatTestCase {
 
     func test_addUsersView_snapshot() {
         // Given
-        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         let users = ChannelInfoMockUtils.generateMockUsers(count: 20)
-        searchController.users_mock = users
+        let userSearch = UserSearch_Mock.mock()
+        userSearch.setUsers(users)
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
-            userSearch: chatClient.makeUserSearch()
+            userSearch: userSearch
         )
 
         // When

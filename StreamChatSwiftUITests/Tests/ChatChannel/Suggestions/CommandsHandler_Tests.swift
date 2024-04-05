@@ -170,11 +170,8 @@ class CommandsHandler_Tests: StreamChatTestCase {
 
     private func makeCommandsHandler() -> CommandsHandler {
         let defaultCommandsConfig = TestCommandsConfig(chatClient: chatClient)
-        let channelController = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient,
-            lastActiveWatchers: TestCommandsConfig.mockUsers
-        )
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = Chat_Mock.mock(bundle: Bundle(for: Self.self))
+        chat.state.watchers = StreamCollection(TestCommandsConfig.mockUsers)
         let commandsHandler = defaultCommandsConfig.makeCommandsHandler(with: chat)
         return commandsHandler
     }

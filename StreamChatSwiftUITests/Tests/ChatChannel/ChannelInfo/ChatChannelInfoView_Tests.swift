@@ -15,7 +15,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 2,
-            currentUserId: chatClient.currentUserId!
+            currentUserId: Self.currentUserId
         )
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
@@ -34,7 +34,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 2,
-            currentUserId: chatClient.currentUserId!,
+            currentUserId: Self.currentUserId,
             onlineUserIndexes: [0, 1]
         )
         let channel = ChatChannel.mockDMChannel(
@@ -54,7 +54,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 2,
-            currentUserId: chatClient.currentUserId!
+            currentUserId: Self.currentUserId
         )
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
@@ -74,7 +74,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 8,
-            currentUserId: chatClient.currentUserId!,
+            currentUserId: Self.currentUserId,
             onlineUserIndexes: [0, 1]
         )
         let group = ChatChannel.mock(
@@ -97,7 +97,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 2,
-            currentUserId: chatClient.currentUserId!,
+            currentUserId: Self.currentUserId,
             onlineUserIndexes: [0, 1]
         )
         let group = ChatChannel.mock(
@@ -120,7 +120,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 8,
-            currentUserId: chatClient.currentUserId!,
+            currentUserId: Self.currentUserId,
             onlineUserIndexes: [0, 1]
         )
         let group = ChatChannel.mock(
@@ -145,7 +145,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 2,
-            currentUserId: chatClient.currentUserId!,
+            currentUserId: Self.currentUserId,
             onlineUserIndexes: [0, 1]
         )
         let group = ChatChannel.mock(
@@ -174,7 +174,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 8,
-            currentUserId: chatClient.currentUserId!,
+            currentUserId: Self.currentUserId,
             onlineUserIndexes: [0, 1]
         )
         let group = ChatChannel.mock(

@@ -8,17 +8,17 @@ import XCTest
 
 class ChatChannelTestHelpers {
 
-    static func makeChannelController(
+    static func makeChat(
         chatClient: ChatClient,
         chatChannel: ChatChannel? = nil,
         messages: [ChatMessage] = [],
         lastActiveWatchers: [ChatUser] = []
-    ) -> ChatChannelController_Mock {
+    ) -> Chat_Mock {
         let config = ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")])
         let channel = chatChannel ?? ChatChannel.mockDMChannel(config: config, lastActiveWatchers: lastActiveWatchers)
         let channelQuery = ChannelQuery(cid: channel.cid)
         let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId ?? .unique]))
-        let channelController = ChatChannelController_Mock.mock(
+        let chat = Chat_Mock.mock(
             channelQuery: channelQuery,
             channelListQuery: channelListQuery,
             client: chatClient
@@ -34,8 +34,8 @@ class ChatChannelTestHelpers {
             channelMessages = [message]
         }
 
-        channelController.simulateInitial(channel: channel, messages: channelMessages, state: .initialized)
-        return channelController
+        chat.simulateInitial(channel: channel, messages: channelMessages)
+        return chat
     }
 
     static let testURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg")!

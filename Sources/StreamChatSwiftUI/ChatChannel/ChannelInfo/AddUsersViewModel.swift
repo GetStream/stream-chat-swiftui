@@ -56,6 +56,7 @@ class AddUsersViewModel: ObservableObject {
     private func searchUsers() {
         let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
         let query = UserListQuery(filter: filter)
+        users = Array(userSearch.state.users)
         Task { @MainActor in
             try await userSearch.search(query: query)
             users = Array(userSearch.state.users)

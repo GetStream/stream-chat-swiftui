@@ -58,10 +58,10 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
         return viewModel
     }
 
-    private func makeChannelController(
+    private func makeChat(
         messages: [ChatMessage] = []
-    ) -> ChatChannelController_Mock {
-        ChatChannelTestHelpers.makeChannelController(
+    ) -> Chat_Mock {
+        ChatChannelTestHelpers.makeChat(
             chatClient: chatClient,
             messages: messages
         )

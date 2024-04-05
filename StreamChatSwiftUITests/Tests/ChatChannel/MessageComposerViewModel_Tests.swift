@@ -346,12 +346,6 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     @MainActor func test_messageComposerVM_inThread() {
         // Given
-        let channelController = makeChannelController()
-        let messageController = ChatMessageControllerSUI_Mock.mock(
-            chatClient: chatClient,
-            cid: .unique,
-            messageId: .unique
-        )
         let chat = chatClient.makeChat(for: .unique)
         let viewModel = MessageComposerViewModel(
             chat: chat,
@@ -682,8 +676,8 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     private func makeChannelController(
         messages: [ChatMessage] = []
-    ) -> ChatChannelController_Mock {
-        MessageComposerTestUtils.makeChannelController(
+    ) -> Chat_Mock {
+        MessageComposerTestUtils.makeChat(
             chatClient: chatClient,
             messages: messages
         )
@@ -703,8 +697,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
 
 enum MessageComposerTestUtils {
     @MainActor static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
-        let channelController = makeChannelController(chatClient: chatClient)
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = makeChat(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(
             chat: chat,
             messageId: nil
@@ -712,11 +705,11 @@ enum MessageComposerTestUtils {
         return viewModel
     }
     
-    static func makeChannelController(
+    static func makeChat(
         chatClient: ChatClient,
         messages: [ChatMessage] = []
-    ) -> ChatChannelController_Mock {
-        ChatChannelTestHelpers.makeChannelController(
+    ) -> Chat_Mock {
+        ChatChannelTestHelpers.makeChat(
             chatClient: chatClient,
             messages: messages
         )

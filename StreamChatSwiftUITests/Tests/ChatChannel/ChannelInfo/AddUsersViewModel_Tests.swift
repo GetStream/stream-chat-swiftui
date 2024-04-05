@@ -13,9 +13,10 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
 
     func test_addUsersViewModel_loadedUsers() {
         // Given
-        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
-        searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 10)
-        let userSearch = chatClient.makeUserSearch()
+        let generated = ChannelInfoMockUtils.generateMockUsers(count: 10)
+        let userSearch = UserSearch_Mock.mock()
+        userSearch.setUsers(generated)
+        
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
             userSearch: userSearch
@@ -25,23 +26,26 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         let users = viewModel.users
 
         // Then
-        XCTAssert(users.count == 10)
+        XCTAssertEqual(users.count, 10)
     }
 
     func test_addUsersViewModel_search() {
         // Given
-        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
-        searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 12)
-        let userSearch = chatClient.makeUserSearch()
+        let generated = ChannelInfoMockUtils.generateMockUsers(count: 12)
+        let userSearch = UserSearch_Mock.mock()
+        userSearch.setUsers(generated)
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
             userSearch: userSearch
         )
         let expectation = self.expectation(description: "search")
-
+        expectation.assertForOverFulfill = false
+        
         // When
         viewModel.searchText = "Test User 1"
-        viewModel.$users.sink { users in
+        viewModel.$users.drop(while: { users in
+            users.count != 3
+        }).sink { users in
             // Then
             XCTAssert(users.count == 3)
             expectation.fulfill()
@@ -51,12 +55,11 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         waitForExpectations(timeout: defaultTimeout)
     }
 
-    func test_addUsersViewModel_onUserAppear() {
+    func test_addUsersViewModel_onUserAppear() async throws {
         // Given
-        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         var users = ChannelInfoMockUtils.generateMockUsers(count: 20)
-        searchController.users_mock = users
-        let userSearch = chatClient.makeUserSearch()
+        let userSearch = UserSearch_Mock.mock()
+        userSearch.setUsers(users)
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
             userSearch: userSearch
@@ -64,10 +67,11 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
 
         // When
         users.append(contentsOf: ChannelInfoMockUtils.generateMockUsers(count: 20))
-        searchController.users_mock = users
+        userSearch.setUsers(users)
         viewModel.onUserAppear(users[5])
         let initial = viewModel.users
         viewModel.onUserAppear(users[15])
+        try await Task.sleep(nanoseconds: 1_000_000)
         let afterLoad = viewModel.users
 
         // Then
