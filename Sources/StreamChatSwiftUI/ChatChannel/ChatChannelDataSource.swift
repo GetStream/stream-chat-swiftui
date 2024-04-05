@@ -15,8 +15,7 @@ protocol MessagesDataSource: AnyObject {
     ///  - messages, the collection of updated messages.
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: StreamCollection<ChatMessage>,
-        changes: [ListChange<ChatMessage>]
+        didUpdateMessages messages: StreamCollection<ChatMessage>
     )
 
     /// Called when the channel is updated.
@@ -106,8 +105,7 @@ class ChatChannelDataSource: ChannelDataSource {
             guard let self else { return }
             delegate?.dataSource(
                 channelDataSource: self,
-                didUpdateMessages: messages,
-                changes: [] //TODO: this
+                didUpdateMessages: messages
             )
         }
         .store(in: &cancellables)
@@ -130,11 +128,11 @@ class ChatChannelDataSource: ChannelDataSource {
         before messageId: MessageId?,
         limit: Int
     ) async throws {
-        try await chat.loadMessages(before: messageId, limit: limit)
+        try await chat.loadPreviousMessages(before: messageId, limit: limit)
     }
     
     func loadNextMessages(limit: Int) async throws {
-        try await chat.loadMessages(after: nil, limit: limit)
+        try await chat.loadNextMessages(limit: limit)
     }
     
     func loadPageAroundMessageId(
@@ -184,11 +182,9 @@ class MessageThreadDataSource: ChannelDataSource {
                 .receive(on: RunLoop.main)
                 .sink(receiveValue: { [weak self] messages in
                 guard let self else { return }
-                //TODO: changes
                 delegate?.dataSource(
                     channelDataSource: self,
-                    didUpdateMessages: StreamCollection(messages),
-                    changes: []
+                    didUpdateMessages: StreamCollection(messages)
                 )
             })
             .store(in: &cancellables)
@@ -208,11 +204,9 @@ class MessageThreadDataSource: ChannelDataSource {
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] messages in
             guard let self else { return }
-            //TODO: changes
             delegate?.dataSource(
                 channelDataSource: self,
-                didUpdateMessages: StreamCollection(messages),
-                changes: []
+                didUpdateMessages: StreamCollection(messages)
             )
         })
         .store(in: &cancellables)
