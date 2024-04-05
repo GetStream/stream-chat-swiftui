@@ -25,11 +25,6 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
 
     @MainActor func test_messageListView_headerOnTop() {
         // Given
-        let controller = ChatChannelController_Mock.mock(
-            channelQuery: .init(cid: .unique),
-            channelListQuery: nil,
-            client: chatClient
-        )
         let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel", memberCount: 3)
         let users = ["Martin", "Stefan", "Adolfo"]
         var messages = [ChatMessage]()
@@ -43,9 +38,8 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
                 )
             )
         }
-        controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
-        let chat = chatClient.makeChat(for: .unique)
-        //TODO: set messages
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
+        chat.simulateInitial(channel: mockChannel, messages: messages)
 
         // When
         let view = NavigationView {

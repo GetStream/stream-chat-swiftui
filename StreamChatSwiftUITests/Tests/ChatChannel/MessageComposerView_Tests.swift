@@ -30,7 +30,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         let view = MessageComposerView(
             viewFactory: factory,
             chat: chat,
-            messageId: .unique,
+            messageId: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}

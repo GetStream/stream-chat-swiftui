@@ -9,7 +9,8 @@ public extension ChatClient {
     /// Create a new instance of mock `ChatClient`
     static func mock(
         isLocalStorageEnabled: Bool = false,
-        customCDNClient: CDNClient? = nil
+        customCDNClient: CDNClient? = nil,
+        currentUserId: UserId? = nil
     ) -> ChatClient {
         var config = ChatClientConfig(apiKey: .init("--== Mock ChatClient ==--"))
         config.customCDNClient = customCDNClient
@@ -39,6 +40,17 @@ public extension ChatClient {
                         deletedMessagesVisibility: $4,
                         shouldShowShadowedMessages: $5
                     )
+                },
+                authenticationRepositoryBuilder: {
+                    let authRepo = AuthRepository_Mock(
+                        apiClient: $0,
+                        databaseContainer: $1,
+                        connectionRepository: $2,
+                        tokenExpirationRetryStrategy: $3,
+                        timerType: $4
+                    )
+                    authRepo.currentUserIdMock = currentUserId
+                    return authRepo
                 }
             )
         )
@@ -69,5 +81,14 @@ class APIClient_Mock: APIClient {
 class WebSocketClient_Mock: WebSocketClient {
     override func connect() {
         // Do nothing for now
+    }
+}
+
+class AuthRepository_Mock: AuthenticationRepository {
+    
+    var currentUserIdMock: UserId?
+    
+    override var currentUserId: UserId? {
+        currentUserIdMock ?? super.currentUserId
     }
 }
