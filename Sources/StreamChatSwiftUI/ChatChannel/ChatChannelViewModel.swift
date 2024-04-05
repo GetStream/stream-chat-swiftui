@@ -364,8 +364,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: StreamCollection<ChatMessage>,
-        changes: [ListChange<ChatMessage>]
+        didUpdateMessages messages: StreamCollection<ChatMessage>
     ) {
         if !isActive {
             return
@@ -376,7 +375,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             array.append(message)
             self.messages = StreamCollection(array)
         } else {
-            let animationState = shouldAnimate(changes: changes)
+            let animationState = shouldAnimate(from: self.messages, to: messages)
             if animationState == .animated {
                 withAnimation {
                     self.messages = messages
@@ -621,44 +620,41 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
+    private func shouldAnimate(from oldMessages: StreamCollection<ChatMessage>, to newMessages: StreamCollection<ChatMessage>) -> AnimationChange {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges || loadingNextMessages {
             return .notAnimated
         }
+        // Animate when inserting or removing messages
+        if oldMessages.count != newMessages.count {
+            return .animated
+        }
         
-        //TODO: fix this:
-        return .animated
-//        var skipChanges = true
-//        var animateChanges = false
-//        for change in changes {
-//            switch change {
-//            case .insert(_, index: _),
-//                 .remove(_, index: _):
-//                return .animated
-//            case let .update(message, index: index):
-//                if index.row < messages.count,
-//                   message.messageId != messages[index.row].messageId
-//                   || message.type == .ephemeral
-//                   || !message.linkAttachments.isEmpty {
-//                    skipChanges = false
-//                    if index.row < messages.count
-//                        && (
-//                            message.reactionScoresId != messages[index.row].reactionScoresId
-//                                && utils.messageListConfig.messageDisplayOptions.shouldAnimateReactions
-//                        ) {
-//                        animateChanges = message.linkAttachments.isEmpty
-//                    }
-//                }
-//            default:
-//                skipChanges = false
-//            }
-//        }
-//        
-//        if skipChanges {
-//            return .skip
-//        }
-//        
-//        return animateChanges ? .animated : .notAnimated
+        var skipChanges = true
+        var animateChanges = false
+        for (firstMessage, secondMessage) in zip(oldMessages, newMessages).reversed() {
+            // The order has changed (moved or inserts == removals)
+            if firstMessage.messageId != secondMessage.messageId {
+                return .animated
+            }
+            // Updated
+            if firstMessage.updatedAt != secondMessage.updatedAt {
+                if secondMessage.type == .ephemeral || !secondMessage.linkAttachments.isEmpty  {
+                    skipChanges = false
+                    if utils.messageListConfig.messageDisplayOptions.shouldAnimateReactions,
+                        firstMessage.reactionScoresId != secondMessage.reactionScoresId {
+                        animateChanges = secondMessage.linkAttachments.isEmpty
+                        if animateChanges {
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        if skipChanges {
+            return .skip
+        }
+        
+        return animateChanges ? .animated : .notAnimated
     }
     
     private func enableDateIndicator() {
