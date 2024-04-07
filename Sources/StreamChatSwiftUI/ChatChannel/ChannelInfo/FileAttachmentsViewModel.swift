@@ -36,6 +36,7 @@ class FileAttachmentsViewModel: ObservableObject {
 
         dateFormatter.dateFormat = "MMMM yyyy"
         self.messageSearch = messageSearch
+        updateAttachments()
         loadMessages()
     }
 

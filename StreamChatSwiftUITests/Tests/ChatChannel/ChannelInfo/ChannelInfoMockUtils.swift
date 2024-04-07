@@ -47,7 +47,7 @@ struct ChannelInfoMockUtils {
     static func generateMessagesWithAttachments(
         withImages: Int = 0,
         withVideos: Int = 0
-    ) -> LazyCachedMapCollection<ChatMessage> {
+    ) -> StreamCollection<ChatMessage> {
         var result = [ChatMessage]()
         for i in 0..<withImages {
             let message = ChatMessage.mock(
@@ -71,12 +71,12 @@ struct ChannelInfoMockUtils {
             result.append(message)
         }
 
-        return LazyCachedMapCollection(source: result) { $0 }
+        return StreamCollection(result)
     }
 
     static func generateMessagesWithFileAttachments(
         count: Int
-    ) -> LazyCachedMapCollection<ChatMessage> {
+    ) -> StreamCollection<ChatMessage> {
         var result = [ChatMessage]()
         for i in 0..<count {
             let message = ChatMessage.mock(
@@ -89,7 +89,7 @@ struct ChannelInfoMockUtils {
             result.append(message)
         }
 
-        return LazyCachedMapCollection(source: result) { $0 }
+        return StreamCollection(result)
     }
 
     static func generateMockUsers(count: Int) -> [ChatUser] {

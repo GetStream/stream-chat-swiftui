@@ -91,8 +91,6 @@ class CommandsHandler_Tests: StreamChatTestCase {
             range: NSRange(location: 1, length: 0)
         )
 
-        let expectation = expectation(description: "suggestions")
-
         // When
         let info = try await commandsHandler.showSuggestions(for: command)
         
@@ -170,8 +168,10 @@ class CommandsHandler_Tests: StreamChatTestCase {
 
     private func makeCommandsHandler() -> CommandsHandler {
         let defaultCommandsConfig = TestCommandsConfig(chatClient: chatClient)
-        let chat = Chat_Mock.mock(bundle: Bundle(for: Self.self))
-        chat.state.watchers = StreamCollection(TestCommandsConfig.mockUsers)
+        let chat = ChatChannelTestHelpers.makeChat(
+            chatClient: chatClient,
+            lastActiveWatchers: TestCommandsConfig.mockUsers
+        )
         let commandsHandler = defaultCommandsConfig.makeCommandsHandler(with: chat)
         return commandsHandler
     }

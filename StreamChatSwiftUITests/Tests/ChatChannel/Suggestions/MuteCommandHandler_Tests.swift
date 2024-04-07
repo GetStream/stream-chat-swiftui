@@ -92,12 +92,10 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
     // MARK: - private
 
     private func makeMuteCommandHandler(symbol: String = "/mute") -> MuteCommandHandler {
-//        let channelController = ChatChannelTestHelpers.makeChannelController(
-//            chatClient: chatClient,
-//            lastActiveWatchers: TestCommandsConfig.mockUsers
-//        )
-        let chat = chatClient.makeChat(for: .unique)
-        //TODO: set watchers.
+        let chat = ChatChannelTestHelpers.makeChat(
+            chatClient: chatClient,
+            lastActiveWatchers: TestCommandsConfig.mockUsers
+        )
         
         let muteCommandHandler = MuteCommandHandler(
             chat: chat,

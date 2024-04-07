@@ -17,13 +17,13 @@ class MediaAttachmentsView_Tests: StreamChatTestCase {
             withImages: 10,
             withVideos: 5
         )
-        let messageSearch = chatClient.makeMessageSearch()
-        //TODO: find a way to set messages.
-//        messageSearch.state.messages = messages
+        let messageSearch = MessageSearch_Mock.mock()
+        messageSearch.messages_mock = messages
         let viewModel = MediaAttachmentsViewModel(
             channel: .mockDMChannel(),
             messageSearch: messageSearch
         )
+        viewModel.loading = false
 
         // When
         let view = MediaAttachmentsView(viewModel: viewModel)

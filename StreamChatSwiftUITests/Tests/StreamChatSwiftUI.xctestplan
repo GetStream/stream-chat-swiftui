@@ -15,8 +15,7 @@
     {
       "skippedTests" : [
         "ChatChannelListViewModel_Tests",
-        "ChatChannelListView_Tests",
-        "FileAttachmentsViewModel_Tests\/test_fileAttachmentsViewModel_loadAdditionalAttachments()"
+        "ChatChannelListView_Tests"
       ],
       "target" : {
         "containerPath" : "container:StreamChatSwiftUI.xcodeproj",

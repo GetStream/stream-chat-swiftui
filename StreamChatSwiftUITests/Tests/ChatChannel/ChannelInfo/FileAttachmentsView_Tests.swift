@@ -14,13 +14,13 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
     func test_fileAttachmentsView_nonEmptySnapshot() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)
-//        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
-//        messageSearchController.messages_mock = messages
-        let messageSearch = chatClient.makeMessageSearch()
+        let messageSearch = MessageSearch_Mock.mock()
+        messageSearch.messages_mock = messages
         let viewModel = FileAttachmentsViewModel(
             channel: .mockDMChannel(),
             messageSearch: messageSearch
         )
+        viewModel.loading = false
 
         // When
         let view = FileAttachmentsView(viewModel: viewModel)

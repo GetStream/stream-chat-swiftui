@@ -12,9 +12,8 @@ class FileAttachmentsViewModel_Tests: StreamChatTestCase {
     func test_fileAttachmentsViewModel_notEmpty() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 10)
-//        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
-//        messageSearchController.messages_mock = messages
-        let messageSearch = chatClient.makeMessageSearch()
+        let messageSearch = MessageSearch_Mock.mock()
+        messageSearch.messages_mock = messages
         let viewModel = FileAttachmentsViewModel(
             channel: .mockDMChannel(),
             messageSearch: messageSearch
@@ -24,16 +23,15 @@ class FileAttachmentsViewModel_Tests: StreamChatTestCase {
         let attachmentsDataSource = viewModel.attachmentsDataSource
 
         // Then
-        XCTAssert(attachmentsDataSource.first?.attachments.count == 10)
-        XCTAssert(attachmentsDataSource.first?.monthAndYear == "January 1970")
+        XCTAssertEqual(attachmentsDataSource.first?.attachments.count, 10)
+        XCTAssertEqual(attachmentsDataSource.first?.monthAndYear, "January 1970")
     }
 
-    func test_fileAttachmentsViewModel_loadAdditionalAttachments() {
+    func test_fileAttachmentsViewModel_loadAdditionalAttachments() async throws {
         // Given
         var messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)
-//        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
-//        messageSearchController.messages_mock = messages
-        let messageSearch = chatClient.makeMessageSearch()
+        let messageSearch = MessageSearch_Mock.mock()
+        messageSearch.messages_mock = messages
         let viewModel = FileAttachmentsViewModel(
             channel: .mockDMChannel(),
             messageSearch: messageSearch
@@ -43,9 +41,8 @@ class FileAttachmentsViewModel_Tests: StreamChatTestCase {
         let additional = Array(ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20))
         var current = Array(messages)
         current.append(contentsOf: additional)
-        messages = LazyCachedMapCollection(source: current) { $0 }
-        //TODO: fix this
-//        messageSearchController.messages_mock = messages
+        messages = StreamCollection(current)
+        messageSearch.messages_mock = messages
 
         // Initial load, when only the 5th attachment is displayed.
         let initial = viewModel.attachmentsDataSource[0].attachments
@@ -62,10 +59,11 @@ class FileAttachmentsViewModel_Tests: StreamChatTestCase {
             after: viewModel.attachmentsDataSource[0],
             latest: secondLoad
         )
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         let afterSecondLoad = viewModel.attachmentsDataSource[0].attachments
 
         // Then
-        XCTAssert(afterFirstLoad.count == 20)
-        XCTAssert(afterSecondLoad.count == 40)
+        XCTAssertEqual(afterFirstLoad.count, 20)
+        XCTAssertEqual(afterSecondLoad.count, 40)
     }
 }

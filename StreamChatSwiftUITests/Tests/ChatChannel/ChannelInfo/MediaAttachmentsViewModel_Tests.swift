@@ -18,10 +18,8 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
             withVideos: 3
         )
         let channel = ChatChannel.mockDMChannel()
-        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
-        messageSearchController.messages_mock = messages
-        let messageSearch = chatClient.makeMessageSearch()
-        //TODO: set messages
+        let messageSearch = MessageSearch_Mock.mock()
+        messageSearch.messages_mock = messages
         let viewModel = MediaAttachmentsViewModel(
             channel: channel,
             messageSearch: messageSearch
@@ -32,21 +30,19 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
         let imageAttachments = viewModel.allImageAttachments
 
         // Then
-        XCTAssert(mediaItems.count == 8)
-        XCTAssert(imageAttachments.count == 5)
+        XCTAssertEqual(mediaItems.count, 8)
+        XCTAssertEqual(imageAttachments.count, 5)
     }
 
-    func test_mediaAttachmentsViewModel_onAttachmentAppear() {
+    func test_mediaAttachmentsViewModel_onAttachmentAppear() async throws {
         // Given
         var messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
             withImages: 15,
             withVideos: 5
         )
         let channel = ChatChannel.mockDMChannel()
-        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
-        messageSearchController.messages_mock = messages
-        let messageSearch = chatClient.makeMessageSearch()
-        //TODO: set messages
+        let messageSearch = MessageSearch_Mock.mock()
+        messageSearch.messages_mock = messages
         
         let viewModel = MediaAttachmentsViewModel(
             channel: channel,
@@ -59,15 +55,16 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
             withImages: 30,
             withVideos: 10
         )
-        messageSearchController.messages_mock = messages
+        messageSearch.messages_mock = messages
         viewModel.onMediaAttachmentAppear(with: 5)
         let middle = viewModel.mediaItems
         viewModel.onMediaAttachmentAppear(with: 15)
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         let afterLoad = viewModel.mediaItems
 
         // Then
-        XCTAssert(initial.count == 20)
-        XCTAssert(middle.count == 20)
-        XCTAssert(afterLoad.count == 40)
+        XCTAssertEqual(initial.count, 20)
+        XCTAssertEqual(middle.count, 20)
+        XCTAssertEqual(afterLoad.count, 40)
     }
 }

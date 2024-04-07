@@ -36,6 +36,7 @@ class MediaAttachmentsViewModel: ObservableObject {
     ) {
         self.channel = channel
         self.messageSearch = messageSearch
+        updateAttachments()
         loadMessages()
     }
 
