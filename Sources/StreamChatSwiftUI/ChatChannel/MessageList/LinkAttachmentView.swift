@@ -98,6 +98,12 @@ public struct LinkAttachmentView: View {
     var linkAttachment: ChatMessageLinkAttachment
     var width: CGFloat
     var isFirst: Bool
+    
+    public init(linkAttachment: ChatMessageLinkAttachment, width: CGFloat, isFirst: Bool) {
+        self.linkAttachment = linkAttachment
+        self.width = width
+        self.isFirst = isFirst
+    }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: padding) {
