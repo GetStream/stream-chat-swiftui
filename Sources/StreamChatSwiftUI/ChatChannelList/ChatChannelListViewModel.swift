@@ -268,10 +268,11 @@ import UIKit
                 if let list {
                     channelList = list
                 } else {
+                    loading = true
                     let query = ChannelListQuery(filter: .containMembers(userIds: [currentUserId]))
                     channelList = try await chatClient.makeChannelList(with: query)
+                    self.loading = false
                 }
-                self.loading = false
                 // access channels
                 if self.selectedChannel == nil {
                     self.updateChannels()
