@@ -28,7 +28,11 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
 
     @MainActor func test_chatChannelView_snapshot() {
         // Given
-        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        let mockChannel = ChatChannel.mock(
+            cid: .unique,
+            name: "Test channel",
+            unreadCount: .mock(messages: 3)
+        )
         var messages = [ChatMessage]()
         let baseIntervalDistance: TimeInterval = 10000
         for i in 0..<3 {
@@ -42,7 +46,7 @@ class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
                 )
             )
         }
-        let chat = Chat_Mock.mock(bundle: Bundle(for: Self.self))
+        let chat = Chat_Mock.mock(chatClient: chatClient)
         chat.simulateInitial(channel: mockChannel, messages: messages)
 
         // When

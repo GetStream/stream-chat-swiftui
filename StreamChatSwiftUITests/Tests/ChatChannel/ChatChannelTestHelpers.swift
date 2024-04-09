@@ -12,10 +12,18 @@ class ChatChannelTestHelpers {
         chatClient: ChatClient,
         chatChannel: ChatChannel? = nil,
         messages: [ChatMessage] = [],
-        lastActiveWatchers: [ChatUser] = []
+        lastActiveWatchers: [ChatUser] = [],
+        currentlyTypingUsers: Set<ChatUser> = []
     ) -> Chat_Mock {
-        let config = ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")])
-        let channel = chatChannel ?? ChatChannel.mockDMChannel(config: config, lastActiveWatchers: lastActiveWatchers)
+        let config = ChannelConfig(
+            typingEventsEnabled: true,
+            commands: [Command(name: "giphy", description: "", set: "", args: "")]
+        )
+        let channel = chatChannel ?? ChatChannel.mockDMChannel(
+            config: config,
+            currentlyTypingUsers: currentlyTypingUsers,
+            lastActiveWatchers: lastActiveWatchers
+        )
         let channelQuery = ChannelQuery(cid: channel.cid)
         let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId ?? .unique]))
         let chat = Chat_Mock.mock(

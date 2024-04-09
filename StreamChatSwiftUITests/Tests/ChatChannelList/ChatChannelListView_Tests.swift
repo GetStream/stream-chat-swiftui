@@ -60,11 +60,9 @@ class ChatChannelListView_Tests: StreamChatTestCase {
     }
 
     private func makeChannelList() -> ChannelList_Mock {
-        let channelList = ChannelList_Mock(
-            channels: mockChannels(),
-            query: .init(filter: .nonEmpty),
-            client: chatClient
-        )
+        let channels = mockChannels()
+        let channelList = ChannelList_Mock.mock(channels: channels)
+        channelList.state.channels = StreamCollection(channels)
         return channelList
     }
 
@@ -75,28 +73,5 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             channels.append(channel)
         }
         return channels
-    }
-}
-
-class ChannelList_Mock: ChannelList {
-    init(
-        channels: [ChatChannel],
-        query: ChannelListQuery,
-        dynamicFilter: ((ChatChannel) -> Bool)? = nil,
-        client: ChatClient,
-        environment: ChannelList.Environment = .init()
-    ) {
-        let channelListUpdater = ChannelListUpdater(
-            database: .init(kind: .inMemory),
-            apiClient: APIClientMock()
-        )
-        super.init(
-            initialChannels: channels,
-            query: query,
-            dynamicFilter: dynamicFilter,
-            channelListUpdater: channelListUpdater,
-            client: client,
-            environment: environment
-        )
     }
 }

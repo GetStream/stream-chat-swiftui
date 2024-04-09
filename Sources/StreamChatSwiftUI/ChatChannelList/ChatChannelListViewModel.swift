@@ -129,6 +129,7 @@ import UIKit
         selectedChannelId: String? = nil
     ) {
         self.selectedChannelId = selectedChannelId
+        self.channels = channelList?.state.channels ?? StreamCollection([])
         setupChannelList(channelList)
         observeChannelDismiss()
         observeHideTabBar()

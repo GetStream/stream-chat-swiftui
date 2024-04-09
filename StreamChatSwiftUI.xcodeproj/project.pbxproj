@@ -3371,7 +3371,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "feature/chat-state-layer-mocks";
+				branch = "feature/chat-state-layer";
 				kind = branch;
 			};
 		};

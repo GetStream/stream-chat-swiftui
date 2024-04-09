@@ -41,13 +41,10 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         // When
         let newChannel1 = ChatChannel.mockDMChannel()
         let newChannel2 = ChatChannel.mockDMChannel()
-//        channelListController.simulate(
-//            channels: [newChannel1, newChannel2],
-//            changes: []
-//        )
+        try await channelList.simulate(channels: [newChannel1, newChannel2])
 
         // Then
-        XCTAssert(viewModel.channels.count == 2)
+        XCTAssertEqual(viewModel.channels.count, 2)
     }
 
     @MainActor func test_channelListVM_onChannelAppear_loadNextChannelsCalled() async throws {
@@ -60,9 +57,10 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
 
         // When
         viewModel.checkForChannels(index: 5)
+        try await waitForTask()
 
         // Then
-//        XCTAssert(channelListController.loadNextChannelsIsCalled == true)
+        XCTAssert(channelList.loadNextChannelsIsCalled == true)
     }
 
     @MainActor func test_channelListVM_onChannelAppear_loadNextChannelsNotCalled() async throws {
@@ -81,7 +79,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         viewModel.checkForChannels(index: 0)
 
         // Then
-//        XCTAssert(channelListController.loadNextChannelsIsCalled == false)
+        XCTAssert(channelList.loadNextChannelsIsCalled == false)
     }
 
     @MainActor func test_channelListVM_onDeleteTapped() async throws {
@@ -173,14 +171,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
 
         // When
         viewModel.delete(channel: channel)
-//        channelListController.simulate(
-//            channels: [],
-//            changes: [
-//                ListChange.remove(
-//                    channel, index: .init(row: 0, section: 0)
-//                )
-//            ]
-//        )
+        try await channelList.simulate(channels: [])
 
         // Then
         XCTAssert(viewModel.channels.isEmpty)
@@ -196,7 +187,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
             selectedChannelId: nil
         )
         viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
-//        channelListController.simulateInitial(channels: [channel], state: .remoteDataFetched)
+        try await channelList.simulate(channels: [channel])
 
         // When
         let message = ChatMessage.mock(
@@ -206,10 +197,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
             author: .mock(id: .unique, name: "Martin")
         )
         channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1), latestMessages: [message])
-//        channelListController.simulate(
-//            channels: [channel],
-//            changes: [.update(channel, index: .init(row: 0, section: 0))]
-//        )
+        try await channelList.simulate(channels: [channel])
         viewModel.checkForChannels(index: 0)
 
         // Then
@@ -275,17 +263,16 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
 
     private func makeChannelList(
         channels: [ChatChannel] = []
-    ) async throws -> ChannelList {
-//        let channelList = ChatChannelListController_Mock.mock(client: chatClient)
-//        var chatChannels = [ChatChannel]()
-//        if channels.isEmpty {
-//            let channel = ChatChannel.mockDMChannel()
-//            chatChannels = [channel]
-//        } else {
-//            chatChannels = channels
-//        }
-//        channelListController.simulateInitial(channels: chatChannels, state: .initialized)
-        let channelList = try await chatClient.makeChannelList(with: .init(filter: .containMembers(userIds: [chatClient.currentUserId ?? ""])))
+    ) async throws -> ChannelList_Mock {
+        let channelList = ChannelList_Mock.mock(client: chatClient)
+        var chatChannels = [ChatChannel]()
+        if channels.isEmpty {
+            let channel = ChatChannel.mockDMChannel()
+            chatChannels = [channel]
+        } else {
+            chatChannels = channels
+        }
+        try await channelList.simulate(channels: chatChannels)
         return channelList
     }
 

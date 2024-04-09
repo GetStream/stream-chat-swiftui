@@ -26,11 +26,12 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         writeMockData(for: mockURL)
     }
     
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         if let mockURL = mockURL {
             try? FileManager.default.removeItem(at: mockURL)
         }
+        await chatClient.logout()
     }
     
     @MainActor func test_messageComposerVM_sendButtonDisabled() {
@@ -311,7 +312,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(overlayShown == true)
     }
     
-    @MainActor func test_messageComposerVM_sendNewMessage() {
+    @MainActor func test_messageComposerVM_sendNewMessage() async throws {
         // Given
         let viewModel = makeComposerViewModel()
         
@@ -324,10 +325,13 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             editedMessage: nil
         ) {
             // Then
-            XCTAssert(viewModel.errorShown == false)
-            XCTAssert(viewModel.text == "")
-            XCTAssert(viewModel.addedAssets.isEmpty)
-            XCTAssert(viewModel.addedFileURLs.isEmpty)
+            Task {
+                try await waitForTask(nanoseconds: 1_000_000_000)
+                XCTAssertEqual(viewModel.errorShown, false)
+                XCTAssertEqual(viewModel.text, "")
+                XCTAssert(viewModel.addedAssets.isEmpty)
+                XCTAssert(viewModel.addedFileURLs.isEmpty)
+            }
         }
     }
     
@@ -346,7 +350,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     @MainActor func test_messageComposerVM_inThread() {
         // Given
-        let chat = chatClient.makeChat(for: .unique)
+        let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(
             chat: chat,
             messageId: .unique
@@ -413,12 +417,13 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(finalSendButtonState == true)
     }
     
-    @MainActor func test_messageComposerVM_suggestionsShown() {
+    @MainActor func test_messageComposerVM_suggestionsShown() async throws {
         // Given
         let viewModel = makeComposerViewModel()
         
         // When
         viewModel.pickerTypeState = .expanded(.instantCommands)
+        try await waitForTask(nanoseconds: 500_000_000)
         
         // Then
         XCTAssert(!viewModel.suggestions.isEmpty)

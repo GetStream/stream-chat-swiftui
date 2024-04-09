@@ -212,14 +212,14 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.shouldShowTypingIndicator == false)
     }
 
-    func test_chatChannelVM_typingIndicatorMessageHeader() {
+    func test_chatChannelVM_typingIndicatorMessageHeader() async throws {
         // Given
         let utils = Utils(
             messageListConfig: MessageListConfig(typingIndicatorPlacement: .navigationBar)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        let chat = makeChat()
         let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let chat = makeChat(typingUsers: [typingUser])
         let viewModel = ChatChannelViewModel(chat: chat)
 
         // When
@@ -229,16 +229,17 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
             change: .update(channel),
             typingUsers: Set(arrayLiteral: typingUser)
         )
+        try await waitForTask(nanoseconds: 500_000_000)
         let headerType = viewModel.channelHeaderType
-
+        
         // Then
         XCTAssert(headerType == .typingIndicator)
     }
 
-    func test_chatChannelVM_typingIndicatorMessageList() {
+    func test_chatChannelVM_typingIndicatorMessageList() async throws {
         // Given
-        let chat = makeChat()
         let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let chat = makeChat(typingUsers: [typingUser])
         let viewModel = ChatChannelViewModel(chat: chat)
 
         // When
@@ -248,7 +249,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
             change: .update(channel),
             typingUsers: Set(arrayLiteral: typingUser)
         )
-
+        
         // Then
         XCTAssert(viewModel.shouldShowTypingIndicator == true)
     }
@@ -469,11 +470,17 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
     // MARK: - private
 
     private func makeChat(
-        messages: [ChatMessage] = []
+        channel: ChatChannel? = nil,
+        messages: [ChatMessage] = [],
+        watchers: [ChatUser] = [],
+        typingUsers: Set<ChatUser> = []
     ) -> Chat_Mock {
         let chat = ChatChannelTestHelpers.makeChat(
             chatClient: ChatClient.mock(bundle: Bundle(for: Self.self)),
-            messages: messages
+            chatChannel: channel,
+            messages: messages,
+            lastActiveWatchers: watchers,
+            currentlyTypingUsers: typingUsers
         )
         return chat
     }

@@ -57,3 +57,7 @@ func waitFor<T>(
         throw WaiterError.waitingForResultTimedOut
     }
 }
+
+func waitForTask(nanoseconds: UInt64 = 1_000_000) async throws {
+    try await Task.sleep(nanoseconds: nanoseconds)
+}
