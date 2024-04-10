@@ -309,7 +309,7 @@ public struct LinkDetectionTextView: View {
                     .ranges(of: mention, options: [.caseInsensitive])
                     .map { NSRange($0, in: string) }
                     .forEach {
-                        attributedText.addAttribute(.link, value: "getstream://mention/\(user.id)", range: $0)
+                        attributedText.addAttribute(.link, value: "getstream://mention/\(message.id)/\(user.id)", range: $0)
                     }
             }
 
