@@ -118,6 +118,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
             chat: chat,
             messageOrder: .topToBottom,
             database: .init(kind: .inMemory, bundle: Bundle(for: Self.self)),
+            clientConfig: .init(apiKey: .init(.unique)),
             replyPaginationHandler: chatClient.makeMessagesPaginationStateHandler()
         )
         let threadDataSource = makeMessageThreadDataSource(
@@ -201,7 +202,10 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
             message: message,
             chat: chat,
             messageOrder: .topToBottom,
-            database: .init(kind: .inMemory, bundle: Bundle(for: Self.self)),
+            database: .init(
+                kind: .inMemory,
+                bundle: Bundle(for: Self.self)), 
+            clientConfig: .init(apiKey: .init(.unique)),
             replyPaginationHandler: chatClient.makeMessagesPaginationStateHandler()
         )
         let threadDataSource = MessageThreadDataSource(

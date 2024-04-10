@@ -240,7 +240,7 @@ struct StreamTextView: View {
 }
 
 @available(iOS 15, *)
-struct LinkDetectionTextView: View {
+public struct LinkDetectionTextView: View {
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -258,7 +258,7 @@ struct LinkDetectionTextView: View {
     
     @State var tintColor = InjectedValues[\.colors].tintColor
         
-    init(message: ChatMessage) {
+    public init(message: ChatMessage) {
         self.message = message
     }
     
@@ -266,7 +266,7 @@ struct LinkDetectionTextView: View {
         utils.messageListConfig.markdownSupportEnabled
     }
     
-    var body: some View {
+    public var body: some View {
         Group {
             if let displayedText {
                 Text(displayedText)
