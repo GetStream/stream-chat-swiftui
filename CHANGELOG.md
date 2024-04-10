@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Customization of the channel loading view
 
 # [4.52.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.52.0)
 _April 09, 2024_

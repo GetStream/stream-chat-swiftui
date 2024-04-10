@@ -152,7 +152,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         : nil
                 )
             } else {
-                LoadingView()
+                factory.makeChannelLoadingView()
             }
         }
         .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())
