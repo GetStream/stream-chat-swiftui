@@ -214,7 +214,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if channelDataSource.hasLoadedAllNextMessages {
             updateScrolledIdToNewestMessage()
         } else {
-            Task {
+            Task { @MainActor in
                 try await channelDataSource.loadFirstPage()
                 self.scrolledId = self.messages.first?.messageId
             }
@@ -465,7 +465,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             scrollPosition = messages[index].messageId
         }
 
-        Task {
+        Task { @MainActor in
             try? await channelDataSource.loadNextMessages(limit: Self.newerMessagesLimit)
             try? await Task.sleep(nanoseconds: 500_000)
             self.loadingNextMessages = false

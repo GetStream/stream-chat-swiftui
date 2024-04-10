@@ -294,7 +294,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread) ?
                 factory.makeJumpToUnreadButton(
                     channel: channel,
-                    onJumpToMessage: {
+                    onJumpToMessage: { @MainActor in
                         _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
                     },
                     onClose: {
