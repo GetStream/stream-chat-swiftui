@@ -62,4 +62,24 @@ class String_Extensions_Tests: XCTestCase {
         XCTAssert("example".isURL == false)
         XCTAssert("invalid_url".isURL == false)
     }
+    
+    func testRangesOfString() {
+        let string = "Hey @Martin, how are you?"
+        let mention = "@Martin"
+        let result = string
+            .ranges(of: mention, options: [.caseInsensitive])
+            .map { NSRange($0, in: string) }
+            .first
+        XCTAssertEqual(result, NSRange(location: 4, length: 7))
+    }
+    
+    func testRangesOfStringNotFound() {
+        let string = "Hey @Martin, how are you?"
+        let mention = "@Alexey"
+        let result = string
+            .ranges(of: mention, options: [.caseInsensitive])
+            .map { NSRange($0, in: string) }
+            .first
+        XCTAssertEqual(result, nil)
+    }
 }

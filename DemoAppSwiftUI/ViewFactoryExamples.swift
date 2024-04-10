@@ -70,6 +70,10 @@ class DemoAppFactory: ViewFactory {
         )
     }
     
+    public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
+        ShowProfileModifier(messageModifierInfo: messageModifierInfo)
+    }
+    
     private func pinChannelAction(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
@@ -96,6 +100,33 @@ class DemoAppFactory: ViewFactory {
             isDestructive: false
         )
         return pinChannel
+    }
+}
+
+struct ShowProfileModifier: ViewModifier {
+    
+    let messageModifierInfo: MessageModifierInfo
+    
+    @State var user: ChatUser?
+    @State var profileShown = false
+    
+    func body(content: Content) -> some View {
+        content
+            .modifier(
+                DefaultViewFactory.shared.makeMessageViewModifier(for: messageModifierInfo)
+            )
+            .onOpenURL(perform: { url in
+                if url.absoluteString.contains("getstream://mention") {
+                    let userId = url.lastPathComponent
+                    self.user = messageModifierInfo.message.mentionedUsers.first(where: { $0.id == userId })
+                }
+            })
+            .sheet(item: $user) { user in
+                VStack {
+                    MessageAvatarView(avatarURL: user.imageURL)
+                    Text(user.name ?? user.id)
+                }
+            }
     }
 }
 

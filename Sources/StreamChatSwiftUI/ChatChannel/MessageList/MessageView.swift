@@ -299,8 +299,20 @@ public struct LinkDetectionTextView: View {
                 string: message.adjustedText,
                 attributes: attributes
             )
-
+            let string = attributedText.string
             var containsLinks = false
+
+            message.mentionedUsers.forEach { user in
+                containsLinks = true
+                let mention = "@\(user.name ?? user.id)"
+                string
+                    .ranges(of: mention, options: [.caseInsensitive])
+                    .map { NSRange($0, in: string) }
+                    .forEach {
+                        attributedText.addAttribute(.link, value: "getstream://mention/\(user.id)", range: $0)
+                    }
+            }
+
             let range = NSRange(location: 0, length: message.adjustedText.utf16.count)
             linkDetector.links(in: message.adjustedText).forEach { textLink in
                 let pattern = "\\[([^\\]]+)\\]\\(\(textLink.originalText)\\)"
