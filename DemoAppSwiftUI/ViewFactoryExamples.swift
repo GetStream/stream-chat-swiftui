@@ -146,8 +146,12 @@ struct ProfileURLModifier: ViewModifier {
                         && messageModifierInfo.message.id == url.pathComponents[1]
                         && (mentionsHandler.selectedUser?.id != url.pathComponents[2] || !showProfile) {
                         let userId = url.pathComponents[2]
-                        mentionsHandler.selectedUser = messageModifierInfo.message.mentionedUsers.first(where: { $0.id == userId })
-                        showProfile = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                            if mentionsHandler.selectedUser == nil {
+                                mentionsHandler.selectedUser = messageModifierInfo.message.mentionedUsers.first(where: { $0.id == userId })
+                                showProfile = true
+                            }
+                        })
                     }
                 })
                 .sheet(isPresented: $showProfile, onDismiss: {
