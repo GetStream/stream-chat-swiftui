@@ -679,7 +679,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
     }
     
-    private func makeChannelController(
+    @MainActor private func makeChannelController(
         messages: [ChatMessage] = []
     ) -> Chat_Mock {
         MessageComposerTestUtils.makeChat(
@@ -710,7 +710,7 @@ enum MessageComposerTestUtils {
         return viewModel
     }
     
-    static func makeChat(
+    @MainActor static func makeChat(
         chatClient: ChatClient,
         messages: [ChatMessage] = []
     ) -> Chat_Mock {

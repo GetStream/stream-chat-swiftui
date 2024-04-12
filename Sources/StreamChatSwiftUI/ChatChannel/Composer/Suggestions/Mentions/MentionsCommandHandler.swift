@@ -96,7 +96,7 @@ public struct MentionsCommandHandler: CommandHandler {
         for typingMention: String,
         mentionRange: NSRange
     ) async throws -> SuggestionInfo {
-        guard let channel = chat.state.channel,
+        guard let channel = await chat.state.channel,
               let currentUserId = chatClient.currentUserId else {
             throw StreamChatError.missingData
         }
@@ -155,7 +155,7 @@ public struct MentionsCommandHandler: CommandHandler {
     private func searchAllUsers(for typingMention: String) async throws -> SuggestionInfo {
         let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
         try await userSearch.search(query: query)
-        let users = userSearch.state.users
+        let users = await userSearch.state.users
         let suggestionInfo = SuggestionInfo(key: id, value: users)
         return suggestionInfo
     }

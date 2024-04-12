@@ -11,7 +11,7 @@ import XCTest
 
 class FileAttachmentsView_Tests: StreamChatTestCase {
 
-    func test_fileAttachmentsView_nonEmptySnapshot() {
+    @MainActor func test_fileAttachmentsView_nonEmptySnapshot() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)
         let messageSearch = MessageSearch_Mock.mock()
@@ -30,7 +30,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_fileAttachmentsView_emptySnapshot() {
+    @MainActor func test_fileAttachmentsView_emptySnapshot() {
         // Given
         let viewModel = FileAttachmentsViewModel(
             channel: .mockDMChannel()
@@ -45,7 +45,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_fileAttachmentsView_loadingSnapshot() {
+    @MainActor func test_fileAttachmentsView_loadingSnapshot() {
         // Given
         let viewModel = FileAttachmentsViewModel(
             channel: .mockDMChannel()

@@ -10,7 +10,7 @@ import XCTest
 
 class ChatChannelViewModel_Tests: StreamChatTestCase {
 
-    func test_chatChannelVM_messagesLoaded() {
+    @MainActor func test_chatChannelVM_messagesLoaded() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -23,7 +23,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.isMessageThread == false)
     }
 
-    func test_chatChannelVM_messageGrouping() {
+    @MainActor func test_chatChannelVM_messageGrouping() {
         // Given
         var messages = [ChatMessage]()
         var offset: Double = 200
@@ -55,7 +55,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         }
     }
 
-    func test_chatChannelVM_scrollToLastMessage() {
+    @MainActor func test_chatChannelVM_scrollToLastMessage() {
         // Given
         let messageId: String = .unique
         let message = ChatMessage.mock(
@@ -74,7 +74,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.scrolledId?.contains(messageId) == true)
     }
 
-    func test_chatChannelVM_currentDateString() {
+    @MainActor func test_chatChannelVM_currentDateString() {
         // Given
         let expectedDate = "Jan 01"
         let chat = makeChat()
@@ -89,7 +89,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(dateString == expectedDate)
     }
 
-    func test_chatChannelVM_showReactionsOverlay() {
+    @MainActor func test_chatChannelVM_showReactionsOverlay() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -102,7 +102,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.reactionsShown == true)
     }
 
-    func test_chatChannelVM_listRefresh() {
+    @MainActor func test_chatChannelVM_listRefresh() {
         // Given
         var messages = [ChatMessage]()
         for i in 0..<250 {
@@ -126,7 +126,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(initialListId != newListId)
     }
 
-    func test_chatChannelVM_listNoRefresh() {
+    @MainActor func test_chatChannelVM_listNoRefresh() {
         // Given
         var messages = [ChatMessage]()
         for i in 0..<200 {
@@ -150,7 +150,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(initialListId == newListId)
     }
 
-    func test_chatChannelVM_messageThread() {
+    @MainActor func test_chatChannelVM_messageThread() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(
@@ -165,7 +165,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(isMessageThread == true)
     }
 
-    func test_chatChannelVM_messageActionInlineReplyExecuted() {
+    @MainActor func test_chatChannelVM_messageActionInlineReplyExecuted() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -182,7 +182,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.quotedMessage == viewModel.messages[0])
     }
 
-    func test_chatChannelVM_messageActionEditExecuted() {
+    @MainActor func test_chatChannelVM_messageActionEditExecuted() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -199,7 +199,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.editedMessage == viewModel.messages[0])
     }
 
-    func test_chatChannelVM_regularMessageHeader() {
+    @MainActor func test_chatChannelVM_regularMessageHeader() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -212,7 +212,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.shouldShowTypingIndicator == false)
     }
 
-    func test_chatChannelVM_typingIndicatorMessageHeader() async throws {
+    @MainActor func test_chatChannelVM_typingIndicatorMessageHeader() async throws {
         // Given
         let utils = Utils(
             messageListConfig: MessageListConfig(typingIndicatorPlacement: .navigationBar)
@@ -226,8 +226,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
         chat.simulate(
             channel: channel,
-            change: .update(channel),
-            typingUsers: Set(arrayLiteral: typingUser)
+            change: .update(channel)
         )
         try await waitForTask(nanoseconds: 500_000_000)
         let headerType = viewModel.channelHeaderType
@@ -236,7 +235,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(headerType == .typingIndicator)
     }
 
-    func test_chatChannelVM_typingIndicatorMessageList() async throws {
+    @MainActor func test_chatChannelVM_typingIndicatorMessageList() async throws {
         // Given
         let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
         let chat = makeChat(typingUsers: [typingUser])
@@ -246,15 +245,14 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
         chat.simulate(
             channel: channel,
-            change: .update(channel),
-            typingUsers: Set(arrayLiteral: typingUser)
+            change: .update(channel)
         )
         
         // Then
         XCTAssert(viewModel.shouldShowTypingIndicator == true)
     }
 
-    func test_chatChannelVM_skipChanges() {
+    @MainActor func test_chatChannelVM_skipChanges() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -282,7 +280,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(initial.first?.messageId == after.first?.messageId)
     }
 
-    func test_chatChannelVM_ephemeral() {
+    @MainActor func test_chatChannelVM_ephemeral() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -317,7 +315,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(initial[0].type != after[0].type)
     }
 
-    func test_chatChannelVM_animatedChanges() {
+    @MainActor func test_chatChannelVM_animatedChanges() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -350,7 +348,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(initial.count < after.count)
     }
 
-    func test_chatChannelVM_updateReadIndicators() {
+    @MainActor func test_chatChannelVM_updateReadIndicators() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -366,14 +364,12 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         // When
         chat.simulate(
             channel: channel,
-            change: .update(channel),
-            typingUsers: nil
+            change: .update(channel)
         )
         let readsString = channel.readsString
         chat.simulate(
             channel: newChannel,
-            change: .update(newChannel),
-            typingUsers: nil
+            change: .update(newChannel)
         )
         let newChannelReadsString = newChannel.readsString
 
@@ -382,7 +378,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(readsString != newChannelReadsString)
     }
 
-    func test_chatChannelVM_threadMessage() {
+    @MainActor func test_chatChannelVM_threadMessage() {
         // Given
         let chat = makeChat()
         let viewModel = ChatChannelViewModel(chat: chat)
@@ -411,7 +407,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.threadMessage == nil)
     }
     
-    func test_chatChannelVM_jumpToInitialMessage() {
+    @MainActor func test_chatChannelVM_jumpToInitialMessage() {
         // Given
         let message = ChatMessage.mock()
         let chat = makeChat(messages: [message])
@@ -424,7 +420,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(shouldJump == true)
     }
     
-    func test_chatChannelVM_jumpToAvailableMessage() {
+    @MainActor func test_chatChannelVM_jumpToAvailableMessage() {
         // Given
         let message1 = ChatMessage.mock()
         let message2 = ChatMessage.mock()
@@ -438,7 +434,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(shouldJump == true)
     }
     
-    func test_chatChannelVM_jumpToUnavailableMessage() {
+    @MainActor func test_chatChannelVM_jumpToUnavailableMessage() {
         // Given
         let message1 = ChatMessage.mock()
         let message2 = ChatMessage.mock()
@@ -453,7 +449,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(shouldJump == false)
     }
     
-    func test_chatChannelVM_jumpToUnknownMessage() {
+    @MainActor func test_chatChannelVM_jumpToUnknownMessage() {
         // Given
         let message1 = ChatMessage.mock()
         let message2 = ChatMessage.mock()
@@ -469,7 +465,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
     // MARK: - private
 
-    private func makeChat(
+    @MainActor private func makeChat(
         channel: ChatChannel? = nil,
         messages: [ChatMessage] = [],
         watchers: [ChatUser] = [],

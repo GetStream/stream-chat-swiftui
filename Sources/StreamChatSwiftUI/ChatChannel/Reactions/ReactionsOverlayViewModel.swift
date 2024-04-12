@@ -29,7 +29,7 @@ open class ReactionsOverlayViewModel: ObservableObject {
         self.message = message
         self.chat = chat
         reactions = Self.reactions(from: message)
-        Task {
+        Task { @MainActor in
             self.messageState = try await chat.makeMessageState(for: message.id)
             self.messageState?.$message
                 .receive(on: RunLoop.main)

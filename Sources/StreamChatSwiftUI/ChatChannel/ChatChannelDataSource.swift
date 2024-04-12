@@ -82,15 +82,15 @@ class ChatChannelDataSource: ChannelDataSource {
     let chat: Chat
     weak var delegate: MessagesDataSource?
     
-    var messages: StreamCollection<ChatMessage> {
+    @MainActor var messages: StreamCollection<ChatMessage> {
         chat.state.messages
     }
     
-    var hasLoadedAllNextMessages: Bool {
+    @MainActor var hasLoadedAllNextMessages: Bool {
         chat.state.hasLoadedAllNextMessages
     }
     
-    var firstUnreadMessageId: String? {
+    @MainActor var firstUnreadMessageId: String? {
         chat.state.firstUnreadMessageId
     }
 
@@ -101,27 +101,31 @@ class ChatChannelDataSource: ChannelDataSource {
     }
     
     private func subscribeForMessageUpdates() {
-        self.chat.state.$messages.sink { [weak self] messages in
-            guard let self else { return }
-            delegate?.dataSource(
-                channelDataSource: self,
-                didUpdateMessages: messages
-            )
+        Task { @MainActor in
+            self.chat.state.$messages.sink { [weak self] messages in
+                guard let self else { return }
+                delegate?.dataSource(
+                    channelDataSource: self,
+                    didUpdateMessages: messages
+                )
+            }
+            .store(in: &cancellables)
         }
-        .store(in: &cancellables)
     }
     
     private func subscribeForChannelUpdates() {
-        self.chat.state.$channel.sink { [weak self] (channel: ChatChannel?) in
-            guard let self else { return }
-            if let channel {
-                delegate?.dataSource(
-                    channelDataSource: self,
-                    didUpdateChannel: .update(channel)
-                )
+        Task { @MainActor in
+            self.chat.state.$channel.sink { [weak self] (channel: ChatChannel?) in
+                guard let self else { return }
+                if let channel {
+                    delegate?.dataSource(
+                        channelDataSource: self,
+                        didUpdateChannel: .update(channel)
+                    )
+                }
             }
+            .store(in: &cancellables)
         }
-        .store(in: &cancellables)
     }
 
     func loadPreviousMessages(
@@ -155,11 +159,11 @@ class MessageThreadDataSource: ChannelDataSource {
     
     weak var delegate: MessagesDataSource?
     
-    var messages: StreamCollection<ChatMessage> {
+    @MainActor var messages: StreamCollection<ChatMessage> {
         self.messageState?.replies ?? StreamCollection([])
     }
     
-    var hasLoadedAllNextMessages: Bool {
+    @MainActor var hasLoadedAllNextMessages: Bool {
         self.messageState?.hasLoadedAllNextReplies ?? false
     }
     
@@ -176,7 +180,7 @@ class MessageThreadDataSource: ChannelDataSource {
     ) {
         self.chat = chat
         self.messageId = messageId
-        Task {
+        Task { @MainActor in
             self.messageState = try await chat.makeMessageState(for: messageId)
             self.messageState?.$replies
                 .receive(on: RunLoop.main)
@@ -200,16 +204,18 @@ class MessageThreadDataSource: ChannelDataSource {
         self.chat = chat
         self.messageId = messageId
         self.messageState = messageState
-        self.messageState?.$replies
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] messages in
-            guard let self else { return }
-            delegate?.dataSource(
-                channelDataSource: self,
-                didUpdateMessages: StreamCollection(messages)
-            )
-        })
-        .store(in: &cancellables)
+        Task { @MainActor in
+            self.messageState?.$replies
+                .receive(on: RunLoop.main)
+                .sink(receiveValue: { [weak self] messages in
+                guard let self else { return }
+                delegate?.dataSource(
+                    channelDataSource: self,
+                    didUpdateMessages: StreamCollection(messages)
+                )
+            })
+            .store(in: &cancellables)
+        }
         Task {
             try await self.loadFirstPage()
         }

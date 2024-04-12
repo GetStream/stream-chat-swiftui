@@ -7,7 +7,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class CreateGroupViewModel: ObservableObject {
+@MainActor class CreateGroupViewModel: ObservableObject {
 
     @Injected(\.chatClient) var chatClient
 

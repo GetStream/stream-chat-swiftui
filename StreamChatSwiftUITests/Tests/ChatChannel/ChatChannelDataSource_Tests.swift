@@ -24,7 +24,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         author: ChatUser.mock(id: .unique)
     )
 
-    func test_channelDataSource_messages() {
+    @MainActor func test_channelDataSource_messages() {
         // Given
         let expected: [ChatMessage] = [message]
         let channelDataSource = makeChannelDataSource(messages: expected)
@@ -37,7 +37,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(messages.count == expected.count)
     }
 
-    func test_channelDataSource_updatedMessages() {
+    @MainActor func test_channelDataSource_updatedMessages() {
         // Given
         let handler = MockMessagesDataSourceHandler()
         let expected: [ChatMessage] = [message]
@@ -57,7 +57,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(noChannelCall == false)
     }
 
-    func test_channelDataSource_updatedChannel() {
+    @MainActor func test_channelDataSource_updatedChannel() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let handler = MockMessagesDataSourceHandler()
@@ -68,7 +68,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
 
         // When
         let noChannelCall = handler.updateChannelCalled
-        chat.simulate(channel: channel, change: .update(channel), typingUsers: [])
+        chat.simulate(channel: channel, change: .update(channel))
         let noMessagesCall = handler.updateMessagesCalled
         let channelCall = handler.updateChannelCalled
 
@@ -78,7 +78,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(noChannelCall == false)
     }
     
-    func test_channelDataSource_hasLoadedAllNextMessages() async throws {
+    @MainActor func test_channelDataSource_hasLoadedAllNextMessages() async throws {
         // Given
         let expected: [ChatMessage] = [message]
         let channelDataSource = makeChannelDataSource(messages: expected)
@@ -93,7 +93,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(channelDataSource.hasLoadedAllNextMessages == true)
     }
     
-    func test_channelDataSource_loadPageAroundMessageId() async throws {
+    @MainActor func test_channelDataSource_loadPageAroundMessageId() async throws {
         // Given
         let handler = MockMessagesDataSourceHandler()
         let expected: [ChatMessage] = [message]
@@ -109,13 +109,12 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(loadPageCall == 1)
     }
 
-    func test_messageThreadDataSource_messages() async throws {
+    @MainActor func test_messageThreadDataSource_messages() async throws {
         // Given
         let expected: [ChatMessage] = [message]
         let chat = makeChat(messages: expected)
         let messageState = MessageState(
             message: message,
-            chat: chat,
             messageOrder: .topToBottom,
             database: .init(kind: .inMemory, bundle: Bundle(for: Self.self)),
             clientConfig: .init(apiKey: .init(.unique)),
@@ -140,7 +139,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         XCTAssert(messages.first == reply)
     }
 
-    func test_messageThreadDataSource_updatedMessages() async throws {
+    @MainActor func test_messageThreadDataSource_updatedMessages() async throws {
         // Given
         let expected: [ChatMessage] = [message]
         let handler = MockMessagesDataSourceHandler()
@@ -185,13 +184,13 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         }
     }
 
-    private func makeChannelDataSource(messages: [ChatMessage]) -> ChatChannelDataSource {
+    @MainActor private func makeChannelDataSource(messages: [ChatMessage]) -> ChatChannelDataSource {
         let chat = makeChat(messages: messages)
         let channelDataSource = ChatChannelDataSource(chat: chat)
         return channelDataSource
     }
 
-    private func makeMessageThreadDataSource(
+    @MainActor private func makeMessageThreadDataSource(
         chat: Chat? = nil,
         messages: [ChatMessage],
         messageId: MessageId,
@@ -200,7 +199,6 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         let chat = chat ?? makeChat(messages: messages)
         let messageState = messageState ?? MessageState(
             message: message,
-            chat: chat,
             messageOrder: .topToBottom,
             database: .init(
                 kind: .inMemory,
@@ -217,7 +215,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         return threadDataSource
     }
 
-    private func makeChat(channel: ChatChannel? = nil, messages: [ChatMessage]) -> Chat_Mock {
+    @MainActor private func makeChat(channel: ChatChannel? = nil, messages: [ChatMessage]) -> Chat_Mock {
         let chat = ChatChannelTestHelpers.makeChat(chatClient: chatClient, messages: messages)
         return chat
     }

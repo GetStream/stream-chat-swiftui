@@ -59,7 +59,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    private func makeChannelList() -> ChannelList_Mock {
+    @MainActor private func makeChannelList() -> ChannelList_Mock {
         let channels = mockChannels()
         let channelList = ChannelList_Mock.mock(channels: channels)
         channelList.state.channels = StreamCollection(channels)

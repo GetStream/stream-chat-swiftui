@@ -11,7 +11,7 @@ import XCTest
 
 class AddUsersView_Tests: StreamChatTestCase {
 
-    func test_addUsersView_snapshot() {
+    @MainActor func test_addUsersView_snapshot() {
         // Given
         let users = ChannelInfoMockUtils.generateMockUsers(count: 20)
         let userSearch = UserSearch_Mock.mock()

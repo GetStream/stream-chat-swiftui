@@ -11,7 +11,7 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
-    func test_mediaAttachmentsViewModel_attachments() {
+    @MainActor func test_mediaAttachmentsViewModel_attachments() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
             withImages: 5,
@@ -34,7 +34,7 @@ class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(imageAttachments.count, 5)
     }
 
-    func test_mediaAttachmentsViewModel_onAttachmentAppear() async throws {
+    @MainActor func test_mediaAttachmentsViewModel_onAttachmentAppear() async throws {
         // Given
         var messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
             withImages: 15,

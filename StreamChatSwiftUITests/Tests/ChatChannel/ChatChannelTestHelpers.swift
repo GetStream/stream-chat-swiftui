@@ -8,7 +8,7 @@ import XCTest
 
 class ChatChannelTestHelpers {
 
-    static func makeChat(
+    @MainActor static func makeChat(
         chatClient: ChatClient,
         chatChannel: ChatChannel? = nil,
         messages: [ChatMessage] = [],

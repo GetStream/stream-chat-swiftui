@@ -202,7 +202,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
 
         // Then
         let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
-        let presentedSubtitle = injectedChannelInfo!.subtitle!
+        let presentedSubtitle = injectedChannelInfo?.subtitle
         let unreadCount = injectedChannelInfo!.unreadCount
         XCTAssert(presentedSubtitle == channel.subtitleText)
         XCTAssert(viewModel.channels[0].subtitleText == "No messages")

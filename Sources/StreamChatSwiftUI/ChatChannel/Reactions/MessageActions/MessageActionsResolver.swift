@@ -29,20 +29,22 @@ public class MessageActionsResolver: MessageActionsResolving {
         info: MessageActionInfo,
         viewModel: ChatChannelViewModel
     ) {
-        if info.identifier == "inlineReply" {
-            withAnimation {
-                viewModel.quotedMessage = info.message
-                viewModel.editedMessage = nil
+        Task { @MainActor in
+            if info.identifier == "inlineReply" {
+                withAnimation {
+                    viewModel.quotedMessage = info.message
+                    viewModel.editedMessage = nil
+                }
+            } else if info.identifier == "edit" {
+                withAnimation {
+                    viewModel.editedMessage = info.message
+                    viewModel.quotedMessage = nil
+                }
+            } else if info.identifier == MessageActionId.markUnread {
+                viewModel.firstUnreadMessageId = info.message.messageId
             }
-        } else if info.identifier == "edit" {
-            withAnimation {
-                viewModel.editedMessage = info.message
-                viewModel.quotedMessage = nil
-            }
-        } else if info.identifier == MessageActionId.markUnread {
-            viewModel.firstUnreadMessageId = info.message.messageId
-        }
 
-        viewModel.reactionsShown = false
+            viewModel.reactionsShown = false
+        }
     }
 }

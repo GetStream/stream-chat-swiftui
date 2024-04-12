@@ -106,7 +106,7 @@ extension ChatChannel {
 
 extension ChatMessage {
 
-    func makeChannelSelectionInfo(with chatClient: ChatClient) -> ChannelSelectionInfo? {
+    @MainActor func makeChannelSelectionInfo(with chatClient: ChatClient) -> ChannelSelectionInfo? {
         if let channelId = cid,
            let channel = chatClient.makeChat(for: channelId).state.channel {
             let searchResult = ChannelSelectionInfo(

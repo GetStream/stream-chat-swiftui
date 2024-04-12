@@ -8,7 +8,7 @@ import XCTest
 
 class CommandsHandler_Tests: StreamChatTestCase {
 
-    func test_commandsHandler_commandCanBeExecuted() {
+    @MainActor func test_commandsHandler_commandCanBeExecuted() {
         // Given
         let commandsHandler = makeCommandsHandler()
         let command = ComposerCommand(
@@ -29,7 +29,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(handler != nil)
     }
 
-    func test_commandsHandler_unknownCommand() {
+    @MainActor func test_commandsHandler_unknownCommand() {
         // Given
         let commandsHandler = makeCommandsHandler()
         let command = ComposerCommand(
@@ -50,7 +50,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(handler == nil)
     }
 
-    func test_commandsHandler_suggestionsAvailable() async throws {
+    @MainActor func test_commandsHandler_suggestionsAvailable() async throws {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "mar"
@@ -67,7 +67,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(users.count == 2)
     }
 
-    func test_commandsHandler_noSuggestionsAvailable() async throws {
+    @MainActor func test_commandsHandler_noSuggestionsAvailable() async throws {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "str"
@@ -82,7 +82,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(users.isEmpty)
     }
 
-    func test_commandsHandler_allSuggestionsAvailable() async throws {
+    @MainActor func test_commandsHandler_allSuggestionsAvailable() async throws {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = ""
@@ -100,7 +100,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(users.count == 3)
     }
 
-    func test_commandsHandler_handleCommandCalled() {
+    @MainActor func test_commandsHandler_handleCommandCalled() {
         // Given
         let commandsHandler = makeCommandsHandler()
         let commandDisplayInfo = CommandDisplayInfo(
@@ -134,7 +134,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         XCTAssert(handler?.executeOnMessageSentCalled == true)
     }
 
-    func test_instantCommandsHandler_info() {
+    @MainActor func test_instantCommandsHandler_info() {
         // Given
         let commandsHandler = makeCommandsHandler()
 
@@ -166,7 +166,7 @@ class CommandsHandler_Tests: StreamChatTestCase {
         return command
     }
 
-    private func makeCommandsHandler() -> CommandsHandler {
+    @MainActor private func makeCommandsHandler() -> CommandsHandler {
         let defaultCommandsConfig = TestCommandsConfig(chatClient: chatClient)
         let chat = ChatChannelTestHelpers.makeChat(
             chatClient: chatClient,

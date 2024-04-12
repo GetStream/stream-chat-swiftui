@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `FileAttachmentsView`.
-class FileAttachmentsViewModel: ObservableObject {
+@MainActor class FileAttachmentsViewModel: ObservableObject {
 
     @Published var loading = false
     @Published var attachmentsDataSource = [MonthlyFileAttachments]()

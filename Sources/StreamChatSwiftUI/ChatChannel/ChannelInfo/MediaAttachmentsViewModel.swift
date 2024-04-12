@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MediaAttachmentsView`.
-class MediaAttachmentsViewModel: ObservableObject {
+@MainActor class MediaAttachmentsViewModel: ObservableObject {
 
     @Published var mediaItems = [MediaItem]()
     @Published var loading = false

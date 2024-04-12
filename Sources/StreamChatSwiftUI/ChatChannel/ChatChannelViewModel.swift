@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `ChatChannelView`.
-open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
+@MainActor open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
@@ -689,13 +689,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     deinit {
-        messageCachingUtils.clearCache()
-        if messageId == nil {
-            utils.chatCache.clearCurrentChat()
-            cleanupAudioPlayer()
-            ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-            if !channelDataSource.hasLoadedAllNextMessages {
-                Task {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            messageCachingUtils.clearCache()
+            if messageId == nil {
+                utils.chatCache.clearCurrentChat()
+                cleanupAudioPlayer()
+                ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+                if !channelDataSource.hasLoadedAllNextMessages {
                     try await channelDataSource.loadFirstPage()
                 }
             }

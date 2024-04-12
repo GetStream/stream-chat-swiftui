@@ -9,7 +9,7 @@ import XCTest
 
 class FileAttachmentsViewModel_Tests: StreamChatTestCase {
 
-    func test_fileAttachmentsViewModel_notEmpty() {
+    @MainActor func test_fileAttachmentsViewModel_notEmpty() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 10)
         let messageSearch = MessageSearch_Mock.mock()
@@ -27,7 +27,7 @@ class FileAttachmentsViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(attachmentsDataSource.first?.monthAndYear, "January 1970")
     }
 
-    func test_fileAttachmentsViewModel_loadAdditionalAttachments() async throws {
+    @MainActor func test_fileAttachmentsViewModel_loadAdditionalAttachments() async throws {
         // Given
         var messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)
         let messageSearch = MessageSearch_Mock.mock()

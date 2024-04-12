@@ -8,7 +8,7 @@ import XCTest
 
 class MuteCommandHandler_Tests: StreamChatTestCase {
 
-    func test_muteCommandHandler_selectingUserToMute() {
+    @MainActor func test_muteCommandHandler_selectingUserToMute() {
         // Given
         let symbol = "/mute"
         let muteCommandHandler = makeMuteCommandHandler()
@@ -37,7 +37,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
         XCTAssert(canBeExecuted == true)
     }
 
-    func test_muteCommandHandler_showSuggestions() async throws {
+    @MainActor func test_muteCommandHandler_showSuggestions() async throws {
         // Given
         let muteCommandHandler = makeMuteCommandHandler()
         let command = ComposerCommand(
@@ -91,7 +91,7 @@ class MuteCommandHandler_Tests: StreamChatTestCase {
 
     // MARK: - private
 
-    private func makeMuteCommandHandler(symbol: String = "/mute") -> MuteCommandHandler {
+    @MainActor private func makeMuteCommandHandler(symbol: String = "/mute") -> MuteCommandHandler {
         let chat = ChatChannelTestHelpers.makeChat(
             chatClient: chatClient,
             lastActiveWatchers: TestCommandsConfig.mockUsers

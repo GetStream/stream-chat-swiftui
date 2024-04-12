@@ -192,22 +192,24 @@ public class ChatChannelInfoViewModel: ObservableObject {
     // MARK: - private
     
     private func subscribeToChannelUpdates() {
-        chat.state.$channel.sink { [weak self] channel in
-            guard let self else { return }
-            if let channel {
-                self.channel = channel
-                if self.channel.lastActiveMembers.count > participants.count {
-                    participants = channel.lastActiveMembers.map { member in
-                        ParticipantInfo(
-                            chatUser: member,
-                            displayName: member.name ?? member.id,
-                            onlineInfoText: self.onlineInfo(for: member)
-                        )
+        Task { @MainActor in
+            chat.state.$channel.sink { [weak self] channel in
+                guard let self else { return }
+                if let channel {
+                    self.channel = channel
+                    if self.channel.lastActiveMembers.count > participants.count {
+                        participants = channel.lastActiveMembers.map { member in
+                            ParticipantInfo(
+                                chatUser: member,
+                                displayName: member.name ?? member.id,
+                                onlineInfoText: self.onlineInfo(for: member)
+                            )
+                        }
                     }
                 }
             }
+            .store(in: &cancellables)
         }
-        .store(in: &cancellables)
     }
 
     private func removeUserFromConversation(completion: @escaping () -> Void) {
@@ -241,7 +243,7 @@ public class ChatChannelInfoViewModel: ObservableObject {
         }
 
         loadingUsers = true
-        Task {
+        Task { @MainActor in
             _ = try? await memberList.loadNextMembers()
             loadingUsers = false
             let newMembers = memberList.state.members.map { member in

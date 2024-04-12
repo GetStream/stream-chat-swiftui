@@ -32,7 +32,7 @@ public class DefaultCommandsConfig: CommandsConfig {
     public let mentionsSymbol: String = "@"
     public let instantCommandsSymbol: String = "/"
 
-    public func makeCommandsHandler(
+    @MainActor public func makeCommandsHandler(
         with chat: Chat
     ) -> CommandsHandler {
         let mentionsCommandHandler = MentionsCommandHandler(

@@ -11,7 +11,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
-    func test_addUsersViewModel_loadedUsers() {
+    @MainActor func test_addUsersViewModel_loadedUsers() {
         // Given
         let generated = ChannelInfoMockUtils.generateMockUsers(count: 10)
         let userSearch = UserSearch_Mock.mock()
@@ -29,7 +29,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(users.count, 10)
     }
 
-    func test_addUsersViewModel_search() {
+    @MainActor func test_addUsersViewModel_search() {
         // Given
         let generated = ChannelInfoMockUtils.generateMockUsers(count: 12)
         let userSearch = UserSearch_Mock.mock()
@@ -55,7 +55,7 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         waitForExpectations(timeout: defaultTimeout)
     }
 
-    func test_addUsersViewModel_onUserAppear() async throws {
+    @MainActor func test_addUsersViewModel_onUserAppear() async throws {
         // Given
         var users = ChannelInfoMockUtils.generateMockUsers(count: 20)
         let userSearch = UserSearch_Mock.mock()

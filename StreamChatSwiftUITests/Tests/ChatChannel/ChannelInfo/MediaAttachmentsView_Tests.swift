@@ -11,7 +11,7 @@ import XCTest
 
 class MediaAttachmentsView_Tests: StreamChatTestCase {
 
-    func test_mediaAttachmentsView_notEmptySnapshot() {
+    @MainActor func test_mediaAttachmentsView_notEmptySnapshot() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
             withImages: 10,
@@ -33,7 +33,7 @@ class MediaAttachmentsView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_mediaAttachmentsView_emptySnapshot() {
+    @MainActor func test_mediaAttachmentsView_emptySnapshot() {
         // Given
         let viewModel = MediaAttachmentsViewModel(channel: .mockDMChannel())
         viewModel.loading = false
@@ -46,7 +46,7 @@ class MediaAttachmentsView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_mediaAttachmentsView_loading() {
+    @MainActor func test_mediaAttachmentsView_loading() {
         // Given
         let viewModel = MediaAttachmentsViewModel(channel: .mockDMChannel())
         viewModel.loading = true
