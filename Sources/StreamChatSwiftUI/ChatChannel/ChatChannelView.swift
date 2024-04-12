@@ -153,7 +153,7 @@ import SwiftUI
                         : nil
                 )
             } else {
-                LoadingView()
+                factory.makeChannelLoadingView()
             }
         }
         .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())

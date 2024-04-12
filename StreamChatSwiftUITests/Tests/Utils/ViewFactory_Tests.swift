@@ -899,6 +899,17 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is LockedView)
     }
+    
+    func test_viewFactory_makeChannelLoadingView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeChannelLoadingView()
+        
+        // Then
+        XCTAssert(view is LoadingView)
+    }
 }
 
 extension ChannelAction: Equatable {

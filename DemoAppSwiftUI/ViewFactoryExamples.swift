@@ -11,6 +11,8 @@ class DemoAppFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 
     private init() {}
+    
+    private var mentionsHandler = MentionsHandler()
 
     public static let shared = DemoAppFactory()
 
@@ -70,6 +72,10 @@ class DemoAppFactory: ViewFactory {
         )
     }
     
+    public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
+        ShowProfileModifier(messageModifierInfo: messageModifierInfo, mentionsHandler: mentionsHandler)
+    }
+    
     private func pinChannelAction(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
@@ -96,6 +102,72 @@ class DemoAppFactory: ViewFactory {
             isDestructive: false
         )
         return pinChannel
+    }
+}
+
+struct ShowProfileModifier: ViewModifier {
+    
+    let messageModifierInfo: MessageModifierInfo
+    
+    @ObservedObject var mentionsHandler: MentionsHandler
+    
+    func body(content: Content) -> some View {
+        content
+            .modifier(
+                DefaultViewFactory.shared.makeMessageViewModifier(for: messageModifierInfo)
+            )
+            .modifier(
+                ProfileURLModifier(
+                    mentionsHandler: mentionsHandler,
+                    messageModifierInfo: messageModifierInfo
+                )
+            )
+    }
+}
+
+class MentionsHandler: ObservableObject {
+    
+    @Published var selectedUser: ChatUser?
+}
+
+struct ProfileURLModifier: ViewModifier {
+    
+    @ObservedObject var mentionsHandler: MentionsHandler
+    var messageModifierInfo: MessageModifierInfo
+    
+    @State var showProfile = false
+    
+    func body(content: Content) -> some View {
+        if !messageModifierInfo.message.mentionedUsers.isEmpty {
+            content
+                .onOpenURL(perform: { url in
+                    if url.absoluteString.contains("getstream://mention")
+                        && url.pathComponents.count > 2
+                        && messageModifierInfo.message.scrollMessageId == url.pathComponents[1]
+                        && (mentionsHandler.selectedUser?.id != url.pathComponents[2] || !showProfile) {
+                        let userId = url.pathComponents[2]
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            if mentionsHandler.selectedUser == nil {
+                                let user = messageModifierInfo.message.mentionedUsers.first(where: { $0.id == userId })
+                                mentionsHandler.selectedUser = user
+                                showProfile = true
+                            }
+                        }
+                    }
+                })
+                .sheet(isPresented: $showProfile, onDismiss: {
+                    mentionsHandler.selectedUser = nil
+                }, content: {
+                    if let user = mentionsHandler.selectedUser {
+                        VStack {
+                            MessageAvatarView(avatarURL: user.imageURL)
+                            Text(user.name ?? user.id)
+                        }
+                    }
+                })
+        } else {
+            content
+        }
     }
 }
 

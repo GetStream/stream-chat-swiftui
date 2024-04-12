@@ -267,6 +267,10 @@ extension ViewFactory {
         DefaultChannelHeaderModifier(channel: channel)
     }
     
+    public func makeChannelLoadingView() -> some View {
+        LoadingView()
+    }
+    
     public func makeMessageThreadHeaderViewModifier() -> some MessageThreadHeaderViewModifier {
         DefaultMessageThreadHeaderModifier()
     }
