@@ -309,7 +309,10 @@ public struct LinkDetectionTextView: View {
                     .ranges(of: mention, options: [.caseInsensitive])
                     .map { NSRange($0, in: string) }
                     .forEach {
-                        attributedText.addAttribute(.link, value: "getstream://mention/\(message.id)/\(user.id)", range: $0)
+                        let messageId = message.messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+                        if let messageId {
+                            attributedText.addAttribute(.link, value: "getstream://mention/\(messageId)/\(user.id)", range: $0)
+                        }
                     }
             }
 

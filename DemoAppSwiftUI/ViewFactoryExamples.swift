@@ -143,7 +143,7 @@ struct ProfileURLModifier: ViewModifier {
                 .onOpenURL(perform: { url in
                     if url.absoluteString.contains("getstream://mention")
                         && url.pathComponents.count > 2
-                        && messageModifierInfo.message.id == url.pathComponents[1]
+                        && messageModifierInfo.message.scrollMessageId == url.pathComponents[1]
                         && (mentionsHandler.selectedUser?.id != url.pathComponents[2] || !showProfile) {
                         let userId = url.pathComponents[2]
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
