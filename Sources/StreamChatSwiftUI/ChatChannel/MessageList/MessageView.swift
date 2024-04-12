@@ -299,15 +299,15 @@ public struct LinkDetectionTextView: View {
                 string: message.adjustedText,
                 attributes: attributes
             )
-            let string = attributedText.string
+            let attributedTextString = attributedText.string
             var containsLinks = false
 
             message.mentionedUsers.forEach { user in
                 containsLinks = true
                 let mention = "@\(user.name ?? user.id)"
-                string
+                attributedTextString
                     .ranges(of: mention, options: [.caseInsensitive])
-                    .map { NSRange($0, in: string) }
+                    .map { NSRange($0, in: attributedTextString) }
                     .forEach {
                         let messageId = message.messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
                         if let messageId {

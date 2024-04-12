@@ -64,8 +64,8 @@ class String_Extensions_Tests: XCTestCase {
     }
     
     func testRangesOfString() {
-        let string = "Hey @Martin, how are you?"
         let mention = "@Martin"
+        let string = "Hey \(mention), how are you?"
         let result = string
             .ranges(of: mention, options: [.caseInsensitive])
             .map { NSRange($0, in: string) }
