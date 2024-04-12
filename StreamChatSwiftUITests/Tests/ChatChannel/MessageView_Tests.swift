@@ -33,6 +33,54 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_messageViewTextMention_snapshot() {
+        // Given
+        let textMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hi @Martin, how are you?",
+            author: .mock(id: .unique),
+            mentionedUsers: [.mock(id: "martin", name: "Martin")]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: textMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageViewTextMentionMultiple_snapshot() {
+        // Given
+        let textMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hi @Martin and @Alexey, how are you? This is @Martin's test!",
+            author: .mock(id: .unique),
+            mentionedUsers: [.mock(id: "martin", name: "Martin"), .mock(id: "alexey", name: "Alexey")]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: textMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_messageViewImage_snapshot() {
         // Given
