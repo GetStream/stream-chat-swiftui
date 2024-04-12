@@ -900,7 +900,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         XCTAssert(view is LockedView)
     }
     
-    func test_viewFactory_makeChannelLoadingView() {
+    @MainActor func test_viewFactory_makeChannelLoadingView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
