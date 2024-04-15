@@ -18,7 +18,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
     
-    func test_messageListViewNewMessages_singleMessage() {
+    @MainActor func test_messageListViewNewMessages_singleMessage() {
         // Given
         let message = ChatMessage.mock(text: "Test message")
         let channel = ChatChannel.mockDMChannel(unreadCount: .mock(messages: 1))
@@ -34,7 +34,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageListViewNewMessages_moreMessages() {
+    @MainActor func test_messageListViewNewMessages_moreMessages() {
         // Given
         let message1 = ChatMessage.mock(text: "Test message 1")
         let message2 = ChatMessage.mock(text: "Test message 2")
@@ -52,7 +52,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageListViewNewMessages_moreMessagesInBetween() {
+    @MainActor func test_messageListViewNewMessages_moreMessagesInBetween() {
         // Given
         let message1 = ChatMessage.mock(text: "Test message 1")
         let message2 = ChatMessage.mock(text: "Test message 2")
@@ -70,7 +70,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageListViewNewMessages_noMessages() {
+    @MainActor func test_messageListViewNewMessages_noMessages() {
         // Given
         let message1 = ChatMessage.mock(text: "Test message 1")
         let message2 = ChatMessage.mock(text: "Test message 2")
@@ -90,7 +90,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
     
     // MARK: - private
     
-    func makeMessageListView(
+    @MainActor func makeMessageListView(
         messages: [ChatMessage],
         channel: ChatChannel
     ) -> some View {

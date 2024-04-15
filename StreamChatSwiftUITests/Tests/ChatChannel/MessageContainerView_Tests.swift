@@ -17,7 +17,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_messageContainerViewSentThisUser_snapshot() {
+    @MainActor func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -34,7 +34,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageContainerEdited_snapshot() {
+    @MainActor func test_messageContainerEdited_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
@@ -54,7 +54,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageContainerCurrentUserColor_snapshot() {
+    @MainActor func test_messageContainerCurrentUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         var colors = ColorPalette()
@@ -77,7 +77,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageContainerOtherUserColor_snapshot() {
+    @MainActor func test_messageContainerOtherUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         var colors = ColorPalette()
@@ -100,7 +100,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageContainerViewSentOtherUser_snapshot() {
+    @MainActor func test_messageContainerViewSentOtherUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -116,7 +116,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageContainerViewPinned_snapshot() {
+    @MainActor func test_messageContainerViewPinned_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -137,7 +137,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_videoAttachment_snapshotNoText() {
+    @MainActor func test_videoAttachment_snapshotNoText() {
         // Given
         let attachment = ChatChannelTestHelpers.videoAttachment
         let message = ChatMessage.mock(
@@ -159,7 +159,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_videoAttachment_snapshotText() {
+    @MainActor func test_videoAttachment_snapshotText() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -183,7 +183,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_imageAttachments_snapshot() {
+    @MainActor func test_imageAttachments_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -207,7 +207,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_imageAttachments_snapshotFiveImages() {
+    @MainActor func test_imageAttachments_snapshotFiveImages() {
         // Given
         let attachment = ChatChannelTestHelpers.imageAttachments[0]
         let attachments = [AnyChatMessageAttachment](repeating: attachment, count: 5)
@@ -235,7 +235,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
 
     // MARK: - private
 
-    func testMessageViewContainer(message: ChatMessage) -> some View {
+    @MainActor func testMessageViewContainer(message: ChatMessage) -> some View {
         MessageContainerView(
             factory: DefaultViewFactory.shared,
             channel: .mockDMChannel(),

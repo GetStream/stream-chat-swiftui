@@ -33,7 +33,7 @@ final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
     
-    func test_messageViewMultiRowReactions_snapshot() {
+    @MainActor func test_messageViewMultiRowReactions_snapshot() {
         // Given
         let viewFactory = TestViewFactory.shared
         let message = ChatMessage.mock(

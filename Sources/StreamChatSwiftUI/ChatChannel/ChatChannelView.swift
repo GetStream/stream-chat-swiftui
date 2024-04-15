@@ -20,9 +20,24 @@ import SwiftUI
     @State private var tabBarAvailable: Bool = false
 
     private var factory: Factory
+    
+    public init(
+        viewModel: ChatChannelViewModel? = nil,
+        chat: Chat,
+        messageId: MessageId? = nil,
+        scrollToMessage: ChatMessage? = nil
+    ) where Factory == DefaultViewFactory {
+        self.init(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            chat: chat,
+            messageId: messageId,
+            scrollToMessage: scrollToMessage
+        )
+    }
 
     public init(
-        viewFactory: Factory = DefaultViewFactory.shared,
+        viewFactory: Factory,
         viewModel: ChatChannelViewModel? = nil,
         chat: Chat,
         messageId: MessageId? = nil,

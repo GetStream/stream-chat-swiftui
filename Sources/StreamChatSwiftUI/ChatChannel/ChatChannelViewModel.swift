@@ -484,9 +484,16 @@ import SwiftUI
             withTimeInterval: 0.5,
             repeats: false,
             block: { [weak self] _ in
-                self?.currentDate = nil
+                guard let self else { return }
+                Task { @MainActor in
+                    self.resetCurrentDate()
+                }
             }
         )
+    }
+    
+    private func resetCurrentDate() {
+        currentDate = nil
     }
     
     private func sendReadEventIfNeeded(for message: ChatMessage) {

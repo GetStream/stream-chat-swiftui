@@ -10,7 +10,7 @@ import XCTest
 
 class MessageListViewAvatars_Tests: StreamChatTestCase {
 
-    func test_messageListView_defaultDMChannel() {
+    @MainActor func test_messageListView_defaultDMChannel() {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: nil)
         let channel = ChatChannel.mockDMChannel()
@@ -22,7 +22,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageListView_defaultGroupsChannel() {
+    @MainActor func test_messageListView_defaultGroupsChannel() {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: nil)
         let channel = ChatChannel.mockNonDMChannel()
@@ -34,7 +34,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageListView_dmChannelAvatarsOff() {
+    @MainActor func test_messageListView_dmChannelAvatarsOff() {
         // Given
         setupConfig(showAvatars: false, showAvatarsInGroups: nil)
         let channel = ChatChannel.mockDMChannel()
@@ -46,7 +46,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageListView_groupsChannelAvatarsOff() {
+    @MainActor func test_messageListView_groupsChannelAvatarsOff() {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: false)
         let channel = ChatChannel.mockNonDMChannel()
@@ -68,7 +68,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    private func makeMessageListView(with channel: ChatChannel) -> MessageListView<DefaultViewFactory> {
+    @MainActor private func makeMessageListView(with channel: ChatChannel) -> MessageListView<DefaultViewFactory> {
         let temp = [ChatMessage.mock(
             id: .unique,
             cid: channel.cid,

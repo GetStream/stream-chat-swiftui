@@ -11,7 +11,7 @@ import XCTest
 
 class MessageView_Tests: StreamChatTestCase {
 
-    func test_messageViewText_snapshot() {
+    @MainActor func test_messageViewText_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
             id: .unique,
@@ -34,7 +34,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageViewTextMention_snapshot() {
+    @MainActor func test_messageViewTextMention_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
             id: .unique,
@@ -58,7 +58,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageViewTextMentionMultiple_snapshot() {
+    @MainActor func test_messageViewTextMentionMultiple_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
             id: .unique,
@@ -82,7 +82,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewImage_snapshot() {
+    @MainActor func test_messageViewImage_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(
             id: .unique,
@@ -106,7 +106,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewImage_snapshot2Images() {
+    @MainActor func test_messageViewImage_snapshot2Images() {
         // Given
         let imageMessage = ChatMessage.mock(
             id: .unique,
@@ -133,7 +133,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewImage_snapshot3Images() {
+    @MainActor func test_messageViewImage_snapshot3Images() {
         // Given
         let imageMessage = ChatMessage.mock(
             id: .unique,
@@ -161,7 +161,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewImage_snapshotQuoted() {
+    @MainActor func test_messageViewImage_snapshotQuoted() {
         // Given
         let quoted = ChatMessage.mock(
             id: .unique,
@@ -192,7 +192,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewGiphy_snapshot() {
+    @MainActor func test_messageViewGiphy_snapshot() {
         // Given
         let giphyMessage = ChatMessage.mock(
             id: .unique,
@@ -216,7 +216,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewVideo_snapshot() {
+    @MainActor func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(
             id: .unique,
@@ -240,7 +240,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewFile_snapshot() {
+    @MainActor func test_messageViewFile_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
             id: .unique,
@@ -264,7 +264,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageViewVoiceRecording_snapshot() {
+    @MainActor func test_messageViewVoiceRecording_snapshot() {
         // Given
         let voiceMessage = ChatMessage.mock(
             id: .unique,
@@ -289,7 +289,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewFileText_snapshot() {
+    @MainActor func test_messageViewFileText_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
             id: .unique,
@@ -313,7 +313,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageViewJumboEmoji_snapshot() {
+    @MainActor func test_messageViewJumboEmoji_snapshot() {
         // Given
         let emojiMessage = ChatMessage.mock(
             id: .unique,
@@ -336,7 +336,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_linkAttachmentView_snapshot() {
+    @MainActor func test_linkAttachmentView_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -359,7 +359,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_deletedMessageView_snapshot() {
+    @MainActor func test_deletedMessageView_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -376,7 +376,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_deletedMessageViewContainer_snapshot() {
+    @MainActor func test_deletedMessageViewContainer_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -399,7 +399,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageRepliesView_snapshot() {
+    @MainActor func test_messageRepliesView_snapshot() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let message = ChatMessage.mock(
@@ -422,7 +422,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_topLeftView_snapshot() {
+    @MainActor func test_topLeftView_snapshot() {
         // Given
         let textView = Text("Test")
 
@@ -436,7 +436,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_noLinks() {
+    @MainActor func test_markdown_noLinks() {
         // Given
         let textMessage = ChatMessage.mock(
             id: .unique,
@@ -462,7 +462,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_withLinks() {
+    @MainActor func test_markdown_withLinks() {
         // Given
         let textMessage = ChatMessage.mock(
             id: .unique,
@@ -488,7 +488,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_withLinksDifferentTint() {
+    @MainActor func test_markdown_withLinksDifferentTint() {
         // Given
         let displayOptions = MessageDisplayOptions { _ in
             [
@@ -523,7 +523,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_disabledWithLinks() {
+    @MainActor func test_markdown_disabledWithLinks() {
         // Given
         let config = MessageListConfig(markdownSupportEnabled: false)
         let utils = Utils(messageListConfig: config)
@@ -553,7 +553,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_disabledWithRegularText() {
+    @MainActor func test_markdown_disabledWithRegularText() {
         // Given
         let config = MessageListConfig(markdownSupportEnabled: false)
         let utils = Utils(messageListConfig: config)
@@ -583,7 +583,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdownAndLinkSupport_disabled() {
+    @MainActor func test_markdownAndLinkSupport_disabled() {
         // Given
         let config = MessageListConfig(
             localLinkDetectionEnabled: false,
@@ -616,7 +616,7 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_linkSupportDisabled() {
+    @MainActor func test_markdown_linkSupportDisabled() {
         // Given
         let config = MessageListConfig(
             localLinkDetectionEnabled: false

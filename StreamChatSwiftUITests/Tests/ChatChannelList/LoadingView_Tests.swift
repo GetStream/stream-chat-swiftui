@@ -10,7 +10,7 @@ import XCTest
 
 class LoadingView_Tests: StreamChatTestCase {
 
-    func test_redactedLoadingView_snapshot() {
+    @MainActor func test_redactedLoadingView_snapshot() {
         // Given
         let factory = DefaultViewFactory.shared
 

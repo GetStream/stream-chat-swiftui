@@ -32,7 +32,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         .withAlphaComponent(0.2)
         .image(screenSize)
 
-    func test_reactionsOverlayView_snapshot() {
+    @MainActor func test_reactionsOverlayView_snapshot() {
         // Given
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
@@ -50,7 +50,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_reactionsOverlayView_noReactions() {
+    @MainActor func test_reactionsOverlayView_noReactions() {
         // Given
         let config = ChannelConfig(reactionsEnabled: false)
         let channel = ChatChannel.mockDMChannel(config: config)
@@ -70,7 +70,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_reactionsOverlayView_usersReactions() {
+    @MainActor func test_reactionsOverlayView_usersReactions() {
         // Given
         let author = ChatUser.mock(id: .unique, name: "Martin")
         let reaction = ChatMessageReaction(
@@ -114,7 +114,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_reactionsOverlay_veryLongMessage() {
+    @MainActor func test_reactionsOverlay_veryLongMessage() {
         // Given
         let messagePart = "this is some random message text repeated several times "
         var messageText = ""
@@ -151,7 +151,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_reactionAnimatableView_snapshot() {
+    @MainActor func test_reactionAnimatableView_snapshot() {
         // Given
         let message = ChatMessage.mock(text: "Test message")
         let reactions: [MessageReactionType] = [.init(rawValue: "love"), .init(rawValue: "like")]
@@ -170,7 +170,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_reactionsOverlayContainer_snapshot() {
+    @MainActor func test_reactionsOverlayContainer_snapshot() {
         // Given
         let message = ChatMessage.mock(text: "Test message")
 
@@ -185,7 +185,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_reactionsAnimatableView_snapshot() {
+    @MainActor func test_reactionsAnimatableView_snapshot() {
         // Given
         let message = ChatMessage.mock(text: "Test message")
         let reactions: [MessageReactionType] = [.init(rawValue: "love"), .init(rawValue: "like")]
@@ -201,7 +201,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_chatMessage_reactionOffsetCurrentUser() {
+    @MainActor func test_chatMessage_reactionOffsetCurrentUser() {
         // Given
         let message = ChatMessage.mock(text: "Test message", isSentByCurrentUser: true)
 
@@ -215,7 +215,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         XCTAssert(offset == -12.5)
     }
 
-    func test_chatMessage_reactionOffsetOtherUser() {
+    @MainActor func test_chatMessage_reactionOffsetOtherUser() {
         // Given
         let message = ChatMessage.mock(text: "Test message", isSentByCurrentUser: false)
 

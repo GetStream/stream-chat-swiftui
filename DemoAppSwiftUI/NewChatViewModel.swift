@@ -111,8 +111,7 @@ import SwiftUI
         state = .loading
         Task { @MainActor in
             do {
-                //TODO: workaround: why is term non-optional in search(term:)
-                chatUsers = try await userSearch.search(query: .search(term: term))
+                chatUsers = try await userSearch.search(term: term)
                 state = .loaded
             } catch {
                 state = .error

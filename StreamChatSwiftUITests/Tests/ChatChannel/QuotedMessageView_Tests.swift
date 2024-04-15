@@ -18,7 +18,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         author: .mock(id: "test", name: "martin")
     )
 
-    func test_quotedMessageViewContainer_snapshot() {
+    @MainActor func test_quotedMessageViewContainer_snapshot() {
         // Given
         let view = QuotedMessageViewContainer(
             factory: DefaultViewFactory.shared,
@@ -32,7 +32,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_quotedMessageView_snapshot() {
+    @MainActor func test_quotedMessageView_snapshot() {
         // Given
         let view = QuotedMessageView(
             factory: DefaultViewFactory.shared,
@@ -46,7 +46,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_quotedMessageView_voiceAttachmentSnapshot() {
+    @MainActor func test_quotedMessageView_voiceAttachmentSnapshot() {
         // Given
         let payload = VoiceRecordingAttachmentPayload(
             title: "Recording",

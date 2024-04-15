@@ -11,7 +11,7 @@ import XCTest
 
 class MessageListView_Tests: StreamChatTestCase {
 
-    func test_messageListView_withReactions() {
+    @MainActor func test_messageListView_withReactions() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
@@ -21,7 +21,7 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageListView_noReactions() {
+    @MainActor func test_messageListView_noReactions() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: false)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
@@ -31,7 +31,7 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
 
-    func test_scrollToBottomButton_snapshotUnreadCount() {
+    @MainActor func test_scrollToBottomButton_snapshotUnreadCount() {
         // Given
         let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
 
@@ -39,7 +39,7 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: button, as: .image(perceptualPrecision: precision))
     }
 
-    func test_scrollToBottomButton_snapshotEmptyCount() {
+    @MainActor func test_scrollToBottomButton_snapshotEmptyCount() {
         // Given
         let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
 
@@ -47,7 +47,7 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: button, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageListView_typingIndicator() {
+    @MainActor func test_messageListView_typingIndicator() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let typingUser = ChatUser.mock(id: "martin", name: "Martin")
@@ -61,7 +61,7 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
 
-    func test_messageListView_snapshotFallback() {
+    @MainActor func test_messageListView_snapshotFallback() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let messageListView = makeMessageListView(channelConfig: channelConfig)
@@ -76,7 +76,7 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageListView_jumpToUnreadButton() {
+    @MainActor func test_messageListView_jumpToUnreadButton() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
         let view = makeMessageListView(
@@ -91,7 +91,7 @@ class MessageListView_Tests: StreamChatTestCase {
 
     // MARK: - private
 
-    func makeMessageListView(
+    @MainActor func makeMessageListView(
         channelConfig: ChannelConfig,
         unreadCount: ChannelUnreadCount = .noUnread,
         currentlyTypingUsers: Set<ChatUser> = []

@@ -9,7 +9,7 @@ import XCTest
 
 class SearchResultsView_Tests: StreamChatTestCase {
 
-    func test_searchResultsView_snapshotResults() {
+    @MainActor func test_searchResultsView_snapshotResults() {
         // Given
         let channel1 = ChatChannel.mock(cid: .unique, name: "Test 1")
         let message1 = ChatMessage.mock(
@@ -53,7 +53,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image)
     }
 
-    func test_searchResultsView_snapshotNoResults() {
+    @MainActor func test_searchResultsView_snapshotNoResults() {
         // Given
         let searchResults = [ChannelSelectionInfo]()
 
@@ -75,7 +75,7 @@ class SearchResultsView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image)
     }
 
-    func test_searchResultsView_snapshotLoading() {
+    @MainActor func test_searchResultsView_snapshotLoading() {
         // Given
         let searchResults = [ChannelSelectionInfo]()
 

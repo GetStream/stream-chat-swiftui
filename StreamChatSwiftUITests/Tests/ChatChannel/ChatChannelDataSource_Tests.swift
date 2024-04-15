@@ -112,7 +112,6 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
     @MainActor func test_messageThreadDataSource_messages() async throws {
         // Given
         let expected: [ChatMessage] = [message]
-        let chat = makeChat(messages: expected)
         let messageState = MessageState(
             message: message,
             messageOrder: .topToBottom,

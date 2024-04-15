@@ -19,9 +19,30 @@ import SwiftUI
     private var onItemTap: (ChatChannel) -> Void
     private var embedInNavigationView: Bool
     private var handleTabBarVisibility: Bool
+    
+    public init(
+        viewModel: ChatChannelListViewModel? = nil,
+        channelList: ChannelList? = nil,
+        title: String = "Stream Chat",
+        onItemTap: ((ChatChannel) -> Void)? = nil,
+        selectedChannelId: String? = nil,
+        handleTabBarVisibility: Bool = true,
+        embedInNavigationView: Bool = true
+    ) where Factory == DefaultViewFactory {
+        self.init(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelList: channelList,
+            title: title,
+            onItemTap: onItemTap,
+            selectedChannelId: selectedChannelId,
+            handleTabBarVisibility: handleTabBarVisibility,
+            embedInNavigationView: embedInNavigationView
+        )
+    }
 
     public init(
-        viewFactory: Factory = DefaultViewFactory.shared,
+        viewFactory: Factory,
         viewModel: ChatChannelListViewModel? = nil,
         channelList: ChannelList? = nil,
         title: String = "Stream Chat",

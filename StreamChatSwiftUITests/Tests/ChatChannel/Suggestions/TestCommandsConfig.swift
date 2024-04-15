@@ -23,9 +23,6 @@ public class TestCommandsConfig: CommandsConfig {
     public func makeCommandsHandler(
         with chat: Chat
     ) -> CommandsHandler {
-        //TODO: set users
-//        let userSearchController = ChatUserSearchController_Mock.mock(client: chatClient)
-//        userSearchController.users_mock = Self.mockUsers
         let userSearch = chatClient.makeUserSearch()
         let mentionsCommand = MentionsCommandHandler(
             chat: chat,

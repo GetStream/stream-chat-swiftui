@@ -164,7 +164,6 @@ class MessageThreadDataSource: ChannelDataSource {
     }
     
     var firstUnreadMessageId: String? {
-        //TODO: fix
         return nil
     }
     
