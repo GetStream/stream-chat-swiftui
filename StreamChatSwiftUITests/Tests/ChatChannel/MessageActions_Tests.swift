@@ -8,7 +8,7 @@ import XCTest
 
 class MessageActions_Tests: StreamChatTestCase {
 
-    func test_messageActions_currentUserDefault() {
+    @MainActor func test_messageActions_currentUserDefault() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let message = ChatMessage.mock(
@@ -40,7 +40,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[5].title == "Delete Message")
     }
 
-    func test_messageActions_otherUserDefault() {
+    @MainActor func test_messageActions_otherUserDefault() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let message = ChatMessage.mock(
@@ -73,7 +73,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[6].title == "Mute User")
     }
 
-    func test_messageActions_currentUserPinned() {
+    @MainActor func test_messageActions_currentUserPinned() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let message = ChatMessage.mock(
@@ -111,7 +111,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[5].title == "Delete Message")
     }
 
-    func test_messageActions_messageNotSent() {
+    @MainActor func test_messageActions_messageNotSent() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let message = ChatMessage.mock(
@@ -140,7 +140,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[2].title == "Delete Message")
     }
 
-    func test_messageActions_attachmentFailure() {
+    @MainActor func test_messageActions_attachmentFailure() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let attachments = [
@@ -176,7 +176,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[1].title == "Delete Message")
     }
     
-    func test_messageActions_bouncedMessage() {
+    @MainActor func test_messageActions_bouncedMessage() {
         // Given
         let channel = ChatChannel.mockDMChannel()
         let moderationDetails = MessageModerationDetails(

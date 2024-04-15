@@ -8,7 +8,7 @@ import XCTest
 
 class MessageActionsViewModel_Tests: StreamChatTestCase {
 
-    func test_messageActionsViewModel_confirmationAlertShown() {
+    @MainActor func test_messageActionsViewModel_confirmationAlertShown() {
         // Given
         let actions = MessageAction.defaultActions(
             factory: DefaultViewFactory.shared,

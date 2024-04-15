@@ -25,26 +25,24 @@ public class MessageActionsResolver: MessageActionsResolving {
         // Public init.
     }
 
-    public func resolveMessageAction(
+    @MainActor public func resolveMessageAction(
         info: MessageActionInfo,
         viewModel: ChatChannelViewModel
     ) {
-        Task { @MainActor in
-            if info.identifier == "inlineReply" {
-                withAnimation {
-                    viewModel.quotedMessage = info.message
-                    viewModel.editedMessage = nil
-                }
-            } else if info.identifier == "edit" {
-                withAnimation {
-                    viewModel.editedMessage = info.message
-                    viewModel.quotedMessage = nil
-                }
-            } else if info.identifier == MessageActionId.markUnread {
-                viewModel.firstUnreadMessageId = info.message.messageId
+        if info.identifier == "inlineReply" {
+            withAnimation {
+                viewModel.quotedMessage = info.message
+                viewModel.editedMessage = nil
             }
-
-            viewModel.reactionsShown = false
+        } else if info.identifier == "edit" {
+            withAnimation {
+                viewModel.editedMessage = info.message
+                viewModel.quotedMessage = nil
+            }
+        } else if info.identifier == MessageActionId.markUnread {
+            viewModel.firstUnreadMessageId = info.message.messageId
         }
+
+        viewModel.reactionsShown = false
     }
 }

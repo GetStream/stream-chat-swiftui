@@ -13,7 +13,7 @@ extension MessageAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `MessageAction`.
-    public static func defaultActions<Factory: ViewFactory>(
+    @MainActor public static func defaultActions<Factory: ViewFactory>(
         factory: Factory,
         for message: ChatMessage,
         channel: ChatChannel,
@@ -152,8 +152,8 @@ extension MessageAction {
 
             if channel.config.mutesEnabled {
                 let author = message.author
-                let currentUser = chatClient.currentUserController().currentUser
-                let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
+                let currentUser = try? chatClient.makeConnectedUser()
+                let isMuted = currentUser?.state.mutedUsers.contains(message.author) ?? false
                 if isMuted {
                     let unmuteAction = unmuteAction(
                         for: message,
@@ -504,7 +504,7 @@ extension MessageAction {
     ) -> MessageAction {
         let muteAction = { @MainActor in
             do {
-                let currentUser = try await chatClient.makeConnectedUser()
+                let currentUser = try chatClient.makeConnectedUser()
                 try await currentUser.muteUser(userToMute.id)
                 onFinish(
                     MessageActionInfo(
@@ -544,7 +544,7 @@ extension MessageAction {
     ) -> MessageAction {
         let unmuteAction = { @MainActor in
             do {
-                let currentUser = try await chatClient.makeConnectedUser()
+                let currentUser = try chatClient.makeConnectedUser()
                 try await currentUser.unmuteUser(userToUnmute.id)
                 onFinish(
                     MessageActionInfo(

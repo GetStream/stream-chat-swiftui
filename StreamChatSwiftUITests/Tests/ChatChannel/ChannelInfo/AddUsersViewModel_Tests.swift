@@ -10,6 +10,14 @@ import XCTest
 class AddUsersViewModel_Tests: StreamChatTestCase {
 
     private var cancellables = Set<AnyCancellable>()
+    
+    override func tearDown() {
+        super.tearDown()
+        for cancellable in cancellables {
+            cancellable.cancel()
+        }
+        cancellables.removeAll()
+    }
 
     @MainActor func test_addUsersViewModel_loadedUsers() {
         // Given
@@ -60,22 +68,23 @@ class AddUsersViewModel_Tests: StreamChatTestCase {
         var users = ChannelInfoMockUtils.generateMockUsers(count: 20)
         let userSearch = UserSearch_Mock.mock()
         userSearch.setUsers(users)
+        try await waitForTask()
         let viewModel = AddUsersViewModel(
             loadedUserIds: [],
             userSearch: userSearch
         )
 
         // When
+        let initial = viewModel.users
         users.append(contentsOf: ChannelInfoMockUtils.generateMockUsers(count: 20))
         userSearch.setUsers(users)
+        try await waitForTask()
         viewModel.onUserAppear(users[5])
-        let initial = viewModel.users
         viewModel.onUserAppear(users[15])
-        try await Task.sleep(nanoseconds: 1_000_000)
         let afterLoad = viewModel.users
 
         // Then
-        XCTAssert(initial.count == 20)
-        XCTAssert(afterLoad.count == 40)
+        XCTAssertEqual(initial.count, 20)
+        XCTAssertEqual(afterLoad.count, 40)
     }
 }

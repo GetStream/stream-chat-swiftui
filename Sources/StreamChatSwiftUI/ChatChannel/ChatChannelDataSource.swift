@@ -13,7 +13,7 @@ protocol MessagesDataSource: AnyObject {
     /// - Parameters:
     ///  - channelDataSource, the channel's data source.
     ///  - messages, the collection of updated messages.
-    func dataSource(
+    @MainActor func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateMessages messages: StreamCollection<ChatMessage>
     )
@@ -22,7 +22,7 @@ protocol MessagesDataSource: AnyObject {
     /// - Parameters:
     ///  - channelDataSource: the channel's data source.
     ///  - channel: the updated channel.
-    func dataSource(
+    @MainActor func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateChannel channel: EntityChange<ChatChannel>
     )
@@ -94,38 +94,34 @@ class ChatChannelDataSource: ChannelDataSource {
         chat.state.firstUnreadMessageId
     }
 
-    init(chat: Chat) {
+    @MainActor init(chat: Chat) {
         self.chat = chat
         subscribeForMessageUpdates()
         subscribeForChannelUpdates()
     }
     
-    private func subscribeForMessageUpdates() {
-        Task { @MainActor in
-            self.chat.state.$messages.sink { [weak self] messages in
-                guard let self else { return }
-                delegate?.dataSource(
-                    channelDataSource: self,
-                    didUpdateMessages: messages
-                )
-            }
-            .store(in: &cancellables)
+    @MainActor private func subscribeForMessageUpdates() {
+        self.chat.state.$messages.sink { [weak self] messages in
+            guard let self else { return }
+            delegate?.dataSource(
+                channelDataSource: self,
+                didUpdateMessages: messages
+            )
         }
+        .store(in: &cancellables)
     }
     
-    private func subscribeForChannelUpdates() {
-        Task { @MainActor in
-            self.chat.state.$channel.sink { [weak self] (channel: ChatChannel?) in
-                guard let self else { return }
-                if let channel {
-                    delegate?.dataSource(
-                        channelDataSource: self,
-                        didUpdateChannel: .update(channel)
-                    )
-                }
+    @MainActor private func subscribeForChannelUpdates() {
+        self.chat.state.$channel.sink { [weak self] (channel: ChatChannel?) in
+            guard let self else { return }
+            if let channel {
+                delegate?.dataSource(
+                    channelDataSource: self,
+                    didUpdateChannel: .update(channel)
+                )
             }
-            .store(in: &cancellables)
         }
+        .store(in: &cancellables)
     }
 
     func loadPreviousMessages(

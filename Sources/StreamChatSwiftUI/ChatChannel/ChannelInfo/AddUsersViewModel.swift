@@ -21,12 +21,12 @@ class AddUsersViewModel: ObservableObject {
     private var loadingNextUsers = false
     private lazy var userSearch: UserSearch = chatClient.makeUserSearch()
 
-    init(loadedUserIds: [String]) {
+    @MainActor init(loadedUserIds: [String]) {
         self.loadedUserIds = loadedUserIds
         searchUsers()
     }
 
-    init(loadedUserIds: [String], userSearch: UserSearch) {
+    @MainActor init(loadedUserIds: [String], userSearch: UserSearch) {
         self.loadedUserIds = loadedUserIds
         self.userSearch = userSearch
         searchUsers()
@@ -53,11 +53,11 @@ class AddUsersViewModel: ObservableObject {
         }
     }
 
-    private func searchUsers() {
+    @MainActor private func searchUsers() {
         let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
         let query = UserListQuery(filter: filter)
+        users = Array(userSearch.state.users)
         Task { @MainActor in
-            users = Array(userSearch.state.users)
             try await userSearch.search(query: query)
             users = Array(userSearch.state.users)
         }

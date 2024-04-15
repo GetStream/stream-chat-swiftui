@@ -42,6 +42,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         let newChannel1 = ChatChannel.mockDMChannel()
         let newChannel2 = ChatChannel.mockDMChannel()
         try await channelList.simulate(channels: [newChannel1, newChannel2])
+        try await waitForTask()
 
         // Then
         XCTAssertEqual(viewModel.channels.count, 2)
@@ -172,6 +173,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         // When
         viewModel.delete(channel: channel)
         try await channelList.simulate(channels: [])
+        try await waitForTask()
 
         // Then
         XCTAssert(viewModel.channels.isEmpty)
@@ -198,16 +200,17 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1), latestMessages: [message])
         try await channelList.simulate(channels: [channel])
+        try await waitForTask()
         viewModel.checkForChannels(index: 0)
 
         // Then
         let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
         let presentedSubtitle = injectedChannelInfo?.subtitle
         let unreadCount = injectedChannelInfo!.unreadCount
-        XCTAssert(presentedSubtitle == channel.subtitleText)
-        XCTAssert(viewModel.channels[0].subtitleText == "No messages")
-        XCTAssert(unreadCount == 0)
-        XCTAssert(channel.shouldShowTypingIndicator == false)
+        XCTAssertEqual(presentedSubtitle, channel.subtitleText)
+        XCTAssertEqual(viewModel.channels[0].subtitleText, "No messages")
+        XCTAssertEqual(unreadCount, 0)
+        XCTAssertEqual(channel.shouldShowTypingIndicator, false)
     }
 
     @MainActor func test_channelListVM_badgeCountUpdate() async throws {
