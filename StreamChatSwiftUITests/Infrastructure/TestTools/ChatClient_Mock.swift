@@ -74,7 +74,7 @@ class APIClient_Mock: APIClient {
         endpoint: Endpoint<Response>,
         completion: @escaping (Result<Response, Error>) -> Void
     ) where Response: Decodable {
-        // Do nothing for now
+        completion(.failure(TestError()))
     }
 }
 
