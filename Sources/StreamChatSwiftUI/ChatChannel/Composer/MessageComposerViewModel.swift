@@ -231,7 +231,7 @@ import SwiftUI
         completion: @escaping () -> Void
     ) {
         defer {
-            checkChannelCooldown()
+            checkChannelCooldown(for: chat.state.channel)
         }
         
         if let composerCommand = composerCommand, composerCommand.id != "instantCommands" {
@@ -626,19 +626,19 @@ import SwiftUI
     }
     
     private func listenToCooldownUpdates() {
-        chat.state.$channel.sink { [weak self] value in
+        chat.state.$channel.sink { [weak self] channel in
             guard self?.isSlowModeDisabled == false else { return }
-            let cooldownDuration = value?.cooldownDuration ?? 0
+            let cooldownDuration = channel?.cooldownDuration ?? 0
             if self?.cooldownPeriod == cooldownDuration {
                 return
             }
             self?.cooldownPeriod = cooldownDuration
-            self?.checkChannelCooldown()
+            self?.checkChannelCooldown(for: channel)
         }
         .store(in: &cancellables)
     }
     
-    private func checkChannelCooldown() {
+    private func checkChannelCooldown(for channel: ChatChannel?) {
         let duration = chat.state.channel?.cooldownDuration ?? 0
         if duration > 0 && timer == nil && !isSlowModeDisabled {
             cooldownDuration = duration

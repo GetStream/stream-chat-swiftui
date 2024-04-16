@@ -177,7 +177,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
 
         func dataSource(
             channelDataSource: ChannelDataSource,
-            didUpdateChannel channel: EntityChange<ChatChannel>
+            didUpdateChannel channel: ChatChannel
         ) {
             updateChannelCalled = true
         }

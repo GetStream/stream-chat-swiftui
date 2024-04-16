@@ -24,7 +24,7 @@ protocol MessagesDataSource: AnyObject {
     ///  - channel: the updated channel.
     @MainActor func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateChannel channel: EntityChange<ChatChannel>
+        didUpdateChannel channel: ChatChannel
     )
 }
 
@@ -117,7 +117,7 @@ class ChatChannelDataSource: ChannelDataSource {
             if let channel {
                 delegate?.dataSource(
                     channelDataSource: self,
-                    didUpdateChannel: .update(channel)
+                    didUpdateChannel: channel
                 )
             }
         }
@@ -178,12 +178,11 @@ class MessageThreadDataSource: ChannelDataSource {
         Task { @MainActor in
             self.messageState = try await chat.makeMessageState(for: messageId)
             self.messageState?.$replies
-                .receive(on: RunLoop.main)
                 .sink(receiveValue: { [weak self] messages in
                 guard let self else { return }
                 delegate?.dataSource(
                     channelDataSource: self,
-                    didUpdateMessages: StreamCollection(messages)
+                    didUpdateMessages: messages
                 )
             })
             .store(in: &cancellables)
@@ -201,12 +200,11 @@ class MessageThreadDataSource: ChannelDataSource {
         self.messageState = messageState
         Task { @MainActor in
             self.messageState?.$replies
-                .receive(on: RunLoop.main)
                 .sink(receiveValue: { [weak self] messages in
                 guard let self else { return }
                 delegate?.dataSource(
                     channelDataSource: self,
-                    didUpdateMessages: StreamCollection(messages)
+                    didUpdateMessages: messages
                 )
             })
             .store(in: &cancellables)

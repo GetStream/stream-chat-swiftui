@@ -83,7 +83,8 @@ import SwiftUI
         didSet {
             // When reactions are shown, the navigation bar is hidden.
             // Check the header type and trigger an update.
-            checkHeaderType()
+            guard let channel else { return }
+            checkHeaderType(for: channel)
         }
     }
 
@@ -184,7 +185,9 @@ import SwiftUI
         }
                 
         channelName = channel?.name ?? ""
-        checkHeaderType()
+        if let channel {
+            checkHeaderType(for: channel)
+        }
         checkUnreadCount()
     }
     
@@ -398,12 +401,12 @@ import SwiftUI
     
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateChannel channel: EntityChange<ChatChannel>
+        didUpdateChannel channel: ChatChannel
     ) {
         checkReadIndicators(for: channel)
-        checkTypingIndicator()
-        checkHeaderType()
-        checkOnlineIndicator()
+        checkTypingIndicator(for: channel)
+        checkHeaderType(for: channel)
+        checkOnlineIndicator(for: channel)
     }
 
     public func showReactionOverlay(for view: AnyView) {
@@ -519,20 +522,15 @@ import SwiftUI
         }
     }
     
-    private func checkReadIndicators(for channel: EntityChange<ChatChannel>) {
-        switch channel {
-        case let .update(chatChannel):
-            let newReadsString = chatChannel.readsString
-            if readsString == "" {
-                readsString = newReadsString
-                return
-            }
-            if readsString != newReadsString && isActive {
-                messages = channelDataSource.messages
-                readsString = newReadsString
-            }
-        default:
-            log.debug("skip updating of messages in channel update")
+    private func checkReadIndicators(for channel: ChatChannel) {
+        let newReadsString = channel.readsString
+        if readsString == "" {
+            readsString = newReadsString
+            return
+        }
+        if readsString != newReadsString && isActive {
+            messages = channelDataSource.messages
+            readsString = newReadsString
         }
     }
     
@@ -550,8 +548,7 @@ import SwiftUI
         }
     }
     
-    private func checkOnlineIndicator() {
-        guard let channel else { return }
+    private func checkOnlineIndicator(for channel: ChatChannel) {
         let updated = !channel.lastActiveMembers.filter { member in
             member.id != chatClient.currentUserId && member.isOnline
         }.isEmpty
@@ -572,11 +569,7 @@ import SwiftUI
         }
     }
     
-    private func checkHeaderType() {
-        guard let channel = channel else {
-            return
-        }
-        
+    private func checkHeaderType(for channel: ChatChannel) {
         let type: ChannelHeaderType
         let typingUsers = channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId
@@ -670,8 +663,7 @@ import SwiftUI
         }
     }
     
-    private func checkTypingIndicator() {
-        guard let channel = channel else { return }
+    private func checkTypingIndicator(for channel: ChatChannel) {
         let shouldShow = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
             && utils.messageListConfig.typingIndicatorPlacement == .bottomOverlay
             && channel.config.typingEventsEnabled
