@@ -233,7 +233,6 @@ import UIKit
     
     private func subscribeToChannelListChanges() {
         channelList?.state.$channels
-            .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] channels in
             self?.handleChannelListChanges(channels)
         })
