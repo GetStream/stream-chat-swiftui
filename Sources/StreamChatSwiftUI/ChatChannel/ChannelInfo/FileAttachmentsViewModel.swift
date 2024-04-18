@@ -68,7 +68,7 @@ import SwiftUI
         if !loadingNextMessages {
             loadingNextMessages = true
             Task { @MainActor in
-                _ = try? await messageSearch.loadNextMessages()
+                _ = try? await messageSearch.loadMoreMessages()
                 updateAttachments()
                 loadingNextMessages = false
             }

@@ -15,8 +15,8 @@ class ChatCache {
     /// Creates a chats with the provided channel id.
     /// - Parameter channelId: the channel's id.
     /// - Returns: `Chat`
-    func chat(for channelId: ChannelId) -> Chat {
-        if let currentChat, channelId == currentChat.cid {
+    @MainActor func chat(for channelId: ChannelId) -> Chat {
+        if let currentChat, channelId == currentChat.state.cid {
             return currentChat
         }
         let chat = chatClient.makeChat(for: channelId)

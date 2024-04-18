@@ -53,9 +53,7 @@ struct DemoAppSwiftUIApp: App {
                             .init(key: .updatedAt)
                         ]
                     )
-                    Task {
-                        appState.channelList = try await chatClient.makeChannelList(with: channelListQuery)
-                    }
+                    appState.channelList = chatClient.makeChannelList(with: channelListQuery)
                 }
                 notificationsHandler.setupRemoteNotifications()
             }

@@ -43,13 +43,11 @@ protocol ChannelDataSource: AnyObject {
     /// Returns the first unread message id.
     var firstUnreadMessageId: String? { get }
 
-    /// Loads the previous messages.
+    /// Loads older messages.
     /// - Parameters:
-    ///  - messageId: the id of the last received message.
     ///  - limit: the max number of messages to be retrieved.
     ///  - completion: called when the messages are loaded.
-    func loadPreviousMessages(
-        before messageId: MessageId?,
+    func loadOlderMessages(
         limit: Int
     ) async throws
     
@@ -57,7 +55,7 @@ protocol ChannelDataSource: AnyObject {
     /// - Parameters:
     ///  - limit: the max number of messages to be retrieved.
     ///  - completion: called when the messages are loaded.
-    func loadNextMessages(
+    func loadNewerMessages(
         limit: Int
     ) async throws
     
@@ -76,7 +74,6 @@ protocol ChannelDataSource: AnyObject {
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
 class ChatChannelDataSource: ChannelDataSource {
-    
     private var cancellables = Set<AnyCancellable>()
 
     let chat: Chat
@@ -129,25 +126,20 @@ class ChatChannelDataSource: ChannelDataSource {
         .store(in: &cancellables)
     }
 
-    func loadPreviousMessages(
-        before messageId: MessageId?,
-        limit: Int
-    ) async throws {
-        try await chat.loadPreviousMessages(before: messageId, limit: limit)
+    func loadOlderMessages(limit: Int) async throws {
+        try await chat.loadOlderMessages(limit: limit)
     }
     
-    func loadNextMessages(limit: Int) async throws {
-        try await chat.loadNextMessages(limit: limit)
+    func loadNewerMessages(limit: Int) async throws {
+        try await chat.loadNewerMessages(limit: limit)
     }
     
-    func loadPageAroundMessageId(
-        _ messageId: MessageId
-    ) async throws {
+    func loadPageAroundMessageId(_ messageId: MessageId) async throws {
         try await chat.loadMessages(around: messageId)
     }
     
     func loadFirstPage() async throws {
-        try await chat.loadMessagesFirstPage()
+        try await chat.get(watch: true)
     }
 }
 
@@ -181,7 +173,7 @@ class MessageThreadDataSource: ChannelDataSource {
         self.chat = chat
         self.messageId = messageId
         Task { @MainActor in
-            self.messageState = try await chat.makeMessageState(for: messageId)
+            self.messageState = try await chat.messageState(for: messageId)
             self.messageState?.$replies
                 .sink(receiveValue: { [weak self] messages in
                 guard let self else { return }
@@ -219,24 +211,19 @@ class MessageThreadDataSource: ChannelDataSource {
         }
     }
 
-    func loadPreviousMessages(
-        before messageId: MessageId?,
-        limit: Int
-    ) async throws {
-        try await chat.loadReplies(before: messageId, of: self.messageId)
+    func loadOlderMessages(limit: Int) async throws {
+        try await chat.loadOlderReplies(for: self.messageId, limit: limit)
     }
     
-    func loadNextMessages(limit: Int) async throws {
-        try await chat.loadReplies(after: nil, of: messageId, limit: limit)
+    func loadNewerMessages(limit: Int) async throws {
+        try await chat.loadNewerReplies(for: messageId, limit: limit)
     }
     
-    func loadPageAroundMessageId(
-        _ messageId: MessageId
-    ) async throws {
-        try await chat.loadMessages(around: messageId)
+    func loadPageAroundMessageId(_ messageId: MessageId) async throws {
+        try await chat.loadReplies(around: messageId, for: self.messageId)
     }
     
     func loadFirstPage() async throws {
-        try await chat.loadRepliesFirstPage(of: messageId)
+        try await chat.loadReplies(for: messageId, pagination: MessagesPagination(pageSize: .messagesPageSize))
     }
 }

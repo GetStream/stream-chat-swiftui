@@ -5,9 +5,7 @@
 import Foundation
 
 func runOnMainActor(_ action: @escaping @MainActor () -> Void) {
-    Task {
-        await MainActor.run {
-            action()
-        }
+    Task { @MainActor in
+        action()
     }
 }

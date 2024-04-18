@@ -156,7 +156,7 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             Task {
-                _ = try? await channelList?.loadNextChannels()
+                _ = try? await channelList?.loadMoreChannels()
                 self.loadingNextChannels = false
             }
         }
@@ -175,7 +175,7 @@ import UIKit
             loadingNextChannels = true
             Task {
                 do {
-                    try await messageSearch.loadNextMessages()
+                    try await messageSearch.loadMoreMessages()
                     updateSearchResults()
                 } catch {
                     log.error("Error loading search results")
@@ -267,9 +267,10 @@ import UIKit
                 if let list {
                     channelList = list
                 } else {
-                    loading = true
                     let query = ChannelListQuery(filter: .containMembers(userIds: [currentUserId]))
-                    channelList = try await chatClient.makeChannelList(with: query)
+                    channelList = chatClient.makeChannelList(with: query)
+                    loading = true
+                    try await channelList?.loadChannels(with: .init(pageSize: .channelsPageSize))
                     self.loading = false
                 }
                 // access channels

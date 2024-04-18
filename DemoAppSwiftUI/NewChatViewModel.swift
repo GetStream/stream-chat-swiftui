@@ -98,7 +98,7 @@ import SwiftUI
         if !loadingNextUsers {
             loadingNextUsers = true
             Task { @MainActor in
-                _ = try? await userSearch.loadNextUsers(limit: 50)
+                _ = try? await userSearch.loadMoreUsers(limit: 50)
                 chatUsers = Array(userSearch.state.users)
                 loadingNextUsers = false
             }

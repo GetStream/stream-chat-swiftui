@@ -443,8 +443,7 @@ import SwiftUI
         if !loadingPreviousMessages {
             loadingPreviousMessages = true
             Task {
-                try? await channelDataSource.loadPreviousMessages(
-                    before: nil,
+                try? await channelDataSource.loadOlderMessages(
                     limit: utils.messageListConfig.pageSize
                 )
                 loadingPreviousMessages = false
@@ -466,7 +465,7 @@ import SwiftUI
         }
 
         Task { @MainActor in
-            try? await channelDataSource.loadNextMessages(limit: Self.newerMessagesLimit)
+            try? await channelDataSource.loadNewerMessages(limit: Self.newerMessagesLimit)
             try? await Task.sleep(nanoseconds: 500_000)
             self.loadingNextMessages = false
         }

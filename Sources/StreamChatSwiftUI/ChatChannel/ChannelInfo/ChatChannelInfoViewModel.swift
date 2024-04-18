@@ -244,7 +244,7 @@ public class ChatChannelInfoViewModel: ObservableObject {
 
         loadingUsers = true
         Task { @MainActor in
-            _ = try? await memberList.loadNextMembers()
+            _ = try? await memberList.loadMoreMembers()
             loadingUsers = false
             let newMembers = memberList.state.members.map { member in
                 ParticipantInfo(

@@ -30,7 +30,7 @@ open class ReactionsOverlayViewModel: ObservableObject {
         self.chat = chat
         reactions = Self.reactions(from: message)
         Task { @MainActor in
-            self.messageState = try await chat.makeMessageState(for: message.id)
+            self.messageState = try await chat.messageState(for: message.id)
             self.messageState?.$message
                 .sink(receiveValue: { [weak self] message in
                     withAnimation {

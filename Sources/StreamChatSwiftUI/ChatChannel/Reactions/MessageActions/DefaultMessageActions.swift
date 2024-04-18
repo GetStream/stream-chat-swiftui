@@ -454,7 +454,7 @@ extension MessageAction {
         return flagMessage
     }
     
-    private static func markAsUnreadAction(
+    @MainActor private static func markAsUnreadAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -574,7 +574,7 @@ extension MessageAction {
         return unmuteUser
     }
 
-    private static func resendMessageAction(
+    @MainActor private static func resendMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -615,7 +615,7 @@ extension MessageAction {
         return messageAction
     }
 
-    private static func messageNotSentActions(
+    @MainActor private static func messageNotSentActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,

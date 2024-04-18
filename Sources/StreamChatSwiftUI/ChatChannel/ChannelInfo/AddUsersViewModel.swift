@@ -46,7 +46,7 @@ class AddUsersViewModel: ObservableObject {
         if !loadingNextUsers {
             loadingNextUsers = true
             Task { @MainActor in
-                _ = try? await userSearch.loadNextUsers()
+                _ = try? await userSearch.loadMoreUsers()
                 users = Array(userSearch.state.users)
                 loadingNextUsers = false
             }
