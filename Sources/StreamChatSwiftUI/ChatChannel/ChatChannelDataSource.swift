@@ -80,7 +80,14 @@ class ChatChannelDataSource: ChannelDataSource {
     private var cancellables = Set<AnyCancellable>()
 
     let chat: Chat
-    weak var delegate: MessagesDataSource?
+    @MainActor weak var delegate: MessagesDataSource? {
+        didSet {
+            cancellables.removeAll()
+            guard delegate != nil else { return }
+            subscribeForMessageUpdates()
+            subscribeForChannelUpdates()
+        }
+    }
     
     @MainActor var messages: StreamCollection<ChatMessage> {
         chat.state.messages
@@ -96,8 +103,6 @@ class ChatChannelDataSource: ChannelDataSource {
 
     @MainActor init(chat: Chat) {
         self.chat = chat
-        subscribeForMessageUpdates()
-        subscribeForChannelUpdates()
     }
     
     @MainActor private func subscribeForMessageUpdates() {

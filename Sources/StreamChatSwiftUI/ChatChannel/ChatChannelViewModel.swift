@@ -185,9 +185,6 @@ import SwiftUI
         }
                 
         channelName = channel?.name ?? ""
-        if let channel {
-            checkHeaderType(for: channel)
-        }
         checkUnreadCount()
     }
     
