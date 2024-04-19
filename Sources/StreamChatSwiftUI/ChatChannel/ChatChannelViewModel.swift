@@ -149,7 +149,7 @@ import SwiftUI
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageId == nil {
-                let message = chat.state.localMessage(for: parentMessageId)
+                let message = chat.localMessage(for: parentMessageId)
                 self?.threadMessage = message
                 self?.threadMessageShown = true
                 self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
@@ -227,7 +227,7 @@ import SwiftUI
                 Task {
                     try await channelDataSource.loadPageAroundMessageId(lastReadMessageId)
                     if let firstUnread = channelDataSource.firstUnreadMessageId,
-                       let message = chat.state.localMessage(for: firstUnread) {
+                       let message = chat.localMessage(for: firstUnread) {
                         firstUnreadMessageId = message.messageId
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                             self?.scrolledId = message.messageId
@@ -255,9 +255,9 @@ import SwiftUI
                 }
                 return true
             } else {
-                let message = chat.state.localMessage(for: baseId)
+                let message = chat.localMessage(for: baseId)
                 if let parentMessageId = message?.parentMessageId, !isMessageThread {
-                    let parentMessage = chat.state.localMessage(for: parentMessageId)
+                    let parentMessage = chat.localMessage(for: parentMessageId)
                     threadMessage = parentMessage
                     threadMessageShown = true
                     messageCachingUtils.jumpToReplyId = message?.messageId
@@ -272,7 +272,7 @@ import SwiftUI
                 Task {
                     try await channelDataSource.loadPageAroundMessageId(baseId)
                     var toJumpId = messageId
-                    if toJumpId == baseId, let message = chat.state.localMessage(for: toJumpId) {
+                    if toJumpId == baseId, let message = chat.localMessage(for: toJumpId) {
                         toJumpId = message.messageId
                     }
                     let scrolledId = toJumpId
@@ -370,7 +370,7 @@ import SwiftUI
             return
         }
         
-        if let messageId, let message = chat.state.localMessage(for: messageId) {
+        if let messageId, let message = chat.localMessage(for: messageId) {
             var array = Array(messages)
             array.append(message)
             self.messages = StreamCollection(array)
