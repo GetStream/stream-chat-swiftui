@@ -108,7 +108,7 @@ class ChatChannelDataSource: ChannelDataSource {
     @MainActor private func subscribeForMessageUpdates() {
         self.chat.state.$messages.sink { [weak self] messages in
             guard let self else { return }
-            delegate?.dataSource(
+            self.delegate?.dataSource(
                 channelDataSource: self,
                 didUpdateMessages: messages
             )
@@ -120,7 +120,7 @@ class ChatChannelDataSource: ChannelDataSource {
         self.chat.state.$channel.sink { [weak self] (channel: ChatChannel?) in
             guard let self else { return }
             if let channel {
-                delegate?.dataSource(
+                self.delegate?.dataSource(
                     channelDataSource: self,
                     didUpdateChannel: channel
                 )
@@ -180,7 +180,7 @@ class MessageThreadDataSource: ChannelDataSource {
             self.messageState?.$replies
                 .sink(receiveValue: { [weak self] messages in
                 guard let self else { return }
-                delegate?.dataSource(
+                self.delegate?.dataSource(
                     channelDataSource: self,
                     didUpdateMessages: messages
                 )
@@ -202,7 +202,7 @@ class MessageThreadDataSource: ChannelDataSource {
             self.messageState?.$replies
                 .sink(receiveValue: { [weak self] messages in
                 guard let self else { return }
-                delegate?.dataSource(
+                self.delegate?.dataSource(
                     channelDataSource: self,
                     didUpdateMessages: messages
                 )
