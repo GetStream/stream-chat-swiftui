@@ -83,6 +83,9 @@ class ChatChannelDataSource: ChannelDataSource {
             guard delegate != nil else { return }
             subscribeForMessageUpdates()
             subscribeForChannelUpdates()
+            Task {
+                try await chat.get(watch: true)
+            }
         }
     }
     
