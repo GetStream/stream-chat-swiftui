@@ -270,7 +270,7 @@ import UIKit
                     let query = ChannelListQuery(filter: .containMembers(userIds: [currentUserId]))
                     channelList = chatClient.makeChannelList(with: query)
                     loading = true
-                    try await channelList?.loadChannels(with: .init(pageSize: .channelsPageSize))
+                    try await channelList?.get()
                     self.loading = false
                 }
                 // access channels
