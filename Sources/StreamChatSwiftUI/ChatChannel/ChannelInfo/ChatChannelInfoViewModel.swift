@@ -197,8 +197,8 @@ public class ChatChannelInfoViewModel: ObservableObject {
                 guard let self else { return }
                 if let channel {
                     self.channel = channel
-                    if self.channel.lastActiveMembers.count > participants.count {
-                        participants = channel.lastActiveMembers.map { member in
+                    if self.channel.lastActiveMembers.count > self.participants.count {
+                        self.participants = self.channel.lastActiveMembers.map { member in
                             ParticipantInfo(
                                 chatUser: member,
                                 displayName: member.name ?? member.id,
