@@ -123,7 +123,8 @@ import SwiftUI
         let selectedUserIds = selectedUsers.map(\.id)
         Task { @MainActor in
             do {
-                chat = try await chatClient.makeDirectMessageChat(with: selectedUserIds, extraData: [:])
+                chat = try chatClient.makeDirectMessageChat(with: selectedUserIds, extraData: [:])
+                try await chat?.get(watch: true)
                 withAnimation {
                     state = .channel
                     updatingSelectedUsers = false

@@ -69,7 +69,7 @@ import SwiftUI
     func showChannelView() {
         Task { @MainActor in
             do {
-                chat = try await chatClient.makeChat(
+                chat = try chatClient.makeChat(
                     with: .init(
                         type: .messaging,
                         id: String(UUID().uuidString.prefix(10))
@@ -77,6 +77,7 @@ import SwiftUI
                     name: groupName,
                     members: selectedUsers.map(\.id)
                 )
+                try await chat.get(watch: true)
                 showGroupConversation = true
             } catch {
                 errorShown = true
