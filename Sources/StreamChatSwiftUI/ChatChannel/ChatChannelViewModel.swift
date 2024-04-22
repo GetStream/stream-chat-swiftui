@@ -211,7 +211,7 @@ import SwiftUI
     }
     
     public func scrollToLastMessage() {
-        if channelDataSource.hasLoadedAllNextMessages {
+        if channelDataSource.hasLoadedAllNewerMessages {
             updateScrolledIdToNewestMessage()
         } else {
             Task { @MainActor in
@@ -452,7 +452,7 @@ import SwiftUI
     }
         
     private func checkForNewerMessages(index: Int) {
-        if channelDataSource.hasLoadedAllNextMessages {
+        if channelDataSource.hasLoadedAllNewerMessages {
             return
         }
         if loadingNextMessages || (index > 5) {
@@ -691,7 +691,7 @@ import SwiftUI
                 utils.chatCache.clearCurrentChat()
                 cleanupAudioPlayer()
                 ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-                if !channelDataSource.hasLoadedAllNextMessages {
+                if !channelDataSource.hasLoadedAllNewerMessages {
                     try await channelDataSource.loadFirstPage()
                 }
             }

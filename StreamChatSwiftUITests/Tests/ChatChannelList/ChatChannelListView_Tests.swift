@@ -61,7 +61,7 @@ class ChatChannelListView_Tests: StreamChatTestCase {
 
     @MainActor private func makeChannelList() -> ChannelList_Mock {
         let channels = mockChannels()
-        let channelList = ChannelList_Mock.mock(channels: channels)
+        let channelList = ChannelList_Mock.mock()
         channelList.state.channels = StreamCollection(channels)
         return channelList
     }

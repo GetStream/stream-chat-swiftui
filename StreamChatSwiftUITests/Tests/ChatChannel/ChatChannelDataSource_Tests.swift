@@ -90,7 +90,7 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         // Then
         XCTAssertEqual(messages.first, expected.first)
         XCTAssertEqual(messages.count, expected.count)
-        XCTAssert(channelDataSource.hasLoadedAllNextMessages == true)
+        XCTAssert(channelDataSource.hasLoadedAllNewerMessages == true)
     }
     
     @MainActor func test_channelDataSource_loadPageAroundMessageId() async throws {

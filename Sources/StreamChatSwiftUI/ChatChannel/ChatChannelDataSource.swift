@@ -38,7 +38,7 @@ protocol ChannelDataSource: AnyObject {
     var messages: StreamCollection<ChatMessage> { get }
     
     /// Determines whether all new messages have been fetched.
-    var hasLoadedAllNextMessages: Bool { get }
+    var hasLoadedAllNewerMessages: Bool { get }
     
     /// Returns the first unread message id.
     var firstUnreadMessageId: String? { get }
@@ -93,8 +93,8 @@ class ChatChannelDataSource: ChannelDataSource {
         chat.state.messages
     }
     
-    @MainActor var hasLoadedAllNextMessages: Bool {
-        chat.state.hasLoadedAllNextMessages
+    @MainActor var hasLoadedAllNewerMessages: Bool {
+        chat.state.hasLoadedAllNewerMessages
     }
     
     @MainActor var firstUnreadMessageId: String? {
@@ -159,7 +159,7 @@ class MessageThreadDataSource: ChannelDataSource {
         self.messageState?.replies ?? StreamCollection([])
     }
     
-    @MainActor var hasLoadedAllNextMessages: Bool {
+    @MainActor var hasLoadedAllNewerMessages: Bool {
         self.messageState?.hasLoadedAllNextReplies ?? false
     }
     
