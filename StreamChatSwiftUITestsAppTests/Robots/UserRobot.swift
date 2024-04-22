@@ -17,6 +17,14 @@ final class UserRobot: Robot {
     init(_ server: StreamMockServer) {
         self.server = server
     }
+    
+    // This can prevent flakiness on SwiftUI-MockServer's side
+    @discardableResult
+    func sleep(_ seconds: TimeInterval) -> Self {
+        let sleepTime = UInt32(seconds * 1000000)
+        usleep(sleepTime)
+        return self
+    }
 
     @discardableResult
     func login() -> Self {

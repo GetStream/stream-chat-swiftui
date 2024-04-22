@@ -688,7 +688,7 @@ extension MessageList_Tests {
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
-            userRobot.login().openChannel()
+            userRobot.login().openChannel().sleep(0.5)
         }
         WHEN("participant adds a thread reply") {
             participantRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
@@ -887,7 +887,7 @@ extension MessageList_Tests {
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
-            userRobot.login().openChannel()
+            userRobot.login().openChannel().sleep(0.5)
         }
         AND("participant adds a thread reply and sends it also to main channel") {
             participantRobot.replyToMessageInThread(threadReply, alsoSendInChannel: true)
@@ -937,7 +937,7 @@ extension MessageList_Tests {
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
-            userRobot.login().openChannel()
+            userRobot.login().openChannel().sleep(0.5)
         }
         AND("participant adds a thread reply") {
             participantRobot.replyToMessageInThread(threadReply, alsoSendInChannel: false)
