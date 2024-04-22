@@ -319,7 +319,7 @@ extension MessageDeliveryStatus_Tests {
                 .openChannel()
         }
         WHEN("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to the message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -368,7 +368,7 @@ extension MessageDeliveryStatus_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         WHEN("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -395,7 +395,7 @@ extension MessageDeliveryStatus_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -424,7 +424,7 @@ extension MessageDeliveryStatus_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -456,7 +456,7 @@ extension MessageDeliveryStatus_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -486,7 +486,7 @@ extension MessageDeliveryStatus_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)

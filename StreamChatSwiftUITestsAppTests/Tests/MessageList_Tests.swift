@@ -261,7 +261,7 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.setConnectivity(to: .off)
         }
         WHEN("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user becomes online") {
             userRobot.setConnectivity(to: .on)
@@ -371,7 +371,7 @@ extension MessageList_Tests {
             userRobot.login().openChannel()
         }
         WHEN("participant sends a message") {
-            participantRobot.sendMessage(newMessage)
+            participantRobot.sendMessage(newMessage, waitBeforeSending: 0.5)
         }
         THEN("message list is scrolled down") {
             userRobot
@@ -393,7 +393,7 @@ extension MessageList_Tests {
             userRobot.scrollMessageListUp()
         }
         AND("participant sends a message") {
-            participantRobot.sendMessage(newMessage)
+            participantRobot.sendMessage(newMessage, waitBeforeSending: 0.5)
         }
         THEN("message list is not scrolled down") {
             userRobot
@@ -463,7 +463,7 @@ extension MessageList_Tests {
             userRobot.scrollMessageListUp(times: 2)
         }
         AND("participant sends a message") {
-            participantRobot.sendMessage(newMessage)
+            participantRobot.sendMessage(newMessage, waitBeforeSending: 0.5)
         }
         THEN("message list is not scrolled down") {
             userRobot
@@ -631,7 +631,7 @@ extension MessageList_Tests {
             userRobot.login().openChannel()
         }
         WHEN("participant sends a message with Unsplash link") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
             userRobot.scrollMessageListDown() // to hide the keyboard
         }
         THEN("user observes a preview of the image with description") {
@@ -648,7 +648,7 @@ extension MessageList_Tests {
             userRobot.login().openChannel()
         }
         WHEN("participant sends a message with YouTube link") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
             userRobot.scrollMessageListDown() // to hide the keyboard
         }
         THEN("user observes a preview of the video with description") {
@@ -1041,7 +1041,7 @@ extension MessageList_Tests {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("the message is delivered") {
             userRobot.assertMessage(message)

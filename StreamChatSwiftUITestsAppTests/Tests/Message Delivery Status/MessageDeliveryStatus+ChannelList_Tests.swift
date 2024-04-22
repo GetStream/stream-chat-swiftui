@@ -155,7 +155,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user retuns to the channel list") {
             userRobot.tapOnBackButton()
@@ -183,7 +183,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to the message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -241,7 +241,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -274,7 +274,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
                 .openChannel()
         }
         AND("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user replies to message in thread") {
             userRobot.replyToMessageInThread(threadReply)
@@ -301,7 +301,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
                 .openChannel()
         }
         AND("user sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant replies to message in thread") {
             participantRobot.replyToMessageInThread(threadReply)

@@ -48,7 +48,7 @@ final class SlowMode_Tests: StreamTestCase {
                 .openChannel()
         }
         AND("participant sends a new text message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user selects reply to a message from context menu") {
             userRobot.selectOptionFromContextMenu(option: .reply)

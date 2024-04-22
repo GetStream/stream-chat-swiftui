@@ -22,7 +22,7 @@ final class ChannelList_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("participant sends a new message") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user goes back to channel list") {
             userRobot.tapOnBackButton()
