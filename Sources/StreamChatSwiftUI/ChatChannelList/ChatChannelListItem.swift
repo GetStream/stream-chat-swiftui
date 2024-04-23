@@ -213,6 +213,20 @@ public struct InjectedChannelInfo {
     public var timestamp: String?
     public var lastMessageAt: Date?
     public var latestMessages: [ChatMessage]?
+    
+    public init(
+        subtitle: String? = nil,
+        unreadCount: Int,
+        timestamp: String? = nil,
+        lastMessageAt: Date? = nil,
+        latestMessages: [ChatMessage]? = nil
+    ) {
+        self.subtitle = subtitle
+        self.unreadCount = unreadCount
+        self.timestamp = timestamp
+        self.lastMessageAt = lastMessageAt
+        self.latestMessages = latestMessages
+    }
 }
 
 extension ChatChannel {
