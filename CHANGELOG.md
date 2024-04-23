@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Highlighting and tapping on user mentions
 - Customization of the channel loading view
+- Public init of InjectedChannelInfo
 
 # [4.52.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.52.0)
 _April 09, 2024_
