@@ -138,6 +138,8 @@
 		841B64D42775F5540016FF3B /* GiphyCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D32775F5540016FF3B /* GiphyCommandHandler.swift */; };
 		841B64D62775FDA00016FF3B /* InstantCommandsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */; };
 		841B64D8277B14440016FF3B /* MuteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B64D7277B14430016FF3B /* MuteCommandHandler.swift */; };
+		841BA9F12BCD6FBD000C73E4 /* CreatePollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BA9F02BCD6FBD000C73E4 /* CreatePollView.swift */; };
+		841BA9F32BCD6FCB000C73E4 /* CreatePollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BA9F22BCD6FCB000C73E4 /* CreatePollViewModel.swift */; };
 		8421BCEC27A400E8000F977D /* ReactionsUsersView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8421BCEB27A400E8000F977D /* ReactionsUsersView_Tests.swift */; };
 		8421BCEE27A43E14000F977D /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8421BCED27A43E14000F977D /* SearchBar.swift */; };
 		8421BCF027A44EAE000F977D /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8421BCEF27A44EAE000F977D /* SearchResultsView.swift */; };
@@ -173,6 +175,8 @@
 		84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84507C99281ACCD70081DDC2 /* AddUsersView_Tests.swift */; };
 		8451617E2AE7B093000A9230 /* AppleMessageComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451617D2AE7B093000A9230 /* AppleMessageComposerView.swift */; };
 		845161802AE7C4E2000A9230 /* WhatsAppChannelHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */; };
+		8451C4912BD7096000849955 /* PollAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451C4902BD7096000849955 /* PollAttachmentView.swift */; };
+		8451C4932BD713D600849955 /* PollAttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */; };
 		8463D9262836617F002B1894 /* ChannelListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8463D9252836617F002B1894 /* ChannelListPage.swift */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		8465FCBF27468B6900AF091E /* DemoAppSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */; };
@@ -674,6 +678,8 @@
 		841B64D32775F5540016FF3B /* GiphyCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyCommandHandler.swift; sourceTree = "<group>"; };
 		841B64D52775FDA00016FF3B /* InstantCommandsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantCommandsHandler.swift; sourceTree = "<group>"; };
 		841B64D7277B14430016FF3B /* MuteCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteCommandHandler.swift; sourceTree = "<group>"; };
+		841BA9F02BCD6FBD000C73E4 /* CreatePollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollView.swift; sourceTree = "<group>"; };
+		841BA9F22BCD6FCB000C73E4 /* CreatePollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel.swift; sourceTree = "<group>"; };
 		8421BCEB27A400E8000F977D /* ReactionsUsersView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersView_Tests.swift; sourceTree = "<group>"; };
 		8421BCED27A43E14000F977D /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		8421BCEF27A44EAE000F977D /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
@@ -711,6 +717,9 @@
 		84507C99281ACCD70081DDC2 /* AddUsersView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersView_Tests.swift; sourceTree = "<group>"; };
 		8451617D2AE7B093000A9230 /* AppleMessageComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMessageComposerView.swift; sourceTree = "<group>"; };
 		8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsAppChannelHeader.swift; sourceTree = "<group>"; };
+		8451C48F2BD6A24600849955 /* stream-chat-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "stream-chat-swift"; path = "../stream-chat-swift"; sourceTree = "<group>"; };
+		8451C4902BD7096000849955 /* PollAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentView.swift; sourceTree = "<group>"; };
+		8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentViewModel.swift; sourceTree = "<group>"; };
 		8463D9252836617F002B1894 /* ChannelListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListPage.swift; sourceTree = "<group>"; };
 		8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StreamChatSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamChatSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1370,6 +1379,15 @@
 			path = InstantCommands;
 			sourceTree = "<group>";
 		};
+		841BA9EF2BCD6FA9000C73E4 /* Polls */ = {
+			isa = PBXGroup;
+			children = (
+				841BA9F02BCD6FBD000C73E4 /* CreatePollView.swift */,
+				841BA9F22BCD6FCB000C73E4 /* CreatePollViewModel.swift */,
+			);
+			path = Polls;
+			sourceTree = "<group>";
+		};
 		8423C340277CB5C70092DCF1 /* Suggestions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1418,6 +1436,7 @@
 		8465FBAB2746873A00AF091E = {
 			isa = PBXGroup;
 			children = (
+				8451C48F2BD6A24600849955 /* stream-chat-swift */,
 				829EF8762A9362C00045D166 /* PrivacyInfo.xcprivacy */,
 				4A65451E274BA170003C5FA8 /* README.md */,
 				8465FBB72746873A00AF091E /* Sources */,
@@ -1590,6 +1609,7 @@
 				8465FD1F2746A95600AF091E /* Reactions */,
 				84289BDF280718DA00282ABE /* ChannelInfo */,
 				84F29088276B90410045472D /* Gallery */,
+				841BA9EF2BCD6FA9000C73E4 /* Polls */,
 				8465FD2A2746A95600AF091E /* Utils */,
 			);
 			path = ChatChannel;
@@ -1625,6 +1645,8 @@
 				8417AAB72ADEC3E300445021 /* BottomReactionsView.swift */,
 				8417AE8F2ADED28800445021 /* ReactionsIconProvider.swift */,
 				849F6BEF2B1A06D10032303E /* JumpToUnreadButton.swift */,
+				8451C4902BD7096000849955 /* PollAttachmentView.swift */,
+				8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */,
 			);
 			path = MessageList;
 			sourceTree = "<group>";
@@ -2401,6 +2423,7 @@
 				82D64BE92AD7E5B700C5C79E /* TaskLoadData.swift in Sources */,
 				847CEFEE27C38ABE00606257 /* MessageCachingUtils.swift in Sources */,
 				82D64BF62AD7E5B700C5C79E /* ImageProcessors+CoreImage.swift in Sources */,
+				8451C4912BD7096000849955 /* PollAttachmentView.swift in Sources */,
 				8465FD792746A95700AF091E /* DeletedMessageView.swift in Sources */,
 				8492975227B156D100A8EEB0 /* SlowModeView.swift in Sources */,
 				82D64B662AD7E5AC00C5C79E /* UIImageView+SwiftyGif.swift in Sources */,
@@ -2482,6 +2505,7 @@
 				844D1D6628510304000CCCB9 /* ChannelControllerFactory.swift in Sources */,
 				8465FD882746A95700AF091E /* SendMessageButton.swift in Sources */,
 				8465FDC82746A95700AF091E /* ChatChannelListItem.swift in Sources */,
+				8451C4932BD713D600849955 /* PollAttachmentViewModel.swift in Sources */,
 				8465FDA62746A95700AF091E /* LazyView.swift in Sources */,
 				A3D7B0DF2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift in Sources */,
 				82D64C002AD7E5B700C5C79E /* Log.swift in Sources */,
@@ -2560,6 +2584,7 @@
 				82D64C1C2AD7E5B700C5C79E /* DataCaching.swift in Sources */,
 				82D64B6A2AD7E5AC00C5C79E /* SwiftyGifManager.swift in Sources */,
 				84EADEA62B2748AD0046B50C /* AudioRecordingNameFormatter.swift in Sources */,
+				841BA9F12BCD6FBD000C73E4 /* CreatePollView.swift in Sources */,
 				82D64C162AD7E5B700C5C79E /* ImageRequest.swift in Sources */,
 				82D64BF82AD7E5B700C5C79E /* ImageProcessors+Circle.swift in Sources */,
 				8465FDD32746A95800AF091E /* ColorPalette.swift in Sources */,
@@ -2650,6 +2675,7 @@
 				82D64BE12AD7E5B700C5C79E /* LazyImageView.swift in Sources */,
 				8465FD7E2746A95700AF091E /* VideoAttachmentView.swift in Sources */,
 				82D64BF52AD7E5B700C5C79E /* ImageProcessors+GaussianBlur.swift in Sources */,
+				841BA9F32BCD6FCB000C73E4 /* CreatePollViewModel.swift in Sources */,
 				82D64BDE2AD7E5B700C5C79E /* Internal.swift in Sources */,
 				8465FD8E2746A95700AF091E /* PhotoAssetsUtils.swift in Sources */,
 				8465FDB92746A95700AF091E /* NukeImageProcessor.swift in Sources */,

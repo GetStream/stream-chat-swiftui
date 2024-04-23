@@ -949,4 +949,7 @@ public protocol ViewFactory: AnyObject {
         onJumpToMessage: @escaping () -> Void,
         onClose: @escaping () -> Void
     ) -> JumpToUnreadButtonType
+    
+    associatedtype PollViewType: View
+    func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> PollViewType
 }

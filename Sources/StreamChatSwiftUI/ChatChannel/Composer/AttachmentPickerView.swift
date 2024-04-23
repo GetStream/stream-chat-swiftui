@@ -98,6 +98,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     cameraPickerShown: $cameraPickerShown,
                     cameraImageAdded: cameraImageAdded
                 )
+            } else if selectedPickerState == .polls {
+                ComposerPollView()
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
                     addedCustomAttachments: addedCustomAttachments,
@@ -157,6 +159,14 @@ public struct AttachmentSourcePickerView: View {
                 icon: images.attachmentPickerCamera,
                 pickerType: .camera,
                 isSelected: selected == .camera,
+                onTap: onTap
+            )
+            .accessibilityIdentifier("attachmentPickerCamera")
+            
+            AttachmentPickerButton(
+                icon: images.attachmentPickerFolder,
+                pickerType: .polls,
+                isSelected: selected == .polls,
                 onTap: onTap
             )
             .accessibilityIdentifier("attachmentPickerCamera")

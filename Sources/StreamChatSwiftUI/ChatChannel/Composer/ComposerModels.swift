@@ -10,6 +10,7 @@ public enum AttachmentPickerState {
     case files
     case photos
     case camera
+    case polls
     case custom
 }
 

@@ -41,6 +41,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                     availableWidth: contentWidth,
                     scrolledId: $scrolledId
                 )
+            } else if let poll = message.poll {
+                factory.makePollView(message: message, poll: poll, isFirst: isFirst)
             } else if !message.attachmentCounts.isEmpty {
                 if messageTypeResolver.hasLinkAttachment(message: message) {
                     factory.makeLinkAttachmentView(

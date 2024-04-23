@@ -942,6 +942,10 @@ extension ViewFactory {
             Spacer()
         }
     }
+    
+    public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
+        PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
