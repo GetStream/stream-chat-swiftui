@@ -563,7 +563,7 @@ import SwiftUI
             do {
                 try await chat.updateMessage(
                     message.id,
-                    with: adjustedText,
+                    text: adjustedText,
                     attachments: utils.composerConfig.attachmentPayloadConverter(message),
                     extraData: message.extraData,
                     skipEnrichURL: false
