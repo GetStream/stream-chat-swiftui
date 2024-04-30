@@ -13,13 +13,20 @@ class CreatePollViewModel: ObservableObject {
     
     @Published var blankOption = ""
     
+    @Published var suggestAnOption = true
+    
     var chatController: ChatChannelController? = {
         InjectedValues[\.utils.channelControllerFactory].currentChannelController
     }()
     
     func createPoll(completion: @escaping () -> ()) {
         guard let chatController else { return }
-        chatController.createPoll(name: question) { result in
+        let pollOptions = options.map { PollOption(text: $0) }
+        chatController.createPoll(
+            name: question,
+            allowUserSuggestedOptions: suggestAnOption,
+            options: pollOptions
+        ) { result in
             switch result {
             case .success(let messageId):
                 log.debug("Created poll in message with id \(messageId)")
