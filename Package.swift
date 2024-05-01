@@ -17,7 +17,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.52.0"),
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.53.0"),
     ],
     targets: [
         .target(
