@@ -66,6 +66,8 @@ struct CreatePollView: View {
                 }
                 .modifier(ListRowModifier())
                 
+                Toggle("Anonymous poll", isOn: $viewModel.anonymousPoll)
+                
                 Toggle("Suggest an option", isOn: $viewModel.suggestAnOption)
                 
                 Spacer()

@@ -5,18 +5,8 @@
 import StreamChat
 import SwiftUI
 
-class PollAttachmentViewModel: ObservableObject, PollControllerDelegate, PollVoteListControllerDelegate {
+class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
-    @Published var votesForOption = [String: [PollVote]]()
-    func controller(
-        _ controller: PollVoteListController,
-        didChangeVotes changes: [ListChange<PollVote>]
-    ) {
-        let optionId = controller.query.optionId
-        votesForOption[optionId] = Array(controller.votes)
-    }
-    
-        
     @Injected(\.chatClient) var chatClient
     
     let message: ChatMessage
@@ -29,6 +19,8 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate, PollVot
     @Published var suggestOptionText = ""
     
     @Published var pollResultsShown = false
+    
+    @Published var currentUserVotes = [PollVote]()
     
     private let createdByCurrentUser: Bool
     
@@ -52,6 +44,10 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate, PollVot
             pollId: poll.id
         )
         pollController.delegate = self
+        pollController.synchronize { [weak self] error in
+            guard let self else { return }
+            self.currentUserVotes = Array(self.pollController.ownVotes)
+        }
     }
     
     func castPollVote(for option: PollOption) {
@@ -100,18 +96,6 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate, PollVot
         dateFormatter.string(from: date)
     }
     
-    var controller: PollVoteListController?
-    
-    func loadMoreVotes(for option: PollOption) {
-        if controller == nil {
-            controller = chatClient.pollVoteListController(
-                query: .init(pollId: poll.id, optionId: option.id, filter: .equal(.optionId, to: option.id))
-            )
-            controller?.delegate = self
-        }
-        controller?.loadMoreVotes()
-    }
-    
     //MARK: - PollControllerDelegate
     
     func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
@@ -120,23 +104,17 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate, PollVot
     
     func pollController(
         _ pollController: PollController,
-        didUpdateOptions options: EntityChange<[PollOption]>
+        didUpdateCurrentUserVotes votes: [ListChange<PollVote>]
     ) {
-        print("======= options changed \(options.item.count)")
-        self.poll.options = options.item
+        self.currentUserVotes = Array(pollController.ownVotes)
     }
     
     // MARK: - private
     
     private func currentUserVote(for option: PollOption) -> PollVote? {
-        //TODO: query all votes.
-        for current in poll.latestVotesByOption {
-            if option.id == current.id {
-                for vote in current.latestVotes {
-                    if vote.user?.id == chatClient.currentUserId {
-                        return vote
-                    }
-                }
+        for current in currentUserVotes {
+            if option.id == current.optionId {
+                return current
             }
         }
         return nil

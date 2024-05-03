@@ -15,6 +15,8 @@ class CreatePollViewModel: ObservableObject {
     
     @Published var suggestAnOption = true
     
+    @Published var anonymousPoll = false
+    
     var chatController: ChatChannelController? = {
         InjectedValues[\.utils.channelControllerFactory].currentChannelController
     }()
@@ -25,6 +27,7 @@ class CreatePollViewModel: ObservableObject {
         chatController.createPoll(
             name: question,
             allowUserSuggestedOptions: suggestAnOption,
+            votingVisibility: anonymousPoll ? .anonymous : .public,
             options: pollOptions
         ) { result in
             switch result {

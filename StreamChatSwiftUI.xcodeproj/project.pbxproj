@@ -356,6 +356,8 @@
 		84B2B5DA281985DA00479CEE /* FileAttachmentsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B2B5D9281985DA00479CEE /* FileAttachmentsView_Tests.swift */; };
 		84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B439E027C6B2F100C04C99 /* MessageCachingUtils_Tests.swift */; };
 		84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B55F692798154C00B99B01 /* MessageListConfig.swift */; };
+		84B738332BE2575E00EC66EC /* PollOptionAllVotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B738322BE2575E00EC66EC /* PollOptionAllVotesView.swift */; };
+		84B738352BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B738342BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift */; };
 		84B87F232861C0C900959CBE /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 84B87F222861C0C900959CBE /* StreamChat */; };
 		84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9B20D27998E9200BFAEAE /* ColorExtensions.swift */; };
 		84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB4C4B2841104700CBE004 /* MessageListDateUtils.swift */; };
@@ -903,6 +905,8 @@
 		84B2B5D9281985DA00479CEE /* FileAttachmentsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAttachmentsView_Tests.swift; sourceTree = "<group>"; };
 		84B439E027C6B2F100C04C99 /* MessageCachingUtils_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCachingUtils_Tests.swift; sourceTree = "<group>"; };
 		84B55F692798154C00B99B01 /* MessageListConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListConfig.swift; sourceTree = "<group>"; };
+		84B738322BE2575E00EC66EC /* PollOptionAllVotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollOptionAllVotesView.swift; sourceTree = "<group>"; };
+		84B738342BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollOptionAllVotesViewModel.swift; sourceTree = "<group>"; };
 		84B9B20D27998E9200BFAEAE /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		84BB4C4B2841104700CBE004 /* MessageListDateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDateUtils.swift; sourceTree = "<group>"; };
 		84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDateUtils_Tests.swift; sourceTree = "<group>"; };
@@ -1365,6 +1369,8 @@
 				8451C4902BD7096000849955 /* PollAttachmentView.swift */,
 				8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */,
 				845CFD772BDA6BFD0058F691 /* PollResultsView.swift */,
+				84B738322BE2575E00EC66EC /* PollOptionAllVotesView.swift */,
+				84B738342BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift */,
 			);
 			path = Polls;
 			sourceTree = "<group>";
@@ -2640,6 +2646,7 @@
 				8423C33D277C94F30092DCF1 /* TwoStepMentionCommand.swift in Sources */,
 				8465FD802746A95700AF091E /* WebView.swift in Sources */,
 				8465FD942746A95700AF091E /* AddedFileAttachmentsView.swift in Sources */,
+				84B738332BE2575E00EC66EC /* PollOptionAllVotesView.swift in Sources */,
 				91B79FD7284E21E0005B6E4F /* ChatUserNamer.swift in Sources */,
 				84F29090276CC1280045472D /* ShareButtonView.swift in Sources */,
 				84AB7B282773D4FE00631A10 /* TypingSuggester.swift in Sources */,
@@ -2699,6 +2706,7 @@
 				82D64C112AD7E5B700C5C79E /* AssetType.swift in Sources */,
 				8465FDAF2746A95700AF091E /* UIImage+Extensions.swift in Sources */,
 				8465FDCE2746A95700AF091E /* InjectedValuesExtensions.swift in Sources */,
+				84B738352BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift in Sources */,
 				8465FDAC2746A95700AF091E /* UIFont+Extensions.swift in Sources */,
 				846D6564279FF0800094B36E /* ReactionUserView.swift in Sources */,
 				8465FDB12746A95700AF091E /* ChatChannelNamer.swift in Sources */,
