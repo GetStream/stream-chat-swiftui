@@ -313,6 +313,7 @@
 		847305BD28243D25004AC770 /* WebView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847305BC28243D25004AC770 /* WebView_Tests.swift */; };
 		847305BF28243DFA004AC770 /* mock.html in Resources */ = {isa = PBXBuildFile; fileRef = 847305BE28243DF9004AC770 /* mock.html */; };
 		84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84733EC527FDBF82006926E0 /* NetworkReachability.swift */; };
+		847735F12BE904C300637394 /* PollCommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847735F02BE904C300637394 /* PollCommentsViewModel.swift */; };
 		84779C752AEBBACD000A6A68 /* BottomReactionsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */; };
 		84779C772AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84779C762AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift */; };
 		84782785284A4DB500D2EE11 /* ChatClient_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C94CCB27578B92007FE2B9 /* ChatClient_Mock.swift */; };
@@ -358,6 +359,7 @@
 		84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B55F692798154C00B99B01 /* MessageListConfig.swift */; };
 		84B738332BE2575E00EC66EC /* PollOptionAllVotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B738322BE2575E00EC66EC /* PollOptionAllVotesView.swift */; };
 		84B738352BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B738342BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift */; };
+		84B738402BE8EE1800EC66EC /* PollCommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B7383F2BE8EE1800EC66EC /* PollCommentsView.swift */; };
 		84B87F232861C0C900959CBE /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 84B87F222861C0C900959CBE /* StreamChat */; };
 		84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9B20D27998E9200BFAEAE /* ColorExtensions.swift */; };
 		84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB4C4B2841104700CBE004 /* MessageListDateUtils.swift */; };
@@ -858,6 +860,7 @@
 		847305BC28243D25004AC770 /* WebView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView_Tests.swift; sourceTree = "<group>"; };
 		847305BE28243DF9004AC770 /* mock.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = mock.html; sourceTree = "<group>"; };
 		84733EC527FDBF82006926E0 /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		847735F02BE904C300637394 /* PollCommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel.swift; sourceTree = "<group>"; };
 		84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomReactionsView_Tests.swift; sourceTree = "<group>"; };
 		84779C762AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsIconProvider_Tests.swift; sourceTree = "<group>"; };
 		847BA08227E0B9C600ED20C7 /* EventBatcherMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatcherMock.swift; sourceTree = "<group>"; };
@@ -907,6 +910,7 @@
 		84B55F692798154C00B99B01 /* MessageListConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListConfig.swift; sourceTree = "<group>"; };
 		84B738322BE2575E00EC66EC /* PollOptionAllVotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollOptionAllVotesView.swift; sourceTree = "<group>"; };
 		84B738342BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollOptionAllVotesViewModel.swift; sourceTree = "<group>"; };
+		84B7383F2BE8EE1800EC66EC /* PollCommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsView.swift; sourceTree = "<group>"; };
 		84B9B20D27998E9200BFAEAE /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		84BB4C4B2841104700CBE004 /* MessageListDateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDateUtils.swift; sourceTree = "<group>"; };
 		84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDateUtils_Tests.swift; sourceTree = "<group>"; };
@@ -1371,6 +1375,8 @@
 				845CFD772BDA6BFD0058F691 /* PollResultsView.swift */,
 				84B738322BE2575E00EC66EC /* PollOptionAllVotesView.swift */,
 				84B738342BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift */,
+				84B7383F2BE8EE1800EC66EC /* PollCommentsView.swift */,
+				847735F02BE904C300637394 /* PollCommentsViewModel.swift */,
 			);
 			path = Polls;
 			sourceTree = "<group>";
@@ -2471,6 +2477,7 @@
 				8465FD922746A95700AF091E /* AttachmentPickerView.swift in Sources */,
 				8465FD952746A95700AF091E /* ReactionsOverlayContainer.swift in Sources */,
 				82D64C032AD7E5B700C5C79E /* RateLimiter.swift in Sources */,
+				84B738402BE8EE1800EC66EC /* PollCommentsView.swift in Sources */,
 				82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */,
 				82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */,
 				82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */,
@@ -2712,6 +2719,7 @@
 				8465FDB12746A95700AF091E /* ChatChannelNamer.swift in Sources */,
 				8465FD9E2746A95700AF091E /* ChatChannelHelpers.swift in Sources */,
 				84E4F7CF294C69F300DD4CE3 /* MessageIdBuilder.swift in Sources */,
+				847735F12BE904C300637394 /* PollCommentsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

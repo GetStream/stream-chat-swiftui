@@ -16,9 +16,15 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     @Published var suggestOptionShown = false
     
+    @Published var addCommentShown = false
+    
     @Published var suggestOptionText = ""
     
+    @Published var commentText = ""
+    
     @Published var pollResultsShown = false
+    
+    @Published var allCommentsShown = false
     
     @Published var currentUserVotes = [PollVote]()
     
@@ -33,6 +39,10 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     var showSuggestOptionButton: Bool {
         !poll.isClosed && poll.allowUserSuggestedOptions == true
+    }
+    
+    var showAddCommentButton: Bool {
+        !poll.isClosed && poll.allowAnswers == true
     }
     
     init(message: ChatMessage, poll: Poll) {
@@ -55,6 +65,17 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
             answerText: nil,
             optionId: option.id
         ) { error in
+            if let error {
+                log.error("Error casting a vote \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func add(comment: String) {
+        pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
+            DispatchQueue.main.async {
+                self?.commentText = ""                
+            }
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
             }

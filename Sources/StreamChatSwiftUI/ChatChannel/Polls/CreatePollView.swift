@@ -66,9 +66,22 @@ struct CreatePollView: View {
                 }
                 .modifier(ListRowModifier())
                 
+                Toggle("Multiple answers", isOn: $viewModel.multipleAnswers)
+                
+                if viewModel.multipleAnswers {
+                    HStack {
+                        TextField("Type a number between 1 and 10", text: $viewModel.maxVotes)
+                            .disabled(!viewModel.maxVotesEnabled)
+                        Toggle("", isOn: $viewModel.maxVotesEnabled)
+                            .frame(width: 64)
+                    }
+                }
+                
                 Toggle("Anonymous poll", isOn: $viewModel.anonymousPoll)
                 
                 Toggle("Suggest an option", isOn: $viewModel.suggestAnOption)
+                
+                Toggle("Add a comment", isOn: $viewModel.allowComments)
                 
                 Spacer()
                     .modifier(ListRowModifier())

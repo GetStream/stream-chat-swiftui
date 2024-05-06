@@ -113,6 +113,6 @@ struct PollOptionResultsView: View {
 
 extension PollVote: Identifiable {
     var displayId: String {
-        "\(id)-\(optionId)-\(pollId)"
+        "\(id)-\(optionId ?? user?.id ?? "")-\(pollId)"
     }
 }

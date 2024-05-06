@@ -79,12 +79,45 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 } label: {
                     Text("Suggest an option")
                 }
-                .modifier(SuggestOptionModifier(
-                    showingAlert: $viewModel.suggestOptionShown,
-                    text: $viewModel.suggestOptionText,
-                    submit: {
-                        viewModel.suggest(option: viewModel.suggestOptionText)
-                    }))
+                .modifier(
+                    SuggestOptionModifier(
+                        title: "Suggest an option",
+                        showingAlert: $viewModel.suggestOptionShown,
+                        text: $viewModel.suggestOptionText,
+                        submit: {
+                            viewModel.suggest(option: viewModel.suggestOptionText)
+                        }
+                    )
+                )
+            }
+            
+            if viewModel.showAddCommentButton {
+                Button {
+                    viewModel.addCommentShown = true
+                } label: {
+                    Text("Add a comment")
+                }
+                .modifier(
+                    SuggestOptionModifier(
+                        title: "Add a comment", 
+                        showingAlert: $viewModel.addCommentShown,
+                        text: $viewModel.commentText,
+                        submit: {
+                            viewModel.add(comment: viewModel.commentText)
+                        }
+                    )
+                )
+            }
+            
+            if viewModel.poll.answersCount > 0 {
+                Button {
+                    viewModel.allCommentsShown = true
+                } label: {
+                    Text("View \(viewModel.poll.answersCount) comments")
+                }
+                .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
+                    PollCommentsView(pollController: viewModel.pollController)
+                }
             }
             
             Button {
@@ -92,7 +125,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             } label: {
                 Text("View results")
             }
-
+            .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
+                PollResultsView(viewModel: viewModel)
+            }
             
             if viewModel.showEndVoteButton {
                 Button {
@@ -111,9 +146,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 )
             )
         )
-        .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
-            PollResultsView(viewModel: viewModel)
-        }
+        
     }
     
     private var poll: Poll {
@@ -135,6 +168,7 @@ extension PollOption: Identifiable {}
 
 struct SuggestOptionModifier: ViewModifier {
     
+    var title: String
     @Binding var showingAlert: Bool
     @Binding var text: String
     var submit: () -> ()
@@ -142,13 +176,12 @@ struct SuggestOptionModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
-                .alert("Suggest an option", isPresented: $showingAlert) {
+                .alert(title, isPresented: $showingAlert) {
                     TextField("Enter a new option", text: $text)
                     Button("Cancel") {
                         showingAlert = false
                     }
                     Button("Add", action: submit)
-                        .disabled(text.isEmpty)
                 } message: {
                     Text("")
                 }
