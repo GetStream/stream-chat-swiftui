@@ -11,9 +11,12 @@ struct PollCommentsView: View {
     
     @StateObject var viewModel: PollCommentsViewModel
     
-    init(pollController: PollController) {
+    init(poll: Poll, pollController: PollController) {
         _viewModel = StateObject(
-            wrappedValue: PollCommentsViewModel(pollController: pollController)
+            wrappedValue: PollCommentsViewModel(
+                poll: poll,
+                pollController: pollController
+            )
         )
     }
     
@@ -26,6 +29,22 @@ struct PollCommentsView: View {
                             .padding(.horizontal)
                     }
                 }
+                
+                Button(action: {
+                    viewModel.addCommentShown = true
+                }, label: {
+                    Text("Add a comment")
+                })
+                .modifier(
+                    SuggestOptionModifier(
+                        title: "Add a comment",
+                        showingAlert: $viewModel.addCommentShown,
+                        text: $viewModel.newCommentText,
+                        submit: {
+                            viewModel.add(comment: viewModel.newCommentText)
+                        }
+                    )
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {

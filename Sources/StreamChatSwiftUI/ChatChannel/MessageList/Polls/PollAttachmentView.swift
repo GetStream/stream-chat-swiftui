@@ -116,7 +116,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     Text("View \(viewModel.poll.answersCount) comments")
                 }
                 .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
-                    PollCommentsView(pollController: viewModel.pollController)
+                    PollCommentsView(poll: viewModel.poll, pollController: viewModel.pollController)
                 }
             }
             
