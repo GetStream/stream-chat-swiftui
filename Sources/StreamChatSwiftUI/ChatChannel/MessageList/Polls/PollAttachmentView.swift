@@ -49,27 +49,18 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Spacer()
             }
             
-            ForEach(poll.options.sorted(by: { $0.text < $1.text })) { option in
-                HStack {
-                    if !poll.isClosed {
-                        Button {
-                            if viewModel.optionVotedByCurrentUser(option) {
-                                viewModel.removePollVote(for: option)
-                            } else {
-                                viewModel.castPollVote(for: option)
-                            }
-                        } label: {
-                            if viewModel.optionVotedByCurrentUser(option) {
-                                Image(systemName: "checkmark.circle.fill")
-                            } else {
-                                Image(systemName: "circle")
-                            }
-                        }
-                    }
-
-                    Text(option.text)
-                    Spacer()
-                    Text("\(poll.voteCountsByOption?[option.id] ?? 0)")
+            ForEach(options.prefix(10)) { option in
+                PollOptionView(viewModel: viewModel, option: option)
+            }
+            
+            if options.count > 10 {
+                Button {
+                    viewModel.allOptionsShown = true
+                } label: {
+                    Text("See \(options.count - 10) more options")
+                }
+                .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
+                    PollAllOptionsView(viewModel: viewModel)
                 }
             }
             
@@ -153,6 +144,10 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         viewModel.poll
     }
     
+    private var options: [PollOption] {
+        poll.options.sorted(by: { $0.text < $1.text })
+    }
+    
     private var subtitleText: String {
         if poll.isClosed == true {
             return "Vote ended"
@@ -188,6 +183,39 @@ struct SuggestOptionModifier: ViewModifier {
         } else {
             //TODO: Add for iOS < 15.
             content
+        }
+    }
+}
+
+struct PollOptionView: View {
+    
+    @ObservedObject var viewModel: PollAttachmentViewModel
+    
+    var option: PollOption
+    var optionFont: Font = InjectedValues[\.fonts].body
+    
+    var body: some View {
+        HStack {
+            if !viewModel.poll.isClosed {
+                Button {
+                    if viewModel.optionVotedByCurrentUser(option) {
+                        viewModel.removePollVote(for: option)
+                    } else {
+                        viewModel.castPollVote(for: option)
+                    }
+                } label: {
+                    if viewModel.optionVotedByCurrentUser(option) {
+                        Image(systemName: "checkmark.circle.fill")
+                    } else {
+                        Image(systemName: "circle")
+                    }
+                }
+            }
+
+            Text(option.text)
+                .font(optionFont)
+            Spacer()
+            Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
         }
     }
 }

@@ -34,8 +34,7 @@ struct PollResultsView: View {
                         poll: viewModel.poll,
                         option: option,
                         votes: Array(option.latestVotes.prefix(10)),
-                        allButtonShown: option.latestVotes.count < (viewModel.poll.voteCountsByOption?[option.id] ?? 0),
-                        dateFormatter: viewModel.dateString(from:)
+                        allButtonShown: option.latestVotes.count < (viewModel.poll.voteCountsByOption?[option.id] ?? 0)
                     )
                 }
                 Spacer()
@@ -68,7 +67,6 @@ struct PollOptionResultsView: View {
     var option: PollOption
     var votes: [PollVote]
     var allButtonShown = false
-    var dateFormatter: (Date) -> String
     var onVoteAppear: ((PollVote) -> Void)?
     
     var body: some View {
@@ -87,7 +85,7 @@ struct PollOptionResultsView: View {
                     )
                     Text(vote.user?.name ?? (vote.user?.id ?? "Anonymous"))
                     Spacer()
-                    Text(dateFormatter(vote.createdAt))
+                    PollDateIndicatorView(date: vote.createdAt)
                 }
                 .onAppear {
                     onVoteAppear?(vote)

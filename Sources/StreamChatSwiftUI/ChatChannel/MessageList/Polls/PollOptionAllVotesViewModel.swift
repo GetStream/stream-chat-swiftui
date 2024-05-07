@@ -14,9 +14,7 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     @Published var pollVotes = [PollVote]()
     
     private var loadingVotes = false
-    
-    private let dateFormatter = DateFormatter.makeDefault()
-    
+        
     init(poll: Poll, option: PollOption) {
         self.poll = poll
         self.option = option
@@ -42,11 +40,7 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         
         loadVotes()
     }
-    
-    func dateString(from date: Date) -> String {
-        dateFormatter.string(from: date)
-    }
-    
+
     func controller(
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]

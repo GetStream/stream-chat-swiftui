@@ -26,12 +26,12 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     @Published var allCommentsShown = false
     
+    @Published var allOptionsShown = false
+    
     @Published var currentUserVotes = [PollVote]()
     
     private let createdByCurrentUser: Bool
-    
-    private let dateFormatter = DateFormatter.makeDefault()
-    
+        
     var showEndVoteButton: Bool {
         //TODO: check why createdBy is set to nil.
         !poll.isClosed && createdByCurrentUser
@@ -111,10 +111,6 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
                 log.error("Error closing the poll \(error.localizedDescription)")
             }
         }
-    }
-    
-    func dateString(from date: Date) -> String {
-        dateFormatter.string(from: date)
     }
     
     //MARK: - PollControllerDelegate

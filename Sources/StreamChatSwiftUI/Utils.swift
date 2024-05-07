@@ -59,6 +59,7 @@ public class Utils {
     
     internal var _audioPlayer: AudioPlaying?
     internal var _audioRecorder: AudioRecording?
+    internal var pollsDateFormatter = PollsDateFormatter()
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),

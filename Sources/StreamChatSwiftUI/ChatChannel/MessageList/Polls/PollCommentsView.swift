@@ -7,6 +7,8 @@ import SwiftUI
 
 struct PollCommentsView: View {
     
+    @Injected(\.colors) var colors
+    
     @Environment(\.presentationMode) var presentationMode
     
     @StateObject var viewModel: PollCommentsViewModel
@@ -25,26 +27,42 @@ struct PollCommentsView: View {
             ScrollView {
                 LazyVStack(alignment: .leading) {
                     ForEach(viewModel.comments) { comment in
-                        Text(comment.answerText ?? "")
-                            .padding(.horizontal)
-                    }
-                }
-                
-                Button(action: {
-                    viewModel.addCommentShown = true
-                }, label: {
-                    Text("Add a comment")
-                })
-                .modifier(
-                    SuggestOptionModifier(
-                        title: "Add a comment",
-                        showingAlert: $viewModel.addCommentShown,
-                        text: $viewModel.newCommentText,
-                        submit: {
-                            viewModel.add(comment: viewModel.newCommentText)
+                        if let answer = comment.answerText {
+                            VStack(alignment: .leading) {
+                                Text(answer)
+                                    .bold()
+                                HStack {
+                                    MessageAvatarView(avatarURL: comment.user?.imageURL)
+                                    Text(comment.user?.name ?? "")
+                                    Spacer()
+                                    PollDateIndicatorView(date: comment.createdAt)
+                                }
+                            }
+                            .withPollsBackground()
                         }
+                    }
+                    
+                    Button(action: {
+                        viewModel.addCommentShown = true
+                    }, label: {
+                        Text("Add a comment")
+                            .bold()
+                            .foregroundColor(colors.tintColor)
+                    })
+                    .frame(maxWidth: .infinity)
+                    .withPollsBackground()
+                    .modifier(
+                        SuggestOptionModifier(
+                            title: "Add a comment",
+                            showingAlert: $viewModel.addCommentShown,
+                            text: $viewModel.newCommentText,
+                            submit: {
+                                viewModel.add(comment: viewModel.newCommentText)
+                            }
+                        )
                     )
-                )
+                }
+                .padding()
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {

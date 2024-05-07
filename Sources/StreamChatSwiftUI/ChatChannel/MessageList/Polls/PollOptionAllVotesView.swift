@@ -25,7 +25,6 @@ struct PollOptionAllVotesView: View {
                     poll: viewModel.poll,
                     option: viewModel.option,
                     votes: viewModel.pollVotes,
-                    dateFormatter: viewModel.dateString(from:),
                     onVoteAppear: viewModel.onAppear(vote:)
                 )
             }
