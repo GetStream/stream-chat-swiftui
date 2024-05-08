@@ -9,10 +9,8 @@ class CreatePollViewModel: ObservableObject {
     
     @Published var question = ""
     
-    @Published var options: [String] = []
-    
-    @Published var blankOption = ""
-    
+    @Published var options: [String] = [""]
+        
     @Published var suggestAnOption = true
     
     @Published var anonymousPoll = false

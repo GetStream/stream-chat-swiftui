@@ -30,66 +30,98 @@ struct ComposerPollView: View {
 
 struct CreatePollView: View {
     
+    @Injected(\.colors) var colors
+    
     @StateObject var viewModel = CreatePollViewModel()
     
     @Environment(\.presentationMode) var presentationMode
     
+    @Environment(\.editMode) var editMode
+    
+    @State var listId = UUID()
+                
     var body: some View {
         NavigationView {
             List {
-                Text("Question")
-                    .modifier(ListRowModifier())
-                TextField("Add a question", text: $viewModel.question)
-                    .modifier(ListRowModifier())
-
-                Text("Options")
-                    .modifier(ListRowModifier())
-                
-                ForEach($viewModel.options, id: \.self) { option in
-                    TextField("Add an option", text: option)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Question")
                         .modifier(ListRowModifier())
-                }
-                .onMove(perform: move)
-                
-                HStack {
-                    TextField("Add an option", text: $viewModel.blankOption)
-                    Spacer()
-                    Button {
-                        if !viewModel.blankOption.isEmpty {
-                            viewModel.options.append(viewModel.blankOption)
-                            viewModel.blankOption = ""
-                        }
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .disabled(viewModel.blankOption.isEmpty)
+                        .padding(.bottom, 4)
+                    TextField("Add a question", text: $viewModel.question)
+                        .modifier(CreatePollItemModifier())
+                    
                 }
                 .modifier(ListRowModifier())
+                                
+                Text("Options")
+                    .modifier(ListRowModifier())
+                    .padding(.bottom, -16)
                 
-                Toggle("Multiple answers", isOn: $viewModel.multipleAnswers)
-                
-                if viewModel.multipleAnswers {
+                ForEach(viewModel.options.indices, id: \.self) { index in
                     HStack {
-                        TextField("Type a number between 1 and 10", text: $viewModel.maxVotes)
-                            .disabled(!viewModel.maxVotesEnabled)
-                        Toggle("", isOn: $viewModel.maxVotesEnabled)
-                            .frame(width: 64)
+                        TextField("Enter text", text: Binding(
+                            get: { viewModel.options[index] },
+                            set: { newValue in
+                                viewModel.options[index] = newValue
+                                // Check if the current text field is the last one
+                                if index == viewModel.options.count - 1, !newValue.isEmpty {
+                                    // Add a new text field
+                                    withAnimation {
+                                        viewModel.options.append("")
+                                    }
+                                }
+                            }
+                        ))
+                        
+                        Spacer()
+                        if index < viewModel.options.count - 1 {
+                            Image(systemName: "equal")
+                                .foregroundColor(Color(colors.textLowEmphasis))
+                        }
+                    }
+                    .modifier(CreatePollItemModifier())
+                    .moveDisabled(index == viewModel.options.count - 1)
+                }
+                .onMove(perform: move)
+                .onDelete { indices in
+                    // Allow deletion of any text field
+                    viewModel.options.remove(atOffsets: indices)
+                }
+                .modifier(ListRowModifier())
+                                
+                VStack(alignment: .leading) {
+                    Toggle("Multiple answers", isOn: $viewModel.multipleAnswers)
+                    
+                    if viewModel.multipleAnswers {
+                        HStack {
+                            TextField("Type a number between 1 and 10", text: $viewModel.maxVotes)
+                                .disabled(!viewModel.maxVotesEnabled)
+                            Toggle("", isOn: $viewModel.maxVotesEnabled)
+                                .frame(width: 64)
+                        }
                     }
                 }
+                .modifier(CreatePollItemModifier())
+                .padding(.top, 16)
                 
                 Toggle("Anonymous poll", isOn: $viewModel.anonymousPoll)
+                    .modifier(CreatePollItemModifier())
                 
                 Toggle("Suggest an option", isOn: $viewModel.suggestAnOption)
+                    .modifier(CreatePollItemModifier())
                 
                 Toggle("Add a comment", isOn: $viewModel.allowComments)
+                    .modifier(CreatePollItemModifier())
                 
                 Spacer()
                     .modifier(ListRowModifier())
             }
             .listStyle(.plain)
+            .id(listId)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Create poll")
+                        .bold()
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -98,15 +130,28 @@ struct CreatePollView: View {
                             presentationMode.wrappedValue.dismiss()
                         }
                     } label: {
-                        Text("Add")
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(colors.tintColor)
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
     func move(from source: IndexSet, to destination: Int) {
         viewModel.options.move(fromOffsets: source, toOffset: destination)
+        listId = UUID()
+    }
+}
+
+struct CreatePollItemModifier: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        content
+            .modifier(ListRowModifier())
+            .withPollsBackground()
+            .padding(.vertical, -4)
     }
 }
 

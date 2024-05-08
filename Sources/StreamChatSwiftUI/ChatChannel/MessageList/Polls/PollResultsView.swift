@@ -14,6 +14,8 @@ struct PollResultsView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     
+    private let numberOfItemsShown = 5
+    
     var body: some View {
         if #available(iOS 16, *) {
             NavigationStack {
@@ -28,13 +30,22 @@ struct PollResultsView: View {
     
     var content: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 8) {
+                HStack {
+                    Text(viewModel.poll.name)
+                        .bold()
+                    Spacer()
+                }
+                .withPollsBackground()
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                
                 ForEach(viewModel.poll.options) { option in
                     PollOptionResultsView(
                         poll: viewModel.poll,
                         option: option,
-                        votes: Array(option.latestVotes.prefix(10)),
-                        allButtonShown: option.latestVotes.count < (viewModel.poll.voteCountsByOption?[option.id] ?? 0)
+                        votes: Array(option.latestVotes.prefix(numberOfItemsShown)),
+                        allButtonShown: option.latestVotes.count > numberOfItemsShown
                     )
                 }
                 Spacer()
@@ -62,6 +73,7 @@ struct PollResultsView: View {
 struct PollOptionResultsView: View {
     
     @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
     
     var poll: Poll
     var option: PollOption
@@ -70,10 +82,15 @@ struct PollOptionResultsView: View {
     var onVoteAppear: ((PollVote) -> Void)?
     
     var body: some View {
-        VStack {
+        VStack(spacing: 24) {
             HStack {
                 Text(option.text)
+                    .font(fonts.bodyBold)
                 Spacer()
+                Image(systemName: "trophy")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 16)
                 Text("\(poll.voteCountsByOption?[option.id] ?? 0) votes")
             }
             
@@ -100,12 +117,8 @@ struct PollOptionResultsView: View {
                 }
             }
         }
-        .padding()
-        .background(
-            Color(colors.background6)
-        )
-        .cornerRadius(16)
-        .padding()
+        .withPollsBackground()
+        .padding(.horizontal)
     }
 }
 
