@@ -29,7 +29,9 @@ class CreatePollViewModel: ObservableObject {
     
     func createPoll(completion: @escaping () -> ()) {
         guard let chatController else { return }
-        let pollOptions = options.map { PollOption(text: $0) }
+        let pollOptions = options
+            .filter { !$0.isEmpty }
+            .map { PollOption(text: $0) }
         chatController.createPoll(
             name: question,
             allowAnswers: allowComments,

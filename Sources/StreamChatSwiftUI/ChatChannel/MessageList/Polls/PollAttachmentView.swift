@@ -35,22 +35,29 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Text(poll.name)
-                    .font(fonts.bodyBold)
-                Spacer()
-            }
-            
-            HStack {
-                Text(subtitleText)
-                    .font(fonts.caption1)
-                    .foregroundColor(Color(colors.textLowEmphasis))
-                Spacer()
+        VStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(poll.name)
+                        .font(fonts.bodyBold)
+                    Spacer()
+                }
+                
+                HStack {
+                    Text(subtitleText)
+                        .font(fonts.caption1)
+                        .foregroundColor(Color(colors.textLowEmphasis))
+                    Spacer()
+                }
             }
             
             ForEach(options.prefix(10)) { option in
-                PollOptionView(viewModel: viewModel, option: option)
+                PollOptionView(
+                    viewModel: viewModel,
+                    option: option,
+                    optionVotes: poll.voteCountsByOption?[option.id],
+                    maxVotes: poll.voteCountsByOption?.values.max()
+                )
             }
             
             if options.count > 10 {
@@ -153,6 +160,8 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             return "Vote ended"
         } else if poll.enforceUniqueVote == true {
             return "Select one"
+        } else if let maxVotes = poll.maxVotesAllowed {
+            return "Select up to \(maxVotes)"
         } else {
             return "Select one or more"
         }
@@ -193,29 +202,78 @@ struct PollOptionView: View {
     
     var option: PollOption
     var optionFont: Font = InjectedValues[\.fonts].body
+    var optionVotes: Int?
+    var maxVotes: Int?
     
     var body: some View {
-        HStack {
-            if !viewModel.poll.isClosed {
-                Button {
-                    if viewModel.optionVotedByCurrentUser(option) {
-                        viewModel.removePollVote(for: option)
-                    } else {
-                        viewModel.castPollVote(for: option)
-                    }
-                } label: {
-                    if viewModel.optionVotedByCurrentUser(option) {
-                        Image(systemName: "checkmark.circle.fill")
-                    } else {
-                        Image(systemName: "circle")
+        VStack(spacing: 4) {
+            HStack {
+                if !viewModel.poll.isClosed {
+                    Button {
+                        if viewModel.optionVotedByCurrentUser(option) {
+                            viewModel.removePollVote(for: option)
+                        } else {
+                            viewModel.castPollVote(for: option)
+                        }
+                    } label: {
+                        if viewModel.optionVotedByCurrentUser(option) {
+                            Image(systemName: "checkmark.circle.fill")
+                        } else {
+                            Image(systemName: "circle")
+                        }
                     }
                 }
-            }
 
-            Text(option.text)
-                .font(optionFont)
-            Spacer()
-            Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
+                Text(option.text)
+                    .font(optionFont)
+                Spacer()
+                HStack(spacing: -4) {
+                    ForEach(option.latestVotes.suffix(2)) { vote in
+                        MessageAvatarView(
+                            avatarURL: vote.user?.imageURL,
+                            size: .init(width: 20, height: 20)
+                        )
+                    }
+                }
+                Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
+            }
+            
+            if let maxVotes {
+                PollVotesIndicatorView(
+                    optionVotes: optionVotes ?? 0,
+                    maxVotes: maxVotes
+                )
+                .padding(.leading, 24)
+            }
         }
+    }
+}
+
+struct PollVotesIndicatorView: View {
+    
+    @Injected(\.colors) var colors
+    
+    var optionVotes: Int
+    var maxVotes: Int
+    
+    private let height: CGFloat = 4
+    
+    var body: some View {
+        GeometryReader { reader in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(colors.background2))
+                    .frame(width: reader.size.width, height: height)
+
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(colors.tintColor)
+                    .frame(width: reader.size.width * ratio, height: height)
+            }
+            .frame(height: height)
+        }
+    }
+    
+    var ratio: CGFloat {
+        CGFloat(optionVotes) / CGFloat(maxVotes)
     }
 }
