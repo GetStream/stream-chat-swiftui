@@ -228,7 +228,9 @@ struct PollOptionView: View {
                     .font(optionFont)
                 Spacer()
                 HStack(spacing: -4) {
-                    ForEach(option.latestVotes.suffix(2)) { vote in
+                    ForEach(option.latestVotes.suffix(2)
+                        .sorted(by: { $0.createdAt > $1.createdAt })
+                    ) { vote in
                         MessageAvatarView(
                             avatarURL: vote.user?.imageURL,
                             size: .init(width: 20, height: 20)
