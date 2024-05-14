@@ -94,7 +94,7 @@ class ChatChannelDataSource: ChannelDataSource {
     }
     
     @MainActor var hasLoadedAllNewerMessages: Bool {
-        chat.state.hasLoadedAllNewerMessages
+        chat.state.hasLoadedAllNewestMessages
     }
     
     @MainActor var firstUnreadMessageId: String? {
@@ -160,7 +160,7 @@ class MessageThreadDataSource: ChannelDataSource {
     }
     
     @MainActor var hasLoadedAllNewerMessages: Bool {
-        self.messageState?.hasLoadedAllNextReplies ?? false
+        self.messageState?.hasLoadedAllNewestReplies ?? false
     }
     
     var firstUnreadMessageId: String? {
