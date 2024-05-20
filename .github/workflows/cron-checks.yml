@@ -108,11 +108,12 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: Test Data
+        name: Test Data E2E (iOS ${{ matrix.ios }})
         path: |
           fastlane/recordings
           fastlane/sinatra_log.txt
-          fastlane/test_output/logs/*/Diagnostics/StreamChatSwiftUITestsAppUITests-*/*/*.txt
+          fastlane/test_output/logs/*/Diagnostics/**/*.txt
+          fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
 
   build-apps:
     name: Build Demo App

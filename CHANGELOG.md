@@ -3,7 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Creating merged channel avatars logged a console warning when the source image uses extended color range [#484](https://github.com/GetStream/stream-chat-swiftui/pull/484)
+
+# [4.55.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.55.0)
+_May 14, 2024_
+
 ### 🔄 Changed
+- Updated StreamChat dependency
 
 # [4.54.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.54.0)
 _May 06, 2024_
