@@ -678,7 +678,7 @@ open class MessageComposerViewModel: ObservableObject {
         
         do {
             let fileSize = try AttachmentFile(url: url).size
-            let canAdd = fileSize < chatClient.config.maxAttachmentSize
+            let canAdd = fileSize < chatClient.maxAttachmentSize(for: url)
             attachmentSizeExceeded = !canAdd
             return canAdd
         } catch {

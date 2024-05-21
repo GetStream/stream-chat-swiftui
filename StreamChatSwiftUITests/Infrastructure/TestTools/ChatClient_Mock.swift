@@ -4,23 +4,25 @@
 
 import Foundation
 @testable import StreamChat
+@testable import StreamChatTestTools
 
 public extension ChatClient {
     /// Create a new instance of mock `ChatClient`
     static func mock(
         isLocalStorageEnabled: Bool = false,
         customCDNClient: CDNClient? = nil
-    ) -> ChatClient {
+    ) -> ChatClient_Mock {
         var config = ChatClientConfig(apiKey: .init("--== Mock ChatClient ==--"))
         config.customCDNClient = customCDNClient
         config.isLocalStorageEnabled = isLocalStorageEnabled
         config.isClientInActiveMode = false
         config.maxAttachmentCountPerMessage = 10
 
-        return .init(
+        return ChatClient_Mock(
             config: config,
+            workerBuilders: [],
             environment: .init(
-                apiClientBuilder: APIClient_Mock.init,
+                apiClientBuilder: APIClient_Spy.init,
                 webSocketClientBuilder: {
                     WebSocketClient_Mock(
                         sessionConfiguration: $0,
@@ -52,22 +54,5 @@ extension ChatClient {
             environment: environment,
             factory: ChatClientFactory(config: config, environment: environment)
         )
-    }
-}
-
-// ===== TEMP =====
-
-class APIClient_Mock: APIClient {
-    override func request<Response>(
-        endpoint: Endpoint<Response>,
-        completion: @escaping (Result<Response, Error>) -> Void
-    ) where Response: Decodable {
-        // Do nothing for now
-    }
-}
-
-class WebSocketClient_Mock: WebSocketClient {
-    override func connect() {
-        // Do nothing for now
     }
 }

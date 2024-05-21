@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
 class MessageComposerViewModel_Tests: StreamChatTestCase {
@@ -481,6 +482,24 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         CDNClient_Mock.maxAttachmentSize = 5
         let client = ChatClient.mock(customCDNClient: cdnClient)
         streamChat = StreamChat(chatClient: client)
+        
+        // When
+        let newAsset = defaultAsset
+        viewModel.imageTapped(newAsset) // will not be added because of small max attachment size.
+        let alertShown = viewModel.attachmentSizeExceeded
+        
+        // Then
+        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(alertShown == true)
+    }
+    
+    func test_messageComposerVM_maxSizeExceededWithAppSettingsConfiguration() {
+        // Given
+        let expectedValue: Int64 = 5
+        chatClient.mockedAppSettings = .mock(imageUploadConfig: .mock(
+            sizeLimitInBytes: expectedValue
+        ))
+        let viewModel = makeComposerViewModel()
         
         // When
         let newAsset = defaultAsset

@@ -56,7 +56,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
         _ = url?.startAccessingSecurityScopedResource()
         if let assetURL = url,
            let file = try? AttachmentFile(url: assetURL),
-           file.size >= chatClient.config.maxAttachmentSize {
+           file.size >= chatClient.maxAttachmentSize(for: assetURL) {
             return true
         } else {
             return false
