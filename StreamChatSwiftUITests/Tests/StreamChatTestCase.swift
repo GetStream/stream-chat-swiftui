@@ -4,7 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-@_exported import StreamChatTestTools
+@_exported @testable import StreamChatTestTools
 @_exported import StreamSwiftTestHelpers
 import XCTest
 
@@ -13,7 +13,7 @@ open class StreamChatTestCase: XCTestCase {
 
     public static var currentUserId: String = .unique
 
-    public var chatClient: ChatClient = {
+    public var chatClient: ChatClient_Mock = {
         let client = ChatClient.mock(isLocalStorageEnabled: false)
         let tokenValue =
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibHVrZV9za3l3YWxrZXIifQ.b6EiC8dq2AHk0JPfI-6PN-AM9TVzt8JV-qB1N9kchlI"
