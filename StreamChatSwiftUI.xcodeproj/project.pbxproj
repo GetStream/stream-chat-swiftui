@@ -725,7 +725,6 @@
 		84507C99281ACCD70081DDC2 /* AddUsersView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersView_Tests.swift; sourceTree = "<group>"; };
 		8451617D2AE7B093000A9230 /* AppleMessageComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMessageComposerView.swift; sourceTree = "<group>"; };
 		8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsAppChannelHeader.swift; sourceTree = "<group>"; };
-		8451C48F2BD6A24600849955 /* stream-chat-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "stream-chat-swift"; path = "../stream-chat-swift"; sourceTree = "<group>"; };
 		8451C4902BD7096000849955 /* PollAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentView.swift; sourceTree = "<group>"; };
 		8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentViewModel.swift; sourceTree = "<group>"; };
 		845CFD772BDA6BFD0058F691 /* PollResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollResultsView.swift; sourceTree = "<group>"; };
@@ -1466,7 +1465,6 @@
 		8465FBAB2746873A00AF091E = {
 			isa = PBXGroup;
 			children = (
-				8451C48F2BD6A24600849955 /* stream-chat-swift */,
 				829EF8762A9362C00045D166 /* PrivacyInfo.xcprivacy */,
 				4A65451E274BA170003C5FA8 /* README.md */,
 				8465FBB72746873A00AF091E /* Sources */,
@@ -3437,8 +3435,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.56.0;
+				branch = "polls-llc";
+				kind = branch;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
