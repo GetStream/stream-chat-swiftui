@@ -428,6 +428,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     public func onViewAppear() {
         setActive()
+        utils.channelControllerFactory.currentChannelController = channelController
         messages = channelDataSource.messages
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         checkNameChange()
