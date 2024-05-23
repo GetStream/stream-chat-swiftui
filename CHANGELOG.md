@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.56.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.56.1)
+_May 23, 2024_
+
 ### ✅ Added
 - Use max file size for validating attachments defined in Stream's Dashboard [#490](https://github.com/GetStream/stream-chat-swiftui/pull/490)
 
