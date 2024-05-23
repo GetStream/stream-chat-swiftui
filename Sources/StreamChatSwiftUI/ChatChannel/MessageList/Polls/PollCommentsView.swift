@@ -45,28 +45,28 @@ struct PollCommentsView: View {
                     Button(action: {
                         viewModel.addCommentShown = true
                     }, label: {
-                        Text("Add a comment")
+                        Text(L10n.Message.Polls.addComment)
                             .bold()
                             .foregroundColor(colors.tintColor)
                     })
-                    .frame(maxWidth: .infinity)
-                    .withPollsBackground()
-                    .modifier(
-                        SuggestOptionModifier(
-                            title: "Add a comment",
-                            showingAlert: $viewModel.addCommentShown,
-                            text: $viewModel.newCommentText,
-                            submit: {
-                                viewModel.add(comment: viewModel.newCommentText)
-                            }
+                        .frame(maxWidth: .infinity)
+                        .withPollsBackground()
+                        .modifier(
+                            SuggestOptionModifier(
+                                title: L10n.Message.Polls.addComment,
+                                showingAlert: $viewModel.addCommentShown,
+                                text: $viewModel.newCommentText,
+                                submit: {
+                                    viewModel.add(comment: viewModel.newCommentText)
+                                }
+                            )
                         )
-                    )
                 }
                 .padding()
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Poll comments")
+                    Text(L10n.Message.Polls.Toolbar.commentsTitle)
                         .bold()
                 }
                 
@@ -76,7 +76,6 @@ struct PollCommentsView: View {
                     } label: {
                         Image(systemName: "xmark")
                     }
-
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

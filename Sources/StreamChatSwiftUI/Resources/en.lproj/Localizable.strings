@@ -50,6 +50,24 @@
 "message.cell.edited" = "Edited";
 "message.reactions.currentUser" = "You";
 
+"message.polls.addComment" = "Add a comment";
+"message.polls.endVote" = "End Vote";
+"message.polls.seeMoreOptions" = "See %d more options";
+"message.polls.show-all" = "Show All";
+"message.polls.subtitle.selectOne" = "Select one";
+"message.polls.subtitle.selectOneOrMore" = "Select one or more";
+"message.polls.subtitle.selectUpTo" = "Select up to %d";
+"message.polls.subtitle.voteEnded" = "Vote ended";
+"message.polls.suggestAnOption" = "Suggest an option";
+"message.polls.toolbar.comments-title" = "Poll Commens";
+"message.polls.toolbar.options-title" = "Poll Options";
+"message.polls.toolbar.results-title" = "Poll Results";
+"message.polls.unknown-vote-author" = "Anonymous";
+"message.polls.viewComments" = "View %d comments";
+"message.polls.viewResults" = "View Results";
+"message.polls.votes" = "%d votes";
+
+"alert.actions.add" = "Add";
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
 "alert.actions.ok" = "Ok";
@@ -63,6 +81,7 @@
 "alert.actions.leave-group-message" = "Are you sure you want to leave this group?";
 "alert.actions.leave-group-button" = "Leave";
 "alert.actions.view-info-title" = "View info";
+"alert.text-field.polls-new-option" = "Enter a new option";
 
 "message.only-visible-to-you" = "Only visible to you";
 "message.deleted-message-placeholder" = "Message deleted";
@@ -84,6 +103,16 @@
 "composer.quoted.photo" = "Photo";
 "composer.quoted.video" = "Video";
 "composer.quoted.giphy" = "Giphy";
+"composer.polls.add-comment" = "Add a comment";
+"composer.polls.add-option" = "Add an option";
+"composer.polls.anonymous-poll" = "Anonymous poll";
+"composer.polls.askQuestion" = "Ask a question";
+"composer.polls.create-poll" = "Create Poll";
+"composer.polls.options" = "Options";
+"composer.polls.question" = "Question";
+"composer.polls.multiple-answers" = "Multiple answers";
+"composer.polls.suggest-option" = "Suggest an option";
+"composer.polls.type-number-from-1-and-10" = "Type a number from 1 and 10";
 
 "composer.commands.giphy" = "Giphy";
 "composer.commands.mute" = "Mute";
@@ -128,6 +157,7 @@
 "dates.time-ago-weeks-plural" = "last seen %d weeks ago";
 "dates.time-ago-months-singular" = "last seen one month ago";
 "dates.time-ago-months-plural" = "last seen %d months ago";
+"dates.today" = "Today";
 
 "chat-info.pinned-messages.title" = "Pinned Messages";
 "chat-info.pinned-messages.empty-title" = "No pinned messages";

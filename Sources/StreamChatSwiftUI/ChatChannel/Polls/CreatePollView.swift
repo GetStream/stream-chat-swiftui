@@ -14,7 +14,7 @@ struct ComposerPollView: View {
             Button {
                 createPollShown = true
             } label: {
-                Text("Create poll")
+                Text(L10n.Composer.Polls.createPoll)
             }
 
             Spacer()
@@ -44,22 +44,21 @@ struct CreatePollView: View {
         NavigationView {
             List {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Question")
+                    Text(L10n.Composer.Polls.question)
                         .modifier(ListRowModifier())
                         .padding(.bottom, 4)
-                    TextField("Add a question", text: $viewModel.question)
+                    TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
                         .modifier(CreatePollItemModifier())
-                    
                 }
                 .modifier(ListRowModifier())
                                 
-                Text("Options")
+                Text(L10n.Composer.Polls.options)
                     .modifier(ListRowModifier())
                     .padding(.bottom, -16)
                 
                 ForEach(viewModel.options.indices, id: \.self) { index in
                     HStack {
-                        TextField("Enter text", text: Binding(
+                        TextField(L10n.Composer.Polls.addOption, text: Binding(
                             get: { viewModel.options[index] },
                             set: { newValue in
                                 viewModel.options[index] = newValue
@@ -90,11 +89,11 @@ struct CreatePollView: View {
                 .modifier(ListRowModifier())
                                 
                 VStack(alignment: .leading) {
-                    Toggle("Multiple answers", isOn: $viewModel.multipleAnswers)
+                    Toggle(L10n.Composer.Polls.multipleAnswers, isOn: $viewModel.multipleAnswers)
                     
                     if viewModel.multipleAnswers {
                         HStack {
-                            TextField("Type a number between 1 and 10", text: $viewModel.maxVotes)
+                            TextField(L10n.Composer.Polls.typeNumberFrom1And10, text: $viewModel.maxVotes)
                                 .disabled(!viewModel.maxVotesEnabled)
                             Toggle("", isOn: $viewModel.maxVotesEnabled)
                                 .frame(width: 64)
@@ -104,13 +103,13 @@ struct CreatePollView: View {
                 .modifier(CreatePollItemModifier())
                 .padding(.top, 16)
                 
-                Toggle("Anonymous poll", isOn: $viewModel.anonymousPoll)
+                Toggle(L10n.Composer.Polls.anonymousPoll, isOn: $viewModel.anonymousPoll)
                     .modifier(CreatePollItemModifier())
                 
-                Toggle("Suggest an option", isOn: $viewModel.suggestAnOption)
+                Toggle(L10n.Composer.Polls.suggestOption, isOn: $viewModel.suggestAnOption)
                     .modifier(CreatePollItemModifier())
                 
-                Toggle("Add a comment", isOn: $viewModel.allowComments)
+                Toggle(L10n.Composer.Polls.addComment, isOn: $viewModel.allowComments)
                     .modifier(CreatePollItemModifier())
                 
                 Spacer()
@@ -120,7 +119,7 @@ struct CreatePollView: View {
             .id(listId)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Create poll")
+                    Text(L10n.Composer.Polls.createPoll)
                         .bold()
                 }
                 

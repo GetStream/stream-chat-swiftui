@@ -36,7 +36,7 @@ struct PollAllOptionsView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Poll options")
+                    Text(L10n.Message.Polls.Toolbar.optionsTitle)
                         .bold()
                 }
                 
@@ -46,7 +46,6 @@ struct PollAllOptionsView: View {
                     } label: {
                         Image(systemName: "xmark")
                     }
-
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

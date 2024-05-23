@@ -44,8 +44,10 @@ struct PollResultsView: View {
                     PollOptionResultsView(
                         poll: viewModel.poll,
                         option: option,
-                        votes: Array(option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt })
-                            .prefix(numberOfItemsShown)),
+                        votes: Array(
+                            option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt })
+                                .prefix(numberOfItemsShown)
+                        ),
                         allButtonShown: option.latestVotes.count > numberOfItemsShown
                     )
                 }
@@ -54,7 +56,7 @@ struct PollResultsView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Poll results")
+                Text(L10n.Message.Polls.Toolbar.resultsTitle)
                     .bold()
             }
             
@@ -64,7 +66,6 @@ struct PollResultsView: View {
                 } label: {
                     Image(systemName: "xmark")
                 }
-
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -92,7 +93,7 @@ struct PollOptionResultsView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 16)
-                Text("\(poll.voteCountsByOption?[option.id] ?? 0) votes")
+                Text(L10n.Message.Polls.votes(poll.voteCountsByOption?[option.id] ?? 0))
             }
             
             ForEach(votes, id: \.displayId) { vote in
@@ -101,7 +102,7 @@ struct PollOptionResultsView: View {
                         avatarURL: vote.user?.imageURL,
                         size: .init(width: 20, height: 20)
                     )
-                    Text(vote.user?.name ?? (vote.user?.id ?? "Anonymous"))
+                    Text(vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor))
                     Spacer()
                     PollDateIndicatorView(date: vote.createdAt)
                 }
@@ -114,7 +115,7 @@ struct PollOptionResultsView: View {
                 NavigationLink {
                     PollOptionAllVotesView(poll: poll, option: option)
                 } label: {
-                    Text("Show all")
+                    Text(L10n.Message.Polls.showAll)
                 }
             }
         }

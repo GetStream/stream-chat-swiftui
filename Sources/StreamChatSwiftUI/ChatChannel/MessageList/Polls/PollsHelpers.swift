@@ -19,7 +19,7 @@ struct PollsBackgroundModifier: ViewModifier {
 
 extension View {
     func withPollsBackground() -> some View {
-        self.modifier(PollsBackgroundModifier())
+        modifier(PollsBackgroundModifier())
     }
 }
 
@@ -53,8 +53,7 @@ class PollsDateFormatter {
     func dateString(for date: Date) -> String {
         // Check if the date is today
         if Calendar.current.isDateInToday(date) {
-            //TODO: localize.
-            return "Today"
+            return L10n.Dates.today
         } else {
             // If it's not today, format the date normally
             return dateFormatter.string(from: date)

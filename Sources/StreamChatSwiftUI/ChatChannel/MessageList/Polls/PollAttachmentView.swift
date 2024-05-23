@@ -64,7 +64,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.allOptionsShown = true
                 } label: {
-                    Text("See \(options.count - 10) more options")
+                    Text(L10n.Message.Polls.seeMoreOptions(options.count - 10))
                 }
                 .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
                     PollAllOptionsView(viewModel: viewModel)
@@ -75,11 +75,11 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.suggestOptionShown = true
                 } label: {
-                    Text("Suggest an option")
+                    Text(L10n.Message.Polls.suggestAnOption)
                 }
                 .modifier(
                     SuggestOptionModifier(
-                        title: "Suggest an option",
+                        title: L10n.Message.Polls.suggestAnOption,
                         showingAlert: $viewModel.suggestOptionShown,
                         text: $viewModel.suggestOptionText,
                         submit: {
@@ -93,11 +93,11 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.addCommentShown = true
                 } label: {
-                    Text("Add a comment")
+                    Text(L10n.Message.Polls.addComment)
                 }
                 .modifier(
                     SuggestOptionModifier(
-                        title: "Add a comment", 
+                        title: L10n.Message.Polls.addComment,
                         showingAlert: $viewModel.addCommentShown,
                         text: $viewModel.commentText,
                         submit: {
@@ -111,7 +111,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.allCommentsShown = true
                 } label: {
-                    Text("View \(viewModel.poll.answersCount) comments")
+                    Text(L10n.Message.Polls.viewComments(viewModel.poll.answersCount))
                 }
                 .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
                     PollCommentsView(poll: viewModel.poll, pollController: viewModel.pollController)
@@ -121,7 +121,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             Button {
                 viewModel.pollResultsShown = true
             } label: {
-                Text("View results")
+                Text(L10n.Message.Polls.viewResults)
             }
             .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
                 PollResultsView(viewModel: viewModel)
@@ -131,7 +131,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.endVote()
                 } label: {
-                    Text("End vote")
+                    Text(L10n.Message.Polls.endVote)
                 }
             }
         }
@@ -144,7 +144,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 )
             )
         )
-        
     }
     
     private var poll: Poll {
@@ -157,13 +156,13 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     
     private var subtitleText: String {
         if poll.isClosed == true {
-            return "Vote ended"
+            return L10n.Message.Polls.Subtitle.voteEnded
         } else if poll.enforceUniqueVote == true {
-            return "Select one"
+            return L10n.Message.Polls.Subtitle.selectOne
         } else if let maxVotes = poll.maxVotesAllowed {
-            return "Select up to \(maxVotes)"
+            return L10n.Message.Polls.Subtitle.selectUpTo(maxVotes)
         } else {
-            return "Select one or more"
+            return L10n.Message.Polls.Subtitle.selectOneOrMore
         }
     }
 }
@@ -175,22 +174,22 @@ struct SuggestOptionModifier: ViewModifier {
     var title: String
     @Binding var showingAlert: Bool
     @Binding var text: String
-    var submit: () -> ()
+    var submit: () -> Void
     
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
                 .alert(title, isPresented: $showingAlert) {
-                    TextField("Enter a new option", text: $text)
-                    Button("Cancel") {
+                    TextField(L10n.Alert.TextField.pollsNewOption, text: $text)
+                    Button(L10n.Alert.Actions.cancel) {
                         showingAlert = false
                     }
-                    Button("Add", action: submit)
+                    Button(L10n.Alert.Actions.add, action: submit)
                 } message: {
                     Text("")
                 }
         } else {
-            //TODO: Add for iOS < 15.
+            // TODO: Add for iOS < 15.
             content
         }
     }
@@ -228,8 +227,9 @@ struct PollOptionView: View {
                     .font(optionFont)
                 Spacer()
                 HStack(spacing: -4) {
-                    ForEach(option.latestVotes.suffix(2)
-                        .sorted(by: { $0.createdAt > $1.createdAt })
+                    ForEach(
+                        option.latestVotes.suffix(2)
+                            .sorted(by: { $0.createdAt > $1.createdAt })
                     ) { vote in
                         MessageAvatarView(
                             avatarURL: vote.user?.imageURL,

@@ -13,6 +13,8 @@ internal enum L10n {
 
   internal enum Alert {
     internal enum Actions {
+      /// Add
+      internal static var add: String { L10n.tr("Localizable", "alert.actions.add") }
       /// Cancel
       internal static var cancel: String { L10n.tr("Localizable", "alert.actions.cancel") }
       /// Delete
@@ -41,6 +43,10 @@ internal enum L10n {
       internal static var message: String { L10n.tr("Localizable", "alert.error.message") }
       /// Something went wrong.
       internal static var title: String { L10n.tr("Localizable", "alert.error.title") }
+    }
+    internal enum TextField {
+      /// Enter a new option
+      internal static var pollsNewOption: String { L10n.tr("Localizable", "alert.text-field.polls-new-option") }
     }
   }
 
@@ -196,6 +202,28 @@ internal enum L10n {
       /// Slow mode ON
       internal static var slowMode: String { L10n.tr("Localizable", "composer.placeholder.slow-mode") }
     }
+    internal enum Polls {
+      /// Add a comment
+      internal static var addComment: String { L10n.tr("Localizable", "composer.polls.add-comment") }
+      /// Add an option
+      internal static var addOption: String { L10n.tr("Localizable", "composer.polls.add-option") }
+      /// Anonymous poll
+      internal static var anonymousPoll: String { L10n.tr("Localizable", "composer.polls.anonymous-poll") }
+      /// Ask a question
+      internal static var askQuestion: String { L10n.tr("Localizable", "composer.polls.askQuestion") }
+      /// Create Poll
+      internal static var createPoll: String { L10n.tr("Localizable", "composer.polls.create-poll") }
+      /// Multiple answers
+      internal static var multipleAnswers: String { L10n.tr("Localizable", "composer.polls.multiple-answers") }
+      /// Options
+      internal static var options: String { L10n.tr("Localizable", "composer.polls.options") }
+      /// Question
+      internal static var question: String { L10n.tr("Localizable", "composer.polls.question") }
+      /// Suggest an option
+      internal static var suggestOption: String { L10n.tr("Localizable", "composer.polls.suggest-option") }
+      /// Type a number from 1 and 10
+      internal static var typeNumberFrom1And10: String { L10n.tr("Localizable", "composer.polls.type-number-from-1-and-10") }
+    }
     internal enum Quoted {
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "composer.quoted.giphy") }
@@ -261,6 +289,8 @@ internal enum L10n {
     }
     /// last seen one week ago
     internal static var timeAgoWeeksSingular: String { L10n.tr("Localizable", "dates.time-ago-weeks-singular") }
+    /// Today
+    internal static var today: String { L10n.tr("Localizable", "dates.today") }
   }
 
   internal enum Message {
@@ -333,6 +363,52 @@ internal enum L10n {
     internal enum GiphyAttachment {
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
+    }
+    internal enum Polls {
+      /// Add a comment
+      internal static var addComment: String { L10n.tr("Localizable", "message.polls.addComment") }
+      /// End Vote
+      internal static var endVote: String { L10n.tr("Localizable", "message.polls.endVote") }
+      /// See %d more options
+      internal static func seeMoreOptions(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.seeMoreOptions", p1)
+      }
+      /// Show All
+      internal static var showAll: String { L10n.tr("Localizable", "message.polls.show-all") }
+      /// Suggest an option
+      internal static var suggestAnOption: String { L10n.tr("Localizable", "message.polls.suggestAnOption") }
+      /// Anonymous
+      internal static var unknownVoteAuthor: String { L10n.tr("Localizable", "message.polls.unknown-vote-author") }
+      /// View %d comments
+      internal static func viewComments(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.viewComments", p1)
+      }
+      /// View Results
+      internal static var viewResults: String { L10n.tr("Localizable", "message.polls.viewResults") }
+      /// %d votes
+      internal static func votes(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.votes", p1)
+      }
+      internal enum Subtitle {
+        /// Select one
+        internal static var selectOne: String { L10n.tr("Localizable", "message.polls.subtitle.selectOne") }
+        /// Select one or more
+        internal static var selectOneOrMore: String { L10n.tr("Localizable", "message.polls.subtitle.selectOneOrMore") }
+        /// Select up to %d
+        internal static func selectUpTo(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.subtitle.selectUpTo", p1)
+        }
+        /// Vote ended
+        internal static var voteEnded: String { L10n.tr("Localizable", "message.polls.subtitle.voteEnded") }
+      }
+      internal enum Toolbar {
+        /// Poll Commens
+        internal static var commentsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.comments-title") }
+        /// Poll Options
+        internal static var optionsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.options-title") }
+        /// Poll Results
+        internal static var resultsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.results-title") }
+      }
     }
     internal enum Reactions {
       /// You
