@@ -63,7 +63,8 @@ struct CreatePollView: View {
                             set: { newValue in
                                 viewModel.options[index] = newValue
                                 // Check if the current text field is the last one
-                                if index == viewModel.options.count - 1, !newValue.isEmpty {
+                                if index == viewModel.options.count - 1,
+                                   !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                                     // Add a new text field
                                     withAnimation {
                                         viewModel.options.append("")
