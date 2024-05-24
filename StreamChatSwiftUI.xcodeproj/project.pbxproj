@@ -2348,7 +2348,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
+			shellScript = "# Adds support for Apple Silicon brew directory\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
