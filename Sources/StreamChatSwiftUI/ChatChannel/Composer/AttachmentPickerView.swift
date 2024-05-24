@@ -164,7 +164,7 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityIdentifier("attachmentPickerCamera")
             
             AttachmentPickerButton(
-                icon: images.attachmentPickerFolder,
+                icon: images.attachmentPickerPolls,
                 pickerType: .polls,
                 isSelected: selected == .polls,
                 onTap: onTap
