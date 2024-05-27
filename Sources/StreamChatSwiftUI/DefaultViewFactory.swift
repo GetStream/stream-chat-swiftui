@@ -943,6 +943,10 @@ extension ViewFactory {
         }
     }
     
+    public func makeComposerPollView() -> some View {
+        ComposerPollView()
+    }
+    
     public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
         PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
     }

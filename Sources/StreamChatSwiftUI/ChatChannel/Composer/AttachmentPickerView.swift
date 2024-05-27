@@ -99,7 +99,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     cameraImageAdded: cameraImageAdded
                 )
             } else if selectedPickerState == .polls {
-                ComposerPollView()
+                viewFactory.makeComposerPollView()
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
                     addedCustomAttachments: addedCustomAttachments,

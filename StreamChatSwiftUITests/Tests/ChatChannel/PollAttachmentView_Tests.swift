@@ -12,7 +12,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
 
     func test_pollAttachmentView_snapshotCommentsAndSuggestions() {
         // Given
-        let poll = createMockPoll()
+        let poll = Poll.mock()
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -36,7 +36,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
     
     func test_pollAttachmentView_snapshotUniqueVotes() {
         // Given
-        let poll = createMockPoll(
+        let poll = Poll.mock(
             allowAnswers: false,
             allowUserSuggestedOptions: false,
             enforceUniqueVote: true
@@ -64,7 +64,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
     
     func test_pollAttachmentView_closedPoll() {
         // Given
-        let poll = createMockPoll(
+        let poll = Poll.mock(
             allowAnswers: false,
             allowUserSuggestedOptions: false,
             enforceUniqueVote: true,
@@ -89,55 +89,5 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         
         // Then
         assertSnapshot(matching: view, as: .image)
-    }
-    
-    // MARK: - private
-    
-    private func createMockPoll(
-        allowAnswers: Bool = true,
-        allowUserSuggestedOptions: Bool = true,
-        enforceUniqueVote: Bool = false,
-        isClosed: Bool = false
-    ) -> Poll {
-        let pollId = "123"
-        let vote = PollVote(
-            id: .unique,
-            createdAt: Date(),
-            updatedAt: Date(),
-            pollId: pollId,
-            optionId: "test",
-            isAnswer: false,
-            answerText: nil,
-            user: .unique
-        )
-        let option = PollOption(
-            id: "test",
-            text: "Test option",
-            latestVotes: [vote],
-            extraData: [:]
-        )
-        let poll = Poll(
-            allowAnswers: allowAnswers,
-            allowUserSuggestedOptions: allowUserSuggestedOptions,
-            answersCount: allowAnswers ? 1 : 0,
-            createdAt: Date(),
-            pollDescription: "Test",
-            enforceUniqueVote: enforceUniqueVote,
-            id: pollId,
-            name: "Test poll",
-            updatedAt: Date(),
-            voteCount: 1,
-            extraData: [:],
-            voteCountsByOption: ["test": 1],
-            isClosed: isClosed,
-            maxVotesAllowed: nil,
-            votingVisibility: .public,
-            createdBy: .mock(id: "test", name: "test"),
-            latestAnswers: [],
-            options: [option],
-            latestVotesByOption: [option]
-        )
-        return poll
-    }
-    
+    }        
 }
