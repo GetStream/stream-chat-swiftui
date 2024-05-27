@@ -2,11 +2,14 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 struct ComposerPollView: View {
     
     @State var createPollShown = false
+    
+    let channelController: ChatChannelController
     
     var body: some View {
         VStack {
@@ -20,7 +23,7 @@ struct ComposerPollView: View {
             Spacer()
         }
         .sheet(isPresented: $createPollShown) {
-            CreatePollView()
+            CreatePollView(chatController: channelController)
         }
         .onAppear {
             createPollShown = true
@@ -33,13 +36,19 @@ struct CreatePollView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     
-    @StateObject var viewModel = CreatePollViewModel()
+    @StateObject var viewModel: CreatePollViewModel
     
     @Environment(\.presentationMode) var presentationMode
     
     @Environment(\.editMode) var editMode
     
     @State var listId = UUID()
+    
+    init(chatController: ChatChannelController) {
+        _viewModel = StateObject(
+            wrappedValue: CreatePollViewModel(chatController: chatController)
+        )
+    }
                 
     var body: some View {
         NavigationView {

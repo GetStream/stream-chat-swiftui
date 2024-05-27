@@ -8,7 +8,8 @@ import SwiftUI
 
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
-
+    @EnvironmentObject var viewModel: MessageComposerViewModel
+    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
@@ -99,7 +100,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     cameraImageAdded: cameraImageAdded
                 )
             } else if selectedPickerState == .polls {
-                viewFactory.makeComposerPollView()
+                viewFactory.makeComposerPollView(channelController: viewModel.channelController)
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
                     addedCustomAttachments: addedCustomAttachments,

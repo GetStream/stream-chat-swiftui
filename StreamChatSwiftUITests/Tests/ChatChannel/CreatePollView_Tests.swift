@@ -12,8 +12,10 @@ final class CreatePollView_Tests: StreamChatTestCase {
 
     func test_createPollView_snapshot() {
         // Given
-        let view = CreatePollView()
-            .applyDefaultSize()
+        let view = CreatePollView(
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+        )
+        .applyDefaultSize()
         
         // Then
         assertSnapshot(matching: view, as: .image)

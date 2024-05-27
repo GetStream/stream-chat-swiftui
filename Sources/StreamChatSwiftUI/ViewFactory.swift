@@ -953,7 +953,7 @@ public protocol ViewFactory: AnyObject {
     associatedtype ComposerPollViewType: View
     /// Creates a composer poll view.
     /// - Returns: view shown in the composer poll slot.
-    func makeComposerPollView() -> ComposerPollViewType
+    func makeComposerPollView(channelController: ChatChannelController) -> ComposerPollViewType
 
     associatedtype PollViewType: View
     /// Creates a poll view.

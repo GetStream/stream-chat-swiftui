@@ -157,6 +157,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 height: viewModel.overlayShown ? popupSize : 0,
                 popupHeight: popupSize
             )
+            .environmentObject(viewModel)
         }
         .background(
             GeometryReader { proxy in

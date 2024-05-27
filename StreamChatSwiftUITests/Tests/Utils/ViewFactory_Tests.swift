@@ -918,7 +918,9 @@ class ViewFactory_Tests: StreamChatTestCase {
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeComposerPollView()
+        let view = viewFactory.makeComposerPollView(
+            channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+        )
         
         // Then
         XCTAssert(view is ComposerPollView)

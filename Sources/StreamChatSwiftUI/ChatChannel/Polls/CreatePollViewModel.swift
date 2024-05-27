@@ -27,9 +27,12 @@ class CreatePollViewModel: ObservableObject {
     
     @Published var allowComments: Bool = false
     
+    let chatController: ChatChannelController
+    
     private var cancellables = [AnyCancellable]()
     
-    init() {
+    init(chatController: ChatChannelController) {
+        self.chatController = chatController
         $maxVotes
             .map { text in
                 guard !text.isEmpty else { return false }
@@ -58,13 +61,8 @@ class CreatePollViewModel: ObservableObject {
             .assignWeakly(to: \.optionsErrorIndices, on: self)
             .store(in: &cancellables)
     }
-    
-    var chatController: ChatChannelController? = {
-        InjectedValues[\.utils.channelControllerFactory].currentChannelController
-    }()
-    
+        
     func createPoll(completion: @escaping () -> Void) {
-        guard let chatController else { return }
         let pollOptions = options
             .filter { !$0.isEmpty }
             .map { PollOption(text: $0) }
