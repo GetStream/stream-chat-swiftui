@@ -58,7 +58,7 @@
 "message.polls.subtitle.selectOneOrMore" = "Select one or more";
 "message.polls.subtitle.selectUpTo" = "Select up to %d";
 "message.polls.subtitle.voteEnded" = "Vote ended";
-"message.polls.suggestAnOption" = "Suggest an option";
+"message.polls.suggestAnOption" = "Suggest an Option";
 "message.polls.toolbar.comments-title" = "Poll Commens";
 "message.polls.toolbar.options-title" = "Poll Options";
 "message.polls.toolbar.results-title" = "Poll Results";
