@@ -406,7 +406,7 @@ internal enum L10n {
         internal static var voteEnded: String { L10n.tr("Localizable", "message.polls.subtitle.voteEnded") }
       }
       internal enum Toolbar {
-        /// Poll Commens
+        /// Poll Comments
         internal static var commentsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.comments-title") }
         /// Poll Options
         internal static var optionsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.options-title") }

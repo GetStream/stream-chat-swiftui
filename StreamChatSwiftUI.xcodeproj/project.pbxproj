@@ -11,6 +11,8 @@
 		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
 		4FEAB3182BFF71F70057E511 /* SwiftUI+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */; };
+		4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */; };
+		4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */; };
 		8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */; };
 		8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */; };
 		820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */; };
@@ -562,6 +564,8 @@
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
 		4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+UIAlertController.swift"; sourceTree = "<group>"; };
+		4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatClient+Extensions.swift"; sourceTree = "<group>"; };
+		4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatClientExtensions_Tests.swift; sourceTree = "<group>"; };
 		820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedReply_Tests.swift; sourceTree = "<group>"; };
 		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
 		829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamTestCase+Tags.swift"; sourceTree = "<group>"; };
@@ -1796,17 +1800,24 @@
 				8465FD3E2746A95600AF091E /* UIColor+Extensions.swift */,
 				8465FD3F2746A95600AF091E /* UIImage+Extensions.swift */,
 				8465FD402746A95600AF091E /* DateUtils.swift */,
+				8465FD452746A95600AF091E /* Cache.swift */,
 				8465FD412746A95600AF091E /* ChatChannelNamer.swift */,
+				4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */,
+				8465FD442746A95600AF091E /* ChatMessage+Extensions.swift */,
+				8465FD472746A95600AF091E /* ChatMessageReactionAppeareance.swift */,
 				91B79FD6284E21E0005B6E4F /* ChatUserNamer.swift */,
+				8465FD3A2746A95600AF091E /* DateFormatter+Extensions.swift */,
+				8465FD402746A95600AF091E /* DateUtils.swift */,
+				8465FD3D2746A95600AF091E /* ImageCDN.swift */,
+				8465FD482746A95600AF091E /* ImageMerger.swift */,
 				8465FD422746A95600AF091E /* InputTextView.swift */,
 				8465FD432746A95600AF091E /* NSLayoutConstraint+Extensions.swift */,
-				8465FD442746A95600AF091E /* ChatMessage+Extensions.swift */,
-				8465FD452746A95600AF091E /* Cache.swift */,
-				8465FD462746A95600AF091E /* VideoPreviewLoader.swift */,
-				8465FD472746A95600AF091E /* ChatMessageReactionAppeareance.swift */,
-				8465FD482746A95600AF091E /* ImageMerger.swift */,
 				8465FD492746A95600AF091E /* NukeImageProcessor.swift */,
+				8465FD3E2746A95600AF091E /* UIColor+Extensions.swift */,
+				8465FD3C2746A95600AF091E /* UIFont+Extensions.swift */,
+				8465FD3F2746A95600AF091E /* UIImage+Extensions.swift */,
 				A3D7B0DE2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift */,
+				8465FD462746A95600AF091E /* VideoPreviewLoader.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -2034,6 +2045,7 @@
 		84C94D52275A135F007FE2B9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */,
 				91CC203B283C4C250049A146 /* URLUtils_Tests.swift */,
 				84C94D53275A1380007FE2B9 /* DateUtils_Tests.swift */,
 				84C94D55275A1AE1007FE2B9 /* StringExtensions_Tests.swift */,
@@ -2400,7 +2412,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
+			shellScript = "# Adds support for Apple Silicon brew directory\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2654,6 +2666,7 @@
 				8465FD8A2746A95700AF091E /* DiscardAttachmentButton.swift in Sources */,
 				8482094E2ACFFCD900EF3261 /* Throttler.swift in Sources */,
 				84EADEBD2B28C2EC0046B50C /* RecordingState.swift in Sources */,
+				4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */,
 				82D64C1B2AD7E5B700C5C79E /* ImageCaching.swift in Sources */,
 				82D64C062AD7E5B700C5C79E /* Graphics.swift in Sources */,
 				8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */,
@@ -2759,6 +2772,7 @@
 				84E0478C284A444E00BAFA17 /* TestRequest.swift in Sources */,
 				84CAD77B284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift in Sources */,
 				84779C772AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift in Sources */,
+				4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */,
 				91CC203C283C4C250049A146 /* URLUtils_Tests.swift in Sources */,
 				84B2B5DA281985DA00479CEE /* FileAttachmentsView_Tests.swift in Sources */,
 				848399F227601231003075E4 /* ReactionsOverlayView_Tests.swift in Sources */,
