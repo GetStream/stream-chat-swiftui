@@ -59,7 +59,7 @@
 "message.polls.subtitle.selectUpTo" = "Select up to %d";
 "message.polls.subtitle.voteEnded" = "Vote ended";
 "message.polls.suggestAnOption" = "Suggest an option";
-"message.polls.toolbar.comments-title" = "Poll Commens";
+"message.polls.toolbar.comments-title" = "Poll Comments";
 "message.polls.toolbar.options-title" = "Poll Options";
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
