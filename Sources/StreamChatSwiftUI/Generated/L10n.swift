@@ -213,6 +213,8 @@ internal enum L10n {
       internal static var askQuestion: String { L10n.tr("Localizable", "composer.polls.askQuestion") }
       /// Create Poll
       internal static var createPoll: String { L10n.tr("Localizable", "composer.polls.create-poll") }
+      /// Maximum votes per person
+      internal static var maximumVotesPerPerson: String { L10n.tr("Localizable", "composer.polls.maximum-votes-per-person") }
       /// Multiple answers
       internal static var multipleAnswers: String { L10n.tr("Localizable", "composer.polls.multiple-answers") }
       /// Options
