@@ -12,6 +12,7 @@ class CreatePollViewModel: ObservableObject {
     @Published var question = ""
     
     @Published var options: [String] = [""]
+    @Published var optionsErrorIndices = Set<Int>()
         
     @Published var suggestAnOption = true
     
@@ -39,6 +40,22 @@ class CreatePollViewModel: ObservableObject {
             .map { $0 && $1 }
             .removeDuplicates()
             .assignWeakly(to: \.showsMaxVotesError, on: self)
+            .store(in: &cancellables)
+        $options
+            .map { options in
+                var errorIndices = Set<Int>()
+                var existing = Set<String>(minimumCapacity: options.count)
+                for (index, option) in options.enumerated() {
+                    let validated = option.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                    if existing.contains(validated), !validated.isEmpty {
+                        errorIndices.insert(index)
+                    }
+                    existing.insert(validated)
+                }
+                return errorIndices
+            }
+            .removeDuplicates()
+            .assignWeakly(to: \.optionsErrorIndices, on: self)
             .store(in: &cancellables)
     }
     
@@ -69,5 +86,9 @@ class CreatePollViewModel: ObservableObject {
                 log.error("Error creating a poll: \(error.localizedDescription)")
             }
         }
+    }
+    
+    func showsOptionError(for index: Int) -> Bool {
+        optionsErrorIndices.contains(index)
     }
 }

@@ -59,29 +59,38 @@ struct CreatePollView: View {
                 
                 ForEach(viewModel.options.indices, id: \.self) { index in
                     HStack {
-                        TextField(L10n.Composer.Polls.addOption, text: Binding(
-                            get: { viewModel.options[index] },
-                            set: { newValue in
-                                viewModel.options[index] = newValue
-                                // Check if the current text field is the last one
-                                if index == viewModel.options.count - 1,
-                                   !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                    // Add a new text field
-                                    withAnimation {
-                                        viewModel.options.append("")
+                        VStack(alignment: .leading, spacing: 2) {
+                            if viewModel.showsOptionError(for: index) {
+                                Text(L10n.Composer.Polls.duplicateOption)
+                                    .foregroundColor(Color(colors.alert))
+                                    .font(fonts.caption1)
+                                    .transition(.opacity)
+                            }
+                            TextField(L10n.Composer.Polls.addOption, text: Binding(
+                                get: { viewModel.options[index] },
+                                set: { newValue in
+                                    viewModel.options[index] = newValue
+                                    // Check if the current text field is the last one
+                                    if index == viewModel.options.count - 1,
+                                       !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                        // Add a new text field
+                                        withAnimation {
+                                            viewModel.options.append("")
+                                        }
                                     }
                                 }
-                            }
-                        ))
-                        
+                            ))
+                        }
                         Spacer()
                         if index < viewModel.options.count - 1 {
                             Image(systemName: "equal")
                                 .foregroundColor(Color(colors.textLowEmphasis))
                         }
                     }
+                    .padding(.vertical, viewModel.showsOptionError(for: index) ? -8 : 0)
                     .modifier(CreatePollItemModifier())
                     .moveDisabled(index == viewModel.options.count - 1)
+                    .animation(.easeIn, value: viewModel.optionsErrorIndices)
                 }
                 .onMove(perform: move)
                 .onDelete { indices in
