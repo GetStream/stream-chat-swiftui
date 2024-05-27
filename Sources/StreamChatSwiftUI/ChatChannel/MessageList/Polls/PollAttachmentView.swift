@@ -177,21 +177,16 @@ struct SuggestOptionModifier: ViewModifier {
     var submit: () -> Void
     
     func body(content: Content) -> some View {
-        if #available(iOS 15.0, *) {
-            content
-                .alert(title, isPresented: $showingAlert) {
-                    TextField(L10n.Alert.TextField.pollsNewOption, text: $text)
-                    Button(L10n.Alert.Actions.cancel) {
-                        showingAlert = false
-                    }
-                    Button(L10n.Alert.Actions.add, action: submit)
-                } message: {
-                    Text("")
-                }
-        } else {
-            // TODO: Add for iOS < 15.
-            content
-        }
+        content
+            .uiAlert(
+                title: title,
+                isPresented: $showingAlert,
+                text: $text,
+                placeholder: L10n.Alert.TextField.pollsNewOption,
+                cancel: L10n.Alert.Actions.cancel,
+                accept: L10n.Alert.Actions.add,
+                action: submit
+            )
     }
 }
 
