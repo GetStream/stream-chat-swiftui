@@ -5,54 +5,58 @@
 import StreamChat
 import SwiftUI
 
-class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
+public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     @Injected(\.chatClient) var chatClient
     
     let message: ChatMessage
     let pollController: PollController
     
-    @Published var poll: Poll
+    @Published public var poll: Poll
     
-    @Published var suggestOptionShown = false
+    @Published public var suggestOptionShown = false
     
-    @Published var addCommentShown = false
+    @Published public var addCommentShown = false
     
-    @Published var suggestOptionText = ""
+    @Published public var suggestOptionText = ""
     
-    @Published var commentText = ""
+    @Published public var commentText = ""
     
-    @Published var pollResultsShown = false
+    @Published public var pollResultsShown = false
     
-    @Published var allCommentsShown = false
+    @Published public var allCommentsShown = false
     
-    @Published var allOptionsShown = false
+    @Published public var allOptionsShown = false
     
-    @Published var currentUserVotes = [PollVote]()
+    @Published public var currentUserVotes = [PollVote]()
     
     private let createdByCurrentUser: Bool
         
-    var showEndVoteButton: Bool {
-        //TODO: check why createdBy is set to nil.
+    public var showEndVoteButton: Bool {
         !poll.isClosed && createdByCurrentUser
     }
     
-    var showSuggestOptionButton: Bool {
+    public var showSuggestOptionButton: Bool {
         !poll.isClosed && poll.allowUserSuggestedOptions == true
     }
     
-    var showAddCommentButton: Bool {
+    public var showAddCommentButton: Bool {
         !poll.isClosed && poll.allowAnswers == true
     }
     
-    init(message: ChatMessage, poll: Poll) {
-        self.message = message
-        self.poll = poll
-        self.createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
-        self.pollController = InjectedValues[\.chatClient].pollController(
+    public convenience init(message: ChatMessage, poll: Poll) {
+        let pollController = InjectedValues[\.chatClient].pollController(
             messageId: message.id,
             pollId: poll.id
         )
+        self.init(message: message, poll: poll, pollController: pollController)
+    }
+    
+    init(message: ChatMessage, poll: Poll, pollController: PollController) {
+        self.message = message
+        self.poll = poll
+        self.createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
+        self.pollController = pollController
         pollController.delegate = self
         pollController.synchronize { [weak self] error in
             guard let self else { return }
@@ -60,7 +64,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
-    func castPollVote(for option: PollOption) {
+    public func castPollVote(for option: PollOption) {
         pollController.castPollVote(
             answerText: nil,
             optionId: option.id
@@ -71,7 +75,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
-    func add(comment: String) {
+    public func add(comment: String) {
         pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
             DispatchQueue.main.async {
                 self?.commentText = ""                
@@ -82,7 +86,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
-    func removePollVote(for option: PollOption) {
+    public func removePollVote(for option: PollOption) {
         guard let vote = currentUserVote(for: option) else { return }
         pollController.removePollVote(
             voteId: vote.id
@@ -93,7 +97,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
-    func endVote() {
+    public func endVote() {
         pollController.closePoll { error in
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
@@ -101,11 +105,11 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
-    func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
+    public func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
         return currentUserVote(for: option) != nil
     }
     
-    func suggest(option: String) {
+    public func suggest(option: String) {
         pollController.suggestPollOption(text: option) { error in
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
@@ -115,11 +119,11 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     //MARK: - PollControllerDelegate
     
-    func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
+    public func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
         self.poll = poll.item
     }
     
-    func pollController(
+    public func pollController(
         _ pollController: PollController,
         didUpdateCurrentUserVotes votes: [ListChange<PollVote>]
     ) {

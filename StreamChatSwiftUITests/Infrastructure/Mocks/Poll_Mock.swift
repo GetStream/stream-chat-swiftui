@@ -10,7 +10,8 @@ extension Poll {
         allowAnswers: Bool = true,
         allowUserSuggestedOptions: Bool = true,
         enforceUniqueVote: Bool = false,
-        isClosed: Bool = false
+        isClosed: Bool = false,
+        name: String = "Test poll"
     ) -> Poll {
         let pollId = "123"
         let voteId = "456"
@@ -39,7 +40,7 @@ extension Poll {
             pollDescription: "Test",
             enforceUniqueVote: enforceUniqueVote,
             id: pollId,
-            name: "Test poll",
+            name: name,
             updatedAt: Date(),
             voteCount: 1,
             extraData: [:],
