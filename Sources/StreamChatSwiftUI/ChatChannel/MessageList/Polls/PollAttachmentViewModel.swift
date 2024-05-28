@@ -33,7 +33,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     private let createdByCurrentUser: Bool
         
     var showEndVoteButton: Bool {
-        //TODO: check why createdBy is set to nil.
+        // TODO: check why createdBy is set to nil.
         !poll.isClosed && createdByCurrentUser
     }
     
@@ -48,16 +48,27 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     init(message: ChatMessage, poll: Poll) {
         self.message = message
         self.poll = poll
-        self.createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
-        self.pollController = InjectedValues[\.chatClient].pollController(
+        createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
+        pollController = InjectedValues[\.chatClient].pollController(
             messageId: message.id,
             pollId: poll.id
         )
         pollController.delegate = self
-        pollController.synchronize { [weak self] error in
+        pollController.synchronize { [weak self] _ in
             guard let self else { return }
             self.currentUserVotes = Array(self.pollController.ownVotes)
         }
+    }
+    
+    /// Returns true if the specified option has more votes than any other option.
+    func hasMostVotes(for option: PollOption) -> Bool {
+        guard let allCounts = poll.voteCountsByOption else { return false }
+        guard let optionVoteCount = allCounts[option.id], optionVoteCount > 0 else { return false }
+        guard let highestVotePerOption = allCounts.values.max() else { return false }
+        guard optionVoteCount == highestVotePerOption else { return false }
+        // Check if only one option has highest number for votes
+        let optionsByVoteCounts = Dictionary(grouping: allCounts, by: { $0.value })
+        return optionsByVoteCounts[optionVoteCount]?.count == 1
     }
     
     func castPollVote(for option: PollOption) {
@@ -74,7 +85,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     func add(comment: String) {
         pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
             DispatchQueue.main.async {
-                self?.commentText = ""                
+                self?.commentText = ""
             }
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
@@ -102,7 +113,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
-        return currentUserVote(for: option) != nil
+        currentUserVote(for: option) != nil
     }
     
     func suggest(option: String) {
@@ -113,7 +124,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
-    //MARK: - PollControllerDelegate
+    // MARK: - PollControllerDelegate
     
     func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
         self.poll = poll.item
@@ -123,7 +134,7 @@ class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         _ pollController: PollController,
         didUpdateCurrentUserVotes votes: [ListChange<PollVote>]
     ) {
-        self.currentUserVotes = Array(pollController.ownVotes)
+        currentUserVotes = Array(pollController.ownVotes)
     }
     
     // MARK: - private
