@@ -22,7 +22,7 @@ struct ComposerPollView: View {
 
             Spacer()
         }
-        .sheet(isPresented: $createPollShown) {
+        .fullScreenCover(isPresented: $createPollShown) {
             CreatePollView(chatController: channelController)
         }
         .onAppear {
@@ -149,6 +149,18 @@ struct CreatePollView: View {
             .listStyle(.plain)
             .id(listId)
             .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        if viewModel.canShowDiscardConfirmation {
+                            viewModel.showsDiscardConfirmation = true
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    } label: {
+                        Text(L10n.Alert.Actions.cancel)
+                    }
+                }
+                
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Composer.Polls.createPoll)
                         .bold()
@@ -166,6 +178,17 @@ struct CreatePollView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .actionSheet(isPresented: $viewModel.showsDiscardConfirmation) {
+                ActionSheet(
+                    title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
+                    buttons: [
+                        .destructive(Text(L10n.Alert.Actions.discardChanges), action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }),
+                        .cancel(Text(L10n.Alert.Actions.keepEditing))
+                    ]
+                )
+            }
         }
     }
     

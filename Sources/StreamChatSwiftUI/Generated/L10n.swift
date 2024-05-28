@@ -23,6 +23,10 @@ internal enum L10n {
       internal static var deleteChannelMessage: String { L10n.tr("Localizable", "alert.actions.delete-channel-message") }
       /// Delete conversation
       internal static var deleteChannelTitle: String { L10n.tr("Localizable", "alert.actions.delete-channel-title") }
+      /// Discard Changes
+      internal static var discardChanges: String { L10n.tr("Localizable", "alert.actions.discard-changes") }
+      /// Keep Editing
+      internal static var keepEditing: String { L10n.tr("Localizable", "alert.actions.keep-editing") }
       /// Leave
       internal static var leaveGroupButton: String { L10n.tr("Localizable", "alert.actions.leave-group-button") }
       /// Are you sure you want to leave this group?
@@ -203,6 +207,8 @@ internal enum L10n {
       internal static var slowMode: String { L10n.tr("Localizable", "composer.placeholder.slow-mode") }
     }
     internal enum Polls {
+      /// Are you sure you want to discard your poll?
+      internal static var actionSheetDiscardTitle: String { L10n.tr("Localizable", "composer.polls.action-sheet-discard-title") }
       /// Add a comment
       internal static var addComment: String { L10n.tr("Localizable", "composer.polls.add-comment") }
       /// Add an option
