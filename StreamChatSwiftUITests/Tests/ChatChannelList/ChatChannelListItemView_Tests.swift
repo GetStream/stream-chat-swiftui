@@ -105,6 +105,44 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_channelListItem_pollMessage_youCreated() throws {
+        // Given
+        let message = try mockPollMessage(isSentByCurrentUser: true)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
+        
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_channelListItem_pollMessage_someoneCreated() throws {
+        // Given
+        let message = try mockPollMessage(isSentByCurrentUser: false)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
+        
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     // MARK: - private
     
@@ -221,6 +259,20 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
             ],
             localState: nil,
             isSentByCurrentUser: isSentByCurrentUser
+        )
+    }
+    
+    private func mockPollMessage(isSentByCurrentUser: Bool) throws -> ChatMessage {
+        .mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            type: .regular,
+            author: .mock(id: "user", name: "User"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: nil,
+            isSentByCurrentUser: isSentByCurrentUser,
+            poll: .mock(optionCount: 1, voteCountForOption: { _ in 0 })
         )
     }
 }

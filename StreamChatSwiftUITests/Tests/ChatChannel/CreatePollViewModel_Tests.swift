@@ -7,6 +7,9 @@
 import XCTest
 
 final class CreatePollViewModel_Tests: StreamChatTestCase {
+    
+    // MARK: - Can Show Discard Confirmation
+    
     func test_canShowDiscardConfirmation_whenEmpty() {
         // Given
         // When
@@ -44,5 +47,39 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssertEqual(viewModel.canShowDiscardConfirmation, true)
+    }
+    
+    // MARK: - Can Create Poll
+    
+    func test_canCreatePoll_whenRequiredInformationAdded() {
+        // Given
+        // When
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        viewModel.question = " A  "
+        viewModel.options = ["O     "]
+        
+        // Then
+        XCTAssertEqual(viewModel.canCreatePoll, true)
+    }
+    
+    func test_canCreatePoll_whenEmptyOrChangedToggles() {
+        // Given
+        // When
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        viewModel.allowComments.toggle()
+        
+        // Then
+        XCTAssertEqual(viewModel.canCreatePoll, false)
+    }
+    
+    func test_canCreatePoll_whenInsertingInformation() {
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        XCTAssertEqual(viewModel.canCreatePoll, false)
+        viewModel.question = "A"
+        XCTAssertEqual(viewModel.canCreatePoll, false)
+        viewModel.options = ["A", "a"] // duplicate error
+        XCTAssertEqual(viewModel.canCreatePoll, false)
+        viewModel.options = ["A", "aa"]
+        XCTAssertEqual(viewModel.canCreatePoll, true)
     }
 }

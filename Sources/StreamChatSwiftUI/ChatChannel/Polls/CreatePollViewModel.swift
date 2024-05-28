@@ -122,9 +122,16 @@ class CreatePollViewModel: ObservableObject {
         }
     }
     
+    var canCreatePoll: Bool {
+        guard !question.trimmed.isEmpty else { return false }
+        guard optionsErrorIndices.isEmpty else { return false }
+        guard options.contains(where: { !$0.trimmed.isEmpty }) else { return false }
+        return true
+    }
+    
     var canShowDiscardConfirmation: Bool {
-        guard question.isEmpty else { return true }
-        return options.contains(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
+        guard question.trimmed.isEmpty else { return true }
+        return options.contains(where: { !$0.trimmed.isEmpty })
     }
     
     func showsOptionError(for index: Int) -> Bool {

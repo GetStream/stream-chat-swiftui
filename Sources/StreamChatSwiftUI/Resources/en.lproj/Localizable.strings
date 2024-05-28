@@ -6,6 +6,10 @@
 "channel.name.andXMore" = "and %@ more";
 "channel.name.missing" = "NoChannel";
 "channel.item.empty-messages" = "No messages";
+"channel.item.poll-someone-voted" = "%@ voted:";
+"channel.item.poll-you-voted" = "You voted:";
+"channel.item.poll-someone-created" = "%@ created:";
+"channel.item.poll-you-created" = "You created:";
 "channel.item.typing-singular" = "is typing ...";
 "channel.item.typing-plural" = "are typing ...";
 "channel.item.muted" = "Channel is muted";
