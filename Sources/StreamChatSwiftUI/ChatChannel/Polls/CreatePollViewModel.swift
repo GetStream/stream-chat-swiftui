@@ -29,6 +29,8 @@ class CreatePollViewModel: ObservableObject {
     
     @Published var allowComments: Bool
     
+    @Published var showsDiscardConfirmation = false
+    
     let chatController: ChatChannelController
     
     private var cancellables = [AnyCancellable]()
@@ -118,6 +120,11 @@ class CreatePollViewModel: ObservableObject {
                 log.error("Error creating a poll: \(error.localizedDescription)")
             }
         }
+    }
+    
+    var canShowDiscardConfirmation: Bool {
+        guard question.isEmpty else { return true }
+        return options.contains(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
     }
     
     func showsOptionError(for index: Int) -> Bool {

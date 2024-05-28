@@ -12,6 +12,7 @@
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
 		4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */; };
 		4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */; };
+		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
 		4FEAB3182BFF71F70057E511 /* SwiftUI+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */; };
 		8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */; };
 		8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */; };
@@ -570,6 +571,7 @@
 		4F198FE02C05BABF00148F49 /* PollAttachmentViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentViewModel_Tests.swift; sourceTree = "<group>"; };
 		4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatClient+Extensions.swift"; sourceTree = "<group>"; };
 		4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatClientExtensions_Tests.swift; sourceTree = "<group>"; };
+		4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel_Tests.swift; sourceTree = "<group>"; };
 		4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+UIAlertController.swift"; sourceTree = "<group>"; };
 		820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedReply_Tests.swift; sourceTree = "<group>"; };
 		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
@@ -2061,6 +2063,7 @@
 				84204BF92C04D55300AE522B /* PollAttachmentView_Tests.swift */,
 				84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */,
 				84204BFD2C052BD600AE522B /* CreatePollView_Tests.swift */,
+				4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */,
 				8428D01D2C05C2CC000B2A04 /* PollAttachmentViewModel_Tests.swift */,
 			);
 			path = ChatChannel;
@@ -2841,6 +2844,7 @@
 				84D6E52A2B3077A500D0056C /* VideoDurationFormatter_Tests.swift in Sources */,
 				84B2B5CE281961E200479CEE /* ChannelInfoMockUtils.swift in Sources */,
 				8492975427B1725B00A8EEB0 /* MessageComposerView_Tests.swift in Sources */,
+				4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */,
 				84204BFA2C04D55300AE522B /* PollAttachmentView_Tests.swift in Sources */,
 				84BB4C50284122E600CBE004 /* ChatChannelViewDateOverlay_Tests.swift in Sources */,
 				84E0478F284A444E00BAFA17 /* EventNotificationCenterMock.swift in Sources */,
