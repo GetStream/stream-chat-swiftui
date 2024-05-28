@@ -77,6 +77,18 @@ internal enum L10n {
       internal static var muted: String { L10n.tr("Localizable", "channel.item.muted") }
       /// Photo
       internal static var photo: String { L10n.tr("Localizable", "channel.item.photo") }
+      /// %@ created:
+      internal static func pollSomeoneCreated(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "channel.item.poll-someone-created", String(describing: p1))
+      }
+      /// %@ voted:
+      internal static func pollSomeoneVoted(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "channel.item.poll-someone-voted", String(describing: p1))
+      }
+      /// You created:
+      internal static var pollYouCreated: String { L10n.tr("Localizable", "channel.item.poll-you-created") }
+      /// You voted:
+      internal static var pollYouVoted: String { L10n.tr("Localizable", "channel.item.poll-you-voted") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
       /// is typing ...
