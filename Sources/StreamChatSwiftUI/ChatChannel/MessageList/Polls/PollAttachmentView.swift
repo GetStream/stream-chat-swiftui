@@ -237,6 +237,7 @@ struct PollOptionView: View {
             
             if let maxVotes {
                 PollVotesIndicatorView(
+                    mostVotes: viewModel.hasMostVotes(for: option),
                     optionVotes: optionVotes ?? 0,
                     maxVotes: maxVotes
                 )
@@ -250,6 +251,7 @@ struct PollVotesIndicatorView: View {
     
     @Injected(\.colors) var colors
     
+    let mostVotes: Bool
     var optionVotes: Int
     var maxVotes: Int
     
@@ -263,7 +265,7 @@ struct PollVotesIndicatorView: View {
                     .frame(width: reader.size.width, height: height)
 
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(colors.tintColor)
+                    .fill(mostVotes ? Color(colors.alternativeActiveTint) : colors.tintColor)
                     .frame(width: reader.size.width * ratio, height: height)
             }
             .frame(height: height)
