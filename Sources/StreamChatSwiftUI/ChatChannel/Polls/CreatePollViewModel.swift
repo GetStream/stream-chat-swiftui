@@ -9,30 +9,64 @@ import SwiftUI
 
 class CreatePollViewModel: ObservableObject {
     
+    @Injected(\.utils) var utils
+    
     @Published var question = ""
     
     @Published var options: [String] = [""]
     @Published var optionsErrorIndices = Set<Int>()
         
-    @Published var suggestAnOption = true
+    @Published var suggestAnOption: Bool
     
-    @Published var anonymousPoll = false
+    @Published var anonymousPoll: Bool
     
-    @Published var multipleAnswers = false
+    @Published var multipleAnswers: Bool
     
-    @Published var maxVotesEnabled = false
+    @Published var maxVotesEnabled: Bool
     
     @Published var maxVotes: String = ""
     @Published var showsMaxVotesError = false
     
-    @Published var allowComments: Bool = false
+    @Published var allowComments: Bool
     
     let chatController: ChatChannelController
     
     private var cancellables = [AnyCancellable]()
     
+    var pollsConfig: PollsConfig {
+        utils.pollsConfig
+    }
+    
+    var multipleAnswersShown: Bool {
+        utils.pollsConfig.multipleAnswers.configurable
+    }
+    
+    var anonymousPollShown: Bool {
+        utils.pollsConfig.anonymousPoll.configurable
+    }
+    
+    var suggestAnOptionShown: Bool {
+        utils.pollsConfig.suggestAnOption.configurable
+    }
+    
+    var addCommentsShown: Bool {
+        utils.pollsConfig.addComments.configurable
+    }
+    
+    var maxVotesShown: Bool {
+        utils.pollsConfig.maxVotesPerPerson.configurable
+    }
+    
     init(chatController: ChatChannelController) {
+        let pollsConfig = InjectedValues[\.utils].pollsConfig
         self.chatController = chatController
+        
+        suggestAnOption = pollsConfig.suggestAnOption.defaultValue
+        anonymousPoll = pollsConfig.anonymousPoll.defaultValue
+        multipleAnswers = pollsConfig.multipleAnswers.defaultValue
+        allowComments = pollsConfig.addComments.defaultValue
+        maxVotesEnabled = pollsConfig.maxVotesPerPerson.defaultValue
+        
         $maxVotes
             .map { text in
                 guard !text.isEmpty else { return false }

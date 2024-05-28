@@ -108,40 +108,50 @@ struct CreatePollView: View {
                 }
                 .modifier(ListRowModifier())
                                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Toggle(L10n.Composer.Polls.multipleAnswers, isOn: $viewModel.multipleAnswers)
-                    if viewModel.multipleAnswers {
-                        HStack(alignment: .textFieldToggle) {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(L10n.Composer.Polls.typeNumberFrom1And10)
-                                    .foregroundColor(Color(colors.alert))
-                                    .font(fonts.caption1)
-                                    .offset(y: viewModel.showsMaxVotesError ? 0 : 6)
-                                    .opacity(viewModel.showsMaxVotesError ? 1 : 0)
-                                    .animation(.easeIn, value: viewModel.showsMaxVotesError)
-                                TextField(L10n.Composer.Polls.maximumVotesPerPerson, text: $viewModel.maxVotes)
-                                    .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
-                                    .disabled(!viewModel.maxVotesEnabled)
+                if viewModel.multipleAnswersShown {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Toggle(L10n.Composer.Polls.multipleAnswers, isOn: $viewModel.multipleAnswers)
+                        if viewModel.multipleAnswers {
+                            HStack(alignment: .textFieldToggle) {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(L10n.Composer.Polls.typeNumberFrom1And10)
+                                        .foregroundColor(Color(colors.alert))
+                                        .font(fonts.caption1)
+                                        .offset(y: viewModel.showsMaxVotesError ? 0 : 6)
+                                        .opacity(viewModel.showsMaxVotesError ? 1 : 0)
+                                        .animation(.easeIn, value: viewModel.showsMaxVotesError)
+                                    TextField(L10n.Composer.Polls.maximumVotesPerPerson, text: $viewModel.maxVotes)
+                                        .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
+                                        .disabled(!viewModel.maxVotesEnabled)
+                                }
+                                .accessibilityElement(children: .combine)
+                                if viewModel.maxVotesShown {
+                                    Toggle("", isOn: $viewModel.maxVotesEnabled)
+                                        .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
+                                        .frame(width: 64)
+                                }
                             }
-                            .accessibilityElement(children: .combine)
-                            Toggle("", isOn: $viewModel.maxVotesEnabled)
-                                .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
-                                .frame(width: 64)
+                            .padding(.top, 8)
                         }
-                        .padding(.top, 8)
                     }
+                    .modifier(CreatePollItemModifier())
+                    .padding(.top, 16)
                 }
-                .modifier(CreatePollItemModifier())
-                .padding(.top, 16)
                 
-                Toggle(L10n.Composer.Polls.anonymousPoll, isOn: $viewModel.anonymousPoll)
-                    .modifier(CreatePollItemModifier())
+                if viewModel.anonymousPollShown {
+                    Toggle(L10n.Composer.Polls.anonymousPoll, isOn: $viewModel.anonymousPoll)
+                        .modifier(CreatePollItemModifier())
+                }
                 
-                Toggle(L10n.Composer.Polls.suggestOption, isOn: $viewModel.suggestAnOption)
-                    .modifier(CreatePollItemModifier())
+                if viewModel.suggestAnOptionShown {
+                    Toggle(L10n.Composer.Polls.suggestOption, isOn: $viewModel.suggestAnOption)
+                        .modifier(CreatePollItemModifier())
+                }
                 
-                Toggle(L10n.Composer.Polls.addComment, isOn: $viewModel.allowComments)
-                    .modifier(CreatePollItemModifier())
+                if viewModel.addCommentsShown {
+                    Toggle(L10n.Composer.Polls.addComment, isOn: $viewModel.allowComments)
+                        .modifier(CreatePollItemModifier())
+                }
                 
                 Spacer()
                     .modifier(ListRowModifier())

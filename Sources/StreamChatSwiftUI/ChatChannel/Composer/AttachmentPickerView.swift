@@ -70,6 +70,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 selected: selectedPickerState,
                 onPickerStateChange: onPickerStateChange
             )
+            .environmentObject(viewModel)
 
             if selectedPickerState == .photos {
                 if let assets = photoLibraryAssets {
@@ -122,7 +123,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
 /// View for picking the source of the attachment (photo, files or camera).
 public struct AttachmentSourcePickerView: View {
-
+    @EnvironmentObject var viewModel: MessageComposerViewModel
+    
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 
@@ -164,13 +166,15 @@ public struct AttachmentSourcePickerView: View {
             )
             .accessibilityIdentifier("attachmentPickerCamera")
             
-            AttachmentPickerButton(
-                icon: images.attachmentPickerPolls,
-                pickerType: .polls,
-                isSelected: selected == .polls,
-                onTap: onTap
-            )
-            .accessibilityIdentifier("attachmentPickerCamera")
+            if viewModel.channelController.channel?.config.pollsEnabled == true {
+                AttachmentPickerButton(
+                    icon: images.attachmentPickerPolls,
+                    pickerType: .polls,
+                    isSelected: selected == .polls,
+                    onTap: onTap
+                )
+                .accessibilityIdentifier("attachmentPickerPolls")
+            }
 
             Spacer()
         }
