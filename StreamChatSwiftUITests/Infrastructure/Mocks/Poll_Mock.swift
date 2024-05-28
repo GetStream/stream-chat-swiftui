@@ -13,15 +13,17 @@ extension Poll {
         isClosed: Bool = false
     ) -> Poll {
         let pollId = "123"
+        let voteId = "456"
+        let voter = ChatUser.mock(id: "voter", name: "voter")
         let vote = PollVote(
-            id: .unique,
+            id: voteId,
             createdAt: Date(),
             updatedAt: Date(),
             pollId: pollId,
             optionId: "test",
             isAnswer: false,
             answerText: nil,
-            user: .unique
+            user: voter
         )
         let option = PollOption(
             id: "test",

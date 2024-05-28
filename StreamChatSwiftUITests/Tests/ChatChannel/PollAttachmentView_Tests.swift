@@ -89,5 +89,31 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         
         // Then
         assertSnapshot(matching: view, as: .image)
-    }        
+    }
+    
+    func test_pollAttachmentView_resultsSnapshot() {
+        // Given
+        let poll = Poll.mock()
+        let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
+        
+        // When
+        let view = PollResultsView(viewModel: viewModel)
+            .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
+    
+    func test_pollAttachmentView_allOptions() {
+        // Given
+        let poll = Poll.mock()
+        let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
+        
+        // When
+        let view = PollAllOptionsView(viewModel: viewModel)
+            .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
