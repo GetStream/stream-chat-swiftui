@@ -151,7 +151,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     }
     
     private var options: [PollOption] {
-        poll.options.sorted(by: { $0.text < $1.text })
+        poll.options
     }
     
     private var subtitleText: String {
