@@ -185,6 +185,7 @@ struct CreatePollView: View {
                         Image(systemName: "paperplane.fill")
                             .foregroundColor(colors.tintColor)
                     }
+                    .disabled(!viewModel.canCreatePoll)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

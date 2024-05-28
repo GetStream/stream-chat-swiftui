@@ -40,6 +40,8 @@ extension String {
     var containsOnlyEmoji: Bool { !isEmpty && !contains { !$0.isEmoji } }
 }
 
+// MARK: -
+
 extension String {
     /// computes levenshtein distance with another string (0
     public func levenshtein(_ other: String) -> Int {
@@ -124,5 +126,11 @@ extension String {
                 : index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
         }
         return result
+    }
+}
+
+extension String {
+    var trimmed: Self {
+        trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
