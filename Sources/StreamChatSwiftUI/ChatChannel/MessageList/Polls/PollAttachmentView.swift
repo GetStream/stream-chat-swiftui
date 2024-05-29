@@ -36,7 +36,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     
     public var body: some View {
         VStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 2) {
                 HStack {
                     Text(poll.name)
                         .font(fonts.bodyBold)
