@@ -8,6 +8,7 @@ import SwiftUI
 public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     private var isCastingVote = false
+    private var isClosingPoll = false
     
     @Injected(\.chatClient) var chatClient
     
@@ -35,6 +36,13 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     private let createdByCurrentUser: Bool
         
     @Published public var showsEndVoteConfirmation = false
+
+    /// If true, poll controls are in enabled state, otherwise disabled.
+    public var canInteract: Bool {
+        guard !isClosingPoll else { return false }
+        guard !showsEndVoteConfirmation else { return false }
+        return true
+    }
     
     public var showEndVoteButton: Bool {
         !poll.isClosed && createdByCurrentUser
@@ -119,7 +127,11 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func endVote() {
-        pollController.closePoll { error in
+        isClosingPoll = true
+        pollController.closePoll { [weak self] error in
+            DispatchQueue.main.async {
+                self?.isClosingPoll = false
+            }
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
             }
