@@ -111,12 +111,14 @@ extension MessageAction {
         }
 
         if message.isSentByCurrentUser {
-            let editAction = editMessageAction(
-                for: message,
-                channel: channel,
-                onFinish: onFinish
-            )
-            messageActions.append(editAction)
+            if message.poll == nil {
+                let editAction = editMessageAction(
+                    for: message,
+                    channel: channel,
+                    onFinish: onFinish
+                )
+                messageActions.append(editAction)
+            }
 
             let deleteAction = deleteMessageAction(
                 for: message,
