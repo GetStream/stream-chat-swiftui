@@ -45,21 +45,18 @@ struct PollCommentsView: View {
                     Button(action: {
                         viewModel.addCommentShown = true
                     }, label: {
-                        Text(L10n.Message.Polls.addComment)
+                        Text(L10n.Message.Polls.Button.addComment)
                             .bold()
                             .foregroundColor(colors.tintColor)
                     })
                         .frame(maxWidth: .infinity)
                         .withPollsBackground()
-                        .modifier(
-                            SuggestOptionModifier(
-                                title: L10n.Message.Polls.addComment,
-                                showingAlert: $viewModel.addCommentShown,
-                                text: $viewModel.newCommentText,
-                                submit: {
-                                    viewModel.add(comment: viewModel.newCommentText)
-                                }
-                            )
+                        .uiAlert(
+                            title: L10n.Alert.Title.addComment,
+                            isPresented: $viewModel.addCommentShown,
+                            text: $viewModel.newCommentText,
+                            accept: L10n.Alert.Actions.send,
+                            action: { viewModel.add(comment: viewModel.newCommentText) }
                         )
                 }
                 .padding()

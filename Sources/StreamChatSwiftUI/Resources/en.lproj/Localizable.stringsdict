@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>message.polls.button.view-number-of-comments</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@comments@</string>
+		<key>comments</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>View %d Comment</string>
+			<key>other</key>
+			<string>View %d Comments</string>
+		</dict>
+	</dict>
 	<key>recording.presentation.name</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

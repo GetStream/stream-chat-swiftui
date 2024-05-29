@@ -64,7 +64,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.allOptionsShown = true
                 } label: {
-                    Text(L10n.Message.Polls.seeMoreOptions(options.count - 10))
+                    Text(L10n.Message.Polls.Button.seeMoreOptions(options.count - 10))
                 }
                 .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
                     PollAllOptionsView(viewModel: viewModel)
@@ -75,17 +75,15 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.suggestOptionShown = true
                 } label: {
-                    Text(L10n.Message.Polls.suggestAnOption)
+                    Text(L10n.Message.Polls.Button.suggestAnOption)
                 }
-                .modifier(
-                    SuggestOptionModifier(
-                        title: L10n.Message.Polls.suggestAnOption,
-                        showingAlert: $viewModel.suggestOptionShown,
-                        text: $viewModel.suggestOptionText,
-                        submit: {
-                            viewModel.suggest(option: viewModel.suggestOptionText)
-                        }
-                    )
+                .uiAlert(
+                    title: L10n.Alert.Title.suggestAnOption,
+                    isPresented: $viewModel.suggestOptionShown,
+                    text: $viewModel.suggestOptionText,
+                    placeholder: L10n.Alert.TextField.pollsNewOption,
+                    accept: L10n.Alert.Actions.send,
+                    action: { viewModel.suggest(option: viewModel.suggestOptionText) }
                 )
             }
             
@@ -93,17 +91,14 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.addCommentShown = true
                 } label: {
-                    Text(L10n.Message.Polls.addComment)
+                    Text(L10n.Message.Polls.Button.addComment)
                 }
-                .modifier(
-                    SuggestOptionModifier(
-                        title: L10n.Message.Polls.addComment,
-                        showingAlert: $viewModel.addCommentShown,
-                        text: $viewModel.commentText,
-                        submit: {
-                            viewModel.add(comment: viewModel.commentText)
-                        }
-                    )
+                .uiAlert(
+                    title: L10n.Alert.Title.addComment,
+                    isPresented: $viewModel.addCommentShown,
+                    text: $viewModel.commentText,
+                    accept: L10n.Alert.Actions.send,
+                    action: { viewModel.add(comment: viewModel.commentText) }
                 )
             }
             
@@ -111,7 +106,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.allCommentsShown = true
                 } label: {
-                    Text(L10n.Message.Polls.viewComments(viewModel.poll.answersCount))
+                    Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
                 }
                 .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
                     PollCommentsView(poll: viewModel.poll, pollController: viewModel.pollController)
@@ -121,7 +116,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             Button {
                 viewModel.pollResultsShown = true
             } label: {
-                Text(L10n.Message.Polls.viewResults)
+                Text(L10n.Message.Polls.Button.viewResults)
             }
             .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
                 PollResultsView(viewModel: viewModel)
@@ -131,7 +126,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.endVote()
                 } label: {
-                    Text(L10n.Message.Polls.endVote)
+                    Text(L10n.Message.Polls.Button.endVote)
                 }
             }
         }
@@ -168,27 +163,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
 }
 
 extension PollOption: Identifiable {}
-
-struct SuggestOptionModifier: ViewModifier {
-    
-    var title: String
-    @Binding var showingAlert: Bool
-    @Binding var text: String
-    var submit: () -> Void
-    
-    func body(content: Content) -> some View {
-        content
-            .uiAlert(
-                title: title,
-                isPresented: $showingAlert,
-                text: $text,
-                placeholder: L10n.Alert.TextField.pollsNewOption,
-                cancel: L10n.Alert.Actions.cancel,
-                accept: L10n.Alert.Actions.add,
-                action: submit
-            )
-    }
-}
 
 struct PollOptionView: View {
     

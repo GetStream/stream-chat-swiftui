@@ -115,7 +115,7 @@ struct PollOptionResultsView: View {
                 NavigationLink {
                     PollOptionAllVotesView(poll: poll, option: option)
                 } label: {
-                    Text(L10n.Message.Polls.showAll)
+                    Text(L10n.Message.Polls.Button.showAll)
                 }
             }
         }
