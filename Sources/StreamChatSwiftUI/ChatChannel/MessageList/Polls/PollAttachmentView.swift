@@ -201,7 +201,7 @@ struct PollOptionView: View {
     
     var body: some View {
         VStack(spacing: 4) {
-            HStack {
+            HStack(alignment: .top) {
                 if !viewModel.poll.isClosed {
                     Button {
                         if viewModel.optionVotedByCurrentUser(option) {
