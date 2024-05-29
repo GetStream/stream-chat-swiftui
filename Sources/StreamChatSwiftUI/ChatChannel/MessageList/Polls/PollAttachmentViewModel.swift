@@ -7,6 +7,8 @@ import SwiftUI
 
 public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
+    private var isCastingVote = false
+    
     @Injected(\.chatClient) var chatClient
     
     let message: ChatMessage
@@ -65,12 +67,19 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func castPollVote(for option: PollOption) {
+        guard !isCastingVote else { return }
+        isCastingVote = true
         pollController.castPollVote(
             answerText: nil,
             optionId: option.id
-        ) { error in
-            if let error {
+        ) { [weak self] error in
+            if let error = error as? ClientError.PollVoteAlreadyExists  {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                    self?.isCastingVote = false
+                })
                 log.error("Error casting a vote \(error.localizedDescription)")
+            } else {
+                self?.isCastingVote = false
             }
         }
     }
@@ -87,10 +96,13 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func removePollVote(for option: PollOption) {
+        guard !isCastingVote else { return }
+        isCastingVote = true
         guard let vote = currentUserVote(for: option) else { return }
         pollController.removePollVote(
             voteId: vote.id
         ) { error in
+            self.isCastingVote = false
             if let error {
                 log.error("Error removing a vote \(error.localizedDescription)")
             }

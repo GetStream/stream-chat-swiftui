@@ -33,7 +33,7 @@ struct PollCommentsView: View {
                                     .bold()
                                 HStack {
                                     MessageAvatarView(avatarURL: comment.user?.imageURL)
-                                    Text(comment.user?.name ?? "")
+                                    Text(comment.user?.name ?? L10n.Message.Polls.unknownVoteAuthor)
                                     Spacer()
                                     PollDateIndicatorView(date: comment.createdAt)
                                 }
