@@ -55,7 +55,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     init(message: ChatMessage, poll: Poll, pollController: PollController) {
         self.message = message
         self.poll = poll
-        self.createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
+        createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
         self.pollController = pollController
         pollController.delegate = self
         pollController.synchronize { [weak self] _ in
@@ -106,7 +106,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
-        return currentUserVote(for: option) != nil
+        currentUserVote(for: option) != nil
     }
     
     public func suggest(option: String) {
@@ -118,6 +118,8 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     /// Returns true if the specified option has more votes than any other option.
+    ///
+    /// - Note: When multiple options have the highest vote count, this function returns false.
     public func hasMostVotes(for option: PollOption) -> Bool {
         guard let allCounts = poll.voteCountsByOption else { return false }
         guard let optionVoteCount = allCounts[option.id], optionVoteCount > 0 else { return false }
@@ -128,7 +130,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         return optionsByVoteCounts[optionVoteCount]?.count == 1
     }
     
-    //MARK: - PollControllerDelegate
+    // MARK: - PollControllerDelegate
     
     public func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
         self.poll = poll.item

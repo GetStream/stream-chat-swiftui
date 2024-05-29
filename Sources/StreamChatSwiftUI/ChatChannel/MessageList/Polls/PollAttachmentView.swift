@@ -236,9 +236,9 @@ struct PollOptionView: View {
             }
             
             PollVotesIndicatorView(
-                mostVotes: viewModel.hasMostVotes(for: option),
+                alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
                 optionVotes: optionVotes ?? 0,
-                maxVotes: maxVotes
+                maxVotes: maxVotes ?? 0
             )
             .padding(.leading, 24)
         }
@@ -249,9 +249,9 @@ struct PollVotesIndicatorView: View {
     
     @Injected(\.colors) var colors
     
-    let mostVotes: Bool
+    let alternativeStyle: Bool
     var optionVotes: Int
-    var maxVotes: Int?
+    var maxVotes: Int
     
     private let height: CGFloat = 4
     
@@ -263,7 +263,7 @@ struct PollVotesIndicatorView: View {
                     .frame(width: reader.size.width, height: height)
 
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(mostVotes ? Color(colors.alternativeActiveTint) : colors.tintColor)
+                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : colors.tintColor)
                     .frame(width: reader.size.width * ratio, height: height)
             }
         }
@@ -271,7 +271,6 @@ struct PollVotesIndicatorView: View {
     }
     
     var ratio: CGFloat {
-        let maxVotes = max(maxVotes ?? 1, 1)
-        return CGFloat(optionVotes) / CGFloat(maxVotes)
+        CGFloat(optionVotes) / CGFloat(max(maxVotes, 1))
     }
 }
