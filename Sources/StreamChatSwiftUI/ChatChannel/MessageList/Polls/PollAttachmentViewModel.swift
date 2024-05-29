@@ -46,6 +46,13 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         !poll.isClosed && poll.allowAnswers == true
     }
     
+    /// If true, user avatars who have voted should be shown with the option, otherwise hidden.
+    ///
+    /// The default is to hide avatars when the poll is anonymous.
+    public var showVoterAvatars: Bool {
+        poll.votingVisibility != VotingVisibility.anonymous
+    }
+    
     public convenience init(message: ChatMessage, poll: Poll) {
         let pollController = InjectedValues[\.chatClient].pollController(
             messageId: message.id,
@@ -73,10 +80,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
             answerText: nil,
             optionId: option.id
         ) { [weak self] error in
-            if let error = error as? ClientError.PollVoteAlreadyExists  {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            if let error = error as? ClientError.PollVoteAlreadyExists {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self?.isCastingVote = false
-                })
+                }
                 log.error("Error casting a vote \(error.localizedDescription)")
             } else {
                 self?.isCastingVote = false
