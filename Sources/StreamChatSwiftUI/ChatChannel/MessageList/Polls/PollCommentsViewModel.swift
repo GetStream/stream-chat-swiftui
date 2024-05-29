@@ -2,6 +2,7 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import StreamChat
 import SwiftUI
 
@@ -14,6 +15,8 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     let pollController: PollController
     let commentsController: PollVoteListController
     
+    private var cancellables = Set<AnyCancellable>()
+    private(set) var animateChanges = false
     private var loadingComments = false
         
     init(poll: Poll, pollController: PollController) {
@@ -32,10 +35,16 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
                 self.loadComments()
             }
         }
+        // No animation for initial load
+        $comments
+            .dropFirst()
+            .map { _ in true }
+            .assignWeakly(to: \.animateChanges, on: self)
+            .store(in: &cancellables)
     }
     
     func add(comment: String) {
-        pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
+        pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] _ in
             DispatchQueue.main.async {
                 self?.newCommentText = ""
             }
@@ -46,8 +55,12 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        withAnimation {
-            self.comments = Array(self.commentsController.votes)
+        if animateChanges {
+            withAnimation {
+                self.comments = Array(self.commentsController.votes)
+            }
+        } else {
+            comments = Array(commentsController.votes)
         }
     }
     
