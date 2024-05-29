@@ -13,8 +13,6 @@ internal enum L10n {
 
   internal enum Alert {
     internal enum Actions {
-      /// Add
-      internal static var add: String { L10n.tr("Localizable", "alert.actions.add") }
       /// Cancel
       internal static var cancel: String { L10n.tr("Localizable", "alert.actions.cancel") }
       /// Delete
@@ -37,6 +35,8 @@ internal enum L10n {
       internal static var muteChannelTitle: String { L10n.tr("Localizable", "alert.actions.mute-channel-title") }
       /// Ok
       internal static var ok: String { L10n.tr("Localizable", "alert.actions.ok") }
+      /// Send
+      internal static var send: String { L10n.tr("Localizable", "alert.actions.send") }
       /// Are you sure you want to unmute this
       internal static var unmuteChannelTitle: String { L10n.tr("Localizable", "alert.actions.unmute-channel-title") }
       /// View info
@@ -51,6 +51,12 @@ internal enum L10n {
     internal enum TextField {
       /// Enter a new option
       internal static var pollsNewOption: String { L10n.tr("Localizable", "alert.text-field.polls-new-option") }
+    }
+    internal enum Title {
+      /// Add a comment
+      internal static var addComment: String { L10n.tr("Localizable", "alert.title.add-comment") }
+      /// Suggest an option
+      internal static var suggestAnOption: String { L10n.tr("Localizable", "alert.title.suggest-an-option") }
     }
   }
 
@@ -387,29 +393,31 @@ internal enum L10n {
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
     internal enum Polls {
-      /// Add a comment
-      internal static var addComment: String { L10n.tr("Localizable", "message.polls.addComment") }
-      /// End Vote
-      internal static var endVote: String { L10n.tr("Localizable", "message.polls.endVote") }
-      /// See %d more options
-      internal static func seeMoreOptions(_ p1: Int) -> String {
-        return L10n.tr("Localizable", "message.polls.seeMoreOptions", p1)
-      }
-      /// Show All
-      internal static var showAll: String { L10n.tr("Localizable", "message.polls.show-all") }
-      /// Suggest an option
-      internal static var suggestAnOption: String { L10n.tr("Localizable", "message.polls.suggestAnOption") }
       /// Anonymous
       internal static var unknownVoteAuthor: String { L10n.tr("Localizable", "message.polls.unknown-vote-author") }
-      /// View %d comments
-      internal static func viewComments(_ p1: Int) -> String {
-        return L10n.tr("Localizable", "message.polls.viewComments", p1)
-      }
-      /// View Results
-      internal static var viewResults: String { L10n.tr("Localizable", "message.polls.viewResults") }
       /// %d votes
       internal static func votes(_ p1: Int) -> String {
         return L10n.tr("Localizable", "message.polls.votes", p1)
+      }
+      internal enum Button {
+        /// Add a Comment
+        internal static var addComment: String { L10n.tr("Localizable", "message.polls.button.addComment") }
+        /// End Vote
+        internal static var endVote: String { L10n.tr("Localizable", "message.polls.button.endVote") }
+        /// See %d More Options
+        internal static func seeMoreOptions(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.button.seeMoreOptions", p1)
+        }
+        /// Show All
+        internal static var showAll: String { L10n.tr("Localizable", "message.polls.button.show-all") }
+        /// Suggest an Option
+        internal static var suggestAnOption: String { L10n.tr("Localizable", "message.polls.button.suggestAnOption") }
+        /// Plural format key: "%#@comments@"
+        internal static func viewNumberOfComments(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.button.view-number-of-comments", p1)
+        }
+        /// View Results
+        internal static var viewResults: String { L10n.tr("Localizable", "message.polls.button.viewResults") }
       }
       internal enum Subtitle {
         /// Select one

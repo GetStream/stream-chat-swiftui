@@ -13,8 +13,8 @@ extension View {
         isPresented: Binding<Bool>,
         message: String = "",
         text: Binding<String>,
-        placeholder: String,
-        cancel: String,
+        placeholder: String = "",
+        cancel: String = L10n.Alert.Actions.cancel,
         accept: String,
         action: @escaping () -> Void
     ) -> some View {

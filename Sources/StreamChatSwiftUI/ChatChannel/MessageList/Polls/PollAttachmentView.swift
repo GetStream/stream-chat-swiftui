@@ -36,7 +36,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     
     public var body: some View {
         VStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 2) {
                 HStack {
                     Text(poll.name)
                         .font(fonts.bodyBold)
@@ -64,7 +64,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.allOptionsShown = true
                 } label: {
-                    Text(L10n.Message.Polls.seeMoreOptions(options.count - 10))
+                    Text(L10n.Message.Polls.Button.seeMoreOptions(options.count - 10))
                 }
                 .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
                     PollAllOptionsView(viewModel: viewModel)
@@ -75,17 +75,15 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.suggestOptionShown = true
                 } label: {
-                    Text(L10n.Message.Polls.suggestAnOption)
+                    Text(L10n.Message.Polls.Button.suggestAnOption)
                 }
-                .modifier(
-                    SuggestOptionModifier(
-                        title: L10n.Message.Polls.suggestAnOption,
-                        showingAlert: $viewModel.suggestOptionShown,
-                        text: $viewModel.suggestOptionText,
-                        submit: {
-                            viewModel.suggest(option: viewModel.suggestOptionText)
-                        }
-                    )
+                .uiAlert(
+                    title: L10n.Alert.Title.suggestAnOption,
+                    isPresented: $viewModel.suggestOptionShown,
+                    text: $viewModel.suggestOptionText,
+                    placeholder: L10n.Alert.TextField.pollsNewOption,
+                    accept: L10n.Alert.Actions.send,
+                    action: { viewModel.suggest(option: viewModel.suggestOptionText) }
                 )
             }
             
@@ -93,17 +91,14 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.addCommentShown = true
                 } label: {
-                    Text(L10n.Message.Polls.addComment)
+                    Text(L10n.Message.Polls.Button.addComment)
                 }
-                .modifier(
-                    SuggestOptionModifier(
-                        title: L10n.Message.Polls.addComment,
-                        showingAlert: $viewModel.addCommentShown,
-                        text: $viewModel.commentText,
-                        submit: {
-                            viewModel.add(comment: viewModel.commentText)
-                        }
-                    )
+                .uiAlert(
+                    title: L10n.Alert.Title.addComment,
+                    isPresented: $viewModel.addCommentShown,
+                    text: $viewModel.commentText,
+                    accept: L10n.Alert.Actions.send,
+                    action: { viewModel.add(comment: viewModel.commentText) }
                 )
             }
             
@@ -111,7 +106,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.allCommentsShown = true
                 } label: {
-                    Text(L10n.Message.Polls.viewComments(viewModel.poll.answersCount))
+                    Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
                 }
                 .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
                     PollCommentsView(poll: viewModel.poll, pollController: viewModel.pollController)
@@ -121,7 +116,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             Button {
                 viewModel.pollResultsShown = true
             } label: {
-                Text(L10n.Message.Polls.viewResults)
+                Text(L10n.Message.Polls.Button.viewResults)
             }
             .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
                 PollResultsView(viewModel: viewModel)
@@ -131,7 +126,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 Button {
                     viewModel.endVote()
                 } label: {
-                    Text(L10n.Message.Polls.endVote)
+                    Text(L10n.Message.Polls.Button.endVote)
                 }
             }
         }
@@ -169,27 +164,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
 
 extension PollOption: Identifiable {}
 
-struct SuggestOptionModifier: ViewModifier {
-    
-    var title: String
-    @Binding var showingAlert: Bool
-    @Binding var text: String
-    var submit: () -> Void
-    
-    func body(content: Content) -> some View {
-        content
-            .uiAlert(
-                title: title,
-                isPresented: $showingAlert,
-                text: $text,
-                placeholder: L10n.Alert.TextField.pollsNewOption,
-                cancel: L10n.Alert.Actions.cancel,
-                accept: L10n.Alert.Actions.add,
-                action: submit
-            )
-    }
-}
-
 struct PollOptionView: View {
     
     @ObservedObject var viewModel: PollAttachmentViewModel
@@ -201,7 +175,7 @@ struct PollOptionView: View {
     
     var body: some View {
         VStack(spacing: 4) {
-            HStack {
+            HStack(alignment: .top) {
                 if !viewModel.poll.isClosed {
                     Button {
                         if viewModel.optionVotedByCurrentUser(option) {
@@ -236,9 +210,9 @@ struct PollOptionView: View {
             }
             
             PollVotesIndicatorView(
-                mostVotes: viewModel.hasMostVotes(for: option),
+                alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
                 optionVotes: optionVotes ?? 0,
-                maxVotes: maxVotes
+                maxVotes: maxVotes ?? 0
             )
             .padding(.leading, 24)
         }
@@ -249,9 +223,9 @@ struct PollVotesIndicatorView: View {
     
     @Injected(\.colors) var colors
     
-    let mostVotes: Bool
+    let alternativeStyle: Bool
     var optionVotes: Int
-    var maxVotes: Int?
+    var maxVotes: Int
     
     private let height: CGFloat = 4
     
@@ -263,7 +237,7 @@ struct PollVotesIndicatorView: View {
                     .frame(width: reader.size.width, height: height)
 
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(mostVotes ? Color(colors.alternativeActiveTint) : colors.tintColor)
+                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : colors.tintColor)
                     .frame(width: reader.size.width * ratio, height: height)
             }
         }
@@ -271,7 +245,6 @@ struct PollVotesIndicatorView: View {
     }
     
     var ratio: CGFloat {
-        let maxVotes = max(maxVotes ?? 1, 1)
-        return CGFloat(optionVotes) / CGFloat(maxVotes)
+        CGFloat(optionVotes) / CGFloat(max(maxVotes, 1))
     }
 }
