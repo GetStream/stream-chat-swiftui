@@ -34,6 +34,8 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     private let createdByCurrentUser: Bool
         
+    @Published public var showsEndVoteConfirmation = false
+    
     public var showEndVoteButton: Bool {
         !poll.isClosed && createdByCurrentUser
     }

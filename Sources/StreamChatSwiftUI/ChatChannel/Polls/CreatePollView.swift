@@ -195,9 +195,9 @@ struct CreatePollView: View {
                 ActionSheet(
                     title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
                     buttons: [
-                        .destructive(Text(L10n.Alert.Actions.discardChanges), action: {
+                        .destructive(Text(L10n.Alert.Actions.discardChanges)) {
                             presentationMode.wrappedValue.dismiss()
-                        }),
+                        },
                         .cancel(Text(L10n.Alert.Actions.keepEditing))
                     ]
                 )

@@ -23,6 +23,8 @@ internal enum L10n {
       internal static var deleteChannelTitle: String { L10n.tr("Localizable", "alert.actions.delete-channel-title") }
       /// Discard Changes
       internal static var discardChanges: String { L10n.tr("Localizable", "alert.actions.discard-changes") }
+      /// End
+      internal static var end: String { L10n.tr("Localizable", "alert.actions.end") }
       /// Keep Editing
       internal static var keepEditing: String { L10n.tr("Localizable", "alert.actions.keep-editing") }
       /// Leave
@@ -55,6 +57,8 @@ internal enum L10n {
     internal enum Title {
       /// Add a comment
       internal static var addComment: String { L10n.tr("Localizable", "alert.title.add-comment") }
+      /// Nobody will be able to vote in this poll anymore.
+      internal static var endPoll: String { L10n.tr("Localizable", "alert.title.end-poll") }
       /// Suggest an option
       internal static var suggestAnOption: String { L10n.tr("Localizable", "alert.title.suggest-an-option") }
     }
