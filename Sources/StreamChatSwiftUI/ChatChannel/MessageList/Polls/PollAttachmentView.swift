@@ -195,14 +195,16 @@ struct PollOptionView: View {
                 Text(option.text)
                     .font(optionFont)
                 Spacer()
-                HStack(spacing: -4) {
-                    ForEach(
-                        option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
-                    ) { vote in
-                        MessageAvatarView(
-                            avatarURL: vote.user?.imageURL,
-                            size: .init(width: 20, height: 20)
-                        )
+                if viewModel.showVoterAvatars {
+                    HStack(spacing: -4) {
+                        ForEach(
+                            option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
+                        ) { vote in
+                            MessageAvatarView(
+                                avatarURL: vote.user?.imageURL,
+                                size: .init(width: 20, height: 20)
+                            )
+                        }
                     }
                 }
                 Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
