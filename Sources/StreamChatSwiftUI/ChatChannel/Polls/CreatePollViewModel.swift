@@ -32,6 +32,7 @@ class CreatePollViewModel: ObservableObject {
     @Published var showsDiscardConfirmation = false
     
     let chatController: ChatChannelController
+    var messageController: ChatMessageController?
     
     private var cancellables = [AnyCancellable]()
     
@@ -59,9 +60,10 @@ class CreatePollViewModel: ObservableObject {
         utils.pollsConfig.maxVotesPerPerson.configurable
     }
     
-    init(chatController: ChatChannelController) {
+    init(chatController: ChatChannelController, messageController: ChatMessageController?) {
         let pollsConfig = InjectedValues[\.utils].pollsConfig
         self.chatController = chatController
+        self.messageController = messageController
         
         suggestAnOption = pollsConfig.suggestAnOption.defaultValue
         anonymousPoll = pollsConfig.anonymousPoll.defaultValue

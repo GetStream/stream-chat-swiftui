@@ -943,8 +943,11 @@ extension ViewFactory {
         }
     }
     
-    public func makeComposerPollView(channelController: ChatChannelController) -> some View {
-        ComposerPollView(channelController: channelController)
+    public func makeComposerPollView(
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?
+    ) -> some View {
+        ComposerPollView(channelController: channelController, messageController: messageController)
     }
     
     public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {

@@ -155,7 +155,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         } else if poll.enforceUniqueVote == true {
             return L10n.Message.Polls.Subtitle.selectOne
         } else if let maxVotes = poll.maxVotesAllowed, maxVotes > 0 {
-            return L10n.Message.Polls.Subtitle.selectUpTo(maxVotes)
+            return L10n.Message.Polls.Subtitle.selectUpTo(min(maxVotes, poll.options.count))
         } else {
             return L10n.Message.Polls.Subtitle.selectOneOrMore
         }

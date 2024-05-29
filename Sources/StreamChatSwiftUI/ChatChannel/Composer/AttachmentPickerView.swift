@@ -101,7 +101,10 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     cameraImageAdded: cameraImageAdded
                 )
             } else if selectedPickerState == .polls {
-                viewFactory.makeComposerPollView(channelController: viewModel.channelController)
+                viewFactory.makeComposerPollView(
+                    channelController: viewModel.channelController,
+                    messageController: viewModel.messageController
+                )
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
                     addedCustomAttachments: addedCustomAttachments,
@@ -166,7 +169,7 @@ public struct AttachmentSourcePickerView: View {
             )
             .accessibilityIdentifier("attachmentPickerCamera")
             
-            if viewModel.channelController.channel?.config.pollsEnabled == true {
+            if viewModel.channelController.channel?.config.pollsEnabled == true && viewModel.messageController == nil {
                 AttachmentPickerButton(
                     icon: images.attachmentPickerPolls,
                     pickerType: .polls,

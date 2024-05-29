@@ -10,6 +10,7 @@ struct ComposerPollView: View {
     @State var createPollShown = false
     
     let channelController: ChatChannelController
+    var messageController: ChatMessageController?
     
     var body: some View {
         VStack {
@@ -23,7 +24,7 @@ struct ComposerPollView: View {
             Spacer()
         }
         .fullScreenCover(isPresented: $createPollShown) {
-            CreatePollView(chatController: channelController)
+            CreatePollView(chatController: channelController, messageController: messageController)
         }
         .onAppear {
             createPollShown = true
@@ -44,9 +45,12 @@ struct CreatePollView: View {
     
     @State var listId = UUID()
     
-    init(chatController: ChatChannelController) {
+    init(chatController: ChatChannelController, messageController: ChatMessageController?) {
         _viewModel = StateObject(
-            wrappedValue: CreatePollViewModel(chatController: chatController)
+            wrappedValue: CreatePollViewModel(
+                chatController: chatController,
+                messageController: messageController
+            )
         )
     }
                 
