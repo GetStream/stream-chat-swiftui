@@ -72,6 +72,7 @@
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
+"alert.actions.end" = "End";
 "alert.actions.ok" = "Ok";
 "alert.actions.discard-changes" = "Discard Changes";
 "alert.actions.delete-channel-title" = "Delete conversation";
@@ -88,6 +89,7 @@
 "alert.actions.view-info-title" = "View info";
 "alert.text-field.polls-new-option" = "Enter a new option";
 "alert.title.add-comment" = "Add a comment";
+"alert.title.end-poll" = "Nobody will be able to vote in this poll anymore.";
 "alert.title.suggest-an-option" = "Suggest an option";
 
 "message.only-visible-to-you" = "Only visible to you";

@@ -6,8 +6,8 @@ import StreamChat
 import SwiftUI
 
 struct ComposerPollView: View {
-    
-    @State var createPollShown = false
+    @State private var showsOnAppear = true
+    @State private var showsCreatePoll = false
     
     let channelController: ChatChannelController
     var messageController: ChatMessageController?
@@ -16,18 +16,20 @@ struct ComposerPollView: View {
         VStack {
             Spacer()
             Button {
-                createPollShown = true
+                showsCreatePoll = true
             } label: {
                 Text(L10n.Composer.Polls.createPoll)
             }
 
             Spacer()
         }
-        .fullScreenCover(isPresented: $createPollShown) {
+        .fullScreenCover(isPresented: $showsCreatePoll) {
             CreatePollView(chatController: channelController, messageController: messageController)
         }
         .onAppear {
-            createPollShown = true
+            guard showsOnAppear else { return }
+            showsOnAppear = false
+            showsCreatePoll = true
         }
     }
 }
@@ -197,9 +199,9 @@ struct CreatePollView: View {
                 ActionSheet(
                     title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
                     buttons: [
-                        .destructive(Text(L10n.Alert.Actions.discardChanges), action: {
+                        .destructive(Text(L10n.Alert.Actions.discardChanges)) {
                             presentationMode.wrappedValue.dismiss()
-                        }),
+                        },
                         .cancel(Text(L10n.Alert.Actions.keepEditing))
                     ]
                 )

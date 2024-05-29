@@ -124,12 +124,24 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             
             if viewModel.showEndVoteButton {
                 Button {
-                    viewModel.endVote()
+                    viewModel.showsEndVoteConfirmation = true
                 } label: {
                     Text(L10n.Message.Polls.Button.endVote)
                 }
+                .actionSheet(isPresented: $viewModel.showsEndVoteConfirmation) {
+                    ActionSheet(
+                        title: Text(L10n.Alert.Title.endPoll),
+                        buttons: [
+                            .destructive(Text(L10n.Alert.Actions.end)) {
+                                viewModel.endVote()
+                            },
+                            .cancel(Text(L10n.Alert.Actions.cancel))
+                        ]
+                    )
+                }
             }
         }
+        .disabled(!viewModel.canInteract)
         .padding()
         .modifier(
             factory.makeMessageViewModifier(
