@@ -98,10 +98,12 @@ struct PollOptionResultsView: View {
             
             ForEach(votes, id: \.displayId) { vote in
                 HStack {
-                    MessageAvatarView(
-                        avatarURL: vote.user?.imageURL,
-                        size: .init(width: 20, height: 20)
-                    )
+                    if poll.votingVisibility != .anonymous {
+                        MessageAvatarView(
+                            avatarURL: vote.user?.imageURL,
+                            size: .init(width: 20, height: 20)
+                        )
+                    }
                     Text(vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor))
                     Spacer()
                     PollDateIndicatorView(date: vote.createdAt)
