@@ -43,23 +43,24 @@ struct PollCommentsView: View {
                             .withPollsBackground()
                         }
                     }
-                    
-                    Button(action: {
-                        viewModel.addCommentShown = true
-                    }, label: {
-                        Text(L10n.Message.Polls.Button.addComment)
-                            .bold()
-                            .foregroundColor(colors.tintColor)
-                    })
-                        .frame(maxWidth: .infinity)
-                        .withPollsBackground()
-                        .uiAlert(
-                            title: L10n.Alert.Title.addComment,
-                            isPresented: $viewModel.addCommentShown,
-                            text: $viewModel.newCommentText,
-                            accept: L10n.Alert.Actions.send,
-                            action: { viewModel.add(comment: viewModel.newCommentText) }
-                        )
+                    if viewModel.addCommentShown {
+                        Button(action: {
+                            viewModel.addCommentShown = true
+                        }, label: {
+                            Text(L10n.Message.Polls.Button.addComment)
+                                .bold()
+                                .foregroundColor(colors.tintColor)
+                        })
+                            .frame(maxWidth: .infinity)
+                            .withPollsBackground()
+                            .uiAlert(
+                                title: L10n.Alert.Title.addComment,
+                                isPresented: $viewModel.addCommentShown,
+                                text: $viewModel.newCommentText,
+                                accept: L10n.Alert.Actions.send,
+                                action: { viewModel.add(comment: viewModel.newCommentText) }
+                            )
+                    }
                 }
                 .padding()
             }
