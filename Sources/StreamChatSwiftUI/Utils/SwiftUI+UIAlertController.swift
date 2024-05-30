@@ -14,6 +14,7 @@ extension View {
         message: String = "",
         text: Binding<String>,
         placeholder: String = "",
+        validation: @escaping (String) -> Bool = UIAlertControllerView.defaultActionValidation,
         cancel: String = L10n.Alert.Actions.cancel,
         accept: String,
         action: @escaping () -> Void
@@ -25,6 +26,7 @@ extension View {
                 message: message,
                 text: text,
                 placeholder: placeholder,
+                validation: validation,
                 cancel: cancel,
                 accept: accept,
                 action: action
@@ -41,6 +43,7 @@ private struct UIAlertControllerView: UIViewControllerRepresentable {
     let message: String
     @Binding var text: String
     let placeholder: String
+    let validation: (String) -> Bool
     let cancel: String
     let accept: String
     let action: () -> Void
@@ -58,9 +61,14 @@ private struct UIAlertControllerView: UIViewControllerRepresentable {
             )
             context.coordinator.alertController = alert
             alert.addTextField { textField in
+                let didEdit = UIAction { [weak alert, weak textField] _ in
+                    guard let defaultAction = alert?.actions.first(where: { $0.style == .default }) else { return }
+                    defaultAction.isEnabled = validation(textField?.text ?? "")
+                }
                 textField.font = .preferredFont(forTextStyle: .body)
                 textField.placeholder = placeholder
                 textField.text = text
+                textField.addAction(didEdit, for: .allEditingEvents)
             }
             alert.addAction(
                 UIAlertAction(title: cancel, style: .cancel) { _ in
@@ -70,7 +78,7 @@ private struct UIAlertControllerView: UIViewControllerRepresentable {
             let textField = alert.textFields?.first
             alert.addAction(
                 UIAlertAction(title: accept, style: .default) { _ in
-                    text = textField?.text ?? ""
+                    text = textField?.text?.trimmed ?? ""
                     isPresented = false
                     action()
                 }
@@ -89,13 +97,17 @@ private struct UIAlertControllerView: UIViewControllerRepresentable {
         coordinator.alertController = nil
     }
     
+    static func defaultActionValidation(_ text: String) -> Bool {
+        !text.trimmed.isEmpty
+    }
+    
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
 }
 
 private extension UIAlertControllerView {
-    final class Coordinator: NSObject, UITextFieldDelegate {
+    final class Coordinator {
         var alertController: UIAlertController?
         
         init(alertController: UIAlertController? = nil) {
