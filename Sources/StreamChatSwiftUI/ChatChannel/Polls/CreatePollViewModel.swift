@@ -102,10 +102,11 @@ class CreatePollViewModel: ObservableObject {
         
     func createPoll(completion: @escaping () -> Void) {
         let pollOptions = options
+            .map(\.trimmed)
             .filter { !$0.isEmpty }
             .map { PollOption(text: $0) }
         chatController.createPoll(
-            name: question,
+            name: question.trimmed,
             allowAnswers: allowComments,
             allowUserSuggestedOptions: suggestAnOption,
             enforceUniqueVote: !multipleAnswers,
