@@ -13,7 +13,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     func test_canShowDiscardConfirmation_whenEmpty() {
         // Given
         // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         
         // Then
         XCTAssertEqual(viewModel.canShowDiscardConfirmation, false)
@@ -22,7 +22,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     func test_canShowDiscardConfirmation_whenToggleChangesButNoTextEntry() {
         // Given
         // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         viewModel.allowComments.toggle()
         
         // Then
@@ -32,7 +32,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     func test_canShowDiscardConfirmation_whenQuestionFilled() {
         // Given
         // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         viewModel.question = "A"
         
         // Then
@@ -42,7 +42,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     func test_canShowDiscardConfirmation_whenOptionAdded() {
         // Given
         // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         viewModel.options = ["A"]
         
         // Then
@@ -54,7 +54,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     func test_canCreatePoll_whenRequiredInformationAdded() {
         // Given
         // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         viewModel.question = " A  "
         viewModel.options = ["O     "]
         
@@ -65,7 +65,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     func test_canCreatePoll_whenEmptyOrChangedToggles() {
         // Given
         // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         viewModel.allowComments.toggle()
         
         // Then
@@ -73,7 +73,7 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
     }
     
     func test_canCreatePoll_whenInsertingInformation() {
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique))
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
         XCTAssertEqual(viewModel.canCreatePoll, false)
         viewModel.question = "A"
         XCTAssertEqual(viewModel.canCreatePoll, false)

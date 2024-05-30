@@ -152,12 +152,14 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func suggest(option: String) {
+        suggestOptionText = ""
+        let isDuplicate = poll.options.contains(where: { $0.text.trimmed.caseInsensitiveCompare(option.trimmed) == .orderedSame })
+        guard !isDuplicate else { return }
         pollController.suggestPollOption(text: option) { error in
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
             }
         }
-        suggestOptionText = ""
     }
     
     /// Returns true if the specified option has more votes than any other option.

@@ -568,7 +568,6 @@
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
-		4F198FE02C05BABF00148F49 /* PollAttachmentViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentViewModel_Tests.swift; sourceTree = "<group>"; };
 		4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatClient+Extensions.swift"; sourceTree = "<group>"; };
 		4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatClientExtensions_Tests.swift; sourceTree = "<group>"; };
 		4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel_Tests.swift; sourceTree = "<group>"; };
@@ -1114,22 +1113,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4F198FDE2C05BA7D00148F49 /* MessageList */ = {
-			isa = PBXGroup;
-			children = (
-				4F198FDF2C05BA8C00148F49 /* Polls */,
-			);
-			path = MessageList;
-			sourceTree = "<group>";
-		};
-		4F198FDF2C05BA8C00148F49 /* Polls */ = {
-			isa = PBXGroup;
-			children = (
-				4F198FE02C05BABF00148F49 /* PollAttachmentViewModel_Tests.swift */,
-			);
-			path = Polls;
-			sourceTree = "<group>";
-		};
 		82A1814528FD69E8005F9D43 /* Message Delivery Status */ = {
 			isa = PBXGroup;
 			children = (
@@ -2024,7 +2007,6 @@
 		84C94D472758BDB2007FE2B9 /* ChatChannel */ = {
 			isa = PBXGroup;
 			children = (
-				4F198FDE2C05BA7D00148F49 /* MessageList */,
 				846B15F22817E7440017F7A1 /* ChannelInfo */,
 				8423C340277CB5C70092DCF1 /* Suggestions */,
 				84C94D482758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift */,

@@ -167,11 +167,78 @@ final class PollAttachmentViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssertEqual(viewModel.currentUserVotes, [vote])
     }
+    
+    func test_pollAttachmentViewModel_winningVoteHasMostVotes() {
+        // Given
+        let poll = Poll.mock(optionCount: 3, voteCountForOption: { optionIndex in
+            switch optionIndex {
+            case 0: return 2
+            case 1: return 3
+            case 2: return 1
+            default: return 0
+            }
+        })
+        
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+        
+        // Then
+        XCTAssertEqual(viewModel.hasMostVotes(for: poll.options[0]), false)
+        XCTAssertEqual(viewModel.hasMostVotes(for: poll.options[1]), true)
+        XCTAssertEqual(viewModel.hasMostVotes(for: poll.options[2]), false)
+    }
+    
+    func test_pollAttachmentViewModel_noWinningVoteWhenEqualHighestVotes() {
+        // Given
+        let poll = Poll.mock(optionCount: 3, voteCountForOption: { optionIndex in
+            switch optionIndex {
+            case 0: return 2
+            case 1: return 3
+            case 2: return 3
+            default: return 0
+            }
+        })
+        
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+        
+        // Then
+        XCTAssertEqual(false, viewModel.hasMostVotes(for: poll.options[0]))
+        XCTAssertEqual(false, viewModel.hasMostVotes(for: poll.options[1]))
+        XCTAssertEqual(false, viewModel.hasMostVotes(for: poll.options[2]))
+    }
+    
+    func test_pollAttachmentViewModel_suggestOptionWithDuplicate() throws {
+        // Given
+        let poll = Poll.mock(optionCount: 3, voteCountForOption: { _ in 0 })
+        let firstOptionText = try XCTUnwrap(poll.options.first?.text)
+        
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+        viewModel.suggest(option: firstOptionText)
+        viewModel.suggest(option: firstOptionText + "   ")
+        viewModel.suggest(option: "   " + firstOptionText + "   ")
+        
+        // Then
+        XCTAssertEqual(3, viewModel.poll.options.count)
+    }
 
     // MARK: - private
     
     private func makePollController() -> PollController_Mock {
-        return PollController_Mock(
+        PollController_Mock(
             client: chatClient,
             messageId: .unique,
             pollId: .unique

@@ -919,7 +919,8 @@ class ViewFactory_Tests: StreamChatTestCase {
         
         // When
         let view = viewFactory.makeComposerPollView(
-            channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+            channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
         )
         
         // Then

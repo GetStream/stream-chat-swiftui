@@ -13,7 +13,8 @@ final class CreatePollView_Tests: StreamChatTestCase {
     func test_createPollView_snapshot() {
         // Given
         let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
         )
         .applyDefaultSize()
         
@@ -31,7 +32,8 @@ final class CreatePollView_Tests: StreamChatTestCase {
             addComments: hidden
         )
         let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
         )
         .applyDefaultSize()
         
@@ -50,7 +52,8 @@ final class CreatePollView_Tests: StreamChatTestCase {
             maxVotesPerPerson: enabled
         )
         let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
         )
         .applyDefaultSize()
         
@@ -72,7 +75,8 @@ final class CreatePollView_Tests: StreamChatTestCase {
             maxVotesPerPerson: enabled
         )
         let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient)
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
         )
         .applyDefaultSize()
         
