@@ -320,7 +320,7 @@ extension ChatChannel {
     }
     
     private func pollMessageText(for previewMessage: ChatMessage) -> String? {
-        guard let poll = previewMessage.poll else { return nil }
+        guard let poll = previewMessage.poll, !previewMessage.isDeleted else { return nil }
         var components = ["📊"]
         if let latestVoter = poll.latestVotesByOption.first?.latestVotes.first?.user {
             if previewMessage.isSentByCurrentUser {
