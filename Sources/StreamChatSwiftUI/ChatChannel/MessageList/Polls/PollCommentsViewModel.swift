@@ -11,6 +11,7 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     @Published var comments = [PollVote]()
     @Published var newCommentText = ""
     @Published var addCommentShown = false
+    @Published var errorShown = false
     
     let pollController: PollController
     let commentsController: PollVoteListController
@@ -44,9 +45,10 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     }
     
     func add(comment: String) {
-        pollController.castPollVote(answerText: comment, optionId: nil) { error in
+        pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
+                self?.errorShown = true
             }
         }
         newCommentText = ""

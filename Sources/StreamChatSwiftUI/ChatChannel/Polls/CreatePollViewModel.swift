@@ -29,7 +29,9 @@ class CreatePollViewModel: ObservableObject {
     
     @Published var allowComments: Bool
     
-    @Published var showsDiscardConfirmation = false
+    @Published var discardConfirmationShown = false
+    
+    @Published var errorShown = false
     
     let chatController: ChatChannelController
     var messageController: ChatMessageController?
@@ -113,14 +115,14 @@ class CreatePollViewModel: ObservableObject {
             maxVotesAllowed: Int(maxVotes),
             votingVisibility: anonymousPoll ? .anonymous : .public,
             options: pollOptions
-        ) { result in
+        ) { [weak self] result in
             switch result {
             case let .success(messageId):
                 log.debug("Created poll in message with id \(messageId)")
                 completion()
             case let .failure(error):
-                // TODO: show alert
                 log.error("Error creating a poll: \(error.localizedDescription)")
+                self?.errorShown = true
             }
         }
     }

@@ -63,6 +63,9 @@ struct PollCommentsView: View {
                 }
                 .padding()
             }
+            .alert(isPresented: $viewModel.errorShown) {
+                Alert.defaultErrorAlert
+            }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Message.Polls.Toolbar.commentsTitle)

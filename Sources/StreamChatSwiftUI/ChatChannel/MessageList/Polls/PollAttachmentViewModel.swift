@@ -47,12 +47,13 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     private let createdByCurrentUser: Bool
         
-    @Published public var showsEndVoteConfirmation = false
+    @Published public var endVoteConfirmationShown = false
+    @Published public var errorShown = false
 
     /// If true, poll controls are in enabled state, otherwise disabled.
     public var canInteract: Bool {
         guard !isClosingPoll else { return false }
-        guard !showsEndVoteConfirmation else { return false }
+        guard !endVoteConfirmationShown else { return false }
         return true
     }
     
@@ -102,11 +103,16 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
             answerText: nil,
             optionId: option.id
         ) { [weak self] error in
-            if let error = error as? ClientError.PollVoteAlreadyExists {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self?.isCastingVote = false
-                }
+            if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
+                if error is ClientError.PollVoteAlreadyExists {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self?.isCastingVote = false
+                    }
+                } else {
+                    self?.isCastingVote = false
+                    self?.errorShown = true
+                }
             } else {
                 self?.isCastingVote = false
             }
@@ -114,9 +120,13 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func add(comment: String) {
-        pollController.castPollVote(answerText: comment, optionId: nil) { error in
+        pollController.castPollVote(
+            answerText: comment,
+            optionId: nil
+        ) { [weak self] error in
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
+                self?.errorShown = true
             }
         }
         commentText = ""
@@ -128,10 +138,11 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         guard let vote = currentUserVote(for: option) else { return }
         pollController.removePollVote(
             voteId: vote.id
-        ) { error in
-            self.isCastingVote = false
+        ) { [weak self] error in
+            self?.isCastingVote = false
             if let error {
                 log.error("Error removing a vote \(error.localizedDescription)")
+                self?.errorShown = true
             }
         }
     }
@@ -143,6 +154,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
             self?.isClosingPoll = false
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
+                self?.errorShown = true
             }
         }
     }
@@ -155,9 +167,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         suggestOptionText = ""
         let isDuplicate = poll.options.contains(where: { $0.text.trimmed.caseInsensitiveCompare(option.trimmed) == .orderedSame })
         guard !isDuplicate else { return }
-        pollController.suggestPollOption(text: option) { error in
+        pollController.suggestPollOption(text: option) { [weak self] error in
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
+                self?.errorShown = true
             }
         }
     }

@@ -125,11 +125,11 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             
             if viewModel.showEndVoteButton {
                 Button {
-                    viewModel.showsEndVoteConfirmation = true
+                    viewModel.endVoteConfirmationShown = true
                 } label: {
                     Text(L10n.Message.Polls.Button.endVote)
                 }
-                .actionSheet(isPresented: $viewModel.showsEndVoteConfirmation) {
+                .actionSheet(isPresented: $viewModel.endVoteConfirmationShown) {
                     ActionSheet(
                         title: Text(L10n.Alert.Title.endPoll),
                         buttons: [
@@ -141,6 +141,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     )
                 }
             }
+        }
+        .alert(isPresented: $viewModel.errorShown) {
+            Alert.defaultErrorAlert
         }
         .disabled(!viewModel.canInteract)
         .padding()

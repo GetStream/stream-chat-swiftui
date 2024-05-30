@@ -168,7 +168,7 @@ struct CreatePollView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         if viewModel.canShowDiscardConfirmation {
-                            viewModel.showsDiscardConfirmation = true
+                            viewModel.discardConfirmationShown = true
                         } else {
                             presentationMode.wrappedValue.dismiss()
                         }
@@ -195,7 +195,7 @@ struct CreatePollView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .actionSheet(isPresented: $viewModel.showsDiscardConfirmation) {
+            .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
                 ActionSheet(
                     title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
                     buttons: [
@@ -205,6 +205,9 @@ struct CreatePollView: View {
                         .cancel(Text(L10n.Alert.Actions.keepEditing))
                     ]
                 )
+            }
+            .alert(isPresented: $viewModel.errorShown) {
+                Alert.defaultErrorAlert
             }
         }
     }
