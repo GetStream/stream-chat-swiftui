@@ -58,6 +58,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     optionVotes: poll.voteCountsByOption?[option.id],
                     maxVotes: poll.voteCountsByOption?.values.max()
                 )
+                .layoutPriority(1) // do not compress long text
             }
             
             if options.count > 10 {
