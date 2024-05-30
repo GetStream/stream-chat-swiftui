@@ -32,7 +32,9 @@ struct PollCommentsView: View {
                                 Text(answer)
                                     .bold()
                                 HStack {
-                                    MessageAvatarView(avatarURL: comment.user?.imageURL)
+                                    if viewModel.pollController.poll?.votingVisibility != .anonymous {
+                                        MessageAvatarView(avatarURL: comment.user?.imageURL)
+                                    }
                                     Text(comment.user?.name ?? L10n.Message.Polls.unknownVoteAuthor)
                                     Spacer()
                                     PollDateIndicatorView(date: comment.createdAt)
