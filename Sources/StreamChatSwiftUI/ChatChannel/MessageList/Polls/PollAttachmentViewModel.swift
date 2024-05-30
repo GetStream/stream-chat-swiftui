@@ -177,6 +177,6 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     // MARK: - private
     
     private func currentUserVote(for option: PollOption) -> PollVote? {
-        currentUserVotes.first(where: { $0.id == option.id })
+        currentUserVotes.first(where: { $0.optionId == option.id })
     }
 }
