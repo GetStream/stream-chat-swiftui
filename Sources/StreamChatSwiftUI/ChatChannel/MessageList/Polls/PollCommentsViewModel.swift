@@ -44,11 +44,12 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     }
     
     func add(comment: String) {
-        pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.newCommentText = ""
+        pollController.castPollVote(answerText: comment, optionId: nil) { error in
+            if let error {
+                log.error("Error casting a vote \(error.localizedDescription)")
             }
         }
+        newCommentText = ""
     }
     
     func controller(

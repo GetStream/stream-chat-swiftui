@@ -102,14 +102,12 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func add(comment: String) {
-        pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
-            DispatchQueue.main.async {
-                self?.commentText = ""
-            }
+        pollController.castPollVote(answerText: comment, optionId: nil) { error in
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
             }
         }
+        commentText = ""
     }
     
     public func removePollVote(for option: PollOption) {
@@ -127,11 +125,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public func endVote() {
+        guard !isClosingPoll else { return }
         isClosingPoll = true
         pollController.closePoll { [weak self] error in
-            DispatchQueue.main.async {
-                self?.isClosingPoll = false
-            }
+            self?.isClosingPoll = false
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
             }
@@ -148,6 +145,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
                 log.error("Error closing the poll \(error.localizedDescription)")
             }
         }
+        suggestOptionText = ""
     }
     
     /// Returns true if the specified option has more votes than any other option.
@@ -179,11 +177,6 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     // MARK: - private
     
     private func currentUserVote(for option: PollOption) -> PollVote? {
-        for current in currentUserVotes {
-            if option.id == current.optionId {
-                return current
-            }
-        }
-        return nil
+        currentUserVotes.first(where: { $0.id == option.id })
     }
 }
