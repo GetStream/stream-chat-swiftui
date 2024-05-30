@@ -25,11 +25,23 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     @Published public var commentText = ""
     
-    @Published public var pollResultsShown = false
+    @Published public var pollResultsShown = false {
+        didSet {
+            notifySheetPresentation(shown: pollResultsShown)
+        }
+    }
     
-    @Published public var allCommentsShown = false
+    @Published public var allCommentsShown = false {
+        didSet {
+            notifySheetPresentation(shown: allCommentsShown)
+        }
+    }
     
-    @Published public var allOptionsShown = false
+    @Published public var allOptionsShown = false {
+        didSet {
+            notifySheetPresentation(shown: allOptionsShown)
+        }
+    }
     
     @Published public var currentUserVotes = [PollVote]()
     
@@ -186,4 +198,17 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
         return nil
     }
+    
+    private func notifySheetPresentation(shown: Bool) {
+        let notificationName: String = shown ? .sheetShownNotification : .sheetHiddenNotification
+        NotificationCenter.default.post(
+            name: NSNotification.Name(notificationName),
+            object: nil
+        )
+    }
+}
+
+extension String {
+    static let sheetShownNotification = "sheetShown"
+    static let sheetHiddenNotification = "sheetHidden"
 }

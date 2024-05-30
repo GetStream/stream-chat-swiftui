@@ -177,6 +177,20 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onViewAppear),
+            name: NSNotification.Name(.sheetHiddenNotification),
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onViewDissappear),
+            name: NSNotification.Name(.sheetShownNotification),
+            object: nil
+        )
+        
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -426,14 +440,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         )
     }
     
-    public func onViewAppear() {
+    @objc public func onViewAppear() {
         setActive()
         messages = channelDataSource.messages
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         checkNameChange()
     }
     
-    public func onViewDissappear() {
+    @objc public func onViewDissappear() {
         isActive = false
     }
     
