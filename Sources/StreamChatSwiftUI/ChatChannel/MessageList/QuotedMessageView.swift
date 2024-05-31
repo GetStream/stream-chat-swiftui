@@ -129,7 +129,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 .aspectRatio(1, contentMode: .fill)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .allowsHitTesting(false)
-            } else if let poll = quotedMessage.poll {
+            } else if let poll = quotedMessage.poll, !quotedMessage.isDeleted {
                 Text("📊 \(poll.name)")
             }
 
