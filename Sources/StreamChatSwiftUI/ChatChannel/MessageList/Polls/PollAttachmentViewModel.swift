@@ -66,7 +66,9 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     public var showAddCommentButton: Bool {
-        !poll.isClosed && poll.allowAnswers == true
+        !poll.isClosed
+        && poll.allowAnswers == true
+        && (poll.latestAnswers.filter { $0.user?.id == chatClient.currentUserId }).count == 0
     }
     
     /// If true, user avatars who have voted should be shown with the option, otherwise hidden.

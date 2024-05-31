@@ -57,7 +57,9 @@ struct PollCommentsView: View {
                             .frame(maxWidth: .infinity)
                             .withPollsBackground()
                             .uiAlert(
-                                title: L10n.Alert.Title.addComment,
+                                title: viewModel.currentUserAddedComment
+                                       ? L10n.Message.Polls.Button.updateComment
+                                       : L10n.Alert.Title.addComment,
                                 isPresented: $viewModel.addCommentShown,
                                 text: $viewModel.newCommentText,
                                 accept: L10n.Alert.Actions.send,

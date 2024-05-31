@@ -416,7 +416,7 @@ internal enum L10n {
         internal static var showAll: String { L10n.tr("Localizable", "message.polls.button.show-all") }
         /// Suggest an Option
         internal static var suggestAnOption: String { L10n.tr("Localizable", "message.polls.button.suggestAnOption") }
-        /// Update Comment
+        /// Update your Comment
         internal static var updateComment: String { L10n.tr("Localizable", "message.polls.button.updateComment") }
         /// Plural format key: "%#@comments@"
         internal static func viewNumberOfComments(_ p1: Int) -> String {
