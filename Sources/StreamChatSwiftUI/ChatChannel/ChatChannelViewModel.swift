@@ -392,19 +392,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        if let message = messageController?.message {
-            var array = Array(messages)
-            array.append(message)
-            self.messages = LazyCachedMapCollection(source: array, map: { $0 })
-        } else {
-            let animationState = shouldAnimate(changes: changes)
-            if animationState == .animated {
-                withAnimation {
-                    self.messages = messages
-                }
-            } else if animationState == .notAnimated {
+        let animationState = shouldAnimate(changes: changes)
+        if animationState == .animated {
+            withAnimation {
                 self.messages = messages
             }
+        } else if animationState == .notAnimated {
+            self.messages = messages
         }
         
         refreshMessageListIfNeeded()

@@ -161,7 +161,11 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     weak var delegate: MessagesDataSource?
     
     var messages: LazyCachedMapCollection<ChatMessage> {
-        messageController.replies
+        var replies = messageController.replies
+        if let message = messageController.message, replies.last != message {
+            replies.append(message)
+        }
+        return replies
     }
     
     var hasLoadedAllNextMessages: Bool {
@@ -195,7 +199,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     ) {
         delegate?.dataSource(
             channelDataSource: self,
-            didUpdateMessages: controller.replies,
+            didUpdateMessages: messages,
             changes: changes
         )
     }
@@ -206,7 +210,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     ) {
         delegate?.dataSource(
             channelDataSource: self,
-            didUpdateMessages: controller.replies,
+            didUpdateMessages: messages,
             changes: []
         )
     }
