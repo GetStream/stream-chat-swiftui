@@ -106,14 +106,12 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
                 if error is ClientError.PollVoteAlreadyExists {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        self?.isCastingVote = false
-                    }
+                    log.debug("Vote already added")
                 } else {
-                    self?.isCastingVote = false
                     self?.errorShown = true
                 }
-            } else {
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.isCastingVote = false
             }
         }
