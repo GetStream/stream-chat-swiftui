@@ -8,6 +8,8 @@ import SwiftUI
 
 class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     
+    @Injected(\.chatClient) var chatClient
+    
     @Published var comments = [PollVote]()
     @Published var newCommentText = ""
     @Published var addCommentShown = false
@@ -46,6 +48,10 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     
     var showsAddCommentButton: Bool {
         pollController.poll?.isClosed == false
+    }
+    
+    var currentUserAddedComment: Bool {
+        comments.filter { $0.user?.id == chatClient.currentUserId }.count > 0
     }
     
     func add(comment: String) {

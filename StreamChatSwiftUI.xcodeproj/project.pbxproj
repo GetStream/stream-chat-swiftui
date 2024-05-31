@@ -3475,7 +3475,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "polls-llc";
+				branch = develop;
 				kind = branch;
 			};
 		};

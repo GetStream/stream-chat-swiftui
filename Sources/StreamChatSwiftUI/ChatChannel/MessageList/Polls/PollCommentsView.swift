@@ -48,7 +48,9 @@ struct PollCommentsView: View {
                         Button(action: {
                             viewModel.addCommentShown = true
                         }, label: {
-                            Text(L10n.Message.Polls.Button.addComment)
+                            Text(viewModel.currentUserAddedComment
+                                 ? L10n.Message.Polls.Button.updateComment
+                                 : L10n.Message.Polls.Button.addComment)
                                 .bold()
                                 .foregroundColor(colors.tintColor)
                         })
