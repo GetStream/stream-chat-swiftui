@@ -113,7 +113,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
                     self?.errorShown = true
                 }
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self?.isCastingVote = false
             }
         }
