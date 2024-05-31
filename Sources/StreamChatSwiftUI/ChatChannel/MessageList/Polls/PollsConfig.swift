@@ -46,6 +46,11 @@ public struct PollsEntryConfig {
     public var configurable: Bool
     /// Indicates the default value of the poll entry.
     public var defaultValue: Bool
+    
+    public init(configurable: Bool, defaultValue: Bool) {
+        self.configurable = configurable
+        self.defaultValue = defaultValue
+    }
 }
 
 extension PollsEntryConfig {
