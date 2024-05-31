@@ -73,7 +73,7 @@
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
 "alert.actions.end" = "End";
-"alert.actions.ok" = "Ok";
+"alert.actions.ok" = "OK";
 "alert.actions.discard-changes" = "Discard Changes";
 "alert.actions.delete-channel-title" = "Delete conversation";
 "alert.actions.delete-channel-message" = "Are you sure you want to delete this conversation?";
