@@ -188,6 +188,8 @@ struct PollOptionView: View {
     var optionFont: Font = InjectedValues[\.fonts].body
     var optionVotes: Int?
     var maxVotes: Int?
+    /// If true, only option name and vote count is shown, otherwise votes indicator and avatars appear as well.
+    var alternativeStyle: Bool = false
     
     var body: some View {
         VStack(spacing: 4) {
@@ -211,7 +213,7 @@ struct PollOptionView: View {
                 Text(option.text)
                     .font(optionFont)
                 Spacer()
-                if viewModel.showVoterAvatars {
+                if !alternativeStyle, viewModel.showVoterAvatars {
                     HStack(spacing: -4) {
                         ForEach(
                             option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
@@ -226,12 +228,14 @@ struct PollOptionView: View {
                 Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
             }
             
-            PollVotesIndicatorView(
-                alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
-                optionVotes: optionVotes ?? 0,
-                maxVotes: maxVotes ?? 0
-            )
-            .padding(.leading, 24)
+            if !alternativeStyle {
+                PollVotesIndicatorView(
+                    alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
+                    optionVotes: optionVotes ?? 0,
+                    maxVotes: maxVotes ?? 0
+                )
+                .padding(.leading, 24)
+            }
         }
     }
 }

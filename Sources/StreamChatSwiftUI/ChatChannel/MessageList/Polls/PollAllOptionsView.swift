@@ -27,12 +27,20 @@ struct PollAllOptionsView: View {
                     
                     LazyVStack(spacing: 32) {
                         ForEach(viewModel.poll.options) { option in
-                            PollOptionView(viewModel: viewModel, option: option, optionFont: fonts.headline)
+                            PollOptionView(
+                                viewModel: viewModel,
+                                option: option,
+                                optionFont: fonts.headline,
+                                alternativeStyle: true
+                            )
                         }
                     }
                     .withPollsBackground()
                 }
                 .padding()
+            }
+            .alert(isPresented: $viewModel.errorShown) {
+                Alert.defaultErrorAlert
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {

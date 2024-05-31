@@ -35,7 +35,7 @@ internal enum L10n {
       internal static var leaveGroupTitle: String { L10n.tr("Localizable", "alert.actions.leave-group-title") }
       /// Are you sure you want to mute this
       internal static var muteChannelTitle: String { L10n.tr("Localizable", "alert.actions.mute-channel-title") }
-      /// Ok
+      /// OK
       internal static var ok: String { L10n.tr("Localizable", "alert.actions.ok") }
       /// Send
       internal static var send: String { L10n.tr("Localizable", "alert.actions.send") }

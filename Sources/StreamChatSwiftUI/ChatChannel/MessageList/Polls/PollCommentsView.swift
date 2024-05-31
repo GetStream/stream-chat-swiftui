@@ -43,7 +43,7 @@ struct PollCommentsView: View {
                             .withPollsBackground()
                         }
                     }
-                    if viewModel.addCommentShown {
+                    if viewModel.showsAddCommentButton {
                         Button(action: {
                             viewModel.addCommentShown = true
                         }, label: {

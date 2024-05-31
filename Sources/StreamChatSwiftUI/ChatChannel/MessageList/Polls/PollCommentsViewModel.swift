@@ -42,11 +42,10 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
             .map { _ in true }
             .assignWeakly(to: \.animateChanges, on: self)
             .store(in: &cancellables)
-        pollController.pollChangesPublisher
-            .map(\.item.isClosed)
-            .removeDuplicates()
-            .assignWeakly(to: \.addCommentShown, on: self)
-            .store(in: &cancellables)
+    }
+    
+    var showsAddCommentButton: Bool {
+        pollController.poll?.isClosed == false
     }
     
     func add(comment: String) {
