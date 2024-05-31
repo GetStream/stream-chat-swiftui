@@ -58,6 +58,14 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         newCommentText = ""
     }
     
+    func onAppear(comment: PollVote) {
+        guard !loadingComments,
+              let index = comments.firstIndex(where: { $0 == comment }),
+              index > comments.count - 10 else { return }
+        
+        loadComments()
+    }
+    
     func controller(
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
@@ -69,11 +77,6 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         } else {
             comments = Array(commentsController.votes)
         }
-    }
-    
-    func onCommentAppear(_ comment: PollVote) {
-        guard comment == comments.last else { return }
-        loadComments()
     }
     
     private func loadComments() {
