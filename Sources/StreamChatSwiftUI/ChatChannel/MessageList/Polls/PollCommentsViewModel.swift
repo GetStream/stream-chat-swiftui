@@ -25,7 +25,9 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         let query = PollVoteListQuery(
             pollId: poll.id,
             optionId: nil,
-            filter: .equal(.pollId, to: poll.id)
+            filter: .and(
+                [.equal(.pollId, to: poll.id), .equal(.isAnswer, to: true)]
+            )
         )
         commentsController = InjectedValues[\.chatClient].pollVoteListController(query: query)
         commentsController.delegate = self
