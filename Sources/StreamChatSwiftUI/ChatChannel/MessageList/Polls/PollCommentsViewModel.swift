@@ -18,7 +18,7 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     
     private var cancellables = Set<AnyCancellable>()
     private(set) var animateChanges = false
-    private var loadingComments = false
+    private var loadingComments = true
         
     init(poll: Poll, pollController: PollController) {
         self.pollController = pollController
@@ -33,10 +33,8 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         commentsController.delegate = self
         commentsController.synchronize { [weak self] _ in
             guard let self else { return }
+            self.loadingComments = false
             self.comments = Array(self.commentsController.votes)
-            if self.comments.isEmpty {
-                self.loadComments()
-            }
         }
         // No animation for initial load
         $comments
@@ -73,12 +71,16 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         }
     }
     
+    func onCommentAppear(_ comment: PollVote) {
+        guard comment == comments.last else { return }
+        loadComments()
+    }
+    
     private func loadComments() {
+        guard !loadingComments, !commentsController.hasLoadedAllVotes else { return }
         loadingComments = true
-
         commentsController.loadMoreVotes { [weak self] _ in
-            guard let self else { return }
-            self.loadingComments = false
+            self?.loadingComments = false
         }
     }
 }

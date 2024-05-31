@@ -41,6 +41,7 @@ struct PollCommentsView: View {
                                 }
                             }
                             .withPollsBackground()
+                            .onAppear { viewModel.onCommentAppear(comment) }
                         }
                     }
                     if viewModel.showsAddCommentButton {
