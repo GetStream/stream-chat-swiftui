@@ -108,13 +108,12 @@ class CreatePollViewModel: ObservableObject {
             .filter { !$0.isEmpty }
             .map { PollOption(text: $0) }
         let maxVotesAllowed = multipleAnswers ? Int(maxVotes) : nil
-        let enforceUniqueVote = maxVotesAllowed == nil
         chatController.createPoll(
             name: question.trimmed,
             allowAnswers: allowComments,
             allowUserSuggestedOptions: suggestAnOption,
-            enforceUniqueVote: enforceUniqueVote,
-            maxVotesAllowed: Int(maxVotes),
+            enforceUniqueVote: !multipleAnswers,
+            maxVotesAllowed: maxVotesAllowed,
             votingVisibility: anonymousPoll ? .anonymous : .public,
             options: pollOptions
         ) { [weak self] result in
