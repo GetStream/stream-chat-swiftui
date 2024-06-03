@@ -29,6 +29,9 @@ struct PollOptionAllVotesView: View {
                 )
             }
         }
+        .alert(isPresented: $viewModel.errorShown) {
+            Alert.defaultErrorAlert
+        }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(viewModel.option.text)

@@ -12,6 +12,7 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     let controller: PollVoteListController
     
     @Published var pollVotes = [PollVote]()
+    @Published var errorShown = false
     
     private var loadingVotes = false
         
@@ -19,24 +20,27 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         self.poll = poll
         self.option = option
         let query = PollVoteListQuery(
-            pollId: poll.id, 
+            pollId: poll.id,
             optionId: option.id, filter: .equal(.optionId, to: option.id)
         )
-        self.controller = InjectedValues[\.chatClient].pollVoteListController(query: query)
-        self.controller.delegate = self
-        self.controller.synchronize { [weak self] _ in
+        controller = InjectedValues[\.chatClient].pollVoteListController(query: query)
+        controller.delegate = self
+        controller.synchronize { [weak self] error in
             guard let self else { return }
             self.pollVotes = Array(self.controller.votes)
             if self.pollVotes.isEmpty {
                 self.loadVotes()
             }
+            if error != nil {
+                self.errorShown = true
+            }
         }
     }
     
     func onAppear(vote: PollVote) {
-        guard !loadingVotes, 
-                let index = pollVotes.firstIndex(where: { $0 == vote }),
-                index > pollVotes.count - 10 else { return }
+        guard !loadingVotes,
+              let index = pollVotes.firstIndex(where: { $0 == vote }),
+              index > pollVotes.count - 10 else { return }
         
         loadVotes()
     }
@@ -53,9 +57,12 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     private func loadVotes() {
         loadingVotes = true
 
-        controller.loadMoreVotes { [weak self] _ in
+        controller.loadMoreVotes { [weak self] error in
             guard let self else { return }
             self.loadingVotes = false
+            if error != nil {
+                self.errorShown = true
+            }
         }
     }
 }
