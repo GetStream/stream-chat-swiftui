@@ -5,6 +5,7 @@
 import StreamChat
 import SwiftUI
 
+/// View model for the `PollAttachmentView`.
 public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     private var isCastingVote = false
@@ -15,38 +16,50 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     let message: ChatMessage
     let pollController: PollController
     
+    /// The object representing the state of the poll.
     @Published public var poll: Poll
     
+    /// If true, an alert with a text field is shown allowing to suggest new options.
     @Published public var suggestOptionShown = false
     
+    /// If true, an alert with a text field is shown allowing to send a comment.
     @Published public var addCommentShown = false
     
+    /// Suggested option title written by an user using an alert.
     @Published public var suggestOptionText = ""
     
+    /// Comment text written by an user using an alert.
     @Published public var commentText = ""
     
+    /// If true, a sheet is shown revealing poll results.
     @Published public var pollResultsShown = false {
         didSet {
             notifySheetPresentation(shown: pollResultsShown)
         }
     }
     
+    /// It true, a sheet is shown with all the poll comments.
     @Published public var allCommentsShown = false {
         didSet {
             notifySheetPresentation(shown: allCommentsShown)
         }
     }
     
+    /// If true, a sheet is shown with all the poll options.
+    ///
+    /// Used for polls with more than 10 options.
     @Published public var allOptionsShown = false {
         didSet {
             notifySheetPresentation(shown: allOptionsShown)
         }
     }
     
+    /// A list of votes given by the current user.
     @Published public var currentUserVotes = [PollVote]()
     
     private let createdByCurrentUser: Bool
         
+    /// If true, an action sheet is shown for closing the poll, otherwise hidden.
     @Published public var endVoteConfirmationShown = false
     @Published public var errorShown = false
 
@@ -57,14 +70,17 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         return true
     }
     
+    /// If true, end vote button is visible under votes, otherwise hidden.
     public var showEndVoteButton: Bool {
         !poll.isClosed && createdByCurrentUser
     }
     
+    /// If true, suggest new option button is visible under votes allowing users to add more poll options, otherwise hidden.
     public var showSuggestOptionButton: Bool {
         !poll.isClosed && poll.allowUserSuggestedOptions == true
     }
     
+    /// If true, add comment button is visible under votes, otherwise hidden.
     public var showAddCommentButton: Bool {
         !poll.isClosed
             && poll.allowAnswers == true
@@ -103,6 +119,9 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
+    /// Casts a vote for a poll.
+    ///
+    /// - Parameter option: The option user tapped on.
     public func castPollVote(for option: PollOption) {
         guard !isCastingVote else { return }
         isCastingVote = true
@@ -124,6 +143,11 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
+    /// Adds a comment to the poll.
+    ///
+    /// Each poll participant can add a single comment. If a comment exists from the current user, the comment is editted.
+    ///
+    /// - Parameter comment: A comment added to the poll.
     public func add(comment: String) {
         pollController.castPollVote(
             answerText: comment,
@@ -137,6 +161,8 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         commentText = ""
     }
     
+    /// Removes the given vote from the specified option.
+    /// - Parameter option: The option user tapped on.
     public func removePollVote(for option: PollOption) {
         guard !isCastingVote else { return }
         isCastingVote = true
@@ -152,6 +178,9 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
+    /// Closes the poll.
+    ///
+    /// Closed poll can't be updated in any way.
     public func endVote() {
         guard !isClosingPoll else { return }
         isClosingPoll = true
@@ -164,10 +193,13 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         }
     }
     
+    /// True, if the current user has voted for the specified option, otherwise false.
     public func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
         currentUserVote(for: option) != nil
     }
     
+    /// Adds a new option to the poll.
+    /// - Parameter option: The suggested option.
     public func suggest(option: String) {
         suggestOptionText = ""
         let isDuplicate = poll.options.contains(where: { $0.text.trimmed.caseInsensitiveCompare(option.trimmed) == .orderedSame })
