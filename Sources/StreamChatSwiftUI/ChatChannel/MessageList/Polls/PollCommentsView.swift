@@ -48,18 +48,14 @@ struct PollCommentsView: View {
                         Button(action: {
                             viewModel.addCommentShown = true
                         }, label: {
-                            Text(viewModel.currentUserAddedComment
-                                 ? L10n.Message.Polls.Button.updateComment
-                                 : L10n.Message.Polls.Button.addComment)
+                            Text(commentButtonTitle)
                                 .bold()
                                 .foregroundColor(colors.tintColor)
                         })
                             .frame(maxWidth: .infinity)
                             .withPollsBackground()
                             .uiAlert(
-                                title: viewModel.currentUserAddedComment
-                                       ? L10n.Message.Polls.Button.updateComment
-                                       : L10n.Alert.Title.addComment,
+                                title: commentButtonTitle,
                                 isPresented: $viewModel.addCommentShown,
                                 text: $viewModel.newCommentText,
                                 accept: L10n.Alert.Actions.send,
@@ -90,9 +86,15 @@ struct PollCommentsView: View {
         }
     }
     
+    private var commentButtonTitle: String {
+        viewModel.currentUserAddedComment
+            ? L10n.Message.Polls.Button.updateComment
+            : L10n.Message.Polls.Button.addComment
+    }
+    
     private func authorTitle(for comment: PollVote) -> String {
         if viewModel.pollController.poll?.votingVisibility == .anonymous {
-           return L10n.Message.Polls.unknownVoteAuthor
+            return L10n.Message.Polls.unknownVoteAuthor
         }
         return comment.user?.name ?? L10n.Message.Polls.unknownVoteAuthor
     }
