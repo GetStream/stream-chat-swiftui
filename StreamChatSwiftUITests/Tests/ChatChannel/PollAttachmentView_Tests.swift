@@ -128,4 +128,23 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_pollAttachmentView_allComments() {
+        // Given
+        let poll = Poll.mock()
+        let pollController = PollController(client: chatClient, messageId: .unique, pollId: poll.id)
+        let viewModel = PollCommentsViewModel(poll: poll, pollController: pollController)
+        viewModel.comments = [.mock(pollId: poll.id, optionId: nil, isAnswer: true, answerText: "Test comment")]
+        
+        // When
+        let view = PollCommentsView(
+            poll: poll,
+            pollController: pollController,
+            viewModel: viewModel
+        )
+        .applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }

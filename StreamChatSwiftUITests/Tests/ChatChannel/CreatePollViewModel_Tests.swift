@@ -82,4 +82,116 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
         viewModel.options = ["A", "aa"]
         XCTAssertEqual(viewModel.canCreatePoll, true)
     }
+    
+    // MARK: - Computed variables
+    
+    func test_multipleAnswersShown_defaultConfig() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertTrue(viewModel.multipleAnswersShown)
+        XCTAssertFalse(viewModel.multipleAnswers)
+    }
+    
+    func test_multipleAnswersShown_hidden() {
+        let utils = Utils(
+            pollsConfig: .init(multipleAnswers: .init(configurable: false, defaultValue: false))
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertFalse(viewModel.multipleAnswersShown)
+        XCTAssertFalse(viewModel.multipleAnswers)
+    }
+    
+    func test_anonymousPollShown_defaultConfig() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertTrue(viewModel.anonymousPollShown)
+        XCTAssertFalse(viewModel.anonymousPoll)
+    }
+    
+    func test_anonymousPollShown_hidden() {
+        let utils = Utils(
+            pollsConfig: .init(anonymousPoll: .init(configurable: false, defaultValue: false))
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertFalse(viewModel.anonymousPollShown)
+        XCTAssertFalse(viewModel.anonymousPoll)
+    }
+    
+    func test_suggestAnOptionShown_defaultConfig() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertTrue(viewModel.suggestAnOptionShown)
+        XCTAssertFalse(viewModel.suggestAnOption)
+    }
+    
+    func test_suggestAnOptionShown_hidden() {
+        let utils = Utils(
+            pollsConfig: .init(suggestAnOption: .init(configurable: false, defaultValue: false))
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertFalse(viewModel.suggestAnOptionShown)
+        XCTAssertFalse(viewModel.suggestAnOption)
+    }
+    
+    func test_addCommentsShown_defaultConfig() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertTrue(viewModel.addCommentsShown)
+        XCTAssertFalse(viewModel.allowComments)
+    }
+    
+    func test_addCommentsShown_hidden() {
+        let utils = Utils(
+            pollsConfig: .init(addComments: .init(configurable: false, defaultValue: false))
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertFalse(viewModel.addCommentsShown)
+        XCTAssertFalse(viewModel.allowComments)
+    }
+    
+    func test_maxVotesShown_defaultConfig() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertTrue(viewModel.maxVotesShown)
+        XCTAssertFalse(viewModel.maxVotesEnabled)
+    }
+    
+    func test_maxVotesShown_hidden() {
+        let utils = Utils(
+            pollsConfig: .init(maxVotesPerPerson: .init(configurable: false, defaultValue: false))
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        XCTAssertFalse(viewModel.maxVotesShown)
+        XCTAssertFalse(viewModel.maxVotesEnabled)
+    }
 }

@@ -13,9 +13,9 @@ struct PollCommentsView: View {
     
     @StateObject var viewModel: PollCommentsViewModel
     
-    init(poll: Poll, pollController: PollController) {
+    init(poll: Poll, pollController: PollController, viewModel: PollCommentsViewModel? = nil) {
         _viewModel = StateObject(
-            wrappedValue: PollCommentsViewModel(
+            wrappedValue: viewModel ?? PollCommentsViewModel(
                 poll: poll,
                 pollController: pollController
             )
