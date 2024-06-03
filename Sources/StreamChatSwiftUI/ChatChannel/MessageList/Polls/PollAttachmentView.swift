@@ -51,7 +51,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 }
             }
             
-            ForEach(options.prefix(10)) { option in
+            ForEach(options.prefix(PollAttachmentViewModel.maxVisibleOptionCount)) { option in
                 PollOptionView(
                     viewModel: viewModel,
                     option: option,
@@ -61,11 +61,11 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 .layoutPriority(1) // do not compress long text
             }
             
-            if options.count > 10 {
+            if options.count > PollAttachmentViewModel.maxVisibleOptionCount {
                 Button {
                     viewModel.allOptionsShown = true
                 } label: {
-                    Text(L10n.Message.Polls.Button.seeMoreOptions(options.count - 10))
+                    Text(L10n.Message.Polls.Button.seeMoreOptions(options.count - PollAttachmentViewModel.maxVisibleOptionCount))
                 }
                 .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
                     PollAllOptionsView(viewModel: viewModel)
