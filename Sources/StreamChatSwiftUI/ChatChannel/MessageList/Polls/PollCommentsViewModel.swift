@@ -33,10 +33,13 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         )
         commentsController = InjectedValues[\.chatClient].pollVoteListController(query: query)
         commentsController.delegate = self
-        commentsController.synchronize { [weak self] _ in
+        commentsController.synchronize { [weak self] error in
             guard let self else { return }
             self.loadingComments = false
             self.comments = Array(self.commentsController.votes)
+            if error != nil {
+                self.errorShown = true
+            }
         }
         // No animation for initial load
         $comments
@@ -51,7 +54,7 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     }
     
     var currentUserAddedComment: Bool {
-        comments.filter { $0.user?.id == chatClient.currentUserId }.count > 0
+        !comments.filter { $0.user?.id == chatClient.currentUserId }.isEmpty
     }
     
     func add(comment: String) {
@@ -88,8 +91,11 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     private func loadComments() {
         guard !loadingComments, !commentsController.hasLoadedAllVotes else { return }
         loadingComments = true
-        commentsController.loadMoreVotes { [weak self] _ in
+        commentsController.loadMoreVotes { [weak self] error in
             self?.loadingComments = false
+            if error != nil {
+                self?.errorShown = true
+            }
         }
     }
 }
