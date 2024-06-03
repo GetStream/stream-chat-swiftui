@@ -35,7 +35,7 @@ struct PollCommentsView: View {
                                     if viewModel.pollController.poll?.votingVisibility != .anonymous {
                                         MessageAvatarView(avatarURL: comment.user?.imageURL)
                                     }
-                                    Text(comment.user?.name ?? L10n.Message.Polls.unknownVoteAuthor)
+                                    Text(authorTitle(for: comment))
                                     Spacer()
                                     PollDateIndicatorView(date: comment.createdAt)
                                 }
@@ -88,5 +88,12 @@ struct PollCommentsView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
+    }
+    
+    private func authorTitle(for comment: PollVote) -> String {
+        if viewModel.pollController.poll?.votingVisibility == .anonymous {
+           return L10n.Message.Polls.unknownVoteAuthor
+        }
+        return comment.user?.name ?? L10n.Message.Polls.unknownVoteAuthor
     }
 }
