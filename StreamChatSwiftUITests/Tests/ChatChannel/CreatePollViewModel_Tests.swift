@@ -39,6 +39,16 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.canShowDiscardConfirmation, true)
     }
     
+    func test_canShowDiscardConfirmation_whenQuestionOnlyWhitespace() {
+        // Given
+        // When
+        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
+        viewModel.question = "              "
+        
+        // Then
+        XCTAssertEqual(viewModel.canShowDiscardConfirmation, false)
+    }
+    
     func test_canShowDiscardConfirmation_whenOptionAdded() {
         // Given
         // When
@@ -193,5 +203,58 @@ final class CreatePollViewModel_Tests: StreamChatTestCase {
         )
         XCTAssertFalse(viewModel.maxVotesShown)
         XCTAssertFalse(viewModel.maxVotesEnabled)
+    }
+    
+    // MARK: - Input Errors
+    
+    func test_optionsErrorIndices_ignoreWhitespaceAndCase() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        viewModel.options = ["   123ab   "]
+        viewModel.options.append("123Ab")
+        viewModel.options.append("123AB ")
+        XCTAssertEqual(Set([1, 2]), viewModel.optionsErrorIndices)
+    }
+    
+    func test_showsMaxVotesError_whenMaxVotesEnabledAndInvalidValue_thenShown() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        viewModel.maxVotesEnabled = true
+        viewModel.maxVotes = "11"
+        XCTAssertEqual(true, viewModel.showsMaxVotesError)
+    }
+    
+    func test_showsMaxVotesError_whenMaxVotesDisabledAndInvalidValue_thenHidden() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        viewModel.maxVotesEnabled = false
+        viewModel.maxVotes = "11"
+        XCTAssertEqual(false, viewModel.showsMaxVotesError)
+    }
+    
+    func test_showsMaxVotesError_whenMaxVotesEnabledAndValidValue_thenHidden() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        viewModel.maxVotesEnabled = false
+        viewModel.maxVotes = "10"
+        XCTAssertEqual(false, viewModel.showsMaxVotesError)
+    }
+    
+    func test_showsMaxVotesError_whenMaxVotesEnabledAndInvalidZeroValue_thenShown() {
+        let viewModel = CreatePollViewModel(
+            chatController: chatClient.channelController(for: .unique),
+            messageController: nil
+        )
+        viewModel.maxVotesEnabled = true
+        viewModel.maxVotes = "0"
+        XCTAssertEqual(true, viewModel.showsMaxVotesError)
     }
 }
