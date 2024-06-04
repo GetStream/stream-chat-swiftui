@@ -949,4 +949,25 @@ public protocol ViewFactory: AnyObject {
         onJumpToMessage: @escaping () -> Void,
         onClose: @escaping () -> Void
     ) -> JumpToUnreadButtonType
+
+    associatedtype ComposerPollViewType: View
+    /// Creates a composer poll view.
+    /// - Returns: view shown in the composer poll slot.
+    func makeComposerPollView(
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?
+    ) -> ComposerPollViewType
+
+    associatedtype PollViewType: View
+    /// Creates a poll view.
+    /// - Parameters:
+    ///  - message: the chat message containing the poll.
+    ///  - poll: the poll to be displayed.
+    ///  - isFirst: a boolean indicating if this is the first poll in the series.
+    /// - Returns: view shown in the poll slot.
+    func makePollView(
+        message: ChatMessage,
+        poll: Poll,
+        isFirst: Bool
+    ) -> PollViewType
 }

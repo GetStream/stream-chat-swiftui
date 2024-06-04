@@ -233,6 +233,9 @@ extension ChatChannel {
 
     public var lastMessageText: String? {
         if let latestMessage = latestMessages.first {
+            if let text = pollMessageText(for: latestMessage) {
+                return text
+            }
             return "\(latestMessage.author.name ?? latestMessage.author.id): \(textContent(for: latestMessage))"
         } else {
             return nil
@@ -314,5 +317,27 @@ extension ChatChannel {
         default:
             return nil
         }
+    }
+    
+    private func pollMessageText(for previewMessage: ChatMessage) -> String? {
+        guard let poll = previewMessage.poll, !previewMessage.isDeleted else { return nil }
+        var components = ["📊"]
+        if let latestVoter = poll.latestVotesByOption.first?.latestVotes.first?.user {
+            if previewMessage.isSentByCurrentUser {
+                components.append(L10n.Channel.Item.pollYouVoted)
+            } else {
+                components.append(L10n.Channel.Item.pollSomeoneVoted(latestVoter.name ?? latestVoter.id))
+            }
+        } else if let creator = poll.createdBy {
+            if previewMessage.isSentByCurrentUser {
+                components.append(L10n.Channel.Item.pollYouCreated)
+            } else {
+                components.append(L10n.Channel.Item.pollSomeoneCreated(creator.name ?? creator.id))
+            }
+        }
+        if !poll.name.isEmpty {
+            components.append(poll.name)
+        }
+        return components.joined(separator: " ")
     }
 }

@@ -6,6 +6,10 @@
 "channel.name.andXMore" = "and %@ more";
 "channel.name.missing" = "NoChannel";
 "channel.item.empty-messages" = "No messages";
+"channel.item.poll-someone-voted" = "%@ voted:";
+"channel.item.poll-you-voted" = "You voted:";
+"channel.item.poll-someone-created" = "%@ created:";
+"channel.item.poll-you-created" = "You created:";
 "channel.item.typing-singular" = "is typing ...";
 "channel.item.typing-plural" = "are typing ...";
 "channel.item.muted" = "Channel is muted";
@@ -50,11 +54,32 @@
 "message.cell.edited" = "Edited";
 "message.reactions.currentUser" = "You";
 
+"message.polls.button.addComment" = "Add a Comment";
+"message.polls.button.updateComment" = "Update Your Comment";
+"message.polls.button.endVote" = "End Vote";
+"message.polls.button.seeMoreOptions" = "See %d More Options";
+"message.polls.button.show-all" = "Show All";
+"message.polls.button.suggestAnOption" = "Suggest an Option";
+"message.polls.button.viewResults" = "View Results";
+"message.polls.subtitle.selectOne" = "Select one";
+"message.polls.subtitle.selectOneOrMore" = "Select one or more";
+"message.polls.subtitle.selectUpTo" = "Select up to %d";
+"message.polls.subtitle.voteEnded" = "Vote ended";
+"message.polls.toolbar.comments-title" = "Poll Comments";
+"message.polls.toolbar.options-title" = "Poll Options";
+"message.polls.toolbar.results-title" = "Poll Results";
+"message.polls.unknown-vote-author" = "Anonymous";
+"message.polls.votes" = "%d votes";
+
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
-"alert.actions.ok" = "Ok";
+"alert.actions.end" = "End";
+"alert.actions.ok" = "OK";
+"alert.actions.discard-changes" = "Discard Changes";
 "alert.actions.delete-channel-title" = "Delete conversation";
 "alert.actions.delete-channel-message" = "Are you sure you want to delete this conversation?";
+"alert.actions.keep-editing" = "Keep Editing";
+"alert.actions.send" = "Send";
 "alert.error.title" = "Something went wrong.";
 "alert.error.message" = "The operation couldn't be completed.";
 "alert.actions.mute-channel-title" = "Are you sure you want to mute this";
@@ -63,6 +88,10 @@
 "alert.actions.leave-group-message" = "Are you sure you want to leave this group?";
 "alert.actions.leave-group-button" = "Leave";
 "alert.actions.view-info-title" = "View info";
+"alert.text-field.polls-new-option" = "Enter a new option";
+"alert.title.add-comment" = "Add a comment";
+"alert.title.end-poll" = "Nobody will be able to vote in this poll anymore.";
+"alert.title.suggest-an-option" = "Suggest an option";
 
 "message.only-visible-to-you" = "Only visible to you";
 "message.deleted-message-placeholder" = "Message deleted";
@@ -84,6 +113,19 @@
 "composer.quoted.photo" = "Photo";
 "composer.quoted.video" = "Video";
 "composer.quoted.giphy" = "Giphy";
+"composer.polls.action-sheet-discard-title" = "Are you sure you want to discard your poll?";
+"composer.polls.add-comment" = "Add a comment";
+"composer.polls.add-option" = "Add an option";
+"composer.polls.anonymous-poll" = "Anonymous poll";
+"composer.polls.askQuestion" = "Ask a question";
+"composer.polls.create-poll" = "Create Poll";
+"composer.polls.options" = "Options";
+"composer.polls.question" = "Question";
+"composer.polls.maximum-votes-per-person" = "Maximum votes per person";
+"composer.polls.duplicate-option" = "This is already an option";
+"composer.polls.multiple-answers" = "Multiple answers";
+"composer.polls.suggest-option" = "Suggest an option";
+"composer.polls.type-number-from-1-and-10" = "Type a number from 1 and 10";
 
 "composer.commands.giphy" = "Giphy";
 "composer.commands.mute" = "Mute";
@@ -128,6 +170,7 @@
 "dates.time-ago-weeks-plural" = "last seen %d weeks ago";
 "dates.time-ago-months-singular" = "last seen one month ago";
 "dates.time-ago-months-plural" = "last seen %d months ago";
+"dates.today" = "Today";
 
 "chat-info.pinned-messages.title" = "Pinned Messages";
 "chat-info.pinned-messages.empty-title" = "No pinned messages";

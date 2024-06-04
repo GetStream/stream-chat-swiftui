@@ -177,6 +177,20 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onViewAppear),
+            name: .messageSheetHiddenNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onViewDissappear),
+            name: .messageSheetShownNotification,
+            object: nil
+        )
+        
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -378,19 +392,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        if let message = messageController?.message {
-            var array = Array(messages)
-            array.append(message)
-            self.messages = LazyCachedMapCollection(source: array, map: { $0 })
-        } else {
-            let animationState = shouldAnimate(changes: changes)
-            if animationState == .animated {
-                withAnimation {
-                    self.messages = messages
-                }
-            } else if animationState == .notAnimated {
+        let animationState = shouldAnimate(changes: changes)
+        if animationState == .animated {
+            withAnimation {
                 self.messages = messages
             }
+        } else if animationState == .notAnimated {
+            self.messages = messages
         }
         
         refreshMessageListIfNeeded()
@@ -426,14 +434,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         )
     }
     
-    public func onViewAppear() {
+    @objc public func onViewAppear() {
         setActive()
         messages = channelDataSource.messages
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         checkNameChange()
     }
     
-    public func onViewDissappear() {
+    @objc public func onViewDissappear() {
         isActive = false
     }
     
@@ -801,3 +809,12 @@ enum AnimationChange {
 
 let firstMessageKey = "firstMessage"
 let lastMessageKey = "lastMessage"
+
+extension Notification.Name {
+    /// A notification for notifying when message dismissed a sheet.
+    static let messageSheetHiddenNotification = Notification.Name("messageSheetHiddenNotification")
+    /// A notification for notifying when message view displays a sheet.
+    ///
+    /// When a sheet is presented, the message cell is not reloaded.
+    static let messageSheetShownNotification = Notification.Name("messageSheetShownNotification")
+}

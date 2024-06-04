@@ -912,6 +912,31 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is LoadingView)
     }
+    
+    func test_viewFactory_makeComposerPollView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeComposerPollView(
+            channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssert(view is ComposerPollView)
+    }
+    
+    func test_viewFactory_makePollView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makePollView(message: .mock(), poll: Poll.mock(), isFirst: true)
+        
+        // Then
+        XCTAssert(view is PollAttachmentView<DefaultViewFactory>)
+    }
 }
 
 extension ChannelAction: Equatable {

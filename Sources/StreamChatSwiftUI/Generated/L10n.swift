@@ -21,6 +21,12 @@ internal enum L10n {
       internal static var deleteChannelMessage: String { L10n.tr("Localizable", "alert.actions.delete-channel-message") }
       /// Delete conversation
       internal static var deleteChannelTitle: String { L10n.tr("Localizable", "alert.actions.delete-channel-title") }
+      /// Discard Changes
+      internal static var discardChanges: String { L10n.tr("Localizable", "alert.actions.discard-changes") }
+      /// End
+      internal static var end: String { L10n.tr("Localizable", "alert.actions.end") }
+      /// Keep Editing
+      internal static var keepEditing: String { L10n.tr("Localizable", "alert.actions.keep-editing") }
       /// Leave
       internal static var leaveGroupButton: String { L10n.tr("Localizable", "alert.actions.leave-group-button") }
       /// Are you sure you want to leave this group?
@@ -29,8 +35,10 @@ internal enum L10n {
       internal static var leaveGroupTitle: String { L10n.tr("Localizable", "alert.actions.leave-group-title") }
       /// Are you sure you want to mute this
       internal static var muteChannelTitle: String { L10n.tr("Localizable", "alert.actions.mute-channel-title") }
-      /// Ok
+      /// OK
       internal static var ok: String { L10n.tr("Localizable", "alert.actions.ok") }
+      /// Send
+      internal static var send: String { L10n.tr("Localizable", "alert.actions.send") }
       /// Are you sure you want to unmute this
       internal static var unmuteChannelTitle: String { L10n.tr("Localizable", "alert.actions.unmute-channel-title") }
       /// View info
@@ -41,6 +49,18 @@ internal enum L10n {
       internal static var message: String { L10n.tr("Localizable", "alert.error.message") }
       /// Something went wrong.
       internal static var title: String { L10n.tr("Localizable", "alert.error.title") }
+    }
+    internal enum TextField {
+      /// Enter a new option
+      internal static var pollsNewOption: String { L10n.tr("Localizable", "alert.text-field.polls-new-option") }
+    }
+    internal enum Title {
+      /// Add a comment
+      internal static var addComment: String { L10n.tr("Localizable", "alert.title.add-comment") }
+      /// Nobody will be able to vote in this poll anymore.
+      internal static var endPoll: String { L10n.tr("Localizable", "alert.title.end-poll") }
+      /// Suggest an option
+      internal static var suggestAnOption: String { L10n.tr("Localizable", "alert.title.suggest-an-option") }
     }
   }
 
@@ -67,6 +87,18 @@ internal enum L10n {
       internal static var muted: String { L10n.tr("Localizable", "channel.item.muted") }
       /// Photo
       internal static var photo: String { L10n.tr("Localizable", "channel.item.photo") }
+      /// %@ created:
+      internal static func pollSomeoneCreated(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "channel.item.poll-someone-created", String(describing: p1))
+      }
+      /// %@ voted:
+      internal static func pollSomeoneVoted(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "channel.item.poll-someone-voted", String(describing: p1))
+      }
+      /// You created:
+      internal static var pollYouCreated: String { L10n.tr("Localizable", "channel.item.poll-you-created") }
+      /// You voted:
+      internal static var pollYouVoted: String { L10n.tr("Localizable", "channel.item.poll-you-voted") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
       /// is typing ...
@@ -196,6 +228,34 @@ internal enum L10n {
       /// Slow mode ON
       internal static var slowMode: String { L10n.tr("Localizable", "composer.placeholder.slow-mode") }
     }
+    internal enum Polls {
+      /// Are you sure you want to discard your poll?
+      internal static var actionSheetDiscardTitle: String { L10n.tr("Localizable", "composer.polls.action-sheet-discard-title") }
+      /// Add a comment
+      internal static var addComment: String { L10n.tr("Localizable", "composer.polls.add-comment") }
+      /// Add an option
+      internal static var addOption: String { L10n.tr("Localizable", "composer.polls.add-option") }
+      /// Anonymous poll
+      internal static var anonymousPoll: String { L10n.tr("Localizable", "composer.polls.anonymous-poll") }
+      /// Ask a question
+      internal static var askQuestion: String { L10n.tr("Localizable", "composer.polls.askQuestion") }
+      /// Create Poll
+      internal static var createPoll: String { L10n.tr("Localizable", "composer.polls.create-poll") }
+      /// This is already an option
+      internal static var duplicateOption: String { L10n.tr("Localizable", "composer.polls.duplicate-option") }
+      /// Maximum votes per person
+      internal static var maximumVotesPerPerson: String { L10n.tr("Localizable", "composer.polls.maximum-votes-per-person") }
+      /// Multiple answers
+      internal static var multipleAnswers: String { L10n.tr("Localizable", "composer.polls.multiple-answers") }
+      /// Options
+      internal static var options: String { L10n.tr("Localizable", "composer.polls.options") }
+      /// Question
+      internal static var question: String { L10n.tr("Localizable", "composer.polls.question") }
+      /// Suggest an option
+      internal static var suggestOption: String { L10n.tr("Localizable", "composer.polls.suggest-option") }
+      /// Type a number from 1 and 10
+      internal static var typeNumberFrom1And10: String { L10n.tr("Localizable", "composer.polls.type-number-from-1-and-10") }
+    }
     internal enum Quoted {
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "composer.quoted.giphy") }
@@ -261,6 +321,8 @@ internal enum L10n {
     }
     /// last seen one week ago
     internal static var timeAgoWeeksSingular: String { L10n.tr("Localizable", "dates.time-ago-weeks-singular") }
+    /// Today
+    internal static var today: String { L10n.tr("Localizable", "dates.today") }
   }
 
   internal enum Message {
@@ -333,6 +395,56 @@ internal enum L10n {
     internal enum GiphyAttachment {
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
+    }
+    internal enum Polls {
+      /// Anonymous
+      internal static var unknownVoteAuthor: String { L10n.tr("Localizable", "message.polls.unknown-vote-author") }
+      /// %d votes
+      internal static func votes(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.votes", p1)
+      }
+      internal enum Button {
+        /// Add a Comment
+        internal static var addComment: String { L10n.tr("Localizable", "message.polls.button.addComment") }
+        /// End Vote
+        internal static var endVote: String { L10n.tr("Localizable", "message.polls.button.endVote") }
+        /// See %d More Options
+        internal static func seeMoreOptions(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.button.seeMoreOptions", p1)
+        }
+        /// Show All
+        internal static var showAll: String { L10n.tr("Localizable", "message.polls.button.show-all") }
+        /// Suggest an Option
+        internal static var suggestAnOption: String { L10n.tr("Localizable", "message.polls.button.suggestAnOption") }
+        /// Update Your Comment
+        internal static var updateComment: String { L10n.tr("Localizable", "message.polls.button.updateComment") }
+        /// Plural format key: "%#@comments@"
+        internal static func viewNumberOfComments(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.button.view-number-of-comments", p1)
+        }
+        /// View Results
+        internal static var viewResults: String { L10n.tr("Localizable", "message.polls.button.viewResults") }
+      }
+      internal enum Subtitle {
+        /// Select one
+        internal static var selectOne: String { L10n.tr("Localizable", "message.polls.subtitle.selectOne") }
+        /// Select one or more
+        internal static var selectOneOrMore: String { L10n.tr("Localizable", "message.polls.subtitle.selectOneOrMore") }
+        /// Select up to %d
+        internal static func selectUpTo(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.subtitle.selectUpTo", p1)
+        }
+        /// Vote ended
+        internal static var voteEnded: String { L10n.tr("Localizable", "message.polls.subtitle.voteEnded") }
+      }
+      internal enum Toolbar {
+        /// Poll Comments
+        internal static var commentsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.comments-title") }
+        /// Poll Options
+        internal static var optionsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.options-title") }
+        /// Poll Results
+        internal static var resultsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.results-title") }
+      }
     }
     internal enum Reactions {
       /// You

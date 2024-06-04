@@ -229,6 +229,7 @@ public class Images {
     public var attachmentPickerPhotos: UIImage = UIImage(systemName: "photo")!
     public var attachmentPickerFolder: UIImage = UIImage(systemName: "folder")!
     public var attachmentPickerCamera: UIImage = UIImage(systemName: "camera")!
+    public var attachmentPickerPolls: UIImage = loadImageSafely(with: "attachment_picker_polls")
     
     public var camera: UIImage = loadImageSafely(with: "camera")
     public var bigPlay: UIImage = loadImageSafely(with: "play_big")

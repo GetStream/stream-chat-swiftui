@@ -22,6 +22,7 @@ public class Utils {
     public var commandsConfig: CommandsConfig
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
+    public var pollsConfig: PollsConfig
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
@@ -59,6 +60,7 @@ public class Utils {
     
     internal var _audioPlayer: AudioPlaying?
     internal var _audioRecorder: AudioRecording?
+    internal var pollsDateFormatter = PollsDateFormatter()
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
@@ -73,6 +75,7 @@ public class Utils {
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
+        pollsConfig: PollsConfig = PollsConfig(),
         channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
@@ -104,6 +107,7 @@ public class Utils {
         self.channelHeaderLoader = channelHeaderLoader
         self.videoDurationFormatter = videoDurationFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
+        self.pollsConfig = pollsConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }
     

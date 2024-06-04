@@ -942,6 +942,17 @@ extension ViewFactory {
             Spacer()
         }
     }
+    
+    public func makeComposerPollView(
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?
+    ) -> some View {
+        ComposerPollView(channelController: channelController, messageController: messageController)
+    }
+    
+    public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
+        PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
