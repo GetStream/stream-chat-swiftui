@@ -2,6 +2,7 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import StreamChat
 import SwiftUI
 
@@ -14,6 +15,8 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     @Published var pollVotes = [PollVote]()
     @Published var errorShown = false
     
+    private var cancellables = Set<AnyCancellable>()
+    private(set) var animateChanges = false
     private var loadingVotes = false
         
     init(poll: Poll, option: PollOption) {
@@ -35,6 +38,12 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
                 self.errorShown = true
             }
         }
+        // No animation for initial load
+        $pollVotes
+            .dropFirst()
+            .map { _ in true }
+            .assignWeakly(to: \.animateChanges, on: self)
+            .store(in: &cancellables)
     }
     
     func onAppear(vote: PollVote) {
@@ -49,8 +58,12 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        withAnimation {
-            self.pollVotes = Array(self.controller.votes)
+        if animateChanges {
+            withAnimation {
+                self.pollVotes = Array(self.controller.votes)
+            }
+        } else {
+            pollVotes = Array(controller.votes)
         }
     }
     
