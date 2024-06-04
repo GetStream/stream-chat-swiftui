@@ -33,7 +33,7 @@ struct PollDateIndicatorView: View {
         utils.pollsDateFormatter.dateString(for:)
     }
     
-    var date: Date
+    let date: Date
     
     var body: some View {
         Text(dateFormatter(date))

@@ -187,7 +187,7 @@ struct PollOptionView: View {
     
     @ObservedObject var viewModel: PollAttachmentViewModel
     
-    var option: PollOption
+    let option: PollOption
     var optionFont: Font = InjectedValues[\.fonts].body
     var optionVotes: Int?
     var maxVotes: Int?
@@ -248,8 +248,8 @@ struct PollVotesIndicatorView: View {
     @Injected(\.colors) var colors
     
     let alternativeStyle: Bool
-    var optionVotes: Int
-    var maxVotes: Int
+    let optionVotes: Int
+    let maxVotes: Int
     
     private let height: CGFloat = 4
     

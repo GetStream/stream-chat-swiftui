@@ -10,7 +10,7 @@ struct ComposerPollView: View {
     @State private var showsCreatePoll = false
     
     let channelController: ChatChannelController
-    var messageController: ChatMessageController?
+    let messageController: ChatMessageController?
     
     var body: some View {
         VStack {
@@ -45,7 +45,7 @@ struct CreatePollView: View {
     
     @Environment(\.editMode) var editMode
     
-    @State var listId = UUID()
+    @State private var listId = UUID()
     
     init(chatController: ChatChannelController, messageController: ChatMessageController?) {
         _viewModel = StateObject(
