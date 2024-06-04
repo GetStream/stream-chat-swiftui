@@ -180,14 +180,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onViewAppear),
-            name: NSNotification.Name(.sheetHiddenNotification),
+            name: .messageSheetHiddenNotification,
             object: nil
         )
         
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onViewDissappear),
-            name: NSNotification.Name(.sheetShownNotification),
+            name: .messageSheetShownNotification,
             object: nil
         )
         
@@ -809,3 +809,12 @@ enum AnimationChange {
 
 let firstMessageKey = "firstMessage"
 let lastMessageKey = "lastMessage"
+
+extension Notification.Name {
+    /// A notification for notifying when message dismissed a sheet.
+    static let messageSheetHiddenNotification = Notification.Name("messageSheetHiddenNotification")
+    /// A notification for notifying when message view displays a sheet.
+    ///
+    /// When a sheet is presented, the message cell is not reloaded.
+    static let messageSheetShownNotification = Notification.Name("messageSheetShownNotification")
+}

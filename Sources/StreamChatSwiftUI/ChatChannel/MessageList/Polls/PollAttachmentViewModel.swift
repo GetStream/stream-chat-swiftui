@@ -246,15 +246,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     }
     
     private func notifySheetPresentation(shown: Bool) {
-        let notificationName: String = shown ? .sheetShownNotification : .sheetHiddenNotification
+        let name: Notification.Name = shown ? .messageSheetShownNotification : .messageSheetHiddenNotification
         NotificationCenter.default.post(
-            name: NSNotification.Name(notificationName),
+            name: name,
             object: nil
         )
     }
-}
-
-extension String {
-    static let sheetShownNotification = "sheetShown"
-    static let sheetHiddenNotification = "sheetHidden"
 }
