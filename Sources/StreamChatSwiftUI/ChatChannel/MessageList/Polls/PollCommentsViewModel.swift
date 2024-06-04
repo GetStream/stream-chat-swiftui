@@ -22,8 +22,7 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     private(set) var animateChanges = false
     private var loadingComments = true
         
-    init(poll: Poll, pollController: PollController) {
-        self.pollController = pollController
+    convenience init(poll: Poll, pollController: PollController) {
         let query = PollVoteListQuery(
             pollId: poll.id,
             optionId: nil,
@@ -31,7 +30,19 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
                 [.equal(.pollId, to: poll.id), .equal(.isAnswer, to: true)]
             )
         )
-        commentsController = InjectedValues[\.chatClient].pollVoteListController(query: query)
+        self.init(
+            pollController: pollController,
+            commentsController: InjectedValues[\.chatClient].pollVoteListController(query: query)
+        )
+    }
+    
+    init(
+        pollController: PollController,
+        commentsController: PollVoteListController
+    ) {
+        self.commentsController = commentsController
+        self.pollController = pollController
+        
         commentsController.delegate = self
         commentsController.synchronize { [weak self] error in
             guard let self else { return }

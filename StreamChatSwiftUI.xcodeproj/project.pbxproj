@@ -10,6 +10,7 @@
 		402C54482B6AAC0100672BFB /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
+		4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */; };
 		4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */; };
 		4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */; };
 		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
@@ -568,6 +569,7 @@
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
+		4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel_Tests.swift; sourceTree = "<group>"; };
 		4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatClient+Extensions.swift"; sourceTree = "<group>"; };
 		4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatClientExtensions_Tests.swift; sourceTree = "<group>"; };
 		4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel_Tests.swift; sourceTree = "<group>"; };
@@ -2009,44 +2011,45 @@
 			children = (
 				846B15F22817E7440017F7A1 /* ChannelInfo */,
 				8423C340277CB5C70092DCF1 /* Suggestions */,
-				84C94D482758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift */,
-				84C2042227917B6A0024D616 /* MessageListView_Tests.swift */,
-				84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */,
-				84C94D4C2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift */,
+				84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */,
+				844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */,
+				842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */,
+				846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */,
+				847305BA28241D8D004AC770 /* ChatChannelHeader_Tests.swift */,
+				84C94D4E2758FE59007FE2B9 /* ChatChannelTestHelpers.swift */,
 				847F7948282A91AD0009F74C /* ChatChannelView_Tests.swift */,
 				84BB4C4F284122E600CBE004 /* ChatChannelViewDateOverlay_Tests.swift */,
-				84C94D5027591DE2007FE2B9 /* ChatMessageIDs_Tests.swift */,
-				84C94D57275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift */,
-				84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */,
-				840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */,
-				84E6EC22279AEE6B0017207B /* MessageContainerView_Tests.swift */,
-				84DEC8DE2760A1D100172876 /* MessageView_Tests.swift */,
-				848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */,
-				8421BCEB27A400E8000F977D /* ReactionsUsersView_Tests.swift */,
-				842383DF2767394200888CFC /* ChatChannelDataSource_Tests.swift */,
-				842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */,
-				84AB7B20277203EF00631A10 /* GalleryView_Tests.swift */,
-				846608E6278C95E700D3D7B3 /* ChatChannelExtensions_Tests.swift */,
-				846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */,
-				841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */,
-				84C94D4E2758FE59007FE2B9 /* ChatChannelTestHelpers.swift */,
-				8492975327B1725B00A8EEB0 /* MessageComposerView_Tests.swift */,
-				84B439E027C6B2F100C04C99 /* MessageCachingUtils_Tests.swift */,
-				847305BA28241D8D004AC770 /* ChatChannelHeader_Tests.swift */,
-				847305BC28243D25004AC770 /* WebView_Tests.swift */,
-				84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */,
-				84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */,
-				844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */,
+				84C94D482758BE1C007FE2B9 /* ChatChannelViewModel_Tests.swift */,
 				842F036C288E93BF00496D49 /* ChatMessage_AdjustedText_Tests.swift */,
 				84D419B928EAD20C00F574F9 /* ChatMessageBubbles_Tests.swift */,
-				84E1D8252976B3F100060491 /* MessageViewMultiRowReactions_Tests.swift */,
-				84AA6EA92987EE51005732EF /* MessageListViewNewMessages_Tests.swift */,
-				8469592E29BB235400134EA0 /* LazyImageExtensions_Tests.swift */,
-				84204BF92C04D55300AE522B /* PollAttachmentView_Tests.swift */,
-				84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */,
+				84C94D5027591DE2007FE2B9 /* ChatMessageIDs_Tests.swift */,
 				84204BFD2C052BD600AE522B /* CreatePollView_Tests.swift */,
 				4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */,
+				84AB7B20277203EF00631A10 /* GalleryView_Tests.swift */,
+				8469592E29BB235400134EA0 /* LazyImageExtensions_Tests.swift */,
+				840008BA27E8D64A00282D88 /* MessageActions_Tests.swift */,
+				84C94D65275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift */,
+				84B439E027C6B2F100C04C99 /* MessageCachingUtils_Tests.swift */,
+				8492975327B1725B00A8EEB0 /* MessageComposerView_Tests.swift */,
+				84C94D4C2758FD5C007FE2B9 /* MessageComposerViewModel_Tests.swift */,
+				84E6EC22279AEE6B0017207B /* MessageContainerView_Tests.swift */,
+				84BB4C4D284115C200CBE004 /* MessageListDateUtils_Tests.swift */,
+				84C2042227917B6A0024D616 /* MessageListView_Tests.swift */,
+				84D77B57289D3CF800C241CE /* MessageListViewAvatars_Tests.swift */,
+				84CAD77A284E5AAA00F28C17 /* MessageListViewLastGroupHeader_Tests.swift */,
+				84AA6EA92987EE51005732EF /* MessageListViewNewMessages_Tests.swift */,
+				841B2EF5278F108700ED619E /* MessageReadIndicatorView_Tests.swift */,
+				84C94D57275A1B89007FE2B9 /* MessageTypeResolver_Tests.swift */,
+				84DEC8DE2760A1D100172876 /* MessageView_Tests.swift */,
+				84E1D8252976B3F100060491 /* MessageViewMultiRowReactions_Tests.swift */,
+				84204BF92C04D55300AE522B /* PollAttachmentView_Tests.swift */,
 				8428D01D2C05C2CC000B2A04 /* PollAttachmentViewModel_Tests.swift */,
+				4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */,
+				842F0BB7276B3518002C400C /* QuotedMessageView_Tests.swift */,
+				848399F127601231003075E4 /* ReactionsOverlayView_Tests.swift */,
+				8421BCEB27A400E8000F977D /* ReactionsUsersView_Tests.swift */,
+				846608E8278C98CB00D3D7B3 /* TypingIndicatorView_Tests.swift */,
+				847305BC28243D25004AC770 /* WebView_Tests.swift */,
 			);
 			path = ChatChannel;
 			sourceTree = "<group>";
@@ -2857,6 +2860,7 @@
 				84B439E127C6B2F100C04C99 /* MessageCachingUtils_Tests.swift in Sources */,
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84B2B5D82819778D00479CEE /* FileAttachmentsViewModel_Tests.swift in Sources */,
+				4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84CC3732290B0A4000689B73 /* StreamChatModel.xcdatamodeld in Sources */,
 				84E04790284A444E00BAFA17 /* CDNClient_Mock.swift in Sources */,
