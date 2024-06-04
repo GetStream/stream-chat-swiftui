@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-struct PollsBackgroundModifier: ViewModifier {
+private struct PollsBackgroundModifier: ViewModifier {
     
     @Injected(\.colors) var colors
     
