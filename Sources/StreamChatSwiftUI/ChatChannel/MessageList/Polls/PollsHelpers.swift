@@ -46,7 +46,7 @@ class PollsDateFormatter {
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM dd HH:mm"
+        formatter.setLocalizedDateFormatFromTemplate("MMM dd HH:mm")
         return formatter
     }()
     
