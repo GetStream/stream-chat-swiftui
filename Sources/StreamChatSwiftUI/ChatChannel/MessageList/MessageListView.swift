@@ -538,7 +538,7 @@ struct TypingIndicatorBottomView: View {
             HStack {
                 TypingIndicatorView()
                 Text(typingIndicatorString)
-                    .font(.footnote)
+                    .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
                 Spacer()
             }
