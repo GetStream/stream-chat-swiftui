@@ -62,7 +62,6 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         
     /// If true, an action sheet is shown for closing the poll, otherwise hidden.
     @Published public var endVoteConfirmationShown = false
-    @Published public var errorShown = false
 
     /// If true, poll controls are in enabled state, otherwise disabled.
     public var canInteract: Bool {
@@ -154,10 +153,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         pollController.castPollVote(
             answerText: comment,
             optionId: nil
-        ) { [weak self] error in
+        ) { error in
             if let error {
                 log.error("Error casting a vote \(error.localizedDescription)")
-                self?.errorShown = true
+                NotificationCenter.default.post(name: .showChannelAlertBannerNotification, object: nil)
             }
         }
         commentText = ""
@@ -189,7 +188,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
             self?.isClosingPoll = false
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
-                self?.errorShown = true
+                NotificationCenter.default.post(name: .showChannelAlertBannerNotification, object: nil)
             }
         }
     }
@@ -205,10 +204,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         suggestOptionText = ""
         let isDuplicate = poll.options.contains(where: { $0.text.trimmed.caseInsensitiveCompare(option.trimmed) == .orderedSame })
         guard !isDuplicate else { return }
-        pollController.suggestPollOption(text: option) { [weak self] error in
+        pollController.suggestPollOption(text: option) { error in
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
-                self?.errorShown = true
+                NotificationCenter.default.post(name: .showChannelAlertBannerNotification, object: nil)
             }
         }
     }

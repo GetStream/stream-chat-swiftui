@@ -58,6 +58,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var listId = UUID().uuidString
 
     @Published public var showScrollToLatestButton = false
+    @Published var showAlertBanner = false
 
     @Published public var currentDateString: String?
     @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
@@ -191,6 +192,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onShowChannelAlertBanner),
+            name: .showChannelAlertBannerNotification,
+            object: nil
+        )
+        
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -211,6 +219,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             threadMessage = message
             threadMessageShown = true
         }
+    }
+    
+    @objc
+    private func onShowChannelAlertBanner() {
+        showAlertBanner = true
     }
     
     @objc
@@ -811,8 +824,12 @@ let firstMessageKey = "firstMessage"
 let lastMessageKey = "lastMessage"
 
 extension Notification.Name {
+    /// A notification for notifying when an error occured and an alert banner should be shown at the top of the message list.
+    static let showChannelAlertBannerNotification = Notification.Name("showChannelAlertBannerNotification")
+    
     /// A notification for notifying when message dismissed a sheet.
     static let messageSheetHiddenNotification = Notification.Name("messageSheetHiddenNotification")
+    
     /// A notification for notifying when message view displays a sheet.
     ///
     /// When a sheet is presented, the message cell is not reloaded.

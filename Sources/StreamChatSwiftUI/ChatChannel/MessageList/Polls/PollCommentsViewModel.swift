@@ -42,8 +42,19 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     ) {
         self.commentsController = commentsController
         self.pollController = pollController
-        
         commentsController.delegate = self
+        refresh()
+        
+        // No animation for initial load
+        $comments
+            .dropFirst()
+            .map { _ in true }
+            .assignWeakly(to: \.animateChanges, on: self)
+            .store(in: &cancellables)
+    }
+    
+    func refresh() {
+        loadingComments = true
         commentsController.synchronize { [weak self] error in
             guard let self else { return }
             self.loadingComments = false
@@ -52,12 +63,6 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
                 self.errorShown = true
             }
         }
-        // No animation for initial load
-        $comments
-            .dropFirst()
-            .map { _ in true }
-            .assignWeakly(to: \.animateChanges, on: self)
-            .store(in: &cancellables)
     }
     
     var showsAddCommentButton: Bool {
