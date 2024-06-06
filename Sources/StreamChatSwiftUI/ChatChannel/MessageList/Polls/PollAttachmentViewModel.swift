@@ -83,7 +83,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     /// If true, add comment button is visible under votes, otherwise hidden.
     public var showAddCommentButton: Bool {
-        !poll.isClosed
+        if poll.votingVisibility == .anonymous {
+            return true
+        }
+        return !poll.isClosed
             && poll.allowAnswers == true
             && (
                 poll.latestAnswers.filter {
