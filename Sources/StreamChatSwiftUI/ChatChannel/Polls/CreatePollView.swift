@@ -182,7 +182,7 @@ struct CreatePollView: View {
                         .bold()
                 }
                 
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         viewModel.createPoll {
                             presentationMode.wrappedValue.dismiss()
