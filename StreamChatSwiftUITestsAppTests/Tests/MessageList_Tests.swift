@@ -506,6 +506,8 @@ extension MessageList_Tests {
     func test_paginationOnThread() throws {
         linkToScenario(withId: 371)
         
+        throw XCTSkip("https://github.com/GetStream/ios-issues-tracking/issues/854")
+        
         let replyCount = 60
         
         GIVEN("user opens the channel") {
