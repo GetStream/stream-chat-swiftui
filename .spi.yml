@@ -4,4 +4,4 @@ builder:
   - platform: ios
     documentation_targets: [StreamChatSwiftUI]
     scheme: StreamChatSwiftUI
-    swift_version: 5.8
+    swift_version: 5.9
