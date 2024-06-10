@@ -43,7 +43,9 @@ struct ComposerTextInputView: UIViewRepresentable {
 
     func updateUIView(_ uiView: InputTextView, context: Context) {
         DispatchQueue.main.async {
-            if uiView.markedTextRange == nil {
+            // Clear marked text if text is reset
+            let canUpdate = uiView.markedTextRange == nil || text.isEmpty
+            if canUpdate {
                 var shouldAnimate = false
                 if uiView.text != text {
                     let previousLocation = selectedRangeLocation
