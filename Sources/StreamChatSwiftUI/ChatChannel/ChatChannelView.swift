@@ -76,6 +76,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     } else {
                         ZStack {
                             factory.makeEmptyMessagesView(for: channel, colors: colors)
+                                .dismissKeyboardOnTap(enabled: keyboardShown)
                             if viewModel.shouldShowTypingIndicator {
                                 factory.makeTypingIndicatorBottomView(
                                     channel: channel,

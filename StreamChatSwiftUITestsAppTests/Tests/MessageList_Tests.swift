@@ -331,6 +331,20 @@ final class MessageList_Tests: StreamTestCase {
             userRobot.assertMessage(message)
         }
     }
+    
+    func test_emptyViewDismissesKeyboard() throws {
+        GIVEN("user opens the channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("keyboard is open") {
+            userRobot.tapOnComposerTextView()
+            userRobot.assertKeyboard(isVisible: true)
+            userRobot.tapOnEmptyMessageList()
+        }
+        THEN("keyboard is dismissed") {
+            userRobot.assertKeyboard(isVisible: false)
+        }
+    }
 }
 
 // MARK: Scroll to bottom
