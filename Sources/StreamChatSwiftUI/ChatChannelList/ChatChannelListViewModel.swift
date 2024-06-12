@@ -109,7 +109,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
-    @Published var hideTabBar = false
+    @Published public var hideTabBar = false
 
     public var isSearching: Bool {
         !searchText.isEmpty
@@ -232,7 +232,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         channel.membership != nil
     }
 
-    func checkTabBarAppearance() {
+    public func checkTabBarAppearance() {
         guard #available(iOS 15, *) else { return }
         if hideTabBar != false {
             hideTabBar = false
