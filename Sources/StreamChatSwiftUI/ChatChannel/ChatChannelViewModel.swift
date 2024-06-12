@@ -391,6 +391,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if !isActive {
             return
         }
+        // Message data can change with every callback
+        utils.messageCachingUtils.clearCache()
         
         let animationState = shouldAnimate(changes: changes)
         if animationState == .animated {

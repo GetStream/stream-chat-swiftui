@@ -23,7 +23,15 @@ public class DefaultMessageIdBuilder: MessageIdBuilder {
         if message.textUpdatedAt != nil {
             statesId = "edited"
         }
-        return message.baseId + statesId + message.reactionScoresId
-            + message.repliesCountId + "\(message.updatedAt)" + message.pinStateId
+        let authorDisplayInfo = message.authorDisplayInfo
+        let author = authorDisplayInfo.name + String(authorDisplayInfo.imageURL?.hashValue ?? 0)
+        
+        return message.baseId +
+            statesId +
+            message.reactionScoresId +
+            message.repliesCountId +
+            "\(message.updatedAt)" +
+            message.pinStateId +
+            author
     }
 }

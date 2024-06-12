@@ -469,6 +469,47 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssert(shouldJump == false)
     }
+    
+    func test_chatChannelVM_messageAuthorChanged() {
+        // Given
+        let channelId = ChannelId.unique
+        let channelController = makeChannelController(messages: [
+            ChatMessage.mock(
+                id: "1",
+                cid: channelId,
+                text: "A",
+                author: .mock(id: "a1", name: "Name")
+            )
+        ])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let initialMesssageIds = viewModel.messages.map(\.messageId)
+        
+        // When
+        channelController.messages_mock = [
+            ChatMessage.mock(
+                id: "1",
+                cid: channelId,
+                text: "A",
+                author: .mock(id: "a1", name: "Name Updated")
+            )
+        ]
+        let changes = channelController.messages
+            .enumerated()
+            .map {
+                ListChange.update(
+                    $0.element,
+                    index: IndexPath(item: $0.offset, section: 0)
+                )
+            }
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: channelController.messages,
+            changes: changes
+        )
+        // Then
+        let updatedMessageIds = viewModel.messages.map(\.messageId)
+        XCTAssertNotEqual(initialMesssageIds, updatedMessageIds, "Message id should not be cached when author changes")
+    }
 
     // MARK: - private
 
