@@ -240,11 +240,14 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
 }
 
 public struct ChatInfoDirectChannelView: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
     var participant: ParticipantInfo?
+
+    public init(participant: ParticipantInfo? = nil) {
+        self.participant = participant
+    }
 
     public var body: some View {
         VStack {
