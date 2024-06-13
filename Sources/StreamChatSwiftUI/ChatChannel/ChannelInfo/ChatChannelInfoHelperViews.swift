@@ -39,11 +39,11 @@ public struct ChatChannelInfoButton: View {
     }
 }
 
-struct ChannelInfoDivider: View {
+public struct ChannelInfoDivider: View {
 
     @Injected(\.colors) private var colors
 
-    var body: some View {
+    public var body: some View {
         Rectangle()
             .fill(Color(colors.innerBorder))
             .frame(height: 8)
@@ -239,14 +239,14 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
     }
 }
 
-struct ChatInfoDirectChannelView: View {
+public struct ChatInfoDirectChannelView: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
     var participant: ParticipantInfo?
 
-    var body: some View {
+    public var body: some View {
         VStack {
             MessageAvatarView(
                 avatarURL: participant?.chatUser.imageURL,

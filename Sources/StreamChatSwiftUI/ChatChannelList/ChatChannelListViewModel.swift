@@ -439,7 +439,7 @@ private let dismissChannel = "io.getstream.dismissChannel"
 
 private let hideTabBarNotification = "io.getstream.hideTabBar"
 
-func notifyChannelDismiss() {
+public func notifyChannelDismiss() {
     NotificationCenter.default.post(name: NSNotification.Name(dismissChannel), object: nil)
 }
 
