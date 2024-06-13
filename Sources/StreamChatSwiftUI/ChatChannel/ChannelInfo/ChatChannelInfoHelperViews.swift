@@ -43,6 +43,8 @@ public struct ChannelInfoDivider: View {
 
     @Injected(\.colors) private var colors
 
+    public init() {}
+    
     public var body: some View {
         Rectangle()
             .fill(Color(colors.innerBorder))
