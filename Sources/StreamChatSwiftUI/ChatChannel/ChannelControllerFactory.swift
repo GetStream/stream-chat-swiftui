@@ -10,7 +10,7 @@ class ChannelControllerFactory {
 
     @Injected(\.chatClient) var chatClient
 
-    private var currentChannelController: ChatChannelController?
+    var currentChannelController: ChatChannelController?
     private var messageControllers = [String: ChatMessageController]()
 
     /// Creates a channel controller with the provided channel id.

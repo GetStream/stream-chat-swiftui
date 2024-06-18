@@ -20,12 +20,23 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var channel: ChatChannel
     var message: ChatMessage
     var replyCount: Int
+    var isRightAligned: Bool
+    var showReplyCount: Bool
 
-    public init(factory: Factory, channel: ChatChannel, message: ChatMessage, replyCount: Int) {
+    public init(
+        factory: Factory,
+        channel: ChatChannel,
+        message: ChatMessage,
+        replyCount: Int,
+        showReplyCount: Bool = true,
+        isRightAligned: Bool? = nil
+    ) {
         self.factory = factory
         self.channel = channel
         self.message = message
         self.replyCount = replyCount
+        self.isRightAligned = isRightAligned ?? message.isRightAligned
+        self.showReplyCount = showReplyCount
     }
 
     public var body: some View {
@@ -41,15 +52,15 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             )
         } label: {
             HStack {
-                if !message.isRightAligned {
+                if !isRightAligned {
                     MessageAvatarView(
                         avatarURL: message.threadParticipants.first?.imageURL,
                         size: .init(width: 16, height: 16)
                     )
                 }
-                Text("\(replyCount) \(repliesText)")
+                Text(title)
                     .font(fonts.footnoteBold)
-                if message.isRightAligned {
+                if isRightAligned {
                     MessageAvatarView(
                         avatarURL: message.threadParticipants.first?.imageURL,
                         size: .init(width: 16, height: 16)
@@ -81,11 +92,19 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 )
                 .offset(y: -24)
                 .rotation3DEffect(
-                    .degrees(message.isRightAligned ? 180 : 0),
+                    .degrees(isRightAligned ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
                 )
             )
             .foregroundColor(colors.tintColor)
+        }
+    }
+    
+    var title: String {
+        if showReplyCount {
+            return "\(replyCount) \(repliesText)"
+        } else {
+            return L10n.Message.Threads.reply
         }
     }
 

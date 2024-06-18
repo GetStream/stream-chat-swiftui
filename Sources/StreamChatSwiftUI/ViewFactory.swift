@@ -524,6 +524,20 @@ public protocol ViewFactory: AnyObject {
         message: ChatMessage,
         replyCount: Int
     ) -> MessageRepliesViewType
+    
+    associatedtype MessageRepliesShownInChannelViewType: View
+    /// Creates the message replies view for a reply that is also shown in a channel.
+    /// - Parameters:
+    ///  - channel: the channel where the message is sent.
+    ///  - message: the message that's being replied to.
+    ///  - replyCount: the current number of replies.
+    /// - Returns: view displayed in the message replies view slot.
+    func makeMessageRepliesShownInChannelView(
+        channel: ChatChannel,
+        message: ChatMessage,
+        parentMessage: ChatMessage,
+        replyCount: Int
+    ) -> MessageRepliesShownInChannelViewType
 
     associatedtype MessageComposerViewType: View
     /// Creates the message composer view.

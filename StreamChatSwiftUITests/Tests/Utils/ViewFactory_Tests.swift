@@ -760,6 +760,22 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
     }
+    
+    func test_viewFactory_makeMessageRepliesShownInChannelView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeMessageRepliesShownInChannelView(
+            channel: ChatChannel.mockDMChannel(),
+            message: message,
+            parentMessage: message,
+            replyCount: 2
+        )
+
+        // Then
+        XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
+    }
 
     func test_viewFactory_makeTypingIndicatorBottomView() {
         // Given
