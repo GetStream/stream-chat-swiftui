@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Thread replies shown in channel indicator
+- Thread replies shown in channel indicator [#518](https://github.com/GetStream/stream-chat-swiftui/pull/518)
 
 # [4.57.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.57.0)
 _June 07, 2024_

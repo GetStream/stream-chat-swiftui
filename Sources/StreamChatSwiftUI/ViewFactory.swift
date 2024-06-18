@@ -530,6 +530,7 @@ public protocol ViewFactory: AnyObject {
     /// - Parameters:
     ///  - channel: the channel where the message is sent.
     ///  - message: the message that's being replied to.
+    ///  - parentMessage: the parent message.
     ///  - replyCount: the current number of replies.
     /// - Returns: view displayed in the message replies view slot.
     func makeMessageRepliesShownInChannelView(
