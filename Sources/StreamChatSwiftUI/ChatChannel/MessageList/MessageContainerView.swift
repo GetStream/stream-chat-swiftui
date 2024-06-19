@@ -166,14 +166,28 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
 
-                    if message.replyCount > 0 && !isInThread {
-                        factory.makeMessageRepliesView(
-                            channel: channel,
-                            message: message,
-                            replyCount: message.replyCount
-                        )
-                        .accessibilityElement(children: .contain)
-                        .accessibility(identifier: "MessageRepliesView")
+                    if !isInThread {
+                        if message.replyCount > 0 {
+                            factory.makeMessageRepliesView(
+                                channel: channel,
+                                message: message,
+                                replyCount: message.replyCount
+                            )
+                            .accessibilityElement(children: .contain)
+                            .accessibility(identifier: "MessageRepliesView")
+                        } else if message.showReplyInChannel,
+                                  let parentId = message.parentMessageId,
+                                  let controller = utils.channelControllerFactory.currentChannelController,
+                                  let parentMessage = controller.dataStore.message(id: parentId) {
+                            factory.makeMessageRepliesShownInChannelView(
+                                channel: channel,
+                                message: message,
+                                parentMessage: parentMessage,
+                                replyCount: parentMessage.replyCount
+                            )
+                            .accessibilityElement(children: .contain)
+                            .accessibility(identifier: "MessageRepliesView")
+                        }
                     }
                     
                     if bottomReactionsShown {

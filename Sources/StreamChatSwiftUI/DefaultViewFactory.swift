@@ -496,6 +496,22 @@ extension ViewFactory {
         )
     }
     
+    public func makeMessageRepliesShownInChannelView(
+        channel: ChatChannel,
+        message: ChatMessage,
+        parentMessage: ChatMessage,
+        replyCount: Int
+    ) -> some View {
+        MessageRepliesView(
+            factory: self,
+            channel: channel,
+            message: parentMessage,
+            replyCount: replyCount,
+            showReplyCount: false,
+            isRightAligned: message.isRightAligned
+        )
+    }
+    
     public func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,
