@@ -160,6 +160,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible
         })
+        .onReceive(NotificationCenter.default.publisher(
+            for: NSNotification.Name(dismissChannel)
+        ), perform: { _ in
+            presentationMode.wrappedValue.dismiss()
+        })
         .onAppear {
             viewModel.onViewAppear()
             if utils.messageListConfig.becomesFirstResponderOnOpen {

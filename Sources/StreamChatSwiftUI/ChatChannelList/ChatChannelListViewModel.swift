@@ -435,7 +435,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 }
 
-private let dismissChannel = "io.getstream.dismissChannel"
+internal let dismissChannel = "io.getstream.dismissChannel"
 
 private let hideTabBarNotification = "io.getstream.hideTabBar"
 
