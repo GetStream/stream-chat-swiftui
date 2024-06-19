@@ -84,10 +84,9 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                                 message: Text(message),
                                 primaryButton: .destructive(Text(buttonTitle)) {
                                     viewModel.leaveConversationTapped {
+                                        presentationMode.wrappedValue.dismiss()
                                         if shownFromMessageList {
                                             notifyChannelDismiss()
-                                        } else {
-                                            presentationMode.wrappedValue.dismiss()
                                         }
                                     }
                                 },
