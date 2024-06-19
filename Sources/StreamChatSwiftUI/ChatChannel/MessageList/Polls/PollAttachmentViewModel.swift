@@ -10,7 +10,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     static let numberOfVisibleOptionsShown = 10
     private var isCastingVote = false
-    private var isClosingPoll = false
+    @Published private var isClosingPoll = false
     
     @Injected(\.chatClient) var chatClient
     
