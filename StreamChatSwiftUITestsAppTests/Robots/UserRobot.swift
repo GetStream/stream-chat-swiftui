@@ -235,6 +235,12 @@ extension UserRobot {
     }
 
     @discardableResult
+    func tapOnComposerTextView() -> Self {
+        MessageListPage.Composer.textView.wait().safeTap()
+        return self
+    }
+    
+    @discardableResult
     func tapOnMessage(at messageCellIndex: Int? = 0) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex)
         return tapOnMessage(messageCell)
@@ -249,6 +255,12 @@ extension UserRobot {
     @discardableResult
     func tapOnMessageList() -> Self {
         MessageListPage.list.safeTap()
+        return self
+    }
+    
+    @discardableResult
+    func tapOnEmptyMessageList() -> Self {
+        MessageListPage.listEmpty.safeTap()
         return self
     }
 
