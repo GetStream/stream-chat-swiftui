@@ -62,6 +62,9 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         
     /// If true, an action sheet is shown for closing the poll, otherwise hidden.
     @Published public var endVoteConfirmationShown = false
+    
+    @available(*, deprecated, message: "Replaced with inline alert banners displayed by the showChannelAlertBannerNotification")
+    @Published public var errorShown = false
 
     /// If true, poll controls are in enabled state, otherwise disabled.
     public var canInteract: Bool {
