@@ -154,9 +154,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         .onReceive(keyboardWillChangePublisher) { visible in
             viewModel.keyboardShown = visible
         }
-        .modifier(
-            HideKeyboardOnTapGesture(shouldAdd: viewModel.keyboardShown)
-        )
+        .dismissKeyboardOnTap(enabled: viewModel.keyboardShown)
         .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
     }
 }
