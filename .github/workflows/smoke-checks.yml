@@ -159,6 +159,7 @@ jobs:
         path: |
           fastlane/recordings
           fastlane/sinatra_log.txt
+          fastlane/test_output/report.junit
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
 
