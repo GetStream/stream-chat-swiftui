@@ -155,7 +155,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: Test Data E2E
+        name: Test Data E2E ${{ matrix.batch }}
         path: |
           fastlane/recordings
           fastlane/sinatra_log.txt
