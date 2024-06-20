@@ -27,7 +27,7 @@ jobs:
       timeout-minutes: 60
       env:
         XCODE_VERSION: "14.3.1"
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: success()
       with:
         name: cache-derived-data
@@ -42,8 +42,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - ios: 17.4
-            xcode: 15.2
+          - ios: 17.0
+            xcode: 15.0.1
             os: macos-14
             device: "iPhone 15 Pro"
             setup_runtime: false
@@ -61,7 +61,7 @@ jobs:
       XCODE_VERSION: ${{ matrix.xcode }}
     steps:
     - uses: actions/checkout@v4.1.1
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: cache-derived-data
         path: derived_data/Build/
@@ -69,6 +69,7 @@ jobs:
       env:
         INSTALL_ALLURE: true
         INSTALL_YEETD: true
+        SKIP_MINT_BOOTSTRAP: true
     - name: Cache iOS Simulator Runtime
       uses: actions/cache@v4
       id: runtime-cache
@@ -105,7 +106,7 @@ jobs:
       run: |
         brew install chargepoint/xcparse/xcparse
         xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: Test Data E2E (iOS ${{ matrix.ios }})
@@ -120,12 +121,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - xcode: 15.2
+          - xcode: 15.4
             os: macos-14
-          - xcode: 14.3.1
+          - xcode: 15.0.1
             os: macos-14
-          - xcode: 14.2
-            os: macos-12
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -175,9 +174,9 @@ jobs:
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-12
+    runs-on: macos-13
     env:
-      XCODE_VERSION: "14.0.1"
+      XCODE_VERSION: "15.0.1"
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
