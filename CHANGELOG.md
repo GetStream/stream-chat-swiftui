@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Dismiss keyboard when tapping on the empty message list [#513](https://github.com/GetStream/stream-chat-swiftui/pull/513)
 - Reset composer text when there is provisional text (e.g. Japanese - kana keyboard) but the text is reset to empty string [#512](https://github.com/GetStream/stream-chat-swiftui/pull/512)
 
+### 🔄 Changed
+- Show inline alert banner when encountering a failure while interacting with polls [#504](https://github.com/GetStream/stream-chat-swiftui/pull/504)
+
 # [4.57.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.57.0)
 _June 07, 2024_
 
