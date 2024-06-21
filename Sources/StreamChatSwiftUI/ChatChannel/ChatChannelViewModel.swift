@@ -405,12 +405,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        let animationState = shouldAnimate(changes: changes)
-        if animationState == .animated {
+        if shouldAnimate(changes: changes) {
             withAnimation {
                 self.messages = messages
             }
-        } else if animationState == .notAnimated {
+        } else {
             self.messages = messages
         }
         
@@ -649,24 +648,22 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
+    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges || loadingNextMessages {
-            return .notAnimated
+            return false
         }
         
-        var skipChanges = true
         var animateChanges = false
         for change in changes {
             switch change {
             case .insert(_, index: _),
                  .remove(_, index: _):
-                return .animated
+                return true
             case let .update(message, index: index):
                 if index.row < messages.count,
                    message.messageId != messages[index.row].messageId
                    || message.type == .ephemeral
                    || !message.linkAttachments.isEmpty {
-                    skipChanges = false
                     if index.row < messages.count
                         && (
                             message.reactionScoresId != messages[index.row].reactionScoresId
@@ -676,15 +673,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     }
                 }
             default:
-                skipChanges = false
+                break
             }
         }
         
-        if skipChanges {
-            return .skip
-        }
-        
-        return animateChanges ? .animated : .notAnimated
+        return animateChanges
     }
     
     private func enableDateIndicator() {
@@ -812,12 +805,6 @@ public enum ChannelHeaderType {
     case messageThread
     /// The header shown when someone is typing.
     case typingIndicator
-}
-
-enum AnimationChange {
-    case animated
-    case notAnimated
-    case skip
 }
 
 let firstMessageKey = "firstMessage"
