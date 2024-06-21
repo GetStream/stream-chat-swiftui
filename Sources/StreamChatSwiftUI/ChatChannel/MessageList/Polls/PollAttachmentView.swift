@@ -145,9 +145,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .alert(isPresented: $viewModel.errorShown) {
-            Alert.defaultErrorAlert
-        }
         .disabled(!viewModel.canInteract)
         .padding()
         .modifier(

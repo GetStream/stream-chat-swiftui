@@ -28,6 +28,17 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         )
         controller = InjectedValues[\.chatClient].pollVoteListController(query: query)
         controller.delegate = self
+        refresh()
+        
+        // No animation for initial load
+        $pollVotes
+            .dropFirst()
+            .map { _ in true }
+            .assignWeakly(to: \.animateChanges, on: self)
+            .store(in: &cancellables)
+    }
+    
+    func refresh() {
         controller.synchronize { [weak self] error in
             guard let self else { return }
             self.pollVotes = Array(self.controller.votes)
@@ -38,12 +49,6 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
                 self.errorShown = true
             }
         }
-        // No animation for initial load
-        $pollVotes
-            .dropFirst()
-            .map { _ in true }
-            .assignWeakly(to: \.animateChanges, on: self)
-            .store(in: &cancellables)
     }
     
     func onAppear(vote: PollVote) {
