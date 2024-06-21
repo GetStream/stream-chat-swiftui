@@ -16,7 +16,6 @@ source_packages_path = 'spm_cache'
 buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
 @force_check = false
-develop_branch = 'main'
 
 before_all do |lane|
   if is_ci
@@ -90,6 +89,7 @@ lane :publish_release do |options|
   clean_products
 
   publish_ios_sdk(
+    skip_git_status_check: false,
     version: options[:version],
     sdk_names: sdk_names,
     podspec_names: ['StreamChatSwiftUI', 'StreamChatSwiftUI-XCFramework'],
@@ -208,7 +208,7 @@ end
 
 desc 'Runs e2e ui tests using mock server in Debug config'
 lane :test_e2e_mock do |options|
-  # next unless is_check_required(sources: sources_matrix[:e2e], force_check: @force_check) # TESTING THIS NOW
+  next unless is_check_required(sources: sources_matrix[:e2e], force_check: @force_check)
 
   start_sinatra
 
@@ -434,7 +434,7 @@ lane :copyright do
 end
 
 private_lane :create_pr do |options|
-  options[:base_branch] ||= develop_branch
+  options[:base_branch] ||= 'develop'
   sh("git checkout -b #{options[:head_branch]}")
   sh('git add -A')
   sh("git commit -m '#{options[:title]}'")
