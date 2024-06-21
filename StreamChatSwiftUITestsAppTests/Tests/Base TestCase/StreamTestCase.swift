@@ -14,6 +14,7 @@ class StreamTestCase: XCTestCase {
     var backendRobot: BackendRobot!
     var participantRobot: ParticipantRobot!
     var server: StreamMockServer!
+    var mockServerCrashed = false
     var recordVideo = false
 
     override func setUpWithError() throws {
@@ -35,7 +36,6 @@ class StreamTestCase: XCTestCase {
         stopVideo()
         app.terminate()
         server.stop()
-        server = nil
         backendRobot.delayServerResponse(byTimeInterval: 0.0)
 
         try super.tearDownWithError()
@@ -45,6 +45,10 @@ class StreamTestCase: XCTestCase {
 }
 
 extension StreamTestCase {
+    
+    func assertMockServer() {
+        XCTAssertFalse(mockServerCrashed, "Mock server failed on start")
+    }
 
     private func useMockServer() {
         // Leverage web socket server
@@ -79,10 +83,17 @@ extension StreamTestCase {
     private func startMockServer() {
         server = StreamMockServer()
         server.configure()
-        let result = server.start(port: in_port_t(MockServerConfiguration.port))
-        if !result {
-            XCTFail("Mock server failed on start")
+        
+        for _ in 0...3 {
+            let serverHasStarted = server.start(port: UInt16(MockServerConfiguration.port))
+            if serverHasStarted {
+                return
+            }
+            server.stop()
+            MockServerConfiguration.port = Int.random(in: 61000..<62000)
         }
+        
+        mockServerCrashed = true
     }
 
     private func startVideo() {
