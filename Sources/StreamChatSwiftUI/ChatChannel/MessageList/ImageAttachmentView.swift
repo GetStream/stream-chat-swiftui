@@ -37,7 +37,8 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 spacing: 0
             ) {
                 ImageAttachmentView(
-                    message: message,
+                    message: message, 
+                    sources: sources,
                     width: width
                 ) { index in
                     if message.localState == nil {
@@ -63,13 +64,43 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             self.selectedIndex = 0
         }) {
             GalleryView(
-                imageAttachments: message.imageAttachments,
+                mediaAttachments: sources,
                 author: message.author,
                 isShown: $galleryShown,
                 selected: selectedIndex
             )
         }
         .accessibilityIdentifier("ImageAttachmentContainer")
+    }
+    
+    private var sources: [MediaAttachment] {
+        let videoSources = message.videoAttachments.map { attachment in
+            let url: URL
+            if let state = attachment.uploadingState {
+                url = state.localFileURL
+            } else {
+                url = attachment.videoURL
+            }
+            return MediaAttachment(
+                url: url,
+                type: .video,
+                uploadingState: attachment.uploadingState
+            )
+        }
+        let imageSources = message.imageAttachments.map { attachment in
+            let url: URL
+            if let state = attachment.uploadingState {
+                url = state.localFileURL
+            } else {
+                url = attachment.imageURL
+            }
+            return MediaAttachment(
+                url: url,
+                type: .image,
+                uploadingState: attachment.uploadingState
+            )
+        }
+        return videoSources + imageSources
     }
 }
 
@@ -115,6 +146,7 @@ struct ImageAttachmentView: View {
     @Injected(\.utils) private var utils
 
     let message: ChatMessage
+    let sources: [MediaAttachment]
     let width: CGFloat
     var imageTapped: ((Int) -> Void)? = nil
 
@@ -123,16 +155,6 @@ struct ImageAttachmentView: View {
 
     private var imageCDN: ImageCDN {
         utils.imageCDN
-    }
-
-    private var sources: [URL] {
-        message.imageAttachments.map { attachment in
-            if let state = attachment.uploadingState {
-                return state.localFileURL
-            } else {
-                return attachment.imageURL
-            }
-        }
     }
 
     var body: some View {
@@ -144,7 +166,7 @@ struct ImageAttachmentView: View {
                     imageTapped: imageTapped,
                     index: 0
                 )
-                .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
+                .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0].url)
             } else if sources.count == 2 {
                 HStack(spacing: spacing) {
                     MultiImageView(
@@ -154,7 +176,7 @@ struct ImageAttachmentView: View {
                         imageTapped: imageTapped,
                         index: 0
                     )
-                    .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
+                    .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0].url)
 
                     MultiImageView(
                         source: sources[1],
@@ -163,7 +185,7 @@ struct ImageAttachmentView: View {
                         imageTapped: imageTapped,
                         index: 1
                     )
-                    .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
+                    .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1].url)
                 }
             } else if sources.count == 3 {
                 HStack(spacing: spacing) {
@@ -174,7 +196,7 @@ struct ImageAttachmentView: View {
                         imageTapped: imageTapped,
                         index: 0
                     )
-                    .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
+                    .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0].url)
 
                     VStack(spacing: spacing) {
                         MultiImageView(
@@ -184,7 +206,7 @@ struct ImageAttachmentView: View {
                             imageTapped: imageTapped,
                             index: 1
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
+                        .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1].url)
 
                         MultiImageView(
                             source: sources[2],
@@ -193,7 +215,7 @@ struct ImageAttachmentView: View {
                             imageTapped: imageTapped,
                             index: 2
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
+                        .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2].url)
                     }
                 }
             } else if sources.count > 3 {
@@ -206,7 +228,7 @@ struct ImageAttachmentView: View {
                             imageTapped: imageTapped,
                             index: 0
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0])
+                        .withUploadingStateIndicator(for: uploadState(for: 0), url: sources[0].url)
 
                         MultiImageView(
                             source: sources[2],
@@ -215,7 +237,7 @@ struct ImageAttachmentView: View {
                             imageTapped: imageTapped,
                             index: 2
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2])
+                        .withUploadingStateIndicator(for: uploadState(for: 2), url: sources[2].url)
                     }
 
                     VStack(spacing: spacing) {
@@ -226,7 +248,7 @@ struct ImageAttachmentView: View {
                             imageTapped: imageTapped,
                             index: 1
                         )
-                        .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1])
+                        .withUploadingStateIndicator(for: uploadState(for: 1), url: sources[1].url)
 
                         ZStack {
                             MultiImageView(
@@ -236,7 +258,7 @@ struct ImageAttachmentView: View {
                                 imageTapped: imageTapped,
                                 index: 3
                             )
-                            .withUploadingStateIndicator(for: uploadState(for: 3), url: sources[3])
+                            .withUploadingStateIndicator(for: uploadState(for: 3), url: sources[3].url)
 
                             if notDisplayedImages > 0 {
                                 Color.black.opacity(0.4)
@@ -265,12 +287,12 @@ struct ImageAttachmentView: View {
     }
 
     private func uploadState(for index: Int) -> AttachmentUploadingState? {
-        message.imageAttachments[index].uploadingState
+        sources[index].uploadingState
     }
 }
 
 struct SingleImageView: View {
-    let source: URL
+    let source: MediaAttachment
     let width: CGFloat
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
@@ -293,7 +315,7 @@ struct SingleImageView: View {
 }
 
 struct MultiImageView: View {
-    let source: URL
+    let source: MediaAttachment
     let width: CGFloat
     let height: CGFloat
     var imageTapped: ((Int) -> Void)? = nil
@@ -318,7 +340,7 @@ struct LazyLoadingImage: View {
     @State private var image: UIImage?
     @State private var error: Error?
 
-    let source: URL
+    let source: MediaAttachment
     let width: CGFloat
     let height: CGFloat
     var resize: Bool = true
@@ -354,27 +376,28 @@ struct LazyLoadingImage: View {
                     ProgressView()
                 }
             }
+            
+            if source.type == .video && width > 64 && source.uploadingState == nil {
+                VideoPlayIcon()
+            }
         }
         .onAppear {
             if image != nil {
                 return
             }
 
-            utils.imageLoader.loadImage(
-                url: source,
-                imageCDN: utils.imageCDN,
+            source.generateThumbnail(
                 resize: resize,
-                preferredSize: CGSize(width: width, height: height),
-                completion: { result in
-                    switch result {
-                    case let .success(image):
-                        self.image = image
-                        onImageLoaded(image)
-                    case let .failure(error):
-                        self.error = error
-                    }
+                preferredSize: CGSize(width: width, height: height)
+            ) { result in
+                switch result {
+                case let .success(image):
+                    self.image = image
+                    onImageLoaded(image)
+                case let .failure(error):
+                    self.error = error
                 }
-            )
+            }
         }
     }
 
@@ -395,4 +418,38 @@ extension ChatMessage {
     var alignmentInBubble: HorizontalAlignment {
         .leading
     }
+}
+
+struct MediaAttachment {
+    @Injected(\.utils) var utils
+    
+    let url: URL
+    let type: MediaAttachmentType
+    var uploadingState: AttachmentUploadingState?
+    
+    func generateThumbnail(
+        resize: Bool,
+        preferredSize: CGSize,
+        completion: @escaping (Result<UIImage, Error>) -> Void
+    ) {
+        if type == .image {
+            utils.imageLoader.loadImage(
+                url: url,
+                imageCDN: utils.imageCDN,
+                resize: resize,
+                preferredSize: preferredSize,
+                completion: completion
+            )
+        } else if type == .video {
+            utils.videoPreviewLoader.loadPreviewForVideo(
+                at: url,
+                completion: completion
+            )
+        }
+    }
+}
+
+enum MediaAttachmentType {
+    case image
+    case video
 }

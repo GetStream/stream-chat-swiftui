@@ -160,6 +160,35 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_messageViewImage_snapshot3ImagesAndVideo() {
+        // Given
+        let imageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            attachments: [
+                ChatChannelTestHelpers.imageAttachments[0],
+                ChatChannelTestHelpers.imageAttachments[0],
+                ChatChannelTestHelpers.imageAttachments[0],
+                ChatChannelTestHelpers.videoAttachments[0]
+            ]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: imageMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_messageViewImage_snapshotQuoted() {
         // Given

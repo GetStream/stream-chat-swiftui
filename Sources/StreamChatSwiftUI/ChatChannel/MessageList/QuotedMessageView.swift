@@ -95,7 +95,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                         VoiceRecordingPreview(voiceAttachment: quotedMessage.voiceRecordingAttachments[0].payload)
                     } else if !quotedMessage.imageAttachments.isEmpty {
                         LazyLoadingImage(
-                            source: quotedMessage.imageAttachments[0].imageURL,
+                            source: MediaAttachment(url: quotedMessage.imageAttachments[0].imageURL, type: .image),
                             width: attachmentWidth,
                             height: attachmentWidth,
                             resize: false
