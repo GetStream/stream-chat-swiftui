@@ -163,6 +163,7 @@ struct StreamVideoPlayer: View {
     
     var body: some View {
         VideoPlayer(player: player)
+            .clipped()
             .onAppear {
                 try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
                 player.play()
