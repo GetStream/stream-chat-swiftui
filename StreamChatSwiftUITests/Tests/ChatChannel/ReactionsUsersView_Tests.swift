@@ -15,6 +15,7 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
         // Given
         let author = ChatUser.mock(id: .unique, name: "Martin")
         let reaction = ChatMessageReaction(
+            id: .unique,
             type: .init(rawValue: "love"),
             score: 1,
             createdAt: Date(),
@@ -44,6 +45,7 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
         for _ in 0..<8 {
             let author = ChatUser.mock(id: .unique, name: "Martin")
             let reaction = ChatMessageReaction(
+                id: .unique,
                 type: .init(rawValue: "love"),
                 score: 1,
                 createdAt: Date(),
