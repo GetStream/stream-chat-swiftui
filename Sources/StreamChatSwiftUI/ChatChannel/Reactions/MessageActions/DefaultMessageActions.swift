@@ -33,7 +33,7 @@ extension MessageAction {
             )
             return messageActions
         } else if message.localState == .pendingSend
-            && message.messageId.contains("\(LocalAttachmentState.uploadingFailed)") {
+            && message.allAttachments.contains(where: { $0.uploadingState?.state == .uploadingFailed }) {
             messageActions = editAndDeleteActions(
                 for: message,
                 channel: channel,
