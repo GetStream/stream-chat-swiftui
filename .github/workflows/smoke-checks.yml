@@ -33,7 +33,9 @@ jobs:
     - name: Build
       run: bundle exec fastlane build_test_app_and_frameworks
       timeout-minutes: 60
-    - uses: actions/upload-artifact@v3
+      env:
+        XCODE_VERSION: "15.2" # Should match the minimum version in dependent jobs
+    - uses: actions/upload-artifact@v4
       if: success()
       with:
         name: cache-derived-data
@@ -48,7 +50,7 @@ jobs:
     needs: build-test-app-and-frameworks
     steps:
     - uses: actions/checkout@v4.1.1
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: cache-derived-data
         path: derived_data/Build/
@@ -90,7 +92,7 @@ jobs:
         brew install chargepoint/xcparse/xcparse
         xcparse logs fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/logs/
         xcparse screenshots fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/snapshots --test
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: Test Data UI
@@ -116,7 +118,7 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v4.1.1
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: cache-derived-data
         path: derived_data/Build/
@@ -124,9 +126,13 @@ jobs:
       env:
         INSTALL_ALLURE: true
         INSTALL_YEETD: true
+        SKIP_MINT_BOOTSTRAP: true
     - name: Run UI Tests (Debug)
       run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true
+      timeout-minutes: 100
       env:
+        XCODE_VERSION: "15.2" # the most stable pair of Xcode
+        IOS_SIMULATOR_DEVICE: "iPhone 15 Pro (17.2)" # and iOS
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_PR_NUM: ${{ github.event.number }}
         MATRIX_SIZE: ${{ strategy.job-total }}
@@ -146,13 +152,14 @@ jobs:
       run: |
         brew install chargepoint/xcparse/xcparse
         xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: Test Data E2E
+        name: Test Data E2E ${{ matrix.batch }}
         path: |
           fastlane/recordings
           fastlane/sinatra_log.txt
+          fastlane/test_output/report.junit
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
 
@@ -182,7 +189,7 @@ jobs:
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v4.1.1
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: cache-derived-data
         path: derived_data/Build/

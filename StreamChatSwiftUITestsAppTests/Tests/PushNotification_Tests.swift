@@ -9,6 +9,11 @@ final class PushNotification_Tests: StreamTestCase {
 
     let sender = "Han Solo"
     let message = "How are you? 🙂"
+    
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        assertMockServer()
+    }
 
     func test_pushNotificationFromMessageList() throws {
         linkToScenario(withId: 442)

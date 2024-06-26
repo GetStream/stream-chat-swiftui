@@ -33,7 +33,7 @@ struct GridPhotosView: View {
                 LazyVGrid(columns: columns, spacing: 2) {
                     ForEach(imageURLs, id: \.self) { url in
                         LazyLoadingImage(
-                            source: url,
+                            source: MediaAttachment(url: url, type: .image),
                             width: Self.itemWidth,
                             height: Self.itemWidth
                         )
