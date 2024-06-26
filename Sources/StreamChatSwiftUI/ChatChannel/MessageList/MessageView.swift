@@ -80,7 +80,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                     )
                 }
 
-                if messageTypeResolver.hasVideoAttachment(message: message) {
+                if messageTypeResolver.hasVideoAttachment(message: message)
+                    && !messageTypeResolver.hasImageAttachment(message: message) {
                     factory.makeVideoAttachmentView(
                         for: message,
                         isFirst: isFirst,
