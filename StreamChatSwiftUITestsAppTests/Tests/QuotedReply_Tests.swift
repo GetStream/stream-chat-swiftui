@@ -15,6 +15,7 @@ final class QuotedReply_Tests: StreamTestCase {
         
         try super.setUpWithError()
         addTags([.coreFeatures])
+        assertMockServer()
     }
     
     override func tearDownWithError() throws {}

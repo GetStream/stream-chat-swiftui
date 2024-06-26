@@ -7,7 +7,7 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
-xcode_version = ENV['XCODE_VERSION'] || '15.2'
+xcode_version = ENV['XCODE_VERSION'] || '15.4'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
 sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
@@ -16,7 +16,6 @@ source_packages_path = 'spm_cache'
 buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
 @force_check = false
-develop_branch = 'main'
 
 before_all do |lane|
   if is_ci
@@ -90,6 +89,7 @@ lane :publish_release do |options|
   clean_products
 
   publish_ios_sdk(
+    skip_git_status_check: false,
     version: options[:version],
     sdk_names: sdk_names,
     podspec_names: ['StreamChatSwiftUI', 'StreamChatSwiftUI-XCFramework'],
@@ -224,13 +224,13 @@ lane :test_e2e_mock do |options|
     xcargs: buildcache_xcargs,
     devices: options[:device],
     prelaunch_simulator: is_ci,
-    number_of_retries: 3 # TODO: CIS-1737
+    number_of_retries: 3
   }
 
-  if is_localhost || options[:cron]
+  if is_localhost
     scan(scan_options)
   else
-    parallelize_tests_on_ci(scan: scan_options, batch: options[:batch])
+    parallelize_tests_on_ci(scan: scan_options, batch: options[:batch], cron: options[:cron])
   end
 end
 
@@ -238,13 +238,41 @@ private_lane :parallelize_tests_on_ci do |options|
   products_dir = File.expand_path("../#{derived_data_path}/Build/Products")
   xctestrun = Dir.glob(File.expand_path("#{products_dir}/*.xctestrun")).first
   tests = retrieve_xctest_names(xctestrun: xctestrun).values.flatten
-  slice_size = (tests.size / ENV['MATRIX_SIZE'].to_f).ceil
+  slice_size = options[:cron] ? tests.size : (tests.size / ENV['MATRIX_SIZE'].to_f).ceil
   only_testing = []
   tests.each_slice(slice_size) { |test| only_testing << test }
   only_testing_batch = only_testing[options[:batch].to_i]
 
-  UI.success("Tests in total: #{only_testing.flatten.size}. Running #{only_testing_batch.size} of them ⌛️")
-  scan(options[:scan].merge(only_testing: only_testing_batch))
+  begin
+    UI.success("Tests in total: #{only_testing.flatten.size}. Running #{only_testing_batch.size} of them ⌛️")
+    scan(options[:scan].merge(only_testing: only_testing_batch))
+  rescue StandardError
+    failed_tests = retreive_failed_e2e_tests
+    UI.important("Re-running #{failed_tests.size} failed tests ⌛️")
+    scan(options[:scan].merge(only_testing: failed_tests))
+  end
+end
+
+private_lane :retreive_failed_e2e_tests do
+  report_path = 'test_output/report.junit'
+  raise UI.user_error!('There is no junit report to parse') unless File.file?(report_path)
+
+  junit_report = Nokogiri::XML(File.read(report_path))
+  failed_tests = []
+  passed_tests = []
+  suite_name = junit_report.xpath('//testsuite').first['name'].split('.').first
+  junit_report.xpath('//testcase').each do |testcase|
+    class_name = testcase['classname'].split('.').last
+    test_name = testcase['name'].delete('()')
+
+    if testcase.at_xpath('failure')
+      failed_tests << "#{suite_name}/#{class_name}/#{test_name}"
+    else
+      passed_tests << "#{suite_name}/#{class_name}/#{test_name}"
+    end
+  end
+
+  (failed_tests - passed_tests).uniq
 end
 
 desc 'Builds Demo app'
@@ -406,7 +434,7 @@ lane :copyright do
 end
 
 private_lane :create_pr do |options|
-  options[:base_branch] ||= develop_branch
+  options[:base_branch] ||= 'develop'
   sh("git checkout -b #{options[:head_branch]}")
   sh('git add -A')
   sh("git commit -m '#{options[:title]}'")
