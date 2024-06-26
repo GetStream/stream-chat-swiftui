@@ -273,19 +273,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             scrolledId = nil
             return true
         } else {
-            let baseId: String
-            if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
-                baseId = messageId
-            } else {
-                guard let parsedBaseId = messageId.components(separatedBy: "$").first else {
-                    scrolledId = nil
-                    return true
-                }
-                baseId = parsedBaseId
+            guard let baseId = messageId.components(separatedBy: "$").first else {
+                scrolledId = nil
+                return true
             }
-            
             let alreadyLoaded = messages.map(\.id).contains(baseId)
-            if alreadyLoaded && (baseId != messageId || StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled) {
+            if alreadyLoaded && baseId != messageId {
                 if scrolledId == nil {
                     scrolledId = messageId
                 }
