@@ -3704,7 +3704,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "perf/database-observer-item-reuse";
+				branch = develop;
 				kind = branch;
 			};
 		};
