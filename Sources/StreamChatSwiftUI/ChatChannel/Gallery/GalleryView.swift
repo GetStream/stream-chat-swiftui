@@ -2,9 +2,9 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import AVKit
 import StreamChat
 import SwiftUI
-import AVKit
 
 /// View used for displaying image attachments in a gallery.
 public struct GalleryView: View {

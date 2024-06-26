@@ -37,7 +37,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 spacing: 0
             ) {
                 ImageAttachmentView(
-                    message: message, 
+                    message: message,
                     sources: sources,
                     width: width
                 ) { index in
