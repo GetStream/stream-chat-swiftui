@@ -670,8 +670,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                         && animateReactions {
                         animateChanges = message.linkAttachments.isEmpty
                     }
-                } else if animateReactions {
-                    animateChanges = animateReactions
                 }
             default:
                 break
