@@ -8,6 +8,16 @@ import XCTest
 
 class ChatMessageIDs_Tests: StreamChatTestCase {
 
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = false
+    }
+    
+    override func tearDownWithError() throws {
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = true
+        try super.tearDownWithError()
+    }
+    
     func test_chatMessage_reactionScoresId() {
         // Given
         let id: String = .unique
