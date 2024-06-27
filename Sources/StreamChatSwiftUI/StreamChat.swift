@@ -17,6 +17,7 @@ public class StreamChat {
         appearance: Appearance = Appearance(),
         utils: Utils = Utils()
     ) {
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = false
         self.chatClient = chatClient
         self.appearance = appearance
         self.utils = utils
