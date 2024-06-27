@@ -90,7 +90,7 @@ extension StreamTestCase {
                 return
             }
             server.stop()
-            MockServerConfiguration.port = Int.random(in: 61000..<62000)
+            MockServerConfiguration.port = UInt16(Int.random(in: 61000..<62000))
         }
         
         mockServerCrashed = true
