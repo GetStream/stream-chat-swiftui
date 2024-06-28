@@ -412,6 +412,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
+        // Set unread state before updating messages for ensuring the state is up to date before `handleMessageAppear` is called
+        if lastReadMessageId != nil && firstUnreadMessageId == nil {
+            firstUnreadMessageId = channelDataSource.firstUnreadMessageId
+        }
+        
         if shouldAnimate(changes: changes) {
             withAnimation {
                 self.messages = messages
@@ -424,10 +429,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
-        }
-        
-        if lastReadMessageId != nil && firstUnreadMessageId == nil {
-            firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         }
     }
     
