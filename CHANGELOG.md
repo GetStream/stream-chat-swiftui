@@ -3,6 +3,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Smoother and more performant view updates in channel and message lists [#522](https://github.com/GetStream/stream-chat-swiftui/pull/522)
+
+# [4.58.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.58.0)
+_June 27, 2024_
+
 ### ✅ Added
 - Thread replies shown in channel indicator [#518](https://github.com/GetStream/stream-chat-swiftui/pull/518)
 
@@ -10,7 +16,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Dismiss the channel when leaving a group [#519](https://github.com/GetStream/stream-chat-swiftui/pull/519)
 - Dismiss keyboard when tapping on the empty message list [#513](https://github.com/GetStream/stream-chat-swiftui/pull/513)
 - Reset composer text when there is provisional text (e.g. Japanese - kana keyboard) but the text is reset to empty string [#512](https://github.com/GetStream/stream-chat-swiftui/pull/512)
-- Smoother and more performant view updates in channel and message lists [#522](https://github.com/GetStream/stream-chat-swiftui/pull/522)
 - Visibility of the comments button in anonymous polls [#524](https://github.com/GetStream/stream-chat-swiftui/pull/524)
 
 ### 🔄 Changed
