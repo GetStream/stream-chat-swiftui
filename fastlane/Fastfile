@@ -96,6 +96,8 @@ lane :publish_release do |options|
   )
 
   update_spm(version: options[:version])
+
+  merge_main_to_develop
 end
 
 lane :merge_release_to_main do
@@ -113,6 +115,19 @@ lane :merge_release_to_main do
   sh('git push')
   UI.important('Please, wait for the `Publish new release` workflow to pass on GitHub Actions: ' \
                "https://github.com/#{github_repo}/actions/workflows/publish-release.yml")
+end
+
+lane :merge_main_to_develop do
+  if is_ci
+    sh('git reset --hard')
+  else
+    ensure_git_status_clean
+  end
+
+  sh('git checkout main && git pull')
+  sh('git checkout develop && git pull')
+  sh('git merge main')
+  sh('git push')
 end
 
 private_lane :appstore_api_key do
