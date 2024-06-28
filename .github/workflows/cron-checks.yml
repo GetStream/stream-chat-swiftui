@@ -17,7 +17,7 @@ env:
 jobs:
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/ruby-cache
@@ -25,8 +25,6 @@ jobs:
     - name: Build
       run: bundle exec fastlane build_test_app_and_frameworks
       timeout-minutes: 60
-      env:
-        XCODE_VERSION: "15.2" # Should match the minimum version in dependent jobs
     - uses: actions/upload-artifact@v4
       if: success()
       with:
@@ -42,16 +40,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - ios: 17.2
-            xcode: 15.2
+          - ios: 17.4
+            xcode: 15.4
             os: macos-14
-            device: "iPhone 15 Pro"
+            device: "iPhone 14 Pro"
             setup_runtime: false
           - ios: 16.4
-            xcode: 15.2
+            xcode: 15.3
             os: macos-14
-            device: "iPhone 14 Pro Max"
-            setup_runtime: false
+            device: "iPhone 14 Pro"
+            setup_runtime: true
       fail-fast: false
     runs-on: ${{ matrix.os }}
     env:
@@ -70,16 +68,13 @@ jobs:
         INSTALL_ALLURE: true
         INSTALL_YEETD: true
         SKIP_MINT_BOOTSTRAP: true
-    - name: Cache iOS Simulator Runtime
-      uses: actions/cache@v4
-      id: runtime-cache
-      with:
-        path: ~/Library/Caches/XcodeInstall/
-        key: runtime-ios-${{ matrix.ios }}
-        restore-keys: runtime-ios-${{ matrix.ios }}
-    - name: Setup iOS ${{ matrix.ios }} Runtime
+        SKIP_BREW_BOOTSTRAP: true
+    - uses: ./.github/actions/setup-ios-runtime
       if: ${{ matrix.setup_runtime }}
-      run: bundle exec fastlane install_sim ios:"${{ matrix.ios }}"
+      timeout-minutes: 60
+      with:
+        version: ${{ matrix.ios }}
+        device: ${{ matrix.device }}
     - name: Launch Allure TestOps
       run: bundle exec fastlane allure_launch cron:true
     - name: Run UI Tests (Debug)
@@ -156,7 +151,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/ruby-cache
-    - name: List Xcode versions xcversion sees
+    - name: List Xcode versions
       run: mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode'"
       timeout-minutes: 25
     - name: Build SwiftUI

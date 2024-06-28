@@ -1,6 +1,9 @@
 # OS X
 .DS_Store
 
+# Environment Variables
+.env
+
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -67,6 +70,7 @@ Products/
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
+!fastlane/.env
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
@@ -91,3 +95,4 @@ derived_data/
 spm_cache/
 .buildcache
 buildcache
+*.dmg
