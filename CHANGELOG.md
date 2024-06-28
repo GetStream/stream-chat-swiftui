@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Smoother and more performant view updates in channel and message lists [#522](https://github.com/GetStream/stream-chat-swiftui/pull/522)
 
 # [4.58.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.58.0)
 _June 27, 2024_

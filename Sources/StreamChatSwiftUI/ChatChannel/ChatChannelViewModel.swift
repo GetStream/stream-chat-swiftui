@@ -273,12 +273,19 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             scrolledId = nil
             return true
         } else {
-            guard let baseId = messageId.components(separatedBy: "$").first else {
+            let findBaseId: String? = {
+                if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
+                    return messageId
+                } else {
+                    return messageId.components(separatedBy: "$").first
+                }
+            }()
+            guard let baseId = findBaseId else {
                 scrolledId = nil
                 return true
             }
             let alreadyLoaded = messages.map(\.id).contains(baseId)
-            if alreadyLoaded && baseId != messageId {
+            if alreadyLoaded {
                 if scrolledId == nil {
                     scrolledId = messageId
                 }
@@ -405,12 +412,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        let animationState = shouldAnimate(changes: changes)
-        if animationState == .animated {
+        // Set unread state before updating messages for ensuring the state is up to date before `handleMessageAppear` is called
+        if lastReadMessageId != nil && firstUnreadMessageId == nil {
+            firstUnreadMessageId = channelDataSource.firstUnreadMessageId
+        }
+        
+        if shouldAnimate(changes: changes) {
             withAnimation {
                 self.messages = messages
             }
-        } else if animationState == .notAnimated {
+        } else {
             self.messages = messages
         }
         
@@ -418,10 +429,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
-        }
-        
-        if lastReadMessageId != nil && firstUnreadMessageId == nil {
-            firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         }
     }
     
@@ -649,42 +656,35 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> AnimationChange {
+    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges || loadingNextMessages {
-            return .notAnimated
+            return false
         }
         
-        var skipChanges = true
         var animateChanges = false
         for change in changes {
             switch change {
             case .insert(_, index: _),
                  .remove(_, index: _):
-                return .animated
+                return true
             case let .update(message, index: index):
+                let animateReactions = message.reactionScoresId != messages[index.row].reactionScoresId
+                    && utils.messageListConfig.messageDisplayOptions.shouldAnimateReactions
                 if index.row < messages.count,
                    message.messageId != messages[index.row].messageId
                    || message.type == .ephemeral
                    || !message.linkAttachments.isEmpty {
-                    skipChanges = false
                     if index.row < messages.count
-                        && (
-                            message.reactionScoresId != messages[index.row].reactionScoresId
-                                && utils.messageListConfig.messageDisplayOptions.shouldAnimateReactions
-                        ) {
+                        && animateReactions {
                         animateChanges = message.linkAttachments.isEmpty
                     }
                 }
             default:
-                skipChanges = false
+                break
             }
         }
         
-        if skipChanges {
-            return .skip
-        }
-        
-        return animateChanges ? .animated : .notAnimated
+        return animateChanges
     }
     
     private func enableDateIndicator() {
@@ -812,12 +812,6 @@ public enum ChannelHeaderType {
     case messageThread
     /// The header shown when someone is typing.
     case typingIndicator
-}
-
-enum AnimationChange {
-    case animated
-    case notAnimated
-    case skip
 }
 
 let firstMessageKey = "firstMessage"
