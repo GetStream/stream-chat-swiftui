@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Added message actions for user blocking [#532](https://github.com/GetStream/stream-chat-swiftui/pull/532)
+
 ### 🐞 Fixed
 - Smoother and more performant view updates in channel and message lists [#522](https://github.com/GetStream/stream-chat-swiftui/pull/522)
 
