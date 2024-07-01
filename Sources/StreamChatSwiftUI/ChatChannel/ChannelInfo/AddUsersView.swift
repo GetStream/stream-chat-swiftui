@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View for the add users popup.
-struct AddUsersView: View {
+public struct AddUsersView: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -24,9 +24,9 @@ struct AddUsersView: View {
     )
 
     @StateObject private var viewModel: AddUsersViewModel
-    var onUserTap: (ChatUser) -> Void
+    public var onUserTap: (ChatUser) -> Void
 
-    init(
+    public init(
         loadedUserIds: [String],
         onUserTap: @escaping (ChatUser) -> Void
     ) {
@@ -36,7 +36,7 @@ struct AddUsersView: View {
         self.onUserTap = onUserTap
     }
 
-    init(
+    public init(
         viewModel: AddUsersViewModel,
         onUserTap: @escaping (ChatUser) -> Void
     ) {
@@ -46,7 +46,7 @@ struct AddUsersView: View {
         self.onUserTap = onUserTap
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             SearchBar(text: $viewModel.searchText)
 

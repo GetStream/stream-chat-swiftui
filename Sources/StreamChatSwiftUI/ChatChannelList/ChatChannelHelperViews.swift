@@ -93,24 +93,28 @@ extension CGSize {
 }
 
 /// Provides access to the the app's tab bar (if present).
-struct TabBarAccessor: UIViewControllerRepresentable {
+public struct TabBarAccessor: UIViewControllerRepresentable {
     var callback: (UITabBar) -> Void
     private let proxyController = ViewController()
 
-    func makeUIViewController(context: UIViewControllerRepresentableContext<TabBarAccessor>) ->
+    public init(callback: @escaping (UITabBar) -> Void) {
+        self.callback = callback
+    }
+
+    public func makeUIViewController(context: UIViewControllerRepresentableContext<TabBarAccessor>) ->
         UIViewController {
         proxyController.callback = callback
         return proxyController
     }
 
-    func updateUIViewController(
+    public func updateUIViewController(
         _ uiViewController: UIViewController,
         context: UIViewControllerRepresentableContext<TabBarAccessor>
     ) {
         // No handling needed.
     }
 
-    typealias UIViewControllerType = UIViewController
+    public typealias UIViewControllerType = UIViewController
 
     private class ViewController: UIViewController {
         var callback: (UITabBar) -> Void = { _ in
@@ -126,10 +130,10 @@ struct TabBarAccessor: UIViewControllerRepresentable {
     }
 }
 
-var isIphone: Bool {
+public var isIphone: Bool {
     UIDevice.current.userInterfaceIdiom == .phone
 }
 
-var isIPad: Bool {
+public var isIPad: Bool {
     UIDevice.current.userInterfaceIdiom == .pad
 }
