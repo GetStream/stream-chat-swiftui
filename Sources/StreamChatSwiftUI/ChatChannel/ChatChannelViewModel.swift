@@ -44,6 +44,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private var loadingPreviousMessages: Bool = false
     private var loadingMessagesAround: Bool = false
+    private var scrollsToUnreadAfterJumpToMessage = false
     private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
@@ -253,17 +254,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func jumpToMessage(messageId: String) -> Bool {
         if messageId == .unknownMessageId {
             if firstUnreadMessageId == nil, let lastReadMessageId {
-                channelDataSource.loadPageAroundMessageId(lastReadMessageId) { [weak self] error in
+                scrollsToUnreadAfterJumpToMessage = true
+                channelDataSource.loadPageAroundMessageId(lastReadMessageId) { error in
                     if error != nil {
                         log.error("Error loading messages around message \(messageId)")
-                        return
-                    }
-                    if let firstUnread = self?.channelDataSource.firstUnreadMessageId,
-                       let message = self?.channelController.dataStore.message(id: firstUnread) {
-                        self?.firstUnreadMessageId = message.messageId
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self?.scrolledId = message.messageId
-                        }
                     }
                 }
             }
@@ -427,6 +421,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         refreshMessageListIfNeeded()
         
+        // Set scroll id after the message id has changed
+        if scrollsToUnreadAfterJumpToMessage, let firstUnreadMessageId {
+            scrollsToUnreadAfterJumpToMessage = false
+            scrolledId = firstUnreadMessageId
+        }
+        
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
         }
@@ -472,31 +472,29 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // MARK: - private
     
     private func checkForOlderMessages(index: Int) {
-        if index < channelDataSource.messages.count - 25 {
-            return
-        }
-
+        guard index >= channelDataSource.messages.count - 25 else { return }
+        guard !loadingPreviousMessages else { return }
+        guard !channelController.hasLoadedAllPreviousMessages else { return }
+        
         log.debug("Loading previous messages")
-        if !loadingPreviousMessages {
-            loadingPreviousMessages = true
-            channelDataSource.loadPreviousMessages(
-                before: nil,
-                limit: utils.messageListConfig.pageSize,
-                completion: { [weak self] _ in
-                    guard let self = self else { return }
+        loadingPreviousMessages = true
+        channelDataSource.loadPreviousMessages(
+            before: nil,
+            limit: utils.messageListConfig.pageSize,
+            completion: { [weak self] _ in
+                guard let self = self else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.loadingPreviousMessages = false
                 }
-            )
-        }
+            }
+        )
     }
         
     private func checkForNewerMessages(index: Int) {
-        if channelDataSource.hasLoadedAllNextMessages {
-            return
-        }
-        if loadingNextMessages || (index > 5) {
-            return
-        }
+        guard index <= 5 else { return }
+        guard !loadingNextMessages else { return }
+        guard !channelController.hasLoadedAllNextMessages else { return }
+        
         loadingNextMessages = true
         
         if scrollPosition != messages.first?.messageId {
