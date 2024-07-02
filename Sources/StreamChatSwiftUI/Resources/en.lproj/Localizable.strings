@@ -40,6 +40,8 @@
 "message.actions.mark-unread" = "Mark Unread";
 "message.actions.flag.confirmation-title" = "Flag Message";
 "message.actions.flag.confirmation-message" = "Do you want to send a copy of this message to a moderator for further investigation?";
+"message.actions.user-block.confirmation-message" = "Are you sure you want to block this user?";
+"message.actions.user-unblock.confirmation-message" = "Are you sure you want to unblock this user?";
 
 "messageList.typingIndicator.typing-unknown" = "Someone is typing";
 
