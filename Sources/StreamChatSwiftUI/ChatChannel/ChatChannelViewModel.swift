@@ -35,7 +35,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     private var isActive = true
     private var readsString = ""
-    private var canMarkRead = true
+    private var canMarkRead = false
+    private var isInitialUnreadCheck = true
     
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
@@ -338,7 +339,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
             save(lastDate: message.createdAt)
         }
-        if index == 0 {
+        if index == 0, channelDataSource.hasLoadedAllNextMessages {
             let isActive = UIApplication.shared.applicationState == .active
             if isActive && canMarkRead {
                 sendReadEventIfNeeded(for: message)
@@ -441,6 +442,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkTypingIndicator()
         checkHeaderType()
         checkOnlineIndicator()
+        checkUnreadCount()
     }
 
     public func showReactionOverlay(for view: AnyView) {
@@ -631,7 +633,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     private func checkUnreadCount() {
         guard !isMessageThread else { return }
-        if channelController.channel?.unreadCount.messages ?? 0 > 0 {
+        
+        guard let channel = channelController.channel else { return }
+        // Delay marking any messages as read until channel has loaded for the first time (slow internet + observer delay)
+        guard isInitialUnreadCheck else { return }
+        isInitialUnreadCheck = false
+        canMarkRead = true
+        
+        if channel.unreadCount.messages > 0 {
             if channelController.firstUnreadMessageId != nil {
                 firstUnreadMessageId = channelController.firstUnreadMessageId
                 canMarkRead = false
