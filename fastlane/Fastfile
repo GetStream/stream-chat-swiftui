@@ -126,6 +126,7 @@ private_lane :appstore_api_key do
 end
 
 lane :pod_lint do
+  Dir.chdir('..') { sh("xcodebuild -resolvePackageDependencies -clonedSourcePackagesDirPath #{source_packages_path}") }
   dependencies = Dir.chdir('..') { JSON.parse(File.read(project_package_resolved)) }
   is_branch = dependencies['pins'].find { |dependency| dependency['identity'] == 'stream-chat-swift' && dependency['state']['branch'] }
   if is_branch.nil?
