@@ -127,7 +127,7 @@ end
 
 lane :pod_lint do
   dependencies = Dir.chdir('..') { JSON.parse(File.read(project_package_resolved)) }
-  is_branch = dependencies["pins"].find { |dependency| dependency['identity'] == 'stream-chat-swift' && dependency['state']['branch'] }
+  is_branch = dependencies['pins'].find { |dependency| dependency['identity'] == 'stream-chat-swift' && dependency['state']['branch'] }
   if is_branch.nil?
     pod_lib_lint(podspec: 'StreamChatSwiftUI.podspec', allow_warnings: true)
   else
