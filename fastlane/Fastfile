@@ -15,7 +15,7 @@ derived_data_path = 'derived_data'
 source_packages_path = 'spm_cache'
 buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
-project_package_resolved = './../StreamChatSwiftUI.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
+project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 @force_check = false
 
 before_all do |lane|
