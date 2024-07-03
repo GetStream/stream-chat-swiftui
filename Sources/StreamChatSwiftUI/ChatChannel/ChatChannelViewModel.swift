@@ -247,7 +247,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             updateScrolledIdToNewestMessage()
         } else {
             channelDataSource.loadFirstPage { [weak self] _ in
-                self?.scrolledId = self?.messages.first?.messageId
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self?.scrolledId = self?.messages.first?.messageId
+                    self?.showScrollToLatestButton = false
+                }
             }
         }
     }
@@ -421,6 +424,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         refreshMessageListIfNeeded()
+        
+        // Jump to a message but we were already scrolled to the bottom
+        if !channelDataSource.hasLoadedAllNextMessages {
+            showScrollToLatestButton = true
+        }
         
         // Set scroll id after the message id has changed
         if scrollsToUnreadAfterJumpToMessage, let firstUnreadMessageId {
@@ -664,7 +672,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
-        if !utils.messageListConfig.messageDisplayOptions.animateChanges || loadingNextMessages {
+        if !utils.messageListConfig.messageDisplayOptions.animateChanges {
+            return false
+        }
+        if loadingMessagesAround || loadingPreviousMessages || loadingNextMessages {
+            return false
+        }
+        if channelController.channel == nil {
             return false
         }
         
