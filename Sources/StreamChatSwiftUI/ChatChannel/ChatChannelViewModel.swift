@@ -36,7 +36,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var isActive = true
     private var readsString = ""
     private var canMarkRead = false
-    private var isInitialUnreadCheck = true
+    private var hasSetInitialCanMarkRead = false
     
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
@@ -46,7 +46,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var loadingPreviousMessages: Bool = false
     private var loadingMessagesAround: Bool = false
     private var scrollsToUnreadAfterJumpToMessage = false
-    private var lastMessageRead: String?
     private var disableDateIndicator = false
     private var channelName = ""
     private var onlineIndicatorShown = false
@@ -336,7 +335,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         } else {
             checkForNewerMessages(index: index)
         }
-        if let firstUnreadMessageId, firstUnreadMessageId.contains(message.id) {
+        if let firstUnreadMessageId, firstUnreadMessageId.contains(message.id), hasSetInitialCanMarkRead {
             canMarkRead = true
         }
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
@@ -537,13 +536,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func sendReadEventIfNeeded(for message: ChatMessage) {
-        if message.id != lastMessageRead {
-            lastMessageRead = message.id
-            throttler.throttle { [weak self] in
-                self?.channelController.markRead()
-                DispatchQueue.main.async {
-                    self?.firstUnreadMessageId = nil
-                }
+        guard let channel, channel.unreadCount.messages > 0 else { return }
+        throttler.throttle { [weak self] in
+            self?.channelController.markRead()
+            DispatchQueue.main.async {
+                self?.firstUnreadMessageId = nil
             }
         }
     }
@@ -644,8 +641,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         guard let channel = channelController.channel else { return }
         // Delay marking any messages as read until channel has loaded for the first time (slow internet + observer delay)
-        guard isInitialUnreadCheck else { return }
-        isInitialUnreadCheck = false
+        guard !hasSetInitialCanMarkRead else { return }
+        hasSetInitialCanMarkRead = true
         canMarkRead = true
         
         if channel.unreadCount.messages > 0 {
