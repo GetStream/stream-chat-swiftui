@@ -3704,7 +3704,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = develop;
+				branch = "fix/swiftui-model-diffing";
 				kind = branch;
 			};
 		};
