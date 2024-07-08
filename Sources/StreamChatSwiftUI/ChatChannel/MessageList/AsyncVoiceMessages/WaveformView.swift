@@ -12,8 +12,8 @@ open class WaveformView: UIView {
     
     @Injected(\.images) var images
     
-    var onSliderChanged: ((TimeInterval) -> Void)?
-    var onSliderTapped: (() -> Void)?
+    open var onSliderChanged: ((TimeInterval) -> Void)?
+    open var onSliderTapped: (() -> Void)?
     
     public struct Content: Equatable {
         /// When set to `true` the waveform will be updating with the data live (scrolling to the trailing side
@@ -49,7 +49,7 @@ open class WaveformView: UIView {
         }
     }
 
-    var content: Content = .initial {
+    open var content: Content = .initial {
         didSet { updateContent() }
     }
     
