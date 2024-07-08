@@ -25,6 +25,17 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
             author: author
         )
     )
+    
+    private var initialReusingState = false
+    
+    override func setUpWithError() throws {
+        initialReusingState = StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = false
+    }
+    
+    override func tearDownWithError() throws {
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = initialReusingState
+    }
 
     func test_messageCachingUtils_authorId() {
         // Given

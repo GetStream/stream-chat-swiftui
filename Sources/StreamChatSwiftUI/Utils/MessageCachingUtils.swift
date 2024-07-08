@@ -64,6 +64,10 @@ class MessageCachingUtils {
     }
 
     func quotedMessage(for message: ChatMessage) -> ChatMessage? {
+        if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
+            return message.quotedMessage
+        }
+        
         if checkedMessageIds.contains(message.id) {
             return nil
         }
