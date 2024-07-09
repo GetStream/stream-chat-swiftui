@@ -69,10 +69,10 @@ open class WaveformView: UIView {
 
     // MARK: - UI Components
 
-    open private(set) lazy var audioVisualizationView: AudioVisualizationView = .init()
+    open lazy var audioVisualizationView: AudioVisualizationView = .init()
         .withoutAutoresizingMaskConstraints
 
-    open private(set) lazy var slider: UISlider = .init()
+    open lazy var slider: UISlider = .init()
         .withoutAutoresizingMaskConstraints
 
     // MARK: - UI Lifecycle
