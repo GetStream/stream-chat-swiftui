@@ -48,6 +48,7 @@ struct PollResultsView: View {
                             option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt })
                                 .prefix(numberOfItemsShown)
                         ),
+                        hasMostVotes: viewModel.hasMostVotes(for: option),
                         allButtonShown: option.latestVotes.count > numberOfItemsShown
                     )
                 }
@@ -80,6 +81,7 @@ struct PollOptionResultsView: View {
     var poll: Poll
     var option: PollOption
     var votes: [PollVote]
+    var hasMostVotes: Bool = false
     var allButtonShown = false
     var onVoteAppear: ((PollVote) -> Void)?
     
@@ -89,10 +91,12 @@ struct PollOptionResultsView: View {
                 Text(option.text)
                     .font(fonts.bodyBold)
                 Spacer()
-                Image(systemName: "trophy")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 16)
+                if hasMostVotes {
+                    Image(systemName: "trophy")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 16)
+                }
                 Text(L10n.Message.Polls.votes(poll.voteCountsByOption?[option.id] ?? 0))
             }
             
