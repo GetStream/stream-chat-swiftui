@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Smoother and more performant view updates in channel and message lists [#522](https://github.com/GetStream/stream-chat-swiftui/pull/522)
 - Fix scrolling location when jumping to a message not in the currently loaded message list [#533](https://github.com/GetStream/stream-chat-swiftui/pull/533)
+- Fix display of the most votes icon in Polls [#538](https://github.com/GetStream/stream-chat-swiftui/pull/538)
 
 # [4.58.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.58.0)
 _June 27, 2024_
