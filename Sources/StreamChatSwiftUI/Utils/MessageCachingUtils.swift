@@ -12,7 +12,6 @@ class MessageCachingUtils {
 
     private var messageAuthorMapping = [String: String]()
     private var messageAuthors = [String: UserDisplayInfo]()
-    private var messageAttachments = [String: Bool]()
     private var checkedMessageIds = Set<String>()
     private var quotedMessageMapping = [String: ChatMessage]()
 
@@ -101,7 +100,6 @@ class MessageCachingUtils {
         messageThreadShown = false
         messageAuthorMapping = [String: String]()
         messageAuthors = [String: UserDisplayInfo]()
-        messageAttachments = [String: Bool]()
         checkedMessageIds = Set<String>()
         quotedMessageMapping = [String: ChatMessage]()
     }
@@ -109,6 +107,16 @@ class MessageCachingUtils {
     // MARK: - private
 
     private func userDisplayInfo(for message: ChatMessage) -> UserDisplayInfo? {
+        if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
+            let user = message.author
+            return UserDisplayInfo(
+                id: user.id,
+                name: user.name ?? user.id,
+                imageURL: user.imageURL,
+                role: user.userRole
+            )
+        }
+        
         if let userId = messageAuthorMapping[message.id],
            let userDisplayInfo = messageAuthors[userId] {
             return userDisplayInfo
@@ -129,12 +137,6 @@ class MessageCachingUtils {
         messageAuthors[user.id] = userDisplayInfo
 
         return userDisplayInfo
-    }
-
-    private func checkAttachments(for message: ChatMessage) -> Bool {
-        let hasAttachments = !message.attachmentCounts.isEmpty
-        messageAttachments[message.id] = hasAttachments
-        return hasAttachments
     }
 }
 
