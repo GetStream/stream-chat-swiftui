@@ -98,8 +98,6 @@ lane :publish_release do |options|
   )
 
   update_spm(version: options[:version])
-
-  merge_main_to_develop
 end
 
 lane :merge_release_to_main do
