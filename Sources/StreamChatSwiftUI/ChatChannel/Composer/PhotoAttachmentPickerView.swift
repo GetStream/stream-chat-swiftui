@@ -52,7 +52,7 @@ public struct PhotoAttachmentCell: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     
-    @StateObject var assetLoader: PhotoAssetLoader
+    @ObservedObject var assetLoader: PhotoAssetLoader
     
     @State private var assetURL: URL?
     @State private var compressing = false
@@ -66,7 +66,21 @@ public struct PhotoAttachmentCell: View {
     private var assetType: AssetType {
         asset.mediaType == .video ? .video : .image
     }
-    
+
+    public init(
+        assetLoader: PhotoAssetLoader, 
+        requestId: PHContentEditingInputRequestID? = nil, 
+        asset: PHAsset, 
+        onImageTap: @escaping (AddedAsset) -> Void, 
+        imageSelected: @escaping (String) -> Bool
+    ) {
+        _assetLoader = ObservedObject(initialValue: assetLoader)
+        self.requestId = requestId
+        self.asset = asset
+        self.onImageTap = onImageTap
+        self.imageSelected = imageSelected
+    }
+ 
     public var body: some View {
         ZStack {
             if let image = assetLoader.loadedImages[asset.localIdentifier] {
