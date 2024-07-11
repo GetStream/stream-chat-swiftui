@@ -229,13 +229,19 @@ struct StreamTextView: View {
     
     @Injected(\.fonts) var fonts
     
-    var message: ChatMessage
+    let message: ChatMessage
+    private let adjustedText: String
+    
+    init(message: ChatMessage) {
+        self.message = message
+        adjustedText = message.adjustedText
+    }
     
     var body: some View {
         if #available(iOS 15, *) {
             LinkDetectionTextView(message: message)
         } else {
-            Text(message.adjustedText)
+            Text(adjustedText)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }

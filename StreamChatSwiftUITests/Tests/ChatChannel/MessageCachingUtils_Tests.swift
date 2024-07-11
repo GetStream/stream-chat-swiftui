@@ -25,6 +25,17 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
             author: author
         )
     )
+    
+    private var initialReusingState = false
+    
+    override func setUpWithError() throws {
+        initialReusingState = StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = false
+    }
+    
+    override func tearDownWithError() throws {
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = initialReusingState
+    }
 
     func test_messageCachingUtils_authorId() {
         // Given
@@ -168,10 +179,49 @@ class MessageCachingUtils_Tests: StreamChatTestCase {
         // Then
         XCTAssert(userDisplayInfo == nil)
     }
+    
+    func test_messageCachingUtils_userDisplayInfoWithoutCaching() {
+        // Given
+        StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled = true
+        let utils = MessageCachingUtils()
+        let authorId: String = .unique
+        let messageId: MessageId = .unique
+        let cid: ChannelId = .unique
+        let url1 = URL(string: "https://imageurl.com")
+        let author1 = ChatUser.mock(id: authorId, name: "Martin", imageURL: url1)
+        let message1 = ChatMessage.mock(
+            id: messageId,
+            cid: cid,
+            text: "Test message",
+            author: author1
+        )
+        let url2 = URL(string: "https://anotherimageurl.com")
+        let author2 = ChatUser.mock(id: authorId, name: "Toomas", imageURL: url2)
+        let message2 = ChatMessage.mock(
+            id: messageId,
+            cid: cid,
+            text: "Test message",
+            author: author2
+        )
+        
+        // When
+        let authorInfo1 = utils.authorInfo(from: message1)
+        let authorInfo2 = utils.authorInfo(from: message2)
+        
+        // Then
+        // Accessing the same message returns updated author information
+        XCTAssertEqual("Martin", authorInfo1.name)
+        XCTAssertEqual(url1, authorInfo1.imageURL)
+        XCTAssertEqual("Toomas", authorInfo2.name)
+        XCTAssertEqual(url2, authorInfo2.imageURL)
+    }
 }
 
 extension UserDisplayInfo: Equatable {
     public static func == (lhs: UserDisplayInfo, rhs: UserDisplayInfo) -> Bool {
-        lhs.id == rhs.id && lhs.name == rhs.name && lhs.imageURL == rhs.imageURL
+        lhs.id == rhs.id &&
+            lhs.name == rhs.name &&
+            lhs.imageURL == rhs.imageURL &&
+            lhs.role == rhs.role
     }
 }

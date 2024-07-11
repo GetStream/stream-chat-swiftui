@@ -33,7 +33,7 @@ extension MessageAction {
             )
             return messageActions
         } else if message.localState == .pendingSend
-            && message.messageId.contains("\(LocalAttachmentState.uploadingFailed)") {
+            && message.allAttachments.contains(where: { $0.uploadingState?.state == .uploadingFailed }) {
             messageActions = editAndDeleteActions(
                 for: message,
                 channel: channel,
@@ -176,6 +176,32 @@ extension MessageAction {
                         onError: onError
                     )
                     messageActions.append(muteAction)
+                }
+            }
+            
+            if InjectedValues[\.utils].messageListConfig.userBlockingEnabled {
+                let userController = chatClient.currentUserController()
+                let blockedUserIds = userController.dataStore.currentUser()?.blockedUserIds ?? []
+                if blockedUserIds.contains(message.author.id) {
+                    let unblockAction = unblockUserAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToUnblock: message.author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(unblockAction)
+                } else {
+                    let blockAction = blockUserAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToBlock: message.author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(blockAction)
                 }
             }
         }
@@ -519,6 +545,46 @@ extension MessageAction {
 
         return muteUser
     }
+    
+    private static func blockUserAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        userToBlock: ChatUser,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let blockController = chatClient.userController(userId: userToBlock.id)
+        let blockAction = {
+            blockController.block { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "block"
+                        )
+                    )
+                }
+            }
+        }
+
+        let blockUser = MessageAction(
+            id: MessageActionId.block,
+            title: L10n.Message.Actions.userBlock,
+            iconName: "circle.slash",
+            action: blockAction,
+            confirmationPopup: ConfirmationPopup(
+                title: L10n.Message.Actions.userBlock,
+                message: L10n.Message.Actions.UserBlock.confirmationMessage,
+                buttonTitle: L10n.Alert.Actions.ok
+            ),
+            isDestructive: true
+        )
+
+        return blockUser
+    }
 
     private static func unmuteAction(
         for message: ChatMessage,
@@ -554,6 +620,46 @@ extension MessageAction {
         )
 
         return unmuteUser
+    }
+    
+    private static func unblockUserAction(
+        for message: ChatMessage,
+        channel: ChatChannel,
+        chatClient: ChatClient,
+        userToUnblock: ChatUser,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let blockController = chatClient.userController(userId: userToUnblock.id)
+        let unblockAction = {
+            blockController.unblock { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "unblock"
+                        )
+                    )
+                }
+            }
+        }
+
+        let unblockUser = MessageAction(
+            id: MessageActionId.unblock,
+            title: L10n.Message.Actions.userUnblock,
+            iconName: "circle.slash",
+            action: unblockAction,
+            confirmationPopup: ConfirmationPopup(
+                title: L10n.Message.Actions.userUnblock,
+                message: L10n.Message.Actions.UserUnblock.confirmationMessage,
+                buttonTitle: L10n.Alert.Actions.ok
+            ),
+            isDestructive: false
+        )
+
+        return unblockUser
     }
 
     private static func resendMessageAction(
@@ -669,4 +775,6 @@ public enum MessageActionId {
     public static let unpin = "unpin_message_action"
     public static let resend = "resend_message_action"
     public static let markUnread = "mark_unread_action"
+    public static let block = "block_user_action"
+    public static let unblock = "unblock_user_action"
 }

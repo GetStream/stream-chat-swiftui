@@ -371,6 +371,14 @@ internal enum L10n {
         /// Flag Message
         internal static var confirmationTitle: String { L10n.tr("Localizable", "message.actions.flag.confirmation-title") }
       }
+      internal enum UserBlock {
+        /// Are you sure you want to block this user?
+        internal static var confirmationMessage: String { L10n.tr("Localizable", "message.actions.user-block.confirmation-message") }
+      }
+      internal enum UserUnblock {
+        /// Are you sure you want to unblock this user?
+        internal static var confirmationMessage: String { L10n.tr("Localizable", "message.actions.user-unblock.confirmation-message") }
+      }
     }
     internal enum Bounce {
       /// Message was bounced

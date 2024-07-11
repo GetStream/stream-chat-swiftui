@@ -30,7 +30,8 @@ public struct MessageListConfig {
         uniqueReactionsEnabled: Bool = false,
         localLinkDetectionEnabled: Bool = true,
         isMessageEditedLabelEnabled: Bool = true,
-        markdownSupportEnabled: Bool = true
+        markdownSupportEnabled: Bool = true,
+        userBlockingEnabled: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -54,6 +55,7 @@ public struct MessageListConfig {
         self.localLinkDetectionEnabled = localLinkDetectionEnabled
         self.isMessageEditedLabelEnabled = isMessageEditedLabelEnabled
         self.markdownSupportEnabled = markdownSupportEnabled
+        self.userBlockingEnabled = userBlockingEnabled
     }
 
     public let messageListType: MessageListType
@@ -78,6 +80,7 @@ public struct MessageListConfig {
     public let localLinkDetectionEnabled: Bool
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
+    public let userBlockingEnabled: Bool
 }
 
 /// Contains information about the message paddings.

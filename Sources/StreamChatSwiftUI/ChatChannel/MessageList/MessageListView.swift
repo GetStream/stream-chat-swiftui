@@ -230,8 +230,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             } else if diff < 0 && scrollDirection == .down {
                                 scrollDirection = .up
                             }
+                            utils.messageCachingUtils.scrollOffset = offsetValue
                         }
-                        utils.messageCachingUtils.scrollOffset = offsetValue
                         let scrollButtonShown = offsetValue < -20
                         if scrollButtonShown != showScrollToLatestButton {
                             showScrollToLatestButton = scrollButtonShown
