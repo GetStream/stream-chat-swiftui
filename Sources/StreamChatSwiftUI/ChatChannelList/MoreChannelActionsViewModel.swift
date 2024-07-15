@@ -128,7 +128,7 @@ public struct ConfirmationPopup {
         self.buttonTitle = buttonTitle
     }
 
-    let title: String
-    let message: String?
-    let buttonTitle: String
+    public let title: String
+    public let message: String?
+    public let buttonTitle: String
 }
