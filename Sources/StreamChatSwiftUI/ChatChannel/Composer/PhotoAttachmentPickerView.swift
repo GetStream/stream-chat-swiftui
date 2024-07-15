@@ -68,13 +68,13 @@ public struct PhotoAttachmentCell: View {
     }
 
     public init(
-        assetLoader: PhotoAssetLoader, 
-        requestId: PHContentEditingInputRequestID? = nil, 
-        asset: PHAsset, 
-        onImageTap: @escaping (AddedAsset) -> Void, 
+        assetLoader: PhotoAssetLoader,
+        requestId: PHContentEditingInputRequestID? = nil,
+        asset: PHAsset,
+        onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool
     ) {
-        _assetLoader = ObservedObject(initialValue: assetLoader)
+        self.assetLoader = assetLoader
         self.requestId = requestId
         self.asset = asset
         self.onImageTap = onImageTap
