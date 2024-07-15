@@ -75,7 +75,7 @@ public struct PhotoAttachmentCell: View {
         imageSelected: @escaping (String) -> Bool
     ) {
         self.assetLoader = assetLoader
-        self.requestId = requestId
+        _requestId = State(initialValue: requestId)
         self.asset = asset
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
