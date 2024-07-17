@@ -31,7 +31,7 @@ end
 
 lane :build_xcframeworks do
   match_me
-  output_directory = "#{Dir.pwd}/../Products"
+  output_directory = File.absolute_path("#{Dir.pwd}/../Products")
   team_id = File.read('Matchfile').match(/team_id\("(.*)"\)/)[1]
   codesign = ["codesign --timestamp -v --sign 'Apple Distribution: Stream.io Inc (#{team_id})'"]
   sdk_names.each do |sdk|
@@ -47,7 +47,19 @@ lane :build_xcframeworks do
     sh('../Scripts/removeUnneededSymbols.sh', sdk, output_directory)
     codesign << lane_context[SharedValues::XCFRAMEWORK_OUTPUT_PATH]
   end
+
+  remove_stream_chat_module_shadow(output_directory: output_directory)
   sh(codesign.join(' ')) # We need to sign all frameworks at once
+end
+
+# Swift emits an invalid module interface when a public type has the same name as a module, see https://github.com/swiftlang/swift/issues/56573
+private_lane :remove_stream_chat_module_shadow do |options|
+  Dir.glob("#{options[:output_directory]}/**/*.swiftinterface") do |file|
+    if File.file?(file)
+      UI.important("Removing the StreamChat module's shadow at: #{file}...")
+      File.write(file, File.read(file).gsub('StreamChat.', ''))
+    end
+  end
 end
 
 desc 'Release a new version'
