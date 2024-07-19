@@ -8,7 +8,8 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate {
+open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
+    
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
     @Injected(\.images) private var images: Images
@@ -103,7 +104,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     @Published public var searchText = "" {
         didSet {
-            handleSearchTextChange()
+            if searchText != oldValue {
+                handleSearchTextChange()
+            }
         }
     }
 
@@ -244,6 +247,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             selectedChannel = channels.first?.channelSelectionInfo
         }
     }
+    
+    // MARK: - ChatMessageSearchControllerDelegate
+    
+    public func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
+        updateSearchResults()
+    }
 
     // MARK: - private
 
@@ -324,6 +333,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if !searchText.isEmpty {
             guard let userId = chatClient.currentUserId else { return }
             messageSearchController = chatClient.messageSearchController()
+            messageSearchController?.delegate = self
             let query = MessageSearchQuery(
                 channelFilter: .containMembers(userIds: [userId]),
                 messageFilter: .autocomplete(.text, text: searchText)
@@ -334,6 +344,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 self?.updateSearchResults()
             })
         } else {
+            messageSearchController?.delegate = nil
             messageSearchController = nil
             searchResults = []
             updateChannels()

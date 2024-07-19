@@ -3,7 +3,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Public init of PhotoAttachmentCell [#544](https://github.com/GetStream/stream-chat-swiftui/pull/544)
+- Public init for AudioRecordingInfo [547](https://github.com/GetStream/stream-chat-swiftui/pull/547)
+
+### 🐞 Fixed
+- Update of search results when slowly typing [#550](https://github.com/GetStream/stream-chat-swiftui/issues/550)
 
 # [4.59.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.59.0)
 _July 10, 2024_
