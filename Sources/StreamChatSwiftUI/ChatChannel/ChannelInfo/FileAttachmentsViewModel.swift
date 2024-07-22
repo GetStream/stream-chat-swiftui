@@ -7,8 +7,8 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `FileAttachmentsView`.
-class FileAttachmentsViewModel: ObservableObject {
-
+class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
+    
     @Published var loading = false
     @Published var attachmentsDataSource = [MonthlyFileAttachments]()
     @Published var selectedAttachment: ChatMessageFileAttachment?
@@ -28,6 +28,7 @@ class FileAttachmentsViewModel: ObservableObject {
 
         dateFormatter.dateFormat = "MMMM yyyy"
         messageSearchController = chatClient.messageSearchController()
+        messageSearchController.delegate = self
         loadMessages()
     }
 
@@ -72,6 +73,12 @@ class FileAttachmentsViewModel: ObservableObject {
                 self.loadingNextMessages = false
             }
         }
+    }
+    
+    // MARK: - ChatMessageSearchControllerDelegate
+    
+    func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
+        updateAttachments()
     }
 
     private func loadMessages() {
