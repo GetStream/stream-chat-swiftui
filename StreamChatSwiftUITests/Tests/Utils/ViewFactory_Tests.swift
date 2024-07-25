@@ -861,9 +861,10 @@ class ViewFactory_Tests: StreamChatTestCase {
             onTap: {},
             onLongPress: {}
         )
-        
+        let name = String(describing: type(of: view))
+
         // Then
-        XCTAssert(view is BottomReactionsView)
+        XCTAssert(name.contains("BottomReactionsView"))
     }
     
     func test_viewFactory_makeCustomAttachmentQuotedView() {
