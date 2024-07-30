@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ⚡ Performance
+- Optimise channel list view updates [#561](https://github.com/GetStream/stream-chat-swiftui/pull/561)
+
 ### 🐞 Fixed
 - Media and files attachments not showing in channel info view [#554](https://github.com/GetStream/stream-chat-swiftui/pull/554)
 - Bottom reactions configuration not always updating reactions [#557](https://github.com/GetStream/stream-chat-swiftui/pull/557)
