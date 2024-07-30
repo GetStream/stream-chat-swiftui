@@ -174,15 +174,23 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             self.offsetX = value
         }
         if offsetX == 0 {
-            openSideLock = nil
-            swipedChannelId = nil
+            if openSideLock != nil {
+                openSideLock = nil
+            }
+            if swipedChannelId != nil {
+                swipedChannelId = nil
+            }
         }
     }
 
     private func dragEnded() {
         if offsetX == 0 {
-            swipedChannelId = nil
-            openSideLock = nil
+            if swipedChannelId != nil {
+                swipedChannelId = nil
+            }
+            if openSideLock != nil {
+                openSideLock = nil
+            }
         } else if offsetX > 0 && showLeadingSwipeActions {
             if offsetX.magnitude < openTriggerValue ||
                 offsetX < menuWidth * 0.8 {
