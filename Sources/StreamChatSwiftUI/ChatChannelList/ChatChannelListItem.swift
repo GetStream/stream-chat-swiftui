@@ -46,7 +46,7 @@ public struct ChatChannelListItem: View {
         } label: {
             HStack {
                 ChannelAvatarView(
-                    avatar: avatar,
+                    channel: channel,
                     showOnlineIndicator: onlineIndicatorShown
                 )
 
@@ -129,24 +129,45 @@ public struct ChatChannelListItem: View {
 
 /// View for the avatar used in channels (includes online indicator overlay).
 public struct ChannelAvatarView: View {
+    @Injected(\.utils) private var utils
+    let avatar: UIImage?
+    let showOnlineIndicator: Bool
+    let size: CGSize
 
-    var avatar: UIImage
-    var showOnlineIndicator: Bool
-    var size: CGSize = .defaultAvatarSize
+    @State private var channelAvatar = UIImage()
+    let channel: ChatChannel?
 
+    @available(
+        *,
+        deprecated,
+        renamed: "init(channel:showOnlineIndicator:size:)",
+        message: "Use automatically refreshing avatar initializer."
+    )
     public init(
         avatar: UIImage,
         showOnlineIndicator: Bool,
         size: CGSize = .defaultAvatarSize
     ) {
         self.avatar = avatar
+        channel = nil
+        self.showOnlineIndicator = showOnlineIndicator
+        self.size = size
+    }
+    
+    public init(
+        channel: ChatChannel,
+        showOnlineIndicator: Bool,
+        size: CGSize = .defaultAvatarSize
+    ) {
+        avatar = nil
+        self.channel = channel
         self.showOnlineIndicator = showOnlineIndicator
         self.size = size
     }
 
     public var body: some View {
         LazyView(
-            AvatarView(avatar: avatar, size: size)
+            AvatarView(avatar: image, size: size)
                 .overlay(
                     showOnlineIndicator ?
                         TopRightView {
@@ -155,8 +176,25 @@ public struct ChannelAvatarView: View {
                         .offset(x: 3, y: -1)
                         : nil
                 )
+                .onLoad {
+                    reloadAvatar()
+                }
+                .onReceive(channelHeaderLoader.channelAvatarChanged(channel?.cid)) { _ in
+                    reloadAvatar()
+                }
         )
         .accessibilityIdentifier("ChannelAvatarView")
+    }
+    
+    private var channelHeaderLoader: ChannelHeaderLoader { utils.channelHeaderLoader }
+    
+    private var image: UIImage {
+        avatar ?? channelAvatar
+    }
+    
+    private func reloadAvatar() {
+        guard let channel else { return }
+        channelAvatar = utils.channelHeaderLoader.image(for: channel)
     }
 }
 

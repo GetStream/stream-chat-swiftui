@@ -53,7 +53,7 @@ struct WhatsAppChannelHeader: ToolbarContent {
         ToolbarItem(placement: .principal) {
             HStack {
                 ChannelAvatarView(
-                    avatar: channelHeaderLoader.image(for: channel),
+                    channel: channel,
                     showOnlineIndicator: false,
                     size: CGSize(width: 36, height: 36)
                 )

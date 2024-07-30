@@ -33,7 +33,7 @@ struct iMessagePocView: View {
                         HStack {
                             ForEach(viewModel.pinnedChannels) { channel in
                                 ChannelAvatarView(
-                                    avatar: channelHeaderLoader.image(for: channel),
+                                    channel: channel,
                                     showOnlineIndicator: false
                                 )
                                 .padding()

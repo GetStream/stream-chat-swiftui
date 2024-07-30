@@ -13,6 +13,7 @@
 		4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */; };
 		4F6D83512C1079A00098C298 /* AlertBannerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83502C1079A00098C298 /* AlertBannerViewModifier.swift */; };
 		4F6D83542C1094220098C298 /* AlertBannerViewModifier_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */; };
+		4F7720AE2C58C45200BAEC02 /* OnLoadViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7720AD2C58C45000BAEC02 /* OnLoadViewModifier.swift */; };
 		4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */; };
 		4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */; };
 		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
@@ -574,6 +575,7 @@
 		4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel_Tests.swift; sourceTree = "<group>"; };
 		4F6D83502C1079A00098C298 /* AlertBannerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerViewModifier.swift; sourceTree = "<group>"; };
 		4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerViewModifier_Tests.swift; sourceTree = "<group>"; };
+		4F7720AD2C58C45000BAEC02 /* OnLoadViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnLoadViewModifier.swift; sourceTree = "<group>"; };
 		4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatClient+Extensions.swift"; sourceTree = "<group>"; };
 		4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatClientExtensions_Tests.swift; sourceTree = "<group>"; };
 		4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel_Tests.swift; sourceTree = "<group>"; };
@@ -1819,7 +1821,6 @@
 			isa = PBXGroup;
 			children = (
 				8465FD392746A95600AF091E /* AutoLayoutHelpers.swift */,
-				4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */,
 				8465FD452746A95600AF091E /* Cache.swift */,
 				8465FD412746A95600AF091E /* ChatChannelNamer.swift */,
 				4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */,
@@ -1833,6 +1834,8 @@
 				8465FD422746A95600AF091E /* InputTextView.swift */,
 				8465FD432746A95600AF091E /* NSLayoutConstraint+Extensions.swift */,
 				8465FD492746A95600AF091E /* NukeImageProcessor.swift */,
+				4F7720AD2C58C45000BAEC02 /* OnLoadViewModifier.swift */,
+				4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */,
 				8465FD3E2746A95600AF091E /* UIColor+Extensions.swift */,
 				8465FD3C2746A95600AF091E /* UIFont+Extensions.swift */,
 				8465FD3F2746A95600AF091E /* UIImage+Extensions.swift */,
@@ -2701,6 +2704,7 @@
 				841B2EF4278DB9E500ED619E /* MessageListHelperViews.swift in Sources */,
 				84EADEB22B2883C60046B50C /* TrailingComposerView.swift in Sources */,
 				84C0C9A328CF18F700CD0136 /* SnapshotCreator.swift in Sources */,
+				4F7720AE2C58C45200BAEC02 /* OnLoadViewModifier.swift in Sources */,
 				8465FDD22746A95800AF091E /* Utils.swift in Sources */,
 				8465FDA12746A95700AF091E /* ChatChannelHeaderViewModifier.swift in Sources */,
 				84F2908A276B90610045472D /* GalleryView.swift in Sources */,

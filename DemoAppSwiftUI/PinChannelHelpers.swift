@@ -40,7 +40,7 @@ struct DemoAppChatChannelListItem: View {
         } label: {
             HStack {
                 ChannelAvatarView(
-                    avatar: avatar,
+                    channel: channel,
                     showOnlineIndicator: onlineIndicatorShown
                 )
 
