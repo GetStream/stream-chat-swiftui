@@ -4,6 +4,8 @@
 
 <p align="center">
   <a href="https://sonarcloud.io/summary/new_code?id=GetStream_stream-chat-swiftui"><img src="https://sonarcloud.io/api/project_badges/measure?project=GetStream_stream-chat-swiftui&metric=coverage" /></a>
+
+  <img id="stream-chat-swiftui-label" alt="StreamChatSwiftUI" src="https://img.shields.io/badge/StreamChatSwiftUI-6.96MB-blue"/>
 </p>
 
 ## SwiftUI StreamChat SDK
