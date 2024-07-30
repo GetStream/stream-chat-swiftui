@@ -107,7 +107,6 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                 setOffsetX(value: 0)
             }
         })
-        .id("\(channel.id)-swipeable")
         .accessibilityIdentifier("ChatChannelSwipeableListItem")
     }
 
