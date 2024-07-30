@@ -189,29 +189,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
 /// Determines the uniqueness of the channel list item.
 extension ChatChannel: Identifiable {
-    private var mutedString: String {
-        isMuted ? "muted" : "unmuted"
-    }
-
     public var id: String {
-        "\(cid.id)-\(lastMessageAt ?? createdAt)-\(lastActiveMembersCount)-\(mutedString)-\(typingUsersString)-\(readUsersId)-\(unreadCount.messages)"
-    }
-
-    private var readUsersId: String {
-        "\(readUsers(currentUserId: nil, message: latestMessages.first).count)"
-    }
-
-    private var lastActiveMembersCount: Int {
-        lastActiveMembers.filter { member in
-            member.isOnline
-        }
-        .count
-    }
-
-    private var typingUsersString: String {
-        currentlyTypingUsers.map { user in
-            user.id
-        }
-        .joined(separator: "-")
+        cid.rawValue
     }
 }

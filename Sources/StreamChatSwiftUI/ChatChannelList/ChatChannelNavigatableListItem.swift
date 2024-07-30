@@ -58,7 +58,6 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 EmptyView()
             }
         }
-        .id("\(channel.id)-navigatable")
     }
 
     private var injectedChannelInfo: InjectedChannelInfo? {
