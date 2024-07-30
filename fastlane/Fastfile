@@ -83,6 +83,9 @@ lane :release do |options|
     # Set the framework version in SystemEnvironment+Version.swift
     new_content = File.read(swift_environment_path).gsub!(previous_version_number, release_version)
     File.open(swift_environment_path, 'w') { |f| f.puts(new_content) }
+
+    # Update sdk sizes
+    Dir.chdir('fastlane') { update_img_shields_sdk_sizes }
   end
 
   pod_lint
@@ -540,6 +543,27 @@ lane :show_frameworks_sizes do |options|
   end
 
   UI.user_error!("#{table_header} benchmark failed.") if markdown_table.include?(fail_status)
+end
+
+desc 'Update img shields SDK size labels'
+lane :update_img_shields_sdk_sizes do
+  sizes = frameworks_sizes
+
+  # Read the file into a string
+  readme_path = '../README.md'
+  readme_content = File.read(readme_path)
+
+  # Define the new value for the badge
+  stream_chat_swiftui_size = "#{sizes[:StreamChatSwiftUI]}MB"
+
+  # Replace the value in the badge URL
+  readme_content.gsub!(%r{(https://img.shields.io/badge/StreamChatSwiftUI-)(.*?)(-blue)}, "\\1#{stream_chat_swiftui_size}\\3")
+
+  # Write the updated content back to the file
+  File.write(readme_path, readme_content)
+
+  # Notify success
+  UI.success('Successfully updated the SDK size labels in README.md!')
 end
 
 def frameworks_sizes
