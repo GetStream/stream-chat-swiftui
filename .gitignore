@@ -71,6 +71,7 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/allurectl
 fastlane/xcresults
+fastlane/metrics
 fastlane/recordings
 StreamChatCore.framework.coverage.txt
 StreamChatCoreTests.xctest.coverage.txt
@@ -87,4 +88,6 @@ derived_data/
 spm_cache/
 .buildcache
 buildcache
+App Thinning Size Report.txt
+app-thinning.plist
 *.dmg

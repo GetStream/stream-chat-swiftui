@@ -13,10 +13,17 @@ sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
 derived_data_path = 'derived_data'
 source_packages_path = 'spm_cache'
+metrics_git = 'git@github.com:GetStream/apple-internal-metrics.git'
+sdk_size_path = "metrics/#{github_repo.split('/').last}-size.json"
 buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
 project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 @force_check = false
+
+warning_status = '🟡' # Warning if a branch is #{max_tolerance} less performant than the benchmark
+fail_status = '🔴' # Failure if a branch is more than #{max_tolerance} less performant than the benchmark
+success_status = '🟢' # Success if a branch is more performant or equals to the benchmark
+outstanding_status = '🚀' # Outstanding performance
 
 before_all do |lane|
   if is_ci
@@ -463,7 +470,8 @@ lane :sources_matrix do
     e2e: ['Sources', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp'],
     ui: ['Sources', 'StreamChatSwiftUITests', xcode_project],
     sample_apps: ['Sources', 'DemoAppSwiftUI', xcode_project],
-    ruby: ['fastlane', 'Gemfile', 'Gemfile.lock']
+    ruby: ['fastlane', 'Gemfile', 'Gemfile.lock'],
+    size: ['Sources', xcode_project]
   }
 end
 
@@ -475,6 +483,93 @@ lane :copyright do
     title: '[CI] Update Copyright',
     head_branch: "ci/update-copyright-#{Time.now.to_i}"
   )
+end
+
+desc 'Show current frameworks size'
+lane :show_frameworks_sizes do |options|
+  next unless is_check_required(sources: sources_matrix[:size], force_check: @force_check)
+
+  ['metrics/'].each { |dir| FileUtils.remove_dir(dir, force: true) }
+
+  sh("git clone #{metrics_git} #{File.dirname(sdk_size_path)}")
+  develop_sizes = JSON.parse(File.read(sdk_size_path))
+  branch_sizes = options[:sizes] || frameworks_sizes
+
+  table_header = '## SDK Size'
+  markdown_table = "#{table_header}\n| `title` | `develop` | `branch` | `diff` | `status` |\n| - | - | - | - | - |\n"
+  sdk_names.each do |title|
+    benchmark_value = develop_sizes[title]
+    branch_value = branch_sizes[title.to_sym]
+    max_tolerance = 0.5 # Max Tolerance is 0.5MB
+    fine_tolerance = 0.25 # Fine Tolerance is 0.25MB
+
+    diff = (branch_value - benchmark_value).round(2)
+
+    status_emoji =
+      if diff < 0
+        outstanding_status
+      elsif diff >= max_tolerance
+        fail_status
+      elsif diff >= fine_tolerance
+        warning_status
+      else
+        success_status
+      end
+
+    markdown_table << "|#{title}|#{benchmark_value}MB|#{branch_value}MB|#{diff}MB|#{status_emoji}|\n"
+  end
+
+  FastlaneCore::PrintTable.print_values(title: 'Benchmark', config: develop_sizes)
+  FastlaneCore::PrintTable.print_values(title: 'SDK Size', config: branch_sizes)
+
+  if is_ci
+    if ENV['GITHUB_EVENT_NAME'].to_s == 'push'
+      File.write(sdk_size_path, JSON.pretty_generate(branch_sizes))
+      Dir.chdir(File.dirname(sdk_size_path)) do
+        if sh('git status -s', log: false).to_s.empty?
+          UI.important('No changes in SDK sizes benchmarks.')
+        else
+          sh('git add -A')
+          sh("git commit -m 'Update #{sdk_size_path}'")
+          sh('git push')
+        end
+      end
+    end
+
+    create_pr_comment(pr_num: ENV.fetch('GITHUB_PR_NUM'), text: markdown_table, edit_last_comment_with_text: table_header)
+  end
+
+  UI.user_error!("#{table_header} benchmark failed.") if markdown_table.include?(fail_status)
+end
+
+def frameworks_sizes
+  root_dir = 'Build/SDKSize'
+  archive_dir = "#{root_dir}/DemoApp.xcarchive"
+
+  FileUtils.rm_rf("../#{root_dir}/")
+
+  match_me
+
+  gym(
+    scheme: 'DemoAppSwiftUI',
+    archive_path: archive_dir,
+    export_method: 'ad-hoc',
+    export_options: 'fastlane/sdk_size_export_options.plist'
+  )
+
+  # Parse the thinned size of Assets.car from Packaging.log
+  assets_size_regex = %r{\b(\d+)\sbytes\sfor\s./Payload/DemoAppSwiftUI.app/Frameworks/StreamChatSwiftUI.framework/Assets.car\b}
+  packaging_log_content = File.read("#{Gym.cache[:temporary_output_path]}/Packaging.log")
+  match = packaging_log_content.match(assets_size_regex)
+  assets_thinned_size = match[1].to_i
+
+  frameworks_path = "../#{archive_dir}/Products/Applications/DemoAppSwiftUI.app/Frameworks"
+  stream_chat_swiftui_size = File.size("#{frameworks_path}/StreamChatSwiftUI.framework/StreamChatSwiftUI")
+  stream_chat_swiftui_size_mb = ((stream_chat_swiftui_size + assets_thinned_size).to_f / 1024 / 1024).round(2)
+
+  {
+    StreamChatSwiftUI: stream_chat_swiftui_size_mb
+  }
 end
 
 private_lane :create_pr do |options|
@@ -492,6 +587,14 @@ private_lane :create_pr do |options|
     base: options[:base_branch],
     body: 'This PR was created automatically by CI.'
   )
+end
+
+private_lane :create_pr_comment do |options|
+  if is_ci && !options[:pr_num].to_s.empty?
+    last_comment = sh("gh pr view #{options[:pr_num]} --json comments --jq '.comments | map(select(.author.login == \"Stream-iOS-Bot\")) | last'")
+    edit_last_comment = last_comment.include?(options[:edit_last_comment_with_text]) ? '--edit-last' : ''
+    sh("gh pr comment #{options[:pr_num]} #{edit_last_comment} -b '#{options[:text]}'")
+  end
 end
 
 private_lane :current_branch do
