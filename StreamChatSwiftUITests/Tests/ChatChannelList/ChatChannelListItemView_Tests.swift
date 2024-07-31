@@ -11,6 +11,15 @@ import XCTest
 
 final class ChatChannelListItemView_Tests: StreamChatTestCase {
         
+    override func setUp() {
+        super.setUp()
+        let circleImage = UIImage.circleImage
+        streamChat?.utils.channelHeaderLoader.placeholder1 = circleImage
+        streamChat?.utils.channelHeaderLoader.placeholder2 = circleImage
+        streamChat?.utils.channelHeaderLoader.placeholder3 = circleImage
+        streamChat?.utils.channelHeaderLoader.placeholder4 = circleImage
+    }
+    
     func test_channelListItem_audioMessage() throws {
         // Given
         let message = try mockAudioMessage(text: "Audio", isSentByCurrentUser: true)
