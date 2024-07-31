@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Media and files attachments not showing in channel info view [#554](https://github.com/GetStream/stream-chat-swiftui/pull/554)
 - Bottom reactions configuration not always updating reactions [#557](https://github.com/GetStream/stream-chat-swiftui/pull/557)
 
+### 🔄 Changed
+- Channel list views do not use explicit id anymore [#561](https://github.com/GetStream/stream-chat-swiftui/pull/561)
+- Deprecate `ChannelAvatarView` initializer `init(avatar:showOnlineIndicator:size:)` in favor of `init(channel:showOnlineIndicator:size:)` [#561](https://github.com/GetStream/stream-chat-swiftui/pull/561)
+
 # [4.60.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.60.0)
 _July 19, 2024_
 
