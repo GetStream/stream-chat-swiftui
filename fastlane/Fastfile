@@ -142,6 +142,7 @@ end
 
 lane :merge_main_to_develop do
   if is_ci
+    sh('git config --global user.name "Stream Bot"')
     sh('git reset --hard')
   else
     ensure_git_status_clean
