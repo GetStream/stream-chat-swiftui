@@ -13,6 +13,7 @@ concurrency:
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build-test-app-and-frameworks:
@@ -54,7 +55,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
       XCODE_VERSION: ${{ matrix.xcode }}
     steps:
@@ -149,6 +149,10 @@ jobs:
     env:
       XCODE_VERSION: "15.0.1"
     steps:
+    - name: Connect iOS Bot
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/ruby-cache
     - name: List Xcode versions
@@ -157,10 +161,6 @@ jobs:
     - name: Build SwiftUI
       run: bundle exec fastlane test_ui device:"iPhone 15" build_for_testing:true
       timeout-minutes: 25
-    - name: Install Bot SSH Key
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - name: Build XCFrameworks
       run: bundle exec fastlane build_xcframeworks
       timeout-minutes: 25
