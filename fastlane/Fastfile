@@ -149,8 +149,8 @@ lane :merge_main_to_develop do
 
   sh('git checkout main')
   sh('git pull origin main')
-  sh('git checkout develop')
-  sh('git pull origin develop')
+  sh('git checkout origin/develop')
+  sh('git pull')
   sh('git log develop..main')
   sh('git merge main')
   sh('git push')
