@@ -40,7 +40,7 @@ struct DemoAppChatChannelListItem: View {
         } label: {
             HStack {
                 ChannelAvatarView(
-                    avatar: avatar,
+                    channel: channel,
                     showOnlineIndicator: onlineIndicatorShown
                 )
 
@@ -83,7 +83,6 @@ struct DemoAppChatChannelListItem: View {
         .foregroundColor(.black)
         .disabled(disabled)
         .background(channel.isPinned ? Color(colors.pinnedBackground) : .clear)
-        .id("\(channel.id)-\(channel.isPinned ? "pinned" : "not-pinned")-base")
     }
 
     private var subtitleView: some View {
@@ -173,7 +172,6 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 EmptyView()
             }
         }
-        .id("\(channel.id)-\(channel.isPinned ? "pinned" : "not-pinned")-base")
     }
 
     private var injectedChannelInfo: InjectedChannelInfo? {
