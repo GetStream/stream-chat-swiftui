@@ -155,6 +155,7 @@ lane :merge_main_to_develop do
   sh('git log develop..main')
   sh('git merge main')
   sh('git push origin HEAD:develop')
+  # test
 end
 
 private_lane :appstore_api_key do
