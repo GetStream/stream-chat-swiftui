@@ -474,7 +474,8 @@ lane :sources_matrix do
     ui: ['Sources', 'StreamChatSwiftUITests', xcode_project],
     sample_apps: ['Sources', 'DemoAppSwiftUI', xcode_project],
     ruby: ['fastlane', 'Gemfile', 'Gemfile.lock'],
-    size: ['Sources', xcode_project]
+    size: ['Sources', xcode_project],
+    sonar: ['Sources']
   }
 end
 
