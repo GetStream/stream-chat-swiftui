@@ -20,6 +20,8 @@ concurrency:
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
   IOS_SIMULATOR_DEVICE: "iPhone 15 Pro (17.4)"
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_PR_NUM: ${{ github.event.pull_request.number }}
 
 jobs:
   build-test-app-and-frameworks:
@@ -48,8 +50,6 @@ jobs:
     name: Automated Code Review
     runs-on: macos-13
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_PR_NUM: ${{ github.event.number }}
       XCODE_VERSION: "15.0.1"
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
@@ -72,6 +72,10 @@ jobs:
     env:
       XCODE_VERSION: "15.0.1"
     steps:
+    - name: Connect iOS Bot
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/ruby-cache
     - name: List Xcode versions
@@ -80,10 +84,6 @@ jobs:
     - name: Build SwiftUI
       run: bundle exec fastlane test_ui device:"iPhone 15" build_for_testing:true
       timeout-minutes: 25
-    - name: Install Bot SSH Key
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - name: Build XCFrameworks
       run: bundle exec fastlane build_xcframeworks
       timeout-minutes: 25
@@ -110,19 +110,12 @@ jobs:
       timeout-minutes: 60
       env:
         GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
-        GITHUB_PR_NUM: ${{ github.event.number }}
-    - name: Get branch name
-      id: get_branch_name
-      run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
     - name: Run Sonar analysis
       if: ${{ github.event.inputs.snapshots != 'true' }}
       run: bundle exec fastlane sonar_upload
       env:
-        BRANCH_NAME: ${{ steps.get_branch_name.outputs.branch }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        PR_NUMBER: ${{ github.event.number }}
     - uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
@@ -164,8 +157,6 @@ jobs:
       run: bundle exec fastlane allure_launch
       env:
         ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_PR_NUM: ${{ github.event.number }}
         GITHUB_EVENT: ${{ toJson(github.event) }}
     - id: get_launch_id
       run: echo "launch_id=${{env.LAUNCH_ID}}" >> $GITHUB_OUTPUT
@@ -203,14 +194,11 @@ jobs:
       env:
         XCODE_VERSION: "15.2" # the most stable pair of Xcode
         IOS_SIMULATOR_DEVICE: "iPhone 15 Pro (17.2)" # and iOS
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_PR_NUM: ${{ github.event.number }}
         MATRIX_SIZE: ${{ strategy.job-total }}
     - name: Allure TestOps Upload
       if: env.LAUNCH_ID != '' && (success() || failure())
       run: bundle exec fastlane allure_upload launch_id:$LAUNCH_ID
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
     - name: Allure TestOps Launch Removal
       if: env.LAUNCH_ID != '' && cancelled()
