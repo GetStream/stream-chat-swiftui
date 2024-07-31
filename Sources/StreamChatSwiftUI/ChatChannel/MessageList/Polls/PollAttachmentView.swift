@@ -14,6 +14,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
+    private let showResults: Bool
     
     @StateObject var viewModel: PollAttachmentViewModel
     
@@ -21,11 +22,13 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         factory: Factory,
         message: ChatMessage,
         poll: Poll,
-        isFirst: Bool
+        isFirst: Bool,
+        showResults: Bool = true
     ) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
+        self.showResults = showResults
         _viewModel = StateObject(
             wrappedValue: PollAttachmentViewModel(
                 message: message,
@@ -56,7 +59,8 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     viewModel: viewModel,
                     option: option,
                     optionVotes: poll.voteCountsByOption?[option.id],
-                    maxVotes: poll.voteCountsByOption?.values.max()
+                    maxVotes: poll.voteCountsByOption?.values.max(),
+                    showOptionVotes: showResults
                 )
                 .layoutPriority(1) // do not compress long text
             }
@@ -71,7 +75,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     )
                 }
                 .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
-                    PollAllOptionsView(viewModel: viewModel)
+                    PollAllOptionsView(viewModel: viewModel, showResults: showResults)
                 }
             }
             
@@ -117,13 +121,15 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 }
             }
             
-            Button {
-                viewModel.pollResultsShown = true
-            } label: {
-                Text(L10n.Message.Polls.Button.viewResults)
-            }
-            .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
-                PollResultsView(viewModel: viewModel)
+            if showResults {
+                Button {
+                    viewModel.pollResultsShown = true
+                } label: {
+                    Text(L10n.Message.Polls.Button.viewResults)
+                }
+                .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
+                    PollResultsView(viewModel: viewModel)
+                }
             }
             
             if viewModel.showEndVoteButton {
@@ -190,6 +196,7 @@ struct PollOptionView: View {
     var maxVotes: Int?
     /// If true, only option name and vote count is shown, otherwise votes indicator and avatars appear as well.
     var alternativeStyle: Bool = false
+    var showOptionVotes: Bool = true
     
     var body: some View {
         VStack(spacing: 4) {
@@ -213,22 +220,25 @@ struct PollOptionView: View {
                 Text(option.text)
                     .font(optionFont)
                 Spacer()
-                if !alternativeStyle, viewModel.showVoterAvatars {
-                    HStack(spacing: -4) {
-                        ForEach(
-                            option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
-                        ) { vote in
-                            MessageAvatarView(
-                                avatarURL: vote.user?.imageURL,
-                                size: .init(width: 20, height: 20)
-                            )
+                
+                if showOptionVotes {
+                    if !alternativeStyle, viewModel.showVoterAvatars {
+                        HStack(spacing: -4) {
+                            ForEach(
+                                option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
+                            ) { vote in
+                                MessageAvatarView(
+                                    avatarURL: vote.user?.imageURL,
+                                    size: .init(width: 20, height: 20)
+                                )
+                            }
                         }
                     }
+                    Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
                 }
-                Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
             }
             
-            if !alternativeStyle {
+            if !alternativeStyle && showOptionVotes {
                 PollVotesIndicatorView(
                     alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
                     optionVotes: optionVotes ?? 0,

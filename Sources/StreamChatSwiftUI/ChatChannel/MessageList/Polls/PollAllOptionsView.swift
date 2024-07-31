@@ -14,6 +14,8 @@ struct PollAllOptionsView: View {
     
     @ObservedObject var viewModel: PollAttachmentViewModel
     
+    let showResults: Bool
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -31,7 +33,8 @@ struct PollAllOptionsView: View {
                                 viewModel: viewModel,
                                 option: option,
                                 optionFont: fonts.headline,
-                                alternativeStyle: true
+                                alternativeStyle: true,
+                                showOptionVotes: showResults
                             )
                         }
                     }
