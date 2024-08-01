@@ -28,6 +28,7 @@ outstanding_status = '🚀' # Outstanding performance
 before_all do |lane|
   if is_ci
     setup_ci
+    sh('git config --global user.name "Stream Bot"')
     xcversion(version: xcode_version) unless [:publish_release, :allure_launch, :allure_upload, :copyright, :pod_lint].include?(lane)
   end
 end
@@ -123,31 +124,39 @@ lane :publish_release do |options|
   merge_main_to_develop
 end
 
-lane :merge_release_to_main do
+lane :merge_release_to_main do |options|
   ensure_git_status_clean
-  sh('git checkout main')
-  sh('git pull')
 
-  # Grep all remote release branches and ensure there's only one
-  release_branches = sh(command: 'git branch -a', log: false).delete(' ').split("\n").grep(%r(origin/.*release/))
-  UI.user_error!("Expected 1 release branch, found #{release_branches.size}") if release_branches.size != 1
+  release_branch =
+    if is_ci
+      # This API operation needs the "admin:org" scope.
+      ios_team = sh('gh api orgs/GetStream/teams/ios-developers/members -q ".[].login"', log: false).split
+      UI.user_error!("#{options[:author]} is not a member of the iOS Team") unless ios_team.include?(options[:author])
+
+      current_branch
+    else
+      release_branches = sh(command: 'git branch -a', log: false).delete(' ').split("\n").grep(%r(origin/.*release/))
+      UI.user_error!("Expected 1 release branch, found #{release_branches.size}") if release_branches.size != 1
+
+      release_branches.first
+    end
+
+  UI.user_error!("`#{release_branch}`` branch does not match the release branch pattern: `release/*`") unless release_branch.start_with?('release/')
+
+  sh('git checkout origin/main')
+  sh('git pull origin main')
 
   # Merge release branch to main. For more info, read: https://notion.so/iOS-Branching-Strategy-37c10127dc26493e937769d44b1d6d9a
-  sh("git merge #{release_branches.first} --ff-only")
-  UI.user_error!('Not pushing changes') unless prompt(text: 'Will push changes. All looking good?', boolean: true)
-  sh('git push')
-  UI.important('Please, wait for the `Publish new release` workflow to pass on GitHub Actions: ' \
-               "https://github.com/#{github_repo}/actions/workflows/publish-release.yml")
+  sh("git merge #{release_branch} --ff-only")
+  sh('git push origin main')
+
+  comment = "[Publication of the release](https://github.com/#{github_repo}/actions/workflows/release-publish.yml) has been launched 👍"
+  UI.important(comment)
+  create_pr_comment(pr_num: ENV.fetch('GITHUB_PR_NUM'), text: comment)
 end
 
 lane :merge_main_to_develop do
-  if is_ci
-    sh('git config --global user.name "Stream Bot"')
-    sh('git reset --hard')
-  else
-    ensure_git_status_clean
-  end
-
+  ensure_git_status_clean
   sh('git checkout main')
   sh('git pull origin main')
   sh('git checkout origin/develop')
@@ -408,7 +417,6 @@ private_lane :update_spm do |options|
     File.open('./Package.swift', 'w') { |file| file << file_data }
 
     # Update the repo
-    sh('git config --global user.name "Stream Bot"')
     sh('git add -A')
     sh("git commit -m 'Bump #{version}'")
     sh('git push')
@@ -622,7 +630,7 @@ end
 private_lane :create_pr_comment do |options|
   if is_ci && !options[:pr_num].to_s.empty?
     last_comment = sh("gh pr view #{options[:pr_num]} --json comments --jq '.comments | map(select(.author.login == \"Stream-iOS-Bot\")) | last'")
-    edit_last_comment = last_comment.include?(options[:edit_last_comment_with_text]) ? '--edit-last' : ''
+    edit_last_comment = options[:edit_last_comment_with_text] && last_comment.include?(options[:edit_last_comment_with_text]) ? '--edit-last' : ''
     sh("gh pr comment #{options[:pr_num]} #{edit_last_comment} -b '#{options[:text]}'")
   end
 end
