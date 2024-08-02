@@ -147,7 +147,7 @@ jobs:
     name: Launch Allure TestOps
     runs-on: macos-13
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
-    needs: test-ui-debug
+    needs: build-test-app-and-frameworks
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
     steps:
@@ -168,7 +168,6 @@ jobs:
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     needs:
       - allure_testops_launch
-      - test-ui-debug
       - build-test-app-and-frameworks
     env:
       LAUNCH_ID: ${{ needs.allure_testops_launch.outputs.launch_id }}
@@ -224,9 +223,7 @@ jobs:
   build-apps:
     name: Build Demo App
     runs-on: macos-14
-    needs:
-      - build-test-app-and-frameworks
-      - test-ui-debug
+    needs: build-test-app-and-frameworks
     if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v4.1.1
