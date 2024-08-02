@@ -15,7 +15,7 @@ public struct CustomChannelHeader: ToolbarContent {
     var title: String
     var currentUserController: CurrentChatUserController
     @Binding var isNewChatShown: Bool
-    @Binding var logoutAlertShown: Bool
+    @Binding var actionsPopupShown: Bool
 
     @MainActor
     public var body: some ToolbarContent {
@@ -39,7 +39,7 @@ public struct CustomChannelHeader: ToolbarContent {
         }
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
-                logoutAlertShown = true
+                actionsPopupShown = true
             } label: {
                 StreamLazyImage(url: currentUserController.currentUser?.imageURL)
             }
@@ -55,6 +55,8 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
 
     @State var isNewChatShown = false
     @State var logoutAlertShown = false
+    @State var actionsPopupShown = false
+    @State var blockedUsersShown = false
 
     func body(content: Content) -> some View {
         ZStack {
@@ -63,8 +65,14 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     title: title,
                     currentUserController: chatClient.currentUserController(),
                     isNewChatShown: $isNewChatShown,
-                    logoutAlertShown: $logoutAlertShown
+                    actionsPopupShown: $actionsPopupShown
                 )
+            }
+            
+            NavigationLink(isActive: $blockedUsersShown) {
+                BlockedUsersView()
+            } label: {
+                EmptyView()
             }
 
             NavigationLink(isActive: $isNewChatShown) {
@@ -89,6 +97,19 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     },
                     secondaryButton: .cancel()
                 )
+            }
+            .confirmationDialog("", isPresented: $actionsPopupShown) {
+                Button("Blocked users") {
+                    blockedUsersShown = true
+                }
+                
+                Button("Logout") {
+                    logoutAlertShown = true
+                }
+                
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Select an action")
             }
         }
     }
