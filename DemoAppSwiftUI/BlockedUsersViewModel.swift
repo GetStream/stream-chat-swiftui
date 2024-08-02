@@ -22,11 +22,11 @@ class BlockedUsersViewModel: ObservableObject {
     func loadBlockedUsers() {
         let blockedUserIds = currentUserController.currentUser?.blockedUserIds ?? []
         for blockedUserId in blockedUserIds {
-            if let user = currentUserController.dataStore.user(id: blockedUserId){
+            if let user = currentUserController.dataStore.user(id: blockedUserId) {
                 blockedUsers.append(user)
             } else {
                 let controller = chatClient.userController(userId: blockedUserId)
-                controller.synchronize { [weak self] error in
+                controller.synchronize { [weak self] _ in
                     if let user = controller.user {
                         self?.blockedUsers.append(user)
                     }

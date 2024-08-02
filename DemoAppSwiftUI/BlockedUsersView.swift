@@ -11,7 +11,7 @@ struct BlockedUsersView: View {
     
     var body: some View {
         ZStack {
-            if viewModel.blockedUsers.count > 0 {
+            if !viewModel.blockedUsers.isEmpty {
                 List {
                     ForEach(viewModel.blockedUsers) { blockedUser in
                         HStack {

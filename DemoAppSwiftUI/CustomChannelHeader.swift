@@ -107,7 +107,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     logoutAlertShown = true
                 }
                 
-                Button("Cancel", role: .cancel) { }
+                Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Select an action")
             }
