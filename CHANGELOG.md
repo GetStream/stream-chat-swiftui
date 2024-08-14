@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix markdown links with query parameters [#576](https://github.com/GetStream/stream-chat-swiftui/pull/576)
 
 # [4.61.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.61.0)
 _July 31, 2024_
