@@ -516,7 +516,7 @@ def frameworks_sizes
 
   frameworks_path = "../#{archive_dir}/Products/Applications/DemoAppSwiftUI.app/Frameworks"
   stream_chat_swiftui_size = File.size("#{frameworks_path}/StreamChatSwiftUI.framework/StreamChatSwiftUI")
-  stream_chat_swiftui_size_kb = ((stream_chat_swiftui_size + assets_thinned_size).to_f / 1024)
+  stream_chat_swiftui_size_kb = (stream_chat_swiftui_size + assets_thinned_size) / 1024.0
 
-  { StreamChatSwiftUI: stream_chat_swiftui_size_kb }
+  { StreamChatSwiftUI: stream_chat_swiftui_size_kb.round(0) }
 end
