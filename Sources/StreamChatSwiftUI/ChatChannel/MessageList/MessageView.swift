@@ -327,7 +327,8 @@ public struct LinkDetectionTextView: View {
 
             let range = NSRange(location: 0, length: message.adjustedText.utf16.count)
             linkDetector.links(in: message.adjustedText).forEach { textLink in
-                let pattern = "\\[([^\\]]+)\\]\\(\(textLink.originalText)\\)"
+                let escapedOriginalText = NSRegularExpression.escapedPattern(for: textLink.originalText)
+                let pattern = "\\[([^\\]]+)\\]\\(\(escapedOriginalText)\\)"
                 if let regex = try? NSRegularExpression(pattern: pattern) {
                     containsLinks = (regex.firstMatch(
                         in: message.adjustedText,
