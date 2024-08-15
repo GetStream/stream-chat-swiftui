@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix markdown links with query parameters [#581](https://github.com/GetStream/stream-chat-swiftui/pull/581)
+	- Limitation: markdown link that includes parameters without protocol prefix is not handled at the moment.
+	- Example: [text](link.com?a=b) will not be presented as markdown, while [text](https://link.com?a=b) will be.
+- Fix updating of mentioned users when sending a message [#582](https://github.com/GetStream/stream-chat-swiftui/pull/582)
 
 # [4.61.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.61.0)
 _July 31, 2024_
