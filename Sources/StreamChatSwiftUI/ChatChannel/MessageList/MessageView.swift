@@ -354,7 +354,7 @@ public struct LinkDetectionTextView: View {
         }
             
         if containsLinks {
-            self.displayedText = AttributedString(attributedText)
+            displayedText = AttributedString(attributedText)
         }
     }
 }
