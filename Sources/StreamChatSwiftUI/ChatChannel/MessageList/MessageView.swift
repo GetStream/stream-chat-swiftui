@@ -289,65 +289,72 @@ public struct LinkDetectionTextView: View {
         .font(fonts.body)
         .tint(tintColor)
         .onAppear {
-            guard utils.messageListConfig.localLinkDetectionEnabled else { return }
-            var attributes: [NSAttributedString.Key: Any] = [
-                .foregroundColor: textColor(for: message),
-                .font: fonts.body
-            ]
-            
-            let additional = utils.messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
-            for (key, value) in additional {
-                if key == .foregroundColor, let value = value as? UIColor {
-                    tintColor = Color(value)
-                } else {
-                    attributes[key] = value
-                }
+            detectLinks(for: message)
+        }
+        .onChange(of: message, perform: { updated in
+            detectLinks(for: updated)
+        })
+    }
+    
+    func detectLinks(for message: ChatMessage) {
+        guard utils.messageListConfig.localLinkDetectionEnabled else { return }
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor(for: message),
+            .font: fonts.body
+        ]
+        
+        let additional = utils.messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
+        for (key, value) in additional {
+            if key == .foregroundColor, let value = value as? UIColor {
+                tintColor = Color(value)
+            } else {
+                attributes[key] = value
             }
-            
-            let attributedText = NSMutableAttributedString(
-                string: message.adjustedText,
-                attributes: attributes
-            )
-            let attributedTextString = attributedText.string
-            var containsLinks = false
+        }
+        
+        let attributedText = NSMutableAttributedString(
+            string: message.adjustedText,
+            attributes: attributes
+        )
+        let attributedTextString = attributedText.string
+        var containsLinks = false
 
-            message.mentionedUsers.forEach { user in
-                containsLinks = true
-                let mention = "@\(user.name ?? user.id)"
-                attributedTextString
-                    .ranges(of: mention, options: [.caseInsensitive])
-                    .map { NSRange($0, in: attributedTextString) }
-                    .forEach {
-                        let messageId = message.messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
-                        if let messageId {
-                            attributedText.addAttribute(.link, value: "getstream://mention/\(messageId)/\(user.id)", range: $0)
-                        }
+        message.mentionedUsers.forEach { user in
+            containsLinks = true
+            let mention = "@\(user.name ?? user.id)"
+            attributedTextString
+                .ranges(of: mention, options: [.caseInsensitive])
+                .map { NSRange($0, in: attributedTextString) }
+                .forEach {
+                    let messageId = message.messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+                    if let messageId {
+                        attributedText.addAttribute(.link, value: "getstream://mention/\(messageId)/\(user.id)", range: $0)
                     }
-            }
+                }
+        }
 
-            let range = NSRange(location: 0, length: message.adjustedText.utf16.count)
-            linkDetector.links(in: message.adjustedText).forEach { textLink in
-                let escapedOriginalText = NSRegularExpression.escapedPattern(for: textLink.originalText)
-                let pattern = "\\[([^\\]]+)\\]\\(\(escapedOriginalText)\\)"
-                if let regex = try? NSRegularExpression(pattern: pattern) {
-                    containsLinks = (regex.firstMatch(
-                        in: message.adjustedText,
-                        options: [],
-                        range: range
-                    ) == nil) || !markdownEnabled
-                } else {
-                    containsLinks = true
-                }
-                
-                if !message.adjustedText.contains("](\(textLink.originalText))") {
-                    containsLinks = true
-                }
-                attributedText.addAttribute(.link, value: textLink.url, range: textLink.range)
+        let range = NSRange(location: 0, length: message.adjustedText.utf16.count)
+        linkDetector.links(in: message.adjustedText).forEach { textLink in
+            let escapedOriginalText = NSRegularExpression.escapedPattern(for: textLink.originalText)
+            let pattern = "\\[([^\\]]+)\\]\\(\(escapedOriginalText)\\)"
+            if let regex = try? NSRegularExpression(pattern: pattern) {
+                containsLinks = (regex.firstMatch(
+                    in: message.adjustedText,
+                    options: [],
+                    range: range
+                ) == nil) || !markdownEnabled
+            } else {
+                containsLinks = true
             }
-                
-            if containsLinks {
-                self.displayedText = AttributedString(attributedText)
+            
+            if !message.adjustedText.contains("](\(textLink.originalText))") {
+                containsLinks = true
             }
+            attributedText.addAttribute(.link, value: textLink.url, range: textLink.range)
+        }
+            
+        if containsLinks {
+            displayedText = AttributedString(attributedText)
         }
     }
 }
