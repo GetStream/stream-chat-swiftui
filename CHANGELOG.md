@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.62.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.62.0)
+_August 16, 2024_
+
 ### 🐞 Fixed
 - Fix markdown links with query parameters [#581](https://github.com/GetStream/stream-chat-swiftui/pull/581)
 	- Limitation: markdown link that includes parameters without protocol prefix is not handled at the moment.
