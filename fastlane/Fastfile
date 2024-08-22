@@ -16,6 +16,7 @@ source_packages_path = 'spm_cache'
 buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
 project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
 @force_check = false
 
 before_all do |lane|
@@ -67,7 +68,6 @@ desc 'Release a new version'
 lane :release do |options|
   previous_version_number = last_git_tag
   artifacts_path = File.absolute_path('../StreamChatSwiftUIArtifacts.json')
-  swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
   extra_changes = lambda do |release_version|
     # Set the framework version on the artifacts
     artifacts = JSON.parse(File.read(artifacts_path))
@@ -100,8 +100,12 @@ end
 
 desc "Publish a new release to GitHub and CocoaPods"
 lane :publish_release do |options|
-  xcversion(version: '15.0.1')
+  release_version = File.read(swift_environment_path).match(/String\s+=\s+"([\d.]+)"/)[1]
+  UI.user_error!("Release #{release_version} has already been published.") if git_tag_exists(tag: release_version, remote: true)
+  UI.user_error!("Release version cannot be empty") if release_version.to_s.empty?
+  ensure_git_branch(branch: 'main')
 
+  xcversion(version: '15.0.1')
   clean_products
   build_xcframeworks
   compress_frameworks
@@ -109,14 +113,14 @@ lane :publish_release do |options|
 
   publish_ios_sdk(
     skip_git_status_check: false,
-    version: options[:version],
+    version: release_version,
     sdk_names: sdk_names,
     podspec_names: ['StreamChatSwiftUI', 'StreamChatSwiftUI-XCFramework'],
     github_repo: github_repo,
     upload_assets: ['Products/StreamChatSwiftUI.zip']
   )
 
-  update_spm(version: options[:version])
+  update_spm(version: release_version)
 
   merge_main_to_develop
 end
