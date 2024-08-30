@@ -120,9 +120,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    public var channel: ChatChannel? {
-        channelController.channel
-    }
+    @Published public private(set) var channel: ChatChannel?
     
     public var isMessageThread: Bool {
         messageController != nil
@@ -150,6 +148,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         channelDataSource.delegate = self
         messages = channelDataSource.messages
+        channel = channelController.channel
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
@@ -445,6 +444,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         didUpdateChannel channel: EntityChange<ChatChannel>,
         channelController: ChatChannelController
     ) {
+        self.channel = channel.item
         checkReadIndicators(for: channel)
         checkTypingIndicator()
         checkHeaderType()
