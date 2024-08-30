@@ -8,7 +8,27 @@ import SwiftUI
 import XCTest
 
 class ChatChannelViewModel_Tests: StreamChatTestCase {
-
+    func test_chatChannelVM_channelIsUpdated() {
+        // Given
+        let cid = ChannelId.unique
+        let initialChannel = ChatChannel.mock(cid: cid)
+        let channelController = makeChannelController()
+        channelController.channel_mock = initialChannel
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        XCTAssertEqual(initialChannel, viewModel.channel)
+        
+        // When
+        let updatedChannel = ChatChannel.mock(cid: cid)
+        channelController.channel_mock = updatedChannel
+        channelController.delegate?.channelController(
+            channelController,
+            didUpdateChannel: .update(updatedChannel)
+        )
+        
+        // Then
+        XCTAssertEqual(updatedChannel, viewModel.channel)
+    }
+    
     func test_chatChannelVM_messagesLoaded() {
         // Given
         let channelController = makeChannelController()
