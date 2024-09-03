@@ -14,8 +14,9 @@ extension View {
     }
 }
 
-private struct DelayedRenderingViewModifier: ViewModifier {
-    @State private var canShowContent = false
+struct DelayedRenderingViewModifier: ViewModifier {
+    static var isEnabled = true
+    @State private var canShowContent = Self.isEnabled ? false : true
     
     func body(content: Content) -> some View {
         if canShowContent {
