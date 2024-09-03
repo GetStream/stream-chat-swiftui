@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+- Improved subtitle info in pinned messages view [#594](https://github.com/GetStream/stream-chat-swiftui/pull/594)
 
 ### 🐞 Fixed
 - Typing users did not update reliably in the message list [#591](https://github.com/GetStream/stream-chat-swiftui/pull/591)
