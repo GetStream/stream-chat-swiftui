@@ -9,7 +9,7 @@ import SwiftUI
 /// View model for the `PinnedMessagesView`.
 public class PinnedMessagesViewModel: ObservableObject {
 
-    private let channel: ChatChannel
+    let channel: ChatChannel
 
     @Published var pinnedMessages: [ChatMessage]
     

@@ -30,6 +30,84 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_pinnedMessagesView_imageSnapshot() {
+        // Given
+        let pinnedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique, name: "Test User"),
+            attachments: ChatChannelTestHelpers.imageAttachments,
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: .unique),
+                expiresAt: nil
+            )
+        )
+        let channel = ChatChannel.mockDMChannel(
+            pinnedMessages: [pinnedMessage]
+        )
+
+        // When
+        let view = PinnedMessagesView(channel: channel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_pinnedMessagesView_videoSnapshot() {
+        // Given
+        let pinnedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique, name: "Test User"),
+            attachments: ChatChannelTestHelpers.videoAttachments,
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: .unique),
+                expiresAt: nil
+            )
+        )
+        let channel = ChatChannel.mockDMChannel(
+            pinnedMessages: [pinnedMessage]
+        )
+
+        // When
+        let view = PinnedMessagesView(channel: channel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_pinnedMessagesView_pollSnapshot() {
+        // Given
+        let pinnedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique, name: "Test User"),
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: .unique),
+                expiresAt: nil
+            ),
+            poll: .mock()
+        )
+        let channel = ChatChannel.mockDMChannel(
+            pinnedMessages: [pinnedMessage]
+        )
+
+        // When
+        let view = PinnedMessagesView(channel: channel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_pinnedMessagesView_emptySnapshot() {
         // Given
