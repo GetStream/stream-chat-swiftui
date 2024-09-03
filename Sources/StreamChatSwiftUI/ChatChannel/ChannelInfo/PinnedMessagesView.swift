@@ -25,7 +25,7 @@ public struct PinnedMessagesView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.pinnedMessages) { message in
-                            PinnedMessageView(message: message)
+                            PinnedMessageView(message: message, channel: viewModel.channel)
                             Divider()
                         }
                     }
@@ -52,6 +52,7 @@ struct PinnedMessageView: View {
     private let avatarSize = CGSize(width: 56, height: 56)
 
     var message: ChatMessage
+    var channel: ChatChannel
 
     var body: some View {
         HStack {
@@ -66,7 +67,7 @@ struct PinnedMessageView: View {
                     .foregroundColor(Color(colors.text))
 
                 HStack {
-                    Text(message.adjustedText)
+                    Text(pinnedMessageSubtitle)
                         .font(fonts.footnote)
                         .foregroundColor(Color(colors.textLowEmphasis))
 
@@ -79,5 +80,12 @@ struct PinnedMessageView: View {
             }
         }
         .padding(.all, 8)
+    }
+    
+    private var pinnedMessageSubtitle: String {
+        if message.poll != nil {
+            return "📊 \(L10n.Channel.Item.poll)"
+        }
+        return channel.attachmentPreviewText(for: message) ?? message.adjustedText
     }
 }
