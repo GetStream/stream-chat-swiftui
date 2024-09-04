@@ -144,7 +144,9 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             }
         }
         .id(quotedMessage.messageId)
-        .padding(hasVoiceAttachments ? [.leading, .top, .bottom] : .all, 8)
+        .padding(
+            hasVoiceAttachments ? [.leading, .top, .bottom] : .all, utils.messageListConfig.messagePaddings.quotedViewPadding
+        )
         .modifier(
             factory.makeMessageViewModifier(
                 for: MessageModifierInfo(
