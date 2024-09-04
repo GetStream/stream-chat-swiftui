@@ -87,6 +87,8 @@ internal enum L10n {
       internal static var muted: String { L10n.tr("Localizable", "channel.item.muted") }
       /// Photo
       internal static var photo: String { L10n.tr("Localizable", "channel.item.photo") }
+      /// Poll
+      internal static var poll: String { L10n.tr("Localizable", "channel.item.poll") }
       /// %@ created:
       internal static func pollSomeoneCreated(_ p1: Any) -> String {
         return L10n.tr("Localizable", "channel.item.poll-someone-created", String(describing: p1))

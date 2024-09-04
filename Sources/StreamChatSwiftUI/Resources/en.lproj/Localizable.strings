@@ -196,4 +196,5 @@
 "channel.item.audio" = "Audio";
 "channel.item.photo" = "Photo";
 "channel.item.video" = "Video";
+"channel.item.poll" = "Poll";
 "channel.item.voice-message" = "Voice Message";
