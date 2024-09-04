@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Typing users did not update reliably in the message list [#591](https://github.com/GetStream/stream-chat-swiftui/pull/591)
+- Channel was sometimes marked as read when the first unread message was one of the first not visible messages [#593](https://github.com/GetStream/stream-chat-swiftui/pull/593)
 
 # [4.62.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.62.0)
 _August 16, 2024_

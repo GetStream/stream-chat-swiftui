@@ -21,6 +21,12 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
         let messageListConfig = MessageListConfig(messageDisplayOptions: messageDisplayOptions)
         let utils = Utils(messageListConfig: messageListConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        DelayedRenderingViewModifier.isEnabled = false
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        DelayedRenderingViewModifier.isEnabled = true
     }
 
     func test_messageListView_headerOnTop() {

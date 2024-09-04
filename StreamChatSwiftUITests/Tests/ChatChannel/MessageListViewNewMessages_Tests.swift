@@ -16,6 +16,12 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         let messageListConfig = MessageListConfig(showNewMessagesSeparator: true)
         let utils = Utils(dateFormatter: EmptyDateFormatter(), messageListConfig: messageListConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        DelayedRenderingViewModifier.isEnabled = false
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        DelayedRenderingViewModifier.isEnabled = true
     }
     
     func test_messageListViewNewMessages_singleMessage() {

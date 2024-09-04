@@ -202,6 +202,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         .id(listId)
                     }
+                    .delayedRendering()
                     .modifier(factory.makeMessageListModifier())
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
                 }

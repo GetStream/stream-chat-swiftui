@@ -9,7 +9,16 @@ import StreamSwiftTestHelpers
 import XCTest
 
 class MessageListViewAvatars_Tests: StreamChatTestCase {
-
+    override func setUp() {
+        super.setUp()
+        DelayedRenderingViewModifier.isEnabled = false
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        DelayedRenderingViewModifier.isEnabled = true
+    }
+    
     func test_messageListView_defaultDMChannel() {
         // Given
         setupConfig(showAvatars: true, showAvatarsInGroups: nil)
