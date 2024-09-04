@@ -44,7 +44,7 @@ open class ChannelHeaderLoader: ObservableObject {
     /// If the image is not downloaded, placeholder is returned.
     /// - Parameter channel: the provided channel.
     /// - Returns: the available image.
-    public func image(for channel: ChatChannel) -> UIImage {
+    open func image(for channel: ChatChannel) -> UIImage {
         if let image = loadedImages[channel.cid] {
             return image
         }
