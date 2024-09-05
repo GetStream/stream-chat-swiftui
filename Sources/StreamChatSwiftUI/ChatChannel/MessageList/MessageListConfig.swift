@@ -88,9 +88,14 @@ public struct MessagePaddings {
 
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
+    public let quotedViewPadding: CGFloat
 
-    public init(horizontal: CGFloat = 8) {
+    public init(
+        horizontal: CGFloat = 8,
+        quotedViewPadding: CGFloat = 8
+    ) {
         self.horizontal = horizontal
+        self.quotedViewPadding = quotedViewPadding
     }
 }
 
