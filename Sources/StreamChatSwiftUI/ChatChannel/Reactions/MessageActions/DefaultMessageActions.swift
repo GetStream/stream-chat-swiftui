@@ -142,15 +142,17 @@ extension MessageAction {
                 messageActions.append(markUnreadAction)
             }
             
-            let flagAction = flagMessageAction(
-                for: message,
-                channel: channel,
-                chatClient: chatClient,
-                onFinish: onFinish,
-                onError: onError
-            )
-
-            messageActions.append(flagAction)
+            if channel.canFlagMessage {
+                let flagAction = flagMessageAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                
+                messageActions.append(flagAction)
+            }
 
             if channel.config.mutesEnabled {
                 let author = message.author
