@@ -99,15 +99,14 @@ class MessageActions_Tests: StreamChatTestCase {
         )
 
         // Then
-        XCTAssert(messageActions.count == 8)
+        XCTAssert(messageActions.count == 7)
         XCTAssert(messageActions[0].title == "Reply")
         XCTAssert(messageActions[1].title == "Thread Reply")
         XCTAssert(messageActions[2].title == "Pin to conversation")
         XCTAssert(messageActions[3].title == "Copy Message")
         XCTAssert(messageActions[4].title == "Mark Unread")
-        XCTAssert(messageActions[5].title == "Flag Message")
-        XCTAssert(messageActions[6].title == "Mute User")
-        XCTAssert(messageActions[7].title == "Block User")
+        XCTAssert(messageActions[5].title == "Mute User")
+        XCTAssert(messageActions[6].title == "Block User")
     }
 
     func test_messageActions_currentUserPinned() {
