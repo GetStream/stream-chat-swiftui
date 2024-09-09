@@ -122,7 +122,15 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     }
 
     private var showTrailingSwipeActions: Bool {
-        !(trailingSwipeActions is EmptyView)
+        let view = factory.makeTrailingSwipeActionsView(
+            channel: channel,
+            offsetX: offsetX,
+            buttonWidth: buttonWidth,
+            swipedChannelId: $swipedChannelId,
+            leftButtonTapped: trailingLeftButtonTapped,
+            rightButtonTapped: trailingRightButtonTapped
+        )
+        return !(view is EmptyView)
     }
 
     private var leadingSwipeActions: some View {
@@ -136,7 +144,14 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     }
 
     private var showLeadingSwipeActions: Bool {
-        !(leadingSwipeActions is EmptyView)
+        let view = factory.makeLeadingSwipeActionsView(
+            channel: channel,
+            offsetX: offsetX,
+            buttonWidth: buttonWidth,
+            swipedChannelId: $swipedChannelId,
+            buttonTapped: leadingButtonTapped
+        )
+        return !(view is EmptyView)
     }
 
     private func dragChanged(to value: CGFloat) {
