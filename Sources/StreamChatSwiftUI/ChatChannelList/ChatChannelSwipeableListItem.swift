@@ -41,6 +41,8 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     private var trailingRightButtonTapped: (ChatChannel) -> Void
     private var trailingLeftButtonTapped: (ChatChannel) -> Void
     private var leadingButtonTapped: (ChatChannel) -> Void
+    
+    @State var verticalScrolling = false
 
     public init(
         factory: Factory,
@@ -76,7 +78,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                 .offset(x: self.offsetX)
                 .simultaneousGesture(
                     DragGesture(
-                        minimumDistance: 10,
+                        minimumDistance: 20,
                         coordinateSpace: .local
                     )
                     .updating($offset) { (value, gestureState, _) in
@@ -85,7 +87,11 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                             width: value.location.x - value.startLocation.x,
                             height: value.location.y - value.startLocation.y
                         )
-
+                        
+                        if abs(value.translation.height) > abs(value.translation.width) && !verticalScrolling {
+                            verticalScrolling = true
+                        }
+                                            
                         if diff == .zero {
                             gestureState = .zero
                         } else {
@@ -98,7 +104,8 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             if offset == .zero {
                 // gesture ended or cancelled
                 dragEnded()
-            } else {
+                verticalScrolling = false
+            } else if !verticalScrolling {
                 dragChanged(to: offset.width)
             }
         })
