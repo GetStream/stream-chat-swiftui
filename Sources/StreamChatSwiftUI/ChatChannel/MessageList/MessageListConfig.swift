@@ -136,7 +136,7 @@ public struct MessageDisplayOptions {
         overlayDateLabelSize: CGFloat = 40,
         lastInGroupHeaderSize: CGFloat = 0,
         newMessagesSeparatorSize: CGFloat = 50,
-        minimumSwipeGestureDistance: CGFloat = 10,
+        minimumSwipeGestureDistance: CGFloat = 20,
         currentUserMessageTransition: AnyTransition = .identity,
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,

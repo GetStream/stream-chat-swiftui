@@ -8,7 +8,6 @@ import Foundation
 import SwiftUI
 import XCTest
 
-#if !canImport(Translation)
 class ViewFactory_Tests: StreamChatTestCase {
 
     private let message = ChatMessage.mock(
@@ -963,4 +962,3 @@ extension ChannelAction: Equatable {
         lhs.id == rhs.id
     }
 }
-#endif
