@@ -42,7 +42,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     private var trailingLeftButtonTapped: (ChatChannel) -> Void
     private var leadingButtonTapped: (ChatChannel) -> Void
     
-    @State var verticalScrolling = false
+    @State private var verticalScrolling = false
 
     public init(
         factory: Factory,
