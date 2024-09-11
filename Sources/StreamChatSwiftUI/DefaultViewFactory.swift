@@ -111,7 +111,7 @@ extension ViewFactory {
         swipedChannelId: Binding<String?>,
         leftButtonTapped: @escaping (ChatChannel) -> Void,
         rightButtonTapped: @escaping (ChatChannel) -> Void
-    ) -> some View {
+    ) -> TrailingSwipeActionsView {
         TrailingSwipeActionsView(
             channel: channel,
             offsetX: offsetX,
@@ -127,7 +127,7 @@ extension ViewFactory {
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
         buttonTapped: (ChatChannel) -> Void
-    ) -> some View {
+    ) -> EmptyView {
         EmptyView()
     }
     
