@@ -56,6 +56,7 @@ class ChatChannelTestHelpers {
                     imageRemoteURL: testURL,
                     extraData: [:]
                 ),
+                downloadingState: nil,
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -80,6 +81,7 @@ class ChatChannelTestHelpers {
                     previewURL: testURL,
                     actions: []
                 ),
+                downloadingState: nil,
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -105,6 +107,7 @@ class ChatChannelTestHelpers {
                     file: attachmentFile,
                     extraData: nil
                 ),
+                downloadingState: nil,
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -130,6 +133,7 @@ class ChatChannelTestHelpers {
                 file: attachmentFile,
                 extraData: nil
             ),
+            downloadingState: nil,
             uploadingState: uploadingState
         )
 
@@ -155,6 +159,7 @@ class ChatChannelTestHelpers {
                     assetURL: testURL,
                     previewURL: testURL
                 ),
+                downloadingState: nil,
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -181,6 +186,7 @@ class ChatChannelTestHelpers {
                     file: attachmentFile,
                     extraData: nil
                 ),
+                downloadingState: nil,
                 uploadingState: uploadingState
             )
             .asAnyAttachment
@@ -202,6 +208,7 @@ class ChatChannelTestHelpers {
             id: .unique,
             type: .voiceRecording,
             payload: payload,
+            downloadingState: nil,
             uploadingState: nil
         ).asAnyAttachment
         
