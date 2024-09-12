@@ -43,18 +43,20 @@ struct DemoAppSwiftUIApp: App {
         }
         .onChange(of: appState.userState) { newValue in
             if newValue == .loggedIn {
-                if let currentUserId = chatClient.currentUserId {
-                    let pinnedByKey = ChatChannel.isPinnedBy(keyForUserId: currentUserId)
-                    let channelListQuery = ChannelListQuery(
-                        filter: .containMembers(userIds: [currentUserId]),
-                        sort: [
-                            .init(key: .custom(keyPath: \.isPinned, key: pinnedByKey), isAscending: true),
-                            .init(key: .lastMessageAt),
-                            .init(key: .updatedAt)
-                        ]
-                    )
-                    appState.channelListController = chatClient.channelListController(query: channelListQuery)
-                }
+                /*
+                 if let currentUserId = chatClient.currentUserId {
+                 let pinnedByKey = ChatChannel.isPinnedBy(keyForUserId: currentUserId)
+                 let channelListQuery = ChannelListQuery(
+                 filter: .containMembers(userIds: [currentUserId]),
+                 sort: [
+                 .init(key: .custom(keyPath: \.isPinned, key: pinnedByKey), isAscending: true),
+                 .init(key: .lastMessageAt),
+                 .init(key: .updatedAt)
+                 ]
+                 )
+                 appState.channelListController = chatClient.channelListController(query: channelListQuery)
+                 }
+                 */
                 notificationsHandler.setupRemoteNotifications()
             }
         }
