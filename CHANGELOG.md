@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.63.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.63.0)
+_September 12, 2024_
+
 ### ✅ Added
 - Configuration for padding for quoted message views [#598](https://github.com/GetStream/stream-chat-swiftui/pull/598)
 
