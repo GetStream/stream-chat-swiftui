@@ -112,9 +112,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         GeometryReader { proxy in
                             Rectangle().fill(Color.clear)
                                 .onChange(of: computeFrame, perform: { _ in
-                                    DispatchQueue.main.async {
-                                        frame = proxy.frame(in: .global)
-                                    }
+                                    frame = proxy.frame(in: .global)
                                 })
                         }
                     )
@@ -347,9 +345,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         showsMessageActions: Bool,
         showsBottomContainer: Bool = true
     ) {
-        computeFrame = true
+        computeFrame.toggle()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            computeFrame = false
             triggerHapticFeedback(style: .medium)
             onLongPress(
                 MessageDisplayInfo(
