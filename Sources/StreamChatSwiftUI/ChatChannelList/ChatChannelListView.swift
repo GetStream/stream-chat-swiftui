@@ -16,10 +16,29 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
 
     private let viewFactory: Factory
     private let title: String
-    private var onItemTap: (ChatChannel) -> Void
+    private let customOnItemTap: ((ChatChannel) -> Void)?
     private var embedInNavigationView: Bool
     private var handleTabBarVisibility: Bool
-
+    
+    /// Creates a channel list view.
+    ///
+    /// - Parameters:
+    ///   - viewFactory: The view factory used for creating views used by the channel list.
+    ///   - viewModel: The view model instance providing the data. Default view model is created if nil.
+    ///   - channelListController: The channel list controller managing the list of channels used as a data souce for the view model. Default controller is created if nil.
+    ///   - title: A title used as the navigation bar title.
+    ///   - onItemTap: A closure for handling a tap on the channel item. Default closure updates the ``ChatChannelListViewModel/selectedChannel`` property in the view model.
+    ///   - selectedChannelId: The id of a channel to be opened after the initial channel list load.
+    ///   - handleTabBarVisibility: True, if TabBar visibility should be automatically updated.
+    ///   - embedInNavigationView: True, if the channel list view should be embedded in a navigation stack.
+    ///
+    /// Changing the instance of the passed in `viewModel` or `channelListController` does not have an effect without reloading the channel list view by assigning a custom identity. The custom identity should be refreshed when either of the passed in instances have been recreated.
+    /// ```swift
+    /// ChatChannelListView(
+    ///   viewModel: viewModel
+    /// )
+    /// .id(myCustomViewIdentity)
+    /// ```
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelListViewModel? = nil,
@@ -30,23 +49,25 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         handleTabBarVisibility: Bool = true,
         embedInNavigationView: Bool = true
     ) {
-        let channelListVM = viewModel ?? ViewModelsFactory.makeChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: selectedChannelId
-        )
         _viewModel = StateObject(
-            wrappedValue: channelListVM
+            wrappedValue: viewModel ?? ViewModelsFactory.makeChannelListViewModel(
+                channelListController: channelListController,
+                selectedChannelId: selectedChannelId
+            )
         )
         self.viewFactory = viewFactory
         self.title = title
         self.handleTabBarVisibility = handleTabBarVisibility
         self.embedInNavigationView = embedInNavigationView
-        if let onItemTap = onItemTap {
-            self.onItemTap = onItemTap
-        } else {
-            self.onItemTap = { channel in
-                channelListVM.selectedChannel = channel.channelSelectionInfo
-            }
+        customOnItemTap = onItemTap
+    }
+    
+    var onItemTap: (ChatChannel) -> Void {
+        if let customOnItemTap {
+            return customOnItemTap
+        }
+        return { [weak viewModel] channel in
+            viewModel?.selectedChannel = channel.channelSelectionInfo
         }
     }
 
