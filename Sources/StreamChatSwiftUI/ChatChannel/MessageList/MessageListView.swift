@@ -301,7 +301,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
                     },
                     onClose: {
-                        firstUnreadMessageId = nil
+                        chatClient.channelController(for: channel.cid).markRead()
                         unreadButtonDismissed = true
                     }
                 ) : nil
