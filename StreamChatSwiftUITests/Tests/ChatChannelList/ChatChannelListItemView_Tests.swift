@@ -153,6 +153,54 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_channelListItem_pollMessage_youVoted() throws {
+        // Given
+        let currentUserId = UserId.unique
+        let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
+            .unique,
+            .unique,
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId))
+        ])
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_pollMessage_someoneVoted() throws {
+        // Given
+        let currentUserId = UserId.unique
+        let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
+            .unique,
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId)),
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: .unique, name: "Steve Jobs"))
+        ])
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
     
     private func mockAudioMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
@@ -271,7 +319,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         )
     }
     
-    private func mockPollMessage(isSentByCurrentUser: Bool) throws -> ChatMessage {
+    private func mockPollMessage(isSentByCurrentUser: Bool, latestVotes: [PollVote] = []) throws -> ChatMessage {
         .mock(
             id: .unique,
             cid: .unique,
@@ -281,7 +329,11 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
             createdAt: Date(timeIntervalSince1970: 100),
             localState: nil,
             isSentByCurrentUser: isSentByCurrentUser,
-            poll: .mock(optionCount: 1, voteCountForOption: { _ in 0 })
+            poll: .mock(
+                name: "Test poll",
+                createdBy: .mock(id: "test", name: "test"),
+                latestVotes: latestVotes
+            )
         )
     }
 }
