@@ -198,7 +198,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     /// True, if the current user has voted for the specified option, otherwise false.
     public func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
-        currentUserVote(for: option) != nil
+        poll.hasCurrentUserVoted(for: option)
     }
     
     /// Adds a new option to the poll.

@@ -92,15 +92,14 @@ final class PollAttachmentViewModel_Tests: StreamChatTestCase {
     
     func test_pollAttachmentViewModel_optionVotedByCurrentUser() {
         // Given
+        let vote = makePollVote()
         let pollController = makePollController()
         let viewModel = PollAttachmentViewModel(
             message: .mock(),
-            poll: .unique,
+            poll: .mock(ownVotes: [vote]),
             pollController: pollController
         )
-        let vote = makePollVote()
         let option = PollOption(id: vote.optionId!, text: "")
-        viewModel.currentUserVotes = [vote]
         
         // When
         let optionVoted = viewModel.optionVotedByCurrentUser(option)
