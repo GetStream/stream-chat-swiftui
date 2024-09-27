@@ -51,7 +51,9 @@ extension Poll {
             createdBy: .mock(id: "test", name: "test"),
             latestAnswers: [],
             options: [option],
-            latestVotesByOption: [option]
+            latestVotesByOption: [option],
+            latestVotes: [],
+            ownVotes: []
         )
         return poll
     }
@@ -89,7 +91,9 @@ extension Poll {
             createdBy: .mock(id: "test", name: "test"),
             latestAnswers: [],
             options: options,
-            latestVotesByOption: options
+            latestVotesByOption: options,
+            latestVotes: [],
+            ownVotes: []
         )
     }
 }
