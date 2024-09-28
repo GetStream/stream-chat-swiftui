@@ -55,8 +55,8 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 PollOptionView(
                     viewModel: viewModel,
                     option: option,
-                    optionVotes: poll.voteCountsByOption?[option.id],
-                    maxVotes: poll.voteCountsByOption?.values.max()
+                    optionVotes: poll.voteCount(for: option),
+                    maxVotes: poll.currentMaximumVoteCount
                 )
                 .layoutPriority(1) // do not compress long text
             }
