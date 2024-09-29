@@ -157,9 +157,9 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         // Given
         let currentUserId = UserId.unique
         let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId)),
             .unique,
-            .unique,
-            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId))
+            .unique
         ])
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
 
@@ -181,9 +181,9 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         // Given
         let currentUserId = UserId.unique
         let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: .unique, name: "Steve Jobs")),
             .unique,
-            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId)),
-            .mock(pollId: .unique, optionId: .unique, user: .mock(id: .unique, name: "Steve Jobs"))
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId))
         ])
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
 

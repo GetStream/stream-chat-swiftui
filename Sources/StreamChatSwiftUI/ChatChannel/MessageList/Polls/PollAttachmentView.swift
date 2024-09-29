@@ -215,7 +215,7 @@ struct PollOptionView: View {
                     if !alternativeStyle, viewModel.showVoterAvatars {
                         HStack(spacing: -4) {
                             ForEach(
-                                option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
+                                option.latestVotes.prefix(2)
                             ) { vote in
                                 MessageAvatarView(
                                     avatarURL: vote.user?.imageURL,
