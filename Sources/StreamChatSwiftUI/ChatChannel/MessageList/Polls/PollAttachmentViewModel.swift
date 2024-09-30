@@ -219,7 +219,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     ///
     /// - Note: When multiple options have the highest vote count, this function returns false.
     public func hasMostVotes(for option: PollOption) -> Bool {
-        return poll.isOptionWithMostVotes(option)
+        poll.isOptionWithMostVotes(option)
     }
     
     // MARK: - PollControllerDelegate

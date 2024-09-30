@@ -198,7 +198,7 @@ struct PollOptionView: View {
         HStack(alignment: .top, spacing: checkboxButtonSpacing) {
             if !viewModel.poll.isClosed {
                 Button {
-                   togglePollVote()
+                    togglePollVote()
                 } label: {
                     if viewModel.optionVotedByCurrentUser(option) {
                         Image(systemName: "checkmark.circle.fill")
