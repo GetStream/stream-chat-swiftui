@@ -53,6 +53,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             } else {
                 markDirty = false
             }
+            checkForDeeplinks()
         }
     }
 
@@ -117,7 +118,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     public var isSearching: Bool {
         !searchText.isEmpty
     }
-
+    
+    /// Creates a view model for the `ChatChannelListView`.
+    ///
+    /// - Parameters:
+    ///   - channelListController: A controller providing the list of channels. If nil, a controller with default `ChannelListQuery` is created.
+    ///   - selectedChannelId: The id of a channel to select. If the channel is not part of the channel list query, no channel is selected.
+    ///   Consider using ``ChatChannelScreen`` for presenting channels what might not be part of the initial page of channels.
     public init(
         channelListController: ChatChannelListController? = nil,
         selectedChannelId: String? = nil
@@ -265,15 +272,16 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
+    /// Checks for currently loaded channels for opening a channel with id.
     private func checkForDeeplinks() {
-        if let selectedChannelId = selectedChannelId,
-           let channelId = try? ChannelId(cid: selectedChannelId) {
-            let chatController = chatClient.channelController(
-                for: channelId,
-                messageOrdering: .topToBottom
-            )
-            selectedChannel = chatController.channel?.channelSelectionInfo
+        guard let selectedChannelId else { return }
+        do {
+            let channelId = try ChannelId(cid: selectedChannelId)
+            guard let selectedChannel = channels.first(where: { $0.cid == channelId })?.channelSelectionInfo else { return }
             self.selectedChannelId = nil
+            self.selectedChannel = selectedChannel
+        } catch {
+            log.error("Failed to select a channel with id \(selectedChannelId) (\(error))")
         }
     }
 
@@ -307,7 +315,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 if self.selectedChannel == nil {
                     self.updateChannels()
                 }
-                self.checkForDeeplinks()
             }
         }
     }
