@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Improves Poll voting UX by making it possible to tap on the whole option as well [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
 ### 🐞 Fixed
+- Rare crash when accessing frame of the view [#607](https://github.com/GetStream/stream-chat-swiftui/pull/607)
+- `ChatChannelListView` navigation did not trigger when using a custom container and its body reloaded [#609](https://github.com/GetStream/stream-chat-swiftui/pull/609)
+- Channel was sometimes not marked as read when tapping the x on the unread message pill in the message list [#610](https://github.com/GetStream/stream-chat-swiftui/pull/610)
 - Fix the poll vote progress view not having full width when the Poll is closed [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
 - Fix the last vote author not accurate in the channel preview [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
 
