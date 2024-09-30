@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+- Improves Poll voting UX by making it possible to tap on the whole option as well [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
+### 🐞 Fixed
+- Fix the poll vote progress view not having full width when the Poll is closed [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
+- Fix the last vote author not accurate in the channel preview [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
 
 # [4.63.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.63.0)
 _September 12, 2024_
