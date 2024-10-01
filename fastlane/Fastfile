@@ -126,8 +126,6 @@ lane :publish_release do |options|
   )
 
   update_spm(version: release_version)
-
-  merge_main
 end
 
 private_lane :appstore_api_key do
