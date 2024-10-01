@@ -96,6 +96,11 @@ end
 
 lane :merge_release do |options|
   merge_release_to_main(author: options[:author])
+  sh('gh workflow run release-publish.yml --ref main')
+end
+
+lane :merge_main do
+  merge_main_to_develop
 end
 
 desc "Publish a new release to GitHub and CocoaPods"
@@ -121,8 +126,6 @@ lane :publish_release do |options|
   )
 
   update_spm(version: release_version)
-
-  merge_main_to_develop
 end
 
 private_lane :appstore_api_key do
