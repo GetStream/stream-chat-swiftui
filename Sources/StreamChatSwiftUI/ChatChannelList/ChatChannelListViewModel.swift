@@ -52,8 +52,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 queuedChannelsChanges = []
             } else {
                 markDirty = false
+                checkForDeeplinks()
             }
-            checkForDeeplinks()
         }
     }
 
@@ -315,6 +315,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 if self.selectedChannel == nil {
                     self.updateChannels()
                 }
+                self.checkForDeeplinks()
             }
         }
     }
