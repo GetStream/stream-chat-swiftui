@@ -40,7 +40,7 @@ open class TwoStepMentionCommand: CommandHandler {
         self.displayInfo = displayInfo
     }
 
-    public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
+    open func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text == id {
             return ComposerCommand(
                 id: id,
@@ -59,7 +59,7 @@ open class TwoStepMentionCommand: CommandHandler {
         }
     }
 
-    public func handleCommand(
+    open func handleCommand(
         for text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
@@ -84,11 +84,11 @@ open class TwoStepMentionCommand: CommandHandler {
         selectedRangeLocation.wrappedValue = newCaretLocation
     }
 
-    public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
+    open func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
         selectedUser != nil
     }
 
-    public func commandHandler(for command: ComposerCommand) -> CommandHandler? {
+    open func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if let selectedUser = selectedUser,
            command.typingSuggestion.text != "\(mentionSymbol)\(selectedUser.mentionText)" {
             self.selectedUser = nil
@@ -96,7 +96,7 @@ open class TwoStepMentionCommand: CommandHandler {
         return command.id == id ? self : nil
     }
 
-    public func showSuggestions(
+    open func showSuggestions(
         for command: ComposerCommand
     ) -> Future<SuggestionInfo, Error> {
         if selectedUser != nil {
@@ -126,7 +126,7 @@ open class TwoStepMentionCommand: CommandHandler {
         return mentionsCommandHandler.showSuggestions(for: updated)
     }
 
-    public var replacesMessageSent: Bool {
+    open var replacesMessageSent: Bool {
         true
     }
 
