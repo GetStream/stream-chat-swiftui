@@ -126,7 +126,7 @@ open class TwoStepMentionCommand: CommandHandler {
         return mentionsCommandHandler.showSuggestions(for: updated)
     }
 
-    public var replacesMessageSent: Bool {
+    open var replacesMessageSent: Bool {
         true
     }
 
