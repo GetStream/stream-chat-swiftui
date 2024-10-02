@@ -55,8 +55,8 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 PollOptionView(
                     viewModel: viewModel,
                     option: option,
-                    optionVotes: poll.voteCountsByOption?[option.id],
-                    maxVotes: poll.voteCountsByOption?.values.max()
+                    optionVotes: poll.voteCount(for: option),
+                    maxVotes: poll.currentMaximumVoteCount
                 )
                 .layoutPriority(1) // do not compress long text
             }
@@ -190,52 +190,62 @@ struct PollOptionView: View {
     var maxVotes: Int?
     /// If true, only option name and vote count is shown, otherwise votes indicator and avatars appear as well.
     var alternativeStyle: Bool = false
-    
-    var body: some View {
-        VStack(spacing: 4) {
-            HStack(alignment: .top) {
-                if !viewModel.poll.isClosed {
-                    Button {
-                        if viewModel.optionVotedByCurrentUser(option) {
-                            viewModel.removePollVote(for: option)
-                        } else {
-                            viewModel.castPollVote(for: option)
-                        }
-                    } label: {
-                        if viewModel.optionVotedByCurrentUser(option) {
-                            Image(systemName: "checkmark.circle.fill")
-                        } else {
-                            Image(systemName: "circle")
-                        }
-                    }
-                }
+    /// The spacing between the checkbox and the option name.
+    /// By default it is 4. For All Options View is 8.
+    var checkboxButtonSpacing: CGFloat = 4
 
-                Text(option.text)
-                    .font(optionFont)
-                Spacer()
-                if !alternativeStyle, viewModel.showVoterAvatars {
-                    HStack(spacing: -4) {
-                        ForEach(
-                            option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt }).suffix(2)
-                        ) { vote in
-                            MessageAvatarView(
-                                avatarURL: vote.user?.imageURL,
-                                size: .init(width: 20, height: 20)
-                            )
-                        }
+    var body: some View {
+        HStack(alignment: .top, spacing: checkboxButtonSpacing) {
+            if !viewModel.poll.isClosed {
+                Button {
+                    togglePollVote()
+                } label: {
+                    if viewModel.optionVotedByCurrentUser(option) {
+                        Image(systemName: "checkmark.circle.fill")
+                    } else {
+                        Image(systemName: "circle")
                     }
                 }
-                Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
             }
-            
-            if !alternativeStyle {
-                PollVotesIndicatorView(
-                    alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
-                    optionVotes: optionVotes ?? 0,
-                    maxVotes: maxVotes ?? 0
-                )
-                .padding(.leading, 24)
+            VStack(spacing: 4) {
+                HStack(alignment: .top) {
+                    Text(option.text)
+                        .font(optionFont)
+                    Spacer()
+                    if !alternativeStyle, viewModel.showVoterAvatars {
+                        HStack(spacing: -4) {
+                            ForEach(
+                                option.latestVotes.prefix(2)
+                            ) { vote in
+                                MessageAvatarView(
+                                    avatarURL: vote.user?.imageURL,
+                                    size: .init(width: 20, height: 20)
+                                )
+                            }
+                        }
+                    }
+                    Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
+                }
+                if !alternativeStyle {
+                    PollVotesIndicatorView(
+                        alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
+                        optionVotes: optionVotes ?? 0,
+                        maxVotes: maxVotes ?? 0
+                    )
+                }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            togglePollVote()
+        }
+    }
+
+    func togglePollVote() {
+        if viewModel.optionVotedByCurrentUser(option) {
+            viewModel.removePollVote(for: option)
+        } else {
+            viewModel.castPollVote(for: option)
         }
     }
 }

@@ -82,10 +82,7 @@ final class PollCommentsViewModel_Tests: StreamChatTestCase {
     private func makeCommentsController() -> PollVoteListController_Mock {
         let query = PollVoteListQuery(
             pollId: .unique,
-            optionId: nil,
-            filter: .and(
-                [.equal(.pollId, to: .unique), .equal(.isAnswer, to: true)]
-            )
+            filter: .equal(.isAnswer, to: true)
         )
         return PollVoteListController_Mock(query: query, client: chatClient)
     }

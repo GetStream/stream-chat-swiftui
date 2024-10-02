@@ -24,7 +24,7 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         self.option = option
         let query = PollVoteListQuery(
             pollId: poll.id,
-            optionId: option.id, filter: .equal(.optionId, to: option.id)
+            optionId: option.id
         )
         controller = InjectedValues[\.chatClient].pollVoteListController(query: query)
         controller.delegate = self

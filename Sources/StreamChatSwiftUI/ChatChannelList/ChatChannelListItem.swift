@@ -360,8 +360,8 @@ extension ChatChannel {
     private func pollMessageText(for previewMessage: ChatMessage) -> String? {
         guard let poll = previewMessage.poll, !previewMessage.isDeleted else { return nil }
         var components = ["📊"]
-        if let latestVoter = poll.latestVotesByOption.first?.latestVotes.first?.user {
-            if previewMessage.isSentByCurrentUser {
+        if let latestVoter = poll.latestVotes.first?.user {
+            if latestVoter.id == membership?.id {
                 components.append(L10n.Channel.Item.pollYouVoted)
             } else {
                 components.append(L10n.Channel.Item.pollSomeoneVoted(latestVoter.name ?? latestVoter.id))
