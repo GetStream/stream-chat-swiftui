@@ -198,7 +198,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     /// True, if the current user has voted for the specified option, otherwise false.
     public func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
-        currentUserVote(for: option) != nil
+        poll.hasCurrentUserVoted(for: option)
     }
     
     /// Adds a new option to the poll.
@@ -219,13 +219,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     ///
     /// - Note: When multiple options have the highest vote count, this function returns false.
     public func hasMostVotes(for option: PollOption) -> Bool {
-        guard let allCounts = poll.voteCountsByOption else { return false }
-        guard let optionVoteCount = allCounts[option.id], optionVoteCount > 0 else { return false }
-        guard let highestVotePerOption = allCounts.values.max() else { return false }
-        guard optionVoteCount == highestVotePerOption else { return false }
-        // Check if only one option has highest number for votes
-        let optionsByVoteCounts = Dictionary(grouping: allCounts, by: { $0.value })
-        return optionsByVoteCounts[optionVoteCount]?.count == 1
+        poll.isOptionWithMostVotes(option)
     }
     
     // MARK: - PollControllerDelegate
@@ -244,7 +238,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     // MARK: - private
     
     private func currentUserVote(for option: PollOption) -> PollVote? {
-        currentUserVotes.first(where: { $0.optionId == option.id })
+        poll.currentUserVote(for: option)
     }
     
     private func notifySheetPresentation(shown: Bool) {

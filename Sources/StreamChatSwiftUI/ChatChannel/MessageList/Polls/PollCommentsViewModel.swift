@@ -25,10 +25,7 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     convenience init(poll: Poll, pollController: PollController) {
         let query = PollVoteListQuery(
             pollId: poll.id,
-            optionId: nil,
-            filter: .and(
-                [.equal(.pollId, to: poll.id), .equal(.isAnswer, to: true)]
-            )
+            filter: .equal(.isAnswer, to: true)
         )
         self.init(
             pollController: pollController,

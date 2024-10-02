@@ -45,7 +45,7 @@ struct PollResultsView: View {
                         poll: viewModel.poll,
                         option: option,
                         votes: Array(
-                            option.latestVotes.sorted(by: { $0.createdAt > $1.createdAt })
+                            option.latestVotes
                                 .prefix(numberOfItemsShown)
                         ),
                         hasMostVotes: viewModel.hasMostVotes(for: option),
