@@ -52,7 +52,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 queuedChannelsChanges = []
             } else {
                 markDirty = false
-                checkForDeeplinks()
             }
         }
     }
@@ -270,6 +269,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         } else {
             channels = controller.channels
         }
+        checkForDeeplinks()
     }
 
     /// Checks for currently loaded channels for opening a channel with id.
