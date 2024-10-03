@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+
+# [4.64.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.64.0)
+_October 03, 2024_
+
+### 🔄 Changed
 - Improves Poll voting UX by making it possible to tap on the whole option as well [#612](https://github.com/GetStream/stream-chat-swiftui/pull/612)
 ### 🐞 Fixed
 - Rare crash when accessing frame of the view [#607](https://github.com/GetStream/stream-chat-swiftui/pull/607)
