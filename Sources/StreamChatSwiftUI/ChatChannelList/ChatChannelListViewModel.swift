@@ -2,6 +2,7 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Foundation
 import StreamChat
 import SwiftUI
@@ -117,7 +118,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     public var isSearching: Bool {
         !searchText.isEmpty
     }
-
+    
+    /// Creates a view model for the `ChatChannelListView`.
+    ///
+    /// - Parameters:
+    ///   - channelListController: A controller providing the list of channels. If nil, a controller with default `ChannelListQuery` is created.
+    ///   - selectedChannelId: The id of a channel to select. If the channel is not part of the channel list query, no channel is selected.
+    ///   Consider using ``ChatChannelScreen`` for presenting channels what might not be part of the initial page of channels.
     public init(
         channelListController: ChatChannelListController? = nil,
         selectedChannelId: String? = nil
@@ -265,15 +272,30 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
+    private var deeplinkCancellable: AnyCancellable?
+    
+    /// Checks for currently loaded channels for opening a channel with id.
     private func checkForDeeplinks() {
-        if let selectedChannelId = selectedChannelId,
-           let channelId = try? ChannelId(cid: selectedChannelId) {
-            let chatController = chatClient.channelController(
-                for: channelId,
-                messageOrdering: .topToBottom
-            )
-            selectedChannel = chatController.channel?.channelSelectionInfo
-            self.selectedChannelId = nil
+        guard let selectedChannelId else { return }
+        do {
+            let channelId = try ChannelId(cid: selectedChannelId)
+            if let channel = channels.first(where: { $0.cid == channelId }) {
+                selectedChannel = channel.channelSelectionInfo
+            } else {
+                // Start waiting for a channel list change because the channel is not part of the loaded list
+                deeplinkCancellable = $channels
+                    .map { Array($0) }
+                    .compactMap { channels in
+                        channels.first(where: { $0.cid == channelId })
+                    }
+                    .map(\.channelSelectionInfo)
+                    .sink { [weak self] selection in
+                        self?.deeplinkCancellable = nil
+                        self?.selectedChannel = selection
+                    }
+            }
+        } catch {
+            log.error("Failed to select a channel with id \(selectedChannelId) (\(error))")
         }
     }
 
