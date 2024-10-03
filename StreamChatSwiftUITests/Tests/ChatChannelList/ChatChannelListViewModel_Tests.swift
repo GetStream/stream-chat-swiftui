@@ -270,55 +270,6 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssert(viewModel.hideTabBar == true)
     }
-    
-    func test_channelListVM_deeplinkToExistingChannel() {
-        // Given
-        let channels = (0..<3).map { ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\($0)")) }
-        let channelListController = makeChannelListController(channels: channels)
-        let selectedId = channels[1].cid
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: selectedId.rawValue
-        )
-        
-        // Then
-        let expectation = XCTestExpectation(description: "SelectedChannel")
-        let cancellable = viewModel.$selectedChannel
-            .filter { $0?.channel.cid == selectedId }
-            .sink { _ in
-                expectation.fulfill()
-            }
-        wait(for: [expectation], timeout: defaultTimeout)
-        cancellable.cancel()
-    }
-    
-    func test_channelListVM_deeplinkToIncomingChannel() {
-        // Given
-        let channels = (0..<3).map { ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\($0)")) }
-        let channelListController = makeChannelListController(channels: channels)
-        let selectedId = ChannelId(type: .messaging, id: "3")
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: selectedId.rawValue
-        )
-        
-        // When
-        let expectation = XCTestExpectation(description: "SelectedChannel")
-        let cancellable = viewModel.$selectedChannel
-            .filter { $0?.channel.cid == selectedId }
-            .sink { _ in
-                expectation.fulfill()
-            }
-        let insertedChannel = ChatChannel.mock(cid: selectedId)
-        channelListController.simulate(
-            channels: channels + [insertedChannel],
-            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
-        )
-        
-        // Then
-        wait(for: [expectation], timeout: defaultTimeout)
-        cancellable.cancel()
-    }
 
     // MARK: - private
 

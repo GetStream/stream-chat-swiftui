@@ -2,6 +2,7 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Foundation
 import StreamChat
 import SwiftUI
@@ -269,17 +270,30 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         } else {
             channels = controller.channels
         }
-        checkForDeeplinks()
     }
 
+    private var deeplinkCancellable: AnyCancellable?
+    
     /// Checks for currently loaded channels for opening a channel with id.
     private func checkForDeeplinks() {
         guard let selectedChannelId else { return }
         do {
             let channelId = try ChannelId(cid: selectedChannelId)
-            guard let channel = controller?.channels.first(where: { $0.cid == channelId }) else { return }
-            self.selectedChannelId = nil
-            selectedChannel = channel.channelSelectionInfo
+            if let channel = channels.first(where: { $0.cid == channelId }) {
+                selectedChannel = channel.channelSelectionInfo
+            } else {
+                // Start waiting for a channel list change because the channel is not part of the loaded list
+                deeplinkCancellable = $channels
+                    .map { Array($0) }
+                    .compactMap { channels in
+                        channels.first(where: { $0.cid == channelId })
+                    }
+                    .map(\.channelSelectionInfo)
+                    .sink { [weak self] selection in
+                        self?.deeplinkCancellable = nil
+                        self?.selectedChannel = selection
+                    }
+            }
         } catch {
             log.error("Failed to select a channel with id \(selectedChannelId) (\(error))")
         }
