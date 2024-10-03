@@ -277,9 +277,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         guard let selectedChannelId else { return }
         do {
             let channelId = try ChannelId(cid: selectedChannelId)
-            guard let selectedChannel = channels.first(where: { $0.cid == channelId })?.channelSelectionInfo else { return }
+            guard let channel = controller?.channels.first(where: { $0.cid == channelId }) else { return }
             self.selectedChannelId = nil
-            self.selectedChannel = selectedChannel
+            selectedChannel = channel.channelSelectionInfo
         } catch {
             log.error("Failed to select a channel with id \(selectedChannelId) (\(error))")
         }
