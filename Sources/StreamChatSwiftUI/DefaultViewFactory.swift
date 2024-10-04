@@ -970,6 +970,12 @@ extension ViewFactory {
     public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
         PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
     }
+
+    // MARK: Threads
+
+    public func makeNoThreadsView() -> some View {
+        NoThreadsView()
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

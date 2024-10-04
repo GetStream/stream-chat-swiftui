@@ -198,3 +198,7 @@
 "channel.item.video" = "Video";
 "channel.item.poll" = "Poll";
 "channel.item.voice-message" = "Voice Message";
+
+// - MARK: Threads
+
+"thread.no-content.message" = "No threads here yet...";

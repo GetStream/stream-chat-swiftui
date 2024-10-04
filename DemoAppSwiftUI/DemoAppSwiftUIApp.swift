@@ -31,7 +31,7 @@ struct DemoAppSwiftUIApp: App {
                         channelListView()
                             .tabItem { Label("Chat", systemImage: "message") }
                             .badge(appState.unreadCount.channels)
-                        LoginView()
+                        DefaultViewFactory.shared.makeNoThreadsView()
                             .tabItem { Label("Threads", systemImage: "text.bubble") }
                             .badge(appState.unreadCount.threads)
                     }

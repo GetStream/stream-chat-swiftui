@@ -502,6 +502,7 @@
 		A3600B43283F664E00E1C930 /* StartPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3600B42283F664E00E1C930 /* StartPage.swift */; };
 		A3828EAD283F6CFE00538258 /* StartPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3828EAC283F6CFE00538258 /* StartPage.swift */; };
 		A3D7B0DF2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D7B0DE2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift */; };
+		AD2DDA612CB040EA0040B8D4 /* NoThreadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2DDA602CB040EA0040B8D4 /* NoThreadsView.swift */; };
 		C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A465A284665B100EF498E /* SDKIdentifier.swift */; };
 		E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E3A1C01B282BAC66002D1E26 /* Sentry */; };
 /* End PBXBuildFile section */
@@ -1073,6 +1074,7 @@
 		A3828EAC283F6CFE00538258 /* StartPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPage.swift; sourceTree = "<group>"; };
 		A3828EB0283F73EE00538258 /* StreamChatSwiftUITestsApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = StreamChatSwiftUITestsApp.xctestplan; sourceTree = "<group>"; };
 		A3D7B0DE2840E23100E308B3 /* UIView+AccessibilityIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AccessibilityIdentifier.swift"; sourceTree = "<group>"; };
+		AD2DDA602CB040EA0040B8D4 /* NoThreadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoThreadsView.swift; sourceTree = "<group>"; };
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1621,6 +1623,7 @@
 				8465FD612746A95700AF091E /* DefaultViewFactory.swift */,
 				8465FD4C2746A95600AF091E /* ChatChannelList */,
 				8465FCFC2746A95600AF091E /* ChatChannel */,
+				AD2DDA5B2CB0332C0040B8D4 /* ChatThreadList */,
 				8465FCF92746A95600AF091E /* CommonViews */,
 				8465FD312746A95600AF091E /* Utils */,
 				8465FCEC2746A95600AF091E /* Generated */,
@@ -2198,6 +2201,14 @@
 			path = "Base TestCase";
 			sourceTree = "<group>";
 		};
+		AD2DDA5B2CB0332C0040B8D4 /* ChatThreadList */ = {
+			isa = PBXGroup;
+			children = (
+				AD2DDA602CB040EA0040B8D4 /* NoThreadsView.swift */,
+			);
+			path = ChatThreadList;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2657,6 +2668,7 @@
 				8465FD832746A95700AF091E /* LinkAttachmentView.swift in Sources */,
 				82D64C082AD7E5B700C5C79E /* Operation.swift in Sources */,
 				82D64BEB2AD7E5B700C5C79E /* ImagePipelineTask.swift in Sources */,
+				AD2DDA612CB040EA0040B8D4 /* NoThreadsView.swift in Sources */,
 				82D64BF92AD7E5B700C5C79E /* ImageProcessors+Resize.swift in Sources */,
 				8465FDC22746A95700AF091E /* ChatChannelNavigatableListItem.swift in Sources */,
 				8465FDAD2746A95700AF091E /* ImageCDN.swift in Sources */,

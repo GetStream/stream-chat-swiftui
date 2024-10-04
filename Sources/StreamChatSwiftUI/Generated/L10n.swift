@@ -540,6 +540,13 @@ internal enum L10n {
       }
     }
   }
+
+  internal enum Thread {
+    internal enum NoContent {
+      /// No threads here yet...
+      internal static var message: String { L10n.tr("Localizable", "thread.no-content.message") }
+    }
+  }
 }
 
 // MARK: - Implementation Details

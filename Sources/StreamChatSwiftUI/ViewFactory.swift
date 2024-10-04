@@ -985,4 +985,10 @@ public protocol ViewFactory: AnyObject {
         poll: Poll,
         isFirst: Bool
     ) -> PollViewType
+
+    // MARK: - Threads
+
+    associatedtype NoThreads: View
+    /// Creates the view that is displayed when there are no threads available.
+    func makeNoThreadsView() -> NoThreads
 }
