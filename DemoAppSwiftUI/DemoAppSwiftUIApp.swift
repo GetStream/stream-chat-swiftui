@@ -31,7 +31,7 @@ struct DemoAppSwiftUIApp: App {
                         channelListView()
                             .tabItem { Label("Chat", systemImage: "message") }
                             .badge(appState.unreadCount.channels)
-                        DefaultViewFactory.shared.makeNoThreadsView()
+                        threadListView()
                             .tabItem { Label("Threads", systemImage: "text.bubble") }
                             .badge(appState.unreadCount.threads)
                     }
@@ -72,6 +72,10 @@ struct DemoAppSwiftUIApp: App {
                 channelListController: channelListController
             )
         }
+    }
+
+    func threadListView() -> ChatThreadListView<DemoAppFactory> {
+        ChatThreadListView(viewFactory: DemoAppFactory.shared)
     }
 }
 

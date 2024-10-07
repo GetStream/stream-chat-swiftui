@@ -976,6 +976,10 @@ extension ViewFactory {
     public func makeNoThreadsView() -> some View {
         NoThreadsView()
     }
+
+    public func makeThreadListDividerItem() -> some View {
+        Divider()
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

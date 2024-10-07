@@ -201,4 +201,8 @@
 
 // - MARK: Threads
 
+"thread.title" = "Threads";
+"thread.new-threads" = "%d new threads";
+"thread.error.message" = "Error loading threads";
 "thread.no-content.message" = "No threads here yet...";
+"thread.item.replied-to" = "replied to: %@";

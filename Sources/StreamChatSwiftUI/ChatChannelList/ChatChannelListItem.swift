@@ -270,14 +270,9 @@ public struct InjectedChannelInfo {
 extension ChatChannel {
 
     public var lastMessageText: String? {
-        if let latestMessage = latestMessages.first {
-            if let text = pollMessageText(for: latestMessage) {
-                return text
-            }
-            return "\(latestMessage.author.name ?? latestMessage.author.id): \(textContent(for: latestMessage))"
-        } else {
-            return nil
-        }
+        guard let latestMessage = latestMessages.first else { return nil }
+        let messageFormatter = MessagePreviewFormatter()
+        return messageFormatter.format(latestMessage)
     }
 
     public var shouldShowTypingIndicator: Bool {
@@ -311,71 +306,5 @@ extension ChatChannel {
         } else {
             return ""
         }
-    }
-    
-    private func textContent(for previewMessage: ChatMessage) -> String {
-        if let attachmentPreviewText = attachmentPreviewText(for: previewMessage) {
-            return attachmentPreviewText
-        }
-        if let textContent = previewMessage.textContent, !textContent.isEmpty {
-            return textContent
-        }
-        return previewMessage.adjustedText
-    }
-    
-    /// The message preview text in case it contains attachments.
-    /// - Parameter previewMessage: The preview message of the channel.
-    /// - Returns: A string representing the message preview text.
-    func attachmentPreviewText(for previewMessage: ChatMessage) -> String? {
-        guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
-            return nil
-        }
-        let text = previewMessage.textContent ?? previewMessage.text
-        switch attachment.type {
-        case .audio:
-            let defaultAudioText = L10n.Channel.Item.audio
-            return "🎧 \(text.isEmpty ? defaultAudioText : text)"
-        case .file:
-            guard let fileAttachment = previewMessage.fileAttachments.first else {
-                return nil
-            }
-            let title = fileAttachment.payload.title
-            return "📄 \(title ?? text)"
-        case .image:
-            let defaultPhotoText = L10n.Channel.Item.photo
-            return "📷 \(text.isEmpty ? defaultPhotoText : text)"
-        case .video:
-            let defaultVideoText = L10n.Channel.Item.video
-            return "📹 \(text.isEmpty ? defaultVideoText : text)"
-        case .giphy:
-            return "/giphy"
-        case .voiceRecording:
-            let defaultVoiceMessageText = L10n.Channel.Item.voiceMessage
-            return "🎧 \(text.isEmpty ? defaultVoiceMessageText : text)"
-        default:
-            return nil
-        }
-    }
-    
-    private func pollMessageText(for previewMessage: ChatMessage) -> String? {
-        guard let poll = previewMessage.poll, !previewMessage.isDeleted else { return nil }
-        var components = ["📊"]
-        if let latestVoter = poll.latestVotes.first?.user {
-            if latestVoter.id == membership?.id {
-                components.append(L10n.Channel.Item.pollYouVoted)
-            } else {
-                components.append(L10n.Channel.Item.pollSomeoneVoted(latestVoter.name ?? latestVoter.id))
-            }
-        } else if let creator = poll.createdBy {
-            if previewMessage.isSentByCurrentUser {
-                components.append(L10n.Channel.Item.pollYouCreated)
-            } else {
-                components.append(L10n.Channel.Item.pollSomeoneCreated(creator.name ?? creator.id))
-            }
-        }
-        if !poll.name.isEmpty {
-            components.append(poll.name)
-        }
-        return components.joined(separator: " ")
     }
 }

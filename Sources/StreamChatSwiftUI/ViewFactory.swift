@@ -991,4 +991,8 @@ public protocol ViewFactory: AnyObject {
     associatedtype NoThreads: View
     /// Creates the view that is displayed when there are no threads available.
     func makeNoThreadsView() -> NoThreads
+
+    associatedtype ThreadListDividerItem: View
+    /// Creates the thread list divider item.
+    func makeThreadListDividerItem() -> ThreadListDividerItem
 }

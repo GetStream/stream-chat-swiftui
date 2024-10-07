@@ -273,4 +273,8 @@ public class Images {
     
     public var searchIcon: UIImage = loadImageSafely(with: "icn_search")
     public var searchCloseIcon: UIImage = UIImage(systemName: "multiply.circle")!
+
+    // MARK: - Threads
+
+    public var threadIcon: UIImage = UIImage(systemName: "text.bubble")!
 }
