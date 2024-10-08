@@ -247,12 +247,9 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
                 .onAppear {
-                    if horizontalSizeClass == .regular {
-                        viewModel.preselectChannelIfNeeded()
-                    }
+                    viewModel.preselectChannelIfNeeded()
                 }
             }
-
             viewFactory.makeChannelListStickyFooterView()
         }
         .modifier(viewFactory.makeChannelListContentModifier())
