@@ -99,7 +99,11 @@ extension ViewFactory {
         Color(colors.background)
             .edgesIgnoringSafeArea(.bottom)
     }
-    
+
+    public func makeChannelListSelectedItemModifier() -> some ViewModifier {
+        DefaultChannelListSelectedItemModifier()
+    }
+
     public func makeChannelListDividerItem() -> some View {
         Divider()
     }

@@ -69,6 +69,10 @@ public protocol ViewFactory: AnyObject {
     /// Creates the channel list divider item.
     func makeChannelListDividerItem() -> ChannelListDividerItem
 
+    associatedtype ChannelListSelectedItemModifier: ViewModifier
+    /// Returns a view modifier applied to the channel list item when it is selected.
+    func makeChannelListSelectedItemModifier() -> ChannelListSelectedItemModifier
+
     associatedtype MoreActionsView: View
     /// Creates the more channel actions view.
     /// - Parameters:

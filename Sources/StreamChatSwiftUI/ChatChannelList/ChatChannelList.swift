@@ -170,6 +170,9 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
                     leadingSwipeButtonTapped: leadingSwipeButtonTapped
                 )
+                .if(selectedChannel?.channel.id == channel.id, transform: {
+                    $0.modifier(factory.makeChannelListSelectedItemModifier())
+                })
                 .onAppear {
                     if let index = channels.firstIndex(where: { chatChannel in
                         chatChannel.id == channel.id
@@ -191,5 +194,16 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 extension ChatChannel: Identifiable {
     public var id: String {
         cid.rawValue
+    }
+}
+
+struct DefaultChannelListSelectedItemModifier: ViewModifier {
+    @Injected(\.colors) var colors
+
+    func body(content: Content) -> some View {
+        content
+            .if(isIPad, transform: {
+                $0.background(Color(colors.background6))
+            })
     }
 }
