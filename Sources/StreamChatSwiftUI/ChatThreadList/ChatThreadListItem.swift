@@ -22,57 +22,16 @@ public struct ChatThreadListItem: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            threadContainerView
-            replyContainerView
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-    }
-
-    var threadContainerView: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 6) {
-                Image(uiImage: images.threadIcon)
-                    .customizable()
-                    .frame(width: 15, height: 15)
-                    .foregroundColor(Color(colors.subtitleText))
-                Text(channelName)
-                    .lineLimit(1)
-                    .foregroundColor(Color(colors.text))
-                    .font(fonts.subheadlineBold)
-            }
-            HStack(alignment: .bottom) {
-                SubtitleText(text: parentMessageText)
-                Spacer()
-                if unreadRepliesCount != 0 {
-                    UnreadIndicatorView(
-                        unreadCount: unreadRepliesCount
-                    )
-                }
-            }
-        }
-    }
-
-    var replyContainerView: some View {
-        HStack(spacing: 8) {
-            MessageAvatarView(
-                avatarURL: latestReplyAuthor?.imageURL,
-                size: .init(width: 40, height: 40),
-                showOnlineIndicator: latestReplyAuthor?.isOnline ?? false
-            )
-            VStack(alignment: .leading) {
-                Text(latestReplyAuthor?.name ?? "")
-                    .lineLimit(1)
-                    .foregroundColor(Color(colors.text))
-                    .font(fonts.subheadlineBold)
-                HStack {
-                    SubtitleText(text: replyMessageText)
-                    Spacer()
-                    SubtitleText(text: replyTimestampText)
-                }
-            }
-        }
+        ChatThreadListItemContentView(
+            channelNameText: channelNameText,
+            parentMessageText: parentMessageText,
+            unreadRepliesCount: unreadRepliesCount,
+            replyAuthorName: latestReplyAuthor?.name ?? "",
+            replyAuthorUrl: latestReplyAuthor?.imageURL,
+            replyAuthorIsOnline: latestReplyAuthor?.isOnline ?? false,
+            replyMessageText: replyMessageText,
+            replyTimestampText: replyTimestampText
+        )
     }
 
     var parentMessageText: String {
@@ -116,7 +75,78 @@ public struct ChatThreadListItem: View {
         thread.latestReplies.last?.author
     }
 
-    var channelName: String {
+    var channelNameText: String {
         utils.channelNamer(thread.channel, chatClient.currentUserId) ?? ""
+    }
+}
+
+struct ChatThreadListItemContentView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
+    @Injected(\.chatClient) private var chatClient
+
+    var channelNameText: String
+    var parentMessageText: String
+    var unreadRepliesCount: Int
+    var replyAuthorName: String
+    var replyAuthorUrl: URL?
+    var replyAuthorIsOnline: Bool
+    var replyMessageText: String
+    var replyTimestampText: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            threadContainerView
+            replyContainerView
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+    }
+
+    var threadContainerView: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 6) {
+                Image(uiImage: images.threadIcon)
+                    .customizable()
+                    .frame(width: 15, height: 15)
+                    .foregroundColor(Color(colors.subtitleText))
+                Text(channelNameText)
+                    .lineLimit(1)
+                    .foregroundColor(Color(colors.text))
+                    .font(fonts.subheadlineBold)
+            }
+            HStack(alignment: .bottom) {
+                SubtitleText(text: parentMessageText)
+                Spacer()
+                if unreadRepliesCount != 0 {
+                    UnreadIndicatorView(
+                        unreadCount: unreadRepliesCount
+                    )
+                }
+            }
+        }
+    }
+
+    var replyContainerView: some View {
+        HStack(spacing: 8) {
+            MessageAvatarView(
+                avatarURL: replyAuthorUrl,
+                size: .init(width: 40, height: 40),
+                showOnlineIndicator: replyAuthorIsOnline
+            )
+            VStack(alignment: .leading) {
+                Text(replyAuthorName)
+                    .lineLimit(1)
+                    .foregroundColor(Color(colors.text))
+                    .font(fonts.subheadlineBold)
+                HStack {
+                    SubtitleText(text: replyMessageText)
+                    Spacer()
+                    SubtitleText(text: replyTimestampText)
+                }
+            }
+        }
     }
 }

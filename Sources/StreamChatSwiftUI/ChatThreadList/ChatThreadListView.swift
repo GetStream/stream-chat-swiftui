@@ -60,12 +60,22 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
 
     public var body: some View {
         NavigationContainerView(embedInNavigationView: embedInNavigationView) {
-            ChatThreadListContentView(
-                viewFactory: viewFactory,
-                viewModel: viewModel
-            )
-            .onLoad {
-                viewModel.loadThreads()
+            Group {
+                if viewModel.isLoading {
+                    viewFactory.makeThreadListLoadingView()
+                } else if viewModel.isEmpty {
+                    viewFactory.makeNoThreadsView()
+                } else {
+                    ChatThreadListContentView(
+                        viewFactory: viewFactory,
+                        viewModel: viewModel
+                    )
+                }
+            }
+            .onAppear {
+                if !viewModel.hasLoadedThreads {
+                    viewModel.loadThreads()
+                }
             }
         }
     }

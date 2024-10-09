@@ -1006,6 +1006,10 @@ public protocol ViewFactory: AnyObject {
     /// Creates the view that is displayed when there are no threads available.
     func makeNoThreadsView() -> NoThreads
 
+    associatedtype ThreadListLoadingView: View
+    /// Creates a loading view for the thread list.
+    func makeThreadListLoadingView() -> ThreadListLoadingView
+
     associatedtype ThreadListModifier: ViewModifier
     /// Returns a view modifier applied to the thread list.
     func makeThreadListModifier() -> ThreadListModifier

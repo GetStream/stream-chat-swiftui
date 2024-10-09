@@ -20,8 +20,17 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     /// A boolean value indicating if the view is currently loading more threads.
     public private(set) var loadingMoreThreads: Bool = false
 
+    /// A boolean value indicating if the initial threads have been loaded.
+    public private(set) var hasLoadedThreads = false
+
     /// The list of threads.
     @Published public var threads = LazyCachedMapCollection<ChatThread>()
+
+    /// A boolean indicating if it is loading data from the server and no local cache is available.
+    @Published public var isLoading = false
+
+    /// A boolean indicating that there is no data from server.
+    @Published public var isEmpty = false
 
     /// Creates a view model for the `ChatThreadListView`.
     ///
@@ -39,7 +48,12 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
 
     public func loadThreads() {
         controller?.delegate = self
-        controller?.synchronize()
+        isLoading = controller?.threads.isEmpty == true
+        controller?.synchronize { [weak self] error in
+            self?.isLoading = false
+            self?.hasLoadedThreads = error == nil
+            self?.isEmpty = self?.controller?.threads.isEmpty == true
+        }
     }
 
     public func controller(
