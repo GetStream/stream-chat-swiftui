@@ -226,7 +226,6 @@ extension ViewFactory {
             )
         }
     }
-    
     public func makeMessageListModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
@@ -973,8 +972,31 @@ extension ViewFactory {
 
     // MARK: Threads
 
+    public func makeThreadDestination() -> (ChatThread) -> ChatChannelView<Self> {
+        { [unowned self] thread in
+            makeMessageThreadDestination()(thread.channel, thread.parentMessage)
+        }
+    }
+
+
+    public func makeThreadListItem(
+        thread: ChatThread,
+        threadDestination: @escaping (ChatThread) -> ThreadDestination
+    ) -> some View {
+        ChatThreadListNavigatableItem(
+            thread: thread,
+            threadListItem: ChatThreadListItem(thread: thread),
+            threadDestination: threadDestination,
+            handleTabBarVisibility: true
+        )
+    }
+
     public func makeNoThreadsView() -> some View {
         NoThreadsView()
+    }
+
+    public func makeThreadListModifier() -> some ViewModifier {
+        EmptyViewModifier()
     }
 
     public func makeThreadListDividerItem() -> some View {

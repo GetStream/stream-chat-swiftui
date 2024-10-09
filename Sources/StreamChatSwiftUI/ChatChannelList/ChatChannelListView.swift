@@ -96,8 +96,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                self.tabBar?.isHidden = newValue
            }
        }
-
-        .accessibilityIdentifier("ChatChannelListView")
+       .accessibilityIdentifier("ChatChannelListView")
     }
 
     @ViewBuilder

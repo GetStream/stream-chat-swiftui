@@ -26,7 +26,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
     ///   - viewModel: The view model instance providing the data. Default view model is created if nil.
     ///   - threadListController: The thread list controller managing the list of threads used as a data source for the view model. Default controller is created if nil.
     ///   - title: A title used as the navigation bar title.
-    ///   - onItemTap: A closure for handling a tap on the thread item. Default closure updates the ``ChatThreadListViewModel/selectedThrea`` property in the view model.
+    ///   - onItemTap: A closure for handling a tap on the thread item. Default closure updates the ``ChatThreadListViewModel/selectedThread`` property in the view model.
     ///   - handleTabBarVisibility: True, if TabBar visibility should be automatically updated.
     ///   - embedInNavigationView: True, if the thread list view should be embedded in a navigation stack.
     ///
@@ -60,25 +60,11 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
 
     public var body: some View {
         NavigationContainerView(embedInNavigationView: embedInNavigationView) {
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.threads) { thread in
-                        NavigationLink(
-                            destination: {
-                                let threadDestination = viewFactory.makeMessageThreadDestination()
-                                threadDestination(thread.channel, thread.parentMessage)
-                                    .modifier(HideTabBarModifier(
-                                        handleTabBarVisibility: handleTabBarVisibility
-                                    ))
-                            },
-                            label: { ChatThreadListItem(thread: thread) }
-                        )
-                        .foregroundColor(.black)
-                        viewFactory.makeThreadListDividerItem()
-                    }
-                }
-            }
-            .onAppear {
+            ChatThreadListContentView(
+                viewFactory: viewFactory,
+                viewModel: viewModel
+            )
+            .onLoad {
                 viewModel.loadThreads()
             }
         }
@@ -91,9 +77,23 @@ extension ChatThreadListView where Factory == DefaultViewFactory {
     }
 }
 
-/// Determines the uniqueness of the channel list item.
-extension ChatThread: Identifiable {
-    public var id: String {
-        parentMessageId
+public struct ChatThreadListContentView<Factory: ViewFactory>: View {
+    private var viewFactory: Factory
+    @ObservedObject private var viewModel: ChatThreadListViewModel
+
+    public init(
+        viewFactory: Factory,
+        viewModel: ChatThreadListViewModel
+    ) {
+        self.viewFactory = viewFactory
+        self.viewModel = viewModel
+    }
+
+    public var body: some View {
+        ThreadList(
+            factory: viewFactory,
+            threads: viewModel.threads,
+            threadDestination: viewFactory.makeThreadDestination()
+        )
     }
 }

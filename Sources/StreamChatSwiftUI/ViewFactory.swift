@@ -988,9 +988,27 @@ public protocol ViewFactory: AnyObject {
 
     // MARK: - Threads
 
+    associatedtype ThreadDestination: View
+    /// Returns a function that creates the thread destination.
+    func makeThreadDestination() -> (ChatThread) -> ThreadDestination
+
+    associatedtype ThreadListItemType: View
+    /// Creates the thread list item.
+    /// - Parameters:
+    ///  - thread: The thread being displayed.
+    ///  - threadDestination: A closure that creates the thread destination.
+    func makeThreadListItem(
+        thread: ChatThread,
+        threadDestination: @escaping (ChatThread) -> ThreadDestination
+    ) -> ThreadListItemType
+
     associatedtype NoThreads: View
     /// Creates the view that is displayed when there are no threads available.
     func makeNoThreadsView() -> NoThreads
+
+    associatedtype ThreadListModifier: ViewModifier
+    /// Returns a view modifier applied to the thread list.
+    func makeThreadListModifier() -> ThreadListModifier
 
     associatedtype ThreadListDividerItem: View
     /// Creates the thread list divider item.
