@@ -25,7 +25,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
     ///   - viewFactory: The view factory used for creating views used by the thread list.
     ///   - viewModel: The view model instance providing the data. Default view model is created if nil.
     ///   - threadListController: The thread list controller managing the list of threads used as a data source for the view model. Default controller is created if nil.
-    ///   - title: A title used as the navigation bar title.
+    ///   - title: A custom title used as the navigation bar title.
     ///   - onItemTap: A closure for handling a tap on the thread item. Default closure updates the ``ChatThreadListViewModel/selectedThread`` property in the view model.
     ///   - handleTabBarVisibility: True, if TabBar visibility should be automatically updated.
     ///   - embedInNavigationView: True, if the thread list view should be embedded in a navigation stack.
@@ -41,7 +41,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatThreadListViewModel? = nil,
         threadListController: ChatThreadListController? = nil,
-        title: String = "Threads",
+        title: String? = nil,
         onItemTap: ((ChatThread) -> Void)? = nil,
         handleTabBarVisibility: Bool = true,
         embedInNavigationView: Bool = true
@@ -52,7 +52,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
             )
         )
         self.viewFactory = viewFactory
-        self.title = title
+        self.title = title ?? L10n.Thread.title
         self.handleTabBarVisibility = handleTabBarVisibility
         self.embedInNavigationView = embedInNavigationView
         customOnItemTap = onItemTap
@@ -72,6 +72,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                     )
                 }
             }
+            .modifier(viewFactory.makeThreadListHeaderViewModifier(title: title))
             .onAppear {
                 if !viewModel.hasLoadedThreads {
                     viewModel.loadThreads()
