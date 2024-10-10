@@ -28,13 +28,13 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
                     searchText: .constant("")
                 )
 
-                VStack(spacing: 0) {
+                LazyVStack(spacing: 0) {
                     ForEach(0..<20) { _ in
                         RedactedChannelCell()
+                            .shimmering()
                         Divider()
                     }
                 }
-                .shimmering()
             }
         }
         .accessibilityIdentifier("RedactedLoadingView")
@@ -52,7 +52,7 @@ struct RedactedChannelCell: View {
     }
 
     public var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Circle()
                 .fill(redactedColor)
                 .frame(width: circleSize, height: circleSize)

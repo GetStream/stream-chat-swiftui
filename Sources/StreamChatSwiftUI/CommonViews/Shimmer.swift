@@ -5,62 +5,34 @@
 import SwiftUI
 
 struct Shimmer: ViewModifier {
-    @State private var phase: CGFloat = 0
-    var duration = 1.5
-    var delay = 0.25
+    /// The duration of a shimmer cycle in seconds. Default: `1.5`.
+    var duration: Double = 1.5
+    /// The delay until the animation re-starts.
+    var delay: Double = 0.25
+
+    @State private var isInitialState = true
 
     public func body(content: Content) -> some View {
         content
-            .modifier(AnimatedMask(phase: phase))
-            .animation(
-                .linear(
-                    duration: duration
+            .mask(
+                LinearGradient(
+                    gradient: .init(colors: [.black.opacity(0.4), .black, .black.opacity(0.4)]),
+                    startPoint: (isInitialState ? .init(x: -0.3, y: -0.3) : .init(x: 1, y: 1)),
+                    endPoint: (isInitialState ? .init(x: 0, y: 0) : .init(x: 1.3, y: 1.3))
                 )
+            )
+            .animation(
+                .linear(duration: duration)
                 .delay(delay)
-                .repeatForever(
-                    autoreverses: false
-                ),
-                value: phase == 0.0
+                .repeatForever(autoreverses: false), 
+                value: isInitialState
             )
-            .onAppear { phase = 0.8 }
-    }
-
-    /// An animatable modifier to interpolate between `phase` values.
-    struct AnimatedMask: AnimatableModifier {
-        var phase: CGFloat = 0
-
-        var animatableData: CGFloat {
-            get { phase }
-            set { phase = newValue }
-        }
-
-        func body(content: Content) -> some View {
-            content
-                .mask(GradientMask(phase: phase).scaleEffect(3))
-        }
-    }
-
-    /// A slanted, animatable gradient between transparent and opaque to use as mask.
-    /// The `phase` parameter shifts the gradient, moving the opaque band.
-    struct GradientMask: View {
-        let phase: CGFloat
-        let centerColor = Color.black
-        let edgeColor = Color.black.opacity(0.3)
-
-        var body: some View {
-            LinearGradient(
-                gradient:
-                Gradient(stops: [
-                    .init(color: edgeColor, location: phase),
-                    .init(color: centerColor, location: phase + 0.1),
-                    .init(color: edgeColor, location: phase + 0.2)
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        }
+            .onAppear {
+                isInitialState = false
+            }
     }
 }
+
 
 extension View {
     /// Adds an animated shimmering effect to any view, typically to show that
