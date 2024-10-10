@@ -72,6 +72,11 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                     )
                 }
             }
+            .bottomBanner(isPresented: viewModel.failedToLoadThreads) {
+                viewFactory.makeThreadsListErrorBannerView {
+                    viewModel.loadThreads()
+                }
+            }
             .accentColor(colors.tintColor)
             .background(
                 viewFactory.makeThreadListBackground(colors: colors)

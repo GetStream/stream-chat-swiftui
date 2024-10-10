@@ -19,8 +19,6 @@ struct ChatThreadListLoadingView: View {
                         replyMessageText: placeholder(length: 50),
                         replyTimestampText: placeholder(length: 8)
                     )
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
                     .shimmering(duration: 0.8, delay: 0.1)
                     .redacted(reason: .placeholder)
 

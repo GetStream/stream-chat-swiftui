@@ -995,6 +995,10 @@ extension ViewFactory {
         NoThreadsView()
     }
 
+    public func makeThreadsListErrorBannerView(onRefreshAction: @escaping () -> Void) -> some View {
+        ChatThreadListErrorBannerView(action: onRefreshAction)
+    }
+
     public func makeThreadListLoadingView() -> some View {
         ChatThreadListLoadingView()
     }

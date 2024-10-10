@@ -7,10 +7,7 @@ import SwiftUI
 
 /// View for the thread list item.
 public struct ChatThreadListItem: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
-    @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 
     var thread: ChatThread
@@ -101,8 +98,7 @@ struct ChatThreadListItemContentView: View {
             threadContainerView
             replyContainerView
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(.all, 8)
     }
 
     var threadContainerView: some View {

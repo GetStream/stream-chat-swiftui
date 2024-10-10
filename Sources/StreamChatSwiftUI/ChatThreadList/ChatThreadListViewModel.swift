@@ -32,6 +32,8 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     /// A boolean indicating that there is no data from server.
     @Published public var isEmpty = false
 
+    /// A boolean indicating if it failed loading the initial data from the server.
+    @Published public var failedToLoadThreads = false
     /// Creates a view model for the `ChatThreadListView`.
     ///
     /// - Parameters:
@@ -49,9 +51,11 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     public func loadThreads() {
         controller?.delegate = self
         isLoading = controller?.threads.isEmpty == true
+        failedToLoadThreads = false
         controller?.synchronize { [weak self] error in
             self?.isLoading = false
             self?.hasLoadedThreads = error == nil
+            self?.failedToLoadThreads = error != nil
             self?.isEmpty = self?.controller?.threads.isEmpty == true
         }
     }
