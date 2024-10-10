@@ -72,9 +72,9 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                     )
                 }
             }
-            .bottomBanner(isPresented: viewModel.failedToLoadThreads) {
+            .bottomBanner(isPresented: viewModel.failedToLoadThreads || viewModel.failedToLoadMoreThreads) {
                 viewFactory.makeThreadsListErrorBannerView {
-                    viewModel.loadThreads()
+                    viewModel.retryLoadThreads()
                 }
             }
             .accentColor(colors.tintColor)
@@ -113,7 +113,16 @@ public struct ChatThreadListContentView<Factory: ViewFactory>: View {
         ThreadList(
             factory: viewFactory,
             threads: viewModel.threads,
-            threadDestination: viewFactory.makeThreadDestination()
+            threadDestination: viewFactory.makeThreadDestination(),
+            onItemAppear: { index in
+                viewModel.didAppearThread(at: index)
+            }, 
+            headerView: {
+                viewFactory.makeThreadListHeaderView(viewModel: viewModel)
+            },
+            footerView: {
+                viewFactory.makeThreadListFooterView(viewModel: viewModel)
+            }
         )
     }
 }

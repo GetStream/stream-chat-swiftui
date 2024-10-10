@@ -517,6 +517,7 @@
 		AD3AB6602CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */; };
 		ADE0F55E2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */; };
 		ADE0F5602CB846EC0053B8B9 /* FloatingBannerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */; };
+		ADE0F5622CB8556F0053B8B9 /* ChatThreadListFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F5612CB8556F0053B8B9 /* ChatThreadListFooterView.swift */; };
 		C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A465A284665B100EF498E /* SDKIdentifier.swift */; };
 		E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E3A1C01B282BAC66002D1E26 /* Sentry */; };
 /* End PBXBuildFile section */
@@ -1103,6 +1104,7 @@
 		AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListHeaderViewModifier.swift; sourceTree = "<group>"; };
 		ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListErrorBannerView.swift; sourceTree = "<group>"; };
 		ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBannerViewModifier.swift; sourceTree = "<group>"; };
+		ADE0F5612CB8556F0053B8B9 /* ChatThreadListFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListFooterView.swift; sourceTree = "<group>"; };
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2242,9 +2244,10 @@
 				AD2DDA5C2CB033460040B8D4 /* ChatThreadList.swift */,
 				AD2DDA5E2CB0361B0040B8D4 /* ChatThreadListViewModel.swift */,
 				AD3AB6552CB54F720014D4D7 /* ChatThreadListNavigatableItem.swift */,
+				AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */,
 				AD3AB6532CB54F310014D4D7 /* ChatThreadListItem.swift */,
 				AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */,
-				AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */,
+				ADE0F5612CB8556F0053B8B9 /* ChatThreadListFooterView.swift */,
 				ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */,
 				AD2DDA602CB040EA0040B8D4 /* NoThreadsView.swift */,
 			);
@@ -2711,6 +2714,7 @@
 				845CFD782BDA6BFD0058F691 /* PollResultsView.swift in Sources */,
 				8465FD892746A95700AF091E /* ComposerTextInputView.swift in Sources */,
 				8465FDBC2746A95700AF091E /* ChannelAvatarsMerger.swift in Sources */,
+				ADE0F5622CB8556F0053B8B9 /* ChatThreadListFooterView.swift in Sources */,
 				8465FDB82746A95700AF091E /* ImageMerger.swift in Sources */,
 				82D64BF22AD7E5B700C5C79E /* ImageProcessors+RoundedCorners.swift in Sources */,
 				841B64C427744DB60016FF3B /* ComposerModels.swift in Sources */,

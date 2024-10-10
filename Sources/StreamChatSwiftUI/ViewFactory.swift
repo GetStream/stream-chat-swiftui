@@ -1017,13 +1017,17 @@ public protocol ViewFactory: AnyObject {
     func makeThreadListLoadingView() -> ThreadListLoadingView
 
     associatedtype ThreadListHeaderViewModifier: ViewModifier
-    /// Creates the thread list header view modifier.
+    /// Creates the thread list navigation header view modifier.
     ///  - Parameter title: the title displayed in the header.
     func makeThreadListHeaderViewModifier(title: String) -> ThreadListHeaderViewModifier
 
-    associatedtype ThreadListModifier: ViewModifier
-    /// Returns a view modifier applied to the thread list.
-    func makeThreadListModifier() -> ThreadListModifier
+    associatedtype ThreadListHeaderView: View
+    /// Creates the header view for the thread list.
+    func makeThreadListHeaderView(viewModel: ChatThreadListViewModel) -> ThreadListHeaderView
+
+    associatedtype ThreadListFooterView: View
+    /// Creates the footer view for the thread list.
+    func makeThreadListFooterView(viewModel: ChatThreadListViewModel) -> ThreadListFooterView
 
     associatedtype ThreadListBackground: View
     /// Creates the background for the thread list.

@@ -17,9 +17,6 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     /// The controller that manages the thread list data.
     private var controller: ChatThreadListController?
 
-    /// A boolean value indicating if the view is currently loading more threads.
-    public private(set) var loadingMoreThreads: Bool = false
-
     /// A boolean value indicating if the initial threads have been loaded.
     public private(set) var hasLoadedThreads = false
 
@@ -34,6 +31,16 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
 
     /// A boolean indicating if it failed loading the initial data from the server.
     @Published public var failedToLoadThreads = false
+
+    /// A boolean indicating if it failed loading threads while paginating.
+    @Published public var failedToLoadMoreThreads = false
+
+    /// A boolean value indicating if the view is currently loading more threads.
+    @Published public var isLoadingMoreThreads: Bool = false
+
+    /// A boolean value indicating if all the older threads are loaded.
+    @Published public var hasLoadedAllThreads: Bool = false
+
     /// Creates a view model for the `ChatThreadListView`.
     ///
     /// - Parameters:
@@ -48,6 +55,15 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         }
     }
 
+    public func retryLoadThreads() {
+        if failedToLoadThreads {
+            loadThreads()
+            return
+        }
+
+        loadMoreThreads()
+    }
+
     public func loadThreads() {
         controller?.delegate = self
         isLoading = controller?.threads.isEmpty == true
@@ -57,6 +73,29 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
             self?.hasLoadedThreads = error == nil
             self?.failedToLoadThreads = error != nil
             self?.isEmpty = self?.controller?.threads.isEmpty == true
+            self?.hasLoadedAllThreads = self?.controller?.hasLoadedAllThreads ?? false
+        }
+    }
+
+    public func didAppearThread(at index: Int) {
+        guard index >= threads.count - 5 else {
+            return
+        }
+
+        loadMoreThreads()
+    }
+
+    public func loadMoreThreads() {
+        if isLoadingMoreThreads || controller?.hasLoadedAllThreads == true {
+            return
+        }
+        
+        isLoadingMoreThreads = true
+        controller?.loadMoreThreads { [weak self] result in
+            self?.isLoadingMoreThreads = false
+            self?.hasLoadedAllThreads = self?.controller?.hasLoadedAllThreads ?? false
+            let threads = try? result.get()
+            self?.failedToLoadMoreThreads = threads == nil
         }
     }
 

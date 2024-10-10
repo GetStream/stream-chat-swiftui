@@ -1007,13 +1007,17 @@ extension ViewFactory {
         ChatThreadListHeaderViewModifier(title: title)
     }
 
+    public func makeThreadListHeaderView(viewModel: ChatThreadListViewModel) -> some View {
+        EmptyView()
+    }
+
+    public func makeThreadListFooterView(viewModel: ChatThreadListViewModel) -> some View {
+        ChatThreadListFooterView(viewModel: viewModel)
+    }
+
     public func makeThreadListBackground(colors: ColorPalette) -> some View {
         Color(colors.background)
             .edgesIgnoringSafeArea(.bottom)
-    }
-
-    public func makeThreadListModifier() -> some ViewModifier {
-        EmptyViewModifier()
     }
 
     public func makeThreadListDividerItem() -> some View {
