@@ -1019,6 +1019,12 @@ public protocol ViewFactory: AnyObject {
     /// Returns a view modifier applied to the thread list.
     func makeThreadListModifier() -> ThreadListModifier
 
+    associatedtype ThreadListBackground: View
+    /// Creates the background for the thread list.
+    /// - Parameter colors: The colors palette used in the SDK.
+    /// - Returns: The view shown as a background of the thread list.
+    func makeThreadListBackground(colors: ColorPalette) -> ThreadListBackground
+
     associatedtype ThreadListDividerItem: View
     /// Creates the thread list divider item.
     func makeThreadListDividerItem() -> ThreadListDividerItem
