@@ -1008,7 +1008,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListHeaderView(viewModel: ChatThreadListViewModel) -> some View {
-        EmptyView()
+        ChatThreadListHeaderView(viewModel: viewModel)
     }
 
     public func makeThreadListFooterView(viewModel: ChatThreadListViewModel) -> some View {

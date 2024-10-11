@@ -83,9 +83,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
             )
             .modifier(viewFactory.makeThreadListHeaderViewModifier(title: title))
             .onAppear {
-                if !viewModel.hasLoadedThreads {
-                    viewModel.loadThreads()
-                }
+                viewModel.viewDidAppear()
             }
         }
     }

@@ -11,18 +11,10 @@ public struct ChatThreadListErrorBannerView: View {
     let action: () -> Void
 
     public var body: some View {
-        HStack(alignment: .center) {
-            Text(L10n.Thread.Error.message)
-                .foregroundColor(Color(colors.staticColorText))
-            Spacer()
-            Button(action: action) {
-                Image(uiImage: images.restart)
-                    .customizable()
-                    .frame(width: 20, height: 20)
-                    .foregroundColor(Color(colors.staticColorText))
-            }
-        }
-        .padding(.all, 16)
-        .background(Color(colors.bannerBackgroundColor))
+        ActionBannerView(
+            text: L10n.Thread.Error.message,
+            image: images.restart,
+            action: action
+        )
     }
 }

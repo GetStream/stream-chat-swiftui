@@ -7,7 +7,7 @@ import Foundation
 import StreamChat
 
 /// View model for the `ChatThreadListView`.
-open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDelegate {
+open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDelegate, EventsControllerDelegate {
 
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
@@ -15,7 +15,10 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     @Injected(\.utils) private var utils: Utils
 
     /// The controller that manages the thread list data.
-    private var controller: ChatThreadListController?
+    private var threadListController: ChatThreadListController!
+
+    /// The controller that manages thread list events.
+    private var eventsController: EventsController!
 
     /// A boolean value indicating if the initial threads have been loaded.
     public private(set) var hasLoadedThreads = false
@@ -25,6 +28,9 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
 
     /// A boolean indicating if it is loading data from the server and no local cache is available.
     @Published public var isLoading = false
+
+    /// A boolean indicating if it is reloading data from the server.
+    @Published public var isReloading = false
 
     /// A boolean indicating that there is no data from server.
     @Published public var isEmpty = false
@@ -41,17 +47,39 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     /// A boolean value indicating if all the older threads are loaded.
     @Published public var hasLoadedAllThreads: Bool = false
 
+    /// The number of new threads available to be fetched.
+    @Published public var newThreadsCount: Int = 0
+
+    /// A boolean value indicating if there are new threads available to be fetched.
+    @Published public var hasNewThreads: Bool = false
+
+    /// The ids of the new threads available to be fetched.
+   private var newAvailableThreadIds: Set<MessageId> = [] {
+       didSet {
+           newThreadsCount = newAvailableThreadIds.count
+           hasNewThreads = newThreadsCount > 0
+       }
+   }
+
     /// Creates a view model for the `ChatThreadListView`.
     ///
     /// - Parameters:
     ///   - threadListController: A controller providing the list of threads. If nil, a controller with default `ThreadListQuery` is created.
+    ///   - eventsController: The controller that manages thread list events. If nil, the default events controller will be provided.
     public init(
-        threadListController: ChatThreadListController? = nil
+        threadListController: ChatThreadListController? = nil,
+        eventsController: EventsController? = nil
     ) {
         if let threadListController = threadListController {
-            self.controller = threadListController
+            self.threadListController = threadListController
         } else {
             makeDefaultThreadListController()
+        }
+
+        if let eventsController = eventsController {
+            self.eventsController = eventsController
+        } else {
+            makeDefaultEventsController()
         }
     }
 
@@ -64,16 +92,32 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         loadMoreThreads()
     }
 
+    public func viewDidAppear() {
+        if !hasLoadedThreads {
+            startObserving()
+            loadThreads()
+        }
+    }
+
+    public func startObserving() {
+        threadListController.delegate = self
+        eventsController?.delegate = self
+    }
+
     public func loadThreads() {
-        controller?.delegate = self
-        isLoading = controller?.threads.isEmpty == true
+        isLoading = threadListController.threads.isEmpty == true
         failedToLoadThreads = false
-        controller?.synchronize { [weak self] error in
+        isReloading = !isEmpty
+        threadListController.synchronize { [weak self] error in
             self?.isLoading = false
+            self?.isReloading = false
             self?.hasLoadedThreads = error == nil
             self?.failedToLoadThreads = error != nil
-            self?.isEmpty = self?.controller?.threads.isEmpty == true
-            self?.hasLoadedAllThreads = self?.controller?.hasLoadedAllThreads ?? false
+            self?.isEmpty = self?.threadListController.threads.isEmpty == true
+            self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
+            if error == nil {
+                self?.newAvailableThreadIds = []
+            }
         }
     }
 
@@ -86,14 +130,14 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     }
 
     public func loadMoreThreads() {
-        if isLoadingMoreThreads || controller?.hasLoadedAllThreads == true {
+        if isLoadingMoreThreads || threadListController.hasLoadedAllThreads == true {
             return
         }
         
         isLoadingMoreThreads = true
-        controller?.loadMoreThreads { [weak self] result in
+        threadListController.loadMoreThreads { [weak self] result in
             self?.isLoadingMoreThreads = false
-            self?.hasLoadedAllThreads = self?.controller?.hasLoadedAllThreads ?? false
+            self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
             let threads = try? result.get()
             self?.failedToLoadMoreThreads = threads == nil
         }
@@ -106,13 +150,26 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         threads = controller.threads
     }
 
-    private func makeDefaultThreadListController() {
-        guard let currentUserId = chatClient.currentUserId else {
-            // TODO: observeClientIdChange()
-            return
+    public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
+        switch event {
+        case let event as ThreadMessageNewEvent:
+            guard let parentId = event.message.parentMessageId else { break }
+            let isNewThread = threadListController.dataStore.thread(parentMessageId: parentId) == nil
+            if isNewThread {
+                newAvailableThreadIds.insert(parentId)
+            }
+        default:
+            break
         }
-        controller = chatClient.threadListController(
+    }
+
+    private func makeDefaultThreadListController() {
+        threadListController = chatClient.threadListController(
             query: .init(watch: true)
         )
+    }
+
+    private func makeDefaultEventsController() {
+        eventsController = chatClient.eventsController()
     }
 }
