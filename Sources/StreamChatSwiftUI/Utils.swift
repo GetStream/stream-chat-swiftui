@@ -14,6 +14,7 @@ public class Utils {
     public var imageCDN: ImageCDN
     public var imageProcessor: ImageProcessor
     public var imageMerger: ImageMerging
+    public var fileCDN: FileCDN
     public var channelNamer: ChatChannelNamer
     public var chatUserNamer: ChatUserNamer
     public var channelAvatarsMerger: ChannelAvatarsMerging
@@ -69,6 +70,7 @@ public class Utils {
         imageCDN: ImageCDN = StreamImageCDN(),
         imageProcessor: ImageProcessor = NukeImageProcessor(),
         imageMerger: ImageMerging = DefaultImageMerger(),
+        fileCDN: FileCDN = DefaultFileCDN(),
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
@@ -92,6 +94,7 @@ public class Utils {
         self.imageCDN = imageCDN
         self.imageProcessor = imageProcessor
         self.imageMerger = imageMerger
+        self.fileCDN = fileCDN
         self.channelNamer = channelNamer
         self.chatUserNamer = chatUserNamer
         self.channelAvatarsMerger = channelAvatarsMerger
