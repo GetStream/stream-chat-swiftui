@@ -116,7 +116,8 @@ extension MessageAction {
                 .makeMessageController(for: message.id, channelId: channel.cid)
             // At the moment, this is the only way to know if we are inside a thread.
             // This should be optimised in the future and provide the view context.
-            if messageController.replies.count > 0 {
+            let isInsideThreadView = messageController.replies.count > 0
+            if isInsideThreadView {
                 let markThreadUnreadAction = markThreadAsUnreadAction(
                     messageController: messageController,
                     message: message,
@@ -124,6 +125,18 @@ extension MessageAction {
                     onError: onError
                 )
                 messageActions.append(markThreadUnreadAction)
+            }
+        } else if !message.isSentByCurrentUser {
+            if !message.isPartOfThread || message.showReplyInChannel {
+                let markUnreadAction = markAsUnreadAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+
+                messageActions.append(markUnreadAction)
             }
         }
 
@@ -147,18 +160,6 @@ extension MessageAction {
 
             messageActions.append(deleteAction)
         } else {
-            if !message.isPartOfThread || message.showReplyInChannel {
-                let markUnreadAction = markAsUnreadAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                
-                messageActions.append(markUnreadAction)
-            }
-            
             if channel.canFlagMessage {
                 let flagAction = flagMessageAction(
                     for: message,
