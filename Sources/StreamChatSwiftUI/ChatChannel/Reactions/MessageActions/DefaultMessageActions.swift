@@ -110,6 +110,23 @@ extension MessageAction {
             messageActions.append(copyAction)
         }
 
+        if message.isRootOfThread {
+            let messageController = InjectedValues[\.utils]
+                .channelControllerFactory
+                .makeMessageController(for: message.id, channelId: channel.cid)
+            // At the moment, this is the only way to know if we are inside a thread.
+            // This should be optimised in the future and provide the view context.
+            if messageController.replies.count > 0 {
+                let markThreadUnreadAction = markThreadAsUnreadAction(
+                    messageController: messageController,
+                    message: message,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                messageActions.append(markThreadUnreadAction)
+            }
+        }
+
         if message.isSentByCurrentUser {
             if message.poll == nil {
                 let editAction = editMessageAction(
@@ -509,6 +526,38 @@ extension MessageAction {
             isDestructive: false
         )
         
+        return unreadAction
+    }
+
+    private static func markThreadAsUnreadAction(
+        messageController: ChatMessageController,
+        message: ChatMessage,
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> MessageAction {
+        let action = {
+            messageController.markThreadUnread() { error in
+                if let error {
+                    onError(error)
+                } else {
+                    onFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: MessageActionId.markUnread
+                        )
+                    )
+                }
+            }
+        }
+        let unreadAction = MessageAction(
+            id: MessageActionId.markUnread,
+            title: L10n.Message.Actions.markUnread,
+            iconName: "message.badge",
+            action: action,
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+
         return unreadAction
     }
 
