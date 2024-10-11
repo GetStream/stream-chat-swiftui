@@ -238,6 +238,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if canMarkRead {
             sendReadEventIfNeeded(for: first)
         }
+        if shouldMarkThreadRead {
+            sendThreadReadEvent()
+        }
     }
     
     public func scrollToLastMessage() {
@@ -345,6 +348,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             if isActive && canMarkRead {
                 sendReadEventIfNeeded(for: message)
             }
+        }
+        if index == 0 && shouldMarkThreadRead {
+            sendThreadReadEvent()
         }
     }
     
@@ -655,7 +661,24 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
-    
+
+    private var shouldMarkThreadRead: Bool {
+        guard UIApplication.shared.applicationState == .active else {
+            return false
+        }
+        guard messageController?.replies.isEmpty == false else {
+            return false
+        }
+        
+        return channelDataSource.hasLoadedAllNextMessages
+    }
+
+    private func sendThreadReadEvent() {
+        throttler.throttle { [weak self] in
+            self?.messageController?.markThreadRead()
+        }
+    }
+
     private func handleDateChange() {
         guard showScrollToLatestButton == true, let currentDate = currentDate else {
             currentDateString = nil
