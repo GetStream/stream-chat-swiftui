@@ -82,6 +82,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                 viewFactory.makeThreadListBackground(colors: colors)
             )
             .modifier(viewFactory.makeThreadListHeaderViewModifier(title: title))
+            .modifier(viewFactory.makeThreadListContainerViewModifier(viewModel: viewModel))
             .onAppear {
                 viewModel.viewDidAppear()
             }

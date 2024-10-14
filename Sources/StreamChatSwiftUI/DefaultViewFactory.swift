@@ -1005,6 +1005,10 @@ extension ViewFactory {
         ChatThreadListLoadingView()
     }
 
+    public func makeThreadListContainerViewModifier(viewModel: ChatThreadListViewModel) -> some ViewModifier {
+        EmptyViewModifier()
+    }
+
     public func makeThreadListHeaderViewModifier(title: String) -> some ViewModifier {
         ChatThreadListHeaderViewModifier(title: title)
     }

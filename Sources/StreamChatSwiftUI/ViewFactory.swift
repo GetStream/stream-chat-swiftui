@@ -1018,6 +1018,11 @@ public protocol ViewFactory: AnyObject {
     /// Creates a loading view for the thread list.
     func makeThreadListLoadingView() -> ThreadListLoadingView
 
+    associatedtype ThreadListContainerModifier: ViewModifier
+    /// Creates a modifier that wraps the thread list. It can be used to handle additional state changes.
+    /// - Parameter viewModel: The view model that manages the state of the thread list.
+    func makeThreadListContainerViewModifier(viewModel: ChatThreadListViewModel) -> ThreadListContainerModifier
+
     associatedtype ThreadListHeaderViewModifier: ViewModifier
     /// Creates the thread list navigation header view modifier.
     ///  - Parameter title: the title displayed in the header.
