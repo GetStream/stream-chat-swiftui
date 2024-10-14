@@ -35,6 +35,8 @@ public struct ChatThreadListItem: View {
         var parentMessageText: String
         if thread.parentMessage.isDeleted {
             parentMessageText = L10n.Message.deletedMessagePlaceholder
+        } else if let threadTitle = thread.title {
+            parentMessageText = threadTitle
         } else {
             let formatter = MessagePreviewFormatter()
             parentMessageText =  formatter.formatContent(for: thread.parentMessage)
