@@ -86,6 +86,8 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         }
     }
 
+    /// Re-fetches the threads. If the initial query failed, it will load the initial page.
+    /// If on the other hand it was a new page that failed, it will re-fetch that page.
     public func retryLoadThreads() {
         if failedToLoadThreads {
             loadThreads()
@@ -95,6 +97,9 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         loadMoreThreads()
     }
 
+    /// Called when the view appears on screen.
+    ///
+    /// By default it will load the initial threads and start observing new data.
     public func viewDidAppear() {
         if !hasLoadedThreads {
             startObserving()
@@ -102,11 +107,13 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         }
     }
 
+    /// Starts observing new data.
     public func startObserving() {
         threadListController.delegate = self
         eventsController?.delegate = self
     }
 
+    /// Loads the initial page of threads.
     public func loadThreads() {
         isLoading = threadListController.threads.isEmpty == true
         failedToLoadThreads = false
@@ -126,6 +133,7 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         }
     }
 
+    /// Called when a thread in the list is shown on screen.
     public func didAppearThread(at index: Int) {
         guard index >= threads.count - 5 else {
             return
@@ -134,6 +142,7 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         loadMoreThreads()
     }
 
+    /// Loads the next page of threads.
     public func loadMoreThreads() {
         if isLoadingMoreThreads || threadListController.hasLoadedAllThreads == true {
             return
