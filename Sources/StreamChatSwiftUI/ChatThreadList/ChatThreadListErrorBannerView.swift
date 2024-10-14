@@ -4,6 +4,7 @@
 
 import SwiftUI
 
+/// A banner view that is displayed when there is an error loading the thread list.
 public struct ChatThreadListErrorBannerView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images

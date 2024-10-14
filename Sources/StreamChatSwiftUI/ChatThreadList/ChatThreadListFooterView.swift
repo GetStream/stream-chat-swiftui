@@ -4,6 +4,7 @@
 
 import SwiftUI
 
+/// The default footer view of the thread list.
 public struct ChatThreadListFooterView: View {
     @ObservedObject private var viewModel: ChatThreadListViewModel
 

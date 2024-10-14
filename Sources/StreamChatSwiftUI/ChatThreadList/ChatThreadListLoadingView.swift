@@ -4,8 +4,9 @@
 
 import SwiftUI
 
-struct ChatThreadListLoadingView: View {
-    var body: some View {
+/// The default thread list loading view.
+public struct ChatThreadListLoadingView: View {
+    public var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach((0..<10)) { _ in
