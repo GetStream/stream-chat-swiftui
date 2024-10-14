@@ -1026,6 +1026,18 @@ extension ViewFactory {
             .edgesIgnoringSafeArea(.bottom)
     }
 
+    public func makeThreadListItemBackground(
+        colors: ColorPalette,
+        thread: ChatThread,
+        isSelected: Bool
+    ) -> some View {
+        if isSelected && isIPad {
+            return Color(colors.background6)
+        }
+
+        return Color(colors.background)
+    }
+
     public func makeThreadListDividerItem() -> some View {
         Divider()
     }

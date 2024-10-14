@@ -60,6 +60,8 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
 
 /// LazyVStack displaying list of threads.
 public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+
     private var factory: Factory
     var threads: LazyCachedMapCollection<ChatThread>
     private var threadDestination: (ChatThread) -> Factory.ThreadDestination
@@ -90,6 +92,11 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
                     thread: thread,
                     threadDestination: threadDestination,
                     selectedThread: $selectedThread
+                )
+                .background(factory.makeThreadListItemBackground(
+                    colors: colors,
+                    thread: thread,
+                    isSelected: selectedThread?.id == thread.id)
                 )
                 .contentShape(Rectangle())
                 .onTapGesture {

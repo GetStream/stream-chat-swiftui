@@ -1042,6 +1042,18 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: The view shown as a background of the thread list.
     func makeThreadListBackground(colors: ColorPalette) -> ThreadListBackground
 
+    associatedtype ThreadListItemBackground: View
+    /// Creates the background for the thread list item.
+    /// - Parameter colors: The colors palette used in the SDK.
+    /// - Parameter thread: The thread which the item view belongs to.
+    /// - Parameter isSelected: Whether the current item is selected or not.
+    /// - Returns: The view shown as a background of the thread list item.
+    func makeThreadListItemBackground(
+        colors: ColorPalette,
+        thread: ChatThread,
+        isSelected: Bool
+    ) -> ThreadListItemBackground
+
     associatedtype ThreadListDividerItem: View
     /// Creates the thread list divider item.
     func makeThreadListDividerItem() -> ThreadListDividerItem
