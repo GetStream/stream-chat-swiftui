@@ -99,7 +99,19 @@ extension ViewFactory {
         Color(colors.background)
             .edgesIgnoringSafeArea(.bottom)
     }
-    
+
+    public func makeChannelListItemBackground(
+        colors: ColorPalette,
+        channel: ChatChannel,
+        isSelected: Bool
+    ) -> some View {
+        if isSelected && isIPad {
+            return Color(colors.background6)
+        }
+
+        return Color(colors.background)
+    }
+
     public func makeChannelListDividerItem() -> some View {
         Divider()
     }

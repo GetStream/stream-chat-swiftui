@@ -65,6 +65,18 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown as a background of the channel list.
     func makeChannelListBackground(colors: ColorPalette) -> ChannelListBackground
 
+    associatedtype ChannelListItemBackground: View
+    /// Creates the background for the channel list item.
+    /// - Parameter colors: The colors palette used in the SDK.
+    /// - Parameter channel: The channel which the item view belongs to.
+    /// - Parameter isSelected: Whether the current item is selected or not.
+    /// - Returns: The view shown as a background of the channel list item.
+    func makeChannelListItemBackground(
+        colors: ColorPalette,
+        channel: ChatChannel,
+        isSelected: Bool
+    ) -> ChannelListItemBackground
+
     associatedtype ChannelListDividerItem: View
     /// Creates the channel list divider item.
     func makeChannelListDividerItem() -> ChannelListDividerItem
