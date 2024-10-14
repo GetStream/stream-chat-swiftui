@@ -981,12 +981,14 @@ extension ViewFactory {
 
     public func makeThreadListItem(
         thread: ChatThread,
-        threadDestination: @escaping (ChatThread) -> ThreadDestination
+        threadDestination: @escaping (ChatThread) -> ThreadDestination,
+        selectedThread: Binding<ThreadSelectionInfo?>
     ) -> some View {
         ChatThreadListNavigatableItem(
             thread: thread,
             threadListItem: ChatThreadListItem(thread: thread),
-            threadDestination: threadDestination,
+            threadDestination: threadDestination, 
+            selectedThread: selectedThread,
             handleTabBarVisibility: true
         )
     }

@@ -23,6 +23,9 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     /// A boolean value indicating if the initial threads have been loaded.
     public private(set) var hasLoadedThreads = false
 
+    /// The current selected thread.
+    @Published public var selectedThread: ThreadSelectionInfo?
+
     /// The list of threads.
     @Published public var threads = LazyCachedMapCollection<ChatThread>()
 
@@ -108,12 +111,14 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         isLoading = threadListController.threads.isEmpty == true
         failedToLoadThreads = false
         isReloading = !isEmpty
+        preselectThreadIfNeeded()
         threadListController.synchronize { [weak self] error in
             self?.isLoading = false
             self?.isReloading = false
             self?.hasLoadedThreads = error == nil
             self?.failedToLoadThreads = error != nil
             self?.isEmpty = self?.threadListController.threads.isEmpty == true
+            self?.preselectThreadIfNeeded()
             self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
             if error == nil {
                 self?.newAvailableThreadIds = []
@@ -171,5 +176,13 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
 
     private func makeDefaultEventsController() {
         eventsController = chatClient.eventsController()
+    }
+
+    private func preselectThreadIfNeeded() {
+        guard isIPad else { return }
+        guard let firstThread = threads.first else { return }
+        guard selectedThread == nil else { return }
+
+        selectedThread = .init(thread: firstThread)
     }
 }

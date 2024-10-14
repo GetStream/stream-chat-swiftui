@@ -11,6 +11,9 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
     var threads: LazyCachedMapCollection<ChatThread>
     private var factory: Factory
     private var threadDestination: (ChatThread) -> Factory.ThreadDestination
+    @Binding private var selectedThread: ThreadSelectionInfo?
+    
+    private var onItemTap: (ChatThread) -> Void
     private var onItemAppear: (Int) -> Void
 
     @ViewBuilder
@@ -23,6 +26,8 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
         factory: Factory,
         threads: LazyCachedMapCollection<ChatThread>,
         threadDestination: @escaping (ChatThread) -> Factory.ThreadDestination,
+        selectedThread: Binding<ThreadSelectionInfo?>,
+        onItemTap: @escaping (ChatThread) -> Void,
         onItemAppear: @escaping (Int) -> Void,
         headerView: @escaping () -> HeaderView,
         footerView: @escaping () -> FooterView
@@ -30,6 +35,8 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
         self.factory = factory
         self.threads = threads
         self.threadDestination = threadDestination
+        self._selectedThread = selectedThread
+        self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
         self.headerView = headerView
         self.footerView = footerView
@@ -42,6 +49,8 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
                 factory: factory,
                 threads: threads,
                 threadDestination: threadDestination,
+                selectedThread: $selectedThread, 
+                onItemTap: onItemTap,
                 onItemAppear: onItemAppear
             )
             footerView()
@@ -54,18 +63,24 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
     private var factory: Factory
     var threads: LazyCachedMapCollection<ChatThread>
     private var threadDestination: (ChatThread) -> Factory.ThreadDestination
+    @Binding private var selectedThread: ThreadSelectionInfo?
+    private var onItemTap: (ChatThread) -> Void
     private var onItemAppear: (Int) -> Void
 
     public init(
         factory: Factory,
         threads: LazyCachedMapCollection<ChatThread>,
         threadDestination: @escaping (ChatThread) -> Factory.ThreadDestination,
+        selectedThread: Binding<ThreadSelectionInfo?>,
+        onItemTap: @escaping (ChatThread) -> Void,
         onItemAppear: @escaping (Int) -> Void
     ) {
         self.factory = factory
         self.threads = threads
         self.threadDestination = threadDestination
+        self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
+        self._selectedThread = selectedThread
     }
 
     public var body: some View {
@@ -73,8 +88,13 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
             ForEach(threads) { thread in
                 factory.makeThreadListItem(
                     thread: thread,
-                    threadDestination: threadDestination
+                    threadDestination: threadDestination,
+                    selectedThread: $selectedThread
                 )
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    onItemTap(thread)
+                }
                 .onAppear {
                     if let index = threads.firstIndex(where: { chatThread in
                         chatThread.id == thread.id

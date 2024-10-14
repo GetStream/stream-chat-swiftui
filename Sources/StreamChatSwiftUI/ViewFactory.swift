@@ -997,9 +997,11 @@ public protocol ViewFactory: AnyObject {
     /// - Parameters:
     ///  - thread: The thread being displayed.
     ///  - threadDestination: A closure that creates the thread destination.
+    ///  - selectedThread: The binding of the currently selected thread.
     func makeThreadListItem(
         thread: ChatThread,
-        threadDestination: @escaping (ChatThread) -> ThreadDestination
+        threadDestination: @escaping (ChatThread) -> ThreadDestination,
+        selectedThread: Binding<ThreadSelectionInfo?>
     ) -> ThreadListItemType
 
     associatedtype NoThreads: View
