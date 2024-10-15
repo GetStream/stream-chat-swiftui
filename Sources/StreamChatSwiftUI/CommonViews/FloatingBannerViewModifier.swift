@@ -51,11 +51,6 @@ struct FloatingBannerViewModifier<BannerView: View>: ViewModifier {
             content
             if isPresented {
                 bannerView()
-                    .animation(.easeInOut)
-                    .transition(
-                        .move(edge: alignment == .bottom ? .bottom : .top)
-                        .combined(with: .opacity)
-                    )
             }
         }
     }

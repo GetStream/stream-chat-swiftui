@@ -8,7 +8,7 @@ import SwiftUI
 public struct ChatThreadListLoadingView: View {
     public var body: some View {
         ScrollView {
-            LazyVStack {
+            VStack {
                 ForEach((0..<10)) { _ in
                     ChatThreadListItemContentView(
                         channelNameText: placeholder(length: 8),
