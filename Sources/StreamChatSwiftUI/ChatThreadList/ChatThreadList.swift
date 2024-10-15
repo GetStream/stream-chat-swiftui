@@ -94,7 +94,6 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
                     selectedThread: $selectedThread
                 )
                 .background(factory.makeThreadListItemBackground(
-                    colors: colors,
                     thread: thread,
                     isSelected: selectedThread?.id == thread.id)
                 )

@@ -67,12 +67,10 @@ public protocol ViewFactory: AnyObject {
 
     associatedtype ChannelListItemBackground: View
     /// Creates the background for the channel list item.
-    /// - Parameter colors: The colors palette used in the SDK.
     /// - Parameter channel: The channel which the item view belongs to.
     /// - Parameter isSelected: Whether the current item is selected or not.
     /// - Returns: The view shown as a background of the channel list item.
     func makeChannelListItemBackground(
-        colors: ColorPalette,
         channel: ChatChannel,
         isSelected: Bool
     ) -> ChannelListItemBackground
@@ -1056,12 +1054,10 @@ public protocol ViewFactory: AnyObject {
 
     associatedtype ThreadListItemBackground: View
     /// Creates the background for the thread list item.
-    /// - Parameter colors: The colors palette used in the SDK.
     /// - Parameter thread: The thread which the item view belongs to.
     /// - Parameter isSelected: Whether the current item is selected or not.
     /// - Returns: The view shown as a background of the thread list item.
     func makeThreadListItemBackground(
-        colors: ColorPalette,
         thread: ChatThread,
         isSelected: Bool
     ) -> ThreadListItemBackground

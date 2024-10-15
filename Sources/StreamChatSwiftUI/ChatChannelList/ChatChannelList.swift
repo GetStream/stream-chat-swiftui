@@ -172,7 +172,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     leadingSwipeButtonTapped: leadingSwipeButtonTapped
                 )
                 .background(factory.makeChannelListItemBackground(
-                    colors: colors,
                     channel: channel,
                     isSelected: selectedChannel?.channel.id == channel.id
                 ))

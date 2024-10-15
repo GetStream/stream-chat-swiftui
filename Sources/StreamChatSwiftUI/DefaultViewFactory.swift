@@ -101,10 +101,10 @@ extension ViewFactory {
     }
 
     public func makeChannelListItemBackground(
-        colors: ColorPalette,
         channel: ChatChannel,
         isSelected: Bool
     ) -> some View {
+        let colors = InjectedValues[\.colors]
         if isSelected && isIPad {
             return Color(colors.background6)
         }
@@ -990,7 +990,6 @@ extension ViewFactory {
         }
     }
 
-
     public func makeThreadListItem(
         thread: ChatThread,
         threadDestination: @escaping (ChatThread) -> ThreadDestination,
@@ -1039,10 +1038,10 @@ extension ViewFactory {
     }
 
     public func makeThreadListItemBackground(
-        colors: ColorPalette,
         thread: ChatThread,
         isSelected: Bool
     ) -> some View {
+        let colors = InjectedValues[\.colors]
         if isSelected && isIPad {
             return Color(colors.background6)
         }
