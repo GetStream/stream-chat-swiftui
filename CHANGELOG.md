@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - New Thread List UI Component [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)
-- Handles marking a thread read in `ChannelViewModel` [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)
+- Handles marking a thread read in `ChatChannelViewModel` [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)
 - Adds `ViewFactory.makeChannelListItemBackground` [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)
 ### 🐞 Fixed
 - Fix Channel List loading view shimmering effect not working [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)
