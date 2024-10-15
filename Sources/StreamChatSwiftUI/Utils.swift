@@ -8,6 +8,9 @@ import StreamChat
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
 public class Utils {
+    // TODO: Make it public in future versions.
+    internal var messagePreviewFormatter = MessagePreviewFormatter()
+
     public var dateFormatter: DateFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading

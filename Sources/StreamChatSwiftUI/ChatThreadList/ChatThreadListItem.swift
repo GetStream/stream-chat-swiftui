@@ -38,7 +38,7 @@ public struct ChatThreadListItem: View {
         } else if let threadTitle = thread.title {
             parentMessageText = threadTitle
         } else {
-            let formatter = MessagePreviewFormatter()
+            let formatter = InjectedValues[\.utils].messagePreviewFormatter
             parentMessageText =  formatter.formatContent(for: thread.parentMessage)
         }
         return L10n.Thread.Item.repliedTo(parentMessageText.trimmed)
@@ -53,7 +53,7 @@ public struct ChatThreadListItem: View {
             return L10n.Message.deletedMessagePlaceholder
         }
 
-        let formatter = MessagePreviewFormatter()
+        let formatter = InjectedValues[\.utils].messagePreviewFormatter
         return formatter.format(latestReply)
     }
 

@@ -86,7 +86,7 @@ struct PinnedMessageView: View {
         if message.poll != nil {
             return "📊 \(L10n.Channel.Item.poll)"
         }
-        let messagePreviewFormatter = MessagePreviewFormatter()
-        return messagePreviewFormatter.formatAttachmentContent(for: message) ?? message.adjustedText
+        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+        return messageFormatter.formatAttachmentContent(for: message) ?? message.adjustedText
     }
 }

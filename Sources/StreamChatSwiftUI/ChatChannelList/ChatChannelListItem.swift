@@ -271,7 +271,7 @@ extension ChatChannel {
 
     public var lastMessageText: String? {
         guard let latestMessage = latestMessages.first else { return nil }
-        let messageFormatter = MessagePreviewFormatter()
+        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.format(latestMessage)
     }
 
