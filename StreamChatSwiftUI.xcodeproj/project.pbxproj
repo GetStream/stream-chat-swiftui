@@ -520,6 +520,7 @@
 		ADE0F5622CB8556F0053B8B9 /* ChatThreadListFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F5612CB8556F0053B8B9 /* ChatThreadListFooterView.swift */; };
 		ADE0F5642CB9609E0053B8B9 /* ChatThreadListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F5632CB9609E0053B8B9 /* ChatThreadListHeaderView.swift */; };
 		ADE0F5662CB962470053B8B9 /* ActionBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F5652CB962470053B8B9 /* ActionBannerView.swift */; };
+		ADE442EE2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */; };
 		ADE442F02CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */; };
 		ADE442F22CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */; };
 		C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A465A284665B100EF498E /* SDKIdentifier.swift */; };
@@ -1111,6 +1112,7 @@
 		ADE0F5612CB8556F0053B8B9 /* ChatThreadListFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListFooterView.swift; sourceTree = "<group>"; };
 		ADE0F5632CB9609E0053B8B9 /* ChatThreadListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListHeaderView.swift; sourceTree = "<group>"; };
 		ADE0F5652CB962470053B8B9 /* ActionBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionBannerView.swift; sourceTree = "<group>"; };
+		ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListViewModel_Tests.swift; sourceTree = "<group>"; };
 		ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListView_Tests.swift; sourceTree = "<group>"; };
 		ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListItemView_Tests.swift; sourceTree = "<group>"; };
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
@@ -2268,6 +2270,7 @@
 		ADE442EC2CBDAA320066CDF7 /* ChatThreadList */ = {
 			isa = PBXGroup;
 			children = (
+				ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */,
 				ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */,
 				ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */,
 			);
@@ -2966,6 +2969,7 @@
 				84C94D0727578BF2007FE2B9 /* RandomDispatchQueue.swift in Sources */,
 				847110B628611033004A46D6 /* MessageActions_Tests.swift in Sources */,
 				84C94D1227578BF2007FE2B9 /* JSONEncoder+Extensions.swift in Sources */,
+				ADE442EE2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift in Sources */,
 				84E04797284A444E00BAFA17 /* WebSocketPingControllerMock.swift in Sources */,
 				8423C34C277DDD250092DCF1 /* MuteCommandHandler_Tests.swift in Sources */,
 				84C94D1127578BF2007FE2B9 /* ChannelId.swift in Sources */,

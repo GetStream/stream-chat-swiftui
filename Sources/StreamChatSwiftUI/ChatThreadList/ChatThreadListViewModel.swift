@@ -89,12 +89,12 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     /// Re-fetches the threads. If the initial query failed, it will load the initial page.
     /// If on the other hand it was a new page that failed, it will re-fetch that page.
     public func retryLoadThreads() {
-        if failedToLoadThreads {
-            loadThreads()
+        if failedToLoadMoreThreads {
+            loadMoreThreads()
             return
         }
 
-        loadMoreThreads()
+        loadThreads()
     }
 
     /// Called when the view appears on screen.
@@ -115,7 +115,8 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
 
     /// Loads the initial page of threads.
     public func loadThreads() {
-        isLoading = threadListController.threads.isEmpty == true
+        let isEmpty = threadListController.threads.isEmpty
+        isLoading = isEmpty
         failedToLoadThreads = false
         isReloading = !isEmpty
         preselectThreadIfNeeded()
