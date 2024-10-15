@@ -8,7 +8,7 @@ import SwiftUI
 public struct ChatThreadListFooterView: View {
     @ObservedObject private var viewModel: ChatThreadListViewModel
 
-    init(
+    public init(
         viewModel: ChatThreadListViewModel
     ) {
         self.viewModel = viewModel

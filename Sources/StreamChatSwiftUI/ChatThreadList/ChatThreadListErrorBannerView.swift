@@ -11,6 +11,10 @@ public struct ChatThreadListErrorBannerView: View {
 
     let action: () -> Void
 
+    public init(action: @escaping () -> Void) {
+        self.action = action
+    }
+
     public var body: some View {
         ActionBannerView(
             text: L10n.Thread.Error.message,
