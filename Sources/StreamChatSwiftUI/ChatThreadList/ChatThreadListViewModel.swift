@@ -6,13 +6,11 @@ import Combine
 import Foundation
 import StreamChat
 
-/// View model for the `ChatThreadListView`.
+/// The ViewModel for the `ChatThreadListView`.
 open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDelegate, EventsControllerDelegate {
 
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
-    @Injected(\.images) private var images: Images
-    @Injected(\.utils) private var utils: Utils
 
     /// The controller that manages the thread list data.
     private var threadListController: ChatThreadListController!
