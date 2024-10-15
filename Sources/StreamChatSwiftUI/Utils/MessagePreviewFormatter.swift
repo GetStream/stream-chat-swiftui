@@ -10,7 +10,7 @@ import SwiftUI
 struct MessagePreviewFormatter {
     @Injected(\.chatClient) var chatClient
 
-    public init() {}
+    init() {}
 
     /// Formats the message including the author's name.
     func format(_ previewMessage: ChatMessage) -> String {

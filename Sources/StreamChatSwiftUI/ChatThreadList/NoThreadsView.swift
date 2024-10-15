@@ -7,6 +7,8 @@ import SwiftUI
 /// Default SDK implementation for the view displayed when there are no threads available.
 public struct NoThreadsView: View {
 
+    public init () {}
+
     public var body: some View {
         NoContentView(
             imageName: "text.bubble",

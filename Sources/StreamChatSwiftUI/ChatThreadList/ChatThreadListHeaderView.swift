@@ -14,7 +14,7 @@ public struct ChatThreadListHeaderView: View {
 
     @ObservedObject private var viewModel: ChatThreadListViewModel
 
-    init(
+    public init(
         viewModel: ChatThreadListViewModel
     ) {
         self.viewModel = viewModel
