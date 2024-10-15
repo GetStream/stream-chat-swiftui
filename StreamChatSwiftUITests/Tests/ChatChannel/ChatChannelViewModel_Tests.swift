@@ -105,7 +105,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 
         // Then
         let dateString = viewModel.currentDateString
-        XCTAssert(dateString == expectedDate)
+        XCTAssertEqual(dateString, expectedDate)
     }
 
     func test_chatChannelVM_showReactionsOverlay() {
