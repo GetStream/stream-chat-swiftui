@@ -104,7 +104,7 @@ struct ChatThreadListItemContentView: View {
     }
 
     var threadContainerView: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 6) {
                 Image(uiImage: images.threadIcon)
                     .customizable()
@@ -118,11 +118,14 @@ struct ChatThreadListItemContentView: View {
             HStack(alignment: .bottom) {
                 SubtitleText(text: parentMessageText)
                 Spacer()
-                if unreadRepliesCount != 0 {
-                    UnreadIndicatorView(
-                        unreadCount: unreadRepliesCount
-                    )
+                HStack {
+                    if unreadRepliesCount != 0 {
+                        UnreadIndicatorView(
+                            unreadCount: unreadRepliesCount
+                        )
+                    }
                 }
+                .frame(minHeight: 18)
             }
         }
     }

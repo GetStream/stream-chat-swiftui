@@ -17,6 +17,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
 
     override func setUp() {
         super.setUp()
+
         let circleImage = UIImage.circleImage
         streamChat?.utils.channelHeaderLoader.placeholder1 = circleImage
         streamChat?.utils.channelHeaderLoader.placeholder2 = circleImage
