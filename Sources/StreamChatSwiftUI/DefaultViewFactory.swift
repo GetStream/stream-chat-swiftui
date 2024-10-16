@@ -997,8 +997,10 @@ extension ViewFactory {
     ) -> some View {
         ChatThreadListNavigatableItem(
             thread: thread,
-            threadListItem: ChatThreadListItem(thread: thread),
-            threadDestination: threadDestination, 
+            threadListItem: ChatThreadListItem(
+                viewModel: .init(thread: thread)
+            ),
+            threadDestination: threadDestination,
             selectedThread: selectedThread,
             handleTabBarVisibility: true
         )

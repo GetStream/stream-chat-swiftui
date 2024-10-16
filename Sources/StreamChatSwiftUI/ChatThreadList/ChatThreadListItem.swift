@@ -7,31 +7,43 @@ import SwiftUI
 
 /// View for the thread list item.
 public struct ChatThreadListItem: View {
-    @Injected(\.utils) private var utils
-    @Injected(\.chatClient) private var chatClient
-
-    var thread: ChatThread
+    var viewModel: ChatThreadListItemViewModel
 
     public init(
-        thread: ChatThread
+        viewModel: ChatThreadListItemViewModel
     ) {
-        self.thread = thread
+        self.viewModel = viewModel
     }
 
     public var body: some View {
         ChatThreadListItemContentView(
-            channelNameText: channelNameText,
-            parentMessageText: parentMessageText,
-            unreadRepliesCount: unreadRepliesCount,
-            replyAuthorName: latestReplyAuthor?.name ?? "",
-            replyAuthorUrl: latestReplyAuthor?.imageURL,
-            replyAuthorIsOnline: latestReplyAuthor?.isOnline ?? false,
-            replyMessageText: replyMessageText,
-            replyTimestampText: replyTimestampText
+            channelNameText: viewModel.channelNameText,
+            parentMessageText: viewModel.parentMessageText,
+            unreadRepliesCount: viewModel.unreadRepliesCount,
+            replyAuthorName: viewModel.latestReplyAuthorNameText,
+            replyAuthorUrl: viewModel.latestReplyAuthorImageURL,
+            replyAuthorIsOnline: viewModel.isLatestReplyAuthorOnline,
+            replyMessageText: viewModel.latestReplyMessageText,
+            replyTimestampText: viewModel.latestReplyTimestampText
         )
     }
+}
 
-    var parentMessageText: String {
+/// The view model for the thread list item view.
+///
+/// It contains the default presentation logic for the thread list item data.
+public struct ChatThreadListItemViewModel {
+    @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
+
+    private let thread: ChatThread
+
+    public init(thread: ChatThread) {
+        self.thread = thread
+    }
+
+    /// The formatted thread parent message text.
+    public var parentMessageText: String {
         var parentMessageText: String
         if thread.parentMessage.isDeleted {
             parentMessageText = L10n.Message.deletedMessagePlaceholder
@@ -44,7 +56,8 @@ public struct ChatThreadListItem: View {
         return L10n.Thread.Item.repliedTo(parentMessageText.trimmed)
     }
 
-    var replyMessageText: String {
+    /// The formatted latest reply text.
+    public var latestReplyMessageText: String {
         guard let latestReply = thread.latestReplies.last else {
             return ""
         }
@@ -57,28 +70,47 @@ public struct ChatThreadListItem: View {
         return formatter.format(latestReply)
     }
 
-    var replyTimestampText: String {
+    /// The formatted latest reply timestamp.
+    public var latestReplyTimestampText: String {
         utils.dateFormatter.string(
             from: thread.latestReplies.last?.createdAt ?? .distantPast
         )
     }
 
-    var unreadRepliesCount: Int {
+    /// The number of unread replies.
+    public var unreadRepliesCount: Int {
         let currentUserRead = thread.reads.first(
             where: { $0.user.id == chatClient.currentUserId }
         )
         return currentUserRead?.unreadMessagesCount ?? 0
     }
 
-    var latestReplyAuthor: ChatUser? {
-        thread.latestReplies.last?.author
+    /// The formatted latest reply author name text.
+    public var latestReplyAuthorNameText: String {
+        latestReplyAuthor?.name ?? ""
     }
 
-    var channelNameText: String {
+    /// A boolean value indicating if the latest reply author is online.
+    public var isLatestReplyAuthorOnline: Bool {
+        latestReplyAuthor?.isOnline ?? false
+    }
+
+    /// The latest reply author's image url.
+    public var latestReplyAuthorImageURL: URL? {
+        latestReplyAuthor?.imageURL
+    }
+
+    /// The formatted channel name text.
+    public var channelNameText: String {
         utils.channelNamer(thread.channel, chatClient.currentUserId) ?? ""
+    }
+
+    private var latestReplyAuthor: ChatUser? {
+        thread.latestReplies.last?.author
     }
 }
 
+/// The layout of the thread list item view.
 struct ChatThreadListItemContentView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
