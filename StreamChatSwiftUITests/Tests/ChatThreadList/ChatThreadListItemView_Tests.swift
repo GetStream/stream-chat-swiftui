@@ -131,3 +131,9 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }
+
+extension ChatThreadListItem {
+    init(thread: ChatThread) {
+        self.init(viewModel: ChatThreadListItemViewModel(thread: thread))
+    }
+}
