@@ -1040,10 +1040,15 @@ public protocol ViewFactory: AnyObject {
 
     associatedtype ThreadListHeaderView: View
     /// Creates the header view for the thread list.
+    ///
+    /// By default it shows a loading spinner if it is loading the initial threads,
+    /// or shows a banner notifying that there are new threads to be fetched.
     func makeThreadListHeaderView(viewModel: ChatThreadListViewModel) -> ThreadListHeaderView
 
     associatedtype ThreadListFooterView: View
     /// Creates the footer view for the thread list.
+    ///
+    /// By default shows a loading spinner when loading more threads.
     func makeThreadListFooterView(viewModel: ChatThreadListViewModel) -> ThreadListFooterView
 
     associatedtype ThreadListBackground: View

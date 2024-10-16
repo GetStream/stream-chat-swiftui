@@ -5,6 +5,8 @@
 import SwiftUI
 
 /// The default footer view of the thread list.
+///
+/// By default shows a loading spinner when loading more threads.
 public struct ChatThreadListFooterView: View {
     @ObservedObject private var viewModel: ChatThreadListViewModel
 
