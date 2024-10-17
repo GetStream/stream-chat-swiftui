@@ -101,7 +101,9 @@ class AppState: ObservableObject, CurrentChatUserControllerDelegate {
 
     static let shared = AppState()
 
-    private init() {}
+    private init() {
+        LogConfig.destinations = []
+    }
 
     func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
         self.unreadCount = didChangeCurrentUserUnreadCount
