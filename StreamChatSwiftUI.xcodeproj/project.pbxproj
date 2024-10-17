@@ -3820,8 +3820,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = exactVersion;
-				version = 4.63.0;
+				branch = "revert-3432-fix/write-crash";
+				kind = branch;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
