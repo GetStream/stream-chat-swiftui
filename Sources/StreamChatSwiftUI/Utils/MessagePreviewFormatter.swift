@@ -69,22 +69,6 @@ struct MessagePreviewFormatter {
     /// Formats the poll, including the author's name.
     private func formatPoll(_ poll: Poll) -> String {
         var components = ["📊"]
-        if let latestVoter = poll.latestVotes.first?.user {
-            if latestVoter.id == chatClient.currentUserId {
-                components.append(L10n.Channel.Item.pollYouVoted)
-            } else {
-                components.append(L10n.Channel.Item.pollSomeoneVoted(latestVoter.name ?? latestVoter.id))
-            }
-        } else if let creator = poll.createdBy {
-            if creator.id == chatClient.currentUserId {
-                components.append(L10n.Channel.Item.pollYouCreated)
-            } else {
-                components.append(L10n.Channel.Item.pollSomeoneCreated(creator.name ?? creator.id))
-            }
-        }
-        if !poll.name.isEmpty {
-            components.append(poll.name)
-        }
         return components.joined(separator: " ")
     }
 }
