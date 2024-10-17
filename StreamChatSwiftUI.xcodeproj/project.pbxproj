@@ -3820,7 +3820,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "revert-3432-fix/write-crash";
+				branch = "fix/revert-linking";
 				kind = branch;
 			};
 		};
