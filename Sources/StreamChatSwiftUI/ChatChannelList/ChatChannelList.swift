@@ -108,6 +108,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 
 /// LazyVStack displaying list of channels.
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
 
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
@@ -170,6 +171,10 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
                     leadingSwipeButtonTapped: leadingSwipeButtonTapped
                 )
+                .background(factory.makeChannelListItemBackground(
+                    channel: channel,
+                    isSelected: selectedChannel?.channel.id == channel.id
+                ))
                 .onAppear {
                     if let index = channels.firstIndex(where: { chatChannel in
                         chatChannel.id == channel.id

@@ -11,7 +11,7 @@ struct NoContentView: View {
     @Injected(\.colors) private var colors
 
     var imageName: String
-    var title: String
+    var title: String?
     var description: String
     var shouldRotateImage: Bool = false
 
@@ -27,7 +27,7 @@ struct NoContentView: View {
                     .aspectRatio(contentMode: .fit)
                     .font(.system(size: 100))
                     .foregroundColor(Color(colors.textLowEmphasis))
-                Text(title)
+                title.map { Text($0) }
                     .font(fonts.bodyBold)
                 Text(description)
                     .font(fonts.body)

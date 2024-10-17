@@ -99,7 +99,19 @@ extension ViewFactory {
         Color(colors.background)
             .edgesIgnoringSafeArea(.bottom)
     }
-    
+
+    public func makeChannelListItemBackground(
+        channel: ChatChannel,
+        isSelected: Bool
+    ) -> some View {
+        let colors = InjectedValues[\.colors]
+        if isSelected && isIPad {
+            return Color(colors.background6)
+        }
+
+        return Color(colors.background)
+    }
+
     public func makeChannelListDividerItem() -> some View {
         Divider()
     }
@@ -226,7 +238,6 @@ extension ViewFactory {
             )
         }
     }
-    
     public func makeMessageListModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
@@ -969,6 +980,79 @@ extension ViewFactory {
     
     public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
         PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
+    }
+
+    // MARK: Threads
+
+    public func makeThreadDestination() -> (ChatThread) -> ChatChannelView<Self> {
+        { [unowned self] thread in
+            makeMessageThreadDestination()(thread.channel, thread.parentMessage)
+        }
+    }
+
+    public func makeThreadListItem(
+        thread: ChatThread,
+        threadDestination: @escaping (ChatThread) -> ThreadDestination,
+        selectedThread: Binding<ThreadSelectionInfo?>
+    ) -> some View {
+        ChatThreadListNavigatableItem(
+            thread: thread,
+            threadListItem: ChatThreadListItem(
+                viewModel: .init(thread: thread)
+            ),
+            threadDestination: threadDestination,
+            selectedThread: selectedThread,
+            handleTabBarVisibility: true
+        )
+    }
+
+    public func makeNoThreadsView() -> some View {
+        NoThreadsView()
+    }
+
+    public func makeThreadsListErrorBannerView(onRefreshAction: @escaping () -> Void) -> some View {
+        ChatThreadListErrorBannerView(action: onRefreshAction)
+    }
+
+    public func makeThreadListLoadingView() -> some View {
+        ChatThreadListLoadingView()
+    }
+
+    public func makeThreadListContainerViewModifier(viewModel: ChatThreadListViewModel) -> some ViewModifier {
+        EmptyViewModifier()
+    }
+
+    public func makeThreadListHeaderViewModifier(title: String) -> some ViewModifier {
+        ChatThreadListHeaderViewModifier(title: title)
+    }
+
+    public func makeThreadListHeaderView(viewModel: ChatThreadListViewModel) -> some View {
+        ChatThreadListHeaderView(viewModel: viewModel)
+    }
+
+    public func makeThreadListFooterView(viewModel: ChatThreadListViewModel) -> some View {
+        ChatThreadListFooterView(viewModel: viewModel)
+    }
+
+    public func makeThreadListBackground(colors: ColorPalette) -> some View {
+        Color(colors.background)
+            .edgesIgnoringSafeArea(.bottom)
+    }
+
+    public func makeThreadListItemBackground(
+        thread: ChatThread,
+        isSelected: Bool
+    ) -> some View {
+        let colors = InjectedValues[\.colors]
+        if isSelected && isIPad {
+            return Color(colors.background6)
+        }
+
+        return Color(colors.background)
+    }
+
+    public func makeThreadListDividerItem() -> some View {
+        Divider()
     }
 }
 

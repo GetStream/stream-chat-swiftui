@@ -72,46 +72,31 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        container()
-            .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
-            .accentColor(colors.tintColor)
-            .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
-                view.navigationViewStyle(.stack)
-            })
-            .background(
-                isIphone && handleTabBarVisibility ?
-                    Color.clear.background(
-                        TabBarAccessor { tabBar in
-                            self.tabBar = tabBar
-                        }
-                    )
-                    .allowsHitTesting(false)
-                    : nil
-            )
-            .onReceive(viewModel.$hideTabBar) { newValue in
-                if isIphone && handleTabBarVisibility {
-                    self.setupTabBarAppeareance()
-                    self.tabBar?.isHidden = newValue
-                }
-            }
-            .accessibilityIdentifier("ChatChannelListView")
-    }
-
-    @ViewBuilder
-    private func container() -> some View {
-        if embedInNavigationView == true {
-            if #available(iOS 16, *), isIphone {
-                NavigationStack {
-                    content()
-                }
-            } else {
-                NavigationView {
-                    content()
-                }
-            }
-        } else {
+        NavigationContainerView(embedInNavigationView: embedInNavigationView) {
             content()
         }
+        .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
+        .accentColor(colors.tintColor)
+        .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
+            view.navigationViewStyle(.stack)
+        })
+        .background(
+           isIphone && handleTabBarVisibility ?
+               Color.clear.background(
+                   TabBarAccessor { tabBar in
+                       self.tabBar = tabBar
+                   }
+               )
+               .allowsHitTesting(false)
+               : nil
+       )
+       .onReceive(viewModel.$hideTabBar) { newValue in
+           if isIphone && handleTabBarVisibility {
+               self.setupTabBarAppeareance()
+               self.tabBar?.isHidden = newValue
+           }
+       }
+       .accessibilityIdentifier("ChatChannelListView")
     }
 
     @ViewBuilder
@@ -261,9 +246,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
                 .onAppear {
-                    if horizontalSizeClass == .regular {
-                        viewModel.preselectChannelIfNeeded()
-                    }
+                    viewModel.preselectChannelIfNeeded()
                 }
             }
 

@@ -14,7 +14,7 @@ struct DemoAppSwiftUIApp: App {
 
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
-    
+
     var channelListController: ChatChannelListController? {
         appState.channelListController
     }
@@ -27,18 +27,14 @@ struct DemoAppSwiftUIApp: App {
             case .notLoggedIn:
                 LoginView()
             case .loggedIn:
-                if notificationsHandler.notificationChannelId != nil {
-                    ChatChannelListView(
-                        viewFactory: DemoAppFactory.shared,
-                        channelListController: channelListController,
-                        selectedChannelId: notificationsHandler.notificationChannelId
-                    )
-                } else {
-                    ChatChannelListView(
-                        viewFactory: DemoAppFactory.shared,
-                        channelListController: channelListController
-                    )
-                }
+                    TabView {
+                        channelListView()
+                            .tabItem { Label("Chat", systemImage: "message") }
+                            .badge(appState.unreadCount.channels)
+                        threadListView()
+                            .tabItem { Label("Threads", systemImage: "text.bubble") }
+                            .badge(appState.unreadCount.threads)
+                    }
             }
         }
         .onChange(of: appState.userState) { newValue in
@@ -57,13 +53,33 @@ struct DemoAppSwiftUIApp: App {
                  appState.channelListController = chatClient.channelListController(query: channelListQuery)
                  }
                  */
+                appState.currentUserController = chatClient.currentUserController()
                 notificationsHandler.setupRemoteNotifications()
             }
         }
     }
+
+    func channelListView() -> ChatChannelListView<DemoAppFactory> {
+        if notificationsHandler.notificationChannelId != nil {
+            ChatChannelListView(
+                viewFactory: DemoAppFactory.shared,
+                channelListController: channelListController,
+                selectedChannelId: notificationsHandler.notificationChannelId
+            )
+        } else {
+            ChatChannelListView(
+                viewFactory: DemoAppFactory.shared,
+                channelListController: channelListController
+            )
+        }
+    }
+
+    func threadListView() -> ChatThreadListView<DemoAppFactory> {
+        ChatThreadListView(viewFactory: DemoAppFactory.shared)
+    }
 }
 
-class AppState: ObservableObject {
+class AppState: ObservableObject, CurrentChatUserControllerDelegate {
 
     @Published var userState: UserState = .launchAnimation {
         willSet {
@@ -72,12 +88,30 @@ class AppState: ObservableObject {
             }
         }
     }
-    
+
+    @Published var unreadCount: UnreadCount = .noUnread
+
     var channelListController: ChatChannelListController?
+    var currentUserController: CurrentChatUserController? {
+        didSet {
+            currentUserController?.delegate = self
+            currentUserController?.synchronize()
+        }
+    }
 
     static let shared = AppState()
 
     private init() {}
+
+    func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
+        self.unreadCount = didChangeCurrentUserUnreadCount
+        let totalUnreadBadge = unreadCount.channels + unreadCount.threads
+        if #available(iOS 16.0, *) {
+            UNUserNotificationCenter.current().setBadgeCount(totalUnreadBadge)
+        } else {
+            UIApplication.shared.applicationIconBadgeNumber = totalUnreadBadge
+        }
+    }
 }
 
 enum UserState {

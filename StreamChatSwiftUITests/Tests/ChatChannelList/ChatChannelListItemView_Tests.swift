@@ -155,7 +155,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
 
     func test_channelListItem_pollMessage_youVoted() throws {
         // Given
-        let currentUserId = UserId.unique
+        let currentUserId = Self.currentUserId
         let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
             .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId)),
             .unique,
@@ -179,7 +179,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
 
     func test_channelListItem_pollMessage_someoneVoted() throws {
         // Given
-        let currentUserId = UserId.unique
+        let currentUserId = Self.currentUserId
         let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
             .mock(pollId: .unique, optionId: .unique, user: .mock(id: .unique, name: "Steve Jobs")),
             .unique,
@@ -331,7 +331,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
             isSentByCurrentUser: isSentByCurrentUser,
             poll: .mock(
                 name: "Test poll",
-                createdBy: .mock(id: "test", name: "test"),
+                createdBy: .mock(id: isSentByCurrentUser ? Self.currentUserId : "test", name: "test"),
                 latestVotes: latestVotes
             )
         )

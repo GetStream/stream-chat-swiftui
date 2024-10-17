@@ -91,4 +91,17 @@ public class ViewModelsFactory {
     ) -> MessageActionsViewModel {
         MessageActionsViewModel(messageActions: messageActions)
     }
+
+    /// Creates the `ChatThreadListViewModel`.
+    ///
+    /// - Parameters:
+    ///    - threadListController: The controller that manages the thread list data.
+    /// - Returns: `ChatThreadListViewModel`.
+    public static func makeThreadListViewModel(
+        threadListController: ChatThreadListController? = nil
+    ) -> ChatThreadListViewModel {
+        ChatThreadListViewModel(
+            threadListController: threadListController
+        )
+    }
 }

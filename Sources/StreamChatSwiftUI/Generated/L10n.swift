@@ -540,6 +540,29 @@ internal enum L10n {
       }
     }
   }
+
+  internal enum Thread {
+    /// %d new threads
+    internal static func newThreads(_ p1: Int) -> String {
+      return L10n.tr("Localizable", "thread.new-threads", p1)
+    }
+    /// Threads
+    internal static var title: String { L10n.tr("Localizable", "thread.title") }
+    internal enum Error {
+      /// Error loading threads
+      internal static var message: String { L10n.tr("Localizable", "thread.error.message") }
+    }
+    internal enum Item {
+      /// replied to: %@
+      internal static func repliedTo(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "thread.item.replied-to", String(describing: p1))
+      }
+    }
+    internal enum NoContent {
+      /// No threads here yet...
+      internal static var message: String { L10n.tr("Localizable", "thread.no-content.message") }
+    }
+  }
 }
 
 // MARK: - Implementation Details
