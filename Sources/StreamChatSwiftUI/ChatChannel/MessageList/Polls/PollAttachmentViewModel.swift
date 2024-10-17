@@ -198,7 +198,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     /// True, if the current user has voted for the specified option, otherwise false.
     public func optionVotedByCurrentUser(_ option: PollOption) -> Bool {
-        false
+        poll.hasCurrentUserVoted(for: option)
     }
     
     /// Adds a new option to the poll.
@@ -219,7 +219,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     ///
     /// - Note: When multiple options have the highest vote count, this function returns false.
     public func hasMostVotes(for option: PollOption) -> Bool {
-        false
+        poll.isOptionWithMostVotes(option)
     }
     
     // MARK: - PollControllerDelegate
@@ -238,7 +238,7 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     // MARK: - private
     
     private func currentUserVote(for option: PollOption) -> PollVote? {
-        nil
+        poll.currentUserVote(for: option)
     }
     
     private func notifySheetPresentation(shown: Bool) {

@@ -51,6 +51,16 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 }
             }
             
+            ForEach(options.prefix(PollAttachmentViewModel.numberOfVisibleOptionsShown)) { option in
+                PollOptionView(
+                    viewModel: viewModel,
+                    option: option,
+                    optionVotes: poll.voteCount(for: option),
+                    maxVotes: poll.currentMaximumVoteCount
+                )
+                .layoutPriority(1) // do not compress long text
+            }
+            
             if options.count > PollAttachmentViewModel.numberOfVisibleOptionsShown {
                 Button {
                     viewModel.allOptionsShown = true
