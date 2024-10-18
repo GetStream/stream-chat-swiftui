@@ -104,14 +104,14 @@ public struct ChatThreadListContentView<Factory: ViewFactory>: View {
         ThreadList(
             factory: viewFactory,
             threads: viewModel.threads,
-            threadDestination: viewFactory.makeThreadDestination(), 
+            threadDestination: viewFactory.makeThreadDestination(),
             selectedThread: $viewModel.selectedThread,
             onItemTap: { thread in
                 viewModel.selectedThread = .init(thread: thread)
             },
             onItemAppear: { index in
                 viewModel.didAppearThread(at: index)
-            }, 
+            },
             headerView: {
                 viewFactory.makeThreadListHeaderView(viewModel: viewModel)
             },
