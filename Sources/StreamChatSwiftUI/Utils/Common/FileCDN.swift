@@ -5,7 +5,7 @@
 import Foundation
 import StreamChat
 
-/// A protocol the video preview uploader implementation must conform to.
+/// FileCDN provides a set of functions to improve handling of files & videos from CDN.
 public protocol FileCDN: AnyObject {
     /// Prepare and return an adjusted or  signed `URL` for the given file `URL`
     /// This function can be used to intercept an unsigned URL and return a valid signed URL

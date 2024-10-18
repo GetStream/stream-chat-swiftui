@@ -153,20 +153,40 @@ public struct GalleryView: View {
 }
 
 struct StreamVideoPlayer: View {
-    
-    @State var player: AVPlayer
-    
+
+    @Injected(\.utils) private var utils
+
+    private var fileCDN: FileCDN {
+        utils.fileCDN
+    }
+
+    let url: URL
+
+    @State var avPlayer: AVPlayer?
+    @State var error: Error?
+
     init(url: URL) {
-        let player = AVPlayer(url: url)
-        _player = State(wrappedValue: player)
+        self.url = url
     }
     
     var body: some View {
-        VideoPlayer(player: player)
-            .clipped()
-            .onAppear {
-                try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                player.play()
+        VStack {
+            if let avPlayer {
+                VideoPlayer(player: avPlayer)
+                    .clipped()
             }
+        }
+        .onAppear {
+            fileCDN.adjustedURL(for: url) { result in
+                switch result {
+                case let .success(url):
+                    self.avPlayer = AVPlayer(url: url)
+                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                    self.avPlayer?.play()
+                case let .failure(error):
+                    self.error = error
+                }
+            }
+        }
     }
 }

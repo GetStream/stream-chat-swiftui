@@ -16,7 +16,8 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
     override func setUp() {
         let utils = Utils(
             videoPreviewLoader: VideoPreviewLoader_Mock(),
-            imageLoader: ImageLoaderUtils_Mock()
+            imageLoader: ImageLoaderUtils_Mock(),
+            fileCDN: FileCDNUtils_Mock()
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
@@ -26,7 +27,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         let videoPreviewLoader = utils.videoPreviewLoader as! VideoPreviewLoader_Mock
 
         // When
-        videoPreviewLoader.loadPreviewForVideo(at: testURL, completion: { _ in })
+        videoPreviewLoader.loadPreviewForVideo(at: testURL, fileCDN: utils.fileCDN, completion: { _ in })
 
         // Then
         XCTAssert(videoPreviewLoader.loadPreviewVideoCalled == true)
@@ -47,5 +48,16 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
 
         // Then
         XCTAssert(imageLoader.loadImageCalled == true)
+    }
+
+    func test_streamChatUtils_injectFileCDN() {
+        // Given
+        let fileCDN = utils.fileCDN as! FileCDNUtils_Mock
+
+        // When
+        fileCDN.adjustedURL(for: testURL, completion: { _ in })
+
+        // Then
+        XCTAssert(fileCDN.adjustedURLCalled == true)
     }
 }
