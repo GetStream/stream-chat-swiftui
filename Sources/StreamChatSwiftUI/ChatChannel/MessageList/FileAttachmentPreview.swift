@@ -18,7 +18,7 @@ public struct FileAttachmentPreview: View {
 
     var url: URL
 
-    @State var adjustedUrl: URL?
+    @State private var adjustedUrl: URL?
     @State private var isLoading = false
     @State private var title: String?
     @State private var error: Error?

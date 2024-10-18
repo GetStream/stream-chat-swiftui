@@ -443,6 +443,7 @@ struct MediaAttachment {
         } else if type == .video {
             utils.videoPreviewLoader.loadPreviewForVideo(
                 at: url,
+                fileCDN: utils.fileCDN,
                 completion: completion
             )
         }

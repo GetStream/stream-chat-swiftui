@@ -12,12 +12,18 @@ public struct VideoPlayerView: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
+
+    private var fileCDN: FileCDN {
+        utils.fileCDN
+    }
 
     let attachment: ChatMessageVideoAttachment
     let author: ChatUser
     @Binding var isShown: Bool
 
-    private let avPlayer: AVPlayer
+    @State private var avPlayer: AVPlayer?
+    @State private var error: Error?
 
     public init(
         attachment: ChatMessageVideoAttachment,
@@ -26,7 +32,6 @@ public struct VideoPlayerView: View {
     ) {
         self.attachment = attachment
         self.author = author
-        avPlayer = AVPlayer(url: attachment.payload.videoURL)
         _isShown = isShown
     }
 
@@ -37,7 +42,9 @@ public struct VideoPlayerView: View {
                 subtitle: author.onlineText,
                 isShown: $isShown
             )
-            VideoPlayer(player: avPlayer)
+            if let avPlayer {
+                VideoPlayer(player: avPlayer)
+            }
             Spacer()
             HStack {
                 ShareButtonView(content: [attachment.payload.videoURL])
@@ -48,11 +55,19 @@ public struct VideoPlayerView: View {
             .foregroundColor(Color(colors.text))
         }
         .onAppear {
-            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-            avPlayer.play()
+            fileCDN.adjustedURL(for: attachment.payload.videoURL) { result in
+                switch result {
+                case let .success(url):
+                    self.avPlayer = AVPlayer(url: url)
+                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                    self.avPlayer?.play()
+                case let .failure(error):
+                    self.error = error
+                }
+            }
         }
         .onDisappear {
-            avPlayer.replaceCurrentItem(with: nil)
+            avPlayer?.replaceCurrentItem(with: nil)
         }
     }
 }

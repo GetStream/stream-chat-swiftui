@@ -10,7 +10,7 @@ class VideoPreviewLoader_Mock: VideoPreviewLoader {
 
     var loadPreviewVideoCalled = false
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    func loadPreviewForVideo(at url: URL, fileCDN: FileCDN, completion: @escaping (Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
     }
 }
@@ -29,4 +29,15 @@ class ImageLoaderUtils_Mock: ImageLoading {
     ) {
         loadImageCalled = true
     }
+}
+
+class FileCDNUtils_Mock: FileCDN {
+
+    var adjustedURLCalled = false
+
+    func adjustedURL(for url: URL, completion: @escaping ((Result<URL, any Error>) -> Void)) {
+        adjustedURLCalled = true
+    }
+    
+
 }
