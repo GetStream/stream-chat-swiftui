@@ -35,7 +35,7 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
         self.factory = factory
         self.threads = threads
         self.threadDestination = threadDestination
-        self._selectedThread = selectedThread
+        _selectedThread = selectedThread
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
         self.headerView = headerView
@@ -49,7 +49,7 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
                 factory: factory,
                 threads: threads,
                 threadDestination: threadDestination,
-                selectedThread: $selectedThread, 
+                selectedThread: $selectedThread,
                 onItemTap: onItemTap,
                 onItemAppear: onItemAppear
             )
@@ -82,7 +82,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
         self.threadDestination = threadDestination
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
-        self._selectedThread = selectedThread
+        _selectedThread = selectedThread
     }
 
     public var body: some View {
@@ -93,9 +93,11 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
                     threadDestination: threadDestination,
                     selectedThread: $selectedThread
                 )
-                .background(factory.makeThreadListItemBackground(
-                    thread: thread,
-                    isSelected: selectedThread?.id == thread.id)
+                .background(
+                    factory.makeThreadListItemBackground(
+                        thread: thread,
+                        isSelected: selectedThread?.id == thread.id
+                    )
                 )
                 .contentShape(Rectangle())
                 .onTapGesture {

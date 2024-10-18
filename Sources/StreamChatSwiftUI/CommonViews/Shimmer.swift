@@ -23,8 +23,8 @@ struct Shimmer: ViewModifier {
             )
             .animation(
                 .linear(duration: duration)
-                .delay(delay)
-                .repeatForever(autoreverses: false), 
+                    .delay(delay)
+                    .repeatForever(autoreverses: false),
                 value: isInitialState
             )
             .onAppear {
@@ -32,7 +32,6 @@ struct Shimmer: ViewModifier {
             }
     }
 }
-
 
 extension View {
     /// Adds an animated shimmering effect to any view, typically to show that

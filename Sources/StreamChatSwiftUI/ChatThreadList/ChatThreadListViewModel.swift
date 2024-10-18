@@ -55,12 +55,12 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
     @Published public var hasNewThreads: Bool = false
 
     /// The ids of the new threads available to be fetched.
-   private var newAvailableThreadIds: Set<MessageId> = [] {
-       didSet {
-           newThreadsCount = newAvailableThreadIds.count
-           hasNewThreads = newThreadsCount > 0
-       }
-   }
+    private var newAvailableThreadIds: Set<MessageId> = [] {
+        didSet {
+            newThreadsCount = newAvailableThreadIds.count
+            hasNewThreads = newThreadsCount > 0
+        }
+    }
 
     /// Creates a view model for the `ChatThreadListView`.
     ///

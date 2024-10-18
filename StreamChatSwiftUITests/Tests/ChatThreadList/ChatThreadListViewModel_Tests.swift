@@ -172,7 +172,7 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
         viewModel.eventsController(
             eventController,
             didReceiveEvent: ThreadMessageNewEvent(
-                message: .mock(parentMessageId: .unique), 
+                message: .mock(parentMessageId: .unique),
                 channel: .mock(cid: .unique),
                 unreadCount: .noUnread,
                 createdAt: .unique

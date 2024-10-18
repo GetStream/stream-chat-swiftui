@@ -24,7 +24,7 @@ public struct ChatThreadListNavigatableItem<ThreadListItem: View, ThreadDestinat
         self.thread = thread
         self.threadListItem = threadListItem
         self.threadDestination = threadDestination
-        self._selectedThread = selectedThread
+        _selectedThread = selectedThread
         self.handleTabBarVisibility = handleTabBarVisibility
     }
 
@@ -55,7 +55,7 @@ public struct ThreadSelectionInfo: Identifiable {
 
     public init(thread: ChatThread) {
         self.thread = thread
-        self.id = thread.id
+        id = thread.id
     }
 }
 
