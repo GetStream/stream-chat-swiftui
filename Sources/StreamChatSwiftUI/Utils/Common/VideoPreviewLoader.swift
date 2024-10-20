@@ -17,6 +17,8 @@ public protocol VideoPreviewLoader: AnyObject {
 
 /// The `VideoPreviewLoader` implemenation used by default.
 public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
+    @Injected(\.utils) var utils
+
     private let cache: Cache<URL, UIImage>
 
     public init(countLimit: Int = 50) {
@@ -39,26 +41,38 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
             return call(completion, with: .success(cached))
         }
 
-        let asset = AVURLAsset(url: url)
-        let imageGenerator = AVAssetImageGenerator(asset: asset)
-        let frameTime = CMTime(seconds: 0.1, preferredTimescale: 600)
+        utils.fileCDN.adjustedURL(for: url) { result in
 
-        imageGenerator.appliesPreferredTrackTransform = true
-        imageGenerator.generateCGImagesAsynchronously(forTimes: [.init(time: frameTime)]) { [weak self] _, image, _, _, error in
-            guard let self = self else { return }
-
-            let result: Result<UIImage, Error>
-            if let thumbnail = image {
-                result = .success(.init(cgImage: thumbnail))
-            } else if let error = error {
-                result = .failure(error)
-            } else {
-                log.error("Both error and image are `nil`.")
+            let adjustedUrl: URL
+            switch result {
+            case let .success(url):
+                adjustedUrl = url
+            case let .failure(error):
+                self.call(completion, with: .failure(error))
                 return
             }
 
-            self.cache[url] = try? result.get()
-            self.call(completion, with: result)
+            let asset = AVURLAsset(url: adjustedUrl)
+            let imageGenerator = AVAssetImageGenerator(asset: asset)
+            let frameTime = CMTime(seconds: 0.1, preferredTimescale: 600)
+
+            imageGenerator.appliesPreferredTrackTransform = true
+            imageGenerator.generateCGImagesAsynchronously(forTimes: [.init(time: frameTime)]) { [weak self] _, image, _, _, error in
+                guard let self = self else { return }
+
+                let result: Result<UIImage, Error>
+                if let thumbnail = image {
+                    result = .success(.init(cgImage: thumbnail))
+                } else if let error = error {
+                    result = .failure(error)
+                } else {
+                    log.error("Both error and image are `nil`.")
+                    return
+                }
+
+                self.cache[url] = try? result.get()
+                self.call(completion, with: result)
+            }
         }
     }
 
