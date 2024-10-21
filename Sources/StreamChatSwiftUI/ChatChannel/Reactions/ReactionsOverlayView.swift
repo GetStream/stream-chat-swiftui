@@ -71,7 +71,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         currentSnapshot: currentSnapshot,
                         popInAnimationInProgress: !popIn
                     )
-                    .offset(y: spacing > 0 ? screenHeight - currentSnapshot.size.height : 0)
+                    .offset(y: overlayOffsetY)
                 } else {
                     Color.gray.opacity(0.4)
                 }
@@ -290,7 +290,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         
         return originY - spacing
     }
-    
+
+    private var overlayOffsetY: CGFloat {
+        if isIPad && UITabBar.appearance().isHidden == false {
+            // When using iPad with TabBar, this hard coded value makes
+            // sure that the overlay is in the correct position.
+            return 20
+        }
+        return spacing > 0 ? screenHeight - currentSnapshot.size.height : 0
+    }
+
     private var spacing: CGFloat {
         let divider: CGFloat = isIPad ? 2 : 1
         let spacing = (UIScreen.main.bounds.height - screenHeight) / divider
