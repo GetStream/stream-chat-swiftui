@@ -28,7 +28,6 @@ extension View {
     }
 }
 
-
 struct FloatingBannerViewModifier<BannerView: View>: ViewModifier {
     let alignment: Alignment
     var isPresented: Bool

@@ -238,6 +238,7 @@ extension ViewFactory {
             )
         }
     }
+
     public func makeMessageListModifier() -> some ViewModifier {
         EmptyViewModifier()
     }

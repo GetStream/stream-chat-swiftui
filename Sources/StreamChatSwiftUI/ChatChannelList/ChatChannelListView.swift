@@ -81,22 +81,22 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             view.navigationViewStyle(.stack)
         })
         .background(
-           isIphone && handleTabBarVisibility ?
-               Color.clear.background(
-                   TabBarAccessor { tabBar in
-                       self.tabBar = tabBar
-                   }
-               )
-               .allowsHitTesting(false)
-               : nil
-       )
-       .onReceive(viewModel.$hideTabBar) { newValue in
-           if isIphone && handleTabBarVisibility {
-               self.setupTabBarAppeareance()
-               self.tabBar?.isHidden = newValue
-           }
-       }
-       .accessibilityIdentifier("ChatChannelListView")
+            isIphone && handleTabBarVisibility ?
+                Color.clear.background(
+                    TabBarAccessor { tabBar in
+                        self.tabBar = tabBar
+                    }
+                )
+                .allowsHitTesting(false)
+                : nil
+        )
+        .onReceive(viewModel.$hideTabBar) { newValue in
+            if isIphone && handleTabBarVisibility {
+                self.setupTabBarAppeareance()
+                self.tabBar?.isHidden = newValue
+            }
+        }
+        .accessibilityIdentifier("ChatChannelListView")
     }
 
     @ViewBuilder

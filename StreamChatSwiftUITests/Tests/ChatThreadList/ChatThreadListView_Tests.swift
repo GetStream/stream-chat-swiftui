@@ -71,7 +71,7 @@ class CustomFactory: ViewFactory {
 
 private class MockChatThreadListViewModel: ChatThreadListViewModel {
     static func empty() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: [],
             isLoading: false,
             isReloading: false,
@@ -86,7 +86,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func loading() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: [],
             isLoading: true,
             isReloading: false,
@@ -101,7 +101,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func withThreads() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: mockThreads,
             isLoading: false,
             isReloading: false,
@@ -116,7 +116,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func loadingMoreThreads() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: mockThreads,
             isLoading: false,
             isReloading: false,
@@ -131,7 +131,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func reloadingThreads() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: mockThreads,
             isLoading: false,
             isReloading: true,
@@ -146,7 +146,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func newThreadsAvailable() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: mockThreads,
             isLoading: false,
             isReloading: false,
@@ -161,7 +161,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func errorLoadingThreads() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: [],
             isLoading: false,
             isReloading: false,
@@ -176,7 +176,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
     }
 
     static func errorLoadingMoreThreads() -> MockChatThreadListViewModel {
-        return MockChatThreadListViewModel(
+        MockChatThreadListViewModel(
             threads: mockThreads,
             isLoading: false,
             isReloading: false,
@@ -223,7 +223,6 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
         didChangeThreads changes: [ListChange<ChatThread>]
     ) {}
     
-
     static var mockYoda = ChatUser.mock(id: .unique, name: "Yoda")
     static var mockVader = ChatUser.mock(id: .unique, name: "Vader")
 

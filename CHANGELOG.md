@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.65.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.65.0)
+_October 18, 2024_
+
 ### ✅ Added
 - New Thread List UI Component [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)
 - Handles marking a thread read in `ChatChannelViewModel` [#621](https://github.com/GetStream/stream-chat-swiftui/pull/621)

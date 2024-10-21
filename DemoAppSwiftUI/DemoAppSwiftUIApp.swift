@@ -27,14 +27,14 @@ struct DemoAppSwiftUIApp: App {
             case .notLoggedIn:
                 LoginView()
             case .loggedIn:
-                    TabView {
-                        channelListView()
-                            .tabItem { Label("Chat", systemImage: "message") }
-                            .badge(appState.unreadCount.channels)
-                        threadListView()
-                            .tabItem { Label("Threads", systemImage: "text.bubble") }
-                            .badge(appState.unreadCount.threads)
-                    }
+                TabView {
+                    channelListView()
+                        .tabItem { Label("Chat", systemImage: "message") }
+                        .badge(appState.unreadCount.channels)
+                    threadListView()
+                        .tabItem { Label("Threads", systemImage: "text.bubble") }
+                        .badge(appState.unreadCount.threads)
+                }
             }
         }
         .onChange(of: appState.userState) { newValue in
@@ -104,7 +104,7 @@ class AppState: ObservableObject, CurrentChatUserControllerDelegate {
     private init() {}
 
     func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
-        self.unreadCount = didChangeCurrentUserUnreadCount
+        unreadCount = didChangeCurrentUserUnreadCount
         let totalUnreadBadge = unreadCount.channels + unreadCount.threads
         if #available(iOS 16.0, *) {
             UNUserNotificationCenter.current().setBadgeCount(totalUnreadBadge)

@@ -51,7 +51,7 @@ public struct ChatThreadListItemViewModel {
             parentMessageText = threadTitle
         } else {
             let formatter = InjectedValues[\.utils].messagePreviewFormatter
-            parentMessageText =  formatter.formatContent(for: thread.parentMessage)
+            parentMessageText = formatter.formatContent(for: thread.parentMessage)
         }
         return L10n.Thread.Item.repliedTo(parentMessageText.trimmed)
     }
