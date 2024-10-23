@@ -325,6 +325,42 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         cancellable.cancel()
     }
 
+    // MARK: - Search
+
+    func test_loadAdditionalSearchResults_whenSearchTypeIsChannels_shouldLoadNextChannels() {
+        let searchChannelListController = makeChannelListController()
+        let viewModel = makeDefaultChannelListVM(searchType: .channels)
+        viewModel.channelListSearchController = searchChannelListController
+        
+        viewModel.loadAdditionalSearchResults(index: 1)
+
+        XCTAssertEqual(searchChannelListController.loadNextChannelsCallCount, 1)
+    }
+
+    func test_loadAdditionalSearchResults_whenSearchTypeIsMessages_shouldLoadNextMessages() {
+        let messageSearchController = ChatMessageSearchController_Mock.mock()
+        let viewModel = makeDefaultChannelListVM(searchType: .messages)
+        viewModel.messageSearchController = messageSearchController
+
+        viewModel.loadAdditionalSearchResults(index: 1)
+
+        XCTAssertEqual(messageSearchController.loadNextMessagesCallCount, 1)
+    }
+
+    func test_searchText_whenChanged_whenSearchTypeIsChannels_shouldPerformChannelSearch() {
+        let viewModel = makeDefaultChannelListVM(searchType: .channels)
+        viewModel.searchText = "Hey"
+        XCTAssertNotNil(viewModel.channelListSearchController)
+        XCTAssertNil(viewModel.messageSearchController)
+    }
+
+    func test_searchText_whenChanged_whenSearchTypeIsMessages_shouldPerformMessageSearch() {
+        let viewModel = makeDefaultChannelListVM(searchType: .messages)
+        viewModel.searchText = "Hey"
+        XCTAssertNil(viewModel.channelListSearchController)
+        XCTAssertNotNil(viewModel.messageSearchController)
+    }
+
     // MARK: - private
 
     private func makeChannelListController(
@@ -343,14 +379,15 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
     }
 
     private func makeDefaultChannelListVM(
-        channels: [ChatChannel] = []
+        channels: [ChatChannel] = [],
+        searchType: ChannelListSearchType = .messages
     ) -> ChatChannelListViewModel {
         let channelListController = makeChannelListController(channels: channels)
         let viewModel = ChatChannelListViewModel(
             channelListController: channelListController,
-            selectedChannelId: nil
+            selectedChannelId: nil,
+            searchType: searchType
         )
-
         return viewModel
     }
 }

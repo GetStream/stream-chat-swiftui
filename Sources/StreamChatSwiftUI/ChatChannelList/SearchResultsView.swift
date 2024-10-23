@@ -143,7 +143,7 @@ struct SearchResultItem<ChannelDestination: View>: View {
                     ChatTitleView(name: channelName)
 
                     HStack {
-                        SubtitleText(text: searchResult.message?.text ?? "")
+                        SubtitleText(text: messageText)
                         Spacer()
                         SubtitleText(text: timestampText)
                     }
@@ -158,6 +158,20 @@ struct SearchResultItem<ChannelDestination: View>: View {
         if let lastMessageAt = searchResult.channel.lastMessageAt {
             return utils.dateFormatter.string(from: lastMessageAt)
         } else {
+            return ""
+        }
+    }
+
+    private var messageText: String {
+        switch searchResult.searchType {
+        case .channels:
+            guard let previewMessage = searchResult.message else {
+                return L10n.Channel.Item.emptyMessages
+            }
+            return utils.messagePreviewFormatter.format(previewMessage)
+        case .messages:
+            return searchResult.message?.text ?? ""
+        default:
             return ""
         }
     }
