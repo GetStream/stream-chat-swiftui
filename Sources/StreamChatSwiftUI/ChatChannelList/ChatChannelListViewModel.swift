@@ -30,8 +30,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Temporarly holding changes while message list is shown.
     private var queuedChannelsChanges = LazyCachedMapCollection<ChatChannel>()
 
-    private var messageSearchController: ChatMessageSearchController?
-
     private var timer: Timer?
 
     /// Controls loading the channels.
@@ -103,6 +101,15 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
+    private var cancellables = Set<AnyCancellable>()
+    private var searchType: ChannelListSearchType
+    private var channelListSearchController: ChatChannelListController?
+    private var messageSearchController: ChatMessageSearchController?
+    @Published private var searchResultsProvider: (any ChannelListSearchResultsProvider)?
+
+    @Published public var loadingSearchResults = false
+    @Published public var searchResults = [ChannelSelectionInfo]()
+    @Published var hideTabBar = false
     @Published public var searchText = "" {
         didSet {
             if searchText != oldValue {
@@ -110,10 +117,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             }
         }
     }
-
-    @Published public var loadingSearchResults = false
-    @Published public var searchResults = [ChannelSelectionInfo]()
-    @Published var hideTabBar = false
 
     public var isSearching: Bool {
         !searchText.isEmpty
@@ -125,16 +128,20 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///   - channelListController: A controller providing the list of channels. If nil, a controller with default `ChannelListQuery` is created.
     ///   - selectedChannelId: The id of a channel to select. If the channel is not part of the channel list query, no channel is selected.
     ///   Consider using ``ChatChannelScreen`` for presenting channels what might not be part of the initial page of channels.
+    ///   - searchType: The type of data the channel list should perform a search.
     public init(
         channelListController: ChatChannelListController? = nil,
-        selectedChannelId: String? = nil
+        selectedChannelId: String? = nil,
+        searchType: ChannelListSearchType = .channels
     ) {
+        self.searchType = searchType
         self.selectedChannelId = selectedChannelId
         if let channelListController = channelListController {
             controller = channelListController
         } else {
             makeDefaultChannelListController()
         }
+
         setupChannelListController()
         observeChannelDismiss()
         observeHideTabBar()
@@ -168,22 +175,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     public func loadAdditionalSearchResults(index: Int) {
-        guard let messageSearchController = messageSearchController else {
-            return
-        }
-
-        if index < messageSearchController.messages.count - 10 {
-            return
-        }
-
-        if !loadingNextChannels {
-            loadingNextChannels = true
-            messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
-                self.updateSearchResults()
-            }
-        }
+        searchResultsProvider?.loadAdditionalSearchResults(at: index)
     }
 
     /// Determines whether an online indicator is shown.
@@ -258,7 +250,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     // MARK: - ChatMessageSearchControllerDelegate
     
     public func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
-        updateSearchResults()
+        // no-op
     }
 
     // MARK: - private
@@ -309,6 +301,26 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         )
     }
 
+    private func makeSearchResultsProvider() {
+        if searchType == .channels {
+            searchResultsProvider = ChannelListSearchChannelsProvider()
+        } else {
+            searchResultsProvider = ChannelListSearchMessagesProvider()
+        }
+
+        searchResultsProvider?.searchResults
+            .assign(to: \.searchResults, on: self)
+            .store(in: &cancellables)
+
+        searchResultsProvider?.loadingSearchResults
+            .assign(to: \.loadingSearchResults, on: self)
+            .store(in: &cancellables)
+
+        searchResultsProvider?.loadingNextSearchResults
+            .assign(to: \.loadingNextChannels, on: self)
+            .store(in: &cancellables)
+    }
+
     private func setupChannelListController() {
         controller?.delegate = self
 
@@ -340,37 +352,18 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             .filter { $0.id != chatClient.currentUserId }
     }
 
-    private func updateSearchResults() {
-        guard let messageSearchController = messageSearchController else {
+    private func handleSearchTextChange() {
+        if searchText.isEmpty {
+            clearSearchResults()
             return
         }
 
-        searchResults = messageSearchController.messages
-            .compactMap { message in
-                message.makeChannelSelectionInfo(with: chatClient)
-            }
+        searchResultsProvider?.performSearch(searchText: searchText)
     }
 
-    private func handleSearchTextChange() {
-        if !searchText.isEmpty {
-            guard let userId = chatClient.currentUserId else { return }
-            messageSearchController = chatClient.messageSearchController()
-            messageSearchController?.delegate = self
-            let query = MessageSearchQuery(
-                channelFilter: .containMembers(userIds: [userId]),
-                messageFilter: .autocomplete(.text, text: searchText)
-            )
-            loadingSearchResults = true
-            messageSearchController?.search(query: query, completion: { [weak self] _ in
-                self?.loadingSearchResults = false
-                self?.updateSearchResults()
-            })
-        } else {
-            messageSearchController?.delegate = nil
-            messageSearchController = nil
-            searchResults = []
-            updateChannels()
-        }
+    private func clearSearchResults() {
+        searchResultsProvider?.clearSearchResults()
+        updateChannels()
     }
 
     private func observeClientIdChange() {
