@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add support for Channel Search in the Channel List [#628](https://github.com/GetStream/stream-chat-swiftui/pull/628)
 ### 🐞 Fixed
 - Fix crash when opening message overlay in iPad with a TabBar [#627](https://github.com/GetStream/stream-chat-swiftui/pull/627)
 
