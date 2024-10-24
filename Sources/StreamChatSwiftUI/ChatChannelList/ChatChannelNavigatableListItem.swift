@@ -73,10 +73,16 @@ public struct ChannelSelectionInfo: Identifiable {
     public let channel: ChatChannel
     public let message: ChatMessage?
     public var injectedChannelInfo: InjectedChannelInfo?
+    public var searchType: ChannelListSearchType
 
-    public init(channel: ChatChannel, message: ChatMessage?) {
+    public init(
+        channel: ChatChannel,
+        message: ChatMessage?,
+        searchType: ChannelListSearchType = .messages
+    ) {
         self.channel = channel
         self.message = message
+        self.searchType = searchType
         if let message = message {
             id = "\(channel.cid.id)-\(message.id)"
         } else {

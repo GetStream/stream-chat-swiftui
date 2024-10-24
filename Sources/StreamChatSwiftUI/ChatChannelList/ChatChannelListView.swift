@@ -19,7 +19,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private let customOnItemTap: ((ChatChannel) -> Void)?
     private var embedInNavigationView: Bool
     private var handleTabBarVisibility: Bool
-    
+
     /// Creates a channel list view.
     ///
     /// - Parameters:
@@ -31,6 +31,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     ///   - selectedChannelId: The id of a channel to be opened after the initial channel list load.
     ///   - handleTabBarVisibility: True, if TabBar visibility should be automatically updated.
     ///   - embedInNavigationView: True, if the channel list view should be embedded in a navigation stack.
+    ///   - searchType: The type of data the channel list should perform a search. By default it searches messages.
     ///
     /// Changing the instance of the passed in `viewModel` or `channelListController` does not have an effect without reloading the channel list view by assigning a custom identity. The custom identity should be refreshed when either of the passed in instances have been recreated.
     /// ```swift
@@ -47,12 +48,14 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         onItemTap: ((ChatChannel) -> Void)? = nil,
         selectedChannelId: String? = nil,
         handleTabBarVisibility: Bool = true,
-        embedInNavigationView: Bool = true
+        embedInNavigationView: Bool = true,
+        searchType: ChannelListSearchType = .messages
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeChannelListViewModel(
                 channelListController: channelListController,
-                selectedChannelId: selectedChannelId
+                selectedChannelId: selectedChannelId,
+                searchType: searchType
             )
         )
         self.viewFactory = viewFactory
