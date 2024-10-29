@@ -1,0 +1,44 @@
+name: Test Flight Deploy DemoApp
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+  release:
+    types: [published]
+
+  workflow_dispatch:
+
+env:
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+jobs:
+  deploy:
+    runs-on: macos-14
+    steps:
+    - name: Connect Bot
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
+    - uses: actions/checkout@v4.1.1
+      with:
+        fetch-depth: 0
+    - uses: ./.github/actions/ruby-cache
+    - uses: ./.github/actions/xcode-cache
+    - name: Deploy Demo app
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_PR_NUM: ${{ github.event.number }}
+      run: bundle exec fastlane swiftui_testflight_build
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: "You shall not pass!"
+        fields: message,commit,author,action,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        MATRIX_CONTEXT: ${{ toJson(matrix) }}
+      if: failure()

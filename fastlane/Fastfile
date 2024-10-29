@@ -162,6 +162,19 @@ lane :match_me do |options|
   )
 end
 
+desc 'Builds the latest version of Demo app and uploads it to TestFlight'
+lane :swiftui_testflight_build do
+  match_me
+  testflight_build(
+    api_key: appstore_api_key,
+    xcode_project: xcode_project,
+    sdk_target: 'StreamChatSwiftUI',
+    app_target: 'DemoAppSwiftUI',
+    app_identifier: 'io.getstream.iOS.DemoAppSwiftUI',
+    app_version: last_git_tag
+  )
+end
+
 desc 'Runs tests in Debug config'
 lane :test_ui do |options|
   next unless is_check_required(sources: sources_matrix[:ui], force_check: @force_check)
