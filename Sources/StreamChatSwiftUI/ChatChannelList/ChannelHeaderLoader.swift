@@ -82,7 +82,7 @@ open class ChannelHeaderLoader: ObservableObject {
         }
     }
 
-    func channelAvatarChanged(_ cid: ChannelId?) -> AnyPublisher<Void, Never> {
+    open func channelAvatarChanged(_ cid: ChannelId?) -> AnyPublisher<Void, Never> {
         didLoadImage
             .filter { $0 == cid }
             .map { _ in () }
