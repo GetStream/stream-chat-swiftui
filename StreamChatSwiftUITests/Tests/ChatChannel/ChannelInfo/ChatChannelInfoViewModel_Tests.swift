@@ -222,10 +222,21 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         XCTAssert(leaveButton == true)
     }
 
+    func test_chatChannelInfoVM_leaveButtonHiddenInGroup() {
+        // Given
+        let channel = mockGroup(with: 5, updateCapabilities: false)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let leaveButton = viewModel.shouldShowLeaveConversationButton
+
+        // Then
+        XCTAssert(leaveButton == false)
+    }
+
     func test_chatChannelInfoVM_leaveButtonShownInDM() {
         // Given
-        let channel = ChatChannel.mock(
-            cid: .unique,
+        let channel = ChatChannel.mockDMChannel(
             name: "Test",
             ownCapabilities: [.deleteChannel]
         )
@@ -262,6 +273,7 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         if updateCapabilities {
             capabilities.insert(.updateChannel)
             capabilities.insert(.deleteChannel)
+            capabilities.insert(.leaveChannel)
         }
         let channel = ChatChannel.mock(
             cid: cid,
