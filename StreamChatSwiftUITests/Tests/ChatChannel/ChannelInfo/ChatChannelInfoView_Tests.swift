@@ -103,7 +103,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.leaveChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -151,7 +151,7 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.updateChannel, .leaveChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
