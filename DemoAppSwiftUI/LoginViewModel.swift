@@ -14,6 +14,11 @@ class LoginViewModel: ObservableObject {
     @Injected(\.chatClient) var chatClient
 
     func demoUserTapped(_ user: UserCredentials) {
+        if user.isGuest {
+            connectGuestUser(withCredentials: user)
+            return
+        }
+
         connectUser(withCredentials: user)
     }
 
@@ -25,7 +30,7 @@ class LoginViewModel: ObservableObject {
         chatClient.connectUser(
             userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
             token: token
-        ) { error in
+        ) { [weak self] error in
             if let error = error {
                 log.error("connecting the user failed \(error)")
                 return
@@ -35,6 +40,27 @@ class LoginViewModel: ObservableObject {
                 withAnimation {
                     self?.loading = false
                     UnsecureRepository.shared.save(user: credentials)
+                    AppState.shared.userState = .loggedIn
+                }
+            }
+        }
+    }
+
+    private func connectGuestUser(withCredentials credentials: UserCredentials) {
+        loading = true
+        LogConfig.level = .warning
+
+        chatClient.connectGuestUser(
+            userInfo: .init(id: credentials.id, name: credentials.name)
+        ) { [weak self] error in
+            if let error = error {
+                log.error("connecting the user failed \(error)")
+                return
+            }
+
+            DispatchQueue.main.async { [weak self] in
+                withAnimation {
+                    self?.loading = false
                     AppState.shared.userState = .loggedIn
                 }
             }
