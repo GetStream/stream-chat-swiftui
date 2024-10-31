@@ -236,8 +236,9 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
 
     func test_chatChannelInfoVM_leaveButtonShownInDM() {
         // Given
-        let channel = ChatChannel.mockDMChannel(
-            name: "Test",
+        let cidDM = ChannelId(type: .messaging, id: "!members" + .newUniqueId)
+        let channel = ChatChannel.mock(
+            cid: cidDM,
             ownCapabilities: [.deleteChannel]
         )
         let viewModel = ChatChannelInfoViewModel(channel: channel)

@@ -3820,7 +3820,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bpollman/stream-chat-swift.git";
 			requirement = {
-				branch = "update-dm-mocks";
+				branch = develop;
 				kind = branch;
 			};
 		};
