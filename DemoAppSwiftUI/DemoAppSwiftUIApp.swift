@@ -18,7 +18,11 @@ struct DemoAppSwiftUIApp: App {
     var channelListController: ChatChannelListController? {
         appState.channelListController
     }
-    
+
+    var channelListSearchType: ChannelListSearchType {
+        .messages
+    }
+
     var body: some Scene {
         WindowGroup {
             switch appState.userState {
@@ -64,12 +68,14 @@ struct DemoAppSwiftUIApp: App {
             ChatChannelListView(
                 viewFactory: DemoAppFactory.shared,
                 channelListController: channelListController,
-                selectedChannelId: notificationsHandler.notificationChannelId
+                selectedChannelId: notificationsHandler.notificationChannelId,
+                searchType: channelListSearchType
             )
         } else {
             ChatChannelListView(
                 viewFactory: DemoAppFactory.shared,
-                channelListController: channelListController
+                channelListController: channelListController,
+                searchType: channelListSearchType
             )
         }
     }

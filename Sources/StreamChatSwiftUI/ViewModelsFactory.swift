@@ -14,14 +14,17 @@ public class ViewModelsFactory {
     /// - Parameters:
     ///    - channelListController: possibility to inject custom channel list controller.
     ///    - selectedChannelId: pre-selected channel id (used for deeplinking).
+    ///    - searchType: The type of data the channel list should perform a search. By default it searches messages.
     /// - Returns: `ChatChannelListViewModel`.
     public static func makeChannelListViewModel(
         channelListController: ChatChannelListController? = nil,
-        selectedChannelId: String? = nil
+        selectedChannelId: String? = nil,
+        searchType: ChannelListSearchType = .messages
     ) -> ChatChannelListViewModel {
         ChatChannelListViewModel(
             channelListController: channelListController,
-            selectedChannelId: selectedChannelId
+            selectedChannelId: selectedChannelId,
+            searchType: searchType
         )
     }
 
