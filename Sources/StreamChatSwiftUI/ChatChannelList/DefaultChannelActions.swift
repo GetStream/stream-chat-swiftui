@@ -25,7 +25,7 @@ extension ChannelAction {
 
         actions.append(viewInfo)
 
-        if !channel.isDirectMessageChannel, let userId = chatClient.currentUserId {
+        if !channel.isDirectMessageChannel, channel.ownCapabilities.contains(.leaveChannel), let userId = chatClient.currentUserId {
             let leaveGroup = leaveGroup(
                 for: channel,
                 chatClient: chatClient,

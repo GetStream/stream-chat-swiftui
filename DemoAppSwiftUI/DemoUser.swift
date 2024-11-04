@@ -11,9 +11,23 @@ public let currentUserIdRegisteredForPush = "currentUserIdRegisteredForPush"
 public struct UserCredentials: Codable {
     public let id: String
     public let name: String
-    public let avatarURL: URL
+    public let avatarURL: URL?
     public let token: String
     public let birthLand: String
+
+    var isGuest: Bool {
+        id == "guest"
+    }
+
+    static var guestUser: UserCredentials {
+        UserCredentials(
+            id: "guest",
+            name: "Guest",
+            avatarURL: nil,
+            token: "",
+            birthLand: ""
+        )
+    }
 }
 
 extension UserCredentials: Identifiable {
@@ -135,8 +149,7 @@ extension UserCredentials: Identifiable {
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZ2VuZXJhbF9ncmlldm91cyJ9.g2UUZdENuacFIxhYCylBuDJZUZ2x59MTWaSpndWGCTU",
             "Qymaen jai Sheelal"
         )
-
     ].map {
         UserCredentials(id: $0.0, name: $0.1, avatarURL: URL(string: $0.2)!, token: $0.3, birthLand: $0.4)
-    }
+    } + [UserCredentials.guestUser]
 }
