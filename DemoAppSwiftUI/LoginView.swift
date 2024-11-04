@@ -56,15 +56,25 @@ struct DemoUserView: View {
 
     var body: some View {
         HStack {
-            StreamLazyImage(
-                url: user.avatarURL,
-                size: CGSize(width: imageSize, height: imageSize)
-            )
+            if user.isGuest {
+                Image(systemName: "person.fill")
+                    .resizable()
+                    .foregroundColor(colors.tintColor)
+                    .frame(width: imageSize, height: imageSize)
+                    .aspectRatio(contentMode: .fit)
+                    .background(Color(colors.background6))
+                    .clipShape(Circle())
+            } else {
+                StreamLazyImage(
+                    url: user.avatarURL,
+                    size: CGSize(width: imageSize, height: imageSize)
+                )
+            }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(user.name)
                     .font(fonts.bodyBold)
-                Text("Stream test account")
+                Text(user.isGuest ? "Login as Guest" : "Stream test account")
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
