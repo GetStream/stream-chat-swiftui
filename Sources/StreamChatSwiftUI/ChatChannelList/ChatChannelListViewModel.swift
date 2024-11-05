@@ -310,9 +310,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
         updateChannels()
 
-        if channels.isEmpty {
-            loading = networkReachability.isNetworkAvailable()
-        }
+        loading = channels.isEmpty
 
         controller?.synchronize { [weak self] error in
             guard let self = self else { return }
@@ -322,9 +320,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 self.channelAlertType = .error
             } else {
                 // access channels
-                if self.selectedChannel == nil {
-                    self.updateChannels()
-                }
+                self.updateChannels()
                 self.checkForDeeplinks()
             }
         }
