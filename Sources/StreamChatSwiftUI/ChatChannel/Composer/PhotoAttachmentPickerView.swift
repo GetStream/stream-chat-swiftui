@@ -58,6 +58,7 @@ public struct PhotoAttachmentCell: View {
     @State private var compressing = false
     @State private var loading = false
     @State var requestId: PHContentEditingInputRequestID?
+    @State var idOverlay = UUID()
     
     var asset: PHAsset
     var onImageTap: (AddedAsset) -> Void
@@ -113,6 +114,7 @@ public struct PhotoAttachmentCell: View {
                                             )
                                         )
                                     }
+                                    idOverlay = UUID()
                                 }
                             }
                     }
@@ -150,6 +152,7 @@ public struct PhotoAttachmentCell: View {
                     )
                 }
             }
+            .id(idOverlay)
         )
         .onAppear {
             self.loading = false
