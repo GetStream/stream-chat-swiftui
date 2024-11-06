@@ -3818,10 +3818,10 @@
 		};
 		84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bpollman/stream-chat-swift.git";
+			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.66.0;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
