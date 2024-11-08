@@ -27,6 +27,7 @@ public enum AttachmentPickerType {
 
 /// View for picking the attachment type (media or giphy commands).
 public struct AttachmentPickerTypeView: View {
+    @EnvironmentObject private var composerViewModel: MessageComposerViewModel
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
 
@@ -49,7 +50,7 @@ public struct AttachmentPickerTypeView: View {
         HStack(spacing: 16) {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                if channelConfig?.uploadsEnabled == true {
+                if composerViewModel.channelController.channel?.canUploadFile == true {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .media,

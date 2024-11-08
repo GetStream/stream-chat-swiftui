@@ -25,7 +25,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-
+        
         // When
         let view = MessageComposerView(
             viewFactory: factory,
@@ -189,6 +189,40 @@ class MessageComposerView_Tests: StreamChatTestCase {
         )
         .environmentObject(viewModel)
         .frame(width: 36, height: 36)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_leadingComposerView_uploadFileCapability() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
+        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+            .environmentObject(viewModel)
+            .frame(width: 36, height: 36)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_leadingComposerView_withoutUploadFileCapability() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
+        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+            .environmentObject(viewModel)
+            .frame(width: 36, height: 36)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
