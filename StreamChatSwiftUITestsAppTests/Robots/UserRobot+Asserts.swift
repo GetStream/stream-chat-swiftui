@@ -663,8 +663,8 @@ extension UserRobot {
 
         if ProcessInfo().operatingSystemVersion.majorVersion > 14 {
             // There is no image preview element details in the hierarchy tree on iOS < 15
-            let previewImage = attributes.LinkPreview.image(in: messageCell)
-            XCTAssertTrue(previewImage.isHittable, "Preview image is not clickable")
+            let link = attributes.LinkPreview.link(in: messageCell)
+            XCTAssertTrue(link.isHittable, "Preview image is not clickable")
         }
         XCTAssertTrue(previewTitle.isHittable, "Preview title is not clickable")
         XCTAssertTrue(previewDescription.isHittable, "Preview description is not clickable")
