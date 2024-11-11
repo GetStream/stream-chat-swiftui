@@ -137,7 +137,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                viewModel.channel.isDirectMessageChannel ? nil :
+                if viewModel.shouldShowAddUserButton {
                     Button {
                         viewModel.addUsersShown = true
                     } label: {
@@ -148,6 +148,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             .background(colors.tintColor)
                             .clipShape(Circle())
                     }
+                }
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
