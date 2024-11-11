@@ -48,6 +48,15 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         channel.ownCapabilities.contains(.updateChannel)
     }
 
+    public var shouldShowAddUserButton: Bool {
+        if channel.isDirectMessageChannel {
+            return false
+        } else {
+            return channel.ownCapabilities.contains(.updateChannelMembers)
+        }
+    }
+
+
     var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
