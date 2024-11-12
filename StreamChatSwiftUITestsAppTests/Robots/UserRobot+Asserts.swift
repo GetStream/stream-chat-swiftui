@@ -932,7 +932,7 @@ extension UserRobot {
         if isPresent {
             image.wait()
             if TestRunnerEnvironment.isCI {
-                sleep(3) // At the moment, this assert is flaky without it
+                sleep(2) // At the moment, this assert is flaky without it
             }
         } else {
             image.waitForDisappearance()
@@ -941,10 +941,10 @@ extension UserRobot {
         let errMessage = isPresent ? "Image is not presented" : "Image is presented"
         XCTAssertTrue(image.exists, errMessage, file: file, line: line)
 
-        image.safeTap()
+        image.tapFrameCenter()
         image.waitForDisappearance(timeout: 2)
         if image.exists {
-            image.safeTap()
+            image.tapFrameCenter()
         }
 
         let fullscreenImage = attributes.fullscreenImage().wait()
