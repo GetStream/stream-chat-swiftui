@@ -931,7 +931,9 @@ extension UserRobot {
         let image = attributes.image(in: messageCell)
         if isPresent {
             image.wait()
-            sleep(2) // At the moment, this assert is flaky without it
+            if TestRunnerEnvironment.isCI {
+                sleep(3) // At the moment, this assert is flaky without it
+            }
         } else {
             image.waitForDisappearance()
         }
