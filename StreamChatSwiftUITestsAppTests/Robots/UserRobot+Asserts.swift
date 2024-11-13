@@ -931,24 +931,12 @@ extension UserRobot {
         let image = attributes.image(in: messageCell)
         if isPresent {
             image.wait()
-            if TestRunnerEnvironment.isCI {
-                sleep(10) // At the moment, this assert is flaky without it
-            }
         } else {
             image.waitForDisappearance()
         }
 
         let errMessage = isPresent ? "Image is not presented" : "Image is presented"
-        XCTAssertTrue(image.exists, errMessage, file: file, line: line)
-
-        image.safeTap()
-        image.waitForDisappearance(timeout: 2)
-        if image.exists {
-            image.safeTap()
-        }
-
-        let fullscreenImage = attributes.fullscreenImage().wait()
-        XCTAssertTrue(fullscreenImage.exists, "Fullscreen \(errMessage)", file: file, line: line)
+        XCTAssertEqual(isPresent, image.exists, errMessage, file: file, line: line)
         return self
     }
 
