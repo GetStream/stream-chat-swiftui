@@ -866,7 +866,7 @@ extension UserRobot {
     ) -> Self {
         let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
         XCTAssertTrue(attributes.giphyLabel(in: cell).wait().exists, "Giphy label does not exist")
-        XCTAssertEqual(0, attributes.giphyButtons(in: cell).count)
+        XCTAssertTrue(attributes.giphyImage(in: cell).exists, "Giphy image does not exist")
         return self
     }
 
