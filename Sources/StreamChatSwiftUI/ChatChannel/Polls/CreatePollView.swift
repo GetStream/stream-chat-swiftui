@@ -162,6 +162,7 @@ struct CreatePollView: View {
                 Spacer()
                     .modifier(ListRowModifier())
             }
+            .background(Color(colors.background).ignoresSafeArea())
             .listStyle(.plain)
             .id(listId)
             .toolbar {
@@ -229,11 +230,14 @@ struct CreatePollItemModifier: ViewModifier {
 }
 
 struct ListRowModifier: ViewModifier {
-    
+
+    @Injected(\.colors) var colors
+
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
                 .listRowSeparator(.hidden)
+                .listRowBackground(Color(colors.background))
         } else {
             content
         }

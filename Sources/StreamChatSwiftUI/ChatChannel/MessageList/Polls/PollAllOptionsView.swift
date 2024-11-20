@@ -31,6 +31,7 @@ struct PollAllOptionsView: View {
                                 viewModel: viewModel,
                                 option: option,
                                 optionFont: fonts.headline,
+                                textColor: Color(colors.text),
                                 alternativeStyle: true,
                                 checkboxButtonSpacing: 8
                             )
