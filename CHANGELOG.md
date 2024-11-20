@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Make `VoiceRecordingButton` public [#658](https://github.com/GetStream/stream-chat-swiftui/pull/658)
 ### 🔄 Changed
 - Message composer now uses `.uploadFile` capability when showing attachment picker icon [#646](https://github.com/GetStream/stream-chat-swiftui/pull/646)
 
