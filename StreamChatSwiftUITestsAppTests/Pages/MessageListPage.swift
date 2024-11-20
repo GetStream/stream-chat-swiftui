@@ -188,6 +188,10 @@ class MessageListPage {
         static func giphyCancelButton(in messageCell: XCUIElement) -> XCUIElement {
             attachmentActionButton(in: messageCell, label: "Cancel")
         }
+        
+        static func giphyImage(in messageCell: XCUIElement) -> XCUIElement {
+            messageCell.otherElements["GiphyAttachmentView"].images.firstMatch
+        }
 
         static func giphyLabel(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.staticTexts["GiphyAttachmentView"]
