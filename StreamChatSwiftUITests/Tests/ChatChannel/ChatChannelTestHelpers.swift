@@ -15,7 +15,11 @@ class ChatChannelTestHelpers {
         lastActiveWatchers: [ChatUser] = []
     ) -> ChatChannelController_Mock {
         let config = ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")])
-        let channel = chatChannel ?? ChatChannel.mockDMChannel(config: config, lastActiveWatchers: lastActiveWatchers)
+        let channel = chatChannel ?? ChatChannel.mockDMChannel(
+            config: config,
+            ownCapabilities: [.uploadFile],
+            lastActiveWatchers: lastActiveWatchers
+        )
         let channelQuery = ChannelQuery(cid: channel.cid)
         let channelListQuery = ChannelListQuery(filter: .containMembers(userIds: [chatClient.currentUserId ?? .unique]))
         let channelController = ChatChannelController_Mock.mock(

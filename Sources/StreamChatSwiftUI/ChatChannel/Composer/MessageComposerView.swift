@@ -68,6 +68,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     state: $viewModel.pickerTypeState,
                     channelConfig: channelConfig
                 )
+                .environmentObject(viewModel)
 
                 factory.makeComposerInputView(
                     text: $viewModel.text,

@@ -362,8 +362,8 @@ extension UserRobot {
             typeText("/giphy")
             sendMessage(text, waitForAppearance: false)
         }
-        if send { tapOnSendGiphyButton() }
         MessageListPage.Attributes.actionButtons().firstMatch.wait()
+        if send { tapOnSendGiphyButton() }
         return self
     }
 

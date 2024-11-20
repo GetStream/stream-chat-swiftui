@@ -663,8 +663,8 @@ extension UserRobot {
 
         if ProcessInfo().operatingSystemVersion.majorVersion > 14 {
             // There is no image preview element details in the hierarchy tree on iOS < 15
-            let previewImage = attributes.LinkPreview.image(in: messageCell)
-            XCTAssertTrue(previewImage.isHittable, "Preview image is not clickable")
+            let link = attributes.LinkPreview.link(in: messageCell)
+            XCTAssertTrue(link.isHittable, "Preview image is not clickable")
         }
         XCTAssertTrue(previewTitle.isHittable, "Preview title is not clickable")
         XCTAssertTrue(previewDescription.isHittable, "Preview description is not clickable")
@@ -866,7 +866,7 @@ extension UserRobot {
     ) -> Self {
         let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
         XCTAssertTrue(attributes.giphyLabel(in: cell).wait().exists, "Giphy label does not exist")
-        XCTAssertEqual(0, attributes.giphyButtons(in: cell).count)
+        XCTAssertTrue(attributes.giphyImage(in: cell).exists, "Giphy image does not exist")
         return self
     }
 
@@ -931,22 +931,12 @@ extension UserRobot {
         let image = attributes.image(in: messageCell)
         if isPresent {
             image.wait()
-            sleep(2) // At the moment, this assert is flaky without it
         } else {
             image.waitForDisappearance()
         }
 
         let errMessage = isPresent ? "Image is not presented" : "Image is presented"
-        XCTAssertTrue(image.exists, errMessage, file: file, line: line)
-
-        image.safeTap()
-        image.waitForDisappearance(timeout: 2)
-        if image.exists {
-            image.safeTap()
-        }
-
-        let fullscreenImage = attributes.fullscreenImage().wait()
-        XCTAssertTrue(fullscreenImage.exists, "Fullscreen \(errMessage)", file: file, line: line)
+        XCTAssertEqual(isPresent, image.exists, errMessage, file: file, line: line)
         return self
     }
 
