@@ -40,6 +40,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 HStack {
                     Text(poll.name)
                         .font(fonts.bodyBold)
+                        .foregroundColor(textColor(for: message))
                     Spacer()
                 }
                 
@@ -56,7 +57,8 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     viewModel: viewModel,
                     option: option,
                     optionVotes: poll.voteCount(for: option),
-                    maxVotes: poll.currentMaximumVoteCount
+                    maxVotes: poll.currentMaximumVoteCount,
+                    textColor: textColor(for: message)
                 )
                 .layoutPriority(1) // do not compress long text
             }
@@ -188,6 +190,7 @@ struct PollOptionView: View {
     var optionFont: Font = InjectedValues[\.fonts].body
     var optionVotes: Int?
     var maxVotes: Int?
+    var textColor: Color
     /// If true, only option name and vote count is shown, otherwise votes indicator and avatars appear as well.
     var alternativeStyle: Bool = false
     /// The spacing between the checkbox and the option name.
@@ -211,6 +214,7 @@ struct PollOptionView: View {
                 HStack(alignment: .top) {
                     Text(option.text)
                         .font(optionFont)
+                        .foregroundColor(textColor)
                     Spacer()
                     if !alternativeStyle, viewModel.showVoterAvatars {
                         HStack(spacing: -4) {
@@ -225,6 +229,7 @@ struct PollOptionView: View {
                         }
                     }
                     Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
+                        .foregroundColor(textColor)
                 }
                 if !alternativeStyle {
                     PollVotesIndicatorView(
