@@ -38,7 +38,8 @@ public struct TrailingComposerView: View {
     }
 }
 
-struct VoiceRecordingButton: View {
+/// The button responsible to start voice recording.
+public struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
     @Injected(\.utils) var utils
     
@@ -47,7 +48,7 @@ struct VoiceRecordingButton: View {
     @State private var longPressed = false
     @State private var longPressStarted: Date?
 
-    var body: some View {
+    public var body: some View {
         Image(systemName: "mic")
             .foregroundColor(Color(colors.textLowEmphasis))
             .gesture(
