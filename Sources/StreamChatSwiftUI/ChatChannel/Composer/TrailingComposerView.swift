@@ -48,6 +48,10 @@ public struct VoiceRecordingButton: View {
     @State private var longPressed = false
     @State private var longPressStarted: Date?
 
+    public init(viewModel: MessageComposerViewModel) {
+        self.viewModel = viewModel
+    }
+
     public var body: some View {
         Image(systemName: "mic")
             .foregroundColor(Color(colors.textLowEmphasis))
