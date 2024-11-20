@@ -388,6 +388,33 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_linkAttachmentView_shouldNotRenderLinkPreviewWithOtherAttachments() {
+        // Given
+        let messageWithLinkAndImages = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "https://getstream.io",
+            author: .mock(id: .unique),
+            attachments: [
+                ChatChannelTestHelpers.imageAttachments[0],
+                ChatChannelTestHelpers.videoAttachments[0]
+            ]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: messageWithLinkAndImages,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_deletedMessageView_snapshot() {
         // Given
         let message = ChatMessage.mock(
