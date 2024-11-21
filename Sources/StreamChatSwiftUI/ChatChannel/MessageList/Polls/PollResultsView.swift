@@ -55,7 +55,7 @@ struct PollResultsView: View {
                 Spacer()
             }
         }
-        .background(Color(colors.background).ignoresSafeArea())
+        .background(Color(colors.background8).ignoresSafeArea())
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(L10n.Message.Polls.Toolbar.resultsTitle)

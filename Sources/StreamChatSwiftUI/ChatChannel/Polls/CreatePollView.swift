@@ -162,7 +162,7 @@ struct CreatePollView: View {
                 Spacer()
                     .modifier(ListRowModifier())
             }
-            .background(Color(colors.background).ignoresSafeArea())
+            .background(Color(colors.background8).ignoresSafeArea())
             .listStyle(.plain)
             .id(listId)
             .toolbar {
@@ -237,7 +237,7 @@ struct ListRowModifier: ViewModifier {
         if #available(iOS 15.0, *) {
             content
                 .listRowSeparator(.hidden)
-                .listRowBackground(Color(colors.background))
+                .listRowBackground(Color(colors.background8))
         } else {
             content
         }
