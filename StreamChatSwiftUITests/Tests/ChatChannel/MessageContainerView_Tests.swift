@@ -59,9 +59,12 @@ class MessageContainerView_Tests: StreamChatTestCase {
         let key = "ai_generated"
         let utils = Utils(
             dateFormatter: EmptyDateFormatter(),
-            messageListConfig: .init(skipEditedMessageLabel: { message in
-                message.extraData[key]?.boolValue == true
-        }))
+            messageListConfig: .init(
+                skipEditedMessageLabel: { message in
+                    message.extraData[key]?.boolValue == true
+                }
+            )
+        )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let message = ChatMessage.mock(
             id: .unique,
