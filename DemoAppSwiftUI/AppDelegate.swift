@@ -63,7 +63,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         #endif
 
         let utils = Utils(
-            messageListConfig: MessageListConfig(dateIndicatorPlacement: .messageList, userBlockingEnabled: true),
+            messageListConfig: MessageListConfig(
+                dateIndicatorPlacement: .messageList,
+                userBlockingEnabled: true,
+                skipEditedMessageLabel: { message in
+                    message.extraData["ai_generated"]?.boolValue == true
+                }
+            ),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
