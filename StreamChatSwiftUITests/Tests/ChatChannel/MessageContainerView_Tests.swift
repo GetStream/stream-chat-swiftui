@@ -54,6 +54,35 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_messageContainerEditedAIGenerated_snapshot() {
+        // Given
+        let key = "ai_generated"
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                skipEditedMessageLabel: { message in
+                    message.extraData[key]?.boolValue == true
+                }
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message sent by current user",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            extraData: [key: true],
+            isSentByCurrentUser: true,
+            textUpdatedAt: Date()
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
     func test_messageContainerCurrentUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
