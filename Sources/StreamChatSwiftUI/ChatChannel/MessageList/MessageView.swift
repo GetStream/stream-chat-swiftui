@@ -44,7 +44,8 @@ public struct MessageView<Factory: ViewFactory>: View {
             } else if let poll = message.poll {
                 factory.makePollView(message: message, poll: poll, isFirst: isFirst)
             } else if !message.attachmentCounts.isEmpty {
-                if messageTypeResolver.hasLinkAttachment(message: message) {
+                let hasOnlyLinks = { message.attachmentCounts.keys.allSatisfy { $0 == .linkPreview } }
+                if messageTypeResolver.hasLinkAttachment(message: message) && hasOnlyLinks() {
                     factory.makeLinkAttachmentView(
                         for: message,
                         isFirst: isFirst,
