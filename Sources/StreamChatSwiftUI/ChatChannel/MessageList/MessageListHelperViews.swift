@@ -66,7 +66,9 @@ struct MessageDateView: View {
     
     var text: String {
         var text = dateFormatter.string(from: message.createdAt)
-        let showMessageEditedLabel = utils.messageListConfig.isMessageEditedLabelEnabled
+        let messageListConfig = utils.messageListConfig
+        let showMessageEditedLabel = messageListConfig.isMessageEditedLabelEnabled
+            && !messageListConfig.skipEditedMessageLabel(message)
             && message.textUpdatedAt != nil
             && !message.isDeleted
         if showMessageEditedLabel {
