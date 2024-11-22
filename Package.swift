@@ -1,13 +1,12 @@
 // swift-tools-version:5.9
 
-import Foundation
 import PackageDescription
 
 let package = Package(
     name: "StreamChatSwiftUI",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v14), .macOS(.v11)
+        .iOS(.v14), .macOS(.v11) // General platform settings
     ],
     products: [
         .library(
@@ -16,8 +15,7 @@ let package = Package(
         ),
         .library(
             name: "StreamChatAISwiftUI",
-            targets: ["StreamChatAISwiftUI"],
-            condition: .when(platform: .iOS, version: .v15)
+            targets: ["StreamChatAISwiftUI"]
         )
     ],
     dependencies: [
@@ -28,15 +26,23 @@ let package = Package(
     targets: [
         .target(
             name: "StreamChatSwiftUI",
-            dependencies: [.product(name: "StreamChat", package: "stream-chat-swift")],
+            dependencies: [
+                .product(name: "StreamChat", package: "stream-chat-swift")
+            ],
             exclude: ["README.md", "Info.plist", "Generated/L10n_template.stencil"],
             resources: [.process("Resources")]
         ),
         .target(
             name: "StreamChatAISwiftUI",
-            dependencies: [.product(name: "Splash", package: "Splash"), .product(name: "MarkdownUI", package: "swift-markdown-ui")],
+            dependencies: [
+                .product(name: "Splash", package: "Splash"),
+                .product(name: "MarkdownUI", package: "swift-markdown-ui")
+            ],
             exclude: [],
-            resources: []
+            resources: [],
+            swiftSettings: [
+                .define("PLATFORM_IOS15_OR_LATER")
+            ]
         )
     ]
 )
