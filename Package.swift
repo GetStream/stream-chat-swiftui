@@ -16,7 +16,8 @@ let package = Package(
         ),
         .library(
             name: "StreamChatAISwiftUI",
-            targets: ["StreamChatAISwiftUI"]
+            targets: ["StreamChatAISwiftUI"],
+            condition: .when(platform: .iOS, version: .v15)
         )
     ],
     dependencies: [
