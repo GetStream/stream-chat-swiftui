@@ -13,10 +13,16 @@ let package = Package(
         .library(
             name: "StreamChatSwiftUI",
             targets: ["StreamChatSwiftUI"]
+        ),
+        .library(
+            name: "StreamChatAISwiftUI",
+            targets: ["StreamChatAISwiftUI"]
         )
     ],
     dependencies: [
         .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.66.0"),
+        .package(url: "https://github.com/JohnSundell/Splash.git", from: "0.16.0"),
+        .package(url: "https://github.com/gonzalezreal/swift-markdown-ui.git", from: "2.4.1")
     ],
     targets: [
         .target(
@@ -24,6 +30,12 @@ let package = Package(
             dependencies: [.product(name: "StreamChat", package: "stream-chat-swift")],
             exclude: ["README.md", "Info.plist", "Generated/L10n_template.stencil"],
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "StreamChatAISwiftUI",
+            dependencies: [.product(name: "Splash", package: "Splash"), .product(name: "MarkdownUI", package: "swift-markdown-ui")],
+            exclude: [],
+            resources: []
         )
     ]
 )
