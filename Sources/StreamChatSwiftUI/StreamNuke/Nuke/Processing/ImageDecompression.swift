@@ -15,14 +15,10 @@ enum ImageDecompression {
     static var isDecompressionNeededAK = "ImageDecompressor.isDecompressionNeeded.AssociatedKey"
 
     static func setDecompressionNeeded(_ isDecompressionNeeded: Bool, for image: PlatformImage) {
-        withUnsafePointer(to: &isDecompressionNeededAK) { keyPointer in
-            objc_setAssociatedObject(image, keyPointer, isDecompressionNeeded, .OBJC_ASSOCIATION_RETAIN)
-        }
+        objc_setAssociatedObject(image, &isDecompressionNeededAK, isDecompressionNeeded, .OBJC_ASSOCIATION_RETAIN)
     }
 
     static func isDecompressionNeeded(for image: PlatformImage) -> Bool? {
-        return withUnsafePointer(to: &isDecompressionNeededAK) { keyPointer in
-            objc_getAssociatedObject(image, keyPointer) as? Bool
-        }
+        objc_getAssociatedObject(image, &isDecompressionNeededAK) as? Bool
     }
 }

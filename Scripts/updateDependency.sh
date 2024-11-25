@@ -24,6 +24,10 @@ if [[ $dependency_directory == *"Nuke"* ]]; then
 	dependency_url="git@github.com:kean/Nuke.git"
 elif [[ $dependency_directory == *"SwiftyGif"* ]]; then
 	dependency_url="git@github.com:kirualex/SwiftyGif.git"
+elif [[ $dependency_directory == *"Splash"* ]]; then
+	dependency_url="git@github.com:JohnSundell/Splash.git"
+elif [[ $dependency_directory == *"MarkdownUI"* ]]; then
+	dependency_url="git@github.com:gonzalezreal/swift-markdown-ui.git"
 else
 	echo "→ Unknown dependency at $dependency_directory"
 	exit 1
