@@ -217,7 +217,12 @@ class MessageActions_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel()
         let moderationDetails = MessageModerationDetails(
             originalText: "Some text",
-            action: .bounce
+            action: .bounce,
+            textHarms: nil,
+            imageHarms: nil,
+            blocklistMatched: nil,
+            semanticFilterMatched: nil,
+            platformCircumvented: nil
         )
         let message = ChatMessage.mock(
             id: .unique,
