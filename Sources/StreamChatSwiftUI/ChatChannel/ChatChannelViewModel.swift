@@ -709,19 +709,18 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                  .remove(_, index: _):
                 return true
             case let .update(message, index: index):
-                let animateReactions = message.reactionScoresId != messages[index.row].reactionScoresId
+                guard index.row >= messages.startIndex, index.row < messages.endIndex else { continue }
+                let existingDisplayedMessage = messages[index.row]
+                let animateReactions = message.reactionScoresId != existingDisplayedMessage.reactionScoresId
                     && utils.messageListConfig.messageDisplayOptions.shouldAnimateReactions
-                if index.row < messages.count,
-                   message.messageId != messages[index.row].messageId
+                if animateReactions,
+                   message.messageId != existingDisplayedMessage.messageId
                    || message.type == .ephemeral
                    || !message.linkAttachments.isEmpty {
-                    if index.row < messages.count
-                        && animateReactions {
-                        animateChanges = message.linkAttachments.isEmpty
-                    }
+                    animateChanges = message.linkAttachments.isEmpty
                 }
-            default:
-                break
+            case .move(_, fromIndex: _, toIndex: _):
+                continue
             }
         }
         
