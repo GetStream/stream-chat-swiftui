@@ -19,11 +19,11 @@ update_swiftygif: check_version_parameter
 	./Scripts/removePublicDeclarations.sh Sources/StreamChatSwiftUI/StreamSwiftyGif
 
 update_markdown_ui: check_version_parameter
-	./Scripts/updateDependency.sh $(version) Dependencies/MarkdownUI Sources/StreamChatAISwiftUI/MarkdownUI Sources
+	./Scripts/updateDependency.sh $(version) Dependencies/MarkdownUI Sources/StreamChatAISwiftUI/StreamMarkdownUI Sources
 	./Scripts/removePublicDeclarations.sh Sources/StreamChatAISwiftUI/StreamMarkdownUI
 
 update_splash: check_version_parameter
-	./Scripts/updateDependency.sh $(version) Dependencies/Splash Sources/StreamChatAISwiftUI/Splash Sources
+	./Scripts/updateDependency.sh $(version) Dependencies/Splash Sources/StreamChatAISwiftUI/StreamSplash Sources
 	./Scripts/removePublicDeclarations.sh Sources/StreamChatAISwiftUI/StreamSplash
 
 check_version_parameter:
