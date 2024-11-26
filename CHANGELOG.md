@@ -3,8 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.67.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.67.0)
+_November 25, 2024_
+
 ### ✅ Added
 - Make `VoiceRecordingButton` public [#658](https://github.com/GetStream/stream-chat-swiftui/pull/658)
+- Add config to skip edited label for some messages [#660](https://github.com/GetStream/stream-chat-swiftui/pull/665)
 ### 🐞 Fixed
 - Fix message long press taking too much time to show actions [#648](https://github.com/GetStream/stream-chat-swiftui/pull/648)
 - Fix rendering link attachment preview with other attachment types [#659](https://github.com/GetStream/stream-chat-swiftui/pull/659)
@@ -13,7 +19,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Message composer now uses `.uploadFile` capability when showing attachment picker icon [#646](https://github.com/GetStream/stream-chat-swiftui/pull/646)
 - `ChannelInfoView` now uses `.updateChannelMembers` capability to show "Add Users" button [#651](https://github.com/GetStream/stream-chat-swiftui/pull/651)
-- Add config to skip edited label for some messages [#660](https://github.com/GetStream/stream-chat-swiftui/pull/660)
 
 # [4.66.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.66.0)
 _November 06, 2024_
