@@ -181,7 +181,7 @@ lane :swiftui_testflight_build do
     sdk_target: 'StreamChatSwiftUI',
     app_target: 'DemoAppSwiftUI',
     app_identifier: 'io.getstream.iOS.DemoAppSwiftUI',
-    app_version: last_git_tag
+    app_version: File.read(swift_environment_path).match(/String\s+=\s+"([\d.]+)"/)[1]
   )
 end
 
