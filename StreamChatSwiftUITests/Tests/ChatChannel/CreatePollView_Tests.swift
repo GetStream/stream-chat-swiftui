@@ -19,9 +19,9 @@ final class CreatePollView_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_createPollView_allOptionsDisabledSnapshot() {
         // Given
         let hidden = PollsEntryConfig(configurable: false, defaultValue: false)
@@ -38,7 +38,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_createPollView_allOptionsEnabledSnapshot() {
@@ -58,7 +58,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_createPollView_mixedOptionsSnapshot() {
@@ -81,6 +81,6 @@ final class CreatePollView_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 }
