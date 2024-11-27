@@ -269,6 +269,12 @@ public struct InjectedChannelInfo {
 
 extension ChatChannel {
 
+    public var previewMessageText: String? {
+        guard let previewMessage else { return nil }
+        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+        return messageFormatter.format(previewMessage)
+    }
+    
     public var lastMessageText: String? {
         guard let latestMessage = latestMessages.first else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
@@ -293,8 +299,8 @@ extension ChatChannel {
             return L10n.Channel.Item.muted
         } else if shouldShowTypingIndicator {
             return typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
-        } else if let lastMessageText = lastMessageText {
-            return lastMessageText
+        } else if let previewMessageText {
+            return previewMessageText
         } else {
             return L10n.Channel.Item.emptyMessages
         }

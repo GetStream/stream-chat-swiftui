@@ -31,7 +31,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 240)
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_pollAttachmentView_snapshotUniqueVotes() {
@@ -59,7 +59,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 150)
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_pollAttachmentView_closedPoll() {
@@ -88,7 +88,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         .frame(width: defaultScreenSize.width, height: 150)
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_pollAttachmentView_resultsSnapshot() {
@@ -101,7 +101,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
             .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_pollAttachmentView_allOptions() {
@@ -114,7 +114,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
             .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_pollAttachmentView_allVotes() {
@@ -126,7 +126,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
             .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
     func test_pollAttachmentView_allComments() {
@@ -145,6 +145,6 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 }

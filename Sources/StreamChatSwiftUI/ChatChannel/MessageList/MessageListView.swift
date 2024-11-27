@@ -263,6 +263,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
                 .accessibilityIdentifier("MessageListScrollView")
             }
+            
+            if messages.isEmpty {
+                Spacer()
+            }
 
             if showScrollToLatestButton {
                 factory.makeScrollToBottomButton(
