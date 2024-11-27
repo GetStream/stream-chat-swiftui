@@ -248,7 +248,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 }
                 .flippedUpsideDown()
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: messages.isEmpty ? .infinity : nil)
                 .clipped()
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId = scrolledId {
@@ -262,10 +262,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 }
                 .accessibilityIdentifier("MessageListScrollView")
-            }
-            
-            if messages.isEmpty {
-                Spacer()
             }
 
             if showScrollToLatestButton {
