@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix message list scroll not working when drag gestured is initiated from a message [#671](https://github.com/GetStream/stream-chat-swiftui/pull/671)
 
 # [4.67.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.67.0)
 _November 25, 2024_
