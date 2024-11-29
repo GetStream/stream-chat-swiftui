@@ -116,12 +116,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 })
                         }
                     )
-                    .onTapGesture(count: 2) {
-                        if messageListConfig.doubleTapOverlayEnabled {
-                            handleGestureForMessage(showsMessageActions: true)
-                        }
-                    }
-                    .highPriorityGesture(
+                    .gesture(
                         LongPressGesture()
                             .onEnded { _ in
                                 if !message.isDeleted {
@@ -129,6 +124,11 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 }
                             }
                     )
+                    .onTapGesture(count: 2) {
+                        if messageListConfig.doubleTapOverlayEnabled {
+                            handleGestureForMessage(showsMessageActions: true)
+                        }
+                    }
                     .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
                     .simultaneousGesture(
                         DragGesture(
