@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "ai-typing-events"),
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "ai/new-typing-events"),
     ],
     targets: [
         .target(
