@@ -5,6 +5,7 @@
 import Combine
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
 class AddUsersViewModel_Tests: StreamChatTestCase {
