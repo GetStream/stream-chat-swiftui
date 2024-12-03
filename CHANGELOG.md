@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.68.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.68.0)
+_December 03, 2024_
+
 ### 🐞 Fixed
 - Fix showing giphy message in the channel list [#669](https://github.com/GetStream/stream-chat-swiftui/pull/669)
 - Fix message list scroll not working when drag gestured is initiated from a message [#671](https://github.com/GetStream/stream-chat-swiftui/pull/671)
