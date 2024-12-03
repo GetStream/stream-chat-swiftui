@@ -6,6 +6,7 @@ import Combine
 import Foundation
 import StreamChat
 import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import SwiftUI
 
 /// Test commands configuration.

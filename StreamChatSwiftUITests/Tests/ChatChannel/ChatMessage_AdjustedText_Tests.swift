@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
 class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
