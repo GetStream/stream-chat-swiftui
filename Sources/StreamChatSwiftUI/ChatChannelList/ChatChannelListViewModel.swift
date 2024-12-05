@@ -365,7 +365,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             messageSearchController.loadNextMessages { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
-                self.updateMessageSearchResults()
             }
         }
     }
