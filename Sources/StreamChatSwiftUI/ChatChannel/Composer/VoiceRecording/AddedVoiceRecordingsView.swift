@@ -30,7 +30,8 @@ struct AddedVoiceRecordingsView: View {
                 VoiceRecordingView(
                     handler: voiceRecordingHandler,
                     addedVoiceRecording: recording,
-                    index: i
+                    index: i,
+                    textColor: Color(colors.text)
                 )
                 .padding(.all, 8)
                 .padding(.trailing, 8)

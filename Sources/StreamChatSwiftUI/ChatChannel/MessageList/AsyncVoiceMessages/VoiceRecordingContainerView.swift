@@ -57,7 +57,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                         duration: attachment.payload.duration ?? 0,
                         waveform: attachment.payload.waveformData ?? []
                     ),
-                    index: index(for: attachment)
+                    index: index(for: attachment),
+                    textColor: textColor(for: message)
                 )
             }
             if !message.text.isEmpty {
@@ -88,7 +89,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             player.subscribe(handler)
         }
         .padding(.all, 8)
-        .background(Color(colors.background))
         .cornerRadius(16)
         .padding(.all, 4)
         .modifier(
@@ -115,7 +115,8 @@ struct VoiceRecordingView: View {
     
     let addedVoiceRecording: AddedVoiceRecording
     let index: Int
-    
+    let textColor: Color
+
     private var player: AudioPlaying {
         utils.audioPlayer
     }
@@ -151,7 +152,8 @@ struct VoiceRecordingView: View {
                 )
                 .bold()
                 .lineLimit(1)
-                
+                .foregroundColor(textColor)
+
                 HStack {
                     RecordingDurationView(
                         duration: showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration
