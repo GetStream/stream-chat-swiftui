@@ -12,13 +12,14 @@ enum MessageRepliesConstants {
 
 /// View shown below a message, when there are replies to it.
 public struct MessageRepliesView<Factory: ViewFactory>: View {
-
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
     var factory: Factory
     var channel: ChatChannel
-    var message: ChatMessage
+    var message: ChatMessage?
+    var parentMessageId: MessageId?
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
@@ -26,8 +27,9 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         channel: ChatChannel,
-        message: ChatMessage,
+        message: ChatMessage?,
         replyCount: Int,
+        parentMessageId: MessageId? = nil,
         showReplyCount: Bool = true,
         isRightAligned: Bool? = nil
     ) {
@@ -35,7 +37,8 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         self.channel = channel
         self.message = message
         self.replyCount = replyCount
-        self.isRightAligned = isRightAligned ?? message.isRightAligned
+        self.parentMessageId = parentMessageId
+        self.isRightAligned = isRightAligned ?? message?.isRightAligned ?? false
         self.showReplyCount = showReplyCount
     }
 
@@ -45,16 +48,31 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             resignFirstResponder()
             // NOTE: this is used to avoid breaking changes.
             // Will be updated in a major release.
-            NotificationCenter.default.post(
-                name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
-                object: nil,
-                userInfo: [MessageRepliesConstants.selectedMessage: message]
-            )
+            if let parentMessageId = self.parentMessageId {
+                let messageController = chatClient.messageController(cid: channel.cid, messageId: parentMessageId)
+                messageController.synchronize { error in
+                    if error != nil {
+                        return
+                    }
+                    guard let message = messageController.message else { return }
+                    NotificationCenter.default.post(
+                        name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                        object: nil,
+                        userInfo: [MessageRepliesConstants.selectedMessage: message]
+                    )
+                }
+            } else if let message = self.message {
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                    object: nil,
+                    userInfo: [MessageRepliesConstants.selectedMessage: message]
+                )
+            }
         } label: {
             HStack {
                 if !isRightAligned {
                     MessageAvatarView(
-                        avatarURL: message.threadParticipants.first?.imageURL,
+                        avatarURL: message?.threadParticipants.first?.imageURL,
                         size: .init(width: 16, height: 16)
                     )
                 }
@@ -62,7 +80,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     .font(fonts.footnoteBold)
                 if isRightAligned {
                     MessageAvatarView(
-                        avatarURL: message.threadParticipants.first?.imageURL,
+                        avatarURL: message?.threadParticipants.first?.imageURL,
                         size: .init(width: 16, height: 16)
                     )
                 }
@@ -109,7 +127,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     }
 
     var repliesText: String {
-        if message.replyCount == 1 {
+        if let message = self.message, message.replyCount == 1 {
             return L10n.Message.Threads.reply
         } else {
             return L10n.Message.Threads.replies

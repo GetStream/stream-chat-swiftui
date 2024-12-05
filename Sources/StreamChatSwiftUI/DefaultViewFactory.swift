@@ -519,6 +519,7 @@ extension ViewFactory {
             channel: channel,
             message: parentMessage,
             replyCount: replyCount,
+            parentMessageId: parentMessage.id == message.id ? message.parentMessageId : nil,
             showReplyCount: false,
             isRightAligned: message.isRightAligned
         )

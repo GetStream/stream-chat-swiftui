@@ -537,6 +537,9 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype MessageRepliesShownInChannelViewType: View
     /// Creates the message replies view for a reply that is also shown in a channel.
+    ///
+    /// **Important Note:** The `parentMessage` can be equal to the `message` in case the `parentMessage` is `nil`.
+    /// In order to avoid breaking changes, the `parentMessage` is not optional, although it should.
     /// - Parameters:
     ///  - channel: the channel where the message is sent.
     ///  - message: the message that's being replied to.
