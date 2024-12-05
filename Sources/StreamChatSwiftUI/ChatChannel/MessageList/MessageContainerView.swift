@@ -175,12 +175,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             .accessibility(identifier: "MessageRepliesView")
                         } else if message.showReplyInChannel,
                                   let parentId = message.parentMessageId,
-                                  let controller = utils.channelControllerFactory.currentChannelController {
-                            let parentMessage = controller.dataStore.message(id: parentId) ?? message
+                                  let controller = utils.channelControllerFactory.currentChannelController,
+                                  let parentMessage = controller.dataStore.message(id: parentId) {
                             factory.makeMessageRepliesShownInChannelView(
                                 channel: channel,
                                 message: message,
-                                parentMessage: controller.dataStore.message(id: parentId) ?? message,
+                                parentMessage: parentMessage,
                                 replyCount: parentMessage.replyCount
                             )
                             .accessibilityElement(children: .contain)
