@@ -105,9 +105,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     internal var channelListSearchController: ChatChannelListController?
     internal var messageSearchController: ChatMessageSearchController?
 
-    /// Channels cache to improve performance when searching for messages.
-    /// The cache is needed because accessing the data store is slow due to CoreData DTO->Model conversion.
-    private var messageSearchChannelCache: [ChannelId: ChatChannel] = [:]
+    /// Serial queue used to process the search results.
+    private let queue = DispatchQueue(label: "com.getstream.stream-chat-swiftui.ChatChannelListViewModel")
 
     @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
@@ -391,7 +390,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func performMessageSearch() {
-        messageSearchChannelCache = [:]
         messageSearchController = chatClient.messageSearchController()
         messageSearchController?.delegate = self
         loadingSearchResults = true
@@ -422,24 +420,22 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
 
-        searchResults = messageSearchController.messages
-            .compactMap { message in
+        queue.async {
+            let results: [ChannelSelectionInfo] = messageSearchController.messages.compactMap { message in
                 guard let channelId = message.cid else { return nil }
-                let channel: ChatChannel?
-                if let cachedChannel = self.messageSearchChannelCache[channelId] {
-                    channel = cachedChannel
-                } else {
-                    channel = messageSearchController.dataStore.channel(cid: channelId)
-                    self.messageSearchChannelCache[channelId] = channel
+                guard let channel = messageSearchController.client.channelController(for: channelId).channel else {
+                    return nil
                 }
-                guard let channel = channel else { return nil }
-
                 return ChannelSelectionInfo(
                     channel: channel,
                     message: message,
                     searchType: .channels
                 )
             }
+            DispatchQueue.main.async {
+                self.searchResults = results
+            }
+        }
     }
 
     private func updateChannelSearchResults() {
@@ -458,7 +454,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func clearSearchResults() {
-        messageSearchChannelCache = [:]
         messageSearchController?.delegate = nil
         messageSearchController = nil
         channelListSearchController?.delegate = nil
