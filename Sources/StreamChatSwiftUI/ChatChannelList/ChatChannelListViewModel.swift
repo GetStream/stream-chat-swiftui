@@ -105,6 +105,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     internal var channelListSearchController: ChatChannelListController?
     internal var messageSearchController: ChatMessageSearchController?
 
+    /// Serial queue used to process the search results.
+    private let queue = DispatchQueue(label: "com.getstream.stream-chat-swiftui.ChatChannelListViewModel")
+
     @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
     @Published var hideTabBar = false
@@ -362,7 +365,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             messageSearchController.loadNextMessages { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
-                self.updateMessageSearchResults()
             }
         }
     }
@@ -387,18 +389,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func performMessageSearch() {
-        guard let userId = chatClient.currentUserId else { return }
         messageSearchController = chatClient.messageSearchController()
         messageSearchController?.delegate = self
-        let query = MessageSearchQuery(
-            channelFilter: .containMembers(userIds: [userId]),
-            messageFilter: .autocomplete(.text, text: searchText)
-        )
         loadingSearchResults = true
-        messageSearchController?.search(query: query, completion: { [weak self] _ in
+        messageSearchController?.search(text: searchText) { [weak self] _ in
             self?.loadingSearchResults = false
-            self?.updateMessageSearchResults()
-        })
+        }
     }
 
     private func performChannelSearch() {
@@ -423,10 +419,22 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
 
-        searchResults = messageSearchController.messages
-            .compactMap { message in
-                message.makeChannelSelectionInfo(with: chatClient)
+        queue.async { [weak self] in
+            let results: [ChannelSelectionInfo] = messageSearchController.messages.compactMap { message in
+                guard let channelId = message.cid else { return nil }
+                guard let channel = self?.chatClient.channelController(for: channelId).channel else {
+                    return nil
+                }
+                return ChannelSelectionInfo(
+                    channel: channel,
+                    message: message,
+                    searchType: .channels
+                )
             }
+            DispatchQueue.main.async {
+                self?.searchResults = results
+            }
+        }
     }
 
     private func updateChannelSearchResults() {

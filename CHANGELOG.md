@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ⚡ Performance
+- Improve message search performance [#680](https://github.com/GetStream/stream-chat-swiftui/pull/680)
 
 # [4.68.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.68.0)
 _December 03, 2024_
