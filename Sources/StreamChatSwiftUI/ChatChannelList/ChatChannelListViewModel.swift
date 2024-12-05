@@ -419,10 +419,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
 
-        queue.async {
+        queue.async { [weak self] in
             let results: [ChannelSelectionInfo] = messageSearchController.messages.compactMap { message in
                 guard let channelId = message.cid else { return nil }
-                guard let channel = messageSearchController.client.channelController(for: channelId).channel else {
+                guard let channel = self?.chatClient.channelController(for: channelId).channel else {
                     return nil
                 }
                 return ChannelSelectionInfo(
@@ -432,7 +432,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 )
             }
             DispatchQueue.main.async {
-                self.searchResults = results
+                self?.searchResults = results
             }
         }
     }
