@@ -7,7 +7,7 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
-xcode_version = ENV['XCODE_VERSION'] || '15.4'
+xcode_version = ENV['XCODE_VERSION'] || '16.1'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
 sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
@@ -116,7 +116,6 @@ lane :publish_release do |options|
   UI.user_error!('Release version cannot be empty') if release_version.to_s.empty?
   ensure_git_branch(branch: 'main')
 
-  xcversion(version: '15.0.1')
   clean_products
   build_xcframeworks
   compress_frameworks
