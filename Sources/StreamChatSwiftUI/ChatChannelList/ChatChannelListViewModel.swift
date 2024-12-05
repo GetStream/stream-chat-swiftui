@@ -105,6 +105,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     internal var channelListSearchController: ChatChannelListController?
     internal var messageSearchController: ChatMessageSearchController?
 
+    /// Channels cache to improve performance when searching for messages.
+    /// The cache is needed because accessing the data store is slow due to CoreData DTO->Model conversion.
+    private var messageSearchChannelCache: [ChannelId: ChatChannel] = [:]
+
     @Published public var loadingSearchResults = false
     @Published public var searchResults = [ChannelSelectionInfo]()
     @Published var hideTabBar = false
@@ -387,18 +391,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func performMessageSearch() {
-        guard let userId = chatClient.currentUserId else { return }
+        messageSearchChannelCache = [:]
         messageSearchController = chatClient.messageSearchController()
         messageSearchController?.delegate = self
-        let query = MessageSearchQuery(
-            channelFilter: .containMembers(userIds: [userId]),
-            messageFilter: .autocomplete(.text, text: searchText)
-        )
         loadingSearchResults = true
-        messageSearchController?.search(query: query, completion: { [weak self] _ in
+        messageSearchController?.search(text: searchText) { [weak self] _ in
             self?.loadingSearchResults = false
-            self?.updateMessageSearchResults()
-        })
+        }
     }
 
     private func performChannelSearch() {
@@ -425,7 +424,21 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
         searchResults = messageSearchController.messages
             .compactMap { message in
-                message.makeChannelSelectionInfo(with: chatClient)
+                guard let channelId = message.cid else { return nil }
+                let channel: ChatChannel?
+                if let cachedChannel = self.messageSearchChannelCache[channelId] {
+                    channel = cachedChannel
+                } else {
+                    channel = messageSearchController.dataStore.channel(cid: channelId)
+                    self.messageSearchChannelCache[channelId] = channel
+                }
+                guard let channel = channel else { return nil }
+
+                return ChannelSelectionInfo(
+                    channel: channel,
+                    message: message,
+                    searchType: .channels
+                )
             }
     }
 
@@ -445,6 +458,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func clearSearchResults() {
+        messageSearchChannelCache = [:]
         messageSearchController?.delegate = nil
         messageSearchController = nil
         channelListSearchController?.delegate = nil

@@ -108,19 +108,3 @@ extension ChatChannel {
         ChannelSelectionInfo(channel: self, message: nil)
     }
 }
-
-extension ChatMessage {
-
-    func makeChannelSelectionInfo(with chatClient: ChatClient) -> ChannelSelectionInfo? {
-        if let channelId = cid,
-           let channel = chatClient.channelController(for: channelId).channel {
-            let searchResult = ChannelSelectionInfo(
-                channel: channel,
-                message: self
-            )
-            return searchResult
-        } else {
-            return nil
-        }
-    }
-}
