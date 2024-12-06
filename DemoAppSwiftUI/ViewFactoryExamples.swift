@@ -87,14 +87,21 @@ class DemoAppFactory: ViewFactory {
             action: { [weak self] in
                 guard let self else { return }
                 let channelController = self.chatClient.channelController(for: channel.cid)
-                let userId = channelController.channel?.membership?.id ?? ""
-                let pinnedKey = ChatChannel.isPinnedBy(keyForUserId: userId)
-                let newState = !channel.isPinned
-                channelController.partialChannelUpdate(extraData: [pinnedKey: .bool(newState)]) { error in
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onDismiss()
+                if channel.isPinned {
+                    channelController.unpin { error in
+                        if let error = error {
+                            onError(error)
+                        } else {
+                            onDismiss()
+                        }
+                    }
+                } else {
+                    channelController.pin { error in
+                        if let error = error {
+                            onError(error)
+                        } else {
+                            onDismiss()
+                        }
                     }
                 }
             },
