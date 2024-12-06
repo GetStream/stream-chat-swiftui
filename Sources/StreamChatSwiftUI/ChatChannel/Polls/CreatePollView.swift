@@ -34,7 +34,7 @@ struct ComposerPollView: View {
     }
 }
 
-struct CreatePollView: View {
+public struct CreatePollView: View {
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -47,7 +47,7 @@ struct CreatePollView: View {
     
     @State private var listId = UUID()
     
-    init(chatController: ChatChannelController, messageController: ChatMessageController?) {
+    public init(chatController: ChatChannelController, messageController: ChatMessageController?) {
         _viewModel = StateObject(
             wrappedValue: CreatePollViewModel(
                 chatController: chatController,
@@ -56,7 +56,7 @@ struct CreatePollView: View {
         )
     }
                 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             List {
                 VStack(alignment: .leading, spacing: 8) {
