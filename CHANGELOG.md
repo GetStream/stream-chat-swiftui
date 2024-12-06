@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ⚡ Performance
 - Improve message search performance [#680](https://github.com/GetStream/stream-chat-swiftui/pull/680)
-### 🔄 Changed
+### ✅ Added
 - Make `CreatePollView` public [#685](https://github.com/GetStream/stream-chat-swiftui/pull/685)
 
 # [4.68.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.68.0)
