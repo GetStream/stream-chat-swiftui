@@ -133,15 +133,14 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         message: ChatMessage,
         parentMessageController: ChatMessageController
     ) {
-        self.parentMessageObserver = parentMessageController.observableObject
+        parentMessageObserver = parentMessageController.observableObject
         self.factory = factory
         self.channel = channel
         self.message = message
-        self.parentMessageObserver.controller.synchronize()
     }
 
     var body: some View {
-        Group {
+        VStack {
             if let parentMessage = parentMessageObserver.message {
                 factory.makeMessageRepliesShownInChannelView(
                     channel: channel,
@@ -151,6 +150,10 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
                 )
             } else {
                 EmptyView()
+            }
+        }.onAppear {
+            if parentMessageObserver.message == nil {
+                parentMessageObserver.controller.synchronize()
             }
         }
     }
