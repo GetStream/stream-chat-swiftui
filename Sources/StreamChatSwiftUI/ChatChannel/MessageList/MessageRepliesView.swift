@@ -133,11 +133,11 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         message: ChatMessage,
         parentMessageController: ChatMessageController
     ) {
-        parentMessageObserver = parentMessageController.observableObject
+        self.parentMessageObserver = parentMessageController.observableObject
         self.factory = factory
         self.channel = channel
         self.message = message
-        parentMessageObserver.controller.synchronize()
+        self.parentMessageObserver.controller.synchronize()
     }
 
     var body: some View {
