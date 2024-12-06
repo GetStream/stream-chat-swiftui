@@ -121,7 +121,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
 /// This is needed when the parent message is not available in the local cache.
 /// Changing the `parentMessage` to `nil` in the `MessageRepliesView` would case multiple changes including breaking changes.
 struct LazyMessageRepliesView<Factory: ViewFactory>: View {
-    @State private var parentMessageObserver: ChatMessageController.ObservableObject
+    @StateObject private var parentMessageObserver: ChatMessageController.ObservableObject
 
     var factory: Factory
     var channel: ChatChannel
@@ -133,7 +133,7 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         message: ChatMessage,
         parentMessageController: ChatMessageController
     ) {
-        parentMessageObserver = parentMessageController.observableObject
+        _parentMessageObserver = StateObject(wrappedValue: parentMessageController.observableObject)
         self.factory = factory
         self.channel = channel
         self.message = message
