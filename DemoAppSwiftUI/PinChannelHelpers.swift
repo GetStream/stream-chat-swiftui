@@ -6,18 +6,6 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-extension ChatChannel {
-    static func isPinnedBy(keyForUserId userId: UserId) -> String {
-        "is_pinned_by_\(userId)"
-    }
-
-    var isPinned: Bool {
-        guard let userId = membership?.id else { return false }
-        let key = Self.isPinnedBy(keyForUserId: userId)
-        return extraData[key]?.boolValue ?? false
-    }
-}
-
 struct DemoAppChatChannelListItem: View {
 
     @Injected(\.fonts) private var fonts
