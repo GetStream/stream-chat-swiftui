@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix message thread reply footnote view not shown if parent message not in cache [#681](https://github.com/GetStream/stream-chat-swiftui/pull/681)
 ### ⚡ Performance
 - Improve message search performance [#680](https://github.com/GetStream/stream-chat-swiftui/pull/680)
+### ✅ Added
+- Make `CreatePollView` public [#685](https://github.com/GetStream/stream-chat-swiftui/pull/685)
 
 # [4.68.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.68.0)
 _December 03, 2024_
