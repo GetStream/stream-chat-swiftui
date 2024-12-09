@@ -53,6 +53,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
 
     var title: String
 
+    @State var isChooseChannelQueryShown = false
     @State var isNewChatShown = false
     @State var logoutAlertShown = false
     @State var actionsPopupShown = false
@@ -99,17 +100,25 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                 )
             }
             .confirmationDialog("", isPresented: $actionsPopupShown) {
-                Button("Blocked users") {
+                Button("Choose Channel Query") {
+                    isChooseChannelQueryShown = true
+                }
+                Button("Show Blocked Users") {
                     blockedUsersShown = true
                 }
                 
-                Button("Logout") {
+                Button("Logout", role: .destructive) {
                     logoutAlertShown = true
                 }
                 
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Select an action")
+            }
+            .confirmationDialog("", isPresented: $isChooseChannelQueryShown) {
+                ChooseChannelQueryView()
+            } message: {
+                Text("Choose a channel query")
             }
         }
     }

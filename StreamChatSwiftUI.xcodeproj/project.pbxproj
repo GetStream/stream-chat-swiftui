@@ -11,6 +11,8 @@
 		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4F077EF82C85E05700F06D83 /* DelayedRenderingViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
+		4F65F1862D06EEA7009F69A8 /* ChooseChannelQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */; };
+		4F65F18A2D071798009F69A8 /* ChannelListQueryIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */; };
 		4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */; };
 		4F6D83512C1079A00098C298 /* AlertBannerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83502C1079A00098C298 /* AlertBannerViewModifier.swift */; };
 		4F6D83542C1094220098C298 /* AlertBannerViewModifier_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */; };
@@ -597,6 +599,8 @@
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedRenderingViewModifier.swift; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
+		4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseChannelQueryView.swift; sourceTree = "<group>"; };
+		4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListQueryIdentifier.swift; sourceTree = "<group>"; };
 		4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel_Tests.swift; sourceTree = "<group>"; };
 		4F6D83502C1079A00098C298 /* AlertBannerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerViewModifier.swift; sourceTree = "<group>"; };
 		4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerViewModifier_Tests.swift; sourceTree = "<group>"; };
@@ -1169,6 +1173,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F65F18B2D0724F3009F69A8 /* ChannelHeader */ = {
+			isa = PBXGroup;
+			children = (
+				846B8E2B2C5B8117006A6249 /* BlockedUsersView.swift */,
+				846B8E2D2C5B8130006A6249 /* BlockedUsersViewModel.swift */,
+				4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */,
+				4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */,
+				8465FCD7274694D200AF091E /* CustomChannelHeader.swift */,
+				84335015274BABF3007A1B81 /* NewChatView.swift */,
+				84335017274BAD4B007A1B81 /* NewChatViewModel.swift */,
+			);
+			path = ChannelHeader;
+			sourceTree = "<group>";
+		};
 		4F6D83522C108D470098C298 /* CommonViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -1595,11 +1613,11 @@
 		8465FCBD27468B6900AF091E /* DemoAppSwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				4F65F18B2D0724F3009F69A8 /* ChannelHeader */,
 				8492974727ABD97F00A8EEB0 /* DemoAppSwiftUI.entitlements */,
 				8465FCBE27468B6900AF091E /* DemoAppSwiftUIApp.swift */,
 				8465FCD3274694D200AF091E /* AppDelegate.swift */,
 				8465FCD6274694D200AF091E /* CustomAttachment.swift */,
-				8465FCD7274694D200AF091E /* CustomChannelHeader.swift */,
 				8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */,
 				8465FCD4274694D200AF091E /* DemoUser.swift */,
 				8465FCD2274694D200AF091E /* LaunchAnimationState.swift */,
@@ -1607,8 +1625,6 @@
 				8465FCD5274694D200AF091E /* SceneDelegate.swift */,
 				84B288D2274D23AF00DD090B /* LoginView.swift */,
 				84B288D4274D286500DD090B /* LoginViewModel.swift */,
-				84335015274BABF3007A1B81 /* NewChatView.swift */,
-				84335017274BAD4B007A1B81 /* NewChatViewModel.swift */,
 				84B288CC274C544B00DD090B /* CreateGroupView.swift */,
 				84B288D0274CEDD000DD090B /* GroupNameView.swift */,
 				84B288CE274C545900DD090B /* CreateGroupViewModel.swift */,
@@ -1619,8 +1635,6 @@
 				8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */,
 				8417AE912ADEDB6400445021 /* UserRepository.swift */,
 				8413C4542B4409B600190AF4 /* PinChannelHelpers.swift */,
-				846B8E2B2C5B8117006A6249 /* BlockedUsersView.swift */,
-				846B8E2D2C5B8130006A6249 /* BlockedUsersViewModel.swift */,
 				84EDBC36274FE5CD0057218D /* Localizable.strings */,
 				8465FCCA27468B7500AF091E /* Info.plist */,
 				8465FCC227468B6A00AF091E /* Assets.xcassets */,
@@ -3036,6 +3050,7 @@
 				845161802AE7C4E2000A9230 /* WhatsAppChannelHeader.swift in Sources */,
 				8465FCDC274694D200AF091E /* SceneDelegate.swift in Sources */,
 				8465FCD9274694D200AF091E /* LaunchAnimationState.swift in Sources */,
+				4F65F18A2D071798009F69A8 /* ChannelListQueryIdentifier.swift in Sources */,
 				84B288D1274CEDD000DD090B /* GroupNameView.swift in Sources */,
 				84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */,
 				8465FCDE274694D200AF091E /* CustomChannelHeader.swift in Sources */,
@@ -3048,6 +3063,7 @@
 				8465FCDB274694D200AF091E /* DemoUser.swift in Sources */,
 				8465FCDD274694D200AF091E /* CustomAttachment.swift in Sources */,
 				8492974B27ABDDCB00A8EEB0 /* NotificationsHandler.swift in Sources */,
+				4F65F1862D06EEA7009F69A8 /* ChooseChannelQueryView.swift in Sources */,
 				8465FCDA274694D200AF091E /* AppDelegate.swift in Sources */,
 				8465FCD8274694D200AF091E /* LaunchScreen.swift in Sources */,
 				84B288CF274C545900DD090B /* CreateGroupViewModel.swift in Sources */,

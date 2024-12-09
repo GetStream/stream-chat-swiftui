@@ -31,7 +31,9 @@ class DemoAppFactory: ViewFactory {
             onDismiss: onDismiss,
             onError: onError
         )
+        let archiveChannel = archiveChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
         let pinChannel = pinChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
+        actions.insert(archiveChannel, at: actions.count - 2)
         actions.insert(pinChannel, at: actions.count - 2)
         return actions
     }
@@ -74,6 +76,40 @@ class DemoAppFactory: ViewFactory {
     
     public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
         ShowProfileModifier(messageModifierInfo: messageModifierInfo, mentionsHandler: mentionsHandler)
+    }
+    
+    private func archiveChannelAction(
+        for channel: ChatChannel,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ChannelAction {
+        ChannelAction(
+            title: channel.isArchived ? "Unarchive Channel" : "Archive Channel",
+            iconName: "archivebox",
+            action: { [weak self] in
+                guard let self else { return }
+                let channelController = self.chatClient.channelController(for: channel.cid)
+                if channel.isArchived {
+                    channelController.unarchive { error in
+                        if let error = error {
+                            onError(error)
+                        } else {
+                            onDismiss()
+                        }
+                    }
+                } else {
+                    channelController.archive { error in
+                        if let error = error {
+                            onError(error)
+                        } else {
+                            onDismiss()
+                        }
+                    }
+                }
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
     }
     
     private func pinChannelAction(
