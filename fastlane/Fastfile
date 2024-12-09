@@ -146,6 +146,40 @@ private_lane :appstore_api_key do
   )
 end
 
+desc "Updates StreamChat dependency locally. Usage: `bundle exec fastlane update_stream_chat version:4.56.0`"
+lane :update_stream_chat do |options|
+  raise UI.user_error!('Provide a version.') unless options[:version]
+
+  Dir.chdir('..') do
+    file = 'Package.swift'
+    current_stream_chat_version = File.read(file)[/stream-chat-swift\.git", from: "([\d.]+)"\)/, 1]
+    File.write(file, File.read(file).gsub(/(stream-chat-swift\.git", from: ")[\d.]+"/, "\\1#{options[:version]}\""))
+
+    file = 'StreamChatSwiftUI-XCFramework.podspec'
+    File.write(file, File.read(file).gsub(/(StreamChat-XCFramework', '~> )[\d.]+'/, "\\1#{options[:version]}'"))
+
+    file = 'StreamChatSwiftUI.podspec'
+    File.write(file, File.read(file).gsub(/(StreamChat', '~> )[\d.]+'/, "\\1#{options[:version]}'"))
+
+    file = 'StreamChatSwiftUI.xcodeproj/project.pbxproj'
+    content = File.read(file)
+    if content.include?("minimumVersion = #{current_stream_chat_version}")
+      File.write(file, content.gsub("minimumVersion = #{current_stream_chat_version}", "minimumVersion = #{options[:version]}"))
+    elsif content.include?('branch = develop')
+      File.write(file, content.gsub('kind = branch', "minimumVersion = #{options[:version]}").gsub('branch = develop', 'kind = upToNextMajorVersion'))
+    else
+      UI.user_error!("Something went wrong after trying to modify #{file}.")
+    end
+  end
+
+  pr_create(
+    title: "Update StreamChat dependency to #{options[:version]}",
+    base_branch: 'develop',
+    head_branch: "ci/update-stream-chat-dependency-#{Time.now.to_i}",
+    github_repo: github_repo
+  )
+end
+
 lane :pod_lint do
   lint_required = true
   Dir.chdir('..') do
