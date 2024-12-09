@@ -185,6 +185,20 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             )
                             .accessibilityElement(children: .contain)
                             .accessibility(identifier: "MessageRepliesView")
+                        } else if message.showReplyInChannel, let parentId = message.parentMessageId {
+                            /// In case the parent message is not available in the local cache, we need to fetch it from the remote server.
+                            /// The lazy view uses the `factory.makeMessageRepliesShownInChannelView` internally once the parent message is fetched.
+                            LazyMessageRepliesView(
+                                factory: factory,
+                                channel: channel,
+                                message: message,
+                                parentMessageController: chatClient.messageController(
+                                    cid: channel.cid,
+                                    messageId: parentId
+                                )
+                            )
+                            .accessibilityElement(children: .contain)
+                            .accessibility(identifier: "MessageRepliesView")
                         }
                     }
                     
