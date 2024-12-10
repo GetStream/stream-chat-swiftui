@@ -68,7 +68,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             if !message.text.isEmpty {
                 AttachmentTextView(message: message)
                     .frame(maxWidth: .infinity)
-                    .cornerRadius(16)
             }
         }
         .padding(.all, 2)
