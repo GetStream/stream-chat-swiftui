@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Improve message search performance [#680](https://github.com/GetStream/stream-chat-swiftui/pull/680)
 ### ✅ Added
 - Make `CreatePollView` public [#685](https://github.com/GetStream/stream-chat-swiftui/pull/685)
+### 🔄 Changed
+- Update `VoiceRecordingContainerView` background colors and layout by moving the message text outside of the recording cell [#689](https://github.com/GetStream/stream-chat-swiftui/pull/689/)
 
 # [4.68.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.68.0)
 _December 03, 2024_
