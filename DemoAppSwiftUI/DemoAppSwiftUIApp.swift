@@ -2,6 +2,7 @@
 // Copyright © 2024 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
@@ -39,25 +40,11 @@ struct DemoAppSwiftUIApp: App {
                         .tabItem { Label("Threads", systemImage: "text.bubble") }
                         .badge(appState.unreadCount.threads)
                 }
+                .id(appState.contentIdentifier)
             }
         }
         .onChange(of: appState.userState) { newValue in
             if newValue == .loggedIn {
-                /*
-                 if let currentUserId = chatClient.currentUserId {
-                 let pinnedByKey = ChatChannel.isPinnedBy(keyForUserId: currentUserId)
-                 let channelListQuery = ChannelListQuery(
-                 filter: .containMembers(userIds: [currentUserId]),
-                 sort: [
-                 .init(key: .custom(keyPath: \.isPinned, key: pinnedByKey), isAscending: true),
-                 .init(key: .lastMessageAt),
-                 .init(key: .updatedAt)
-                 ]
-                 )
-                 appState.channelListController = chatClient.channelListController(query: channelListQuery)
-                 }
-                 */
-                appState.currentUserController = chatClient.currentUserController()
                 notificationsHandler.setupRemoteNotifications()
             }
         }
@@ -86,28 +73,55 @@ struct DemoAppSwiftUIApp: App {
 }
 
 class AppState: ObservableObject, CurrentChatUserControllerDelegate {
+    @Injected(\.chatClient) var chatClient: ChatClient
 
-    @Published var userState: UserState = .launchAnimation {
-        willSet {
-            if newValue == .notLoggedIn && userState == .loggedIn {
-                channelListController = nil
-            }
-        }
-    }
-
+    // Recreate the content view when channel query changes.
+    @Published private(set) var contentIdentifier: String = ""
+    
+    @Published var userState: UserState = .launchAnimation
     @Published var unreadCount: UnreadCount = .noUnread
 
-    var channelListController: ChatChannelListController?
-    var currentUserController: CurrentChatUserController? {
-        didSet {
-            currentUserController?.delegate = self
-            currentUserController?.synchronize()
-        }
-    }
+    private(set) var channelListController: ChatChannelListController?
+    private(set) var currentUserController: CurrentChatUserController?
+    private var cancellables = Set<AnyCancellable>()
 
     static let shared = AppState()
 
-    private init() {}
+    private init() {
+        $userState
+            .removeDuplicates()
+            .filter { $0 == .notLoggedIn }
+            .sink { [weak self] _ in
+                self?.didLogout()
+            }
+            .store(in: &cancellables)
+        $userState
+            .removeDuplicates()
+            .filter { $0 == .loggedIn }
+            .sink { [weak self] _ in
+                self?.didLogin()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func didLogout() {
+        channelListController = nil
+        currentUserController = nil
+    }
+    
+    private func didLogin() {
+        setChannelQueryIdentifier(.initial)
+        
+        currentUserController = chatClient.currentUserController()
+        currentUserController?.delegate = self
+        currentUserController?.synchronize()
+    }
+    
+    func setChannelQueryIdentifier(_ identifier: ChannelListQueryIdentifier) {
+        let query = AppState.channelListQuery(forIdentifier: identifier, chatClient: chatClient)
+        channelListController = chatClient.channelListController(query: query)
+        contentIdentifier = identifier.rawValue
+    }
 
     func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
         unreadCount = didChangeCurrentUserUnreadCount
@@ -124,4 +138,44 @@ enum UserState {
     case launchAnimation
     case notLoggedIn
     case loggedIn
+}
+
+extension AppState {
+    private static func channelListQuery(
+        forIdentifier identifier: ChannelListQueryIdentifier,
+        chatClient: ChatClient
+    ) -> ChannelListQuery {
+        guard let currentUserId = chatClient.currentUserId else { fatalError("Not logged in") }
+        switch identifier {
+        case .initial:
+            return ChannelListQuery(
+                filter: .containMembers(userIds: [currentUserId])
+            )
+        case .unarchivedAndPinnedSorted:
+            return ChannelListQuery(
+                filter: .and([
+                    .containMembers(userIds: [currentUserId]),
+                    .equal(.archived, to: false)
+                ]),
+                sort: [
+                    .init(key: .pinnedAt, isAscending: false),
+                    .init(key: .default)
+                ]
+            )
+        case .archived:
+            return ChannelListQuery(
+                filter: .and([
+                    .containMembers(userIds: [currentUserId]),
+                    .equal(.archived, to: true)
+                ])
+            )
+        case .pinned:
+            return ChannelListQuery(
+                filter: .and([
+                    .containMembers(userIds: [currentUserId]),
+                    .equal(.pinned, to: true)
+                ])
+            )
+        }
+    }
 }
