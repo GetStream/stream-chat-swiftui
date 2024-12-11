@@ -40,32 +40,37 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     
     public var body: some View {
         VStack {
-            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
-                factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
-                )
+            VStack {
+                if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+                    factory.makeQuotedMessageView(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
+                }
+                
+                ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
+                    VoiceRecordingView(
+                        handler: handler,
+                        addedVoiceRecording: AddedVoiceRecording(
+                            url: attachment.payload.voiceRecordingURL,
+                            duration: attachment.payload.duration ?? 0,
+                            waveform: attachment.payload.waveformData ?? []
+                        ),
+                        index: index(for: attachment)
+                    )
+                }
             }
-            
-            ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
-                VoiceRecordingView(
-                    handler: handler,
-                    addedVoiceRecording: AddedVoiceRecording(
-                        url: attachment.payload.voiceRecordingURL,
-                        duration: attachment.payload.duration ?? 0,
-                        waveform: attachment.payload.waveformData ?? []
-                    ),
-                    index: index(for: attachment)
-                )
-            }
+            .padding(.all, 8)
+            .background(Color(colors.background8))
+            .cornerRadius(16)
             if !message.text.isEmpty {
                 AttachmentTextView(message: message)
                     .frame(maxWidth: .infinity)
-                    .cornerRadius(16)
             }
         }
+        .padding(.all, 2)
         .onReceive(handler.$context, perform: { value in
             guard message.voiceRecordingAttachments.count > 1 else { return }
             if value.state == .playing {
@@ -87,10 +92,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         .onAppear {
             player.subscribe(handler)
         }
-        .padding(.all, 8)
-        .background(Color(colors.background))
-        .cornerRadius(16)
-        .padding(.all, 4)
         .modifier(
             factory.makeMessageViewModifier(
                 for: MessageModifierInfo(message: message, isFirst: isFirst)
