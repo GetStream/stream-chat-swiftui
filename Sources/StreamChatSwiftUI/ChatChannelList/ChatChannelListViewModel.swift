@@ -102,8 +102,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private let searchType: ChannelListSearchType
-    internal var channelListSearchController: ChatChannelListController?
-    internal var messageSearchController: ChatMessageSearchController?
+    /// The channel search controller which should be created only by ``performChannelSearch()``.
+    public var channelListSearchController: ChatChannelListController?
+    /// The message search controller which should be created only by ``performMessageSearch()``.
+    public var messageSearchController: ChatMessageSearchController?
 
     /// Serial queue used to process the search results.
     private let queue = DispatchQueue(label: "com.getstream.stream-chat-swiftui.ChatChannelListViewModel")
@@ -388,7 +390,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    private func performMessageSearch() {
+    /// Creates a new message search controller, sets its delegate, and triggers the search operation.
+    open func performMessageSearch() {
         messageSearchController = chatClient.messageSearchController()
         messageSearchController?.delegate = self
         loadingSearchResults = true
@@ -397,7 +400,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    private func performChannelSearch() {
+    /// Creates a new channel search controller, sets its delegate, and triggers the search operation.
+    open func performChannelSearch() {
         guard let userId = chatClient.currentUserId else { return }
         var query = ChannelListQuery(
             filter: .and([
@@ -405,6 +409,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 .containMembers(userIds: [userId])
             ])
         )
+        // Do not start watching any of the searched channels.
         query.options = []
         channelListSearchController = chatClient.channelListController(query: query)
         loadingSearchResults = true
