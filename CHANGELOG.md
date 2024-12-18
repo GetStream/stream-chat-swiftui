@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.69.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.69.0)
+_December 18, 2024_
+
 ### ✅ Added
 - Make `CreatePollView` public [#685](https://github.com/GetStream/stream-chat-swiftui/pull/685)
 - Make `ChatChannelListViewModel.searchType` public and observable [#693](https://github.com/GetStream/stream-chat-swiftui/pull/693)
