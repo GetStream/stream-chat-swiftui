@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Make `CreatePollView` public [#685](https://github.com/GetStream/stream-chat-swiftui/pull/685)
+- Make `ChatChannelListViewModel.searchType` public and observable [#693](https://github.com/GetStream/stream-chat-swiftui/pull/693)
 - Allow customizing channel and message search in the `ChatChannelListViewModel` [#XYZ](ADD)
   - Allow overriding `ChatChannelListViewModel.performChannelSearch` and `ChatChannelListViewModel.performMessageSearch`
   - Make `ChatChannelListViewModel.channelListSearchController` and `ChatChannelListViewModel.messageSearchController` public
