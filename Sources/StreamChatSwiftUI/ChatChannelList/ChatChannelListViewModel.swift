@@ -101,7 +101,16 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    private let searchType: ChannelListSearchType
+    /// The type for search results.
+    ///
+    /// Setting a new value will reload search results.
+    @Published public var searchType: ChannelListSearchType {
+        didSet {
+            guard searchType != oldValue else { return }
+            performSearch()
+        }
+    }
+    
     /// The channel search controller which should be created only by ``performChannelSearch()``.
     public var channelListSearchController: ChatChannelListController?
     /// The message search controller which should be created only by ``performMessageSearch()``.
@@ -116,7 +125,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @Published public var searchText = "" {
         didSet {
             if searchText != oldValue {
-                handleSearchTextChange()
+                performSearch()
             }
         }
     }
@@ -337,7 +346,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             .filter { $0.id != chatClient.currentUserId }
     }
 
-    private func handleSearchTextChange() {
+    private func performSearch() {
         if searchText.isEmpty {
             clearSearchResults()
             return
@@ -393,10 +402,11 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Creates a new message search controller, sets its delegate, and triggers the search operation.
     open func performMessageSearch() {
         messageSearchController = chatClient.messageSearchController()
-        messageSearchController?.delegate = self
         loadingSearchResults = true
         messageSearchController?.search(text: searchText) { [weak self] _ in
             self?.loadingSearchResults = false
+            self?.messageSearchController?.delegate = self
+            self?.updateMessageSearchResults()
         }
     }
 
@@ -420,7 +430,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func updateMessageSearchResults() {
-        guard let messageSearchController = messageSearchController else {
+        guard let messageSearchController, searchType == .messages else {
             return
         }
 
@@ -433,7 +443,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 return ChannelSelectionInfo(
                     channel: channel,
                     message: message,
-                    searchType: .channels
+                    searchType: .messages
                 )
             }
             DispatchQueue.main.async {
@@ -443,7 +453,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     private func updateChannelSearchResults() {
-        guard let channelListSearchController = self.channelListSearchController else {
+        guard let channelListSearchController, searchType == .channels else {
             return
         }
 
