@@ -11,10 +11,10 @@ class TypingIndicatorView_Tests: StreamChatTestCase {
 
     func test_typingIndicatorView_snapshot() {
         // Given
-        let view = TypingIndicatorView()
+        let view = TypingIndicatorView(isTyping: true)
             .frame(width: 20, height: 16)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: CGSize(width: 20, height: 16))
     }
 }
