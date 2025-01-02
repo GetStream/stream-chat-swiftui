@@ -12,6 +12,10 @@ public struct TypingIndicatorView: View {
     private let animationDuration: CGFloat = 0.75
 
     public init() { /* Public init */ }
+    
+    init(isTyping: Bool) {
+        _isTyping = State<Bool>(wrappedValue: isTyping)
+    }
 
     public var body: some View {
         HStack(spacing: 4) {
@@ -42,7 +46,8 @@ public struct TypingIndicatorView: View {
 
 /// View that represents one circle of the typing indicator view.
 private struct TypingIndicatorCircle: View {
-
+    @Injected(\.colors) var colors
+    
     private let circleWidth: CGFloat = 4
     private let circleHeight: CGFloat = 4
     private let yOffset: CGFloat = 1.5
@@ -53,6 +58,7 @@ private struct TypingIndicatorCircle: View {
 
     var body: some View {
         Circle()
+            .foregroundColor(Color(colors.text))
             .frame(width: circleWidth, height: circleHeight)
             .opacity(isTyping ? maxOpacity : minOpacity)
             .offset(y: isTyping ? yOffset : -yOffset)
