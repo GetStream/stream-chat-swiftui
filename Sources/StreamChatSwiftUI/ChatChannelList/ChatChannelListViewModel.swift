@@ -35,9 +35,6 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Controls loading the channels.
     public private(set) var loadingNextChannels: Bool = false
 
-    /// Checks if internet connection is available.
-    private let networkReachability = NetworkReachability()
-
     /// Checks if the queued changes are completely applied.
     private var markDirty = false
 
