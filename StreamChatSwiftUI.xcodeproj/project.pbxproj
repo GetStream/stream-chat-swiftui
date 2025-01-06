@@ -332,7 +332,6 @@
 		847305BB28241D8D004AC770 /* ChatChannelHeader_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847305BA28241D8D004AC770 /* ChatChannelHeader_Tests.swift */; };
 		847305BD28243D25004AC770 /* WebView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847305BC28243D25004AC770 /* WebView_Tests.swift */; };
 		847305BF28243DFA004AC770 /* mock.html in Resources */ = {isa = PBXBuildFile; fileRef = 847305BE28243DF9004AC770 /* mock.html */; };
-		84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84733EC527FDBF82006926E0 /* NetworkReachability.swift */; };
 		847735F12BE904C300637394 /* PollCommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847735F02BE904C300637394 /* PollCommentsViewModel.swift */; };
 		84779C752AEBBACD000A6A68 /* BottomReactionsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */; };
 		84779C772AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84779C762AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift */; };
@@ -920,7 +919,6 @@
 		847305BA28241D8D004AC770 /* ChatChannelHeader_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelHeader_Tests.swift; sourceTree = "<group>"; };
 		847305BC28243D25004AC770 /* WebView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView_Tests.swift; sourceTree = "<group>"; };
 		847305BE28243DF9004AC770 /* mock.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = mock.html; sourceTree = "<group>"; };
-		84733EC527FDBF82006926E0 /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		847735F02BE904C300637394 /* PollCommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel.swift; sourceTree = "<group>"; };
 		84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomReactionsView_Tests.swift; sourceTree = "<group>"; };
 		84779C762AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsIconProvider_Tests.swift; sourceTree = "<group>"; };
@@ -1879,7 +1877,6 @@
 				8465FD3B2746A95600AF091E /* StringExtensions.swift */,
 				841B64C92775BBC10016FF3B /* Errors.swift */,
 				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
-				84733EC527FDBF82006926E0 /* NetworkReachability.swift */,
 				84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */,
 				4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */,
 				842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */,
@@ -2869,7 +2866,6 @@
 				82D64C102AD7E5B700C5C79E /* ImageDecoders+Default.swift in Sources */,
 				84289BE5280720E700282ABE /* PinnedMessagesView.swift in Sources */,
 				8465FD8B2746A95700AF091E /* FilePickerView.swift in Sources */,
-				84733EC627FDBF82006926E0 /* NetworkReachability.swift in Sources */,
 				82D64C0A2AD7E5B700C5C79E /* LinkedList.swift in Sources */,
 				84E6EC27279B0C930017207B /* ReactionsUsersView.swift in Sources */,
 				82D64BEC2AD7E5B700C5C79E /* OperationTask.swift in Sources */,
