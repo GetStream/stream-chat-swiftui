@@ -8,12 +8,13 @@ import SwiftUI
 struct ShadowViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
 
+    var backgroundColor: UIColor = .systemBackground
     var cornerRadius: CGFloat = 16
     var firstRadius: CGFloat = 10
     var firstY: CGFloat = 12
     
     func body(content: Content) -> some View {
-        content.background(Color(UIColor.systemBackground))
+        content.background(Color(backgroundColor))
             .cornerRadius(cornerRadius)
             .modifier(ShadowModifier(firstRadius: firstRadius, firstY: firstY))
             .overlay(

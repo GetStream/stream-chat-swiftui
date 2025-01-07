@@ -39,7 +39,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             VStack {
                 if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
                     factory.makeQuotedMessageView(
@@ -49,24 +49,26 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 }
-                
-                ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
-                    VoiceRecordingView(
-                        handler: handler,
-                        addedVoiceRecording: AddedVoiceRecording(
-                            url: attachment.payload.voiceRecordingURL,
-                            duration: attachment.payload.duration ?? 0,
-                            waveform: attachment.payload.waveformData ?? []
-                        ),
-                        index: index(for: attachment)
-                    )
+                VStack(spacing: 2) {
+                    ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
+                        VoiceRecordingView(
+                            handler: handler,
+                            textColor: textColor(for: message),
+                            addedVoiceRecording: AddedVoiceRecording(
+                                url: attachment.payload.voiceRecordingURL,
+                                duration: attachment.payload.duration ?? 0,
+                                waveform: attachment.payload.waveformData ?? []
+                            ),
+                            index: index(for: attachment)
+                        )
+                        .padding(.all, 8)
+                        .background(Color(recordingItemBackgroundColor))
+                        .roundWithBorder(cornerRadius: 14)
+                    }
                 }
             }
-            .padding(.all, 8)
-            .background(Color(colors.background8))
-            .cornerRadius(16)
             if !message.text.isEmpty {
-                AttachmentTextView(message: message)
+                AttachmentTextView(message: message, injectedBackgroundColor: bubbleBackgroundColor)
                     .frame(maxWidth: .infinity)
             }
         }
@@ -94,9 +96,26 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         }
         .modifier(
             factory.makeMessageViewModifier(
-                for: MessageModifierInfo(message: message, isFirst: isFirst)
+                for: MessageModifierInfo(
+                    message: message,
+                    isFirst: isFirst,
+                    injectedBackgroundColor: bubbleBackgroundColor,
+                    cornerRadius: 16
+                )
             )
         )
+    }
+    
+    private var bubbleBackgroundColor: UIColor {
+        message.isSentByCurrentUser ?
+            colors.voiceMessageCurrentUserBackground :
+            colors.voiceMessageOtherUserBackground
+    }
+    
+    private var recordingItemBackgroundColor: UIColor {
+        message.isSentByCurrentUser ?
+            colors.voiceMessageCurrentUserRecordingBackground :
+            colors.voiceMessageOtherUserRecordingBackground
     }
     
     private func index(for attachment: ChatMessageVoiceRecordingAttachment) -> Int {
@@ -114,6 +133,7 @@ struct VoiceRecordingView: View {
     @State var rate: AudioPlaybackRate = .normal
     @ObservedObject var handler: VoiceRecordingHandler
     
+    let textColor: Color
     let addedVoiceRecording: AddedVoiceRecording
     let index: Int
     
@@ -135,10 +155,17 @@ struct VoiceRecordingView: View {
             Button(action: {
                 handlePlayTap()
             }, label: {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                    .padding(.all, 8)
+                Image(uiImage: isPlaying ? images.pauseFilled : images.playFilled)
+                    .frame(width: 36, height: 36)
                     .foregroundColor(.primary)
-                    .modifier(ShadowViewModifier(firstRadius: 2, firstY: 4))
+                    .modifier(
+                        ShadowViewModifier(
+                            backgroundColor: colors.voiceMessageControlBackground,
+                            cornerRadius: 18,
+                            firstRadius: 2,
+                            firstY: 4
+                        )
+                    )
             })
                 .opacity(loading ? 0 : 1)
                 .overlay(loading ? ProgressView() : nil)
@@ -152,6 +179,7 @@ struct VoiceRecordingView: View {
                 )
                 .bold()
                 .lineLimit(1)
+                .foregroundColor(textColor)
                 
                 HStack {
                     RecordingDurationView(
@@ -199,7 +227,7 @@ struct VoiceRecordingView: View {
                 Image(uiImage: images.fileAac)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 36)
+                    .frame(height: 40)
             }
         }
         .onReceive(handler.$context, perform: { value in
