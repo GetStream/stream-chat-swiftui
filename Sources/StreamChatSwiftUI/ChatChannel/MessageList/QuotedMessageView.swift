@@ -178,8 +178,9 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     }
 
     private var textForMessage: String {
-        if !quotedMessage.text.isEmpty {
-            return quotedMessage.adjustedText
+        let textContent = quotedMessage.textContent ?? ""
+        if !textContent.isEmpty {
+            return textContent
         }
 
         if !quotedMessage.imageAttachments.isEmpty {
