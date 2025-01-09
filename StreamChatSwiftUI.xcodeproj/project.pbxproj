@@ -3835,7 +3835,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "fix/quoted-message-refresh";
+				branch = develop;
 				kind = branch;
 			};
 		};
