@@ -193,6 +193,9 @@ extension View {
     public func textColor(for message: ChatMessage) -> Color {
         @Injected(\.colors) var colors
         
+        if message.isDeleted {
+            return Color(colors.textLowEmphasis)
+        }
         if message.isSentByCurrentUser {
             return Color(colors.messageCurrentUserTextColor)
         } else {

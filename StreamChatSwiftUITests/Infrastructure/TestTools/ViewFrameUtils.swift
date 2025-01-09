@@ -12,4 +12,8 @@ extension View {
             height: defaultScreenSize.height
         )
     }
+    
+    func applySize(_ size: CGSize) -> some View {
+        frame(width: size.width, height: size.height)
+    }
 }

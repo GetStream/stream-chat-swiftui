@@ -46,6 +46,21 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_quotedMessageView_deletedSnapshot() {
+        // Given
+        let viewSize = CGSize(width: 200, height: 50)
+        let message = ChatMessage.mock(text: "Hello", deletedAt: .unique)
+        let view = QuotedMessageView(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: message,
+            fillAvailableSpace: true,
+            forceLeftToRight: true
+        )
+        .applySize(viewSize)
+        
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: viewSize)
+    }
+    
     func test_quotedMessageView_voiceAttachmentSnapshot() {
         // Given
         let payload = VoiceRecordingAttachmentPayload(
