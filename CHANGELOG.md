@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Exposes all the default message actions [#711](https://github.com/GetStream/stream-chat-swiftui/pull/711)
 ### 🐞 Fixed
 - Use bright color for typing indicator animation in dark mode [#702](https://github.com/GetStream/stream-chat-swiftui/pull/702)
 - Refresh quoted message preview when the quoted message is deleted [#705](https://github.com/GetStream/stream-chat-swiftui/pull/705)
