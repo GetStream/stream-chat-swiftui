@@ -23,16 +23,13 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             author: author,
             extraData: [:]
         )
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "test",
-            author: .mock(id: .unique),
-            latestReactions: [reaction]
+        let mockViewModel = MockReactionUsersViewModel(
+            reactions: [reaction],
+            totalReactionsCount: 1
         )
 
         // When
-        let view = ReactionsUsersView(message: message, maxHeight: 140)
+        let view = ReactionsUsersView(viewModel: mockViewModel, maxHeight: 140)
             .frame(width: 250)
 
         // Then
@@ -56,19 +53,39 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
             reactions.insert(reaction)
         }
 
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "test",
-            author: .mock(id: .unique),
-            latestReactions: reactions
+        let mockViewModel = MockReactionUsersViewModel(
+            reactions: Array(reactions),
+            totalReactionsCount: 8
         )
 
         // When
-        let view = ReactionsUsersView(message: message, maxHeight: 280)
+        let view = ReactionsUsersView(viewModel: mockViewModel, maxHeight: 280)
             .frame(width: defaultScreenSize.width, height: 320)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+}
+
+class MockReactionUsersViewModel: ReactionsUsersViewModel {
+    init(
+        reactions: [ChatMessageReaction] = [],
+        totalReactionsCount: Int = 0,
+        isRightAligned: Bool = false
+    ) {
+        super.init(message: .mock())
+        self.reactions = reactions
+        mockedIsRightAligned = isRightAligned
+        mockedTotalReactionsCount = totalReactionsCount
+    }
+
+    var mockedTotalReactionsCount: Int = 0
+    override var totalReactionsCount: Int {
+        mockedTotalReactionsCount
+    }
+
+    var mockedIsRightAligned: Bool = false
+    override var isRightAligned: Bool {
+        mockedIsRightAligned
     }
 }
