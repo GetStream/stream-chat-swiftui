@@ -404,11 +404,9 @@ class MessageComposerView_Tests: StreamChatTestCase {
     }
 
     func test_composerInputView_command() {
-        // Given
         let factory = DefaultViewFactory.shared
-
-        // When
         let size = CGSize(width: defaultScreenSize.width, height: 100)
+
         let view = ComposerInputView(
             factory: factory,
             text: .constant(""),
@@ -434,12 +432,11 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
-        // Then
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, record: true)
 
         // Themed
         streamChat?.appearance.colors.tintColor = .mint
-
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
+        streamChat?.appearance.colors.staticColorText = .black
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed", record: true)
     }
 }

@@ -345,6 +345,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                    displayInfo.isInstant == true {
                     HStack(spacing: 0) {
                         Image(uiImage: images.smallBolt)
+                            .renderingMode(.template)
+                            .foregroundColor(Color(colors.staticColorText))
                         Text(displayInfo.displayName.uppercased())
                     }
                     .padding(.horizontal, 8)
