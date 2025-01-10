@@ -229,9 +229,7 @@ extension MessageAction {
         return messageActions
     }
 
-    // MARK: - private
-
-    private static func copyMessageAction(
+    public static func copyMessageAction(
         for message: ChatMessage,
         onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
@@ -255,7 +253,7 @@ extension MessageAction {
         return copyAction
     }
 
-    private static func editMessageAction(
+    public static func editMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         onFinish: @escaping (MessageActionInfo) -> Void
@@ -279,7 +277,7 @@ extension MessageAction {
         return editAction
     }
 
-    private static func pinMessageAction(
+    public static func pinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -318,7 +316,7 @@ extension MessageAction {
         return pinAction
     }
 
-    private static func unpinMessageAction(
+    public static func unpinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -357,7 +355,7 @@ extension MessageAction {
         return pinAction
     }
 
-    private static func replyAction(
+    public static func replyAction(
         for message: ChatMessage,
         channel: ChatChannel,
         onFinish: @escaping (MessageActionInfo) -> Void
@@ -381,7 +379,7 @@ extension MessageAction {
         return replyAction
     }
 
-    private static func threadReplyAction<Factory: ViewFactory>(
+    public static func threadReplyAction<Factory: ViewFactory>(
         factory: Factory,
         for message: ChatMessage,
         channel: ChatChannel
@@ -404,7 +402,7 @@ extension MessageAction {
         return replyThread
     }
 
-    private static func deleteMessageAction(
+    public static func deleteMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -449,7 +447,7 @@ extension MessageAction {
         return deleteMessage
     }
 
-    private static func flagMessageAction(
+    public static func flagMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -494,7 +492,7 @@ extension MessageAction {
         return flagMessage
     }
     
-    private static func markAsUnreadAction(
+    public static func markAsUnreadAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -530,7 +528,7 @@ extension MessageAction {
         return unreadAction
     }
 
-    private static func markThreadAsUnreadAction(
+    public static func markThreadAsUnreadAction(
         messageController: ChatMessageController,
         message: ChatMessage,
         onFinish: @escaping (MessageActionInfo) -> Void,
@@ -562,7 +560,7 @@ extension MessageAction {
         return unreadAction
     }
 
-    private static func muteAction(
+    public static func muteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -598,7 +596,7 @@ extension MessageAction {
         return muteUser
     }
     
-    private static func blockUserAction(
+    public static func blockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -638,7 +636,7 @@ extension MessageAction {
         return blockUser
     }
 
-    private static func unmuteAction(
+    public static func unmuteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -674,7 +672,7 @@ extension MessageAction {
         return unmuteUser
     }
     
-    private static func unblockUserAction(
+    public static func unblockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -714,7 +712,7 @@ extension MessageAction {
         return unblockUser
     }
 
-    private static func resendMessageAction(
+    public static func resendMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -753,7 +751,7 @@ extension MessageAction {
         return messageAction
     }
 
-    private static func messageNotSentActions(
+    public static func messageNotSentActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
