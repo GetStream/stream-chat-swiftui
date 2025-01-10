@@ -432,11 +432,11 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, record: true)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
 
         // Themed
         streamChat?.appearance.colors.tintColor = .mint
         streamChat?.appearance.colors.staticColorText = .black
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed", record: true)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
     }
 }
