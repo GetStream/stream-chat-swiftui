@@ -5,7 +5,9 @@
 import StreamChat
 import SwiftUI
 
-extension MessageAction {
+// MARK: - Default Message Actions
+
+public extension MessageAction {
     /// Returns the default message actions.
     ///
     ///  - Parameters:
@@ -13,7 +15,7 @@ extension MessageAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `MessageAction`.
-    public static func defaultActions<Factory: ViewFactory>(
+    static func defaultActions<Factory: ViewFactory>(
         factory: Factory,
         for message: ChatMessage,
         channel: ChatChannel,
@@ -229,7 +231,8 @@ extension MessageAction {
         return messageActions
     }
 
-    public static func copyMessageAction(
+    /// The action to copy the message text.
+    static func copyMessageAction(
         for message: ChatMessage,
         onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
@@ -253,7 +256,8 @@ extension MessageAction {
         return copyAction
     }
 
-    public static func editMessageAction(
+    /// The action to edit the message.
+    static func editMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         onFinish: @escaping (MessageActionInfo) -> Void
@@ -277,7 +281,8 @@ extension MessageAction {
         return editAction
     }
 
-    public static func pinMessageAction(
+    /// The action to pin the message.
+    static func pinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -316,7 +321,8 @@ extension MessageAction {
         return pinAction
     }
 
-    public static func unpinMessageAction(
+    /// The action to unpin the message.
+    static func unpinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -355,7 +361,8 @@ extension MessageAction {
         return pinAction
     }
 
-    public static func replyAction(
+    /// The action to reply to the message
+    static func replyAction(
         for message: ChatMessage,
         channel: ChatChannel,
         onFinish: @escaping (MessageActionInfo) -> Void
@@ -379,7 +386,8 @@ extension MessageAction {
         return replyAction
     }
 
-    public static func threadReplyAction<Factory: ViewFactory>(
+    /// The action to reply to the message in a thread
+    static func threadReplyAction<Factory: ViewFactory>(
         factory: Factory,
         for message: ChatMessage,
         channel: ChatChannel
@@ -402,7 +410,8 @@ extension MessageAction {
         return replyThread
     }
 
-    public static func deleteMessageAction(
+    /// The action to delete the message.
+    static func deleteMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -447,7 +456,8 @@ extension MessageAction {
         return deleteMessage
     }
 
-    public static func flagMessageAction(
+    /// The action to flag the message.
+    static func flagMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -491,8 +501,9 @@ extension MessageAction {
 
         return flagMessage
     }
-    
-    public static func markAsUnreadAction(
+
+    /// The action to mark the message as unread.
+    static func markAsUnreadAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -528,7 +539,8 @@ extension MessageAction {
         return unreadAction
     }
 
-    public static func markThreadAsUnreadAction(
+    /// The action to mark the thread as unread.
+    static func markThreadAsUnreadAction(
         messageController: ChatMessageController,
         message: ChatMessage,
         onFinish: @escaping (MessageActionInfo) -> Void,
@@ -560,7 +572,8 @@ extension MessageAction {
         return unreadAction
     }
 
-    public static func muteAction(
+    /// The action to mute the user.
+    static func muteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -595,8 +608,9 @@ extension MessageAction {
 
         return muteUser
     }
-    
-    public static func blockUserAction(
+
+    /// The action to block the user
+    static func blockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -636,7 +650,8 @@ extension MessageAction {
         return blockUser
     }
 
-    public static func unmuteAction(
+    /// The action to unmute the user.
+    static func unmuteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -671,8 +686,9 @@ extension MessageAction {
 
         return unmuteUser
     }
-    
-    public static func unblockUserAction(
+
+    /// The action to unblock the user.
+    static func unblockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -712,7 +728,8 @@ extension MessageAction {
         return unblockUser
     }
 
-    public static func resendMessageAction(
+    /// The action to resend the message.
+    static func resendMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -751,7 +768,8 @@ extension MessageAction {
         return messageAction
     }
 
-    public static func messageNotSentActions(
+    /// The actions for a message that was not sent.
+    static func messageNotSentActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -780,6 +798,8 @@ extension MessageAction {
 
         return messageActions
     }
+
+    // MARK: - Helpers
 
     private static func editAndDeleteActions(
         for message: ChatMessage,
