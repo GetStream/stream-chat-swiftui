@@ -5,8 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Colors and images for voice recording view [#704](https://github.com/GetStream/stream-chat-swiftui/pull/704)
-  - `ColorPalette.voiceMessageCurrentUserBackground` and `ColorPalette.voiceMessageOtherUserBackground`
-  - `ColorPalette.voiceMessageCurrentUserRecordingBackground` and `ColorPalette.voiceMessageOtherUserRecordingBackground`
   - `ColorPalette.voiceMessageControlBackground`
   - `Images.pauseFilled`
 - Exposes all the default message actions [#711](https://github.com/GetStream/stream-chat-swiftui/pull/711)

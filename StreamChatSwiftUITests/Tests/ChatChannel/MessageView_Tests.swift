@@ -480,8 +480,8 @@ class MessageView_Tests: StreamChatTestCase {
 
         // When
         adjustAppearance() { appearance in
-            appearance.colors.voiceMessageCurrentUserBackground = .orange
-            appearance.colors.voiceMessageCurrentUserRecordingBackground = .yellow
+            appearance.colors.messageCurrentUserBackground = [.orange]
+            appearance.colors.background8 = .yellow
             appearance.colors.voiceMessageControlBackground = .cyan
             appearance.colors.messageCurrentUserTextColor = .blue
             appearance.colors.textLowEmphasis = .red

@@ -62,13 +62,13 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                             index: index(for: attachment)
                         )
                         .padding(.all, 8)
-                        .background(Color(recordingItemBackgroundColor))
+                        .background(Color(colors.background8))
                         .roundWithBorder(cornerRadius: 14)
                     }
                 }
             }
             if !message.text.isEmpty {
-                AttachmentTextView(message: message, injectedBackgroundColor: bubbleBackgroundColor)
+                AttachmentTextView(message: message)
                     .frame(maxWidth: .infinity)
             }
         }
@@ -99,23 +99,10 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst,
-                    injectedBackgroundColor: bubbleBackgroundColor,
                     cornerRadius: 16
                 )
             )
         )
-    }
-    
-    private var bubbleBackgroundColor: UIColor {
-        message.isSentByCurrentUser ?
-            colors.voiceMessageCurrentUserBackground :
-            colors.voiceMessageOtherUserBackground
-    }
-    
-    private var recordingItemBackgroundColor: UIColor {
-        message.isSentByCurrentUser ?
-            colors.voiceMessageCurrentUserRecordingBackground :
-            colors.voiceMessageOtherUserRecordingBackground
     }
     
     private func index(for attachment: ChatMessageVoiceRecordingAttachment) -> Int {
