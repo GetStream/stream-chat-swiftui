@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Use `AppSettings.fileUploadConfig` and `AppSettings.imageUploadConfig` for setting supported media types for pickers [#713](https://github.com/GetStream/stream-chat-swiftui/pull/713)
 - Exposes all the default message actions [#711](https://github.com/GetStream/stream-chat-swiftui/pull/711)
 ### 🐞 Fixed
 - Use bright color for typing indicator animation in dark mode [#702](https://github.com/GetStream/stream-chat-swiftui/pull/702)
