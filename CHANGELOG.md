@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🔄 Changed
 - Support theming and update layout of `VoiceRecordingContainerView` [#704](https://github.com/GetStream/stream-chat-swiftui/pull/704)
+- Use `ColorPalette.highlightedAccentBackground` for `AudioVisualizationView.highlightedBarColor` [#704](https://github.com/GetStream/stream-chat-swiftui/pull/704)
 
 # [4.69.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.69.0)
 _December 18, 2024_
