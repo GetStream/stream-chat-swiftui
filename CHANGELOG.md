@@ -9,10 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - `ColorPalette.voiceMessageCurrentUserRecordingBackground` and `ColorPalette.voiceMessageOtherUserRecordingBackground`
   - `ColorPalette.voiceMessageControlBackground`
   - `Images.pauseFilled`
-
+- Exposes all the default message actions [#711](https://github.com/GetStream/stream-chat-swiftui/pull/711)
 ### 🐞 Fixed
 - Use bright color for typing indicator animation in dark mode [#702](https://github.com/GetStream/stream-chat-swiftui/pull/702)
 - Refresh quoted message preview when the quoted message is deleted [#705](https://github.com/GetStream/stream-chat-swiftui/pull/705)
+- Fix composer command view not Themable [#710](https://github.com/GetStream/stream-chat-swiftui/pull/710)
 
 ### 🔄 Changed
 - Support theming and update layout of `VoiceRecordingContainerView` [#704](https://github.com/GetStream/stream-chat-swiftui/pull/704)
