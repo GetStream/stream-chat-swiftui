@@ -83,7 +83,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of messages in a channel </td>
-    <th rowspan="12"><img src="ReadmeAssets/MessageListPreview.gif?raw=true" width="80%" /></th>
+    <th rowspan="14"><img src="ReadmeAssets/MessageListPreview.gif?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Photo attachments </td> </tr>
   <tr> <td> Giphy attachments </td> </tr>
@@ -95,6 +95,8 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   <tr> <td> Message grouping based on the send time </td> </tr>
   <tr> <td> Thread and inline replies </td> </tr>
   <tr> <td> Typing and read indicators </td> </tr>
+  <tr> <td> Async voice messages </td> </tr>
+  <tr> <td> Polls support </td> </tr>
   <tr><td> </td> </tr>
   </tr>
 </table>
@@ -110,11 +112,13 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> Support for multiline text, expands and shrinks as needed </td>
-    <th rowspan="8"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
+    <th rowspan="10"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
   </tr>
   <tr> <td> Image, video and file attachments </td> </tr>
   <tr> <td> Camera integration </td> </tr>
   <tr> <td> Custom attachments </td> </tr>
+  <tr> <td> Recording async voice messages </td> </tr>
+  <tr> <td> Creation of polls </td> </tr>
   <tr> <td> Mentions </td> </tr>
   <tr> <td> Instant commands (e.g. giphy) </td> </tr>
   <tr> <td> Custom commands </td> </tr>
