@@ -25,4 +25,11 @@ open class StreamChatTestCase: XCTestCase {
         super.setUp()
         streamChat = StreamChat(chatClient: chatClient)
     }
+    
+    func adjustAppearance(_ block: (inout Appearance) -> Void) {
+        guard let streamChat else { return }
+        var appearance = streamChat.appearance
+        block(&appearance)
+        streamChat.appearance = appearance
+    }
 }

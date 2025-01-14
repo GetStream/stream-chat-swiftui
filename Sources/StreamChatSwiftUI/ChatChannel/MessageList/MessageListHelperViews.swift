@@ -202,4 +202,9 @@ extension View {
             return Color(colors.messageOtherUserTextColor)
         }
     }
+    
+    func textColor(currentUser: Bool) -> Color {
+        @Injected(\.colors) var colors
+        return currentUser ? Color(colors.messageCurrentUserTextColor) : Color(colors.messageOtherUserTextColor)
+    }
 }

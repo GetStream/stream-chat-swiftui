@@ -29,6 +29,7 @@ struct AddedVoiceRecordingsView: View {
                 let recording = addedVoiceRecordings[i]
                 VoiceRecordingView(
                     handler: voiceRecordingHandler,
+                    textColor: textColor(currentUser: true),
                     addedVoiceRecording: recording,
                     index: i
                 )

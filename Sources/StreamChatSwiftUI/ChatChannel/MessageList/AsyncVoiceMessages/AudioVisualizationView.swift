@@ -44,7 +44,7 @@ open class AudioVisualizationView: UIView {
     open var barColor: UIColor { colors.textLowEmphasis }
 
     /// The colour of the waveform bar that is part of the "played" duration.
-    open var highlightedBarColor: UIColor { .blue }
+    open var highlightedBarColor: UIColor { colors.highlightedAccentBackground }
 
     /// The colour of the waveform bar's background.
     open var barBackgroundColor: UIColor { colors.background }

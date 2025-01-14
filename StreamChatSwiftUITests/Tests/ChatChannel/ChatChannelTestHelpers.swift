@@ -200,23 +200,28 @@ class ChatChannelTestHelpers {
         return fileAttachments
     }
     
+    static func voiceRecordingAttachments(count: Int) -> [AnyChatMessageAttachment] {
+        (0..<count).map { index in
+            let title = index == 0 ? "Recording" : "Recording-\(index)"
+            let payload = VoiceRecordingAttachmentPayload(
+                title: title,
+                voiceRecordingRemoteURL: .localYodaImage,
+                file: try! .init(url: .localYodaImage),
+                duration: Double(index) + 5.0,
+                waveformData: [0, 0.1, 0.5, 1],
+                extraData: nil
+            )
+            return ChatMessageVoiceRecordingAttachment(
+                id: .unique,
+                type: .voiceRecording,
+                payload: payload,
+                downloadingState: nil,
+                uploadingState: nil
+            ).asAnyAttachment
+        }
+    }
+    
     static var voiceRecordingAttachments: [AnyChatMessageAttachment] {
-        let payload = VoiceRecordingAttachmentPayload(
-            title: "Recording",
-            voiceRecordingRemoteURL: .localYodaImage,
-            file: try! .init(url: .localYodaImage),
-            duration: 5,
-            waveformData: [0, 0.1, 0.5, 1],
-            extraData: nil
-        )
-        let attachment = ChatMessageVoiceRecordingAttachment(
-            id: .unique,
-            type: .voiceRecording,
-            payload: payload,
-            downloadingState: nil,
-            uploadingState: nil
-        ).asAnyAttachment
-        
-        return [attachment]
+        voiceRecordingAttachments(count: 1)
     }
 }

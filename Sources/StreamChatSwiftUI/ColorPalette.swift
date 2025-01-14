@@ -79,6 +79,7 @@ public struct ColorPalette {
     public lazy var reactionCurrentUserColor: UIColor? = UIColor(tintColor)
     public lazy var reactionOtherUserColor: UIColor? = textLowEmphasis
     public lazy var selectedReactionBackgroundColor: UIColor? = nil
+    public var voiceMessageControlBackground: UIColor = .streamWhiteStatic
 
     // MARK: - Composer
 
