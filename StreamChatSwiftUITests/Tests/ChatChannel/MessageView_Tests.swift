@@ -318,7 +318,6 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         AssertSnapshot(
             view,
-            variants: .onlyUserInterfaceStyles,
             size: CGSize(width: defaultScreenSize.width, height: 130)
         )
     }
@@ -348,7 +347,6 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         AssertSnapshot(
             view,
-            variants: .onlyUserInterfaceStyles,
             size: CGSize(width: defaultScreenSize.width, height: 130)
         )
     }
@@ -378,7 +376,6 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         AssertSnapshot(
             view,
-            variants: .onlyUserInterfaceStyles,
             size: CGSize(width: defaultScreenSize.width, height: 130)
         )
     }
@@ -408,8 +405,104 @@ class MessageView_Tests: StreamChatTestCase {
         // Then
         AssertSnapshot(
             view,
-            variants: .onlyUserInterfaceStyles,
             size: CGSize(width: defaultScreenSize.width, height: 130)
+        )
+    }
+    
+    func test_messageViewVoiceRecordingWithTextFromParticipantMultiple_snapshot() {
+        // Given
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments(count: 2),
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 250)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 250)
+        )
+    }
+    
+    func test_messageViewVoiceRecordingWithTextFromMeMultiple_snapshot() {
+        // Given
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments(count: 2),
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 250)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 250)
+        )
+    }
+    
+    func test_messageViewVoiceRecordingFromMeTheming_snapshot() {
+        // Given
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments(count: 2),
+            isSentByCurrentUser: true
+        )
+
+        // When
+        adjustAppearance() { appearance in
+            appearance.colors.messageCurrentUserBackground = [.orange]
+            appearance.colors.background8 = .yellow
+            appearance.colors.voiceMessageControlBackground = .cyan
+            appearance.colors.messageCurrentUserTextColor = .blue
+            appearance.colors.textLowEmphasis = .red
+            appearance.images.playFilled = UIImage(systemName: "star")!
+            appearance.images.fileAac = UIImage(systemName: "scribble")!
+        }
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 250)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            variants: [.defaultLight],
+            size: CGSize(width: defaultScreenSize.width, height: 250)
         )
     }
 

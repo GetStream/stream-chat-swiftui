@@ -110,9 +110,11 @@ public struct AttachmentTextView: View {
     @Injected(\.fonts) private var fonts
 
     var message: ChatMessage
+    let injectedBackgroundColor: UIColor?
 
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, injectedBackgroundColor: UIColor? = nil) {
         self.message = message
+        self.injectedBackgroundColor = injectedBackgroundColor
     }
 
     public var body: some View {
@@ -127,6 +129,9 @@ public struct AttachmentTextView: View {
     }
 
     private var backgroundColor: UIColor {
+        if let injectedBackgroundColor {
+            return injectedBackgroundColor
+        }
         var colors = colors
         if message.isSentByCurrentUser {
             if message.type == .ephemeral {
