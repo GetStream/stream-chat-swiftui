@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Image picker for loading images.
 struct ImagePickerView: UIViewControllerRepresentable {
-    @Injected(\.chatClient) var client
     @Injected(\.utils) var utils
     
     let sourceType: UIImagePickerController.SourceType
@@ -22,22 +21,16 @@ struct ImagePickerView: UIViewControllerRepresentable {
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
             pickerController.sourceType = sourceType
         }
-        pickerController.mediaTypes = mediaTypes
+        let gallerySupportedTypes = utils.composerConfig.gallerySupportedTypes
+        if gallerySupportedTypes == .images {
+            pickerController.mediaTypes = ["public.image"]
+        } else if gallerySupportedTypes == .videos {
+            pickerController.mediaTypes = ["public.movie"]
+        } else {
+            pickerController.mediaTypes = ["public.image", "public.movie"]
+        }
         
         return pickerController
-    }
-    
-    var mediaTypes: [String] {
-        // Prefer AppSettings over GallerySupportedTypes
-        let allowedUTITypes = client.appSettings?.imageUploadConfig.allowedUTITypes ?? []
-        if !allowedUTITypes.isEmpty {
-            return allowedUTITypes
-        }
-        switch utils.composerConfig.gallerySupportedTypes {
-        case .images: return ["public.image"]
-        case .imagesAndVideo: return ["public.image", "public.movie"]
-        case .videos: return ["public.movie"]
-        }
     }
 
     func updateUIViewController(
