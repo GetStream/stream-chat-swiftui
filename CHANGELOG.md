@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.70.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.70.0)
+_January 15, 2025_
+
 ### ✅ Added
 - Use `AppSettings.fileUploadConfig` for setting supported UTI types for the file picker [#713](https://github.com/GetStream/stream-chat-swiftui/pull/713)
 - Colors and images for voice recording view [#704](https://github.com/GetStream/stream-chat-swiftui/pull/704)
