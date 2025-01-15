@@ -34,7 +34,6 @@ public struct MessageAuthorAndDateView: View {
 /// View that displays the message author.
 public struct MessageAuthorView: View {
     
-    @Injected(\.utils) private var utils
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -44,8 +43,12 @@ public struct MessageAuthorView: View {
         self.message = message
     }
     
+    var authorName: String {
+        message.author.name ?? message.author.id
+    }
+    
     public var body: some View {
-        Text(utils.messageCachingUtils.authorName(for: message))
+        Text(authorName)
             .lineLimit(1)
             .font(fonts.footnoteBold)
             .foregroundColor(Color(colors.textLowEmphasis))

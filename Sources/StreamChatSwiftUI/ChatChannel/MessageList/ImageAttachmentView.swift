@@ -7,7 +7,6 @@ import SwiftUI
 
 public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
-    @Injected(\.utils) private var utils
 
     var factory: Factory
     let message: ChatMessage
@@ -23,7 +22,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+            if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,

@@ -41,7 +41,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             VStack {
-                if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+                if let quotedMessage = message.quotedMessage {
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,
                         fillAvailableSpace: !message.attachmentCounts.isEmpty,

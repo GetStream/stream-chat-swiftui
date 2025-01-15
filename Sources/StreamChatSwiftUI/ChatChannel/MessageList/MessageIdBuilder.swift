@@ -16,17 +16,6 @@ public class DefaultMessageIdBuilder: MessageIdBuilder {
     public init() { /* Public init. */ }
 
     public func makeMessageId(for message: ChatMessage) -> String {
-        if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
-            return message.id
-        }
-        var statesId = "empty"
-        if message.localState != nil {
-            statesId = message.uploadingStatesId
-        }
-        if message.textUpdatedAt != nil {
-            statesId = "edited"
-        }
-        return message.baseId + statesId + message.reactionScoresId
-            + message.repliesCountId + "\(message.updatedAt)" + message.pinStateId
+        message.id
     }
 }

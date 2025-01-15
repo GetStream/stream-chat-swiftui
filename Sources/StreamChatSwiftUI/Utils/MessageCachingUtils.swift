@@ -6,15 +6,9 @@ import Foundation
 import StreamChat
 import UIKit
 
-/// Caches messages related data to avoid accessing the database.
+/// Caches messages related data.
 /// Cleared on chat channel view dismiss or memory warning.
 class MessageCachingUtils {
-
-    private var messageAuthorMapping = [String: String]()
-    private var messageAuthors = [String: UserDisplayInfo]()
-    private var checkedMessageIds = Set<String>()
-    private var quotedMessageMapping = [String: ChatMessage]()
-
     var scrollOffset: CGFloat = 0
     var messageThreadShown = false {
         didSet {
@@ -26,117 +20,10 @@ class MessageCachingUtils {
     
     var jumpToReplyId: String?
 
-    func authorId(for message: ChatMessage) -> String {
-        if let userDisplayInfo = userDisplayInfo(for: message) {
-            return userDisplayInfo.id
-        }
-
-        let userDisplayInfo = saveUserDisplayInfo(for: message)
-        return userDisplayInfo.id
-    }
-
-    func authorName(for message: ChatMessage) -> String {
-        if let userDisplayInfo = userDisplayInfo(for: message) {
-            return userDisplayInfo.name
-        }
-
-        let userDisplayInfo = saveUserDisplayInfo(for: message)
-        return userDisplayInfo.name
-    }
-
-    func authorImageURL(for message: ChatMessage) -> URL? {
-        if let userDisplayInfo = userDisplayInfo(for: message) {
-            return userDisplayInfo.imageURL
-        }
-
-        let userDisplayInfo = saveUserDisplayInfo(for: message)
-        return userDisplayInfo.imageURL
-    }
-
-    func authorInfo(from message: ChatMessage) -> UserDisplayInfo {
-        if let userDisplayInfo = userDisplayInfo(for: message) {
-            return userDisplayInfo
-        }
-
-        let userDisplayInfo = saveUserDisplayInfo(for: message)
-        return userDisplayInfo
-    }
-
-    func quotedMessage(for message: ChatMessage) -> ChatMessage? {
-        if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
-            return message.quotedMessage
-        }
-        
-        if checkedMessageIds.contains(message.id) {
-            return nil
-        }
-
-        if let quoted = quotedMessageMapping[message.id] {
-            return quoted
-        }
-
-        let quoted = message.quotedMessage
-        if quoted == nil {
-            checkedMessageIds.insert(message.id)
-        } else {
-            quotedMessageMapping[message.id] = quoted
-        }
-
-        return quoted
-    }
-
-    func userDisplayInfo(with id: String) -> UserDisplayInfo? {
-        for userInfo in messageAuthors.values {
-            if userInfo.id == id {
-                return userInfo
-            }
-        }
-        return nil
-    }
-
     func clearCache() {
         log.debug("Clearing cached message data")
         scrollOffset = 0
         messageThreadShown = false
-        messageAuthorMapping = [String: String]()
-        messageAuthors = [String: UserDisplayInfo]()
-        checkedMessageIds = Set<String>()
-        quotedMessageMapping = [String: ChatMessage]()
-    }
-
-    // MARK: - private
-
-    private func userDisplayInfo(for message: ChatMessage) -> UserDisplayInfo? {
-        if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
-            let user = message.author
-            return UserDisplayInfo(
-                id: user.id,
-                name: user.name ?? user.id,
-                imageURL: user.imageURL,
-                role: user.userRole
-            )
-        }
-        
-        if let userId = messageAuthorMapping[message.id],
-           let userDisplayInfo = messageAuthors[userId] {
-            return userDisplayInfo
-        } else {
-            return nil
-        }
-    }
-
-    private func saveUserDisplayInfo(for message: ChatMessage) -> UserDisplayInfo {
-        let user = message.author
-        let userDisplayInfo = UserDisplayInfo(
-            id: user.id,
-            name: user.name ?? user.id,
-            imageURL: user.imageURL,
-            role: user.userRole
-        )
-        messageAuthorMapping[message.id] = user.id
-        messageAuthors[user.id] = userDisplayInfo
-
-        return userDisplayInfo
     }
 }
 
@@ -158,12 +45,19 @@ public struct UserDisplayInfo {
 extension ChatMessage {
 
     public var authorDisplayInfo: UserDisplayInfo {
-        let cachingUtils = InjectedValues[\.utils].messageCachingUtils
-        return cachingUtils.authorInfo(from: self)
+        UserDisplayInfo(
+            id: author.id,
+            name: author.name ?? author.id,
+            imageURL: author.imageURL,
+            role: author.userRole
+        )
     }
 
+    @available(*, deprecated, message: """
+    User display info is not cached anymore and this method returned 
+    cached data only. Use `ChatMessage.authorDisplayInfo` instead
+    """)
     public func userDisplayInfo(from id: String) -> UserDisplayInfo? {
-        let cachingUtils = InjectedValues[\.utils].messageCachingUtils
-        return cachingUtils.userDisplayInfo(with: id)
+        nil
     }
 }

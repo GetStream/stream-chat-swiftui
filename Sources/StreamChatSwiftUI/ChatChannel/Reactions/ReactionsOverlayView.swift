@@ -88,7 +88,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             if !messageDisplayInfo.message.isRightAligned &&
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                 factory.makeMessageAvatarView(
-                    for: utils.messageCachingUtils.authorInfo(from: messageDisplayInfo.message)
+                    for: messageDisplayInfo.message.authorDisplayInfo
                 )
                 .offset(
                     x: paddingValue / 2,
