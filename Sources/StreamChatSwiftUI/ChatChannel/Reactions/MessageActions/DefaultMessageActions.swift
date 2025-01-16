@@ -72,7 +72,14 @@ public extension MessageAction {
             messageActions.append(replyAction)
         }
 
-        if channel.config.repliesEnabled && !message.isPartOfThread {
+        // At the moment, this is the only way to know if we are inside a thread.
+        // This should be optimised in the future and provide the view context.
+        let messageController = InjectedValues[\.utils]
+            .channelControllerFactory
+            .makeMessageController(for: message.id, channelId: channel.cid)
+        let isInsideThreadView = messageController.replies.count > 0
+
+        if channel.config.repliesEnabled && !message.isPartOfThread && !isInsideThreadView {
             let replyThread = threadReplyAction(
                 factory: factory,
                 for: message,
@@ -113,12 +120,6 @@ public extension MessageAction {
         }
 
         if message.isRootOfThread {
-            let messageController = InjectedValues[\.utils]
-                .channelControllerFactory
-                .makeMessageController(for: message.id, channelId: channel.cid)
-            // At the moment, this is the only way to know if we are inside a thread.
-            // This should be optimised in the future and provide the view context.
-            let isInsideThreadView = messageController.replies.count > 0
             if isInsideThreadView {
                 let markThreadUnreadAction = markThreadAsUnreadAction(
                     messageController: messageController,
