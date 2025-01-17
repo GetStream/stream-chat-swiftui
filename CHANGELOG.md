@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Fix thread reply action shown when inside a Thread [#717](https://github.com/GetStream/stream-chat-swiftui/pull/717)
 ### 🔄 Changed
 - Deprecate unused `ChatMessage.userDisplayInfo(from:)` which only accessed cached data [#718](https://github.com/GetStream/stream-chat-swiftui/pull/718)
 
