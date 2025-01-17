@@ -3843,7 +3843,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "cleanup/model-reuse-runtime-check";
+				branch = develop;
 				kind = branch;
 			};
 		};
