@@ -68,7 +68,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 } else {
                     if messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                         factory.makeMessageAvatarView(
-                            for: utils.messageCachingUtils.authorInfo(from: message)
+                            for: message.authorDisplayInfo
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)

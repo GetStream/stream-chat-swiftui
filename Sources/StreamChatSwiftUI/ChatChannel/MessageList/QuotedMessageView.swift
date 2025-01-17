@@ -7,9 +7,6 @@ import SwiftUI
 
 /// Container showing the quoted message view with the user avatar.
 struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
-
-    @Injected(\.utils) private var utils
-
     private let avatarSize: CGFloat = 24
 
     var factory: Factory
@@ -22,7 +19,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
                 factory.makeQuotedMessageAvatarView(
-                    for: utils.messageCachingUtils.authorInfo(from: quotedMessage),
+                    for: quotedMessage.authorDisplayInfo,
                     size: CGSize(width: avatarSize, height: avatarSize)
                 )
 
@@ -41,7 +38,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                 )
 
                 factory.makeQuotedMessageAvatarView(
-                    for: utils.messageCachingUtils.authorInfo(from: quotedMessage),
+                    for: quotedMessage.authorDisplayInfo,
                     size: CGSize(width: avatarSize, height: avatarSize)
                 )
             }

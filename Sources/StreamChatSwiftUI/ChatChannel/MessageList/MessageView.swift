@@ -158,7 +158,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+            if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
@@ -193,11 +193,10 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
     var isFirst: Bool
 
     @Injected(\.fonts) private var fonts
-    @Injected(\.utils) private var utils
 
     public var body: some View {
         ZStack {
-            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+            if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,
