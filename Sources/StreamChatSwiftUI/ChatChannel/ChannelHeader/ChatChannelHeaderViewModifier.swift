@@ -64,12 +64,12 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                     resignFirstResponder()
                     isActive = true
                 } label: {
-                    Rectangle()
-                        .fill(Color(colors.background))
-                        .contentShape(Rectangle())
-                        .frame(width: 36, height: 36)
-                        .clipShape(Circle())
-                        .offset(x: 8)
+                    ChannelAvatarView(
+                        avatar: headerImage,
+                        showOnlineIndicator: onlineIndicatorShown,
+                        size: CGSize(width: 36, height: 36)
+                    )
+                    .offset(x: 4)
                 }
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
@@ -78,15 +78,6 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 } label: {
                     EmptyView()
                 }
-                .accessibilityHidden(true)
-                
-                ChannelAvatarView(
-                    avatar: headerImage,
-                    showOnlineIndicator: onlineIndicatorShown,
-                    size: CGSize(width: 36, height: 36)
-                )
-                .offset(x: 8)
-                .allowsHitTesting(false)
                 .accessibilityHidden(true)
             }
             .accessibilityIdentifier("ChannelAvatarView")
