@@ -272,17 +272,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             scrolledId = nil
             return true
         } else {
-            let findBaseId: String? = {
-                if StreamRuntimeCheck._isDatabaseObserverItemReusingEnabled {
-                    return messageId
-                } else {
-                    return messageId.components(separatedBy: "$").first
-                }
-            }()
-            guard let baseId = findBaseId else {
-                scrolledId = nil
-                return true
-            }
+            let baseId = messageId
             let alreadyLoaded = messages.map(\.id).contains(baseId)
             if alreadyLoaded {
                 if scrolledId == nil {
@@ -368,8 +358,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             
             let previous = index - 1
             let previousMessage = messages[previous]
-            let currentAuthorId = messageCachingUtils.authorId(for: message)
-            let previousAuthorId = messageCachingUtils.authorId(for: previousMessage)
+            let currentAuthorId = message.author.id
+            let previousAuthorId = previousMessage.author.id
 
             if currentAuthorId != previousAuthorId {
                 temp[message.id]?.append(firstMessageKey)

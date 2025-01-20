@@ -6,9 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
-
-    @Injected(\.utils) private var utils
-
     var factory: Factory
     var message: ChatMessage
     var width: CGFloat
@@ -31,7 +28,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(alignment: message.alignmentInBubble) {
-            if let quotedMessage = utils.messageCachingUtils.quotedMessage(for: message) {
+            if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: !message.attachmentCounts.isEmpty,
