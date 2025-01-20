@@ -92,6 +92,7 @@ struct NewChatView: View, KeyboardReadable {
                     viewFactory: DemoAppFactory.shared,
                     channelController: controller
                 )
+                .modifier(TabBarVisibilityModifier())
             } else {
                 Spacer()
             }
@@ -101,6 +102,19 @@ struct NewChatView: View, KeyboardReadable {
             keyboardShown = visible
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
+    }
+}
+
+struct TabBarVisibilityModifier: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content.toolbarVisibility(.hidden, for: .bottomBar)
+        } else if #available(iOS 16.0, *) {
+            content.toolbar(.hidden, for: .bottomBar)
+        } else {
+            content
+        }
     }
 }
 
