@@ -144,5 +144,23 @@
 			<string>%d Thread Replies</string>
 		</dict>
 	</dict>
+	<key>message.cell.read.count</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@seen@</string>
+		<key>seen</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>Seen by no-one</string>
+			<key>one</key>
+			<string>Seen by %d</string>
+			<key>other</key>
+			<string>Seen by %d</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

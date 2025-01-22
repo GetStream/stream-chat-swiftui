@@ -18,9 +18,13 @@
 "channel.name.direct-message" = "user";
 "channel.name.group" = "group";
 
+"channel.list.scroll-to-bottom.title" = "Scroll to bottom";
+
 "channel.no-content.title" = "Let's start chatting";
 "channel.no-content.message" = "How about sending your first message to a friend?";
 "channel.no-content.start" = "Start a chat";
+
+"channel.header.info.title" = "Channel info";
 
 "message.actions.inline-reply" = "Reply";
 "message.actions.thread-reply" = "Thread Reply";
@@ -54,6 +58,7 @@
 "message.cell.pinnedBy" = "Pinned by";
 "message.cell.unknownPin" = "unknown";
 "message.cell.edited" = "Edited";
+"message.cell.sent-at" = "Sent at %@";
 "message.reactions.currentUser" = "You";
 
 "message.polls.button.addComment" = "Add a Comment";

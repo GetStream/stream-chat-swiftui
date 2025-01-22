@@ -76,6 +76,12 @@ internal enum L10n {
   }
 
   internal enum Channel {
+    internal enum Header {
+      internal enum Info {
+        /// Channel info
+        internal static var title: String { L10n.tr("Localizable", "channel.header.info.title") }
+      }
+    }
     internal enum Item {
       /// Audio
       internal static var audio: String { L10n.tr("Localizable", "channel.item.audio") }
@@ -111,6 +117,12 @@ internal enum L10n {
       internal static var video: String { L10n.tr("Localizable", "channel.item.video") }
       /// Voice Message
       internal static var voiceMessage: String { L10n.tr("Localizable", "channel.item.voice-message") }
+    }
+    internal enum List {
+      internal enum ScrollToBottom {
+        /// Scroll to bottom
+        internal static var title: String { L10n.tr("Localizable", "channel.list.scroll-to-bottom.title") }
+      }
     }
     internal enum Name {
       /// and
@@ -391,8 +403,18 @@ internal enum L10n {
       internal static var edited: String { L10n.tr("Localizable", "message.cell.edited") }
       /// Pinned by
       internal static var pinnedBy: String { L10n.tr("Localizable", "message.cell.pinnedBy") }
+      /// Sent at %@
+      internal static func sentAt(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.cell.sent-at", String(describing: p1))
+      }
       /// unknown
       internal static var unknownPin: String { L10n.tr("Localizable", "message.cell.unknownPin") }
+      internal enum Read {
+        /// Plural format key: "%#@seen@"
+        internal static func count(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.cell.read.count", p1)
+        }
+      }
     }
     internal enum FileAttachment {
       /// Error occured while previewing the file.
