@@ -28,6 +28,9 @@ struct ReactionsContainer: View {
                 .onLongPressGesture {
                     onLongPressGesture()
                 }
+                .accessibilityAction {
+                    onTapGesture()
+                }
             }
 
             Spacer()

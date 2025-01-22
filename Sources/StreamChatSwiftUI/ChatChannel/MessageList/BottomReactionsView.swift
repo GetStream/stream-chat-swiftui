@@ -95,6 +95,9 @@ struct BottomReactionsView: View {
                     .onLongPressGesture {
                         onLongPress()
                     }
+                    .accessibilityAction {
+                        viewModel.reactionTapped(reaction)
+                    }
                 }
             }
             
