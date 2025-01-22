@@ -122,9 +122,11 @@ jobs:
     strategy:
       matrix:
         include:
+          - xcode: 16.2
+            os: macos-15
           - xcode: 16.1
             os: macos-15
-          - xcode: 15.4
+          - xcode: 16.0
             os: macos-15
       fail-fast: false
     runs-on: ${{ matrix.os }}
