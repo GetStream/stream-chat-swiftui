@@ -108,9 +108,7 @@ struct NewChatView: View, KeyboardReadable {
 struct TabBarVisibilityModifier: ViewModifier {
     
     func body(content: Content) -> some View {
-        if #available(iOS 18, *) {
-            content.toolbarVisibility(.hidden, for: .bottomBar)
-        } else if #available(iOS 16.0, *) {
+        if #available(iOS 16.0, *) {
             content.toolbar(.hidden, for: .bottomBar)
         } else {
             content
