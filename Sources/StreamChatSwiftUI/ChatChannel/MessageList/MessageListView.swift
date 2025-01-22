@@ -527,6 +527,7 @@ public struct DateIndicatorView: View {
                 .padding(.all, 8)
             Spacer()
         }
+        .accessibilityAddTraits(.isHeader)
     }
 }
 

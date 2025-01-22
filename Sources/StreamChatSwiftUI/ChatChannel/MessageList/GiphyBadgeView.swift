@@ -14,6 +14,7 @@ public struct GiphyBadgeView: View {
         BottomLeftView {
             HStack(spacing: 4) {
                 Image(uiImage: images.commandGiphy)
+                    .accessibilityHidden(true)
                 Text(L10n.Message.GiphyAttachment.title)
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.staticColorText))

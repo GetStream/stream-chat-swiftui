@@ -20,6 +20,7 @@ struct RecordingView: View {
         HStack {
             Image(systemName: "mic")
                 .foregroundColor(.red)
+                .accessibilityHidden(true)
             RecordingDurationView(duration: audioRecordingInfo.duration)
             
             Spacer()
@@ -30,6 +31,7 @@ struct RecordingView: View {
             }
             .foregroundColor(Color(colors.textLowEmphasis))
             .opacity(opacityForSlideToCancel)
+            .accessibilityHidden(true)
             
             Spacer()
             
@@ -38,6 +40,7 @@ struct RecordingView: View {
             } label: {
                 Image(systemName: "mic")
             }
+            .accessibilityLabel(Text(L10n.Composer.AudioRecording.stop))
         }
         .padding(.all, 12)
         .overlay(

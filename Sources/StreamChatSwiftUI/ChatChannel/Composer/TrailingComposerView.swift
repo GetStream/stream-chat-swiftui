@@ -85,5 +85,12 @@ public struct VoiceRecordingButton: View {
                         }
                     }
             )
+            .accessibilityRemoveTraits(.isImage)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(Text(L10n.Composer.AudioRecording.start))
+            .accessibilityAction {
+                viewModel.recordingState = .recording(.zero)
+                viewModel.startRecording()
+            }
     }
 }

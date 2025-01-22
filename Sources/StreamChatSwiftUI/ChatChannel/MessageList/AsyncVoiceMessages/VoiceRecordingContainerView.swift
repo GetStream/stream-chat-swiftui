@@ -215,6 +215,7 @@ struct VoiceRecordingView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 40)
+                    .accessibilityHidden(true)
             }
         }
         .onReceive(handler.$context, perform: { value in

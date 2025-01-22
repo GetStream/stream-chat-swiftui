@@ -159,6 +159,7 @@ public struct AttachmentSourcePickerView: View {
                 isSelected: selected == .files,
                 onTap: onTap
             )
+            .accessibilityLabel(L10n.Composer.Picker.file)
             .accessibilityIdentifier("attachmentPickerFiles")
 
             AttachmentPickerButton(
@@ -176,6 +177,7 @@ public struct AttachmentSourcePickerView: View {
                     isSelected: selected == .polls,
                     onTap: onTap
                 )
+                .accessibilityLabel(L10n.Composer.Polls.createPoll)
                 .accessibilityIdentifier("attachmentPickerPolls")
             }
 

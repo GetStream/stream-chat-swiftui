@@ -34,8 +34,12 @@ public extension ChatClient {
                 databaseContainerBuilder: {
                     DatabaseContainer_Spy(
                         kind: $0,
+                        shouldFlushOnStart: $1,
+                        shouldResetEphemeralValuesOnStart: $2,
                         bundle: Bundle(for: StreamChatTestCase.self),
-                        chatClientConfig: $1
+                        localCachingSettings: $3,
+                        deletedMessagesVisibility: $4,
+                        shouldShowShadowedMessages: $5
                     )
                 },
                 authenticationRepositoryBuilder: AuthenticationRepository_Mock.init

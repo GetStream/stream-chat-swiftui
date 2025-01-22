@@ -371,6 +371,11 @@ struct LazyLoadingImage: View {
                                     imageTapped(index ?? 0)
                                 }
                         )
+                        .accessibilityLabel(L10n.Message.Attachment.accessibilityLabel((index ?? 0) + 1))
+                        .accessibilityAddTraits(source.type == .video ? .startsMediaSession : .isImage)
+                        .accessibilityAction {
+                            imageTapped(index ?? 0)
+                        }
                 }
             } else if error != nil {
                 Color(.secondarySystemBackground)
@@ -383,6 +388,7 @@ struct LazyLoadingImage: View {
             
             if source.type == .video && width > 64 && source.uploadingState == nil {
                 VideoPlayIcon()
+                    .accessibilityHidden(true)
             }
         }
         .onAppear {
@@ -414,6 +420,7 @@ struct LazyLoadingImage: View {
             .allowsHitTesting(false)
             .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
             .clipped()
+            .accessibilityHidden(true)
     }
 }
 

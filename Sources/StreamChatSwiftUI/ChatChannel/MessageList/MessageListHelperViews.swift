@@ -124,10 +124,14 @@ public struct MessageReadIndicatorView: View {
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
+            .accessibilityLabel(
+                Text(
+                    readUsers.isEmpty ? L10n.Message.ReadStatus.seenByNoOne : L10n.Message.ReadStatus.seenByOthers
+                )
+            )
             .accessibilityIdentifier("readIndicatorCheckmark")
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(L10n.Message.Cell.Read.count(readUsers.count)))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageReadIndicatorView")
     }
     
