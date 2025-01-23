@@ -26,7 +26,7 @@ public struct MessageAuthorAndDateView: View {
             }
             Spacer()
         }
-        .accessibilityElement(children: .contain)
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier("MessageAuthorAndDateView")
     }
 }
@@ -80,11 +80,16 @@ struct MessageDateView: View {
         return text
     }
     
+    var accessibilityLabel: String {
+        L10n.Message.Cell.sentAt(text)
+    }
+    
     var body: some View {
         Text(text)
             .font(fonts.footnote)
             .foregroundColor(Color(colors.textLowEmphasis))
             .animation(nil)
+            .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityIdentifier("MessageDateView")
     }
 }
@@ -119,6 +124,11 @@ public struct MessageReadIndicatorView: View {
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
+            .accessibilityLabel(
+                Text(
+                    readUsers.isEmpty ? L10n.Message.ReadStatus.seenByNoOne : L10n.Message.ReadStatus.seenByOthers
+                )
+            )
             .accessibilityIdentifier("readIndicatorCheckmark")
         }
         .accessibilityElement(children: .contain)
@@ -161,6 +171,7 @@ public struct MessagePinDetailsView: View {
             Image(uiImage: images.pin)
                 .customizable()
                 .frame(maxHeight: 12)
+                .accessibilityHidden(true)
             Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
                 .font(fonts.footnote)
         }

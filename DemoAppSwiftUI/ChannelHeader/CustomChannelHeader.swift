@@ -36,12 +36,15 @@ public struct CustomChannelHeader: ToolbarContent {
                     .background(colors.tintColor)
                     .clipShape(Circle())
             }
+            .accessibilityLabel(Text("New Channel"))
         }
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
                 actionsPopupShown = true
             } label: {
                 StreamLazyImage(url: currentUserController.currentUser?.imageURL)
+                    .accessibilityLabel("Account Actions")
+                    .accessibilityAddTraits(.isButton)
             }
         }
     }

@@ -31,7 +31,7 @@ public struct SendMessageButton: View {
                 )
         }
         .disabled(!enabled)
-        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")
     }
 

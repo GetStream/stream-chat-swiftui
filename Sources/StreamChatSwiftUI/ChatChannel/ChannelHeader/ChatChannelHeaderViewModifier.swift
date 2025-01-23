@@ -71,13 +71,15 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                         .clipShape(Circle())
                         .offset(x: 8)
                 }
+                .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
                 NavigationLink(isActive: $isActive) {
                     LazyView(ChatChannelInfoView(channel: channel, shownFromMessageList: true))
                 } label: {
                     EmptyView()
                 }
-
+                .accessibilityHidden(true)
+                
                 ChannelAvatarView(
                     avatar: headerImage,
                     showOnlineIndicator: onlineIndicatorShown,
@@ -85,6 +87,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 )
                 .offset(x: 8)
                 .allowsHitTesting(false)
+                .accessibilityHidden(true)
             }
             .accessibilityIdentifier("ChannelAvatarView")
         }

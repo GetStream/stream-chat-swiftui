@@ -18,9 +18,17 @@
 "channel.name.direct-message" = "user";
 "channel.name.group" = "group";
 
+"channel.list.scroll-to-bottom.title" = "Scroll to bottom";
+
 "channel.no-content.title" = "Let's start chatting";
 "channel.no-content.message" = "How about sending your first message to a friend?";
 "channel.no-content.start" = "Start a chat";
+
+"channel.header.info.title" = "Channel info";
+
+"message.attachment.accessibility-label" = "Attachment %d";
+"message.read-status.seen-by-others" = "Seen by others";
+"message.read-status.seen-by-no-one" = "Seen by no one";
 
 "message.actions.inline-reply" = "Reply";
 "message.actions.thread-reply" = "Thread Reply";
@@ -54,6 +62,7 @@
 "message.cell.pinnedBy" = "Pinned by";
 "message.cell.unknownPin" = "unknown";
 "message.cell.edited" = "Edited";
+"message.cell.sent-at" = "Sent at %@";
 "message.reactions.currentUser" = "You";
 
 "message.polls.button.addComment" = "Add a Comment";
@@ -109,6 +118,7 @@
 "composer.picker.file" = "File";
 "composer.picker.media" = "Photo or Video";
 "composer.picker.cancel" = "Cancel";
+"composer.picker.show-all" = "Attachment pickers";
 "composer.files.add-more" = "Add more files";
 "composer.images.no-access-library" = "You have not granted access to the photo library.";
 "composer.images.access-settings" = "Change in Settings";
@@ -128,6 +138,8 @@
 "composer.polls.multiple-answers" = "Multiple answers";
 "composer.polls.suggest-option" = "Suggest an option";
 "composer.polls.type-number-from-1-and-10" = "Type a number from 1 and 10";
+"composer.audio-recording.start" = "Start recording audio message";
+"composer.audio-recording.stop" = "Stop recording audio message";
 
 "composer.commands.giphy" = "Giphy";
 "composer.commands.mute" = "Mute";

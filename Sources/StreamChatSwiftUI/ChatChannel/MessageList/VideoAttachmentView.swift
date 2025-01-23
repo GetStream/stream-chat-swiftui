@@ -155,6 +155,7 @@ struct VideoAttachmentContentView: View {
                     .scaledToFill()
                     .clipped()
                     .allowsHitTesting(false)
+                    .accessibilityHidden(true)
 
                 if width > 64 && attachment.uploadingState == nil {
                     VStack {
@@ -164,6 +165,9 @@ struct VideoAttachmentContentView: View {
                     .contentShape(Rectangle())
                     .clipped()
                     .onTapGesture {
+                        fullScreenShown = true
+                    }
+                    .accessibilityAction {
                         fullScreenShown = true
                     }
                 }

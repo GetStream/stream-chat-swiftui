@@ -56,6 +56,7 @@ public struct AttachmentPickerTypeView: View {
                         pickerType: .media,
                         selected: attachmentPickerType
                     )
+                    .accessibilityLabel(Text(L10n.Composer.Picker.showAll))
                     .accessibilityIdentifier("PickerTypeButtonMedia")
                 }
 
@@ -65,6 +66,7 @@ public struct AttachmentPickerTypeView: View {
                         pickerType: .instantCommands,
                         selected: attachmentPickerType
                     )
+                    .accessibilityLabel(Text(L10n.Composer.Suggestions.Commands.header))
                     .accessibilityIdentifier("PickerTypeButtonCommands")
                 }
             case .collapsed:

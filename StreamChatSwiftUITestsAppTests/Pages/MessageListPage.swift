@@ -227,7 +227,7 @@ class MessageListPage {
         }
 
         static func files(in messageCell: XCUIElement) -> XCUIElementQuery {
-            messageCell.images.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer'"))
+            messageCell.buttons.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer'"))
         }
 
         static func videoPlayer() -> XCUIElement {

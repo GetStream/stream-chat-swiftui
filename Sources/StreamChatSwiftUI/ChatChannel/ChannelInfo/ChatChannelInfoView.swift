@@ -112,6 +112,9 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                         .onTapGesture {
                             viewModel.addUsersShown = false
                         }
+                        .accessibilityAction {
+                            viewModel.addUsersShown = false
+                        }
                     AddUsersView(
                         loadedUserIds: viewModel.participants.map(\.id),
                         onUserTap: viewModel.addUserTapped(_:)

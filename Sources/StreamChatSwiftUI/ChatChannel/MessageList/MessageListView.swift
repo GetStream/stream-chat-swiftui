@@ -467,6 +467,7 @@ public struct ScrollToBottomButton: View {
                     .frame(width: buttonSize, height: buttonSize)
                     .modifier(ShadowViewModifier(cornerRadius: buttonSize / 2))
             }
+            .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
             .padding()
             .overlay(
                 unreadCount > 0 ?
@@ -526,6 +527,7 @@ public struct DateIndicatorView: View {
                 .padding(.all, 8)
             Spacer()
         }
+        .accessibilityAddTraits(.isHeader)
     }
 }
 
