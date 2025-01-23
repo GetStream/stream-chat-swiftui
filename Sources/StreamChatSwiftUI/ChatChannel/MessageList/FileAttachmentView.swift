@@ -137,6 +137,7 @@ public struct FileAttachmentDisplayView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 34, height: 40)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
                     .font(fonts.bodyBold)
@@ -149,6 +150,7 @@ public struct FileAttachmentDisplayView: View {
             }
             Spacer()
         }
+        .accessibilityElement(children: .combine)
     }
 
     private var previewImage: UIImage {
