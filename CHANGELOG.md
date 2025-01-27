@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Fix thread reply action shown when inside a Thread [#717](https://github.com/GetStream/stream-chat-swiftui/pull/717)
 - Improve voice over by adding missing labels, removing decorative images, and setting accessibility actions [#726](https://github.com/GetStream/stream-chat-swiftui/pull/726)
+- Fix avatar's background color when changing the navigation bar background color [#725](https://github.com/GetStream/stream-chat-swiftui/pull/725)
 ### 🔄 Changed
 - Deprecate unused `ChatMessage.userDisplayInfo(from:)` which only accessed cached data [#718](https://github.com/GetStream/stream-chat-swiftui/pull/718)
 ### 🎭 New Localizations
