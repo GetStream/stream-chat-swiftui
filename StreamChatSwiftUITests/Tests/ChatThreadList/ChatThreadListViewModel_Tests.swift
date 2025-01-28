@@ -11,7 +11,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_viewDidAppear_thenLoadsThreads() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         let viewModel = ChatThreadListViewModel(
             threadListController: mockThreadListController
@@ -23,7 +24,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_viewDidAppear_whenAlreadyLoadedThreads_thenDoesNotLoadsThreads() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         let viewModel = ChatThreadListViewModel(
             threadListController: mockThreadListController
@@ -38,7 +40,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_loadThreads_whenInitialEmptyData_whenSuccess() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         mockThreadListController.threads_mock = []
         let viewModel = ChatThreadListViewModel(
@@ -64,7 +67,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_loadThreads_whenCacheAvailable_whenSuccess() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         mockThreadListController.threads_mock = [.mock()]
         let viewModel = ChatThreadListViewModel(
@@ -90,7 +94,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_loadThreads_whenError() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         mockThreadListController.threads_mock = []
         let viewModel = ChatThreadListViewModel(
@@ -110,7 +115,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_didAppearThread_whenInsideThreshold_thenLoadMoreThreads() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         let viewModel = ChatThreadListViewModel(
             threadListController: mockThreadListController
@@ -131,7 +137,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_didAppearThread_whenNotInThreshold_thenDoNotLoadMoreThreads() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         let viewModel = ChatThreadListViewModel(
             threadListController: mockThreadListController
@@ -152,7 +159,8 @@ class ChatThreadListViewModel_Tests: StreamChatTestCase {
 
     func test_didReceiveThreadMessageNewEvent() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
-            query: .init(watch: true)
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
         )
         let viewModel = ChatThreadListViewModel(
             threadListController: mockThreadListController
