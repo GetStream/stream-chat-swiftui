@@ -34,6 +34,7 @@ public extension ChatClient {
                 databaseContainerBuilder: {
                     DatabaseContainer_Spy(
                         kind: $0,
+                        bundle: Bundle(for: StreamChatTestCase.self),
                         chatClientConfig: $1
                     )
                 },
