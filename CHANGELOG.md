@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.71.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.71.0)
+_January 28, 2025_
+
 ### 🐞 Fixed
 - Fix thread reply action shown when inside a Thread [#717](https://github.com/GetStream/stream-chat-swiftui/pull/717)
 - Improve voice over by adding missing labels, removing decorative images, and setting accessibility actions [#726](https://github.com/GetStream/stream-chat-swiftui/pull/726)
