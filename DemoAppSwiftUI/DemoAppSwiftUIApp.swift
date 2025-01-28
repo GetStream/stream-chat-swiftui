@@ -149,17 +149,11 @@ extension AppState {
         switch identifier {
         case .initial:
             return ChannelListQuery(
-                filter: .containMembers(userIds: [currentUserId])
-            )
-        case .unarchivedAndPinnedSorted:
-            return ChannelListQuery(
-                filter: .and([
-                    .containMembers(userIds: [currentUserId]),
-                    .equal(.archived, to: false)
-                ]),
+                filter: .containMembers(userIds: [currentUserId]),
                 sort: [
-                    .init(key: .pinnedAt, isAscending: false),
-                    .init(key: .default)
+                    Sorting(key: .pinnedAt),
+                    Sorting(key: .lastMessageAt),
+                    Sorting(key: .createdAt)
                 ]
             )
         case .archived:
