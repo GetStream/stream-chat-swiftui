@@ -207,7 +207,7 @@ public struct ChannelAvatarView: View {
     }
     
     private func reloadAvatar() {
-        guard let channel else { return }
+        guard let channel, avatar == nil else { return }
         channelAvatar = utils.channelHeaderLoader.image(for: channel)
     }
 }
