@@ -58,6 +58,19 @@ public protocol ViewFactory: AnyObject {
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> ChannelListItemType
+    
+    associatedtype ChannelAvatarViewType: View
+    /// Creates the channel avatar view shown in the channel list, search results and the channel header.
+    /// - Parameters:
+    /// - channel: the channel where the avatar is displayed.
+    /// - showOnlineIndicator: whether the online indicator is shown.
+    /// - size: the size of the avatar.
+    /// - Returns: view displayed in the channel avatar slot.
+    func makeChannelAvatarView(
+        for channel: ChatChannel,
+        showOnlineIndicator: Bool,
+        size: CGSize
+    ) -> ChannelAvatarViewType
 
     associatedtype ChannelListBackground: View
     /// Creates the background for the channel list.

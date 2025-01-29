@@ -11,7 +11,7 @@ public protocol ChatChannelHeaderViewModifier: ViewModifier {
 }
 
 /// The default channel header.
-public struct DefaultChatChannelHeader: ToolbarContent {
+public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
@@ -34,15 +34,18 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         .isEmpty
     }
 
+    private var factory: Factory
     public var channel: ChatChannel
     public var headerImage: UIImage
     @Binding public var isActive: Bool
 
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         headerImage: UIImage,
         isActive: Binding<Bool>
     ) {
+        self.factory = factory
         self.channel = channel
         self.headerImage = headerImage
         _isActive = isActive
@@ -64,12 +67,11 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                     resignFirstResponder()
                     isActive = true
                 } label: {
-                    ChannelAvatarView(
-                        avatar: headerImage,
+                    factory.makeChannelAvatarView(
+                        for: channel,
                         showOnlineIndicator: onlineIndicatorShown,
                         size: CGSize(width: 36, height: 36)
-                    )
-                    .offset(x: 4)
+                    )                    
                 }
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
@@ -86,19 +88,25 @@ public struct DefaultChatChannelHeader: ToolbarContent {
 }
 
 /// The default header modifier.
-public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
+public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHeaderViewModifier {
     @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
     @State private var isActive: Bool = false
 
+    private var factory: Factory
     public var channel: ChatChannel
     
-    public init(channel: ChatChannel) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        channel: ChatChannel
+    ) {
+        self.factory = factory
         self.channel = channel
     }
 
     public func body(content: Content) -> some View {
         content.toolbar {
             DefaultChatChannelHeader(
+                factory: factory,
                 channel: channel,
                 headerImage: channelHeaderLoader.image(for: channel),
                 isActive: $isActive

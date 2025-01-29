@@ -74,6 +74,7 @@ extension ViewFactory {
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> some View {
         let listItem = ChatChannelNavigatableListItem(
+            factory: self,
             channel: channel,
             channelName: channelName,
             avatar: avatar,
@@ -92,6 +93,18 @@ extension ViewFactory {
             trailingRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
+        )
+    }
+    
+    public func makeChannelAvatarView(
+        for channel: ChatChannel,
+        showOnlineIndicator: Bool,
+        size: CGSize
+    ) -> some View {
+        ChannelAvatarView(
+            channel: channel,
+            showOnlineIndicator: showOnlineIndicator,
+            size: size
         )
     }
     
@@ -189,6 +202,7 @@ extension ViewFactory {
         channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
     ) -> some View {
         SearchResultItem(
+            factory: self,
             searchResult: searchResult,
             onlineIndicatorShown: onlineIndicatorShown,
             channelName: channelName,
@@ -280,7 +294,7 @@ extension ViewFactory {
     public func makeChannelHeaderViewModifier(
         for channel: ChatChannel
     ) -> some ChatChannelHeaderViewModifier {
-        DefaultChannelHeaderModifier(channel: channel)
+        DefaultChannelHeaderModifier(factory: self, channel: channel)
     }
     
     public func makeChannelLoadingView() -> some View {

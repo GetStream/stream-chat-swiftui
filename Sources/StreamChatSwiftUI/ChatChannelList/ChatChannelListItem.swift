@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View for the channel list item.
-public struct ChatChannelListItem: View {
+public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -14,6 +14,7 @@ public struct ChatChannelListItem: View {
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 
+    var factory: Factory
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
@@ -23,6 +24,7 @@ public struct ChatChannelListItem: View {
     var onItemTap: (ChatChannel) -> Void
 
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         channelName: String,
         injectedChannelInfo: InjectedChannelInfo? = nil,
@@ -31,6 +33,7 @@ public struct ChatChannelListItem: View {
         disabled: Bool = false,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
+        self.factory = factory
         self.channel = channel
         self.channelName = channelName
         self.injectedChannelInfo = injectedChannelInfo
@@ -45,9 +48,10 @@ public struct ChatChannelListItem: View {
             onItemTap(channel)
         } label: {
             HStack {
-                ChannelAvatarView(
-                    channel: channel,
-                    showOnlineIndicator: onlineIndicatorShown
+                factory.makeChannelAvatarView(
+                    for: channel,
+                    showOnlineIndicator: onlineIndicatorShown,
+                    size: .defaultAvatarSize
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

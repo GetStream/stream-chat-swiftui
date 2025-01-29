@@ -142,4 +142,37 @@ class SearchResultsView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image)
     }
+    
+    func test_searchResultsView_channelAvatarUpdated() {
+        // Given
+        let channel1 = ChatChannel.mock(cid: .unique, name: "Test 1")
+        let message1 = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test 1",
+            author: .mock(id: .unique)
+        )
+        let result1 = ChannelSelectionInfo(
+            channel: channel1,
+            message: message1
+        )
+        let searchResults = [result1]
+
+        // When
+        let view = SearchResultsView(
+            factory: ChannelAvatarViewFactory(),
+            selectedChannel: .constant(nil),
+            searchResults: searchResults,
+            loadingSearchResults: false,
+            onlineIndicatorShown: { _ in false },
+            channelNaming: { $0.name ?? "" },
+            imageLoader: { _ in UIImage(systemName: "person.circle")! },
+            onSearchResultTap: { _ in },
+            onItemAppear: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image)
+    }
 }
