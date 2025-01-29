@@ -71,7 +71,8 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                         for: channel,
                         showOnlineIndicator: onlineIndicatorShown,
                         size: CGSize(width: 36, height: 36)
-                    )                    
+                    )
+                    .offset(x: 4)
                 }
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
