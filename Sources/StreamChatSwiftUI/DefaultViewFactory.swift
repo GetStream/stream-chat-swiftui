@@ -103,7 +103,7 @@ extension ViewFactory {
         ChannelAvatarView(
             channel: channel,
             showOnlineIndicator: options.showOnlineIndicator,
-            avatar: options.avatar,      
+            avatar: options.avatar,
             size: options.size
         )
     }
