@@ -109,11 +109,10 @@ class ChannelAvatarViewFactory: ViewFactory {
     
     func makeChannelAvatarView(
         for channel: ChatChannel,
-        showOnlineIndicator: Bool,
-        size: CGSize
+        with options: ChannelAvatarViewOptions
     ) -> some View {
         Circle()
             .fill(.red)
-            .frame(width: size.width, height: size.height)
+            .frame(width: options.size.width, height: options.size.height)
     }
 }
