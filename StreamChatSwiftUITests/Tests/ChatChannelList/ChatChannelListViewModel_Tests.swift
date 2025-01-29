@@ -338,7 +338,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
     }
 
     func test_loadAdditionalSearchResults_whenSearchTypeIsMessages_shouldLoadNextMessages() {
-        let messageSearchController = ChatMessageSearchController_Mock.mock()
+        let messageSearchController = ChatMessageSearchController_Mock.mock(client: .mock(isLocalStorageEnabled: false))
         let viewModel = makeDefaultChannelListVM(searchType: .messages)
         viewModel.messageSearchController = messageSearchController
 
