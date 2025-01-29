@@ -137,8 +137,7 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
             HStack {
                 factory.makeChannelAvatarView(
                     for: searchResult.channel,
-                    showOnlineIndicator: onlineIndicatorShown,
-                    size: .defaultAvatarSize
+                    with: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

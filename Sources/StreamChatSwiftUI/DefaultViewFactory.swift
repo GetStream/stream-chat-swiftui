@@ -98,13 +98,13 @@ extension ViewFactory {
     
     public func makeChannelAvatarView(
         for channel: ChatChannel,
-        showOnlineIndicator: Bool,
-        size: CGSize
+        with options: ChannelAvatarViewOptions
     ) -> some View {
         ChannelAvatarView(
             channel: channel,
-            showOnlineIndicator: showOnlineIndicator,
-            size: size
+            showOnlineIndicator: options.showOnlineIndicator,
+            avatar: options.avatar,      
+            size: options.size
         )
     }
     

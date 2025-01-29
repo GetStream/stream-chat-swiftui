@@ -962,8 +962,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         // When
         let view = viewFactory.makeChannelAvatarView(
             for: .mockNonDMChannel(),
-            showOnlineIndicator: false,
-            size: .defaultAvatarSize
+            with: .init(showOnlineIndicator: false)
         )
         
         // Then

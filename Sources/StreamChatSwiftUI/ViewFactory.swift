@@ -62,14 +62,12 @@ public protocol ViewFactory: AnyObject {
     associatedtype ChannelAvatarViewType: View
     /// Creates the channel avatar view shown in the channel list, search results and the channel header.
     /// - Parameters:
-    /// - channel: the channel where the avatar is displayed.
-    /// - showOnlineIndicator: whether the online indicator is shown.
-    /// - size: the size of the avatar.
+    ///  - channel: the channel where the avatar is displayed.
+    ///  - options: the options used to configure the avatar view.
     /// - Returns: view displayed in the channel avatar slot.
     func makeChannelAvatarView(
         for channel: ChatChannel,
-        showOnlineIndicator: Bool,
-        size: CGSize
+        with options: ChannelAvatarViewOptions
     ) -> ChannelAvatarViewType
 
     associatedtype ChannelListBackground: View
