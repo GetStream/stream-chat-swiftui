@@ -118,10 +118,11 @@ struct SearchResultView<Factory: ViewFactory>: View {
 }
 
 /// The search result item user interface.
-struct SearchResultItem<ChannelDestination: View>: View {
+struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
 
     @Injected(\.utils) private var utils
 
+    var factory: Factory
     var searchResult: ChannelSelectionInfo
     var onlineIndicatorShown: Bool
     var channelName: String
@@ -134,9 +135,9 @@ struct SearchResultItem<ChannelDestination: View>: View {
             onSearchResultTap(searchResult)
         } label: {
             HStack {
-                ChannelAvatarView(
-                    avatar: avatar,
-                    showOnlineIndicator: onlineIndicatorShown
+                factory.makeChannelAvatarView(
+                    for: searchResult.channel,
+                    with: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

@@ -71,6 +71,21 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_channelListView_channelAvatarUpdated() {
+        // Given
+        let controller = makeChannelListController()
+
+        // When
+        let view = ChatChannelListView(
+            viewFactory: ChannelAvatarViewFactory(),
+            channelListController: controller
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     private func makeChannelListController() -> ChatChannelListController_Mock {
         let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
@@ -85,5 +100,19 @@ class ChatChannelListView_Tests: StreamChatTestCase {
             channels.append(channel)
         }
         return channels
+    }
+}
+
+class ChannelAvatarViewFactory: ViewFactory {
+    
+    @Injected(\.chatClient) var chatClient
+    
+    func makeChannelAvatarView(
+        for channel: ChatChannel,
+        with options: ChannelAvatarViewOptions
+    ) -> some View {
+        Circle()
+            .fill(.red)
+            .frame(width: options.size.width, height: options.size.height)
     }
 }

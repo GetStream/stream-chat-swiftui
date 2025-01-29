@@ -165,7 +165,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         let view = viewFactory.makeChannelHeaderViewModifier(for: .mockDMChannel())
 
         // Then
-        XCTAssert(view is DefaultChannelHeaderModifier)
+        XCTAssert(view is DefaultChannelHeaderModifier<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeMessageTextView() {
@@ -953,6 +953,20 @@ class ViewFactory_Tests: StreamChatTestCase {
         
         // Then
         XCTAssert(view is PollAttachmentView<DefaultViewFactory>)
+    }
+    
+    func test_viewFactory_makeChannelAvatarView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeChannelAvatarView(
+            for: .mockNonDMChannel(),
+            with: .init(showOnlineIndicator: false)
+        )
+        
+        // Then
+        XCTAssert(view is ChannelAvatarView)
     }
 }
 

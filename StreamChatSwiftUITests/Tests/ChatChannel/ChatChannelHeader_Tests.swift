@@ -26,6 +26,27 @@ class ChatChannelHeader_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_chatChannelHeaderModifier_channelAvatarUpdated() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(name: "Test channel")
+
+        // When
+        let view = NavigationView {
+            Text("Test")
+                .applyDefaultSize()
+                .modifier(
+                    DefaultChannelHeaderModifier(
+                        factory: ChannelAvatarViewFactory(),
+                        channel: channel
+                    )
+                )
+        }
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_chatChannelHeader_snapshot() {
         // Given

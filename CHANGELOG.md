@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add factory method to customize the channel avatar [#734](https://github.com/GetStream/stream-chat-swiftui/pull/734)
 
 # [4.71.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.71.0)
 _January 28, 2025_

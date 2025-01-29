@@ -7,7 +7,8 @@ import SwiftUI
 
 /// Chat channel list item that supports navigating to a destination.
 /// It's generic over the channel destination.
-public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
+public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestination: View>: View {
+    private var factory: Factory
     private var channel: ChatChannel
     private var channelName: String
     private var avatar: UIImage
@@ -18,6 +19,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
     private var onItemTap: (ChatChannel) -> Void
 
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         channelName: String,
         avatar: UIImage,
@@ -27,6 +29,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
         channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
+        self.factory = factory
         self.channel = channel
         self.channelName = channelName
         self.channelDestination = channelDestination
@@ -40,6 +43,7 @@ public struct ChatChannelNavigatableListItem<ChannelDestination: View>: View {
     public var body: some View {
         ZStack {
             ChatChannelListItem(
+                factory: factory,
                 channel: channel,
                 channelName: channelName,
                 injectedChannelInfo: injectedChannelInfo,

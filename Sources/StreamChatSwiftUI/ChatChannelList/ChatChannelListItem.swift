@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View for the channel list item.
-public struct ChatChannelListItem: View {
+public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -14,6 +14,7 @@ public struct ChatChannelListItem: View {
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 
+    var factory: Factory
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
@@ -23,6 +24,7 @@ public struct ChatChannelListItem: View {
     var onItemTap: (ChatChannel) -> Void
 
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         channelName: String,
         injectedChannelInfo: InjectedChannelInfo? = nil,
@@ -31,6 +33,7 @@ public struct ChatChannelListItem: View {
         disabled: Bool = false,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
+        self.factory = factory
         self.channel = channel
         self.channelName = channelName
         self.injectedChannelInfo = injectedChannelInfo
@@ -45,9 +48,9 @@ public struct ChatChannelListItem: View {
             onItemTap(channel)
         } label: {
             HStack {
-                ChannelAvatarView(
-                    channel: channel,
-                    showOnlineIndicator: onlineIndicatorShown
+                factory.makeChannelAvatarView(
+                    for: channel,
+                    with: .init(showOnlineIndicator: onlineIndicatorShown)
                 )
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -127,6 +130,16 @@ public struct ChatChannelListItem: View {
     }
 }
 
+/// Options for setting up the channel avatar view.
+public struct ChannelAvatarViewOptions {
+    /// Whether the online indicator should be shown.
+    public var showOnlineIndicator: Bool
+    /// Size of the avatar.
+    public var size: CGSize = .defaultAvatarSize
+    /// Optional avatar image. If not provided, it will be loaded by the channel header loader.
+    public var avatar: UIImage?
+}
+
 /// View for the avatar used in channels (includes online indicator overlay).
 public struct ChannelAvatarView: View {
     @Injected(\.utils) private var utils
@@ -157,9 +170,10 @@ public struct ChannelAvatarView: View {
     public init(
         channel: ChatChannel,
         showOnlineIndicator: Bool,
+        avatar: UIImage? = nil,
         size: CGSize = .defaultAvatarSize
     ) {
-        avatar = nil
+        self.avatar = avatar
         self.channel = channel
         self.showOnlineIndicator = showOnlineIndicator
         self.size = size
@@ -193,7 +207,7 @@ public struct ChannelAvatarView: View {
     }
     
     private func reloadAvatar() {
-        guard let channel else { return }
+        guard let channel, avatar == nil else { return }
         channelAvatar = utils.channelHeaderLoader.image(for: channel)
     }
 }
