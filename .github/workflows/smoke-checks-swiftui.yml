@@ -1,0 +1,79 @@
+name: Smoke Checks SwiftUI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+
+  workflow_dispatch:
+    inputs:
+      snapshots:
+        description: 'Should Snapshots be recorded on CI?'
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
+  IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.1)"
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_PR_NUM: ${{ github.event.pull_request.number }}
+
+jobs:
+  test-ui-debug:
+    name: Test SwiftUI (Debug)
+    runs-on: macos-15
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/bootstrap
+      env:
+        INSTALL_YEETD: true
+        INSTALL_SONAR: true
+    - uses: ./.github/actions/python-cache
+    - name: Run UI Tests (Debug)
+      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:${{ github.event.inputs.snapshots }}
+      timeout-minutes: 120
+      env:
+        GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
+    - name: Run Sonar analysis
+      if: ${{ github.event.inputs.snapshots != 'true' }}
+      run: bundle exec fastlane sonar_upload
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: "You shall not pass!"
+        job_name: "Test (Debug)"
+        fields: message,commit,author,action,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        MATRIX_CONTEXT: ${{ toJson(matrix) }}
+      if: ${{ github.event_name == 'push' && failure() }}
+    - name: Parse xcresult
+      if: failure()
+      run: |
+        brew install chargepoint/xcparse/xcparse
+        xcparse logs fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/logs/
+        xcparse screenshots fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/snapshots --test
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: Test Data UI
+        path: |
+          fastlane/recordings
+          fastlane/sinatra_log.txt
+          fastlane/test_output/snapshots
+          fastlane/test_output/logs/*/Diagnostics/**/*.txt
+          fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*

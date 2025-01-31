@@ -71,6 +71,8 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/allurectl
 fastlane/xcresults
+fastlane/sonar
+fastlane/mint
 **/metrics/
 fastlane/recordings
 StreamChatCore.framework.coverage.txt
