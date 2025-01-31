@@ -152,8 +152,7 @@ extension AppState {
                 filter: .containMembers(userIds: [currentUserId]),
                 sort: [
                     Sorting(key: .pinnedAt),
-                    Sorting(key: .lastMessageAt),
-                    Sorting(key: .createdAt)
+                    Sorting(key: .default)
                 ]
             )
         case .archived:
