@@ -22,7 +22,6 @@ jobs:
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
     runs-on: macos-15
-    if: ${{ github.event_name != 'push' }}
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/ruby-cache
@@ -44,7 +43,6 @@ jobs:
     runs-on: macos-15
     env:
       XCODE_VERSION: "15.4"
-    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
@@ -61,7 +59,6 @@ jobs:
   build-xcode15:
     name: Build SDKs (Xcode 15.0)
     runs-on: macos-15
-    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     env:
       XCODE_VERSION: "15.4"
     steps:
@@ -87,7 +84,6 @@ jobs:
   allure_testops_launch:
     name: Launch Allure TestOps
     runs-on: macos-13
-    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
@@ -106,7 +102,6 @@ jobs:
   test-e2e-debug:
     name: Test E2E UI (Debug)
     runs-on: macos-15
-    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     needs:
       - allure_testops_launch
       - build-test-app-and-frameworks
@@ -162,7 +157,6 @@ jobs:
     name: Build Demo App
     runs-on: macos-14
     needs: build-test-app-and-frameworks
-    if: ${{ github.event_name != 'push' && github.event.inputs.snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: actions/download-artifact@v4
