@@ -33,7 +33,31 @@ struct DemoAppSwiftUIApp: App {
                 LoginView()
             case .loggedIn:
                 TabView {
-                    channelListView()
+                    NavigationView {
+                        VStack(spacing: 0) {
+                            if notificationsHandler.notificationChannelId != nil {
+                                ChatChannelListView(
+                                    viewFactory: DemoAppFactory.shared,
+                                    channelListController: channelListController,
+                                    selectedChannelId: notificationsHandler.notificationChannelId,
+                                    embedInNavigationView: false,
+                                    searchType: channelListSearchType
+                                )
+                            } else {
+                                ChatChannelListView(
+                                    viewFactory: DemoAppFactory.shared,
+                                    channelListController: channelListController,
+                                    embedInNavigationView: false,
+                                    searchType: channelListSearchType
+                                )
+                            }
+                            NavigationLink(
+                                                destination: Text("test"),
+                                                isActive: .constant(false)
+                                            ) { EmptyView() }
+                                                .hidden()
+                        }
+                    }
                         .tabItem { Label("Chat", systemImage: "message") }
                         .badge(appState.unreadCount.channels)
                     threadListView()
@@ -56,12 +80,14 @@ struct DemoAppSwiftUIApp: App {
                 viewFactory: DemoAppFactory.shared,
                 channelListController: channelListController,
                 selectedChannelId: notificationsHandler.notificationChannelId,
+                embedInNavigationView: false,
                 searchType: channelListSearchType
             )
         } else {
             ChatChannelListView(
                 viewFactory: DemoAppFactory.shared,
                 channelListController: channelListController,
+                embedInNavigationView: false,
                 searchType: channelListSearchType
             )
         }

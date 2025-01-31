@@ -17,7 +17,10 @@ class DemoAppFactory: ViewFactory {
     public static let shared = DemoAppFactory()
 
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
-        CustomChannelModifier(title: title)
+        STNavigationView(title: "test", onTapArchives: {
+            
+        }, showArchive: false)
+
     }
     
     func supportedMoreChannelActions(
@@ -72,6 +75,10 @@ class DemoAppFactory: ViewFactory {
             trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
         )
+    }
+    
+    func makeChannelListTopView(searchText: Binding<String>) -> some View {
+        STSearchView(searchText: searchText, appliedButtonClicked: false, selectedFilterType: .all, filterValues: { _, _ in })
     }
     
     public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
@@ -146,6 +153,152 @@ class DemoAppFactory: ViewFactory {
         )
         return pinChannel
     }
+}
+
+enum STFilterType: String {
+    case all = "All"
+    case unread = "Unread"
+}
+
+public struct STSearchView: View {
+    internal init(searchText: Binding<String>, appliedButtonClicked: Bool, showBottomSheet: Bool = false, filterOption: [String] = ["All", "Unread"], selectedFilterType: STFilterType, resultCount: Int = 0, viewFactory: DemoAppFactory = DemoAppFactory.shared, filterValues: @escaping (STFilterType, Bool) -> Void) {
+        _searchText = searchText
+        self.appliedButtonClicked = appliedButtonClicked
+        self.showBottomSheet = showBottomSheet
+        self.filterOption = filterOption
+        self.selectedFilterType = selectedFilterType
+        self.resultCount = resultCount
+        self.viewFactory = viewFactory
+        self.filterValues = filterValues
+    }
+    
+  @Binding var searchText: String
+  @State var appliedButtonClicked: Bool
+  @State var showBottomSheet: Bool = false
+  @State var filterOption: [String] = ["All", "Unread"]
+  @State var selectedFilterType: STFilterType
+  @State var resultCount: Int = 0
+  private var viewFactory = DemoAppFactory.shared
+
+  var filterValues: (_ selectedType: STFilterType, _ filterButtonClicked: Bool) -> Void
+   
+  public var body: some View {
+    VStack(spacing: 0) {
+      HStack {
+        HStack {
+            Image(systemName: "xmark")
+            .foregroundColor(.gray)
+            .padding(.leading, 8)
+         
+          ZStack(alignment: .leading) {
+            if searchText.isEmpty {
+              Text("Search messages")
+                .foregroundColor(.gray)
+                .font(.body)
+            }
+             
+            TextField("", text: $searchText)
+              .textFieldStyle(PlainTextFieldStyle())
+          }
+           
+          if !searchText.isEmpty {
+            Button(action: {
+              searchText = ""
+            }) {
+                Image(systemName: "xmark")
+                .foregroundColor(.gray)
+            }
+            .padding(.trailing, 8)
+          }
+        }
+        .frame(height: 44)
+        .overlay(
+          RoundedRectangle(cornerRadius: 10)
+        )
+        .background(Color(.white))
+         
+        Button(action: {
+          showBottomSheet = true
+        }) {
+            Image(systemName: "xmark")
+            .foregroundColor(.gray)
+        }
+        .padding(.leading, 16)
+      }
+      .padding([.leading, .trailing], 18)
+      .frame(height: 60)
+       
+      if appliedButtonClicked {
+        VStack {
+            Text("Test")
+          .frame(maxWidth: .infinity, maxHeight: 40)
+        }
+        .background(.white)
+      }
+    }
+    .onAppear {
+
+    }
+    .animation(.easeInOut, value: showBottomSheet)
+  }
+}
+
+
+struct STNavigationView: ChannelListHeaderViewModifier {
+ var title: String
+ public var onTapArchives: () -> Void
+ @State private var showArchive: Bool
+  
+ init(title: String, onTapArchives: @escaping () -> Void, showArchive: Bool) {
+  self.title = title
+  self.onTapArchives = onTapArchives
+  self.showArchive = showArchive
+ }
+  
+ func body(content: Content) -> some View {
+  content
+   .toolbar {
+     STChannelHeaderView(
+      title: title,
+      showArchive: $showArchive,
+      onTapArchives: onTapArchives)
+
+   }
+   .navigationBarTitleDisplayMode(.inline)
+ }
+}
+
+public struct STChannelHeaderView: ToolbarContent {
+ @Injected(\.fonts) var fonts
+ @Injected(\.images) var images
+  
+ var title: String
+ @Binding var showArchive: Bool
+ public var onTapArchives: () -> Void
+  
+ public var body: some ToolbarContent {
+  ToolbarItem(placement: .navigationBarLeading) {
+   Text(title)
+    .font(.system(size: 34, weight: .bold))
+    .foregroundColor(.gray)
+    .padding(.leading, 16)
+     
+  }
+   
+  ToolbarItem(placement: .navigationBarTrailing) {
+   HStack {
+    if showArchive {
+     Button(action: onTapArchives) {
+         Image(systemName: "person")
+       .resizable()
+       .frame(width: 24, height: 24)
+     }
+     .padding(.trailing, 16)
+    }
+   }
+  }
+
+ }
 }
 
 struct ShowProfileModifier: ViewModifier {
