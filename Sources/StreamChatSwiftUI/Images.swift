@@ -280,6 +280,7 @@ public class Images {
     public var threadIcon: UIImage = UIImage(systemName: "text.bubble")!
     
     // MARK: - No Content Icons
+    
     public var noContent: UIImage = UIImage(
         systemName: "message",
         withConfiguration: UIImage.SymbolConfiguration(pointSize: 100, weight: .regular)
