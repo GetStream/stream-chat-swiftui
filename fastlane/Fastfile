@@ -23,7 +23,7 @@ before_all do |lane|
   if is_ci
     setup_ci
     setup_git_config
-    xcversion(version: xcode_version) unless [:publish_release, :allure_launch, :allure_upload, :copyright, :pod_lint].include?(lane)
+    xcversion(version: xcode_version) unless [:publish_release, :sonar_upload, :allure_launch, :allure_upload, :copyright, :pod_lint].include?(lane)
   end
 end
 
@@ -259,6 +259,8 @@ lane :test_ui do |options|
       base_branch: current_branch,
       head_branch: "#{current_branch}-snapshots"
     )
+  else
+    slather
   end
 end
 

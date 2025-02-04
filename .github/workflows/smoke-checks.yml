@@ -7,6 +7,12 @@ on:
       - 'CHANGELOG.md'
 
   workflow_dispatch:
+    inputs:
+      snapshots:
+        description: 'Should Snapshots be recorded on CI?'
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -41,6 +47,7 @@ jobs:
   automated-code-review:
     name: Automated Code Review
     runs-on: macos-15
+    if: ${{ github.event.inputs.snapshots != 'true' }}
     env:
       XCODE_VERSION: "15.4"
     steps:
@@ -59,6 +66,7 @@ jobs:
   build-xcode15:
     name: Build SDKs (Xcode 15.0)
     runs-on: macos-15
+    if: ${{ github.event.inputs.snapshots != 'true' }}
     env:
       XCODE_VERSION: "15.4"
     steps:
@@ -81,9 +89,52 @@ jobs:
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
 
+  test-ui-debug:
+    name: Test SwiftUI (Debug)
+    runs-on: macos-15
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/bootstrap
+      env:
+        INSTALL_YEETD: true
+        INSTALL_SONAR: true
+    - name: Run UI Tests (Debug)
+      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:${{ github.event.inputs.snapshots }}
+      timeout-minutes: 120
+      env:
+        GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
+    - name: Run Sonar analysis
+      if: ${{ github.event.inputs.snapshots != 'true' }}
+      run: bundle exec fastlane sonar_upload
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Parse xcresult
+      if: failure()
+      run: |
+        brew install chargepoint/xcparse/xcparse
+        xcparse logs fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/logs/
+        xcparse screenshots fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/snapshots --test
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: Test Data UI
+        path: |
+          fastlane/recordings
+          fastlane/sinatra_log.txt
+          fastlane/test_output/snapshots
+          fastlane/test_output/logs/*/Diagnostics/**/*.txt
+          fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
+    - name: Upload Test Coverage
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-coverage-${{ github.event.pull_request.number }}
+        path: reports/sonarqube-generic-coverage.xml
+
   allure_testops_launch:
     name: Launch Allure TestOps
     runs-on: macos-13
+    if: ${{ github.event.inputs.snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
@@ -102,6 +153,7 @@ jobs:
   test-e2e-debug:
     name: Test E2E UI (Debug)
     runs-on: macos-15
+    if: ${{ github.event.inputs.snapshots != 'true' }}
     needs:
       - allure_testops_launch
       - build-test-app-and-frameworks
@@ -156,6 +208,7 @@ jobs:
   build-apps:
     name: Build Demo App
     runs-on: macos-14
+    if: ${{ github.event.inputs.snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     steps:
     - uses: actions/checkout@v4.1.1
