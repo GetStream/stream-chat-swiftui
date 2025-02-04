@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add factory method to customize the channel avatar [#734](https://github.com/GetStream/stream-chat-swiftui/pull/734)
 - Add possibility to replace the no content icons [#740](https://github.com/GetStream/stream-chat-swiftui/pull/740)
 
+### 🐞 Fixed
+- Fix hiding message actions when tapping on the add reactions button in the bottom reactions view [#737](https://github.com/GetStream/stream-chat-swiftui/pull/737)
+
 # [4.71.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.71.0)
 _January 28, 2025_
 
