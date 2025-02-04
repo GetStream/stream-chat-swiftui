@@ -7,6 +7,8 @@ import SwiftUI
 
 /// View displaying pinned messages in the chat info screen.
 public struct PinnedMessagesView: View {
+    
+    @Injected(\.images) private var images
 
     @StateObject private var viewModel: PinnedMessagesViewModel
 
@@ -32,7 +34,7 @@ public struct PinnedMessagesView: View {
                 }
             } else {
                 NoContentView(
-                    imageName: "message",
+                    image: images.noContent,
                     title: L10n.ChatInfo.PinnedMessages.emptyTitle,
                     description: L10n.ChatInfo.PinnedMessages.emptyDesc,
                     shouldRotateImage: true

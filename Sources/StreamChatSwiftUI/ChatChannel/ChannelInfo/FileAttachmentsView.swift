@@ -12,6 +12,7 @@ public struct FileAttachmentsView: View {
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
 
     public init(channel: ChatChannel) {
         _viewModel = StateObject(
@@ -29,7 +30,7 @@ public struct FileAttachmentsView: View {
                 LoadingView()
             } else if viewModel.attachmentsDataSource.isEmpty {
                 NoContentView(
-                    imageName: "folder",
+                    image: images.noMedia,
                     title: L10n.ChatInfo.Files.emptyTitle,
                     description: L10n.ChatInfo.Files.emptyDesc
                 )

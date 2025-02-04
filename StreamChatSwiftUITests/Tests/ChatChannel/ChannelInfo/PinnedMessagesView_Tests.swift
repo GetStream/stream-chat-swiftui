@@ -118,7 +118,7 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: defaultScreenSize)
     }
 }
 
