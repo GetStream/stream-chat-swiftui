@@ -43,7 +43,7 @@ class MediaAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: .defaultAvatarSize)
     }
 
     func test_mediaAttachmentsView_loading() {
