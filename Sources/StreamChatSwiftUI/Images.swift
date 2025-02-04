@@ -278,4 +278,19 @@ public class Images {
     // MARK: - Threads
 
     public var threadIcon: UIImage = UIImage(systemName: "text.bubble")!
+    
+    // MARK: - No Content Icons
+    
+    public var noContent: UIImage = UIImage(
+        systemName: "message",
+        withConfiguration: UIImage.SymbolConfiguration(pointSize: 100, weight: .regular)
+    ) ?? UIImage.circleImage
+    public var noMedia: UIImage = UIImage(
+        systemName: "folder",
+        withConfiguration: UIImage.SymbolConfiguration(pointSize: 100, weight: .regular)
+    ) ?? UIImage.circleImage
+    public var noThreads: UIImage = UIImage(
+        systemName: "text.bubble",
+        withConfiguration: UIImage.SymbolConfiguration(pointSize: 100, weight: .regular)
+    ) ?? UIImage.circleImage
 }

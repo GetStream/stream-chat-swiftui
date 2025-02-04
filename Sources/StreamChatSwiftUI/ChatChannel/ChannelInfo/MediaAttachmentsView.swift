@@ -7,6 +7,8 @@ import SwiftUI
 
 /// View displaying media attachments.
 public struct MediaAttachmentsView: View {
+    
+    @Injected(\.images) private var images
 
     @StateObject private var viewModel: MediaAttachmentsViewModel
 
@@ -40,7 +42,7 @@ public struct MediaAttachmentsView: View {
                 LoadingView()
             } else if viewModel.mediaItems.isEmpty {
                 NoContentView(
-                    imageName: "folder",
+                    image: images.noMedia,
                     title: L10n.ChatInfo.Media.emptyTitle,
                     description: L10n.ChatInfo.Media.emptyDesc
                 )

@@ -42,7 +42,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: defaultScreenSize)
     }
 
     func test_fileAttachmentsView_loadingSnapshot() {
