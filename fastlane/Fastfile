@@ -260,7 +260,7 @@ lane :test_ui do |options|
       head_branch: "#{current_branch}-snapshots"
     )
   else
-    slather
+    slather unless options[:build_for_testing]
   end
 end
 
