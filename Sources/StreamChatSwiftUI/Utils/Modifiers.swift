@@ -79,6 +79,25 @@ struct IconOverImageModifier: ViewModifier {
     }
 }
 
+struct ChangeBarsVisibilityModifier: ViewModifier {
+    
+    @Injected(\.utils) private var utils
+    
+    var shouldShow: Bool
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 16, *), !utils.messageListConfig.handleTabBarVisibility {
+            content
+                .navigationBarHidden(!shouldShow)
+                .toolbar(shouldShow ? .visible : .hidden, for: .tabBar)
+        } else {
+            content
+                .navigationBarHidden(!shouldShow)
+        }
+
+    }
+}
+
 extension View {
     /// View extension that applies default padding to elements.
     public func standardPadding() -> some View {
@@ -91,6 +110,10 @@ extension View {
 
     public func applyDefaultIconOverlayStyle() -> some View {
         modifier(IconOverImageModifier())
+    }
+    
+    public func changeBarsVisibility(shouldShow: Bool) -> some View {
+        modifier(ChangeBarsVisibilityModifier(shouldShow: shouldShow))
     }
 }
 
