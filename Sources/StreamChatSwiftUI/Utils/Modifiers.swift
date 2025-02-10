@@ -94,7 +94,6 @@ struct ChangeBarsVisibilityModifier: ViewModifier {
             content
                 .navigationBarHidden(!shouldShow)
         }
-
     }
 }
 
