@@ -88,26 +88,28 @@ public extension MessageAction {
             messageActions.append(replyThread)
         }
 
-        if message.pinDetails != nil {
-            let unpinAction = unpinMessageAction(
-                for: message,
-                channel: channel,
-                chatClient: chatClient,
-                onFinish: onFinish,
-                onError: onError
-            )
-
-            messageActions.append(unpinAction)
-        } else {
-            let pinAction = pinMessageAction(
-                for: message,
-                channel: channel,
-                chatClient: chatClient,
-                onFinish: onFinish,
-                onError: onError
-            )
-
-            messageActions.append(pinAction)
+        if channel.canPinMessage {
+            if message.pinDetails != nil {
+                let unpinAction = unpinMessageAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                
+                messageActions.append(unpinAction)
+            } else {
+                let pinAction = pinMessageAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                
+                messageActions.append(pinAction)
+            }
         }
 
         if !message.text.isEmpty {
