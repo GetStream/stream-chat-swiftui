@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix visibility of tabbar when reactions are shown [#750](https://github.com/GetStream/stream-chat-swiftui/pull/750)
+### 🔄 Changed
+- Only show "Pin/Unpin message" Action if user has permission [#749](https://github.com/GetStream/stream-chat-swiftui/pull/749)
 
 # [4.72.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.72.0)
 _February 04, 2025_
