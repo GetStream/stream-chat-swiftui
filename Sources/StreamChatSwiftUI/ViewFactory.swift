@@ -637,7 +637,8 @@ public protocol ViewFactory: AnyObject {
         placeholder: String,
         editable: Bool,
         maxMessageLength: Int?,
-        currentHeight: CGFloat
+        currentHeight: CGFloat,
+        onImagePasted: ((UIImage) -> Void)?
     ) -> ComposerTextInputViewType
 
     associatedtype TrailingComposerViewType: View
