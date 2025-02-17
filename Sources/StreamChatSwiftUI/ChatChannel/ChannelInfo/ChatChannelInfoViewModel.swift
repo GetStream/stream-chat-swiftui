@@ -67,6 +67,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
            }) {
             return [otherParticipant]
         }
+        
+        let participants = self.participants.filter { $0.isDeactivated == false }
 
         if participants.count <= 6 {
             return participants
@@ -98,7 +100,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
-        return total - displayed
+        let deactivated = participants.filter { $0.isDeactivated }.count
+        return total - displayed - deactivated
     }
 
     public var mutedText: String {
@@ -124,7 +127,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
             ParticipantInfo(
                 chatUser: member,
                 displayName: member.name ?? member.id,
-                onlineInfoText: onlineInfo(for: member)
+                onlineInfoText: onlineInfo(for: member),
+                isDeactivated: member.isDeactivated
             )
         }
     }
@@ -198,7 +202,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
                     ParticipantInfo(
                         chatUser: member,
                         displayName: member.name ?? member.id,
-                        onlineInfoText: onlineInfo(for: member)
+                        onlineInfoText: onlineInfo(for: member),
+                        isDeactivated: member.isDeactivated
                     )
                 }
             }
@@ -247,7 +252,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
                     ParticipantInfo(
                         chatUser: member,
                         displayName: member.name ?? member.id,
-                        onlineInfoText: self.onlineInfo(for: member)
+                        onlineInfoText: self.onlineInfo(for: member),
+                        isDeactivated: member.isDeactivated
                     )
                 }
                 if newMembers.count > self.participants.count {
