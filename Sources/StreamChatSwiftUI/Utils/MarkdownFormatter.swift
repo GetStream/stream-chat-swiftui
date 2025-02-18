@@ -49,7 +49,6 @@ final class MarkdownFormatter {
                 .foregroundColor(Color(colors.subtitleText))
         case .codeBlock:
             return AttributeContainer()
-                .backgroundColor(Color(colors.background2))
                 .font(fonts.body.monospaced())
         case let .header(level):
             let font: Font = {
