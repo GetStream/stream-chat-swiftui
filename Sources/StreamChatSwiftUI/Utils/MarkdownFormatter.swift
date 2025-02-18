@@ -12,10 +12,15 @@ final class MarkdownFormatter {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    func format(_ string: String, attributes: AttributeContainer) -> AttributedString {
+    func format(
+        _ string: String,
+        attributes: AttributeContainer,
+        layoutDirection: LayoutDirection
+    ) -> AttributedString {
         do {
             return try MarkdownParser.style(
                 markdown: string,
+                options: .init(layoutDirectionLeftToRight: layoutDirection == .leftToRight),
                 attributes: attributes,
                 inlinePresentationIntentAttributes: inlinePresentationIntentAttributes(for:),
                 presentationIntentAttributes: presentationIntentAttributes(for:in:)

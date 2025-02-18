@@ -250,6 +250,7 @@ struct StreamTextView: View {
 
 @available(iOS 15, *)
 public struct LinkDetectionTextView: View {
+    @Environment(\.layoutDirection) var layoutDirection
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -299,7 +300,11 @@ public struct LinkDetectionTextView: View {
             .font(fonts.body)
         var attributedString: AttributedString
         if utils.messageListConfig.markdownSupportEnabled {
-            attributedString = MarkdownFormatter().format(text, attributes: attributes)
+            attributedString = MarkdownFormatter().format(
+                text,
+                attributes: attributes,
+                layoutDirection: layoutDirection
+            )
         } else {
             attributedString = AttributedString(message.adjustedText, attributes: attributes)
         }
