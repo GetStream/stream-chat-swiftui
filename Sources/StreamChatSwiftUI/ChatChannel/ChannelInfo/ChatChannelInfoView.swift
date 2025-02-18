@@ -36,7 +36,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         ZStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    if viewModel.channel.isDirectMessageChannel {
+                    if viewModel.showSingleMemberDMView {
                         ChatInfoDirectChannelView(
                             participant: viewModel.displayedParticipants.first
                         )
@@ -125,7 +125,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Group {
-                    if viewModel.channel.isDirectMessageChannel {
+                    if viewModel.showSingleMemberDMView {
                         Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
                             .font(fonts.bodyBold)
                             .foregroundColor(Color(colors.text))

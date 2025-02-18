@@ -59,9 +59,13 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
+    
+    public var showSingleMemberDMView: Bool {
+        channel.isDirectMessageChannel && participants.count <= 2
+    }
 
     public var displayedParticipants: [ParticipantInfo] {
-        if channel.isDirectMessageChannel,
+        if showSingleMemberDMView,
            let otherParticipant = participants.first(where: { info in
                info.id != chatClient.currentUserId
            }) {
@@ -110,7 +114,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     }
 
     public var showMoreUsersButton: Bool {
-        !channel.isDirectMessageChannel && memberListCollapsed && notDisplayedParticipantsCount > 0
+        !showSingleMemberDMView && memberListCollapsed && notDisplayedParticipantsCount > 0
     }
 
     public init(channel: ChatChannel) {

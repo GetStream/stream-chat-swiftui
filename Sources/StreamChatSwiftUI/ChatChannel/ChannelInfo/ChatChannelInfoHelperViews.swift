@@ -64,10 +64,10 @@ public struct ChatInfoOptionsView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            if !viewModel.channel.isDirectMessageChannel {
-                ChannelNameUpdateView(viewModel: viewModel)
-            } else {
+            if viewModel.showSingleMemberDMView {
                 ChatInfoMentionText(participant: viewModel.displayedParticipants.first)
+            } else if !viewModel.channel.isDirectMessageChannel {
+                ChannelNameUpdateView(viewModel: viewModel)
             }
 
             Divider()

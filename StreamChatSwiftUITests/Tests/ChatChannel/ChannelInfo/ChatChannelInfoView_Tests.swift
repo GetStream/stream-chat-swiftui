@@ -49,6 +49,25 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_chatChannelInfoView_directChannelMoreMembersSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 4,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            name: "Direct channel",
+            lastActiveMembers: members
+        )
+
+        // When
+        let view = ChatChannelInfoView(channel: channel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_chatChannelInfoView_directChannelMutedSnapshot() {
         // Given
