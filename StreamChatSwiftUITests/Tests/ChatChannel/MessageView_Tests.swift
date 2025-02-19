@@ -723,6 +723,18 @@ class MessageView_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: size)
     }
     
+    func test_text_withMultiline() {
+        let size = messageViewSize(height: 100)
+        let view = messageView(
+            size: size,
+            """
+            This is regular text
+            This is the second line
+            """
+        )
+        AssertSnapshot(view, size: size)
+    }
+    
     func test_markdown_disabledWithRegularText() {
         // Given
         let config = MessageListConfig(markdownSupportEnabled: false)
