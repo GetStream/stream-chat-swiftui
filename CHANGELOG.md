@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add `Fonts.title2` for supporting markdown headers [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
 ### 🐞 Fixed
 - Fix visibility of tabbar when reactions are shown [#750](https://github.com/GetStream/stream-chat-swiftui/pull/750)
+- Show all members in direct message channel info view [#760](https://github.com/GetStream/stream-chat-swiftui/pull/760)
 ### 🔄 Changed
 - Only show "Pin/Unpin message" Action if user has permission [#749](https://github.com/GetStream/stream-chat-swiftui/pull/749)
 - Filter deactivated users in channel info view [#758](https://github.com/GetStream/stream-chat-swiftui/pull/758)
