@@ -7,20 +7,26 @@ import StreamChat
 import SwiftUI
 
 /// Converts markdown string to AttributedString with styling attributes.
-@available(iOS 15, *)
 final class MarkdownFormatter {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
+    private let markdownParser = MarkdownParser()
+    
+    func containsMarkdown(_ string: String) -> Bool {
+        markdownParser.containsMarkdown(string)
+    }
+    
+    @available(iOS 15, *)
     func format(
         _ string: String,
         attributes: AttributeContainer,
         layoutDirection: LayoutDirection
     ) -> AttributedString {
         do {
-            return try MarkdownParser.style(
+            return try markdownParser.style(
                 markdown: string,
-                options: .init(layoutDirectionLeftToRight: layoutDirection == .leftToRight),
+                options: MarkdownParser.ParsingOptions(layoutDirectionLeftToRight: layoutDirection == .leftToRight),
                 attributes: attributes,
                 inlinePresentationIntentAttributes: inlinePresentationIntentAttributes(for:),
                 presentationIntentAttributes: presentationIntentAttributes(for:in:)
@@ -33,12 +39,14 @@ final class MarkdownFormatter {
     
     // MARK: - Styling Attributes
     
+    @available(iOS 15, *)
     private func inlinePresentationIntentAttributes(
         for inlinePresentationIntent: InlinePresentationIntent
     ) -> AttributeContainer? {
         nil // use default attributes
     }
     
+    @available(iOS 15, *)
     private func presentationIntentAttributes(
         for presentationKind: PresentationIntent.Kind,
         in presentationIntent: PresentationIntent
@@ -64,7 +72,7 @@ final class MarkdownFormatter {
                 case 5:
                     return fonts.subheadline
                 default:
-                    return fonts.subheadline
+                    return fonts.footnote
                 }
             }()
             let foregroundColor: Color? = level >= 6 ? Color(colors.subtitleText) : nil

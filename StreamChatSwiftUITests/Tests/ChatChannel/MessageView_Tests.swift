@@ -850,17 +850,20 @@ class MessageView_Tests: StreamChatTestCase {
     }
     
     func test_markdown_unorderedLists() {
-        let size = messageViewSize(height: 400)
+        let size = messageViewSize(height: 550)
         let view = messageView(
             size: size,
             """
-            Unordered (no nesting)  
+            Unordered (no nesting)
+            
             Fruits:
             - **Oranges** (bold)
             - Apples
+            
             Trees:
             * Birch
             * Maple
+            
             Animals:
             + Cat
             + _Dog_ (italic)
@@ -900,15 +903,17 @@ class MessageView_Tests: StreamChatTestCase {
     }
     
     func test_markdown_orderedLists() {
-        let size = messageViewSize(height: 250)
+        let size = messageViewSize(height: 400)
         let view = messageView(
             size: size,
             """
-            Ordered (no nesting)    
-            Fruits:  
+            Ordered (no nesting)
+
+            Fruits:
             1. **Oranges** (bold)
             1. Apples
-            Animals:  
+
+            Animals:
             1. Cat
             2. _Dog_ (italic)
             3. Rabbit
