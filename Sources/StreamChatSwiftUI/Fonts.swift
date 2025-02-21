@@ -21,6 +21,7 @@ public struct Fonts {
     public var headline = Font.headline
     public var headlineBold = Font.headline.bold()
     public var title = Font.title
+    public var title2 = Font.title2
     public var title3 = Font.title3
     public var emoji = Font.system(size: 50)
 }
