@@ -830,16 +830,17 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_markdown_inlinePresentation() {
-        let size = messageViewSize(height: 200)
+    func test_markdown_text() {
+        let size = messageViewSize(height: 300)
         let view = messageView(
             size: size,
             """
             This is **bold** text  
             This text is _italicized_  
             This was ~~mistaken~~ text  
-            This has backlashes for a newline\\
-            This is regular text
+            This has backslashes for a newline\\
+            This has html line break<br/>Will span two lines  
+            ***All this text is important***  
             """
         )
         AssertSnapshot(view, size: size)
@@ -1046,6 +1047,20 @@ class MessageView_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: size)
     }
     
+    func test_code_inlineOnMultipleLines() {
+        let size = messageViewSize(height: 250)
+        let view = messageView(
+            size: size,
+            """
+            `inline code`
+            
+            `inline code which
+            should render on a single line`
+            """
+        )
+        AssertSnapshot(view, size: size)
+    }
+    
     func test_markdown_quote() {
         let size = messageViewSize(height: 150)
         let view = messageView(
@@ -1053,6 +1068,40 @@ class MessageView_Tests: StreamChatTestCase {
             """
             Text that is not a quote
             > Text that is a quote
+            """
+        )
+        AssertSnapshot(view, size: size)
+    }
+    
+    func test_markdown_quote_multipleLines() {
+        let size = messageViewSize(height: 150)
+        let view = messageView(
+            size: size,
+            """
+            Text that is not a quote
+            > Quote
+            > should
+            > render
+            > on
+            > a
+            > single
+            > line
+            """
+        )
+        AssertSnapshot(view, size: size)
+    }
+    
+    func test_markdown_quote_separate() {
+        let size = messageViewSize(height: 250)
+        let view = messageView(
+            size: size,
+            """
+            Text that is not a quote
+            > Text that is a quote
+            
+            > This is a second quote
+            
+            Another text that is not a quote
             """
         )
         AssertSnapshot(view, size: size)
