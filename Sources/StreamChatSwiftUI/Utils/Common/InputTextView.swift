@@ -52,6 +52,8 @@ class InputTextView: UITextView, AccessibilityView {
             }
         }
     }
+    
+    var onImagePasted: ((UIImage) -> Void)?
 
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
@@ -143,9 +145,22 @@ class InputTextView: UITextView, AccessibilityView {
 
     override open func paste(_ sender: Any?) {
         super.paste(sender)
+        if let pastedImage = UIPasteboard.general.image,
+           let onImagePasted {
+            onImagePasted(pastedImage)
+            return
+        }
         handleTextChange()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.scrollToBottom()
+        }
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(paste(_:)) && onImagePasted != nil && UIPasteboard.general.image != nil {
+            return true
+        } else {
+            return super.canPerformAction(action, withSender: sender)
         }
     }
 }
