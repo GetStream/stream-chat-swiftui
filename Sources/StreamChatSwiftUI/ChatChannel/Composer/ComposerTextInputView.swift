@@ -18,6 +18,7 @@ struct ComposerTextInputView: UIViewRepresentable {
     var editable: Bool
     var maxMessageLength: Int?
     var currentHeight: CGFloat
+    var onImagePasted: ((UIImage) -> Void)?
 
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView: InputTextView
@@ -33,6 +34,7 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.placeholderLabel.text = placeholder
         inputTextView.contentInsetAdjustmentBehavior = .never
         inputTextView.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
+        inputTextView.onImagePasted = onImagePasted
 
         if utils.messageListConfig.becomesFirstResponderOnOpen {
             inputTextView.becomeFirstResponder()

@@ -624,7 +624,8 @@ extension ViewFactory {
         placeholder: String,
         editable: Bool,
         maxMessageLength: Int?,
-        currentHeight: CGFloat
+        currentHeight: CGFloat,
+        onImagePasted: ((UIImage) -> Void)?
     ) -> some View {
         ComposerTextInputView(
             text: text,
@@ -633,7 +634,8 @@ extension ViewFactory {
             placeholder: placeholder,
             editable: editable,
             maxMessageLength: maxMessageLength,
-            currentHeight: currentHeight
+            currentHeight: currentHeight,
+            onImagePasted: onImagePasted
         )
     }
     
