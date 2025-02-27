@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Only show "Pin/Unpin message" Action if user has permission [#749](https://github.com/GetStream/stream-chat-swiftui/pull/749)
 - Filter deactivated users in channel info view [#758](https://github.com/GetStream/stream-chat-swiftui/pull/758)
 ### 🎭 New Localizations
-Add localizable keys for supporting accessibility labels:
+Add localizable keys for supporting moderation alerts:
 - `message.moderation.alert.title`
 - `message.moderation.alert.message`
 - `message.moderation.alert.resend`
