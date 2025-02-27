@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `Utils.MessageListConfig.bouncedMessagesAlertActionsEnabled` to support bounced actions alert [#764](https://github.com/GetStream/stream-chat-swiftui/pull/764)
+- Add `ViewFactory.makeBouncedMessageActionsModifier()` to customize the new bounced actions alert [#764](https://github.com/GetStream/stream-chat-swiftui/pull/764)
 ### 🐞 Fixed
 - Fix visibility of tabbar when reactions are shown [#750](https://github.com/GetStream/stream-chat-swiftui/pull/750)
 - Show all members in direct message channel info view [#760](https://github.com/GetStream/stream-chat-swiftui/pull/760)
