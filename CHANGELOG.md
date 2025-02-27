@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Only show "Pin/Unpin message" Action if user has permission [#749](https://github.com/GetStream/stream-chat-swiftui/pull/749)
 - Filter deactivated users in channel info view [#758](https://github.com/GetStream/stream-chat-swiftui/pull/758)
+- If the `bouncedMessagesAlertActionsEnabled` is not changed to false, the bounced actions will now be shown as an alert instead of context menu [#764](https://github.com/GetStream/stream-chat-swiftui/pull/764)
 ### 🎭 New Localizations
 Add localizable keys for supporting moderation alerts:
 - `message.moderation.alert.title`
