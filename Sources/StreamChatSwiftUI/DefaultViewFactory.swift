@@ -270,7 +270,11 @@ extension ViewFactory {
             forceLeftToRight: messageModifierInfo.forceLeftToRight
         )
     }
-    
+
+    public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
+        BouncedMessageActionsModifier(viewModel: viewModel)
+    }
+
     public func makeEmptyMessagesView(
         for channel: ChatChannel,
         colors: ColorPalette
