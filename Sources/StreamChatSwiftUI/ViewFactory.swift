@@ -254,6 +254,14 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
     func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
 
+    associatedtype BouncedMessageActionsModifierType: ViewModifier
+    /// Returns a view modifier applied to the bounced message actions.
+    ///
+    /// This modifier is only used if `Utils.messageListConfig.bouncedMessagesAlertActionsEnabled` is `true`.
+    /// By default the flag is false and the bounced actions are shown as a context menu.
+    /// - Parameter viewModel: the view model of the chat channel view.
+    func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> BouncedMessageActionsModifierType
+
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
     /// - Parameter userDisplayInfo: the author's display info.

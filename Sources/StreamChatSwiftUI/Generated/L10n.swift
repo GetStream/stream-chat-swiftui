@@ -437,18 +437,20 @@ internal enum L10n {
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
     internal enum Moderation {
-      /// Cancel
-      internal static var cancel: String { L10n.tr("Localizable", "message.moderation.cancel") }
-      /// Delete Message
-      internal static var delete: String { L10n.tr("Localizable", "message.moderation.delete") }
-      /// Edit Message
-      internal static var edit: String { L10n.tr("Localizable", "message.moderation.edit") }
-      /// Consider how your comment might make others feel and be sure to follow our Community Guidelines.
-      internal static var message: String { L10n.tr("Localizable", "message.moderation.message") }
-      /// Send Anyway
-      internal static var resend: String { L10n.tr("Localizable", "message.moderation.resend") }
-      /// Are you sure?
-      internal static var title: String { L10n.tr("Localizable", "message.moderation.title") }
+      internal enum Alert {
+        /// Cancel
+        internal static var cancel: String { L10n.tr("Localizable", "message.moderation.alert.cancel") }
+        /// Delete Message
+        internal static var delete: String { L10n.tr("Localizable", "message.moderation.alert.delete") }
+        /// Edit Message
+        internal static var edit: String { L10n.tr("Localizable", "message.moderation.alert.edit") }
+        /// Consider how your comment might make others feel and be sure to follow our Community Guidelines.
+        internal static var message: String { L10n.tr("Localizable", "message.moderation.alert.message") }
+        /// Send Anyway
+        internal static var resend: String { L10n.tr("Localizable", "message.moderation.alert.resend") }
+        /// Are you sure?
+        internal static var title: String { L10n.tr("Localizable", "message.moderation.alert.title") }
+      }
     }
     internal enum Polls {
       /// Anonymous

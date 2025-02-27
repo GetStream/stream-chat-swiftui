@@ -32,6 +32,7 @@ public struct MessageListConfig {
         isMessageEditedLabelEnabled: Bool = true,
         markdownSupportEnabled: Bool = true,
         userBlockingEnabled: Bool = false,
+        bouncedMessagesAlertActionsEnabled: Bool = false,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false }
     ) {
         self.messageListType = messageListType
@@ -57,6 +58,7 @@ public struct MessageListConfig {
         self.isMessageEditedLabelEnabled = isMessageEditedLabelEnabled
         self.markdownSupportEnabled = markdownSupportEnabled
         self.userBlockingEnabled = userBlockingEnabled
+        self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
     }
 
@@ -83,6 +85,12 @@ public struct MessageListConfig {
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
     public let userBlockingEnabled: Bool
+
+    /// A boolean to enable the alert actions for bounced messages.
+    ///
+    /// By default it is false and the bounced actions are displayed in the message context menu.
+    public let bouncedMessagesAlertActionsEnabled: Bool
+
     public let skipEditedMessageLabel: (ChatMessage) -> Bool
 }
 
@@ -111,7 +119,6 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
-
     public let showAvatars: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool

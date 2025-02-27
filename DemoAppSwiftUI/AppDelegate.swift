@@ -66,6 +66,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             messageListConfig: MessageListConfig(
                 dateIndicatorPlacement: .messageList,
                 userBlockingEnabled: true,
+                bouncedMessagesAlertActionsEnabled: true,
                 skipEditedMessageLabel: { message in
                     message.extraData["ai_generated"]?.boolValue == true
                 }
