@@ -32,7 +32,7 @@ public struct MessageListConfig {
         isMessageEditedLabelEnabled: Bool = true,
         markdownSupportEnabled: Bool = true,
         userBlockingEnabled: Bool = false,
-        bouncedMessagesAlertActionsEnabled: Bool = false,
+        bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false }
     ) {
         self.messageListType = messageListType
@@ -88,7 +88,7 @@ public struct MessageListConfig {
 
     /// A boolean to enable the alert actions for bounced messages.
     ///
-    /// By default it is false and the bounced actions are displayed in the message context menu.
+    /// By default it is true and the bounced actions are displayed as an alert instead of a context menu.
     public let bouncedMessagesAlertActionsEnabled: Bool
 
     public let skipEditedMessageLabel: (ChatMessage) -> Bool

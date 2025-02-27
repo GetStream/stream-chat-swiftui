@@ -89,7 +89,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    public private(set) var bouncedMessage: ChatMessage?
+    @Published public var bouncedMessage: ChatMessage?
     @Published public var bouncedActionsViewShown = false {
         didSet {
             if bouncedActionsViewShown == false {

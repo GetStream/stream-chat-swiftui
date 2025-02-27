@@ -201,9 +201,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
-        .if(utils.messageListConfig.bouncedMessagesAlertActionsEnabled) {
-            $0.modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
-        }
+        .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
     }
 
     private var generatingSnapshot: Bool {

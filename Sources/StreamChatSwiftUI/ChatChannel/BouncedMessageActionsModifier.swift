@@ -6,6 +6,8 @@ import StreamChat
 import SwiftUI
 
 /// The modifier that shows the actions for a bounced message.
+///
+/// This modifier is only used if `Utils.messageListConfig.bouncedMessagesAlertActionsEnabled` is `true`.
 public struct BouncedMessageActionsModifier: ViewModifier {
     @ObservedObject private var viewModel: ChatChannelViewModel
 
