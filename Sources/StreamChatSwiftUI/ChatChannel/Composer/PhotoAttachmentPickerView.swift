@@ -200,6 +200,6 @@ public struct PhotoAttachmentCell: View {
     private func assetJpgURL() -> URL? {
         guard let assetURL = assetURL else { return nil }
         guard let assetData = try? Data(contentsOf: assetURL) else { return nil }
-        return try? UIImage(data: assetData)?.temporaryLocalFileUrl()
+        return try? UIImage(data: assetData)?.saveAsJpgToTemporaryUrl()
     }
 }
