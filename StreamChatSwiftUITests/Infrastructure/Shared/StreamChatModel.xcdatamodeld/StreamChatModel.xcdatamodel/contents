@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="AttachmentDTO" representedClassName="AttachmentDTO" syncable="YES">
         <attribute name="data" attributeType="Binary"/>
         <attribute name="id" attributeType="String"/>
@@ -28,6 +28,7 @@
         <attribute name="readEventsEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="repliesEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="searchEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="skipLastMsgAtUpdateForSystemMsg" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="typingEventsEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="uploadsEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -45,6 +46,7 @@
         <attribute name="extraData" attributeType="Binary"/>
         <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="isBlocked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isDisabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isFrozen" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="lastMessageAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -61,6 +63,7 @@
         <relationship name="config" maxCount="1" deletionRule="Cascade" destinationEntity="ChannelConfigDTO" inverseName="channel" inverseEntity="ChannelConfigDTO"/>
         <relationship name="createdBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="createdChannels" inverseEntity="UserDTO"/>
         <relationship name="currentlyTypingUsers" toMany="YES" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="typingIn" inverseEntity="UserDTO"/>
+        <relationship name="draftMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="draftOfChannel" inverseEntity="MessageDTO"/>
         <relationship name="memberListQueries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ChannelMemberListQueryDTO" inverseName="channel" inverseEntity="ChannelMemberListQueryDTO"/>
         <relationship name="members" toMany="YES" deletionRule="Nullify" destinationEntity="MemberDTO" inverseName="channel" inverseEntity="MemberDTO"/>
         <relationship name="membership" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MemberDTO" inverseName="membershipChannel" inverseEntity="MemberDTO"/>
@@ -151,7 +154,7 @@
         <relationship name="devices" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DeviceDTO" inverseName="user" inverseEntity="DeviceDTO"/>
         <relationship name="flaggedMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="flaggedBy" inverseEntity="MessageDTO"/>
         <relationship name="flaggedUsers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="flaggedBy" inverseEntity="UserDTO"/>
-        <relationship name="mutedUsers" toMany="YES" deletionRule="Cascade" destinationEntity="UserDTO" inverseName="mutedBy" inverseEntity="UserDTO"/>
+        <relationship name="mutedUsers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="mutedBy" inverseEntity="UserDTO"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="currentUser" inverseEntity="UserDTO"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -171,8 +174,10 @@
         </uniquenessConstraints>
     </entity>
     <entity name="MemberDTO" representedClassName="MemberDTO" syncable="YES">
+        <attribute name="archivedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="banExpiresAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="channelRoleRaw" optional="YES" attributeType="String"/>
+        <attribute name="extraData" optional="YES" attributeType="Binary"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="inviteAcceptedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="inviteRejectedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -182,6 +187,7 @@
         <attribute name="memberCreatedAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="memberUpdatedAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="notificationsMuted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="pinnedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChannelDTO" inverseName="members" inverseEntity="ChannelDTO"/>
         <relationship name="membershipChannel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChannelDTO" inverseName="membership" inverseEntity="ChannelDTO"/>
         <relationship name="queries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ChannelMemberListQueryDTO" inverseName="members" inverseEntity="ChannelMemberListQueryDTO"/>
@@ -204,6 +210,7 @@
         <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="extraData" optional="YES" attributeType="Binary"/>
         <attribute name="id" attributeType="String"/>
+        <attribute name="isDraft" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isHardDeleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isShadowed" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isSilent" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -222,6 +229,7 @@
         <attribute name="reactionCounts" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="reactionScores" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="replyCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="restrictedVisibility" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="showInsideThread" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="showReplyInChannel" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="skipEnrichUrl" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -234,6 +242,9 @@
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AttachmentDTO" inverseName="message" inverseEntity="AttachmentDTO"/>
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChannelDTO" inverseName="messages" inverseEntity="ChannelDTO"/>
         <relationship name="childOfThread" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadDTO" inverseName="latestReplies" inverseEntity="ThreadDTO"/>
+        <relationship name="draftOfChannel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChannelDTO" inverseName="draftMessage" inverseEntity="ChannelDTO"/>
+        <relationship name="draftOfThread" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="draftReply" inverseEntity="MessageDTO"/>
+        <relationship name="draftReply" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="draftOfThread" inverseEntity="MessageDTO"/>
         <relationship name="flaggedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentUserDTO" inverseName="flaggedMessages" inverseEntity="CurrentUserDTO"/>
         <relationship name="mentionedUsers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="mentionedMessages" inverseEntity="UserDTO"/>
         <relationship name="moderationDetails" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageModerationDetailsDTO" inverseName="message" inverseEntity="MessageModerationDetailsDTO"/>
@@ -266,7 +277,12 @@
     </entity>
     <entity name="MessageModerationDetailsDTO" representedClassName="MessageModerationDetailsDTO" syncable="YES">
         <attribute name="action" attributeType="String" defaultValueString=""/>
+        <attribute name="blocklistMatched" optional="YES" attributeType="String" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <attribute name="imageHarms" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="originalText" attributeType="String" defaultValueString=""/>
+        <attribute name="platformCircumvented" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="semanticFilterMatched" optional="YES" attributeType="String" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <attribute name="textHarms" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <relationship name="message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="moderationDetails" inverseEntity="MessageDTO"/>
     </entity>
     <entity name="MessageReactionDTO" representedClassName="MessageReactionDTO" syncable="YES">
@@ -334,6 +350,11 @@
         <relationship name="latestVotesByOption" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PollOptionDTO" inverseName="pollLatestVotes" inverseEntity="PollOptionDTO"/>
         <relationship name="message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="poll" inverseEntity="MessageDTO"/>
         <relationship name="options" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="PollOptionDTO" inverseName="poll" inverseEntity="PollOptionDTO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="PollOptionDTO" representedClassName="PollOptionDTO" syncable="YES">
         <attribute name="custom" optional="YES" attributeType="Binary"/>
@@ -342,6 +363,11 @@
         <relationship name="latestVotes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PollVoteDTO" inverseName="option" inverseEntity="PollVoteDTO"/>
         <relationship name="poll" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PollDTO" inverseName="options" inverseEntity="PollDTO"/>
         <relationship name="pollLatestVotes" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PollDTO" inverseName="latestVotesByOption" inverseEntity="PollDTO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="PollVoteDTO" representedClassName="PollVoteDTO" syncable="YES">
         <attribute name="answerText" optional="YES" attributeType="String"/>
@@ -355,11 +381,21 @@
         <relationship name="poll" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PollDTO" inverseName="latestVotes" inverseEntity="PollDTO"/>
         <relationship name="queries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PollVoteListQueryDTO" inverseName="votes" inverseEntity="PollVoteListQueryDTO"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserDTO" inverseName="votes" inverseEntity="UserDTO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="PollVoteListQueryDTO" representedClassName="PollVoteListQueryDTO" syncable="YES">
         <attribute name="filterHash" optional="YES" attributeType="String"/>
         <attribute name="filterJSONData" optional="YES" attributeType="Binary"/>
         <relationship name="votes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PollVoteDTO" inverseName="queries" inverseEntity="PollVoteDTO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="filterHash"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="QueuedRequestDTO" representedClassName="QueuedRequestDTO" syncable="YES">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
@@ -445,7 +481,7 @@
         <relationship name="members" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MemberDTO" inverseName="user" inverseEntity="MemberDTO"/>
         <relationship name="mentionedMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="mentionedUsers" inverseEntity="MessageDTO"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="user" inverseEntity="MessageDTO"/>
-        <relationship name="mutedBy" toMany="YES" deletionRule="Nullify" destinationEntity="CurrentUserDTO" inverseName="mutedUsers" inverseEntity="CurrentUserDTO"/>
+        <relationship name="mutedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CurrentUserDTO" inverseName="mutedUsers" inverseEntity="CurrentUserDTO"/>
         <relationship name="participatedThreads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="threadParticipants" inverseEntity="MessageDTO"/>
         <relationship name="pinnedMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageDTO" inverseName="pinnedBy" inverseEntity="MessageDTO"/>
         <relationship name="pollCreatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PollDTO" inverseName="createdBy" inverseEntity="PollDTO"/>
