@@ -3855,13 +3855,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-<<<<<<< HEAD
 				branch = "feature/attributed-string-styled-markdown";
 				kind = branch;
-=======
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.73.0;
->>>>>>> develop
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
