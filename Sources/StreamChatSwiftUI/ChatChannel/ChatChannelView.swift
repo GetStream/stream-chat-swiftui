@@ -61,9 +61,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
                             onScrollToBottom: viewModel.scrollToLastMessage,
                             onLongPress: { displayInfo in
-                                messageDisplayInfo = displayInfo
-                                withAnimation {
-                                    viewModel.showReactionOverlay(for: AnyView(self))
+                                let isBouncedAlertEnabled = utils.messageListConfig.bouncedMessagesAlertActionsEnabled
+                                if isBouncedAlertEnabled && displayInfo.message.isBounced {
+                                    viewModel.showBouncedActionsView(for: displayInfo.message)
+                                } else {
+                                    messageDisplayInfo = displayInfo
+                                    withAnimation {
+                                        viewModel.showReactionOverlay(for: AnyView(self))
+                                    }
                                 }
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
@@ -196,6 +201,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
+        .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
     }
 
     private var generatingSnapshot: Bool {

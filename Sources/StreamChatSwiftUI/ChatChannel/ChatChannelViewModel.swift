@@ -89,6 +89,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
+    @Published public var bouncedMessage: ChatMessage?
+    @Published public var bouncedActionsViewShown = false {
+        didSet {
+            if bouncedActionsViewShown == false {
+                bouncedMessage = nil
+            }
+        }
+    }
+
     @Published public var quotedMessage: ChatMessage? {
         didSet {
             if oldValue != nil && quotedMessage == nil {
@@ -451,7 +460,28 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public func showReactionOverlay(for view: AnyView) {
         currentSnapshot = utils.snapshotCreator.makeSnapshot(for: view)
     }
-    
+
+    public func showBouncedActionsView(for message: ChatMessage) {
+        bouncedActionsViewShown = true
+        bouncedMessage = message
+    }
+
+    public func deleteMessage(_ message: ChatMessage) {
+        guard let cid = message.cid else { return }
+        let messageController = chatClient.messageController(cid: cid, messageId: message.id)
+        messageController.deleteMessage()
+    }
+
+    public func resendMessage(_ message: ChatMessage) {
+        guard let cid = message.cid else { return }
+        let messageController = chatClient.messageController(cid: cid, messageId: message.id)
+        messageController.resendMessage()
+    }
+
+    public func editMessage(_ message: ChatMessage) {
+        messageActionExecuted(.init(message: message, identifier: "edit"))
+    }
+
     public func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
         utils.messageActionsResolver.resolveMessageAction(
             info: messageActionInfo,
