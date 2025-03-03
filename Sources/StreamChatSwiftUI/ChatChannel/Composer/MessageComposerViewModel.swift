@@ -152,6 +152,7 @@ open class MessageComposerViewModel: ObservableObject {
     
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
+    public var quotedMessage: Binding<ChatMessage?>?
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
     
@@ -203,13 +204,17 @@ open class MessageComposerViewModel: ObservableObject {
     private var canAddAdditionalAttachments: Bool {
         totalAttachmentsCount < chatClient.config.maxAttachmentCountPerMessage
     }
-    
+
+    // TODO: Alternative: Add Binding<QuotedMessage> here and populate draft message here
+    // Then, it is not required the envObject(channelViewModel)
     public init(
         channelController: ChatChannelController,
-        messageController: ChatMessageController?
+        messageController: ChatMessageController?,
+        quotedMessage: Binding<ChatMessage?>? = nil
     ) {
         self.channelController = channelController
         self.messageController = messageController
+        self.quotedMessage = quotedMessage
         listenToCooldownUpdates()
         NotificationCenter.default.addObserver(
             self,
@@ -218,7 +223,76 @@ open class MessageComposerViewModel: ObservableObject {
             object: nil
         )
     }
-    
+
+    public func fillDraftMessage(_ message: DraftMessage) {
+        text = message.text // TODO: Command
+        mentionedUsers = message.mentionedUsers
+        showReplyInChannel = message.showReplyInChannel
+        addedAssets = message.attachments.filter {
+            $0.type == .image || $0.type == .video
+        }.compactMap { attachment in
+            if let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self),
+               let imageData = try? Data(contentsOf: imageAttachment.imageURL),
+               let image = UIImage(data: imageData) {
+                return AddedAsset(
+                    image: image,
+                    id: imageAttachment.id.rawValue,
+                    url: imageAttachment.imageURL,
+                    type: .image,
+                    extraData: imageAttachment.extraData ?? [:]
+                )
+            } else if let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self),
+                      let videoThumbnailUrl = videoAttachment.thumbnailURL,
+                      let videoThumbnailData = try? Data(contentsOf: videoThumbnailUrl),
+                      let image = UIImage(data: videoThumbnailData) {
+                // TODO: Generate video thumbnail
+                return AddedAsset(
+                    image: image,
+                    id: videoAttachment.id.rawValue,
+                    url: videoAttachment.videoURL,
+                    type: .video,
+                    extraData: videoAttachment.extraData ?? [:]
+                )
+            }
+            return nil
+        }
+    }
+
+    public func updateDraftMessage(
+        quotedMessage: ChatMessage?,
+        isSilent: Bool = false,
+        extraData: [String: RawJSON] = [:]
+    ) {
+        let attachments = try? inputAttachmentsAsPayloads()
+        let mentionedUserIds = mentionedUsers.map(\.id)
+        let availableCommands = channelController.channel?.config.commands ?? []
+        let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
+
+        if let messageController = messageController {
+            messageController.updateDraftReply(
+                text: messageText,
+                isSilent: isSilent,
+                attachments: attachments ?? [],
+                mentionedUserIds: mentionedUserIds,
+                quotedMessageId: quotedMessage?.id,
+                showReplyInChannel: showReplyInChannel,
+                command: command,
+                extraData: extraData
+            )
+            return
+        }
+
+        channelController.updateDraftMessage(
+            text: messageText,
+            isSilent: isSilent,
+            attachments: attachments ?? [],
+            mentionedUserIds: mentionedUserIds,
+            quotedMessageId: quotedMessage?.id,
+            command: command,
+            extraData: extraData
+        )
+    }
+
     public func sendMessage(
         quotedMessage: ChatMessage?,
         editedMessage: ChatMessage?,
@@ -254,27 +328,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         
         do {
-            var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
-            attachments += try addedFileURLs.map { url in
-                _ = url.startAccessingSecurityScopedResource()
-                return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
-            }
-            attachments += try addedVoiceRecordings.map { recording in
-                _ = recording.url.startAccessingSecurityScopedResource()
-                var localMetadata = AnyAttachmentLocalMetadata()
-                localMetadata.duration = recording.duration
-                localMetadata.waveformData = recording.waveform
-                return try AnyAttachmentPayload(
-                    localFileURL: recording.url,
-                    attachmentType: .voiceRecording,
-                    localMetadata: localMetadata
-                )
-            }
-            
-            attachments += addedCustomAttachments.map { attachment in
-                attachment.content
-            }
-            
+            let attachments = try inputAttachmentsAsPayloads()
             if let messageController = messageController {
                 messageController.createNewReply(
                     text: messageText,
@@ -524,7 +578,31 @@ open class MessageComposerViewModel: ObservableObject {
             self?.imageAssets = assets
         }
     }
-    
+
+    private func inputAttachmentsAsPayloads() throws -> [AnyAttachmentPayload] {
+        var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
+        attachments += try addedFileURLs.map { url in
+            _ = url.startAccessingSecurityScopedResource()
+            return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
+        }
+        attachments += try addedVoiceRecordings.map { recording in
+            _ = recording.url.startAccessingSecurityScopedResource()
+            var localMetadata = AnyAttachmentLocalMetadata()
+            localMetadata.duration = recording.duration
+            localMetadata.waveformData = recording.waveform
+            return try AnyAttachmentPayload(
+                localFileURL: recording.url,
+                attachmentType: .voiceRecording,
+                localMetadata: localMetadata
+            )
+        }
+
+        attachments += addedCustomAttachments.map { attachment in
+            attachment.content
+        }
+        return attachments
+    }
+
     private func checkForMentionedUsers(
         commandId: String?,
         extraData: [String: Any]
