@@ -102,7 +102,7 @@ public struct PhotoAttachmentCell: View {
                             .allowsHitTesting(true)
                             .onTapGesture {
                                 withAnimation {
-                                    if let assetURL = assetJpgURL() {
+                                    if let assetURL = asset.mediaType == .image ? assetJpgURL() : assetURL {
                                         onImageTap(
                                             AddedAsset(
                                                 image: image,
