@@ -37,7 +37,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
                 with: channelController,
-                messageController: messageController
+                messageController: messageController,
+                quotedMessage: quotedMessage
             )
         )
         _quotedMessage = quotedMessage
@@ -46,7 +47,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     @StateObject var viewModel: MessageComposerViewModel
-    @EnvironmentObject var channelViewModel: ChatChannelViewModel
 
     var onMessageSent: () -> Void
 
@@ -214,11 +214,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 editedMessageWillShow = true
                 viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
-        }
-        .onChange(of: channelViewModel.draftMessage) { _ in
-            guard let draft = channelViewModel.draftMessage else { return }
-            viewModel.fillDraftMessage(draft)
-            quotedMessage = draft.quotedMessage
         }
         .onDisappear(perform: {
             viewModel.updateDraftMessage(quotedMessage: quotedMessage)

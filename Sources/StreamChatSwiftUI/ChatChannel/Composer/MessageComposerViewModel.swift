@@ -122,7 +122,17 @@ open class MessageComposerViewModel: ObservableObject {
             }
         }
     }
-    
+
+    @Published public var draftMessage: DraftMessage? {
+        didSet {
+            if let draftMessage = draftMessage {
+                DispatchQueue.main.async {
+                    self.fillDraftMessage(draftMessage)
+                }
+            }
+        }
+    }
+
     @Published public var filePickerShown = false
     @Published public var cameraPickerShown = false
     @Published public var errorShown = false
@@ -205,8 +215,6 @@ open class MessageComposerViewModel: ObservableObject {
         totalAttachmentsCount < chatClient.config.maxAttachmentCountPerMessage
     }
 
-    // TODO: Alternative: Add Binding<QuotedMessage> here and populate draft message here
-    // Then, it is not required the envObject(channelViewModel)
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
@@ -215,7 +223,15 @@ open class MessageComposerViewModel: ObservableObject {
         self.channelController = channelController
         self.messageController = messageController
         self.quotedMessage = quotedMessage
+
+        if let messageController {
+            draftMessage = messageController.message?.draftReply
+        } else {
+            draftMessage = channelController.channel?.draftMessage
+        }
+
         listenToCooldownUpdates()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
@@ -227,6 +243,7 @@ open class MessageComposerViewModel: ObservableObject {
     public func fillDraftMessage(_ message: DraftMessage) {
         text = message.text // TODO: Command
         mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
         showReplyInChannel = message.showReplyInChannel
         addedAssets = message.attachments.filter {
             $0.type == .image || $0.type == .video
@@ -712,7 +729,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         .store(in: &cancellables)
     }
-    
+
     private func checkChannelCooldown() {
         let duration = channelController.channel?.cooldownDuration ?? 0
         if duration > 0 && timer == nil && !isSlowModeDisabled {

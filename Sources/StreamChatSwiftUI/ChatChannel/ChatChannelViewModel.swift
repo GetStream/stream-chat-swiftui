@@ -98,8 +98,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    @Published public var draftMessage: DraftMessage?
-
     @Published public var quotedMessage: ChatMessage? {
         didSet {
             if oldValue != nil && quotedMessage == nil {
@@ -496,12 +494,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messages = channelDataSource.messages
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         checkNameChange()
-
-        if let messageController {
-            draftMessage = messageController.message?.draftReply
-        } else {
-            draftMessage = channelController.channel?.draftMessage
-        }
     }
     
     @objc public func onViewDissappear() {
