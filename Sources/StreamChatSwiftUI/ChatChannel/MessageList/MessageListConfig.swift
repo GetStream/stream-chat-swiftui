@@ -19,6 +19,7 @@ public struct MessageListConfig {
         messagePopoverEnabled: Bool = true,
         doubleTapOverlayEnabled: Bool = false,
         becomesFirstResponderOnOpen: Bool = false,
+        resignsFirstResponderOnScrollDown: Bool = true,
         updateChannelsFromMessageList: Bool = false,
         maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
@@ -45,6 +46,7 @@ public struct MessageListConfig {
         self.messagePopoverEnabled = messagePopoverEnabled
         self.doubleTapOverlayEnabled = doubleTapOverlayEnabled
         self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
+        self.resignsFirstResponderOnScrollDown = resignsFirstResponderOnScrollDown
         self.updateChannelsFromMessageList = updateChannelsFromMessageList
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
         self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
@@ -72,6 +74,7 @@ public struct MessageListConfig {
     public let messagePopoverEnabled: Bool
     public let doubleTapOverlayEnabled: Bool
     public let becomesFirstResponderOnOpen: Bool
+    public let resignsFirstResponderOnScrollDown: Bool
     public let updateChannelsFromMessageList: Bool
     public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
     public let cacheSizeOnChatDismiss: Int
