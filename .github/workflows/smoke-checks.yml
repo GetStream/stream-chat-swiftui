@@ -20,7 +20,7 @@ concurrency:
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
-  IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.1)"
+  IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.2)"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_PR_NUM: ${{ github.event.pull_request.number }}
 
@@ -64,7 +64,7 @@ jobs:
       run: bundle exec fastlane pod_lint
 
   build-xcode15:
-    name: Build SDKs (Xcode 15.0)
+    name: Build SDKs (Xcode 15)
     runs-on: macos-15
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
@@ -104,7 +104,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     - name: Run Sonar analysis
-      if: ${{ github.event.inputs.snapshots != 'true' }}
+      if: ${{ github.event.inputs.record_snapshots != 'true' }}
       run: bundle exec fastlane sonar_upload
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -133,7 +133,7 @@ jobs:
 
   allure_testops_launch:
     name: Launch Allure TestOps
-    runs-on: macos-13
+    runs-on: macos-15
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     outputs:
@@ -207,7 +207,7 @@ jobs:
 
   build-apps:
     name: Build Demo App
-    runs-on: macos-14
+    runs-on: macos-15
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     steps:
