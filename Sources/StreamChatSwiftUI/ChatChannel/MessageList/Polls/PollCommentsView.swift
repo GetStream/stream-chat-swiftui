@@ -5,15 +5,22 @@
 import StreamChat
 import SwiftUI
 
-struct PollCommentsView: View {
+struct PollCommentsView<Factory: ViewFactory>: View {
     
     @Injected(\.colors) var colors
     
     @Environment(\.presentationMode) var presentationMode
     
     @StateObject var viewModel: PollCommentsViewModel
+    let factory: Factory
     
-    init(poll: Poll, pollController: PollController, viewModel: PollCommentsViewModel? = nil) {
+    init(
+        factory: Factory,
+        poll: Poll,
+        pollController: PollController,
+        viewModel: PollCommentsViewModel? = nil
+    ) {
+        self.factory = factory
         _viewModel = StateObject(
             wrappedValue: viewModel ?? PollCommentsViewModel(
                 poll: poll,
@@ -33,7 +40,14 @@ struct PollCommentsView: View {
                                     .bold()
                                 HStack {
                                     if viewModel.pollController.poll?.votingVisibility != .anonymous {
-                                        MessageAvatarView(avatarURL: comment.user?.imageURL)
+                                        factory.makeMessageAvatarView(
+                                            for:
+                                                UserDisplayInfo(
+                                                    id: comment.user?.id ?? "",
+                                                    name: comment.user?.name ?? "",
+                                                    imageURL: comment.user?.imageURL
+                                                )
+                                        )
                                     }
                                     Text(authorTitle(for: comment))
                                     Spacer()

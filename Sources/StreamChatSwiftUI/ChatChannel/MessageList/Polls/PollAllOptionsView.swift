@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-struct PollAllOptionsView: View {
+struct PollAllOptionsView<Factory: ViewFactory>: View {
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -13,6 +13,8 @@ struct PollAllOptionsView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @ObservedObject var viewModel: PollAttachmentViewModel
+    
+    let factory: Factory
     
     var body: some View {
         NavigationView {
@@ -29,6 +31,7 @@ struct PollAllOptionsView: View {
                         ForEach(viewModel.poll.options) { option in
                             PollOptionView(
                                 viewModel: viewModel,
+                                factory: factory,
                                 option: option,
                                 optionFont: fonts.headline,
                                 textColor: Color(colors.text),

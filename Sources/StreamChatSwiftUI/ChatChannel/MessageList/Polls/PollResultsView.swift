@@ -5,11 +5,13 @@
 import StreamChat
 import SwiftUI
 
-struct PollResultsView: View {
+struct PollResultsView<Factory: ViewFactory>: View {
     
     @Environment(\.presentationMode) var presentationMode
     
     @ObservedObject var viewModel: PollAttachmentViewModel
+    
+    let factory: Factory
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -42,6 +44,7 @@ struct PollResultsView: View {
                 
                 ForEach(viewModel.poll.options) { option in
                     PollOptionResultsView(
+                        factory: factory,
                         poll: viewModel.poll,
                         option: option,
                         votes: Array(
@@ -74,11 +77,12 @@ struct PollResultsView: View {
     }
 }
 
-struct PollOptionResultsView: View {
+struct PollOptionResultsView<Factory: ViewFactory>: View {
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     
+    let factory: Factory
     var poll: Poll
     var option: PollOption
     var votes: [PollVote]
@@ -104,9 +108,13 @@ struct PollOptionResultsView: View {
             ForEach(votes, id: \.displayId) { vote in
                 HStack {
                     if poll.votingVisibility != .anonymous {
-                        MessageAvatarView(
-                            avatarURL: vote.user?.imageURL,
-                            size: .init(width: 20, height: 20)
+                        factory.makeMessageAvatarView(
+                            for: UserDisplayInfo(
+                                id: vote.user?.id ?? "",
+                                name: vote.user?.name ?? "",
+                                imageURL: vote.user?.imageURL,
+                                size: .init(width: 20, height: 20)
+                            )
                         )
                     }
                     Text(vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor))
@@ -120,7 +128,7 @@ struct PollOptionResultsView: View {
             
             if allButtonShown {
                 NavigationLink {
-                    PollOptionAllVotesView(poll: poll, option: option)
+                    PollOptionAllVotesView(factory: factory, poll: poll, option: option)
                 } label: {
                     Text(L10n.Message.Polls.Button.showAll)
                 }
