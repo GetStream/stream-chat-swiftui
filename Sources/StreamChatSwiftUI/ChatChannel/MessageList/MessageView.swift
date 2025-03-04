@@ -299,7 +299,7 @@ public struct LinkDetectionTextView: View {
             .foregroundColor(textColor(for: message))
             .font(fonts.body)
         var attributedString: AttributedString
-        if utils.messageListConfig.markdownSupportEnabled, utils.markdownFormatter.containsMarkdown(text) {
+        if utils.messageListConfig.markdownSupportEnabled {
             attributedString = utils.markdownFormatter.format(
                 text,
                 attributes: attributes,

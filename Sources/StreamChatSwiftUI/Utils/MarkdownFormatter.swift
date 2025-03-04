@@ -12,11 +12,7 @@ final class MarkdownFormatter {
     @Injected(\.fonts) private var fonts
     
     private let markdownParser = MarkdownParser()
-    
-    func containsMarkdown(_ string: String) -> Bool {
-        markdownParser.containsMarkdown(string)
-    }
-    
+        
     @available(iOS 15, *)
     func format(
         _ string: String,
