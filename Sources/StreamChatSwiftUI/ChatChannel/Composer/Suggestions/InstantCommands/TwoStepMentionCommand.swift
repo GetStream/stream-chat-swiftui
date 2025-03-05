@@ -41,7 +41,7 @@ open class TwoStepMentionCommand: CommandHandler {
     }
 
     open func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
-        if text == id {
+        if text.hasPrefix(id) {
             return ComposerCommand(
                 id: id,
                 typingSuggestion: TypingSuggestion(

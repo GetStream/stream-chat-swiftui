@@ -115,7 +115,7 @@ open class MessageComposerViewModel: ObservableObject {
         didSet {
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
-                clearText()
+                clearCommandText()
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
@@ -241,7 +241,7 @@ open class MessageComposerViewModel: ObservableObject {
     }
 
     public func fillDraftMessage(_ message: DraftMessage) {
-        text = message.text // TODO: Command
+        text = message.text
         mentionedUsers = message.mentionedUsers
         quotedMessage?.wrappedValue = message.quotedMessage
         showReplyInChannel = message.showReplyInChannel
@@ -750,7 +750,36 @@ open class MessageComposerViewModel: ObservableObject {
             self?.text = ""
         }
     }
-    
+
+    /// Same as clearText() but it just clears the command id.
+    private func clearCommandText() {
+        guard let command = composerCommand else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let currentText = self?.text else { return }
+            if let value = self?.getValueOfCommand(currentText) {
+                self?.text = value
+                return
+            }
+            self?.text = ""
+        }
+    }
+
+    private func getValueOfCommand(_ currentText: String) -> String? {
+        let pattern = "/\\S+\\s+(.*)"
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let range = NSRange(currentText.startIndex..<currentText.endIndex, in: currentText)
+
+            if let match = regex.firstMatch(in: currentText, range: range) {
+                let valueRange = match.range(at: 1)
+
+                if let range = Range(valueRange, in: currentText) {
+                    return String(currentText[range])
+                }
+            }
+        }
+        return nil
+    }
+
     private func canAddAttachment(with url: URL) -> Bool {
         if !canAddAdditionalAttachments {
             return false
