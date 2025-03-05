@@ -282,6 +282,12 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter channel: the displayed channel.
     func makeChannelHeaderViewModifier(for channel: ChatChannel) -> ChatHeaderViewModifier
     
+    associatedtype ChangeBarsVisibilityModifier: ViewModifier
+    /// Creates a view modifier that changes the visibility of bars.
+    /// - Parameter shouldShow: A Boolean value indicating whether the bars should be shown.
+    /// - Returns: A view modifier that changes the visibility of bars.
+    func changeBarsVisibility(shouldShow: Bool) -> ChangeBarsVisibilityModifier
+    
     associatedtype ChannelLoadingViewType: View
     /// Creates a loading view for the channel.
     func makeChannelLoadingView() -> ChannelLoadingViewType

@@ -79,7 +79,7 @@ struct IconOverImageModifier: ViewModifier {
     }
 }
 
-struct ChangeBarsVisibilityModifier: ViewModifier {
+struct ChangeChannelBarsVisibilityModifier: ViewModifier {
     
     @Injected(\.utils) private var utils
     
@@ -109,10 +109,6 @@ extension View {
 
     public func applyDefaultIconOverlayStyle() -> some View {
         modifier(IconOverImageModifier())
-    }
-    
-    public func changeBarsVisibility(shouldShow: Bool) -> some View {
-        modifier(ChangeBarsVisibilityModifier(shouldShow: shouldShow))
     }
 }
 
