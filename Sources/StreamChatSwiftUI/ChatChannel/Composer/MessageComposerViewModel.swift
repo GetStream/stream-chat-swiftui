@@ -245,33 +245,26 @@ open class MessageComposerViewModel: ObservableObject {
         mentionedUsers = message.mentionedUsers
         quotedMessage?.wrappedValue = message.quotedMessage
         showReplyInChannel = message.showReplyInChannel
-        addedAssets = message.attachments.filter {
-            $0.type == .image || $0.type == .video
-        }.compactMap { attachment in
-            if let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self),
-               let imageData = try? Data(contentsOf: imageAttachment.imageURL),
-               let image = UIImage(data: imageData) {
-                return AddedAsset(
-                    image: image,
-                    id: imageAttachment.id.rawValue,
-                    url: imageAttachment.imageURL,
-                    type: .image,
-                    extraData: imageAttachment.extraData ?? [:]
-                )
-            } else if let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self),
-                      let videoThumbnailUrl = videoAttachment.thumbnailURL,
-                      let videoThumbnailData = try? Data(contentsOf: videoThumbnailUrl),
-                      let image = UIImage(data: videoThumbnailData) {
-                // TODO: Generate video thumbnail
-                return AddedAsset(
-                    image: image,
-                    id: videoAttachment.id.rawValue,
-                    url: videoAttachment.videoURL,
-                    type: .video,
-                    extraData: videoAttachment.extraData ?? [:]
-                )
+        message.attachments.forEach { attachment in
+            switch attachment.type {
+            case .image, .video:
+                guard let addedAsset = attachment.toAddedAsset() else { break }
+                addedAssets.append(addedAsset)
+            case .file:
+                guard let url = attachment.attachment(payloadType: FileAttachmentPayload.self)?.assetURL else {
+                    break
+                }
+                addedFileURLs.append(url)
+            case .voiceRecording:
+                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
+                addedVoiceRecordings.append(addedVoiceRecording)
+            case .linkPreview, .audio, .giphy, .unknown:
+                break
+            default:
+                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
+                let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
+                addedCustomAttachments.append(customAttachment)
             }
-            return nil
         }
     }
 
