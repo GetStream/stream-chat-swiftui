@@ -54,6 +54,7 @@ open class MessageComposerViewModel: ObservableObject {
                 selectedRangeLocation = 0
                 suggestions = [String: Any]()
                 mentionedUsers = Set<ChatUser>()
+                deleteDraftMessage()
             }
         }
     }
@@ -273,6 +274,9 @@ open class MessageComposerViewModel: ObservableObject {
         isSilent: Bool = false,
         extraData: [String: RawJSON] = [:]
     ) {
+        guard sendButtonEnabled else {
+            return
+        }
         let attachments = try? inputAttachmentsAsPayloads()
         let mentionedUserIds = mentionedUsers.map(\.id)
         let availableCommands = channelController.channel?.config.commands ?? []
@@ -301,6 +305,18 @@ open class MessageComposerViewModel: ObservableObject {
             command: command,
             extraData: extraData
         )
+    }
+
+    private func deleteDraftMessage() {
+        guard draftMessage != nil else {
+            return
+        }
+
+        if let messageController = messageController {
+            messageController.deleteDraftReply()
+        } else {
+            channelController.deleteDraftMessage()
+        }
     }
 
     public func sendMessage(
@@ -377,7 +393,9 @@ open class MessageComposerViewModel: ObservableObject {
                     }
                 }
             }
-            
+
+            deleteDraftMessage()
+
             clearInputData()
         } catch {
             errorShown = true
