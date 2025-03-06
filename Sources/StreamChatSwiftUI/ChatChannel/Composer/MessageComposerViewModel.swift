@@ -274,7 +274,7 @@ open class MessageComposerViewModel: ObservableObject {
         isSilent: Bool = false,
         extraData: [String: RawJSON] = [:]
     ) {
-        guard sendButtonEnabled else {
+        guard utils.messageListConfig.draftMessagesEnabled && sendButtonEnabled else {
             return
         }
         let attachments = try? inputAttachmentsAsPayloads()

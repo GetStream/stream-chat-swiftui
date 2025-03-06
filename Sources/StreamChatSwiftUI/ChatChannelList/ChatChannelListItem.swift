@@ -106,7 +106,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     TypingIndicatorView()
                 }
             }
-            if let draftText = channel.draftMessageText {
+            if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack {
                     Text("\(L10n.Message.Preview.draft):")
                         .font(fonts.caption1).bold()

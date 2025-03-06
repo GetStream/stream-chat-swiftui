@@ -80,6 +80,7 @@ public struct ChatThreadListItemViewModel {
 
     /// The formatted draft reply text.
     public var draftReplyText: String? {
+        guard utils.messageListConfig.draftMessagesEnabled else { return nil }
         guard let draftMessage = thread.parentMessage.draftReply else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.formatContent(for: ChatMessage(draftMessage))
