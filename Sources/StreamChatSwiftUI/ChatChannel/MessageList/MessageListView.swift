@@ -238,7 +238,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         if scrollButtonShown != showScrollToLatestButton {
                             showScrollToLatestButton = scrollButtonShown
                         }
-                        if keyboardShown && diff < -20 {
+                        if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
                             keyboardShown = false
                             resignFirstResponder()
                         }
