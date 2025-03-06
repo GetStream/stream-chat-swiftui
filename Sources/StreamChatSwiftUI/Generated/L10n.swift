@@ -502,6 +502,10 @@ internal enum L10n {
         internal static var resultsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.results-title") }
       }
     }
+    internal enum Preview {
+      /// Draft
+      internal static var draft: String { L10n.tr("Localizable", "message.preview.draft") }
+    }
     internal enum Reactions {
       /// You
       internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
