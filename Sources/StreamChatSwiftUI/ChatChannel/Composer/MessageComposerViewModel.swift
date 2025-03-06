@@ -160,9 +160,10 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
-    
+
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
+    public let eventsController: EventsController
     public var quotedMessage: Binding<ChatMessage?>?
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
@@ -219,10 +220,12 @@ open class MessageComposerViewModel: ObservableObject {
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
+        eventsController: EventsController? = nil,
         quotedMessage: Binding<ChatMessage?>? = nil
     ) {
         self.channelController = channelController
         self.messageController = messageController
+        self.eventsController = eventsController ?? channelController.client.eventsController()
         self.quotedMessage = quotedMessage
 
         if let messageController {
@@ -230,6 +233,8 @@ open class MessageComposerViewModel: ObservableObject {
         } else {
             draftMessage = channelController.channel?.draftMessage
         }
+
+        self.eventsController.delegate = self
 
         listenToCooldownUpdates()
 
@@ -825,6 +830,18 @@ open class MessageComposerViewModel: ObservableObject {
     private func applicationWillEnterForeground() {
         if (imageAssets?.count ?? 0) > 0 {
             fetchAssets()
+        }
+    }
+}
+
+extension MessageComposerViewModel: EventsControllerDelegate {
+    public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
+        if let event = event as? DraftUpdatedEvent, event.cid == channelController.cid {
+            if let messageController = messageController, messageController.messageId == event.draftMessage.threadId {
+                draftMessage = event.draftMessage
+                return
+            }
+            draftMessage = event.draftMessage
         }
     }
 }
