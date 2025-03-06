@@ -117,7 +117,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         editedMessage: $viewModel.editedMessage,
                         onMessageSent: viewModel.scrollToLastMessage
                     )
-                    .environmentObject(viewModel)
                     .opacity((
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
                             .reactionsShown && viewModel.channel?.isFrozen == false
