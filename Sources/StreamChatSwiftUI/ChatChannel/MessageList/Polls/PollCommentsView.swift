@@ -40,14 +40,12 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                                     .bold()
                                 HStack {
                                     if viewModel.pollController.poll?.votingVisibility != .anonymous {
-                                        factory.makeMessageAvatarView(
-                                            for:
-                                                UserDisplayInfo(
-                                                    id: comment.user?.id ?? "",
-                                                    name: comment.user?.name ?? "",
-                                                    imageURL: comment.user?.imageURL
-                                                )
+                                        let displayInfo = UserDisplayInfo(
+                                            id: comment.user?.id ?? "",
+                                            name: comment.user?.name ?? "",
+                                            imageURL: comment.user?.imageURL
                                         )
+                                        factory.makeMessageAvatarView(for: displayInfo)
                                     }
                                     Text(authorTitle(for: comment))
                                     Spacer()
