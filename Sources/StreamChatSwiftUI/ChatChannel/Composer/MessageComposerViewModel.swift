@@ -399,8 +399,6 @@ open class MessageComposerViewModel: ObservableObject {
                 }
             }
 
-            deleteDraftMessage()
-
             clearInputData()
         } catch {
             errorShown = true
