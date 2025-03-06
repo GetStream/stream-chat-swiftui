@@ -834,12 +834,12 @@ open class MessageComposerViewModel: ObservableObject {
 
 extension MessageComposerViewModel: EventsControllerDelegate {
     public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
-        if let event = event as? DraftUpdatedEvent, event.cid == channelController.cid {
-            if let messageController = messageController, messageController.messageId == event.draftMessage.threadId {
+        if let event = event as? DraftUpdatedEvent {
+            let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
+            let isFromSameChannel = channelController.cid == event.cid && messageController == nil
+            if isFromSameThread || isFromSameChannel {
                 draftMessage = event.draftMessage
-                return
             }
-            draftMessage = event.draftMessage
         }
     }
 }
