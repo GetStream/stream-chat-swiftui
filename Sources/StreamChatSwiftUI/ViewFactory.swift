@@ -286,7 +286,7 @@ public protocol ViewFactory: AnyObject {
     /// Creates a view modifier that changes the visibility of bars.
     /// - Parameter shouldShow: A Boolean value indicating whether the bars should be shown.
     /// - Returns: A view modifier that changes the visibility of bars.
-    func changeBarsVisibility(shouldShow: Bool) -> ChangeBarsVisibilityModifier
+    func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> ChangeBarsVisibilityModifier
     
     associatedtype ChannelLoadingViewType: View
     /// Creates a loading view for the channel.

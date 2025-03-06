@@ -301,7 +301,7 @@ extension ViewFactory {
         DefaultChannelHeaderModifier(factory: self, channel: channel)
     }
     
-    public func changeBarsVisibility(shouldShow: Bool) -> some ViewModifier {
+    public func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> some ViewModifier {
         ChangeChannelBarsVisibilityModifier(shouldShow: shouldShow)
     }
     
