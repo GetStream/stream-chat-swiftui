@@ -19,9 +19,22 @@ class MessageCachingUtils {
     }
     
     var jumpToReplyId: String?
+    var channelTranslationLanguages = [ChannelId: TranslationLanguage?]()
+    
+    // ChatMessage.adjustedText is used everywhere, but there is no easy way to get the
+    // language used in the channel. Therefore, it is cached here.
+    func translationLanguage(for cid: ChannelId) -> TranslationLanguage? {
+        if let language = channelTranslationLanguages[cid] {
+            return language
+        }
+        let language = InjectedValues[\.chatClient].channelController(for: cid).channel?.membership?.language
+        channelTranslationLanguages[cid] = language
+        return language
+    }
 
     func clearCache() {
         log.debug("Clearing cached message data")
+        channelTranslationLanguages.removeAll()
         scrollOffset = 0
         messageThreadShown = false
     }

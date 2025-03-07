@@ -261,6 +261,49 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_translatedText_participant_snapshot() {
+        // Given
+        let cid = ChannelId.unique
+        streamChat?.utils.messageCachingUtils.channelTranslationLanguages[cid] = .spanish
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: cid,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
+        )
+        
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+    
+    func test_translatedText_myMessageIsNotTranslated_snapshot() {
+        // Given
+        let cid = ChannelId.unique
+        streamChat?.utils.messageCachingUtils.channelTranslationLanguages[cid] = .spanish
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: cid,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ],
+            isSentByCurrentUser: true
+        )
+        
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
 
     // MARK: - private
 

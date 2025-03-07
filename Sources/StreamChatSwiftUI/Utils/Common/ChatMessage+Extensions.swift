@@ -83,7 +83,21 @@ public extension ChatMessage {
     }
 
     var adjustedText: String {
-        InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
+        let text = translatedText ?? text
+        return InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
+    }
+    
+    var translationLanguage: TranslationLanguage? {
+        guard translations != nil else { return nil }
+        guard !isSentByCurrentUser else { return nil }
+        guard let cid else { return nil }
+        return InjectedValues[\.utils].messageCachingUtils.translationLanguage(for: cid)
+    }
+    
+    private var translatedText: String? {
+        guard translations != nil else { return nil }
+        guard let translationLanguage else { return nil }
+        return translatedText(for: translationLanguage)
     }
     
     var isRightAligned: Bool {
@@ -93,5 +107,11 @@ public extension ChatMessage {
             return false
         }
         return isSentByCurrentUser
+    }
+}
+
+extension TranslationLanguage {
+    var localizedName: String? {
+        Locale.current.localizedString(forLanguageCode: languageCode)
     }
 }

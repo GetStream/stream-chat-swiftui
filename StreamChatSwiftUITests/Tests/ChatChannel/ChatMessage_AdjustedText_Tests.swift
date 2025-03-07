@@ -35,6 +35,53 @@ class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
         // Then
         XCTAssert(adjustedText == "bla bla Text")
     }
+    
+    func test_chatMesage_adjustedText_forParticipantReturnsTranslatedText() {
+        // Given
+        let cid = ChannelId.unique
+        let utils = Utils()
+        utils.messageCachingUtils.channelTranslationLanguages[cid] = .spanish
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: cid,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
+        )
+        
+        // When
+        let adjustedText = message.adjustedText
+
+        // Then
+        XCTAssertEqual("Hola", adjustedText)
+    }
+    
+    func test_chatMesage_adjustedText_forMeDoesNotReturnTranslatedText() {
+        // Given
+        let cid = ChannelId.unique
+        let utils = Utils()
+        utils.messageCachingUtils.channelTranslationLanguages[cid] = .spanish
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: cid,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ],
+            isSentByCurrentUser: true
+        )
+        
+        // When
+        let adjustedText = message.adjustedText
+
+        // Then
+        XCTAssertEqual("Hello", adjustedText)
+    }
 
     func test_composerVM_adjustMessageOnSend() {
         // Given

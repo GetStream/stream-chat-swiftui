@@ -10,6 +10,7 @@ class LoginViewModel: ObservableObject {
 
     @Published var demoUsers = UserCredentials.builtInUsers
     @Published var loading = false
+    @Published var showsConfiguration = false
 
     @Injected(\.chatClient) var chatClient
 
@@ -28,7 +29,12 @@ class LoginViewModel: ObservableObject {
         LogConfig.level = .warning
 
         chatClient.connectUser(
-            userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
+            userInfo: .init(
+                id: credentials.id,
+                name: credentials.name,
+                imageURL: credentials.avatarURL,
+                language: AppConfiguration.default.translationLanguage
+            ),
             token: token
         ) { [weak self] error in
             if let error = error {

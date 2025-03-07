@@ -226,6 +226,11 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
 
                     if showsAllInfo && !message.isDeleted {
+                        if let translationLanguage = message.translationLanguage?.localizedName {
+                            Text(L10n.Message.translatedTo(translationLanguage))
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.subtitleText))
+                        }
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
                                 factory.makeMessageReadIndicatorView(

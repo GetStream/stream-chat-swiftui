@@ -81,7 +81,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 userInfo: .init(
                     id: credentials.id,
                     name: credentials.name,
-                    imageURL: credentials.avatarURL
+                    imageURL: credentials.avatarURL,
+                    language: AppConfiguration.default.translationLanguage
                 ),
                 token: token
             )
