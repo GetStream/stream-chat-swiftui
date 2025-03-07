@@ -33,12 +33,20 @@ public struct UserDisplayInfo {
     public let name: String
     public let imageURL: URL?
     public let role: UserRole?
+    public let size: CGSize?
 
-    public init(id: String, name: String, imageURL: URL?, role: UserRole? = nil) {
+    public init(
+        id: String,
+        name: String,
+        imageURL: URL?,
+        role: UserRole? = nil,
+        size: CGSize? = nil
+    ) {
         self.id = id
         self.name = name
         self.imageURL = imageURL
         self.role = role
+        self.size = size
     }
 }
 

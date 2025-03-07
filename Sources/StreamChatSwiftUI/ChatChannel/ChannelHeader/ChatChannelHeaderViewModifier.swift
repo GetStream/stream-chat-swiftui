@@ -80,7 +80,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
                 NavigationLink(isActive: $isActive) {
-                    LazyView(ChatChannelInfoView(channel: channel, shownFromMessageList: true))
+                    LazyView(ChatChannelInfoView(factory: factory, channel: channel, shownFromMessageList: true))
                 } label: {
                     EmptyView()
                 }

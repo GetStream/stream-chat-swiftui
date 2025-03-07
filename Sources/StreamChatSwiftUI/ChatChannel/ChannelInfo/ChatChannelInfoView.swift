@@ -6,29 +6,37 @@ import StreamChat
 import SwiftUI
 
 // View for the channel info screen.
-public struct ChatChannelInfoView: View, KeyboardReadable {
+public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable {
 
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
+    let factory: Factory
+    
     @StateObject private var viewModel: ChatChannelInfoViewModel
     private var shownFromMessageList: Bool
 
     @Environment(\.presentationMode) var presentationMode
-
+    
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         shownFromMessageList: Bool = false
     ) {
         _viewModel = StateObject(
             wrappedValue: ChatChannelInfoViewModel(channel: channel)
         )
+        self.factory = factory
         self.shownFromMessageList = shownFromMessageList
     }
 
-    init(viewModel: ChatChannelInfoViewModel) {
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        viewModel: ChatChannelInfoViewModel
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.factory = factory
         shownFromMessageList = false
     }
 
@@ -38,10 +46,12 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                 LazyVStack(spacing: 0) {
                     if viewModel.showSingleMemberDMView {
                         ChatInfoDirectChannelView(
+                            factory: factory,
                             participant: viewModel.displayedParticipants.first
                         )
                     } else {
                         ChatInfoParticipantsView(
+                            factory: factory,
                             participants: viewModel.displayedParticipants,
                             onItemAppear: viewModel.onParticipantAppear(_:)
                         )
@@ -59,7 +69,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
 
                     ChannelInfoDivider()
 
-                    ChatInfoOptionsView(viewModel: viewModel)
+                    ChatInfoOptionsView(factory: factory, viewModel: viewModel)
 
                     ChannelInfoDivider()
                         .alert(isPresented: $viewModel.errorShown) {
