@@ -215,6 +215,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
+        .onAppear(perform: {
+            viewModel.fillDraftMessage()
+        })
         .onDisappear(perform: {
             viewModel.updateDraftMessage(quotedMessage: quotedMessage)
         })

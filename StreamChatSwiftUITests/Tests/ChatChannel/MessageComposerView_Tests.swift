@@ -576,15 +576,18 @@ class MessageComposerView_Tests: StreamChatTestCase {
     private func makeComposerView(with draftMessage: DraftMessage) -> some View {
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")]),
+            draftMessage: draftMessage
+        )
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.fillDraftMessage(draftMessage)
 
-        var quotedMessage: ChatMessage?
         return MessageComposerView(
             viewFactory: factory,
             viewModel: viewModel,
             channelController: channelController,
-            quotedMessage: .init(get: { quotedMessage }, set: { quotedMessage = $0 }),
+            quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
             onMessageSent: {}
         )

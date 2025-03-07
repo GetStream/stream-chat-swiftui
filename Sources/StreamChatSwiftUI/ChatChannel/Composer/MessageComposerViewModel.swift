@@ -124,14 +124,11 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    @Published public var draftMessage: DraftMessage? {
-        didSet {
-            if let draftMessage = draftMessage {
-                DispatchQueue.main.async {
-                    self.fillDraftMessage(draftMessage)
-                }
-            }
+    public var draftMessage: DraftMessage? {
+        if let messageController {
+            return messageController.message?.draftReply
         }
+        return channelController.channel?.draftMessage
     }
 
     @Published public var filePickerShown = false
@@ -228,12 +225,6 @@ open class MessageComposerViewModel: ObservableObject {
         self.eventsController = eventsController ?? channelController.client.eventsController()
         self.quotedMessage = quotedMessage
 
-        if let messageController {
-            draftMessage = messageController.message?.draftReply
-        } else {
-            draftMessage = channelController.channel?.draftMessage
-        }
-
         self.eventsController.delegate = self
 
         listenToCooldownUpdates()
@@ -246,7 +237,12 @@ open class MessageComposerViewModel: ObservableObject {
         )
     }
 
-    public func fillDraftMessage(_ message: DraftMessage) {
+    /// Populates the draft message in the composer with the current controller's draft information.
+    public func fillDraftMessage() {
+        guard let message = draftMessage else {
+            return
+        }
+
         text = message.text
         mentionedUsers = message.mentionedUsers
         quotedMessage?.wrappedValue = message.quotedMessage
@@ -274,6 +270,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
 
+    /// Updates the draft message locally and on the server.
     public func updateDraftMessage(
         quotedMessage: ChatMessage?,
         isSilent: Bool = false,
@@ -775,14 +772,12 @@ open class MessageComposerViewModel: ObservableObject {
     /// Same as clearText() but it just clears the command id.
     private func clearCommandText() {
         guard let command = composerCommand else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-            guard let currentText = self?.text else { return }
-            if let value = self?.getValueOfCommand(currentText) {
-                self?.text = value
-                return
-            }
-            self?.text = ""
+        let currentText = text
+        if let value = getValueOfCommand(currentText) {
+            text = value
+            return
         }
+        text = ""
     }
 
     private func getValueOfCommand(_ currentText: String) -> String? {
@@ -838,7 +833,7 @@ extension MessageComposerViewModel: EventsControllerDelegate {
             let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
             let isFromSameChannel = channelController.cid == event.cid && messageController == nil
             if isFromSameThread || isFromSameChannel {
-                draftMessage = event.draftMessage
+                fillDraftMessage()
             }
         }
     }
