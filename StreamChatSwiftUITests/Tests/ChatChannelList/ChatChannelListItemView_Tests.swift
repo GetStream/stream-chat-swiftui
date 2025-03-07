@@ -18,8 +18,9 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         streamChat?.utils.channelHeaderLoader.placeholder2 = circleImage
         streamChat?.utils.channelHeaderLoader.placeholder3 = circleImage
         streamChat?.utils.channelHeaderLoader.placeholder4 = circleImage
+        streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: true)
     }
-    
+
     func test_channelListItem_audioMessage() throws {
         // Given
         let message = try mockAudioMessage(text: "Audio", isSentByCurrentUser: true)
@@ -187,6 +188,46 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
             .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId))
         ])
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), previewMessage: message)
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_draftMessage() throws {
+        // Given
+        let message = DraftMessage.mock(text: "Draft message")
+        let channel = ChatChannel.mock(cid: .unique, previewMessage: .mock(), draftMessage: message)
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_draftMessageWithAttachment() throws {
+        // Given
+        let message = DraftMessage.mock(text: "Draft message", attachments: [.dummy(payload: try JSONEncoder().encode(
+            ImageAttachmentPayload(title: "Test", imageRemoteURL: .localYodaImage, file: .init(url: .localYodaImage))
+        ))])
+        let channel = ChatChannel.mock(cid: .unique, previewMessage: .mock(), draftMessage: message)
 
         // When
         let view = ChatChannelListItem(

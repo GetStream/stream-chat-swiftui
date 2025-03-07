@@ -107,7 +107,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 }
             }
             if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
-                HStack {
+                HStack(spacing: 2) {
                     Text("\(L10n.Message.Preview.draft):")
                         .font(fonts.caption1).bold()
                         .foregroundColor(Color(colors.highlightedAccentBackground))

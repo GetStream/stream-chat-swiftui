@@ -186,7 +186,7 @@ struct ChatThreadListItemContentView: View {
                     .font(fonts.subheadlineBold)
                 HStack {
                     if let draftText {
-                        HStack {
+                        HStack(spacing: 2) {
                             draftPrefixView
                             SubtitleText(text: draftText)
                         }
