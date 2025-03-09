@@ -285,7 +285,7 @@ extension ViewFactory {
     }
     
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
-        MessageAvatarView(avatarURL: userDisplayInfo.imageURL)
+        MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: userDisplayInfo.size ?? .messageAvatarSize)
     }
     
     public func makeQuotedMessageAvatarView(

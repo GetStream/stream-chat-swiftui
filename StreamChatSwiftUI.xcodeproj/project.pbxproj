@@ -19,6 +19,8 @@
 		4F7720AE2C58C45200BAEC02 /* OnLoadViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7720AD2C58C45000BAEC02 /* OnLoadViewModifier.swift */; };
 		4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */; };
 		4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */; };
+		4FCD7DA72D632121000EEB0F /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCD7DA62D63211B000EEB0F /* MarkdownFormatter.swift */; };
+		4FCD7DBD2D633F72000EEB0F /* AttributedString+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */; };
 		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
 		4FD964622D353D88001B6838 /* FilePickerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD964612D353D82001B6838 /* FilePickerView_Tests.swift */; };
 		4FEAB3182BFF71F70057E511 /* SwiftUI+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */; };
@@ -609,6 +611,8 @@
 		4F7720AD2C58C45000BAEC02 /* OnLoadViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnLoadViewModifier.swift; sourceTree = "<group>"; };
 		4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatClient+Extensions.swift"; sourceTree = "<group>"; };
 		4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatClientExtensions_Tests.swift; sourceTree = "<group>"; };
+		4FCD7DA62D63211B000EEB0F /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
+		4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Extensions.swift"; sourceTree = "<group>"; };
 		4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel_Tests.swift; sourceTree = "<group>"; };
 		4FD964612D353D82001B6838 /* FilePickerView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerView_Tests.swift; sourceTree = "<group>"; };
 		4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -1872,24 +1876,25 @@
 		8465FD312746A95600AF091E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				8465FD382746A95600AF091E /* Common */,
+				8465FD4A2746A95600AF091E /* BundleExtensions.swift */,
+				841B64C92775BBC10016FF3B /* Errors.swift */,
+				AD3AB6512CB498380014D4D7 /* HideTabBarModifier.swift */,
+				8465FD372746A95600AF091E /* ImageLoading.swift */,
+				8465FD362746A95600AF091E /* KeyboardHandling.swift */,
+				842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */,
+				8465FD352746A95600AF091E /* LazyView.swift */,
+				4FCD7DA62D63211B000EEB0F /* MarkdownFormatter.swift */,
+				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
 				AD3AB6592CB59A660014D4D7 /* MessagePreviewFormatter.swift */,
-				8465FD322746A95600AF091E /* ViewExtensions.swift */,
+				8465FD342746A95600AF091E /* Modifiers.swift */,
 				AD3AB64F2CB41B0D0014D4D7 /* NavigationContainerView.swift */,
 				8465FD332746A95600AF091E /* NukeImageLoader.swift */,
-				8465FD342746A95600AF091E /* Modifiers.swift */,
-				8465FD352746A95600AF091E /* LazyView.swift */,
-				8465FD362746A95600AF091E /* KeyboardHandling.swift */,
-				8465FD372746A95600AF091E /* ImageLoading.swift */,
 				84C0C9A228CF18F700CD0136 /* SnapshotCreator.swift */,
-				8465FD4A2746A95600AF091E /* BundleExtensions.swift */,
-				8465FD3B2746A95600AF091E /* StringExtensions.swift */,
-				841B64C92775BBC10016FF3B /* Errors.swift */,
-				847CEFED27C38ABE00606257 /* MessageCachingUtils.swift */,
 				84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */,
+				8465FD3B2746A95600AF091E /* StringExtensions.swift */,
 				4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */,
-				842ADEA828EB018C00F2BE36 /* LazyImageExtensions.swift */,
-				AD3AB6512CB498380014D4D7 /* HideTabBarModifier.swift */,
-				8465FD382746A95600AF091E /* Common */,
+				8465FD322746A95600AF091E /* ViewExtensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1897,6 +1902,7 @@
 		8465FD382746A95600AF091E /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */,
 				8465FD392746A95600AF091E /* AutoLayoutHelpers.swift */,
 				8465FD452746A95600AF091E /* Cache.swift */,
 				8465FD412746A95600AF091E /* ChatChannelNamer.swift */,
@@ -2154,20 +2160,20 @@
 		84C94D52275A135F007FE2B9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */,
-				91CC203B283C4C250049A146 /* URLUtils_Tests.swift */,
-				84C94D53275A1380007FE2B9 /* DateUtils_Tests.swift */,
-				84C94D55275A1AE1007FE2B9 /* StringExtensions_Tests.swift */,
-				84C94D59275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift */,
-				84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */,
-				84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */,
+				84D6E52B2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift */,
 				84C94D61275A5BB7007FE2B9 /* ChatChannelNamer_Tests.swift */,
+				4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */,
 				91B79FD8284E7E9C005B6E4F /* ChatUserNamer_Tests.swift */,
-				84E1D8272976CCAF00060491 /* SortReactions_Tests.swift */,
+				84C94D53275A1380007FE2B9 /* DateUtils_Tests.swift */,
+				84C94D5D275A3AA9007FE2B9 /* ImageCDN_Tests.swift */,
 				849988AF2AE6BE4800CC95C9 /* PaddingsConfig_Tests.swift */,
 				84779C762AEBCA6E000A6A68 /* ReactionsIconProvider_Tests.swift */,
+				84E1D8272976CCAF00060491 /* SortReactions_Tests.swift */,
+				84C94D59275A2E43007FE2B9 /* StreamChat_Utils_Tests.swift */,
+				84C94D55275A1AE1007FE2B9 /* StringExtensions_Tests.swift */,
+				91CC203B283C4C250049A146 /* URLUtils_Tests.swift */,
 				84D6E5292B3077A500D0056C /* VideoDurationFormatter_Tests.swift */,
-				84D6E52B2B3078D200D0056C /* AudioRecordingNameFormatter_Tests.swift */,
+				84C94D5F275A45D2007FE2B9 /* ViewFactory_Tests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2763,6 +2769,7 @@
 				8465FD752746A95700AF091E /* ImageAttachmentView.swift in Sources */,
 				82D64C0C2AD7E5B700C5C79E /* ImageEncoders.swift in Sources */,
 				8465FD832746A95700AF091E /* LinkAttachmentView.swift in Sources */,
+				4FCD7DA72D632121000EEB0F /* MarkdownFormatter.swift in Sources */,
 				82D64C082AD7E5B700C5C79E /* Operation.swift in Sources */,
 				82D64BEB2AD7E5B700C5C79E /* ImagePipelineTask.swift in Sources */,
 				AD2DDA612CB040EA0040B8D4 /* NoThreadsView.swift in Sources */,
@@ -2851,6 +2858,7 @@
 				82D64BEE2AD7E5B700C5C79E /* AsyncTask.swift in Sources */,
 				8465FDD12746A95700AF091E /* Images.swift in Sources */,
 				844EF8ED2809AACD00CC82F9 /* NoContentView.swift in Sources */,
+				4FCD7DBD2D633F72000EEB0F /* AttributedString+Extensions.swift in Sources */,
 				84EADEA42B2746B70046B50C /* VideoDurationFormatter.swift in Sources */,
 				82D64C0E2AD7E5B700C5C79E /* ImageEncoders+ImageIO.swift in Sources */,
 				84A1CACD2816BC420046595A /* ChatChannelInfoHelperViews.swift in Sources */,
@@ -3847,8 +3855,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.73.0;
+				branch = develop;
+				kind = branch;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

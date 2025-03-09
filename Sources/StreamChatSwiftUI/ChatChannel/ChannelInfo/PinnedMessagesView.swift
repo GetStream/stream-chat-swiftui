@@ -6,19 +6,26 @@ import StreamChat
 import SwiftUI
 
 /// View displaying pinned messages in the chat info screen.
-public struct PinnedMessagesView: View {
+public struct PinnedMessagesView<Factory: ViewFactory>: View {
     
     @Injected(\.images) private var images
 
     @StateObject private var viewModel: PinnedMessagesViewModel
+    
+    let factory: Factory
 
-    public init(channel: ChatChannel, channelController: ChatChannelController? = nil) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        channel: ChatChannel,
+        channelController: ChatChannelController? = nil
+    ) {
         _viewModel = StateObject(
             wrappedValue: PinnedMessagesViewModel(
                 channel: channel,
                 channelController: channelController
             )
         )
+        self.factory = factory
     }
 
     public var body: some View {
@@ -27,7 +34,7 @@ public struct PinnedMessagesView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.pinnedMessages) { message in
-                            PinnedMessageView(message: message, channel: viewModel.channel)
+                            PinnedMessageView(factory: factory, message: message, channel: viewModel.channel)
                             Divider()
                         }
                     }
@@ -45,7 +52,7 @@ public struct PinnedMessagesView: View {
     }
 }
 
-struct PinnedMessageView: View {
+struct PinnedMessageView<Factory: ViewFactory>: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -53,14 +60,19 @@ struct PinnedMessageView: View {
 
     private let avatarSize = CGSize(width: 56, height: 56)
 
+    var factory: Factory
     var message: ChatMessage
     var channel: ChatChannel
 
     var body: some View {
         HStack {
-            MessageAvatarView(
-                avatarURL: message.author.imageURL,
-                size: avatarSize
+            factory.makeMessageAvatarView(
+                for: UserDisplayInfo(
+                    id: message.author.id,
+                    name: message.author.name ?? "",
+                    imageURL: message.author.imageURL,
+                    size: avatarSize
+                )
             )
 
             VStack(alignment: .leading, spacing: 4) {
