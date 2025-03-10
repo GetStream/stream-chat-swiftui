@@ -22,7 +22,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Binding var editedMessage: ChatMessage?
     
     private let recordingViewHeight: CGFloat = 80
-    private let messageSendingParameters: MessageSendingParameters
 
     public init(
         viewFactory: Factory,
@@ -31,7 +30,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         messageController: ChatMessageController? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        messageSendingParameters: MessageSendingParameters = .init(),
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
@@ -45,7 +43,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         _quotedMessage = quotedMessage
         _editedMessage = editedMessage
         self.onMessageSent = onMessageSent
-        self.messageSendingParameters = messageSendingParameters
     }
 
     @StateObject var viewModel: MessageComposerViewModel
@@ -102,11 +99,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 ) {
                     viewModel.sendMessage(
                         quotedMessage: quotedMessage,
-                        editedMessage: editedMessage,
-                        isSilent: messageSendingParameters.isSilent,
-                        skipPush: messageSendingParameters.skipPush,
-                        skipEnrichUrl: messageSendingParameters.skipEnrichUrl,
-                        extraData: messageSendingParameters.extraData
+                        editedMessage: editedMessage
                     ) {
                         quotedMessage = nil
                         editedMessage = nil
@@ -426,24 +419,5 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var isInCooldown: Bool {
         cooldownDuration > 0
-    }
-}
-
-public struct MessageSendingParameters {
-    public let isSilent: Bool
-    public let skipPush: Bool
-    public let skipEnrichUrl: Bool
-    public let extraData: [String: RawJSON]
-    
-    public init(
-        isSilent: Bool = false,
-        skipPush: Bool = false,
-        skipEnrichUrl: Bool = false,
-        extraData: [String: RawJSON] = [:]
-    ) {
-        self.isSilent = isSilent
-        self.skipPush = skipPush
-        self.skipEnrichUrl = skipEnrichUrl
-        self.extraData = extraData
     }
 }
