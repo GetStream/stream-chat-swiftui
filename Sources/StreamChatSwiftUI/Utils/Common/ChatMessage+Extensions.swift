@@ -46,6 +46,12 @@ public extension ChatMessage {
 
         return isDeleted ? L10n.Message.deletedMessagePlaceholder : adjustedText
     }
+    
+    func textContent(for translationLanguage: TranslationLanguage?) -> String? {
+        guard let translationLanguage else { return nil }
+        guard !isSentByCurrentUser, !isDeleted else { return nil }
+        return translatedText(for: translationLanguage)
+    }
 
     /// A boolean value that checks if the message is visible for current user only.
     var isOnlyVisibleForCurrentUser: Bool {
@@ -83,21 +89,7 @@ public extension ChatMessage {
     }
 
     var adjustedText: String {
-        let text = translatedText ?? text
-        return InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
-    }
-    
-    var translationLanguage: TranslationLanguage? {
-        guard translations != nil else { return nil }
-        guard !isSentByCurrentUser else { return nil }
-        guard let cid else { return nil }
-        return InjectedValues[\.utils].messageCachingUtils.translationLanguage(for: cid)
-    }
-    
-    private var translatedText: String? {
-        guard translations != nil else { return nil }
-        guard let translationLanguage else { return nil }
-        return translatedText(for: translationLanguage)
+        InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
     }
     
     var isRightAligned: Bool {

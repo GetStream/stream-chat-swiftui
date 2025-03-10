@@ -264,11 +264,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
     
     func test_translatedText_participant_snapshot() {
         // Given
-        let cid = ChannelId.unique
-        streamChat?.utils.messageCachingUtils.channelTranslationLanguages[cid] = .spanish
         let message = ChatMessage.mock(
             id: .unique,
-            cid: cid,
+            cid: .unique,
             text: "Hello",
             author: .mock(id: .unique),
             translations: [
@@ -278,6 +276,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         
         // When
         let view = testMessageViewContainer(message: message)
+            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
@@ -285,11 +284,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
     
     func test_translatedText_myMessageIsNotTranslated_snapshot() {
         // Given
-        let cid = ChannelId.unique
-        streamChat?.utils.messageCachingUtils.channelTranslationLanguages[cid] = .spanish
         let message = ChatMessage.mock(
             id: .unique,
-            cid: cid,
+            cid: .unique,
             text: "Hello",
             author: .mock(id: .unique),
             translations: [
@@ -300,6 +297,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         
         // When
         let view = testMessageViewContainer(message: message)
+            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))

@@ -197,7 +197,63 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
             onItemTap: { _ in }
         )
         .frame(width: defaultScreenSize.width)
-
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_channelListItem_translatedText_participant() throws {
+        // Given
+        let message = try mockTranslatedMessage(
+            text: "Hello",
+            translations: [.spanish: "Hola"],
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            membership: .mock(id: .unique, language: .spanish),
+            latestMessages: [message],
+            previewMessage: message
+        )
+        
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_channelListItem_translatedText_me() throws {
+        // Given
+        let message = try mockTranslatedMessage(
+            text: "Hello",
+            translations: [.spanish: "Hola"],
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            membership: .mock(id: .unique, language: .spanish),
+            latestMessages: [message],
+            previewMessage: message
+        )
+        
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -335,6 +391,24 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
                 createdBy: .mock(id: isSentByCurrentUser ? Self.currentUserId : "test", name: "test"),
                 latestVotes: latestVotes
             )
+        )
+    }
+    
+    private func mockTranslatedMessage(
+        text: String,
+        translations: [TranslationLanguage: String]?,
+        isSentByCurrentUser: Bool
+    ) throws -> ChatMessage {
+        .mock(
+            id: .unique,
+            cid: .unique,
+            text: text,
+            type: .regular,
+            author: .mock(id: "user", name: "User"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            translations: translations,
+            localState: nil,
+            isSentByCurrentUser: isSentByCurrentUser
         )
     }
 }
