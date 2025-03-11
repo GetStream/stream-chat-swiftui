@@ -94,10 +94,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     Divider()
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
-                            view.changeBarsVisibility(shouldShow: false)
+                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: false))
                         })
                         .if(!viewModel.reactionsShown, transform: { view in
-                            view.changeBarsVisibility(shouldShow: true)
+                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: true))
                         })
                         .if(viewModel.channelHeaderType == .regular) { view in
                             view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
