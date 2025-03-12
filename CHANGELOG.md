@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Uploading a HEIC photo from the library is now converted to JPEG for better compatibility [#767](https://github.com/GetStream/stream-chat-swiftui/pull/767)
 - Customizing the message avatar view is reflected in all views that use it [#772](https://github.com/GetStream/stream-chat-swiftui/pull/772)
+- Made the sendMessage method in MessageComposerViewModel open [#779](https://github.com/GetStream/stream-chat-swiftui/pull/779)
 - Move `ChangeBarsVisibilityModifier` into `ViewFactory` for better customization [#774](https://github.com/GetStream/stream-chat-swiftui/pull/774)
 
 # [4.73.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.73.0)
