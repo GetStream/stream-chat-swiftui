@@ -226,13 +226,13 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
 
+                    if message.textContent(for: translationLanguage) != nil,
+                       let localizedName = translationLanguage?.localizedName {
+                        Text(L10n.Message.translatedTo(localizedName))
+                            .font(fonts.footnote)
+                            .foregroundColor(Color(colors.subtitleText))
+                    }
                     if showsAllInfo && !message.isDeleted {
-                        if message.textContent(for: translationLanguage) != nil,
-                           let localizedName = translationLanguage?.localizedName {
-                            Text(L10n.Message.translatedTo(localizedName))
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.subtitleText))
-                        }
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
                                 factory.makeMessageReadIndicatorView(
