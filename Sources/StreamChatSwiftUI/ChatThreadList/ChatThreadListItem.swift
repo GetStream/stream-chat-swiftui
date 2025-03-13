@@ -51,7 +51,7 @@ public struct ChatThreadListItemViewModel {
             parentMessageText = threadTitle
         } else {
             let formatter = InjectedValues[\.utils].messagePreviewFormatter
-            parentMessageText = formatter.formatContent(for: thread.parentMessage)
+            parentMessageText = formatter.formatContent(for: thread.parentMessage, in: thread.channel)
         }
         return L10n.Thread.Item.repliedTo(parentMessageText.trimmed)
     }
@@ -67,7 +67,7 @@ public struct ChatThreadListItemViewModel {
         }
 
         let formatter = InjectedValues[\.utils].messagePreviewFormatter
-        return formatter.format(latestReply)
+        return formatter.format(latestReply, in: thread.channel)
     }
 
     /// The formatted latest reply timestamp.

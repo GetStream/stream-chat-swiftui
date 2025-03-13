@@ -251,6 +251,7 @@ struct StreamTextView: View {
 @available(iOS 15, *)
 public struct LinkDetectionTextView: View {
     @Environment(\.layoutDirection) var layoutDirection
+    @Environment(\.channelTranslationLanguage) var translationLanguage
     
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -292,8 +293,12 @@ public struct LinkDetectionTextView: View {
     }
     
     private func attributedString(for message: ChatMessage) -> AttributedString {
-        let text = message.adjustedText
+        var text = message.adjustedText
         
+        // Translation
+        if let translatedText = message.textContent(for: translationLanguage) {
+            text = translatedText
+        }
         // Markdown
         let attributes = AttributeContainer()
             .foregroundColor(textColor(for: message))

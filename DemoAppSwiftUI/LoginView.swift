@@ -20,6 +20,11 @@ struct LoginView: View {
             Text("Welcome to Stream Chat")
                 .font(.title)
                 .padding(.all, 8)
+            
+            Button("Configuration") {
+                viewModel.showsConfiguration = true
+            }
+            .buttonStyle(.borderedProminent)
 
             Text("Select a user to try the iOS SDK:")
                 .font(.body)
@@ -42,6 +47,9 @@ struct LoginView: View {
         .overlay(
             viewModel.loading ? ProgressView() : nil
         )
+        .sheet(isPresented: $viewModel.showsConfiguration) {
+            AppConfigurationView()
+        }
     }
 }
 

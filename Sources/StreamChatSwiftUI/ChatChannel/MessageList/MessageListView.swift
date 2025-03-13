@@ -148,6 +148,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 onLongPress: handleLongPress(messageDisplayInfo:),
                                 isLast: !showsLastInGroupInfo && message == messages.last
                             )
+                            .environment(\.channelTranslationLanguage, channel.membership?.language)
                             .onAppear {
                                 if index == nil {
                                     index = messageListDateUtils.index(for: message, in: messages)
@@ -595,5 +596,20 @@ private class MessageRenderingUtil {
         }
 
         return skipRendering
+    }
+}
+
+private struct ChannelTranslationLanguageKey: EnvironmentKey {
+    static let defaultValue: TranslationLanguage? = nil
+}
+
+extension EnvironmentValues {
+    var channelTranslationLanguage: TranslationLanguage? {
+        get {
+            self[ChannelTranslationLanguageKey.self]
+        }
+        set {
+            self[ChannelTranslationLanguageKey.self] = newValue
+        }
     }
 }
