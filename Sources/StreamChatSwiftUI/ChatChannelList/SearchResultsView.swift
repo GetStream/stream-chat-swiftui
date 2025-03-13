@@ -169,7 +169,7 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
             guard let previewMessage = searchResult.message else {
                 return L10n.Channel.Item.emptyMessages
             }
-            return utils.messagePreviewFormatter.format(previewMessage)
+            return utils.messagePreviewFormatter.format(previewMessage, in: searchResult.channel)
         case .messages:
             return searchResult.message?.text ?? ""
         default:

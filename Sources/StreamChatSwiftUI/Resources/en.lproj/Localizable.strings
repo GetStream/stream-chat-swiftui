@@ -89,6 +89,8 @@
 "message.polls.unknown-vote-author" = "Anonymous";
 "message.polls.votes" = "%d votes";
 
+"message.translatedTo" = "Translated to %@";
+
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
 "alert.actions.end" = "End";

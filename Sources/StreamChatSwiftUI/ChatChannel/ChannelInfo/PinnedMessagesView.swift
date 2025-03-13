@@ -101,6 +101,6 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
             return "📊 \(L10n.Channel.Item.poll)"
         }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.formatAttachmentContent(for: message) ?? message.adjustedText
+        return messageFormatter.formatAttachmentContent(for: message, in: channel) ?? message.adjustedText
     }
 }

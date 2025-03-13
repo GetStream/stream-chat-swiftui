@@ -295,7 +295,7 @@ extension ChatChannel {
     public var previewMessageText: String? {
         guard let previewMessage else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.format(previewMessage)
+        return messageFormatter.format(previewMessage, in: self)
     }
 
     public var draftMessageText: String? {
@@ -307,7 +307,7 @@ extension ChatChannel {
     public var lastMessageText: String? {
         guard let latestMessage = latestMessages.first else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.format(latestMessage)
+        return messageFormatter.format(latestMessage, in: self)
     }
 
     public var shouldShowTypingIndicator: Bool {

@@ -321,7 +321,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    public func sendMessage(
+    open func sendMessage(
         quotedMessage: ChatMessage?,
         editedMessage: ChatMessage?,
         isSilent: Bool = false,

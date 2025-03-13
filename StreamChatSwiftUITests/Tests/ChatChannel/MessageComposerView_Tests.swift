@@ -442,7 +442,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         streamChat?.appearance.colors.staticColorText = .black
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
     }
-
+  
     // MARK: - Drafts
 
     // Note: For some reason the text is not rendered in the composer,
@@ -591,5 +591,42 @@ class MessageComposerView_Tests: StreamChatTestCase {
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
+    }
+    
+    func test_composerQuotedMessage_translated() {
+        let factory = DefaultViewFactory.shared
+        let size = CGSize(width: defaultScreenSize.width, height: 100)
+
+        let channelController = ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient,
+            chatChannel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let view = ComposerInputView(
+            factory: factory,
+            text: .constant("Hello"),
+            selectedRangeLocation: .constant(0),
+            command: .constant(nil),
+            addedAssets: [],
+            addedFileURLs: [],
+            addedCustomAttachments: [],
+            quotedMessage: .constant(
+                .mock(
+                    text: "Hello",
+                    translations: [.spanish: "Hola"]
+                )
+            ),
+            cooldownDuration: 0,
+            onCustomAttachmentTap: { _ in
+            },
+            removeAttachmentWithId: { _ in }
+        )
+        .environmentObject(viewModel)
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
     }
 }

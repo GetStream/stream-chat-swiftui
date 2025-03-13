@@ -56,6 +56,7 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
 
 /// View for the quoted message.
 public struct QuotedMessageView<Factory: ViewFactory>: View {
+    @Environment(\.channelTranslationLanguage) var translationLanguage
 
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
@@ -178,7 +179,9 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     }
 
     private var textForMessage: String {
-        let textContent = quotedMessage.textContent ?? ""
+        let translatedTextContent = quotedMessage.textContent(for: translationLanguage)
+        let textContent = translatedTextContent ?? quotedMessage.textContent ?? ""
+        
         if !textContent.isEmpty {
             return textContent
         }
