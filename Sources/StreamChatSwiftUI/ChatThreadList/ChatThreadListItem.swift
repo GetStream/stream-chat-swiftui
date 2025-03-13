@@ -83,7 +83,7 @@ public struct ChatThreadListItemViewModel {
         guard utils.messageListConfig.draftMessagesEnabled else { return nil }
         guard let draftMessage = thread.parentMessage.draftReply else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.formatContent(for: ChatMessage(draftMessage))
+        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: thread.channel)
     }
 
     /// The number of unread replies.

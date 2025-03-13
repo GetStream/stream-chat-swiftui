@@ -301,7 +301,7 @@ extension ChatChannel {
     public var draftMessageText: String? {
         guard let draftMessage = draftMessage else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.formatContent(for: ChatMessage(draftMessage))
+        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: self)
     }
 
     public var lastMessageText: String? {
