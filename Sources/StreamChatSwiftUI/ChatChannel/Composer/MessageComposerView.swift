@@ -300,6 +300,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     isInComposer: true,
                     scrolledId: .constant(nil)
                 )
+                .environment(\.channelTranslationLanguage, viewModel.channelController.channel?.membership?.language)
             }
 
             if !addedAssets.isEmpty {

@@ -7,7 +7,8 @@ import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
-
+    @Environment(\.channelTranslationLanguage) var translationLanguage
+    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -225,6 +226,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
 
+                    if message.textContent(for: translationLanguage) != nil,
+                       let localizedName = translationLanguage?.localizedName {
+                        Text(L10n.Message.translatedTo(localizedName))
+                            .font(fonts.footnote)
+                            .foregroundColor(Color(colors.subtitleText))
+                    }
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {

@@ -13,33 +13,33 @@ struct MessagePreviewFormatter {
     init() {}
 
     /// Formats the message including the author's name.
-    func format(_ previewMessage: ChatMessage) -> String {
+    func format(_ previewMessage: ChatMessage, in channel: ChatChannel) -> String {
         if let poll = previewMessage.poll {
             return formatPoll(poll)
         }
-        return "\(previewMessage.author.name ?? previewMessage.author.id): \(formatContent(for: previewMessage))"
+        return "\(previewMessage.author.name ?? previewMessage.author.id): \(formatContent(for: previewMessage, in: channel))"
     }
     
     /// Formats only the content of the message without the author's name.
-    func formatContent(for previewMessage: ChatMessage) -> String {
-        if let attachmentPreviewText = formatAttachmentContent(for: previewMessage) {
+    func formatContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String {
+        if let attachmentPreviewText = formatAttachmentContent(for: previewMessage, in: channel) {
             return attachmentPreviewText
         }
-        if let textContent = previewMessage.textContent, !textContent.isEmpty {
+        if let textContent = previewMessage.textContent(for: channel.membership?.language), !textContent.isEmpty {
             return textContent
         }
         return previewMessage.adjustedText
     }
 
     /// Formats only the attachment content of the message in case it contains attachments.
-    func formatAttachmentContent(for previewMessage: ChatMessage) -> String? {
+    func formatAttachmentContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String? {
         if let poll = previewMessage.poll {
             return "📊 \(poll.name)"
         }
         guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
             return nil
         }
-        let text = previewMessage.textContent ?? previewMessage.text
+        let text = previewMessage.textContent(for: channel.membership?.language) ?? previewMessage.text
         switch attachment.type {
         case .audio:
             let defaultAudioText = L10n.Channel.Item.audio
