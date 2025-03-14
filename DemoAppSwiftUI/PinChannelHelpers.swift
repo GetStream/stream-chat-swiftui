@@ -85,7 +85,16 @@ struct DemoAppChatChannelListItem: View {
                     TypingIndicatorView()
                 }
             }
-            SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
+            if let draftText = channel.draftMessageText {
+                HStack(spacing: 2) {
+                    Text("Draft:")
+                        .font(fonts.caption1).bold()
+                        .foregroundColor(Color(colors.highlightedAccentBackground))
+                    SubtitleText(text: draftText)
+                }
+            } else {
+                SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
+            }
             Spacer()
         }
         .accessibilityIdentifier("subtitleView")

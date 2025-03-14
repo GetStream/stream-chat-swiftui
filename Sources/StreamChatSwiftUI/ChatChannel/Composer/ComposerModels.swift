@@ -2,6 +2,7 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 import StreamChat
 import SwiftUI
 
@@ -52,6 +53,48 @@ extension AddedAsset {
     }
 }
 
+extension AnyChatMessageAttachment {
+    func toAddedAsset() -> AddedAsset? {
+        if let imageAttachment = attachment(payloadType: ImageAttachmentPayload.self),
+           let imageData = try? Data(contentsOf: imageAttachment.imageURL),
+           let image = UIImage(data: imageData) {
+            return AddedAsset(
+                image: image,
+                id: imageAttachment.id.rawValue,
+                url: imageAttachment.imageURL,
+                type: .image,
+                extraData: imageAttachment.extraData ?? [:]
+            )
+        } else if let videoAttachment = attachment(payloadType: VideoAttachmentPayload.self),
+                  let thumbnail = imageThumbnail(for: videoAttachment.payload) {
+            return AddedAsset(
+                image: thumbnail,
+                id: videoAttachment.id.rawValue,
+                url: videoAttachment.videoURL,
+                type: .video,
+                extraData: videoAttachment.extraData ?? [:]
+            )
+        }
+        return nil
+    }
+
+    private func imageThumbnail(for videoAttachmentPayload: VideoAttachmentPayload) -> UIImage? {
+        if let thumbnailURL = videoAttachmentPayload.thumbnailURL, let data = try? Data(contentsOf: thumbnailURL) {
+            return UIImage(data: data)
+        }
+        let asset = AVURLAsset(url: videoAttachmentPayload.videoURL, options: nil)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
+        guard let cgImage = try? imageGenerator.copyCGImage(
+            at: CMTimeMake(value: 0, timescale: 1),
+            actualTime: nil
+        ) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
+    }
+}
+
 /// Type of asset added to the composer.
 public enum AssetType {
     case image
@@ -90,5 +133,18 @@ public struct AddedVoiceRecording: Identifiable, Equatable {
         self.url = url
         self.duration = duration
         self.waveform = waveform
+    }
+}
+
+extension AnyChatMessageAttachment {
+    func toAddedVoiceRecording() -> AddedVoiceRecording? {
+        guard let voiceAttachment = attachment(payloadType: VoiceRecordingAttachmentPayload.self) else { return nil }
+        guard let duration = voiceAttachment.duration else { return nil }
+        guard let waveform = voiceAttachment.waveformData else { return nil }
+        return AddedVoiceRecording(
+            url: voiceAttachment.voiceRecordingURL,
+            duration: duration,
+            waveform: waveform
+        )
     }
 }

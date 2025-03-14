@@ -20,7 +20,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
-    
+
     private let recordingViewHeight: CGFloat = 80
 
     public init(
@@ -37,7 +37,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
                 with: channelController,
-                messageController: messageController
+                messageController: messageController,
+                quotedMessage: quotedMessage
             )
         )
         _quotedMessage = quotedMessage
@@ -214,6 +215,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
+        .onAppear(perform: {
+            viewModel.fillDraftMessage()
+        })
+        .onDisappear(perform: {
+            viewModel.updateDraftMessage(quotedMessage: quotedMessage)
+        })
         .accessibilityElement(children: .contain)
     }
 }

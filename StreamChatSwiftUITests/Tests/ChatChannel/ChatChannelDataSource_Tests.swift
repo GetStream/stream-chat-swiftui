@@ -210,6 +210,19 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
         return threadDataSource
     }
 
+    private func makeMessageThreadDataSource(
+        messages: [ChatMessage],
+        messageController: ChatMessageControllerSUI_Mock
+    ) -> MessageThreadDataSource {
+        let channelController = makeChannelController(messages: messages)
+        let threadDataSource = MessageThreadDataSource(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        return threadDataSource
+    }
+
     private func makeChannelController(messages: [ChatMessage]) -> ChatChannelController_Mock {
         let channelController = ChatChannelTestHelpers.makeChannelController(
             chatClient: chatClient,

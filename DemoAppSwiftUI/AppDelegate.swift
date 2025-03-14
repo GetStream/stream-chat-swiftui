@@ -69,7 +69,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 bouncedMessagesAlertActionsEnabled: true,
                 skipEditedMessageLabel: { message in
                     message.extraData["ai_generated"]?.boolValue == true
-                }
+                },
+                draftMessagesEnabled: true
             ),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )

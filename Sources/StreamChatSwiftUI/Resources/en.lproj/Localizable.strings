@@ -178,6 +178,8 @@
 
 "message.bounce.title" = "Message was bounced";
 
+"message.preview.draft" = "Draft";
+
 "current-selection" = "%d of %d";
 
 "attachment.max-size-exceeded" = "Attachment size exceed the limit.";
