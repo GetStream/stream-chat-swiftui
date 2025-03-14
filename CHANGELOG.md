@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.74.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.74.0)
+_March 14, 2025_
+
 ### ✅ Added
 - Feature rich markdown rendering with AttributedString [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
 - Add `Fonts.title2` for supporting markdown headers [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
