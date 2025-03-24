@@ -6,27 +6,27 @@ import StreamChat
 import SwiftUI
 
 /// View for the add users popup.
-struct AddUsersView: View {
+struct AddUsersView<Factory: ViewFactory>: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
-    private static let columnCount = 4
-    private static let itemSize: CGFloat = 64
-
     private let columns = Array(
         repeating:
         GridItem(
-            .adaptive(minimum: itemSize),
+            .adaptive(minimum: 64),
             alignment: .top
         ),
-        count: columnCount
+        count: 4
     )
+    
+    private let factory: Factory
 
     @StateObject private var viewModel: AddUsersViewModel
     var onUserTap: (ChatUser) -> Void
 
     init(
+        factory: Factory = DefaultViewFactory.shared,
         loadedUserIds: [String],
         onUserTap: @escaping (ChatUser) -> Void
     ) {
@@ -34,9 +34,11 @@ struct AddUsersView: View {
             wrappedValue: AddUsersViewModel(loadedUserIds: loadedUserIds)
         )
         self.onUserTap = onUserTap
+        self.factory = factory
     }
 
     init(
+        factory: Factory = DefaultViewFactory.shared,
         viewModel: AddUsersViewModel,
         onUserTap: @escaping (ChatUser) -> Void
     ) {
@@ -44,6 +46,7 @@ struct AddUsersView: View {
             wrappedValue: viewModel
         )
         self.onUserTap = onUserTap
+        self.factory = factory
     }
 
     var body: some View {
@@ -57,17 +60,20 @@ struct AddUsersView: View {
                             onUserTap(user)
                         } label: {
                             VStack {
-                                MessageAvatarView(
-                                    avatarURL: user.imageURL,
-                                    size: CGSize(width: Self.itemSize, height: Self.itemSize),
-                                    showOnlineIndicator: false
+                                let itemSize: CGFloat = 64
+                                let userDisplayInfo = UserDisplayInfo(
+                                    id: user.id,
+                                    name: user.name ?? "",
+                                    imageURL: user.imageURL,
+                                    size: CGSize(width: itemSize, height: itemSize)
                                 )
+                                factory.makeMessageAvatarView(for: userDisplayInfo)
 
                                 Text(user.name ?? user.id)
                                     .multilineTextAlignment(.center)
                                     .lineLimit(2)
                                     .font(fonts.footnoteBold)
-                                    .frame(width: Self.itemSize)
+                                    .frame(width: itemSize)
                                     .foregroundColor(Color(colors.text))
                             }
                             .padding(.all, 8)

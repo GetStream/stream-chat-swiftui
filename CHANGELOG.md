@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Add avatar customization in add users popup [#787](https://github.com/GetStream/stream-chat-swiftui/pull/787)
+
+# [4.74.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.74.0)
+_March 14, 2025_
+
+### ✅ Added
 - Feature rich markdown rendering with AttributedString [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
 - Add `Fonts.title2` for supporting markdown headers [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
 - Add `resignsFirstResponderOnScrollDown` to `MessageListConfig` [#769](https://github.com/GetStream/stream-chat-swiftui/pull/769)
