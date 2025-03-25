@@ -23,6 +23,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         streamChat?.utils.channelHeaderLoader.placeholder2 = circleImage
         streamChat?.utils.channelHeaderLoader.placeholder3 = circleImage
         streamChat?.utils.channelHeaderLoader.placeholder4 = circleImage
+        streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: true)
 
         currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId, name: "Vader", imageURL: nil)
 
@@ -124,6 +125,32 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
                     .mock(text: "", author: mockYoda, poll: .mock(name: "Who is worse?"))
                 ]
             )
+
+        let view = ChatThreadListItem(thread: thread)
+            .frame(width: defaultScreenSize.width)
+
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_threadListItem_whenDraftMessage() {
+        let thread = mockThread
+            .with(parentMessage: .mock(text: "Parent", draftReply: .mock(text: "Draft message")))
+
+        let view = ChatThreadListItem(thread: thread)
+            .frame(width: defaultScreenSize.width)
+
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_threadListItem_whenDraftMessageHasAttachment() throws {
+        let message = DraftMessage.mock(text: "Draft message", attachments: [.dummy(payload: try JSONEncoder().encode(
+            ImageAttachmentPayload(title: "Test", imageRemoteURL: .localYodaImage, file: .init(url: .localYodaImage))
+        ))])
+        let thread = mockThread
+            .with(parentMessage: .mock(
+                text: "Parent",
+                draftReply: message
+            ))
 
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)

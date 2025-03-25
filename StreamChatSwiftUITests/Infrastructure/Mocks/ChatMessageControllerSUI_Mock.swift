@@ -13,7 +13,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
         currentUserId: UserId = "ID",
         cid: ChannelId? = nil,
         messageId: String = "MockMessage"
-    ) -> ChatMessageController_Mock {
+    ) -> ChatMessageControllerSUI_Mock {
         if let authenticationRepository = chatClient.authenticationRepository as? AuthenticationRepository_Mock {
             authenticationRepository.mockedCurrentUserId = currentUserId
         }
@@ -58,6 +58,30 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
     var synchronize_callCount = 0
     override public func synchronize(_ completion: ((Error?) -> Void)? = nil) {
         synchronize_callCount += 1
+    }
+
+    var updateDraftReply_callCount = 0
+    var updateDraftReply_text: String?
+
+    override public func updateDraftReply(
+        text: String,
+        isSilent: Bool = false,
+        attachments: [AnyAttachmentPayload] = [],
+        mentionedUserIds: [UserId] = [],
+        quotedMessageId: MessageId? = nil,
+        showReplyInChannel: Bool = false,
+        command: Command? = nil,
+        extraData: [String: RawJSON] = [:],
+        completion: ((Result<DraftMessage, any Error>) -> Void)? = nil
+    ) {
+        updateDraftReply_callCount += 1
+        updateDraftReply_text = text
+    }
+
+    var deleteDraftReply_callCount = 0
+
+    override public func deleteDraftReply(completion: (((any Error)?) -> Void)? = nil) {
+        deleteDraftReply_callCount += 1
     }
 }
 

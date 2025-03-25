@@ -24,7 +24,8 @@ public struct ChatThreadListItem: View {
             replyAuthorUrl: viewModel.latestReplyAuthorImageURL,
             replyAuthorIsOnline: viewModel.isLatestReplyAuthorOnline,
             replyMessageText: viewModel.latestReplyMessageText,
-            replyTimestampText: viewModel.latestReplyTimestampText
+            replyTimestampText: viewModel.latestReplyTimestampText,
+            draftText: viewModel.draftReplyText
         )
     }
 }
@@ -77,6 +78,14 @@ public struct ChatThreadListItemViewModel {
         )
     }
 
+    /// The formatted draft reply text.
+    public var draftReplyText: String? {
+        guard utils.messageListConfig.draftMessagesEnabled else { return nil }
+        guard let draftMessage = thread.parentMessage.draftReply else { return nil }
+        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: thread.channel)
+    }
+
     /// The number of unread replies.
     public var unreadRepliesCount: Int {
         let currentUserRead = thread.reads.first(
@@ -126,6 +135,7 @@ struct ChatThreadListItemContentView: View {
     var replyAuthorIsOnline: Bool
     var replyMessageText: String
     var replyTimestampText: String
+    var draftText: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -175,11 +185,24 @@ struct ChatThreadListItemContentView: View {
                     .foregroundColor(Color(colors.text))
                     .font(fonts.subheadlineBold)
                 HStack {
-                    SubtitleText(text: replyMessageText)
+                    if let draftText {
+                        HStack(spacing: 2) {
+                            draftPrefixView
+                            SubtitleText(text: draftText)
+                        }
+                    } else {
+                        SubtitleText(text: replyMessageText)
+                    }
                     Spacer()
                     SubtitleText(text: replyTimestampText)
                 }
             }
         }
+    }
+
+    var draftPrefixView: some View {
+        Text("\(L10n.Message.Preview.draft):")
+            .font(fonts.caption1).bold()
+            .foregroundColor(Color(colors.highlightedAccentBackground))
     }
 }

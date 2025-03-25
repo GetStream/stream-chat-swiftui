@@ -106,7 +106,16 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     TypingIndicatorView()
                 }
             }
-            SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
+            if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
+                HStack(spacing: 2) {
+                    Text("\(L10n.Message.Preview.draft):")
+                        .font(fonts.caption1).bold()
+                        .foregroundColor(Color(colors.highlightedAccentBackground))
+                    SubtitleText(text: draftText)
+                }
+            } else {
+                SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
+            }
             Spacer()
         }
         .accessibilityIdentifier("subtitleView")
@@ -288,7 +297,13 @@ extension ChatChannel {
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.format(previewMessage, in: self)
     }
-    
+
+    public var draftMessageText: String? {
+        guard let draftMessage = draftMessage else { return nil }
+        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: self)
+    }
+
     public var lastMessageText: String? {
         guard let latestMessage = latestMessages.first else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter

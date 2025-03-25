@@ -5,6 +5,7 @@
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
+import SwiftUI
 import XCTest
 
 class MessageComposerViewModel_Tests: StreamChatTestCase {
@@ -692,8 +693,311 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.audioRecordingInfo == .initial)
     }
     
-    // MARK: - private
+    // MARK: - Draft Message Tests
+
+    func test_messageComposerVM_command() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "/giphy text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(
+            cid: channelController.cid!,
+            config: ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")]),
+            draftMessage: draftMessage
+        )
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.fillDraftMessage()
+
+        // When
+        XCTAssertEqual(viewModel.composerCommand?.id, "/giphy")
+        XCTAssertEqual(viewModel.text, "text")
+    }
+
+    func test_messageComposerVM_updateDraftMessage() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        let quotedMessage = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted message", author: .mock(id: .unique))
+        
+        // When
+        viewModel.text = "Draft text"
+        viewModel.updateDraftMessage(quotedMessage: quotedMessage)
+        
+        // Then
+        XCTAssertEqual(channelController.updateDraftMessage_text, "Draft text")
+        XCTAssertEqual(channelController.updateDraftMessage_callCount, 1)
+    }
     
+    func test_messageComposerVM_updateDraftReply() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        let quotedMessage = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted message", author: .mock(id: .unique))
+        
+        // When
+        viewModel.text = "Draft reply"
+        viewModel.updateDraftMessage(quotedMessage: quotedMessage)
+        
+        // Then
+        XCTAssertEqual(messageController.updateDraftReply_text, "Draft reply")
+        XCTAssertEqual(messageController.updateDraftReply_callCount, 1)
+    }
+    
+    func test_messageComposerVM_whenTextErased_shouldDeleteDraftMessage() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.text = "text"
+
+        // When
+        viewModel.text = ""
+        
+        // Then
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+    }
+    
+    func test_messageComposerVM_whenTextErased_deleteDraftReply() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let draftMessage = DraftMessage.mock(text: "reply")
+        messageController.message_mock = .mock(draftReply: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.text = "reply"
+
+        // When
+        viewModel.text = ""
+        
+        // Then
+        XCTAssertEqual(messageController.deleteDraftReply_callCount, 1)
+    }
+
+    func test_messageComposerVM_whenMessagePublished_deleteDraftMessage() {
+        // Given
+        let channelController = makeChannelController()
+        let draftMessage = DraftMessage.mock(text: "text")
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.text = "text"
+
+        // When
+        viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
+        
+        // Then
+        // Sending a message will clear the input, deleting the draft message.
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+    }
+
+    func test_messageComposerVM_whenMessagePublished_deleteDraftReply() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let draftMessage = DraftMessage.mock(text: "reply")
+        messageController.message_mock = .mock(draftReply: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.text = "reply"
+
+        // When
+        viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
+        
+        // Then
+        XCTAssertEqual(messageController.deleteDraftReply_callCount, 1)
+    }
+
+    func test_messageComposerVM_draftMessageUpdatedEvent() throws {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: .mock(text: "Draft"))
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        let draftMessage = DraftMessage.mock(text: "Draft from event")
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: draftMessage)
+        let cid = try XCTUnwrap(channelController.cid)
+        let event = DraftUpdatedEvent(cid: cid, channel: .mock(cid: cid), draftMessage: draftMessage, createdAt: .unique)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+        
+        // Then
+        XCTAssertEqual(viewModel.text, "Draft from event")
+    }
+    
+    func test_messageComposerVM_draftReplyUpdatedEvent() throws {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid!,
+            messageId: .unique
+        )
+        messageController.message_mock = .mock(draftReply: .mock(text: "Draft"))
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        
+        // When
+        let draftMessage = DraftMessage.mock(
+            threadId: messageController.messageId,
+            text: "Draft reply from event"
+        )
+        messageController.message_mock = .mock(draftReply: draftMessage)
+        let cid = try XCTUnwrap(channelController.cid)
+        let event = DraftUpdatedEvent(cid: cid, channel: .mock(cid: cid), draftMessage: draftMessage, createdAt: .unique)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+        
+        // Then
+        XCTAssertEqual(viewModel.text, "Draft reply from event")
+    }
+
+    func test_messageComposerVM_draftReplyUpdatedEventFromOtherThread_shouldNotUpdate() throws {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid!,
+            messageId: .unique
+        )
+        messageController.message_mock = .mock(draftReply: .mock(text: "Draft"))
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.fillDraftMessage()
+
+        // When
+        let draftMessage = DraftMessage.mock(
+            threadId: .unique,
+            text: "Draft reply from event"
+        )
+        messageController.message_mock = .mock(draftReply: draftMessage)
+        let cid = try XCTUnwrap(channelController.cid)
+        let event = DraftUpdatedEvent(cid: cid, channel: .mock(cid: cid), draftMessage: draftMessage, createdAt: .unique)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+
+        // Then
+        XCTAssertEqual(viewModel.text, "Draft")
+    }
+
+    func test_messageComposerVM_draftMessageDeletedEvent() throws {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: .mock(text: "Draft"))
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: nil)
+        let cid = try XCTUnwrap(channelController.cid)
+        let event = DraftDeletedEvent(cid: cid, threadId: nil, createdAt: .unique)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+
+        // Then
+        XCTAssertEqual(viewModel.text, "")
+    }
+
+    func test_messageComposerVM_draftReplyDeletedEvent() throws {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid!,
+            messageId: .unique
+        )
+        messageController.message_mock = .mock(draftReply: .mock(text: "Draft"))
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        messageController.message_mock = .mock(draftReply: nil)
+        let cid = try XCTUnwrap(channelController.cid)
+        let event = DraftDeletedEvent(cid: cid, threadId: messageController.messageId, createdAt: .unique)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+
+        // Then
+        XCTAssertEqual(viewModel.text, "")
+    }
+
+    func test_messageComposerVM_draftReplyDeletedEventFromOtherThread_shouldNotUpdate() throws {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid!,
+            messageId: .unique
+        )
+        messageController.message_mock = .mock(draftReply: .mock(text: "Draft"))
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.fillDraftMessage()
+
+        // When
+        messageController.message_mock = .mock(draftReply: nil)
+        let cid = try XCTUnwrap(channelController.cid)
+        let event = DraftDeletedEvent(cid: cid, threadId: .unique, createdAt: .unique)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+
+        // Then
+        XCTAssertEqual(viewModel.text, "Draft")
+    }
+
+    // MARK: - private
+
+    private func makeComposerDraftsViewModel(
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?
+    ) -> MessageComposerViewModel {
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.utils = .init(messageListConfig: .init(draftMessagesEnabled: true))
+        return viewModel
+    }
+
     private func makeComposerViewModel() -> MessageComposerViewModel {
         MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
     }
