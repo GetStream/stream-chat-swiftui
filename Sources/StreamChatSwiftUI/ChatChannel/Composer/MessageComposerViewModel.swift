@@ -250,6 +250,12 @@ open class MessageComposerViewModel: ObservableObject {
         mentionedUsers = message.mentionedUsers
         quotedMessage?.wrappedValue = message.quotedMessage
         showReplyInChannel = message.showReplyInChannel
+
+        addedAssets.removeAll()
+        addedFileURLs.removeAll()
+        addedVoiceRecordings.removeAll()
+        addedCustomAttachments.removeAll()
+
         message.attachments.forEach { attachment in
             switch attachment.type {
             case .image, .video:
