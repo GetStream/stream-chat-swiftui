@@ -55,7 +55,7 @@ open class MessageComposerViewModel: ObservableObject {
                 suggestions = [String: Any]()
                 mentionedUsers = Set<ChatUser>()
 
-                if oldValue != "" {
+                if oldValue != "" && !sendButtonEnabled {
                     deleteDraftMessage()
                 }
             }
