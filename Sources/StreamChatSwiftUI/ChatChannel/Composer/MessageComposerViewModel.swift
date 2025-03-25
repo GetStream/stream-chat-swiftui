@@ -54,7 +54,10 @@ open class MessageComposerViewModel: ObservableObject {
                 selectedRangeLocation = 0
                 suggestions = [String: Any]()
                 mentionedUsers = Set<ChatUser>()
-                deleteDraftMessage()
+
+                if oldValue != "" {
+                    deleteDraftMessage()
+                }
             }
         }
     }

@@ -765,6 +765,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             channelController: channelController,
             messageController: nil
         )
+        viewModel.text = "text"
 
         // When
         viewModel.text = ""
@@ -787,6 +788,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             channelController: channelController,
             messageController: messageController
         )
+        viewModel.text = "reply"
 
         // When
         viewModel.text = ""
@@ -804,6 +806,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             channelController: channelController,
             messageController: nil
         )
+        viewModel.text = "text"
 
         // When
         viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
@@ -827,6 +830,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             channelController: channelController,
             messageController: messageController
         )
+        viewModel.text = "reply"
 
         // When
         viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
