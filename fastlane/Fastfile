@@ -50,8 +50,19 @@ lane :build_xcframeworks do
     codesign << lane_context[SharedValues::XCFRAMEWORK_OUTPUT_PATH]
   end
 
+  remove_swiftui_core_module_shadow(output_directory: output_directory)
   remove_stream_chat_module_shadow(output_directory: output_directory)
   sh(codesign.join(' ')) # We need to sign all frameworks at once
+end
+
+# https://linear.app/stream/issue/IOS-630
+private_lane :remove_swiftui_core_module_shadow do |options|
+  Dir.glob("#{options[:output_directory]}/**/*.swiftinterface").each do |file|
+    if File.file?(file)
+      UI.important("Removing the SwiftUICore module's shadow at: #{file}...")
+      File.write(file, File.read(file).gsub('SwiftUICore.', ''))
+    end
+  end
 end
 
 # Swift emits an invalid module interface when a public type has the same name as a module, see https://github.com/swiftlang/swift/issues/56573
