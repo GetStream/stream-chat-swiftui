@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.75.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.75.0)
+_March 26, 2025_
+
 ### ✅ Added
 - Add avatar customization in add users popup [#787](https://github.com/GetStream/stream-chat-swiftui/pull/787)
 - Add support for Draft Messages when `Utils.messageListConfig.draftMessagesEnabled` is `true` [#775](https://github.com/GetStream/stream-chat-swiftui/pull/775)
