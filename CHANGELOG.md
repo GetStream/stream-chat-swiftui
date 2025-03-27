@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `minOriginY` to the initializer of `ReactionsOverlayView` for better UI customization [#793](https://github.com/GetStream/stream-chat-swiftui/pull/793)
 ### 🔄 Changed
 
 # [4.75.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.75.0)
