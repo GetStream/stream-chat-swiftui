@@ -984,6 +984,101 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.text, "Draft")
     }
 
+    func test_messageComposerVM_whenLastAssetRemoved_shouldDeleteDraft() {
+        // Given
+        let channelController = makeChannelController()
+        let draftMessage = DraftMessage.mock(text: "")
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        let asset = defaultAsset
+        viewModel.imageTapped(asset)
+
+        // When
+        viewModel.imageTapped(asset) // Remove the asset by tapping again
+
+        // Then
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+    }
+
+    func test_messageComposerVM_whenLastFileRemoved_shouldDeleteDraft() {
+        // Given
+        let channelController = makeChannelController()
+        let draftMessage = DraftMessage.mock(text: "")
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.addedFileURLs = [mockURL]
+
+        // When
+        viewModel.removeAttachment(with: mockURL.absoluteString)
+
+        // Then
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+    }
+
+    func test_messageComposerVM_whenLastVoiceRecordingRemoved_shouldDeleteDraft() {
+        // Given
+        let channelController = makeChannelController()
+        let draftMessage = DraftMessage.mock(text: "")
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        let recording = AddedVoiceRecording(url: mockURL, duration: 1.0, waveform: [0.5])
+        viewModel.addedVoiceRecordings = [recording]
+
+        // When
+        viewModel.removeAttachment(with: mockURL.absoluteString)
+
+        // Then
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+    }
+
+    func test_messageComposerVM_whenLastCustomAttachmentRemoved_shouldDeleteDraft() {
+        // Given
+        let channelController = makeChannelController()
+        let draftMessage = DraftMessage.mock(text: "")
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        let attachment = CustomAttachment(id: .unique, content: .mockFile)
+        viewModel.customAttachmentTapped(attachment)
+
+        // When
+        viewModel.customAttachmentTapped(attachment) // Remove by tapping again
+
+        // Then
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+    }
+
+    func test_messageComposerVM_whenRemovingAttachment_withTextPresent_shouldNotDeleteDraft() {
+        // Given
+        let channelController = makeChannelController()
+        let draftMessage = DraftMessage.mock(text: "Hello")
+        channelController.channel_mock = .mock(cid: .unique, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.text = "Hello"
+        let asset = defaultAsset
+        viewModel.imageTapped(asset)
+
+        // When
+        viewModel.imageTapped(asset) // Remove the asset by tapping again
+
+        // Then
+        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
+    }
+
     // MARK: - private
 
     private func makeComposerDraftsViewModel(

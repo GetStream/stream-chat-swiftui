@@ -30,6 +30,10 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public private(set) var addedAssets = [AddedAsset]() {
         didSet {
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
     
@@ -55,7 +59,7 @@ open class MessageComposerViewModel: ObservableObject {
                 suggestions = [String: Any]()
                 mentionedUsers = Set<ChatUser>()
 
-                if oldValue != "" && !sendButtonEnabled {
+                if shouldDeleteDraftMessage(oldValue: oldValue) {
                     deleteDraftMessage()
                 }
             }
@@ -71,18 +75,30 @@ open class MessageComposerViewModel: ObservableObject {
                 addedFileURLs.removeLast()
             }
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
     
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
     
@@ -251,10 +267,10 @@ open class MessageComposerViewModel: ObservableObject {
         quotedMessage?.wrappedValue = message.quotedMessage
         showReplyInChannel = message.showReplyInChannel
 
-        addedAssets.removeAll()
-        addedFileURLs.removeAll()
-        addedVoiceRecordings.removeAll()
-        addedCustomAttachments.removeAll()
+        var addedAssets: [AddedAsset] = []
+        var addedFileURLs: [URL] = []
+        var addedVoiceRecordings: [AddedVoiceRecording] = []
+        var addedCustomAttachments: [CustomAttachment] = []
 
         message.attachments.forEach { attachment in
             switch attachment.type {
@@ -277,6 +293,11 @@ open class MessageComposerViewModel: ObservableObject {
                 addedCustomAttachments.append(customAttachment)
             }
         }
+
+        self.addedAssets = addedAssets
+        self.addedFileURLs = addedFileURLs
+        self.addedVoiceRecordings = addedVoiceRecordings
+        self.addedCustomAttachments = addedCustomAttachments
     }
 
     /// Updates the draft message locally and on the server.
@@ -318,7 +339,8 @@ open class MessageComposerViewModel: ObservableObject {
         )
     }
 
-    private func deleteDraftMessage() {
+    /// Deletes the draft message locally and on the server if it exists.
+    public func deleteDraftMessage() {
         guard draftMessage != nil else {
             return
         }
@@ -328,6 +350,11 @@ open class MessageComposerViewModel: ObservableObject {
         } else {
             channelController.deleteDraftMessage()
         }
+    }
+
+    /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
+    private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
+        !oldValue.isEmpty && !sendButtonEnabled
     }
 
     open func sendMessage(
