@@ -93,7 +93,7 @@ open class MoreChannelActionsViewModel: ObservableObject {
 }
 
 /// Model describing a channel action.
-public struct ChannelAction: Identifiable {
+public struct ChannelAction: Identifiable, Sendable {
     public var id: String {
         "\(title)-\(iconName)"
     }
