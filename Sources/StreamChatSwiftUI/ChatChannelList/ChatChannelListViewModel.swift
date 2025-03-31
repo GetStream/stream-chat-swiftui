@@ -222,7 +222,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
 
-    public func showErrorPopup(_ error: Error?) {
+    open func showErrorPopup(_ error: Error?) {
         channelAlertType = .error
     }
 
