@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix draft not deleted when attachments are removed from the composer [#791](https://github.com/GetStream/stream-chat-swiftui/pull/791)
 
 ### 🔄 Changed
-- Made `showErrorPopup` in `ChatChannelListViewModel`
+- Made `showErrorPopup` open in `ChatChannelListViewModel`
 
 # [4.75.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.75.0)
 _March 26, 2025_
