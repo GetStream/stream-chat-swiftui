@@ -510,6 +510,20 @@ open class MessageComposerViewModel: ObservableObject {
         addedAssets = images
     }
     
+    public func imagePasted(_ image: UIImage) {
+        guard let imageURL = try? image.temporaryLocalFileUrl() else {
+            log.error("Failed to write image to local temporary file")
+            return
+        }
+        let addedImage = AddedAsset(
+            image: image,
+            id: UUID().uuidString,
+            url: imageURL,
+            type: .image
+        )
+        addedAssets.append(addedImage)
+    }
+    
     public func removeAttachment(with id: String) {
         if id.isURL, let url = URL(string: id) {
             var urls = [URL]()
