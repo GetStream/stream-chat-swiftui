@@ -49,6 +49,25 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_chatChannelInfoView_directChannelMoreMembersSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 4,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            name: "Direct channel",
+            lastActiveMembers: members
+        )
+
+        // When
+        let view = ChatChannelInfoView(channel: channel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_chatChannelInfoView_directChannelMutedSnapshot() {
         // Given
@@ -115,6 +134,30 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_chatChannelInfoView_smallGroupDeactivatedSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 3,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1],
+            deactivatedUserIndexes: [2]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.leaveChannel, .updateChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+
+        // When
+        let view = ChatChannelInfoView(channel: group)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 
     func test_chatChannelInfoView_groupExpandedSnapshot() {
         // Given
@@ -132,6 +175,56 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         )
         let viewModel = ChatChannelInfoViewModel(channel: group)
         viewModel.memberListCollapsed = false
+
+        // When
+        let view = ChatChannelInfoView(viewModel: viewModel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_chatChannelInfoView_groupCollapsedDeactivatedSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 8,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1],
+            deactivatedUserIndexes: [2, 3]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: group)
+
+        // When
+        let view = ChatChannelInfoView(viewModel: viewModel)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_chatChannelInfoView_groupCollapsedLargeDeactivatedSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 8,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1],
+            deactivatedUserIndexes: [5]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: group)
 
         // When
         let view = ChatChannelInfoView(viewModel: viewModel)

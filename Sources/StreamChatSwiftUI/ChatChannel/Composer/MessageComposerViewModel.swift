@@ -30,6 +30,10 @@ open class MessageComposerViewModel: ObservableObject {
     @Published public private(set) var addedAssets = [AddedAsset]() {
         didSet {
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
     
@@ -54,6 +58,10 @@ open class MessageComposerViewModel: ObservableObject {
                 selectedRangeLocation = 0
                 suggestions = [String: Any]()
                 mentionedUsers = Set<ChatUser>()
+
+                if shouldDeleteDraftMessage(oldValue: oldValue) {
+                    deleteDraftMessage()
+                }
             }
         }
     }
@@ -67,18 +75,30 @@ open class MessageComposerViewModel: ObservableObject {
                 addedFileURLs.removeLast()
             }
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
     
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
             checkPickerSelectionState()
+
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
         }
     }
     
@@ -115,14 +135,21 @@ open class MessageComposerViewModel: ObservableObject {
         didSet {
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
-                clearText()
+                clearCommandText()
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
             }
         }
     }
-    
+
+    public var draftMessage: DraftMessage? {
+        if let messageController {
+            return messageController.message?.draftReply
+        }
+        return channelController.channel?.draftMessage
+    }
+
     @Published public var filePickerShown = false
     @Published public var cameraPickerShown = false
     @Published public var errorShown = false
@@ -149,9 +176,11 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
-    
+
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
+    public let eventsController: EventsController
+    public var quotedMessage: Binding<ChatMessage?>?
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
     
@@ -203,14 +232,22 @@ open class MessageComposerViewModel: ObservableObject {
     private var canAddAdditionalAttachments: Bool {
         totalAttachmentsCount < chatClient.config.maxAttachmentCountPerMessage
     }
-    
+
     public init(
         channelController: ChatChannelController,
-        messageController: ChatMessageController?
+        messageController: ChatMessageController?,
+        eventsController: EventsController? = nil,
+        quotedMessage: Binding<ChatMessage?>? = nil
     ) {
         self.channelController = channelController
         self.messageController = messageController
+        self.eventsController = eventsController ?? channelController.client.eventsController()
+        self.quotedMessage = quotedMessage
+
+        self.eventsController.delegate = self
+
         listenToCooldownUpdates()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
@@ -218,8 +255,109 @@ open class MessageComposerViewModel: ObservableObject {
             object: nil
         )
     }
-    
-    public func sendMessage(
+
+    /// Populates the draft message in the composer with the current controller's draft information.
+    public func fillDraftMessage() {
+        guard let message = draftMessage else {
+            return
+        }
+
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+
+        var addedAssets: [AddedAsset] = []
+        var addedFileURLs: [URL] = []
+        var addedVoiceRecordings: [AddedVoiceRecording] = []
+        var addedCustomAttachments: [CustomAttachment] = []
+
+        message.attachments.forEach { attachment in
+            switch attachment.type {
+            case .image, .video:
+                guard let addedAsset = attachment.toAddedAsset() else { break }
+                addedAssets.append(addedAsset)
+            case .file:
+                guard let url = attachment.attachment(payloadType: FileAttachmentPayload.self)?.assetURL else {
+                    break
+                }
+                addedFileURLs.append(url)
+            case .voiceRecording:
+                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
+                addedVoiceRecordings.append(addedVoiceRecording)
+            case .linkPreview, .audio, .giphy, .unknown:
+                break
+            default:
+                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
+                let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
+                addedCustomAttachments.append(customAttachment)
+            }
+        }
+
+        self.addedAssets = addedAssets
+        self.addedFileURLs = addedFileURLs
+        self.addedVoiceRecordings = addedVoiceRecordings
+        self.addedCustomAttachments = addedCustomAttachments
+    }
+
+    /// Updates the draft message locally and on the server.
+    public func updateDraftMessage(
+        quotedMessage: ChatMessage?,
+        isSilent: Bool = false,
+        extraData: [String: RawJSON] = [:]
+    ) {
+        guard utils.messageListConfig.draftMessagesEnabled && sendButtonEnabled else {
+            return
+        }
+        let attachments = try? inputAttachmentsAsPayloads()
+        let mentionedUserIds = mentionedUsers.map(\.id)
+        let availableCommands = channelController.channel?.config.commands ?? []
+        let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
+
+        if let messageController = messageController {
+            messageController.updateDraftReply(
+                text: messageText,
+                isSilent: isSilent,
+                attachments: attachments ?? [],
+                mentionedUserIds: mentionedUserIds,
+                quotedMessageId: quotedMessage?.id,
+                showReplyInChannel: showReplyInChannel,
+                command: command,
+                extraData: extraData
+            )
+            return
+        }
+
+        channelController.updateDraftMessage(
+            text: messageText,
+            isSilent: isSilent,
+            attachments: attachments ?? [],
+            mentionedUserIds: mentionedUserIds,
+            quotedMessageId: quotedMessage?.id,
+            command: command,
+            extraData: extraData
+        )
+    }
+
+    /// Deletes the draft message locally and on the server if it exists.
+    public func deleteDraftMessage() {
+        guard draftMessage != nil else {
+            return
+        }
+
+        if let messageController = messageController {
+            messageController.deleteDraftReply()
+        } else {
+            channelController.deleteDraftMessage()
+        }
+    }
+
+    /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
+    private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
+        !oldValue.isEmpty && !sendButtonEnabled
+    }
+
+    open func sendMessage(
         quotedMessage: ChatMessage?,
         editedMessage: ChatMessage?,
         isSilent: Bool = false,
@@ -254,27 +392,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         
         do {
-            var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
-            attachments += try addedFileURLs.map { url in
-                _ = url.startAccessingSecurityScopedResource()
-                return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
-            }
-            attachments += try addedVoiceRecordings.map { recording in
-                _ = recording.url.startAccessingSecurityScopedResource()
-                var localMetadata = AnyAttachmentLocalMetadata()
-                localMetadata.duration = recording.duration
-                localMetadata.waveformData = recording.waveform
-                return try AnyAttachmentPayload(
-                    localFileURL: recording.url,
-                    attachmentType: .voiceRecording,
-                    localMetadata: localMetadata
-                )
-            }
-            
-            attachments += addedCustomAttachments.map { attachment in
-                attachment.content
-            }
-            
+            let attachments = try inputAttachmentsAsPayloads()
             if let messageController = messageController {
                 messageController.createNewReply(
                     text: messageText,
@@ -313,7 +431,7 @@ open class MessageComposerViewModel: ObservableObject {
                     }
                 }
             }
-            
+
             clearInputData()
         } catch {
             errorShown = true
@@ -538,7 +656,31 @@ open class MessageComposerViewModel: ObservableObject {
             self?.imageAssets = assets
         }
     }
-    
+
+    private func inputAttachmentsAsPayloads() throws -> [AnyAttachmentPayload] {
+        var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
+        attachments += try addedFileURLs.map { url in
+            _ = url.startAccessingSecurityScopedResource()
+            return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
+        }
+        attachments += try addedVoiceRecordings.map { recording in
+            _ = recording.url.startAccessingSecurityScopedResource()
+            var localMetadata = AnyAttachmentLocalMetadata()
+            localMetadata.duration = recording.duration
+            localMetadata.waveformData = recording.waveform
+            return try AnyAttachmentPayload(
+                localFileURL: recording.url,
+                attachmentType: .voiceRecording,
+                localMetadata: localMetadata
+            )
+        }
+
+        attachments += addedCustomAttachments.map { attachment in
+            attachment.content
+        }
+        return attachments
+    }
+
     private func checkForMentionedUsers(
         commandId: String?,
         extraData: [String: Any]
@@ -648,7 +790,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
         .store(in: &cancellables)
     }
-    
+
     private func checkChannelCooldown() {
         let duration = channelController.channel?.cooldownDuration ?? 0
         if duration > 0 && timer == nil && !isSlowModeDisabled {
@@ -676,7 +818,34 @@ open class MessageComposerViewModel: ObservableObject {
             self?.text = ""
         }
     }
-    
+
+    /// Same as clearText() but it just clears the command id.
+    private func clearCommandText() {
+        guard let command = composerCommand else { return }
+        let currentText = text
+        if let value = getValueOfCommand(currentText) {
+            text = value
+            return
+        }
+        text = ""
+    }
+
+    private func getValueOfCommand(_ currentText: String) -> String? {
+        let pattern = "/\\S+\\s+(.*)"
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let range = NSRange(currentText.startIndex..<currentText.endIndex, in: currentText)
+
+            if let match = regex.firstMatch(in: currentText, range: range) {
+                let valueRange = match.range(at: 1)
+
+                if let range = Range(valueRange, in: currentText) {
+                    return String(currentText[range])
+                }
+            }
+        }
+        return nil
+    }
+
     private func canAddAttachment(with url: URL) -> Bool {
         if !canAddAdditionalAttachments {
             return false
@@ -704,6 +873,26 @@ open class MessageComposerViewModel: ObservableObject {
     private func applicationWillEnterForeground() {
         if (imageAssets?.count ?? 0) > 0 {
             fetchAssets()
+        }
+    }
+}
+
+extension MessageComposerViewModel: EventsControllerDelegate {
+    public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
+        if let event = event as? DraftUpdatedEvent {
+            let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
+            let isFromSameChannel = channelController.cid == event.cid && messageController == nil
+            if isFromSameThread || isFromSameChannel {
+                fillDraftMessage()
+            }
+        }
+
+        if let event = event as? DraftDeletedEvent {
+            let isFromSameThread = messageController?.messageId == event.threadId
+            let isFromSameChannel = channelController.cid == event.cid && messageController == nil
+            if isFromSameThread || isFromSameChannel {
+                clearInputData()
+            }
         }
     }
 }

@@ -66,9 +66,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             messageListConfig: MessageListConfig(
                 dateIndicatorPlacement: .messageList,
                 userBlockingEnabled: true,
+                bouncedMessagesAlertActionsEnabled: true,
                 skipEditedMessageLabel: { message in
                     message.extraData["ai_generated"]?.boolValue == true
-                }
+                },
+                draftMessagesEnabled: true
             ),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
@@ -80,7 +82,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 userInfo: .init(
                     id: credentials.id,
                     name: credentials.name,
-                    imageURL: credentials.avatarURL
+                    imageURL: credentials.avatarURL,
+                    language: AppConfiguration.default.translationLanguage
                 ),
                 token: token
             )

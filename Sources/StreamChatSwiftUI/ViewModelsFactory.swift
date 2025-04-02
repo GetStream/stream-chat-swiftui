@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import SwiftUI
 
 /// Factory used to create view models.
 public class ViewModelsFactory {
@@ -64,16 +65,19 @@ public class ViewModelsFactory {
 
     /// Makes the message composer view model.
     /// - Parameters:
-    ///  -  channelController: the channel controller.
+    ///  - channelController: the channel controller.
     ///  - messageController: optional message controller (used in threads).
+    ///  - quotedMessage: the quoted message.
     /// - Returns: `MessageComposerViewModel`.
     public static func makeMessageComposerViewModel(
         with channelController: ChatChannelController,
-        messageController: ChatMessageController?
+        messageController: ChatMessageController?,
+        quotedMessage: Binding<ChatMessage?>? = nil
     ) -> MessageComposerViewModel {
         MessageComposerViewModel(
             channelController: channelController,
-            messageController: messageController
+            messageController: messageController,
+            quotedMessage: quotedMessage
         )
     }
 

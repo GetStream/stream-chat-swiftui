@@ -3,13 +3,65 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### ✅ Added
-- Add support for pasting images into composer text input
+### 🔄 Changed
 
+# [4.76.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.76.0)
+_March 31, 2025_
+
+### ✅ Added
+- Add `minOriginY` to the initializer of `ReactionsOverlayView` for better UI customization [#793](https://github.com/GetStream/stream-chat-swiftui/pull/793)
+### 🐞 Fixed
+- Fix draft not deleted when attachments are removed from the composer [#791](https://github.com/GetStream/stream-chat-swiftui/pull/791)
+### 🔄 Changed
+- Made `showErrorPopup` open in `ChatChannelListViewModel` [#794](https://github.com/GetStream/stream-chat-swiftui/pull/794)
+
+# [4.75.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.75.0)
+_March 26, 2025_
+
+### ✅ Added
+- Add avatar customization in add users popup [#787](https://github.com/GetStream/stream-chat-swiftui/pull/787)
+- Add support for Draft Messages when `Utils.messageListConfig.draftMessagesEnabled` is `true` [#775](https://github.com/GetStream/stream-chat-swiftui/pull/775)
+- Add draft preview in Channel List and Thread List if drafts are enabled [#775](https://github.com/GetStream/stream-chat-swiftui/pull/775)
+
+# [4.74.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.74.0)
+_March 14, 2025_
+
+### ✅ Added
+- Feature rich markdown rendering with AttributedString [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
+- Add `Fonts.title2` for supporting markdown headers [#757](https://github.com/GetStream/stream-chat-swiftui/pull/757)
+- Add `resignsFirstResponderOnScrollDown` to `MessageListConfig` [#769](https://github.com/GetStream/stream-chat-swiftui/pull/769)
+- Show auto-translated message translations ([learn more](https://getstream.io/chat/docs/ios-swift/translation/#enabling-automatic-translation)) [#776](https://github.com/GetStream/stream-chat-swiftui/pull/776)
+### 🐞 Fixed
+- Show typing suggestions for names containing whitespace [#781](https://github.com/GetStream/stream-chat-swiftui/pull/781)
+### 🔄 Changed
+- Uploading a HEIC photo from the library is now converted to JPEG for better compatibility [#767](https://github.com/GetStream/stream-chat-swiftui/pull/767)
+- Customizing the message avatar view is reflected in all views that use it [#772](https://github.com/GetStream/stream-chat-swiftui/pull/772)
+- Made the sendMessage method in MessageComposerViewModel open [#779](https://github.com/GetStream/stream-chat-swiftui/pull/779)
+- Move `ChangeBarsVisibilityModifier` into `ViewFactory` for better customization [#774](https://github.com/GetStream/stream-chat-swiftui/pull/774)
+### 🎭 New Localizations
+- `message.translatedTo` [#776](https://github.com/GetStream/stream-chat-swiftui/pull/776)
+
+# [4.73.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.73.0)
+_February 28, 2025_
+
+### ✅ Added
+- Add `Utils.MessageListConfig.bouncedMessagesAlertActionsEnabled` to support bounced actions alert [#764](https://github.com/GetStream/stream-chat-swiftui/pull/764)
+- Add `ViewFactory.makeBouncedMessageActionsModifier()` to customize the new bounced actions alert [#764](https://github.com/GetStream/stream-chat-swiftui/pull/764)
 ### 🐞 Fixed
 - Fix visibility of tabbar when reactions are shown [#750](https://github.com/GetStream/stream-chat-swiftui/pull/750)
+- Show all members in direct message channel info view [#760](https://github.com/GetStream/stream-chat-swiftui/pull/760)
 ### 🔄 Changed
 - Only show "Pin/Unpin message" Action if user has permission [#749](https://github.com/GetStream/stream-chat-swiftui/pull/749)
+- Filter deactivated users in channel info view [#758](https://github.com/GetStream/stream-chat-swiftui/pull/758)
+- Bounced message actions will now be shown as an alert instead of a context menu by default [#764](https://github.com/GetStream/stream-chat-swiftui/pull/764)
+### 🎭 New Localizations
+Add localizable keys for supporting moderation alerts:
+- `message.moderation.alert.title`
+- `message.moderation.alert.message`
+- `message.moderation.alert.resend`
+- `message.moderation.alert.edit`
+- `message.moderation.alert.delete`
+- `message.moderation.alert.cancel`
 
 # [4.72.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.72.0)
 _February 04, 2025_

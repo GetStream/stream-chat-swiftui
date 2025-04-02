@@ -24,7 +24,8 @@ public struct ChatThreadListItem: View {
             replyAuthorUrl: viewModel.latestReplyAuthorImageURL,
             replyAuthorIsOnline: viewModel.isLatestReplyAuthorOnline,
             replyMessageText: viewModel.latestReplyMessageText,
-            replyTimestampText: viewModel.latestReplyTimestampText
+            replyTimestampText: viewModel.latestReplyTimestampText,
+            draftText: viewModel.draftReplyText
         )
     }
 }
@@ -51,7 +52,7 @@ public struct ChatThreadListItemViewModel {
             parentMessageText = threadTitle
         } else {
             let formatter = InjectedValues[\.utils].messagePreviewFormatter
-            parentMessageText = formatter.formatContent(for: thread.parentMessage)
+            parentMessageText = formatter.formatContent(for: thread.parentMessage, in: thread.channel)
         }
         return L10n.Thread.Item.repliedTo(parentMessageText.trimmed)
     }
@@ -67,7 +68,7 @@ public struct ChatThreadListItemViewModel {
         }
 
         let formatter = InjectedValues[\.utils].messagePreviewFormatter
-        return formatter.format(latestReply)
+        return formatter.format(latestReply, in: thread.channel)
     }
 
     /// The formatted latest reply timestamp.
@@ -75,6 +76,14 @@ public struct ChatThreadListItemViewModel {
         utils.dateFormatter.string(
             from: thread.latestReplies.last?.createdAt ?? .distantPast
         )
+    }
+
+    /// The formatted draft reply text.
+    public var draftReplyText: String? {
+        guard utils.messageListConfig.draftMessagesEnabled else { return nil }
+        guard let draftMessage = thread.parentMessage.draftReply else { return nil }
+        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: thread.channel)
     }
 
     /// The number of unread replies.
@@ -126,6 +135,7 @@ struct ChatThreadListItemContentView: View {
     var replyAuthorIsOnline: Bool
     var replyMessageText: String
     var replyTimestampText: String
+    var draftText: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -175,11 +185,24 @@ struct ChatThreadListItemContentView: View {
                     .foregroundColor(Color(colors.text))
                     .font(fonts.subheadlineBold)
                 HStack {
-                    SubtitleText(text: replyMessageText)
+                    if let draftText {
+                        HStack(spacing: 2) {
+                            draftPrefixView
+                            SubtitleText(text: draftText)
+                        }
+                    } else {
+                        SubtitleText(text: replyMessageText)
+                    }
                     Spacer()
                     SubtitleText(text: replyTimestampText)
                 }
             }
         }
+    }
+
+    var draftPrefixView: some View {
+        Text("\(L10n.Message.Preview.draft):")
+            .font(fonts.caption1).bold()
+            .foregroundColor(Color(colors.highlightedAccentBackground))
     }
 }

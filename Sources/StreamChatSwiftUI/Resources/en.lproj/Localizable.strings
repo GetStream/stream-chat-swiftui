@@ -51,6 +51,13 @@
 "message.actions.user-block.confirmation-message" = "Are you sure you want to block this user?";
 "message.actions.user-unblock.confirmation-message" = "Are you sure you want to unblock this user?";
 
+"message.moderation.alert.title" = "Are you sure?";
+"message.moderation.alert.message" = "Consider how your comment might make others feel and be sure to follow our Community Guidelines.";
+"message.moderation.alert.resend" = "Send Anyway";
+"message.moderation.alert.edit" = "Edit Message";
+"message.moderation.alert.delete" = "Delete Message";
+"message.moderation.alert.cancel" = "Cancel";
+
 "messageList.typingIndicator.typing-unknown" = "Someone is typing";
 
 "message.threads.reply" = "Thread Reply";
@@ -81,6 +88,8 @@
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
 "message.polls.votes" = "%d votes";
+
+"message.translatedTo" = "Translated to %@";
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
@@ -168,6 +177,8 @@
 "message.search.cancel" = "Cancel";
 
 "message.bounce.title" = "Message was bounced";
+
+"message.preview.draft" = "Draft";
 
 "current-selection" = "%d of %d";
 

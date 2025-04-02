@@ -20,7 +20,7 @@ class MessageActionsViewModel_Tests: StreamChatTestCase {
                 text: "test",
                 author: .mock(id: .unique)
             ),
-            channel: .mockDMChannel(),
+            channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage]),
             chatClient: chatClient,
             onFinish: { _ in },
             onError: { _ in }

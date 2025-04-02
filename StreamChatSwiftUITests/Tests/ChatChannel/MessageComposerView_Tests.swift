@@ -16,7 +16,10 @@ class MessageComposerView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
         let utils = Utils(
-            messageListConfig: MessageListConfig(becomesFirstResponderOnOpen: true),
+            messageListConfig: MessageListConfig(
+                becomesFirstResponderOnOpen: true,
+                draftMessagesEnabled: true
+            ),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
@@ -438,5 +441,192 @@ class MessageComposerView_Tests: StreamChatTestCase {
         streamChat?.appearance.colors.tintColor = .mint
         streamChat?.appearance.colors.staticColorText = .black
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
+    }
+  
+    // MARK: - Drafts
+
+    // Note: For some reason the text is not rendered in the composer,
+    // Maybe it's because of the `UITextView` that is used in the `InputTextView`.
+    // Either way, the test of the content is covered.
+
+    func test_composerView_draftWithImageAttachment() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockDraftMessage = DraftMessage.mock(
+            attachments: [
+                .dummy(
+                    type: .image,
+                    payload: try JSONEncoder().encode(
+                        ImageAttachmentPayload(
+                            title: nil,
+                            imageRemoteURL: TestImages.yoda.url,
+                            file: .init(type: .jpeg, size: 10, mimeType: nil)
+                        )
+                    )
+                ),
+                .dummy(
+                    type: .image,
+                    payload: try JSONEncoder().encode(
+                        ImageAttachmentPayload(
+                            title: nil,
+                            imageRemoteURL: TestImages.chewbacca.url,
+                            file: .init(type: .jpeg, size: 10, mimeType: nil)
+                        )
+                    )
+                )
+            ]
+        )
+
+        let view = makeComposerView(with: mockDraftMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_draftWithVideoAttachment() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockDraftMessage = DraftMessage.mock(
+            attachments: [
+                .dummy(
+                    type: .video,
+                    payload: try JSONEncoder().encode(
+                        VideoAttachmentPayload(
+                            title: nil,
+                            videoRemoteURL: TestImages.yoda.url,
+                            thumbnailURL: TestImages.yoda.url,
+                            file: .init(type: .mov, size: 10, mimeType: nil),
+                            extraData: nil
+                        )
+                    )
+                )
+            ]
+        )
+
+        let view = makeComposerView(with: mockDraftMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_draftWithFileAttachment() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockDraftMessage = DraftMessage.mock(
+            attachments: [
+                .dummy(
+                    type: .file,
+                    payload: try JSONEncoder().encode(
+                        FileAttachmentPayload(
+                            title: "Test",
+                            assetRemoteURL: .localYodaQuote,
+                            file: .init(type: .txt, size: 10, mimeType: nil),
+                            extraData: nil
+                        )
+                    )
+                )
+            ]
+        )
+        let view = makeComposerView(with: mockDraftMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_draftWithVoiceRecordingAttachment() throws {
+        let url: URL = URL(fileURLWithPath: "/tmp/\(UUID().uuidString)")
+        let duration: TimeInterval = 100
+        let waveformData: [Float] = .init(repeating: 0.5, count: 10)
+        try Data(count: 1024).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockDraftMessage = DraftMessage.mock(
+            attachments: [
+                .dummy(
+                    type: .voiceRecording,
+                    payload: try JSONEncoder().encode(
+                        VoiceRecordingAttachmentPayload(
+                            title: "Audio",
+                            voiceRecordingRemoteURL: url,
+                            file: .init(type: .aac, size: 120, mimeType: "audio/aac"),
+                            duration: duration,
+                            waveformData: waveformData,
+                            extraData: nil
+                        )
+                    )
+                )
+            ]
+        )
+        let view = makeComposerView(with: mockDraftMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_draftWithCommand() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let mockDraftMessage = DraftMessage.mock(
+            text: "/giphy test"
+        )
+
+        let view = makeComposerView(with: mockDraftMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    private func makeComposerView(with draftMessage: DraftMessage) -> some View {
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: ChannelConfig(commands: [Command(name: "giphy", description: "", set: "", args: "")]),
+            draftMessage: draftMessage
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+
+        return MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+    }
+    
+    func test_composerQuotedMessage_translated() {
+        let factory = DefaultViewFactory.shared
+        let size = CGSize(width: defaultScreenSize.width, height: 100)
+
+        let channelController = ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient,
+            chatChannel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let view = ComposerInputView(
+            factory: factory,
+            text: .constant("Hello"),
+            selectedRangeLocation: .constant(0),
+            command: .constant(nil),
+            addedAssets: [],
+            addedFileURLs: [],
+            addedCustomAttachments: [],
+            quotedMessage: .constant(
+                .mock(
+                    text: "Hello",
+                    translations: [.spanish: "Hola"]
+                )
+            ),
+            cooldownDuration: 0,
+            onCustomAttachmentTap: { _ in
+            },
+            removeAttachmentWithId: { _ in }
+        )
+        .environmentObject(viewModel)
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
     }
 }

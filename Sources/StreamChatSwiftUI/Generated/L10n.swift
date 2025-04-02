@@ -352,6 +352,10 @@ internal enum L10n {
     internal static var deletedMessagePlaceholder: String { L10n.tr("Localizable", "message.deleted-message-placeholder") }
     /// Only visible to you
     internal static var onlyVisibleToYou: String { L10n.tr("Localizable", "message.only-visible-to-you") }
+    /// Translated to %@
+    internal static func translatedTo(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "message.translatedTo", String(describing: p1))
+    }
     internal enum Actions {
       /// Copy Message
       internal static var copy: String { L10n.tr("Localizable", "message.actions.copy") }
@@ -436,6 +440,22 @@ internal enum L10n {
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
+    internal enum Moderation {
+      internal enum Alert {
+        /// Cancel
+        internal static var cancel: String { L10n.tr("Localizable", "message.moderation.alert.cancel") }
+        /// Delete Message
+        internal static var delete: String { L10n.tr("Localizable", "message.moderation.alert.delete") }
+        /// Edit Message
+        internal static var edit: String { L10n.tr("Localizable", "message.moderation.alert.edit") }
+        /// Consider how your comment might make others feel and be sure to follow our Community Guidelines.
+        internal static var message: String { L10n.tr("Localizable", "message.moderation.alert.message") }
+        /// Send Anyway
+        internal static var resend: String { L10n.tr("Localizable", "message.moderation.alert.resend") }
+        /// Are you sure?
+        internal static var title: String { L10n.tr("Localizable", "message.moderation.alert.title") }
+      }
+    }
     internal enum Polls {
       /// Anonymous
       internal static var unknownVoteAuthor: String { L10n.tr("Localizable", "message.polls.unknown-vote-author") }
@@ -485,6 +505,10 @@ internal enum L10n {
         /// Poll Results
         internal static var resultsTitle: String { L10n.tr("Localizable", "message.polls.toolbar.results-title") }
       }
+    }
+    internal enum Preview {
+      /// Draft
+      internal static var draft: String { L10n.tr("Localizable", "message.preview.draft") }
     }
     internal enum Reactions {
       /// You

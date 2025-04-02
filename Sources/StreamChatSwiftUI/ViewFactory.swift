@@ -254,6 +254,14 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
     func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
 
+    associatedtype BouncedMessageActionsModifierType: ViewModifier
+    /// Returns a view modifier applied to the bounced message actions.
+    ///
+    /// This modifier is only used if `Utils.messageListConfig.bouncedMessagesAlertActionsEnabled` is `true`.
+    /// By default the flag is true and the bounced actions are shown as an alert instead of a context menu.
+    /// - Parameter viewModel: the view model of the chat channel view.
+    func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> BouncedMessageActionsModifierType
+
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
     /// - Parameter userDisplayInfo: the author's display info.
@@ -273,6 +281,12 @@ public protocol ViewFactory: AnyObject {
     /// Creates the channel header view modifier.
     /// - Parameter channel: the displayed channel.
     func makeChannelHeaderViewModifier(for channel: ChatChannel) -> ChatHeaderViewModifier
+    
+    associatedtype ChangeBarsVisibilityModifier: ViewModifier
+    /// Creates a view modifier that changes the visibility of bars.
+    /// - Parameter shouldShow: A Boolean value indicating whether the bars should be shown.
+    /// - Returns: A view modifier that changes the visibility of bars.
+    func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> ChangeBarsVisibilityModifier
     
     associatedtype ChannelLoadingViewType: View
     /// Creates a loading view for the channel.

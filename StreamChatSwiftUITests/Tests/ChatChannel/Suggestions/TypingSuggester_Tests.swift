@@ -62,12 +62,12 @@ class TypingSuggester_Tests: XCTestCase {
         XCTAssert(suggestion?.locationRange == NSRange(location: 1, length: 2))
     }
 
-    func test_typingSuggester_notFoundEmptySpace() {
+    func test_typingSuggester_emptySpaceAllowed() {
         // Given
         let options = TypingSuggestionOptions(symbol: "@")
         let typingSuggester = TypingSuggester(options: options)
-        let string = "@M art"
-        let caretLocation = 3
+        let string = "@Han Solo"
+        let caretLocation = 6
 
         // When
         let suggestion = typingSuggester.typingSuggestion(
@@ -76,7 +76,8 @@ class TypingSuggester_Tests: XCTestCase {
         )
 
         // Then
-        XCTAssert(suggestion == nil)
+        XCTAssertEqual("Han S", suggestion?.text)
+        XCTAssertEqual(NSRange(location: 1, length: 5), suggestion?.locationRange)
     }
 
     func test_typingSuggester_notFoundNotOnStart() {

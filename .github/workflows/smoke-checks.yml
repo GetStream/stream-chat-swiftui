@@ -8,8 +8,8 @@ on:
 
   workflow_dispatch:
     inputs:
-      snapshots:
-        description: 'Should Snapshots be recorded on CI?'
+      record_snapshots:
+        description: 'Record snapshots on CI?'
         type: boolean
         required: false
         default: false
@@ -20,7 +20,7 @@ concurrency:
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
-  IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.1)"
+  IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.2)"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_PR_NUM: ${{ github.event.pull_request.number }}
 
@@ -47,7 +47,7 @@ jobs:
   automated-code-review:
     name: Automated Code Review
     runs-on: macos-15
-    if: ${{ github.event.inputs.snapshots != 'true' }}
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "15.4"
     steps:
@@ -64,9 +64,9 @@ jobs:
       run: bundle exec fastlane pod_lint
 
   build-xcode15:
-    name: Build SDKs (Xcode 15.0)
+    name: Build SDKs (Xcode 15)
     runs-on: macos-15
-    if: ${{ github.event.inputs.snapshots != 'true' }}
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "15.4"
     steps:
@@ -99,12 +99,12 @@ jobs:
         INSTALL_YEETD: true
         INSTALL_SONAR: true
     - name: Run UI Tests (Debug)
-      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:${{ github.event.inputs.snapshots }}
+      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:"${{ github.event.inputs.record_snapshots }}"
       timeout-minutes: 120
       env:
         GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     - name: Run Sonar analysis
-      if: ${{ github.event.inputs.snapshots != 'true' }}
+      if: ${{ github.event.inputs.record_snapshots != 'true' }}
       run: bundle exec fastlane sonar_upload
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -133,8 +133,8 @@ jobs:
 
   allure_testops_launch:
     name: Launch Allure TestOps
-    runs-on: macos-13
-    if: ${{ github.event.inputs.snapshots != 'true' }}
+    runs-on: macos-15
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
@@ -153,7 +153,7 @@ jobs:
   test-e2e-debug:
     name: Test E2E UI (Debug)
     runs-on: macos-15
-    if: ${{ github.event.inputs.snapshots != 'true' }}
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     needs:
       - allure_testops_launch
       - build-test-app-and-frameworks
@@ -207,8 +207,8 @@ jobs:
 
   build-apps:
     name: Build Demo App
-    runs-on: macos-14
-    if: ${{ github.event.inputs.snapshots != 'true' }}
+    runs-on: macos-15
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     needs: build-test-app-and-frameworks
     steps:
     - uses: actions/checkout@v4.1.1

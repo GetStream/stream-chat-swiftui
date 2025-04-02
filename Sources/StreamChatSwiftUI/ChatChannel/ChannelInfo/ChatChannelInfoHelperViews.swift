@@ -50,24 +50,29 @@ struct ChannelInfoDivider: View {
     }
 }
 
-public struct ChatInfoOptionsView: View {
+public struct ChatInfoOptionsView<Factory: ViewFactory>: View {
     
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
     @StateObject var viewModel: ChatChannelInfoViewModel
+    let factory: Factory
     
-    public init(viewModel: ChatChannelInfoViewModel) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        viewModel: ChatChannelInfoViewModel
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.factory = factory
     }
 
     public var body: some View {
         VStack(spacing: 0) {
-            if !viewModel.channel.isDirectMessageChannel {
-                ChannelNameUpdateView(viewModel: viewModel)
-            } else {
+            if viewModel.showSingleMemberDMView {
                 ChatInfoMentionText(participant: viewModel.displayedParticipants.first)
+            } else if !viewModel.channel.isDirectMessageChannel {
+                ChannelNameUpdateView(viewModel: viewModel)
             }
 
             Divider()
@@ -89,6 +94,7 @@ public struct ChatInfoOptionsView: View {
                 title: L10n.ChatInfo.PinnedMessages.title
             ) {
                 PinnedMessagesView(
+                    factory: factory,
                     channel: viewModel.channel,
                     channelController: viewModel.channelController
                 )
@@ -100,7 +106,7 @@ public struct ChatInfoOptionsView: View {
                 icon: UIImage(systemName: "photo")!,
                 title: L10n.ChatInfo.Media.title
             ) {
-                MediaAttachmentsView(channel: viewModel.channel)
+                MediaAttachmentsView(factory: factory, channel: viewModel.channel)
             }
 
             Divider()
@@ -239,20 +245,29 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
     }
 }
 
-struct ChatInfoDirectChannelView: View {
+struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
+    let factory: Factory
     var participant: ParticipantInfo?
+    
+    init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo?) {
+        self.factory = factory
+        self.participant = participant
+    }
 
     var body: some View {
         VStack {
-            MessageAvatarView(
-                avatarURL: participant?.chatUser.imageURL,
+            let displayInfo = UserDisplayInfo(
+                id: participant?.chatUser.id ?? "",
+                name: participant?.chatUser.name ?? "",
+                imageURL: participant?.chatUser.imageURL,
                 size: .init(width: 64, height: 64)
             )
-
+            factory.makeMessageAvatarView(for: displayInfo)
+            
             Text(participant?.onlineInfoText ?? "")
                 .font(fonts.footnote)
                 .foregroundColor(Color(colors.textLowEmphasis))

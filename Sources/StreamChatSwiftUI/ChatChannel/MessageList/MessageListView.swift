@@ -148,6 +148,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 onLongPress: handleLongPress(messageDisplayInfo:),
                                 isLast: !showsLastInGroupInfo && message == messages.last
                             )
+                            .environment(\.channelTranslationLanguage, channel.membership?.language)
                             .onAppear {
                                 if index == nil {
                                     index = messageListDateUtils.index(for: message, in: messages)
@@ -238,7 +239,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         if scrollButtonShown != showScrollToLatestButton {
                             showScrollToLatestButton = scrollButtonShown
                         }
-                        if keyboardShown && diff < -20 {
+                        if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
                             keyboardShown = false
                             resignFirstResponder()
                         }
@@ -595,5 +596,20 @@ private class MessageRenderingUtil {
         }
 
         return skipRendering
+    }
+}
+
+private struct ChannelTranslationLanguageKey: EnvironmentKey {
+    static let defaultValue: TranslationLanguage? = nil
+}
+
+extension EnvironmentValues {
+    var channelTranslationLanguage: TranslationLanguage? {
+        get {
+            self[ChannelTranslationLanguageKey.self]
+        }
+        set {
+            self[ChannelTranslationLanguageKey.self] = newValue
+        }
     }
 }

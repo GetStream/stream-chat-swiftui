@@ -61,9 +61,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
                             onScrollToBottom: viewModel.scrollToLastMessage,
                             onLongPress: { displayInfo in
-                                messageDisplayInfo = displayInfo
-                                withAnimation {
-                                    viewModel.showReactionOverlay(for: AnyView(self))
+                                let isBouncedAlertEnabled = utils.messageListConfig.bouncedMessagesAlertActionsEnabled
+                                if isBouncedAlertEnabled && displayInfo.message.isBounced {
+                                    viewModel.showBouncedActionsView(for: displayInfo.message)
+                                } else {
+                                    messageDisplayInfo = displayInfo
+                                    withAnimation {
+                                        viewModel.showReactionOverlay(for: AnyView(self))
+                                    }
                                 }
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
@@ -89,10 +94,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     Divider()
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
-                            view.changeBarsVisibility(shouldShow: false)
+                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: false))
                         })
                         .if(!viewModel.reactionsShown, transform: { view in
-                            view.changeBarsVisibility(shouldShow: true)
+                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: true))
                         })
                         .if(viewModel.channelHeaderType == .regular) { view in
                             view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
@@ -196,6 +201,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
+        .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
     }
 
     private var generatingSnapshot: Bool {

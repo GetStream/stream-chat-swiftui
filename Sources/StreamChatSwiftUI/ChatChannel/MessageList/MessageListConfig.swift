@@ -19,6 +19,7 @@ public struct MessageListConfig {
         messagePopoverEnabled: Bool = true,
         doubleTapOverlayEnabled: Bool = false,
         becomesFirstResponderOnOpen: Bool = false,
+        resignsFirstResponderOnScrollDown: Bool = true,
         updateChannelsFromMessageList: Bool = false,
         maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
@@ -32,7 +33,9 @@ public struct MessageListConfig {
         isMessageEditedLabelEnabled: Bool = true,
         markdownSupportEnabled: Bool = true,
         userBlockingEnabled: Bool = false,
-        skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false }
+        bouncedMessagesAlertActionsEnabled: Bool = true,
+        skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
+        draftMessagesEnabled: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -44,6 +47,7 @@ public struct MessageListConfig {
         self.messagePopoverEnabled = messagePopoverEnabled
         self.doubleTapOverlayEnabled = doubleTapOverlayEnabled
         self.becomesFirstResponderOnOpen = becomesFirstResponderOnOpen
+        self.resignsFirstResponderOnScrollDown = resignsFirstResponderOnScrollDown
         self.updateChannelsFromMessageList = updateChannelsFromMessageList
         self.maxTimeIntervalBetweenMessagesInGroup = maxTimeIntervalBetweenMessagesInGroup
         self.cacheSizeOnChatDismiss = cacheSizeOnChatDismiss
@@ -57,7 +61,9 @@ public struct MessageListConfig {
         self.isMessageEditedLabelEnabled = isMessageEditedLabelEnabled
         self.markdownSupportEnabled = markdownSupportEnabled
         self.userBlockingEnabled = userBlockingEnabled
+        self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
+        self.draftMessagesEnabled = draftMessagesEnabled
     }
 
     public let messageListType: MessageListType
@@ -70,6 +76,7 @@ public struct MessageListConfig {
     public let messagePopoverEnabled: Bool
     public let doubleTapOverlayEnabled: Bool
     public let becomesFirstResponderOnOpen: Bool
+    public let resignsFirstResponderOnScrollDown: Bool
     public let updateChannelsFromMessageList: Bool
     public let maxTimeIntervalBetweenMessagesInGroup: TimeInterval
     public let cacheSizeOnChatDismiss: Int
@@ -83,7 +90,18 @@ public struct MessageListConfig {
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
     public let userBlockingEnabled: Bool
+
+    /// A boolean to enable the alert actions for bounced messages.
+    ///
+    /// By default it is true and the bounced actions are displayed as an alert instead of a context menu.
+    public let bouncedMessagesAlertActionsEnabled: Bool
+
     public let skipEditedMessageLabel: (ChatMessage) -> Bool
+
+    /// A boolean value indicating if draft messages should be enabled.
+    ///
+    /// If enabled, the SDK will save the message content as a draft when the user navigates away from the composer.
+    public let draftMessagesEnabled: Bool
 }
 
 /// Contains information about the message paddings.
@@ -111,7 +129,6 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public struct MessageDisplayOptions {
-
     public let showAvatars: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool

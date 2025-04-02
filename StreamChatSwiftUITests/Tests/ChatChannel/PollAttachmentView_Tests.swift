@@ -97,7 +97,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
         
         // When
-        let view = PollResultsView(viewModel: viewModel)
+        let view = PollResultsView(viewModel: viewModel, factory: DefaultViewFactory.shared)
             .applyDefaultSize()
         
         // Then
@@ -110,7 +110,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
         
         // When
-        let view = PollAllOptionsView(viewModel: viewModel)
+        let view = PollAllOptionsView(viewModel: viewModel, factory: DefaultViewFactory.shared)
             .applyDefaultSize()
         
         // Then
@@ -122,7 +122,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         let poll = Poll.mock()
         
         // When
-        let view = PollOptionAllVotesView(poll: poll, option: poll.options[0])
+        let view = PollOptionAllVotesView(factory: DefaultViewFactory.shared, poll: poll, option: poll.options[0])
             .applyDefaultSize()
         
         // Then
@@ -138,6 +138,7 @@ final class PollAttachmentView_Tests: StreamChatTestCase {
         
         // When
         let view = PollCommentsView(
+            factory: DefaultViewFactory.shared,
             poll: poll,
             pollController: pollController,
             viewModel: viewModel

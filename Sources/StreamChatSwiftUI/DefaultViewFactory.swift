@@ -270,7 +270,11 @@ extension ViewFactory {
             forceLeftToRight: messageModifierInfo.forceLeftToRight
         )
     }
-    
+
+    public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
+        BouncedMessageActionsModifier(viewModel: viewModel)
+    }
+
     public func makeEmptyMessagesView(
         for channel: ChatChannel,
         colors: ColorPalette
@@ -281,7 +285,7 @@ extension ViewFactory {
     }
     
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
-        MessageAvatarView(avatarURL: userDisplayInfo.imageURL)
+        MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: userDisplayInfo.size ?? .messageAvatarSize)
     }
     
     public func makeQuotedMessageAvatarView(
@@ -295,6 +299,10 @@ extension ViewFactory {
         for channel: ChatChannel
     ) -> some ChatChannelHeaderViewModifier {
         DefaultChannelHeaderModifier(factory: self, channel: channel)
+    }
+    
+    public func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> some ViewModifier {
+        ChangeChannelBarsVisibilityModifier(shouldShow: shouldShow)
     }
     
     public func makeChannelLoadingView() -> some View {

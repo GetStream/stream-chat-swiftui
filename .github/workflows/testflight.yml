@@ -15,7 +15,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
     - name: Connect Bot
       uses: webfactory/ssh-agent@v0.7.0
@@ -37,8 +37,7 @@ jobs:
       with:
         status: ${{ job.status }}
         text: "You shall not pass!"
-        fields: message,commit,author,action,workflow,job,took
+        fields: repo,commit,author,workflow
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        MATRIX_CONTEXT: ${{ toJson(matrix) }}
       if: failure()
