@@ -511,7 +511,7 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public func imagePasted(_ image: UIImage) {
-        guard let imageURL = try? image.temporaryLocalFileUrl() else {
+        guard let imageURL = try? image.saveAsJpgToTemporaryUrl() else {
             log.error("Failed to write image to local temporary file")
             return
         }

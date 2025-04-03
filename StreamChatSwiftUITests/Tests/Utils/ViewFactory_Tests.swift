@@ -832,8 +832,7 @@ class ViewFactory_Tests: StreamChatTestCase {
             placeholder: "Send a message",
             editable: true,
             maxMessageLength: nil,
-            currentHeight: 40,
-            onImagePasted: nil
+            currentHeight: 40
         )
         
         // Then

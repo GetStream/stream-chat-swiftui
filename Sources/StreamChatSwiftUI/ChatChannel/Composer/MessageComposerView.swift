@@ -372,9 +372,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : L10n.Composer.Placeholder.message,
                     editable: !isInCooldown,
                     maxMessageLength: maxMessageLength,
-                    currentHeight: textFieldHeight,
-                    onImagePasted: viewModel.imagePasted(_:)
+                    currentHeight: textFieldHeight
                 )
+                .environmentObject(viewModel)
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
