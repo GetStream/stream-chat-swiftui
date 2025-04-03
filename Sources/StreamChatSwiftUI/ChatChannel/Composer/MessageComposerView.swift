@@ -374,6 +374,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     maxMessageLength: maxMessageLength,
                     currentHeight: textFieldHeight
                 )
+                .environmentObject(viewModel)
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
