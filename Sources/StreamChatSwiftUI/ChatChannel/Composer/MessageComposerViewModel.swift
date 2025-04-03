@@ -183,7 +183,13 @@ open class MessageComposerViewModel: ObservableObject {
     public var quotedMessage: Binding<ChatMessage?>?
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
-    
+
+    public var canSendPoll: Bool {
+        channelController.channel?.config.pollsEnabled == true
+            && channelController.channel?.canSendPoll == true
+            && messageController == nil
+    }
+
     internal lazy var audioRecorder: AudioRecording = {
         let audioRecorder = utils.audioRecorder
         audioRecorder.subscribe(self)
