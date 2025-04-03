@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Allow pasting images to the composer [#797](https://github.com/GetStream/stream-chat-swiftui/pull/797)
+### 🐞 Fixed
+- Fix allowing to send Polls when the current user does not have the capability [#798](https://github.com/GetStream/stream-chat-swiftui/pull/798)
 
 # [4.76.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.76.0)
 _March 31, 2025_
