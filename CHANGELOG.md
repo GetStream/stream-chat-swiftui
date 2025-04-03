@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Allow pasting images to the composer [#797](https://github.com/GetStream/stream-chat-swiftui/pull/797)
 
 # [4.76.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.76.0)
 _March 31, 2025_
