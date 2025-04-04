@@ -70,6 +70,27 @@ class ChatChannelTestHelpers {
         return imageAttachments
     }()
 
+    static func imageAttachment(state: LocalAttachmentState) -> AnyChatMessageAttachment {
+        let attachmentFile = AttachmentFile(type: .png, size: 0, mimeType: "image/png")
+        let uploadingState = AttachmentUploadingState(
+            localFileURL: testURL,
+            state: state,
+            file: attachmentFile
+        )
+        return ChatMessageImageAttachment(
+            id: .unique,
+            type: .image,
+            payload: ImageAttachmentPayload(
+                title: "test",
+                imageRemoteURL: testURL,
+                extraData: [:]
+            ),
+            downloadingState: nil,
+            uploadingState: uploadingState
+        )
+        .asAnyAttachment
+    }
+
     static var giphyAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .gif, size: 0, mimeType: "image/gif")
         let uploadingState = AttachmentUploadingState(

@@ -261,7 +261,43 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    func test_imageAttachments_failed_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploadingFailed)],
+            localState: .sendingFailed
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_imageAttachments_failedWhenMessageTextIsEmpty_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploadingFailed)],
+            localState: .sendingFailed
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_translatedText_participant_snapshot() {
         // Given
         let message = ChatMessage.mock(

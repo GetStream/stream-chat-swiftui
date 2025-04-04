@@ -106,7 +106,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 )
                                 : nil
 
-                            (message.localState == .sendingFailed || message.isBounced) ? SendFailureIndicator() : nil
+                            ((message.localState == .sendingFailed || message.isBounced) && !message.text.isEmpty) ?
+                                SendFailureIndicator() : nil
                         }
                     )
                     .background(
