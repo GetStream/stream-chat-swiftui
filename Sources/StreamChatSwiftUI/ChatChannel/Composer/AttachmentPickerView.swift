@@ -170,7 +170,7 @@ public struct AttachmentSourcePickerView: View {
             )
             .accessibilityIdentifier("attachmentPickerCamera")
             
-            if viewModel.channelController.channel?.config.pollsEnabled == true && viewModel.messageController == nil {
+            if viewModel.canSendPoll {
                 AttachmentPickerButton(
                     icon: images.attachmentPickerPolls,
                     pickerType: .polls,
