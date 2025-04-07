@@ -169,6 +169,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
             } label: {
                 EmptyView()
             }
+            .opacity(0) // Fixes showing accessibility button shape
         }
     }
 

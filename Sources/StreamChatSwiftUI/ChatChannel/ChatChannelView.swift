@@ -134,6 +134,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     } label: {
                         EmptyView()
                     }
+                    .opacity(0) // Fixes showing accessibility button shape
                 }
                 .accentColor(colors.tintColor)
                 .overlay(
