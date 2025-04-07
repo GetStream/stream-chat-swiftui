@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix showing a double error indicator when sending attachments without any text [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)
 - Fix showing read indicator when message failed to be sent [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)
 - Fix not showing sending indicator when message is in sending state [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)
+- Fix empty accessibility button shapes shown in navigation link views [#800](https://github.com/GetStream/stream-chat-swiftui/pull/800)
 
 # [4.76.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.76.0)
 _March 31, 2025_
