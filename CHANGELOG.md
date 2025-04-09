@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Allow pasting images to the composer [#797](https://github.com/GetStream/stream-chat-swiftui/pull/797)
+- Add `ChatChannelListViewModel.setChannelAlertType` for setting the alert type [#801](https://github.com/GetStream/stream-chat-swiftui/pull/801)
 ### 🐞 Fixed
 - Fix allowing to send Polls when the current user does not have the capability [#798](https://github.com/GetStream/stream-chat-swiftui/pull/798)
 - Fix showing a double error indicator when sending attachments without any text [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)

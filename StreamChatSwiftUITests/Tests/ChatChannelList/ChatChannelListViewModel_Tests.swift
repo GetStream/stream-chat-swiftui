@@ -110,7 +110,19 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.channelAlertType == .error)
         XCTAssert(viewModel.alertShown == true)
     }
-
+    
+    func test_channelListVM_setChannelAlertType() {
+        // Given
+        let viewModel = makeDefaultChannelListVM()
+        
+        // When
+        viewModel.setChannelAlertType(.error)
+        
+        // Then
+        XCTAssert(viewModel.channelAlertType == .error)
+        XCTAssert(viewModel.alertShown == true)
+    }
+    
     func test_channelListVM_nameForChannel() {
         // Given
         let expectedName = "test"
