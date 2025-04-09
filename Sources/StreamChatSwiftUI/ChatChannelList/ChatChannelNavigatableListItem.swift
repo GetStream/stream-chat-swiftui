@@ -61,6 +61,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
             } label: {
                 EmptyView()
             }
+            .opacity(0) // Fixes showing accessibility button shape
         }
     }
 
