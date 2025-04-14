@@ -210,11 +210,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         )
         .modifier(factory.makeComposerViewModifier())
         .onChange(of: editedMessage) { _ in
-            viewModel.text = editedMessage?.text ?? ""
+            viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
                 becomeFirstResponder()
                 editedMessageWillShow = true
-                viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
         .onAppear(perform: {

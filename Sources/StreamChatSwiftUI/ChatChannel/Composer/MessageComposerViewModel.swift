@@ -67,7 +67,9 @@ open class MessageComposerViewModel: ObservableObject {
     }
 
     @Published public var selectedRangeLocation: Int = 0
-    
+
+    /// An helper property to store additional information of file attachments.
+    private var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
     @Published public var addedFileURLs = [URL]() {
         didSet {
             if totalAttachmentsCount > chatClient.config.maxAttachmentCountPerMessage
@@ -262,48 +264,22 @@ open class MessageComposerViewModel: ObservableObject {
         )
     }
 
-    /// Populates the draft message in the composer with the current controller's draft information.
-    public func fillDraftMessage() {
-        guard let message = draftMessage else {
+    public func fillEditedMessage(_ editedMessage: ChatMessage?) {
+        guard let editedMessage = editedMessage else {
+            clearInputData()
             return
         }
 
-        text = message.text
-        mentionedUsers = message.mentionedUsers
-        quotedMessage?.wrappedValue = message.quotedMessage
-        showReplyInChannel = message.showReplyInChannel
+        fillComposer(with: editedMessage)
+    }
 
-        var addedAssets: [AddedAsset] = []
-        var addedFileURLs: [URL] = []
-        var addedVoiceRecordings: [AddedVoiceRecording] = []
-        var addedCustomAttachments: [CustomAttachment] = []
-
-        message.attachments.forEach { attachment in
-            switch attachment.type {
-            case .image, .video:
-                guard let addedAsset = attachment.toAddedAsset() else { break }
-                addedAssets.append(addedAsset)
-            case .file:
-                guard let url = attachment.attachment(payloadType: FileAttachmentPayload.self)?.assetURL else {
-                    break
-                }
-                addedFileURLs.append(url)
-            case .voiceRecording:
-                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
-                addedVoiceRecordings.append(addedVoiceRecording)
-            case .linkPreview, .audio, .giphy, .unknown:
-                break
-            default:
-                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
-                let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
-                addedCustomAttachments.append(customAttachment)
-            }
+    /// Populates the draft message in the composer with the current controller's draft information.
+    public func fillDraftMessage() {
+        guard let draft = draftMessage else {
+            return
         }
 
-        self.addedAssets = addedAssets
-        self.addedFileURLs = addedFileURLs
-        self.addedVoiceRecordings = addedVoiceRecordings
-        self.addedCustomAttachments = addedCustomAttachments
+        fillComposer(with: ChatMessage(draft))
     }
 
     /// Updates the draft message locally and on the server.
@@ -358,11 +334,6 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
-    private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
-        !oldValue.isEmpty && !sendButtonEnabled
-    }
-
     open func sendMessage(
         quotedMessage: ChatMessage?,
         editedMessage: ChatMessage?,
@@ -393,7 +364,11 @@ open class MessageComposerViewModel: ObservableObject {
         let mentionedUserIds = mentionedUsers.map(\.id)
         
         if let editedMessage = editedMessage {
-            edit(message: editedMessage, completion: completion)
+            edit(
+                message: editedMessage,
+                attachments: try? inputAttachmentsAsPayloads(),
+                completion: completion
+            )
             return
         }
         
@@ -643,7 +618,55 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     // MARK: - private
-    
+
+    private func fillComposer(with message: ChatMessage) {
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+
+        var addedAssets: [AddedAsset] = []
+        var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
+        var addedFileURLs: [URL] = []
+        var addedVoiceRecordings: [AddedVoiceRecording] = []
+        var addedCustomAttachments: [CustomAttachment] = []
+
+        message.allAttachments.forEach { attachment in
+            switch attachment.type {
+            case .image, .video:
+                guard let addedAsset = attachment.toAddedAsset() else { break }
+                addedAssets.append(addedAsset)
+            case .file:
+                guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
+                    break
+                }
+                addedRemoteFileURLs[filePayload.assetURL] = filePayload.payload
+                addedFileURLs.append(filePayload.assetURL)
+            case .voiceRecording:
+                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
+                addedVoiceRecordings.append(addedVoiceRecording)
+            case .linkPreview, .audio, .giphy, .unknown:
+                break
+            default:
+                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
+                let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
+                addedCustomAttachments.append(customAttachment)
+            }
+        }
+
+        self.addedAssets = addedAssets
+        self.addedRemoteFileURLs = addedRemoteFileURLs
+        self.addedFileURLs = addedFileURLs
+        self.addedVoiceRecordings = addedVoiceRecordings
+        self.addedCustomAttachments = addedCustomAttachments
+    }
+
+    /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
+    private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
+        !oldValue.isEmpty && !sendButtonEnabled
+    }
+
     private func fetchAssets() {
         let fetchOptions = PHFetchOptions()
         let supportedTypes = utils.composerConfig.gallerySupportedTypes
@@ -663,10 +686,14 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    private func inputAttachmentsAsPayloads() throws -> [AnyAttachmentPayload] {
+    /// Converts all added assets to payloads.
+    open func inputAttachmentsAsPayloads() throws -> [AnyAttachmentPayload] {
         var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
         attachments += try addedFileURLs.map { url in
             _ = url.startAccessingSecurityScopedResource()
+            if let filePayload = addedRemoteFileURLs[url] {
+                return AnyAttachmentPayload(payload: filePayload)
+            }
             return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
         }
         attachments += try addedVoiceRecordings.map { recording in
@@ -708,6 +735,7 @@ open class MessageComposerViewModel: ObservableObject {
     
     private func edit(
         message: ChatMessage,
+        attachments: [AnyAttachmentPayload]?,
         completion: @escaping () -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
@@ -717,10 +745,16 @@ open class MessageComposerViewModel: ObservableObject {
             cid: channelId,
             messageId: message.id
         )
-        
+
+        var newAttachments = attachments ?? []
+        let fallbackAttachments = utils.composerConfig.attachmentPayloadConverter(message)
+        if !fallbackAttachments.isEmpty {
+            newAttachments = fallbackAttachments
+        }
+
         messageController.editMessage(
             text: adjustedText,
-            attachments: utils.composerConfig.attachmentPayloadConverter(message)
+            attachments: newAttachments
         ) { [weak self] error in
             if error != nil {
                 self?.errorShown = true
@@ -871,7 +905,9 @@ open class MessageComposerViewModel: ObservableObject {
             attachmentSizeExceeded = !canAdd
             return canAdd
         } catch {
-            return false
+            // If for some reason we can't access the file size, we delegate
+            // the decision to the server.
+            return true
         }
     }
     
