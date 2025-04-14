@@ -102,9 +102,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         quotedMessage: quotedMessage,
                         editedMessage: editedMessage
                     ) {
+                        // Calling onMessageSent() before erasing the edited and quoted message
+                        // so that onMessageSent can use them for state handling.
+                        onMessageSent()
                         quotedMessage = nil
                         editedMessage = nil
-                        onMessageSent()
                     }
                 }
                 .environmentObject(viewModel)
