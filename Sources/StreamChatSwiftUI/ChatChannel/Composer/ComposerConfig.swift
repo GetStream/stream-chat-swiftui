@@ -22,7 +22,7 @@ public struct ComposerConfig {
         *,
         deprecated,
         message: """
-        Override the MessageComposerViewModel.inputAttachmentsAsPayloads in order to convert the message attachments to payloads.
+        Override the MessageComposerViewModel.inputAttachmentsAsPayloads() in order to convert the message attachments to payloads.
         """
     )
     public var attachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload]
