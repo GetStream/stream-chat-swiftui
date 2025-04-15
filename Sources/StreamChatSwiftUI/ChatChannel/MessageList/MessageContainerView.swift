@@ -135,7 +135,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
-                            if message.isDeleted || !channel.config.repliesEnabled {
+                            if !message.isInteractionEnabled || !channel.config.repliesEnabled {
                                 return
                             }
                             // Using updating since onEnded is not called if the gesture is canceled.
