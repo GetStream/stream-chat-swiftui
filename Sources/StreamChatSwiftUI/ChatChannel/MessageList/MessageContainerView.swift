@@ -124,7 +124,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
                     .onLongPressGesture(perform: {
-                        if !message.isDeleted {
+                        if message.isInteractionEnabled {
                             handleGestureForMessage(showsMessageActions: true)
                         }
                     })
