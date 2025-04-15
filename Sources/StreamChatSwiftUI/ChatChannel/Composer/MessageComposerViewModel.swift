@@ -626,40 +626,44 @@ open class MessageComposerViewModel: ObservableObject {
         showReplyInChannel = message.showReplyInChannel
         selectedRangeLocation = message.text.count
 
-        var addedAssets: [AddedAsset] = []
-        var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
-        var addedFileURLs: [URL] = []
-        var addedVoiceRecordings: [AddedVoiceRecording] = []
-        var addedCustomAttachments: [CustomAttachment] = []
+        DispatchQueue.global().async { [weak self] in
+            var addedAssets: [AddedAsset] = []
+            var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
+            var addedFileURLs: [URL] = []
+            var addedVoiceRecordings: [AddedVoiceRecording] = []
+            var addedCustomAttachments: [CustomAttachment] = []
 
-        message.allAttachments.forEach { attachment in
-            switch attachment.type {
-            case .image, .video:
-                guard let addedAsset = attachment.toAddedAsset() else { break }
-                addedAssets.append(addedAsset)
-            case .file:
-                guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
+            message.allAttachments.forEach { attachment in
+                switch attachment.type {
+                case .image, .video:
+                    guard let addedAsset = attachment.toAddedAsset() else { break }
+                    addedAssets.append(addedAsset)
+                case .file:
+                    guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
+                        break
+                    }
+                    addedRemoteFileURLs[filePayload.assetURL] = filePayload.payload
+                    addedFileURLs.append(filePayload.assetURL)
+                case .voiceRecording:
+                    guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
+                    addedVoiceRecordings.append(addedVoiceRecording)
+                case .linkPreview, .audio, .giphy, .unknown:
                     break
+                default:
+                    guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
+                    let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
+                    addedCustomAttachments.append(customAttachment)
                 }
-                addedRemoteFileURLs[filePayload.assetURL] = filePayload.payload
-                addedFileURLs.append(filePayload.assetURL)
-            case .voiceRecording:
-                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
-                addedVoiceRecordings.append(addedVoiceRecording)
-            case .linkPreview, .audio, .giphy, .unknown:
-                break
-            default:
-                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
-                let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
-                addedCustomAttachments.append(customAttachment)
+            }
+
+            DispatchQueue.main.async {
+                self?.addedAssets = addedAssets
+                self?.addedRemoteFileURLs = addedRemoteFileURLs
+                self?.addedFileURLs = addedFileURLs
+                self?.addedVoiceRecordings = addedVoiceRecordings
+                self?.addedCustomAttachments = addedCustomAttachments
             }
         }
-
-        self.addedAssets = addedAssets
-        self.addedRemoteFileURLs = addedRemoteFileURLs
-        self.addedFileURLs = addedFileURLs
-        self.addedVoiceRecordings = addedVoiceRecordings
-        self.addedCustomAttachments = addedCustomAttachments
     }
 
     /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
