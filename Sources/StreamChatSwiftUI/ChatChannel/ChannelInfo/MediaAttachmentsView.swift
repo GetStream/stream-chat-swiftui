@@ -58,6 +58,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                 if !mediaItem.isVideo, let imageAttachment = mediaItem.imageAttachment {
                                     let index = viewModel.allImageAttachments.firstIndex { $0.id == imageAttachment.id } ?? 0
                                     ImageAttachmentContentView(
+                                        factory: factory,
                                         mediaItem: mediaItem,
                                         imageAttachment: imageAttachment,
                                         allImageAttachments: viewModel.allImageAttachments,
@@ -66,6 +67,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                     )
                                 } else if let videoAttachment = mediaItem.videoAttachment {
                                     VideoAttachmentContentView(
+                                        factory: factory,
                                         attachment: videoAttachment,
                                         author: mediaItem.author,
                                         width: Self.itemWidth,
@@ -108,10 +110,11 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
     }
 }
 
-struct ImageAttachmentContentView: View {
+struct ImageAttachmentContentView<Factory: ViewFactory>: View {
 
     @State private var galleryShown = false
 
+    let factory: Factory
     let mediaItem: MediaItem
     let imageAttachment: ChatMessageImageAttachment
     let allImageAttachments: [ChatMessageImageAttachment]
@@ -134,8 +137,8 @@ struct ImageAttachmentContentView: View {
             .clipped()
         }
         .fullScreenCover(isPresented: $galleryShown) {
-            GalleryView(
-                imageAttachments: allImageAttachments,
+            factory.makeGalleryView(
+                mediaAttachments: allImageAttachments.map { MediaAttachment(from: $0) },
                 author: mediaItem.author,
                 isShown: $galleryShown,
                 selected: index

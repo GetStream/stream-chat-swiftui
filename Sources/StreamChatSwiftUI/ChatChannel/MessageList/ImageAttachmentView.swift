@@ -62,7 +62,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         .fullScreenCover(isPresented: $galleryShown, onDismiss: {
             self.selectedIndex = 0
         }) {
-            GalleryView(
+            factory.makeGalleryView(
                 mediaAttachments: sources,
                 author: message.author,
                 isShown: $galleryShown,
@@ -431,7 +431,7 @@ extension ChatMessage {
     }
 }
 
-struct MediaAttachment {
+public struct MediaAttachment {
     @Injected(\.utils) var utils
     
     let url: URL
@@ -457,6 +457,22 @@ struct MediaAttachment {
                 completion: completion
             )
         }
+    }
+}
+
+extension MediaAttachment {
+    init(from attachment: ChatMessageImageAttachment) {
+        let url: URL
+        if let state = attachment.uploadingState {
+            url = state.localFileURL
+        } else {
+            url = attachment.imageURL
+        }
+        self.init(
+            url: url,
+            type: .image,
+            uploadingState: attachment.uploadingState
+        )
     }
 }
 

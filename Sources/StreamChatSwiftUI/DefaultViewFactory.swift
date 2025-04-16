@@ -445,6 +445,32 @@ extension ViewFactory {
         )
     }
     
+    public func makeGalleryView(
+        mediaAttachments: [MediaAttachment],
+        author: ChatUser,
+        isShown: Binding<Bool>,
+        selected: Int
+    ) -> some View {
+        GalleryView(
+            mediaAttachments: mediaAttachments,
+            author: author,
+            isShown: isShown,
+            selected: selected
+        )
+    }
+    
+    public func makeVideoPlayerView(
+        attachment: ChatMessageVideoAttachment,
+        author: ChatUser,
+        isShown: Binding<Bool>
+    ) -> some View {
+        VideoPlayerView(
+            attachment: attachment,
+            author: author,
+            isShown: isShown
+        )
+    }
+    
     public func makeDeletedMessageView(
         for message: ChatMessage,
         isFirst: Bool,
