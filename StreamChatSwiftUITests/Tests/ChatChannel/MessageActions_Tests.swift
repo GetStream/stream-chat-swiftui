@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
 class MessageActions_Tests: StreamChatTestCase {
@@ -251,7 +252,47 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[2].title == "Edit Message")
         XCTAssert(messageActions[3].title == "Delete Message")
     }
-    
+
+    func test_messageActions_giphyMessage_shouldNotContainEditActtion() throws {
+        // Given
+        let channel = mockDMChannel
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: chatClient.currentUserId!),
+            attachments: [
+                .dummy(
+                    type: .giphy,
+                    payload: try JSONEncoder().encode(GiphyAttachmentPayload(
+                        title: "Test",
+                        previewURL: URL(string: "Url")!
+                    ))
+                )
+            ],
+            isSentByCurrentUser: true
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssertEqual(messageActions.count, 5)
+        XCTAssertEqual(messageActions[0].title, "Reply")
+        XCTAssertEqual(messageActions[1].title, "Thread Reply")
+        XCTAssertEqual(messageActions[2].title, "Pin to conversation")
+        XCTAssertEqual(messageActions[3].title, "Copy Message")
+        XCTAssertEqual(messageActions[4].title, "Delete Message")
+    }
+
     // MARK: - Private
     
     private var mockDMChannel: ChatChannel {
