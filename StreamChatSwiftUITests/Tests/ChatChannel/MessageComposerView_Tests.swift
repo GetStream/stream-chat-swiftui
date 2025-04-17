@@ -582,6 +582,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
             draftMessage: draftMessage
         )
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.attachmentsConverter = SyncAttachmentsConverter()
 
         return MessageComposerView(
             viewFactory: factory,
@@ -628,5 +629,15 @@ class MessageComposerView_Tests: StreamChatTestCase {
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+    }
+}
+
+class SyncAttachmentsConverter: MessageAttachmentsConverter {
+    override func attachmentsToAssets(
+        _ attachments: [AnyChatMessageAttachment],
+        completion: @escaping (ComposerAssets) -> Void
+    ) {
+        let addedAssets = attachmentsToAssets(attachments)
+        completion(addedAssets)
     }
 }

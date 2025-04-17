@@ -11,7 +11,17 @@ import SwiftUI
 open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) internal var utils
-    
+
+    var attachmentsConverter = MessageAttachmentsConverter()
+    var composerAssets: ComposerAssets {
+        ComposerAssets(
+            mediaAssets: addedAssets,
+            fileAssets: addedFileURLs.map { FileAddedAsset(url: $0, payload: addedRemoteFileURLs[$0]) },
+            voiceAssets: addedVoiceRecordings,
+            customAssets: addedCustomAttachments
+        )
+    }
+
     @Published public var pickerState: AttachmentPickerState = .photos {
         didSet {
             if pickerState == .camera {
@@ -265,21 +275,36 @@ open class MessageComposerViewModel: ObservableObject {
     }
 
     public func fillEditedMessage(_ editedMessage: ChatMessage?) {
-        guard let editedMessage = editedMessage else {
+        guard let message = editedMessage else {
             clearInputData()
             return
         }
 
-        fillComposer(with: editedMessage)
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
     }
 
     /// Populates the draft message in the composer with the current controller's draft information.
     public func fillDraftMessage() {
-        guard let draft = draftMessage else {
+        guard let message = draftMessage else {
             return
         }
 
-        fillComposer(with: ChatMessage(draft))
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+
+        let composerAssets = attachmentsConverter.attachmentsToAssets(message.attachments)
+        updateComposerAssets(composerAssets)
     }
 
     /// Updates the draft message locally and on the server.
@@ -619,79 +644,19 @@ open class MessageComposerViewModel: ObservableObject {
 
     /// Converts all added assets to payloads.
     open func convertAddedAssetsToPayloads() throws -> [AnyAttachmentPayload] {
-        var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
-        attachments += try addedFileURLs.map { url in
-            _ = url.startAccessingSecurityScopedResource()
-            if let filePayload = addedRemoteFileURLs[url] {
-                return AnyAttachmentPayload(payload: filePayload)
-            }
-            return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
-        }
-        attachments += try addedVoiceRecordings.map { recording in
-            _ = recording.url.startAccessingSecurityScopedResource()
-            var localMetadata = AnyAttachmentLocalMetadata()
-            localMetadata.duration = recording.duration
-            localMetadata.waveformData = recording.waveform
-            return try AnyAttachmentPayload(
-                localFileURL: recording.url,
-                attachmentType: .voiceRecording,
-                localMetadata: localMetadata
-            )
-        }
-
-        attachments += addedCustomAttachments.map { attachment in
-            attachment.content
-        }
-        return attachments
+        try attachmentsConverter.assetsToPayloads(composerAssets)
     }
 
     // MARK: - private
 
-    private func fillComposer(with message: ChatMessage) {
-        text = message.text
-        mentionedUsers = message.mentionedUsers
-        quotedMessage?.wrappedValue = message.quotedMessage
-        showReplyInChannel = message.showReplyInChannel
-        selectedRangeLocation = message.text.count
-
-        DispatchQueue.global().async { [weak self] in
-            var addedAssets: [AddedAsset] = []
-            var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
-            var addedFileURLs: [URL] = []
-            var addedVoiceRecordings: [AddedVoiceRecording] = []
-            var addedCustomAttachments: [CustomAttachment] = []
-
-            message.allAttachments.forEach { attachment in
-                switch attachment.type {
-                case .image, .video:
-                    guard let addedAsset = attachment.toAddedAsset() else { break }
-                    addedAssets.append(addedAsset)
-                case .file:
-                    guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
-                        break
-                    }
-                    addedRemoteFileURLs[filePayload.assetURL] = filePayload.payload
-                    addedFileURLs.append(filePayload.assetURL)
-                case .voiceRecording:
-                    guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
-                    addedVoiceRecordings.append(addedVoiceRecording)
-                case .linkPreview, .audio, .giphy, .unknown:
-                    break
-                default:
-                    guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
-                    let customAttachment = CustomAttachment(id: attachment.id.rawValue, content: anyAttachmentPayload)
-                    addedCustomAttachments.append(customAttachment)
-                }
-            }
-
-            DispatchQueue.main.async {
-                self?.addedAssets = addedAssets
-                self?.addedRemoteFileURLs = addedRemoteFileURLs
-                self?.addedFileURLs = addedFileURLs
-                self?.addedVoiceRecordings = addedVoiceRecordings
-                self?.addedCustomAttachments = addedCustomAttachments
-            }
+    private func updateComposerAssets(_ assets: ComposerAssets) {
+        addedAssets = assets.mediaAssets
+        addedFileURLs = assets.fileAssets.map(\.url)
+        addedRemoteFileURLs = assets.fileAssets.reduce(into: [:]) { result, asset in
+            result[asset.url] = asset.payload
         }
+        addedVoiceRecordings = assets.voiceAssets
+        addedCustomAttachments = assets.customAssets
     }
 
     /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
@@ -940,5 +905,118 @@ extension MessageComposerViewModel: EventsControllerDelegate {
                 clearInputData()
             }
         }
+    }
+}
+
+// The assets added to the composer.
+struct ComposerAssets {
+    // Image and Video Assets.
+    var mediaAssets: [AddedAsset] = []
+    // File Assets.
+    var fileAssets: [FileAddedAsset] = []
+    // Voice Assets.
+    var voiceAssets: [AddedVoiceRecording] = []
+    // Custom Assets.
+    var customAssets: [CustomAttachment] = []
+}
+
+// A asset containing file information.
+// If it has a payload, it means that the file is already uploaded to the server.
+struct FileAddedAsset {
+    var url: URL
+    var payload: FileAttachmentPayload?
+}
+
+// The converter responsible to map attachments to assets and vice versa.
+class MessageAttachmentsConverter {
+    let queue = DispatchQueue(label: "MessageAttachmentsConverter")
+
+    /// Converts the added assets to payloads.
+    func assetsToPayloads(_ assets: ComposerAssets) throws -> [AnyAttachmentPayload] {
+        let mediaAssets = assets.mediaAssets
+        let fileAssets = assets.fileAssets
+        let voiceAssets = assets.voiceAssets
+        let customAssets = assets.customAssets
+
+        var attachments = try mediaAssets.map { try $0.toAttachmentPayload() }
+        attachments += try fileAssets.map { file in
+            _ = file.url.startAccessingSecurityScopedResource()
+            if let filePayload = file.payload {
+                return AnyAttachmentPayload(payload: filePayload)
+            }
+            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: .file)
+        }
+        attachments += try voiceAssets.map { recording in
+            _ = recording.url.startAccessingSecurityScopedResource()
+            var localMetadata = AnyAttachmentLocalMetadata()
+            localMetadata.duration = recording.duration
+            localMetadata.waveformData = recording.waveform
+            return try AnyAttachmentPayload(
+                localFileURL: recording.url,
+                attachmentType: .voiceRecording,
+                localMetadata: localMetadata
+            )
+        }
+
+        attachments += customAssets.map { attachment in
+            attachment.content
+        }
+        return attachments
+    }
+
+    /// Converts the attachments to assets.
+    ///
+    /// This operation is asynchronous to make sure loading expensive assets are not done in the main thread.
+    func attachmentsToAssets(
+        _ attachments: [AnyChatMessageAttachment],
+        completion: @escaping (ComposerAssets) -> Void
+    ) {
+        queue.async {
+            let addedAssets = self.attachmentsToAssets(attachments)
+            DispatchQueue.main.async {
+                completion(addedAssets)
+            }
+        }
+    }
+
+    /// Converts the attachments to assets synchronously.
+    ///
+    /// This operation is synchronous and should only be used if all attachments are already loaded.
+    /// Like for example, for draft messages.
+    func attachmentsToAssets(
+        _ attachments: [AnyChatMessageAttachment]
+    ) -> ComposerAssets {
+        var addedAssets = ComposerAssets()
+
+        attachments.forEach { attachment in
+            switch attachment.type {
+            case .image, .video:
+                guard let addedAsset = attachment.toAddedAsset() else { break }
+                addedAssets.mediaAssets.append(addedAsset)
+            case .file:
+                guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
+                    break
+                }
+                let fileAsset = FileAddedAsset(
+                    url: filePayload.assetURL,
+                    payload: filePayload.payload
+                )
+                addedAssets.fileAssets.append(fileAsset)
+            case .voiceRecording:
+                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
+                addedAssets.voiceAssets.append(addedVoiceRecording)
+            case .linkPreview, .audio, .giphy, .unknown:
+                break
+            default:
+                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
+                let customAttachment = CustomAttachment(
+                    id: attachment.id.rawValue,
+                    content: anyAttachmentPayload
+                )
+                addedAssets.customAssets.append(customAttachment)
+            }
+        }
+
+        return addedAssets
     }
 }
