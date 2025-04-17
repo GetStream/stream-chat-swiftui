@@ -291,7 +291,7 @@ open class MessageComposerViewModel: ObservableObject {
         guard utils.messageListConfig.draftMessagesEnabled && sendButtonEnabled else {
             return
         }
-        let attachments = try? inputAttachmentsAsPayloads()
+        let attachments = try? convertAddedAssetsToPayloads()
         let mentionedUserIds = mentionedUsers.map(\.id)
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
@@ -346,7 +346,7 @@ open class MessageComposerViewModel: ObservableObject {
         defer {
             checkChannelCooldown()
         }
-        
+
         if let composerCommand = composerCommand, composerCommand.id != "instantCommands" {
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
@@ -366,14 +366,14 @@ open class MessageComposerViewModel: ObservableObject {
         if let editedMessage = editedMessage {
             edit(
                 message: editedMessage,
-                attachments: try? inputAttachmentsAsPayloads(),
+                attachments: try? convertAddedAssetsToPayloads(),
                 completion: completion
             )
             return
         }
         
         do {
-            let attachments = try inputAttachmentsAsPayloads()
+            let attachments = try convertAddedAssetsToPayloads()
             if let messageController = messageController {
                 messageController.createNewReply(
                     text: messageText,
@@ -616,7 +616,35 @@ open class MessageComposerViewModel: ObservableObject {
             extraData: extraData
         )
     }
-    
+
+    /// Converts all added assets to payloads.
+    open func convertAddedAssetsToPayloads() throws -> [AnyAttachmentPayload] {
+        var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
+        attachments += try addedFileURLs.map { url in
+            _ = url.startAccessingSecurityScopedResource()
+            if let filePayload = addedRemoteFileURLs[url] {
+                return AnyAttachmentPayload(payload: filePayload)
+            }
+            return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
+        }
+        attachments += try addedVoiceRecordings.map { recording in
+            _ = recording.url.startAccessingSecurityScopedResource()
+            var localMetadata = AnyAttachmentLocalMetadata()
+            localMetadata.duration = recording.duration
+            localMetadata.waveformData = recording.waveform
+            return try AnyAttachmentPayload(
+                localFileURL: recording.url,
+                attachmentType: .voiceRecording,
+                localMetadata: localMetadata
+            )
+        }
+
+        attachments += addedCustomAttachments.map { attachment in
+            attachment.content
+        }
+        return attachments
+    }
+
     // MARK: - private
 
     private func fillComposer(with message: ChatMessage) {
@@ -688,34 +716,6 @@ open class MessageComposerViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             self?.imageAssets = assets
         }
-    }
-
-    /// Converts all added assets to payloads.
-    open func inputAttachmentsAsPayloads() throws -> [AnyAttachmentPayload] {
-        var attachments = try addedAssets.map { try $0.toAttachmentPayload() }
-        attachments += try addedFileURLs.map { url in
-            _ = url.startAccessingSecurityScopedResource()
-            if let filePayload = addedRemoteFileURLs[url] {
-                return AnyAttachmentPayload(payload: filePayload)
-            }
-            return try AnyAttachmentPayload(localFileURL: url, attachmentType: .file)
-        }
-        attachments += try addedVoiceRecordings.map { recording in
-            _ = recording.url.startAccessingSecurityScopedResource()
-            var localMetadata = AnyAttachmentLocalMetadata()
-            localMetadata.duration = recording.duration
-            localMetadata.waveformData = recording.waveform
-            return try AnyAttachmentPayload(
-                localFileURL: recording.url,
-                attachmentType: .voiceRecording,
-                localMetadata: localMetadata
-            )
-        }
-
-        attachments += addedCustomAttachments.map { attachment in
-            attachment.content
-        }
-        return attachments
     }
 
     private func checkForMentionedUsers(
@@ -865,7 +865,7 @@ open class MessageComposerViewModel: ObservableObject {
 
     /// Same as clearText() but it just clears the command id.
     private func clearCommandText() {
-        guard let command = composerCommand else { return }
+        guard composerCommand != nil else { return }
         let currentText = text
         if let value = getValueOfCommand(currentText) {
             text = value
