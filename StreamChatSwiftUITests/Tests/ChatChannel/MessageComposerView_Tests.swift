@@ -630,6 +630,160 @@ class MessageComposerView_Tests: StreamChatTestCase {
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
     }
+
+    // MARK: - Editing
+
+    func test_composerView_editingMessageWithText() {
+        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let mockEditedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a message being edited",
+            author: .mock(id: .unique)
+        )
+
+        let view = makeComposerViewWithEditedMessage(mockEditedMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_editingMessageWithImageAttachment() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockEditedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with image",
+            author: .mock(id: .unique),
+            attachments: [
+                .dummy(
+                    type: .image,
+                    payload: try JSONEncoder().encode(
+                        ImageAttachmentPayload(
+                            title: nil,
+                            imageRemoteURL: TestImages.yoda.url,
+                            file: .init(type: .jpeg, size: 10, mimeType: nil)
+                        )
+                    )
+                )
+            ]
+        )
+
+        let view = makeComposerViewWithEditedMessage(mockEditedMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_editingMessageWithVideoAttachment() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockEditedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with video",
+            author: .mock(id: .unique),
+            attachments: [
+                .dummy(
+                    type: .video,
+                    payload: try JSONEncoder().encode(
+                        VideoAttachmentPayload(
+                            title: nil,
+                            videoRemoteURL: TestImages.yoda.url,
+                            thumbnailURL: TestImages.yoda.url,
+                            file: .init(type: .mov, size: 10, mimeType: nil),
+                            extraData: nil
+                        )
+                    )
+                )
+            ]
+        )
+
+        let view = makeComposerViewWithEditedMessage(mockEditedMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_editingMessageWithFileAttachment() throws {
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockEditedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with file",
+            author: .mock(id: .unique),
+            attachments: [
+                .dummy(
+                    type: .file,
+                    payload: try JSONEncoder().encode(
+                        FileAttachmentPayload(
+                            title: "Test",
+                            assetRemoteURL: .localYodaQuote,
+                            file: .init(type: .txt, size: 10, mimeType: nil),
+                            extraData: nil
+                        )
+                    )
+                )
+            ]
+        )
+
+        let view = makeComposerViewWithEditedMessage(mockEditedMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    func test_composerView_editingMessageWithVoiceRecording() throws {
+        let url: URL = URL(fileURLWithPath: "/tmp/\(UUID().uuidString)")
+        let duration: TimeInterval = 100
+        let waveformData: [Float] = .init(repeating: 0.5, count: 10)
+        try Data(count: 1024).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let mockEditedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with voice recording",
+            author: .mock(id: .unique),
+            attachments: [
+                .dummy(
+                    type: .voiceRecording,
+                    payload: try JSONEncoder().encode(
+                        VoiceRecordingAttachmentPayload(
+                            title: "Audio",
+                            voiceRecordingRemoteURL: url,
+                            file: .init(type: .aac, size: 120, mimeType: "audio/aac"),
+                            duration: duration,
+                            waveformData: waveformData,
+                            extraData: nil
+                        )
+                    )
+                )
+            ]
+        )
+
+        let view = makeComposerViewWithEditedMessage(mockEditedMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
+    private func makeComposerViewWithEditedMessage(_ editedMessage: ChatMessage) -> some View {
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.attachmentsConverter = SyncAttachmentsConverter()
+        viewModel.fillEditedMessage(editedMessage)
+
+        return MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(editedMessage),
+            onMessageSent: {}
+        )
+    }
 }
 
 class SyncAttachmentsConverter: MessageAttachmentsConverter {
