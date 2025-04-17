@@ -274,37 +274,23 @@ open class MessageComposerViewModel: ObservableObject {
         )
     }
 
+    /// Populates the composer with the edited message.
     public func fillEditedMessage(_ editedMessage: ChatMessage?) {
         guard let message = editedMessage else {
             clearInputData()
             return
         }
 
-        text = message.text
-        mentionedUsers = message.mentionedUsers
-        quotedMessage?.wrappedValue = message.quotedMessage
-        showReplyInChannel = message.showReplyInChannel
-        selectedRangeLocation = message.text.count
-
-        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            self?.updateComposerAssets(assets)
-        }
+        fillComposer(with: message)
     }
 
     /// Populates the draft message in the composer with the current controller's draft information.
     public func fillDraftMessage() {
-        guard let message = draftMessage else {
+        guard let draft = draftMessage else {
             return
         }
 
-        text = message.text
-        mentionedUsers = message.mentionedUsers
-        quotedMessage?.wrappedValue = message.quotedMessage
-        showReplyInChannel = message.showReplyInChannel
-        selectedRangeLocation = message.text.count
-
-        let composerAssets = attachmentsConverter.attachmentsToAssets(message.attachments)
-        updateComposerAssets(composerAssets)
+        fillComposer(with: ChatMessage(draft))
     }
 
     /// Updates the draft message locally and on the server.
@@ -648,6 +634,18 @@ open class MessageComposerViewModel: ObservableObject {
     }
 
     // MARK: - private
+
+    private func fillComposer(with message: ChatMessage) {
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
+    }
 
     private func updateComposerAssets(_ assets: ComposerAssets) {
         addedAssets = assets.mediaAssets
