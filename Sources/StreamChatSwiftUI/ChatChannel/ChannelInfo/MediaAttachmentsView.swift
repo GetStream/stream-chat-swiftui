@@ -80,9 +80,9 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                 BottomRightView {
                                     factory.makeMessageAvatarView(
                                         for: UserDisplayInfo(
-                                            id: mediaItem.author.id,
-                                            name: mediaItem.author.name ?? "",
-                                            imageURL: mediaItem.author.imageURL,
+                                            id: mediaItem.message.author.id,
+                                            name: mediaItem.message.author.name ?? "",
+                                            imageURL: mediaItem.message.author.imageURL,
                                             size: .init(width: 24, height: 24)
                                         )
                                     )

@@ -114,8 +114,4 @@ struct MediaItem: Identifiable {
 
     var videoAttachment: ChatMessageVideoAttachment?
     var imageAttachment: ChatMessageImageAttachment?
-    
-    var author: ChatUser {
-        message.author
-    }
 }
