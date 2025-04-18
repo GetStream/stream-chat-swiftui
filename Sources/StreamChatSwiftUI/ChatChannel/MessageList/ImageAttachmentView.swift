@@ -62,11 +62,11 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         .fullScreenCover(isPresented: $galleryShown, onDismiss: {
             self.selectedIndex = 0
         }) {
-            GalleryView(
+            factory.makeGalleryView(
                 mediaAttachments: sources,
-                author: message.author,
+                message: message,
                 isShown: $galleryShown,
-                selected: selectedIndex
+                options: .init(selectedIndex: selectedIndex)
             )
         }
         .accessibilityIdentifier("ImageAttachmentContainer")
@@ -431,7 +431,7 @@ extension ChatMessage {
     }
 }
 
-struct MediaAttachment {
+public struct MediaAttachment {
     @Injected(\.utils) var utils
     
     let url: URL
@@ -460,7 +460,29 @@ struct MediaAttachment {
     }
 }
 
+extension MediaAttachment {
+    init(from attachment: ChatMessageImageAttachment) {
+        let url: URL
+        if let state = attachment.uploadingState {
+            url = state.localFileURL
+        } else {
+            url = attachment.imageURL
+        }
+        self.init(
+            url: url,
+            type: .image,
+            uploadingState: attachment.uploadingState
+        )
+    }
+}
+
 enum MediaAttachmentType {
     case image
     case video
+}
+
+/// Options for the gallery view.
+public struct MediaViewsOptions {
+    /// The index of the selected media item.
+    public let selectedIndex: Int
 }

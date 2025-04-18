@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add factory methods for gallery and video player view [#808](https://github.com/GetStream/stream-chat-swiftui/pull/808)
 
 # [4.77.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.77.0)
 _April 10, 2025_

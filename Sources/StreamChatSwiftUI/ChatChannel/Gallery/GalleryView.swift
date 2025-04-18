@@ -28,19 +28,7 @@ public struct GalleryView: View {
         isShown: Binding<Bool>,
         selected: Int
     ) {
-        let mediaAttachments = imageAttachments.map { attachment in
-            let url: URL
-            if let state = attachment.uploadingState {
-                url = state.localFileURL
-            } else {
-                url = attachment.imageURL
-            }
-            return MediaAttachment(
-                url: url,
-                type: .image,
-                uploadingState: attachment.uploadingState
-            )
-        }
+        let mediaAttachments = imageAttachments.map { MediaAttachment(from: $0) }
         self.init(
             mediaAttachments: mediaAttachments,
             author: author,
@@ -49,7 +37,7 @@ public struct GalleryView: View {
         )
     }
     
-    init(
+    public init(
         mediaAttachments: [MediaAttachment],
         author: ChatUser,
         isShown: Binding<Bool>,
