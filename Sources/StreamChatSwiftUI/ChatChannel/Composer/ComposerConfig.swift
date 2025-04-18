@@ -17,14 +17,6 @@ public struct ComposerConfig {
     public var inputPaddingsConfig: PaddingsConfig
     public var adjustMessageOnSend: (String) -> (String)
     public var adjustMessageOnRead: (String) -> (String)
-
-    @available(
-        *,
-        deprecated,
-        message: """
-        Override the MessageComposerViewModel.inputAttachmentsAsPayloads() in order to convert the message attachments to payloads.
-        """
-    )
     public var attachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload]
 
     public init(
@@ -52,9 +44,8 @@ public struct ComposerConfig {
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
     }
     
-    public static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { _ in
-        /// This now returns empty array by default since attachmentPayloadConverter has been deprecated.
-        []
+    public static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { message in
+        message.allAttachments.toAnyAttachmentPayload()
     }
 }
 

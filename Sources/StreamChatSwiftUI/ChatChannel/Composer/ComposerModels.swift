@@ -27,34 +27,25 @@ public struct AddedAsset: Identifiable, Equatable {
     public let url: URL
     public let type: AssetType
     public var extraData: [String: RawJSON] = [:]
-
-    /// The payload of the attachment, in case the attachment has been uploaded to server already.
-    /// This is mostly used when editing an existing message that contains attachments.
-    public var payload: AttachmentPayload?
-
+    
     public init(
         image: UIImage,
         id: String,
         url: URL,
         type: AssetType,
-        extraData: [String: RawJSON] = [:],
-        payload: AttachmentPayload? = nil
+        extraData: [String: RawJSON] = [:]
     ) {
         self.image = image
         self.id = id
         self.url = url
         self.type = type
         self.extraData = extraData
-        self.payload = payload
     }
 }
 
 extension AddedAsset {
     func toAttachmentPayload() throws -> AnyAttachmentPayload {
-        if let payload = self.payload {
-            return AnyAttachmentPayload(payload: payload)
-        }
-        return try AnyAttachmentPayload(
+        try AnyAttachmentPayload(
             localFileURL: url,
             attachmentType: type == .video ? .video : .image,
             extraData: extraData
@@ -72,8 +63,7 @@ extension AnyChatMessageAttachment {
                 id: imageAttachment.id.rawValue,
                 url: imageAttachment.imageURL,
                 type: .image,
-                extraData: imageAttachment.extraData ?? [:],
-                payload: imageAttachment.payload
+                extraData: imageAttachment.extraData ?? [:]
             )
         } else if let videoAttachment = attachment(payloadType: VideoAttachmentPayload.self),
                   let thumbnail = imageThumbnail(for: videoAttachment.payload) {
@@ -82,8 +72,7 @@ extension AnyChatMessageAttachment {
                 id: videoAttachment.id.rawValue,
                 url: videoAttachment.videoURL,
                 type: .video,
-                extraData: videoAttachment.extraData ?? [:],
-                payload: videoAttachment.payload
+                extraData: videoAttachment.extraData ?? [:]
             )
         }
         return nil

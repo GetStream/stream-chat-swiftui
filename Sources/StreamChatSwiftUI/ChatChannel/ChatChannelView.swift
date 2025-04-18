@@ -115,9 +115,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         messageController: viewModel.messageController,
                         quotedMessage: $viewModel.quotedMessage,
                         editedMessage: $viewModel.editedMessage,
-                        onMessageSent: {
-                            viewModel.messageSentTapped()
-                        }
+                        onMessageSent: viewModel.scrollToLastMessage
                     )
                     .opacity((
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
