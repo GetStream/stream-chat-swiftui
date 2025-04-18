@@ -976,9 +976,9 @@ class ViewFactory_Tests: StreamChatTestCase {
         // When
         let view = viewFactory.makeGalleryView(
             mediaAttachments: [],
-            author: .unique,
+            message: .mock(),
             isShown: .constant(true),
-            selected: 0
+            options: .init(selectedIndex: 0)
         )
             
         // Then
@@ -992,8 +992,9 @@ class ViewFactory_Tests: StreamChatTestCase {
         // When
         let view = viewFactory.makeVideoPlayerView(
             attachment: .mock(id: .unique),
-            author: .unique,
-            isShown: .constant(true)
+            message: .mock(),
+            isShown: .constant(true),
+            options: .init(selectedIndex: 0)
         )
             
         // Then

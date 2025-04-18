@@ -444,28 +444,30 @@ public protocol ViewFactory: AnyObject {
     /// Creates the gallery view.
     /// - Parameters:
     ///  - mediaAttachments: the media attachments that will be displayed.
-    ///  - author: the author of the message.
+    ///  - message: the message whose attachments will be displayed.
     ///  - isShown: whether the gallery is shown.
-    ///  - selected: the index of the selected attachment.
+    ///  - options: additional options used to configure the gallery view.
     ///  - Returns: view displayed in the gallery slot.
     func makeGalleryView(
         mediaAttachments: [MediaAttachment],
-        author: ChatUser,
+        message: ChatMessage,
         isShown: Binding<Bool>,
-        selected: Int
+        options: MediaViewsOptions
     ) -> GalleryViewType
     
     associatedtype VideoPlayerViewType: View
     /// Creates the video player view.
     /// - Parameters:
     ///  - attachment: the video attachment that will be displayed.
-    ///  - author: the author of the message.
+    ///  - message: the message whose attachments will be displayed.
     ///  - isShown: whether the video player is shown.
+    ///  - options: additional options used to configure the gallery view.
     ///  - Returns: view displayed in the video player slot.
     func makeVideoPlayerView(
         attachment: ChatMessageVideoAttachment,
-        author: ChatUser,
-        isShown: Binding<Bool>
+        message: ChatMessage,
+        isShown: Binding<Bool>,
+        options: MediaViewsOptions
     ) -> VideoPlayerViewType
 
     associatedtype DeletedMessageViewType: View

@@ -132,7 +132,7 @@ public struct VideoAttachmentView<Factory: ViewFactory>: View {
         VideoAttachmentContentView(
             factory: factory,
             attachment: attachment,
-            author: message.author,
+            message: message,
             width: width,
             ratio: ratio,
             cornerRadius: cornerRadius
@@ -152,7 +152,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
 
     let factory: Factory
     let attachment: ChatMessageVideoAttachment
-    let author: ChatUser
+    let message: ChatMessage
     let width: CGFloat
     var ratio: CGFloat = 0.75
     var cornerRadius: CGFloat = 24
@@ -199,8 +199,9 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
         .fullScreenCover(isPresented: $fullScreenShown) {
             factory.makeVideoPlayerView(
                 attachment: attachment,
-                author: author,
-                isShown: $fullScreenShown
+                message: message,
+                isShown: $fullScreenShown,
+                options: .init(selectedIndex: 0)
             )
         }
         .onAppear {

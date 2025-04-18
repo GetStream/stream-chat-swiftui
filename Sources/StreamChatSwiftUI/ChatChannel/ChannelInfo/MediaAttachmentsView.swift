@@ -69,7 +69,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                     VideoAttachmentContentView(
                                         factory: factory,
                                         attachment: videoAttachment,
-                                        author: mediaItem.author,
+                                        message: mediaItem.message,
                                         width: Self.itemWidth,
                                         ratio: 1,
                                         cornerRadius: 0
@@ -139,9 +139,9 @@ struct ImageAttachmentContentView<Factory: ViewFactory>: View {
         .fullScreenCover(isPresented: $galleryShown) {
             factory.makeGalleryView(
                 mediaAttachments: allImageAttachments.map { MediaAttachment(from: $0) },
-                author: mediaItem.author,
+                message: mediaItem.message,
                 isShown: $galleryShown,
-                selected: index
+                options: .init(selectedIndex: index)
             )
         }
     }

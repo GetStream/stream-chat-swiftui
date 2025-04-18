@@ -64,9 +64,9 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         }) {
             factory.makeGalleryView(
                 mediaAttachments: sources,
-                author: message.author,
+                message: message,
                 isShown: $galleryShown,
-                selected: selectedIndex
+                options: .init(selectedIndex: selectedIndex)
             )
         }
         .accessibilityIdentifier("ImageAttachmentContainer")
@@ -479,4 +479,10 @@ extension MediaAttachment {
 enum MediaAttachmentType {
     case image
     case video
+}
+
+/// Options for the gallery view.
+public struct MediaViewsOptions {
+    /// The index of the selected media item.
+    public let selectedIndex: Int
 }
