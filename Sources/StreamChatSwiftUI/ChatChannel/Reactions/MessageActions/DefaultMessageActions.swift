@@ -146,7 +146,7 @@ public extension MessageAction {
         }
 
         if message.isSentByCurrentUser {
-            if message.poll == nil {
+            if message.poll == nil && message.giphyAttachments.isEmpty {
                 let editAction = editMessageAction(
                     for: message,
                     channel: channel,
