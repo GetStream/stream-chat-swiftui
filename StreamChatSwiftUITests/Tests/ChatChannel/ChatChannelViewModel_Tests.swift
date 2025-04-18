@@ -94,6 +94,45 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssert(viewModel.scrolledId!.contains(messageId))
     }
 
+    func test_chatChannelVM_messageSentTapped() {
+        // Given
+        let messageId: String = .unique
+        let message = ChatMessage.mock(
+            id: messageId,
+            cid: .unique,
+            text: "Test message",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        viewModel.messageSentTapped()
+
+        // Then
+        XCTAssert(viewModel.scrolledId!.contains(messageId))
+    }
+
+    func test_chatChannelVM_messageSentTapped_whenEditingMessage_shouldNotScroll() {
+        // Given
+        let messageId: String = .unique
+        let message = ChatMessage.mock(
+            id: messageId,
+            cid: .unique,
+            text: "Test message",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.editedMessage = .unique
+
+        // When
+        viewModel.messageSentTapped()
+
+        // Then
+        XCTAssertNil(viewModel.scrolledId)
+    }
+
     func test_chatChannelVM_currentDateString() {
         // Given
         let expectedDate = "Jan 01"
