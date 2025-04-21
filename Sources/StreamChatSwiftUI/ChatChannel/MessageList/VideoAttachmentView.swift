@@ -24,6 +24,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                     )
 
                     VideoAttachmentsList(
+                        factory: factory,
                         message: message,
                         width: width
                     )
@@ -38,6 +39,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                 )
             } else {
                 VideoAttachmentsList(
+                    factory: factory,
                     message: message,
                     width: width
                 )
@@ -63,12 +65,18 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     }
 }
 
-public struct VideoAttachmentsList: View {
+public struct VideoAttachmentsList<Factory: ViewFactory>: View {
 
+    let factory: Factory
     let message: ChatMessage
     let width: CGFloat
 
-    public init(message: ChatMessage, width: CGFloat) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        message: ChatMessage,
+        width: CGFloat
+    ) {
+        self.factory = factory
         self.message = message
         self.width = width
     }
@@ -77,6 +85,7 @@ public struct VideoAttachmentsList: View {
         VStack {
             ForEach(message.videoAttachments, id: \.self) { attachment in
                 VideoAttachmentView(
+                    factory: factory,
                     attachment: attachment,
                     message: message,
                     width: width
@@ -90,8 +99,9 @@ public struct VideoAttachmentsList: View {
     }
 }
 
-public struct VideoAttachmentView: View {
+public struct VideoAttachmentView<Factory: ViewFactory>: View {
 
+    let factory: Factory
     let attachment: ChatMessageVideoAttachment
     let message: ChatMessage
     let width: CGFloat
@@ -99,12 +109,14 @@ public struct VideoAttachmentView: View {
     var cornerRadius: CGFloat = 24
 
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         attachment: ChatMessageVideoAttachment,
         message: ChatMessage,
         width: CGFloat,
         ratio: CGFloat = 0.75,
         cornerRadius: CGFloat = 24
     ) {
+        self.factory = factory
         self.attachment = attachment
         self.message = message
         self.width = width
@@ -118,8 +130,9 @@ public struct VideoAttachmentView: View {
 
     public var body: some View {
         VideoAttachmentContentView(
+            factory: factory,
             attachment: attachment,
-            author: message.author,
+            message: message,
             width: width,
             ratio: ratio,
             cornerRadius: cornerRadius
@@ -128,7 +141,7 @@ public struct VideoAttachmentView: View {
     }
 }
 
-struct VideoAttachmentContentView: View {
+struct VideoAttachmentContentView<Factory: ViewFactory>: View {
 
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
@@ -137,8 +150,9 @@ struct VideoAttachmentContentView: View {
         utils.videoPreviewLoader
     }
 
+    let factory: Factory
     let attachment: ChatMessageVideoAttachment
-    let author: ChatUser
+    let message: ChatMessage
     let width: CGFloat
     var ratio: CGFloat = 0.75
     var cornerRadius: CGFloat = 24
@@ -183,10 +197,11 @@ struct VideoAttachmentContentView: View {
         .frame(width: width, height: width * ratio)
         .cornerRadius(cornerRadius)
         .fullScreenCover(isPresented: $fullScreenShown) {
-            VideoPlayerView(
+            factory.makeVideoPlayerView(
                 attachment: attachment,
-                author: author,
-                isShown: $fullScreenShown
+                message: message,
+                isShown: $fullScreenShown,
+                options: .init(selectedIndex: 0)
             )
         }
         .onAppear {

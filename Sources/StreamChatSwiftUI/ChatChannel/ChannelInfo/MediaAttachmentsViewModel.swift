@@ -84,7 +84,7 @@ class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDe
                 let mediaItem = MediaItem(
                     id: imageAttachment.id.rawValue,
                     isVideo: false,
-                    author: message.author,
+                    message: message,
                     videoAttachment: nil,
                     imageAttachment: imageAttachment
                 )
@@ -94,7 +94,7 @@ class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDe
                 let mediaItem = MediaItem(
                     id: videoAttachment.id.rawValue,
                     isVideo: true,
-                    author: message.author,
+                    message: message,
                     videoAttachment: videoAttachment,
                     imageAttachment: nil
                 )
@@ -110,7 +110,7 @@ class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDe
 struct MediaItem: Identifiable {
     let id: String
     let isVideo: Bool
-    let author: ChatUser
+    let message: ChatMessage
 
     var videoAttachment: ChatMessageVideoAttachment?
     var imageAttachment: ChatMessageImageAttachment?
