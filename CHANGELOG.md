@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix having message edit action on Giphy messages [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
 - Fix being able to long press an unsent Giphy message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
 - Fix being able to swipe to reply an unsent Giphy message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix translated message showing original text in message actions overlay [#810](https://github.com/GetStream/stream-chat-swiftui/pull/810)
+
 ### 🔄 Changed
 - Deprecated `ComposerConfig.attachmentPayloadConverter` in favour of `MessageComposerViewModel.convertAddedAssetsToPayloads()` [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
 
