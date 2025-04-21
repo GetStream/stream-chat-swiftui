@@ -225,6 +225,36 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         // Then
         XCTAssert(offset == 12.5)
     }
+
+    func test_reactionsOverlayView_translated() {
+        // Given
+        let testMessage = ChatMessage.mock(
+            id: "test",
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: "test", name: "martin"),
+            translations: [.portuguese: "Olá"]
+        )
+        let messageDisplayInfo = MessageDisplayInfo(
+            message: testMessage,
+            frame: self.messageDisplayInfo.frame,
+            contentWidth: self.messageDisplayInfo.contentWidth,
+            isFirst: true
+        )
+        let view = VerticallyCenteredView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: .mock(cid: .unique, membership: .mock(id: "test", language: .portuguese)),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: messageDisplayInfo,
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+        }
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }
 
 struct VerticallyCenteredView<Content: View>: View {
