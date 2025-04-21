@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add factory methods for gallery and video player view [#808](https://github.com/GetStream/stream-chat-swiftui/pull/808)
+- Add support for editing message attachments [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+### 🐞 Fixed
+- Fix scrolling to the bottom when editing a message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix having message edit action on Giphy messages [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix being able to long press an unsent Giphy message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix being able to swipe to reply an unsent Giphy message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+### 🔄 Changed
+- Deprecated `ComposerConfig.attachmentPayloadConverter` in favour of `MessageComposerViewModel.convertAddedAssetsToPayloads()` [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
 
 # [4.77.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.77.0)
 _April 10, 2025_

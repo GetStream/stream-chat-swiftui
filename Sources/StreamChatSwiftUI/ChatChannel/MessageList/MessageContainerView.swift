@@ -35,6 +35,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private let replyThreshold: CGFloat = 60
     private let paddingValue: CGFloat = 8
 
+    var isSwipeToReplyPossible: Bool {
+        message.isInteractionEnabled && channel.config.repliesEnabled
+    }
+
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -124,9 +128,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
                     .onLongPressGesture(perform: {
-                        if !message.isDeleted {
-                            handleGestureForMessage(showsMessageActions: true)
-                        }
+                        handleGestureForMessage(showsMessageActions: true)
                     })
                     .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
                     .simultaneousGesture(
@@ -135,7 +137,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
-                            if message.isDeleted || !channel.config.repliesEnabled {
+                            guard isSwipeToReplyPossible else {
                                 return
                             }
                             // Using updating since onEnded is not called if the gesture is canceled.
@@ -363,10 +365,14 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         }
     }
 
-    private func handleGestureForMessage(
+    func handleGestureForMessage(
         showsMessageActions: Bool,
         showsBottomContainer: Bool = true
     ) {
+        guard message.isInteractionEnabled else {
+            return
+        }
+
         computeFrame.toggle()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             triggerHapticFeedback(style: .medium)
