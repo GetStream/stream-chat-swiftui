@@ -341,7 +341,11 @@ extension ViewFactory {
             isLast: isLast,
             scrolledId: scrolledId,
             quotedMessage: quotedMessage,
-            onLongPress: onLongPress
+            onLongPress: onLongPress,
+            viewModel: MessageViewModel(
+                message: message,
+                channel: channel
+            )
         )
     }
     

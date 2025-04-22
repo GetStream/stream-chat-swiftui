@@ -6,6 +6,39 @@ import AVKit
 import StreamChat
 import SwiftUI
 
+open class MessageViewModel: ObservableObject {
+    @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
+
+    private var message: ChatMessage
+    private var channel: ChatChannel
+
+    public init(
+        message: ChatMessage,
+        channel: ChatChannel
+    ) {
+        self.message = message
+        self.channel = channel
+    }
+
+    open var isSwipeToQuoteReplyPossible: Bool {
+        message.isInteractionEnabled && channel.config.repliesEnabled
+    }
+
+    open var textContent: String {
+        if let language = channel.membership?.language,
+           let translatedText = message.textContent(for: language) {
+            return translatedText
+        }
+
+        return message.adjustedText
+    }
+
+    private var messageListConfig: MessageListConfig {
+        utils.messageListConfig
+    }
+}
+
 public struct MessageContainerView<Factory: ViewFactory>: View {
     @Environment(\.channelTranslationLanguage) var translationLanguage
     
@@ -35,9 +68,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private let replyThreshold: CGFloat = 60
     private let paddingValue: CGFloat = 8
 
-    var isSwipeToReplyPossible: Bool {
-        message.isInteractionEnabled && channel.config.repliesEnabled
-    }
+    @ObservedObject private var viewModel: MessageViewModel
 
     public init(
         factory: Factory,
@@ -49,7 +80,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isLast: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        viewModel: MessageViewModel? = nil
     ) {
         self.factory = factory
         self.channel = channel
@@ -61,6 +93,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.onLongPress = onLongPress
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
+        self.viewModel = viewModel ?? MessageViewModel(
+            message: message,
+            channel: channel
+        )
     }
 
     public var body: some View {
@@ -137,7 +173,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
-                            guard isSwipeToReplyPossible else {
+                            guard viewModel.isSwipeToQuoteReplyPossible else {
                                 return
                             }
                             // Using updating since onEnded is not called if the gesture is canceled.
@@ -286,6 +322,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
+        .environmentObject(viewModel)
     }
 
     private var maximumHorizontalSwipeDisplacement: CGFloat {
