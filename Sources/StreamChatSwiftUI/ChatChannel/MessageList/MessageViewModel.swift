@@ -9,8 +9,8 @@ open class MessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
-    private var message: ChatMessage
-    private var channel: ChatChannel?
+    public private(set) var message: ChatMessage
+    public private(set) var channel: ChatChannel?
     public private(set) var originalTextMessageIds: Set<MessageId>
 
     public init(

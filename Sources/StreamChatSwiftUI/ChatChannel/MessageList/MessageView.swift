@@ -266,8 +266,6 @@ public struct LinkDetectionTextView: View {
         LocalizedStringKey(message.adjustedText)
     }
     
-    @State var displayedText: AttributedString?
-    
     @State var linkDetector = TextLinkDetector()
     
     @State var tintColor = InjectedValues[\.colors].tintColor
@@ -278,27 +276,14 @@ public struct LinkDetectionTextView: View {
     
     public var body: some View {
         Group {
-            if let displayedText {
-                Text(displayedText)
-            } else {
-                Text(message.adjustedText)
-            }
+            Text(displayText)
         }
         .foregroundColor(textColor(for: message))
         .font(fonts.body)
         .tint(tintColor)
-        .onAppear {
-            displayedText = attributedString(for: message)
-        }
-        .onChange(of: message, perform: { updated in
-            displayedText = attributedString(for: updated)
-        })
-        .onChange(of: viewModel.isOriginalTextShown, perform: { _ in
-            displayedText = attributedString(for: message)
-        })
     }
     
-    private func attributedString(for message: ChatMessage) -> AttributedString {
+    var displayText: AttributedString {
         let text = viewModel.textContent
 
         // Markdown
