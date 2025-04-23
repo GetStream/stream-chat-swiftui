@@ -71,8 +71,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                     }
                                 }
                             },
-                            onJumpToMessage: viewModel.jumpToMessage(messageId:),
-                            originalTextMessageIds: $viewModel.originalTextMessageIds
+                            onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
                         .environmentObject(viewModel)
                         .overlay(

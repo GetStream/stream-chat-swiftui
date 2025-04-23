@@ -38,7 +38,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var scrollDirection = ScrollDirection.up
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
-    @Binding var originalTextMessageIds: Set<MessageId>
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -83,8 +82,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        onJumpToMessage: ((String) -> Bool)? = nil,
-        originalTextMessageIds: Binding<Set<MessageId>> = .constant([])
+        onJumpToMessage: ((String) -> Bool)? = nil
     ) {
         self.factory = factory
         self.channel = channel
@@ -104,7 +102,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         _quotedMessage = quotedMessage
         _scrollPosition = scrollPosition
         _firstUnreadMessageId = firstUnreadMessageId
-        _originalTextMessageIds = originalTextMessageIds
         if !messageRenderingUtil.hasPreviousMessageSet
             || self.showScrollToLatestButton == false
             || self.scrolledId != nil

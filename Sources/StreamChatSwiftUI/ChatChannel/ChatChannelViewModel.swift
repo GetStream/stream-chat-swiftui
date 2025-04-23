@@ -225,18 +225,23 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkUnreadCount()
     }
 
+    /// Show the original text for the given translated message.
     public func showOriginalText(for message: ChatMessage) {
         originalTextMessageIds.insert(message.id)
     }
 
+    /// Show the translated text for the given translated message.
     public func showTranslatedText(for message: ChatMessage) {
         originalTextMessageIds.remove(message.id)
     }
 
+    /// Creates a view model for the given message.
+    ///
+    /// You can override this method to provide a custom view model.
     open func makeMessageViewModel(
         for message: ChatMessage
-    ) -> ChatMessageViewModel {
-        ChatMessageViewModel(
+    ) -> MessageViewModel {
+        MessageViewModel(
             message: message,
             channel: channel,
             originalTextMessageIds: originalTextMessageIds
