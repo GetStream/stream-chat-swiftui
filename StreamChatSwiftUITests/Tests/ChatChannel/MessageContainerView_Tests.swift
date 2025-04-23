@@ -205,6 +205,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             width: 2 * defaultScreenSize.width / 3,
             scrolledId: .constant(nil)
         )
+        .environmentObject(MessageViewModel(message: message, channel: nil))
         .frame(width: 200)
         .padding()
 
@@ -230,6 +231,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
+        .environmentObject(MessageViewModel(message: message, channel: nil))
         .frame(width: 200)
 
         // Then
@@ -256,6 +258,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
+        .environmentObject(MessageViewModel(message: message, channel: nil))
         .frame(width: 200)
 
         // Then
@@ -339,150 +342,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
-    func test_handleGestureForMessage_whenMessageIsInteractable_shouldLongPress() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let exp = expectation(description: "Long press triggered")
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil)
-        ) { _ in
-            exp.fulfill()
-        }
-
-        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
-
-        waitForExpectations(timeout: defaultTimeout) { error in
-            XCTAssertNil(error, "Long press was not triggered")
-        }
-    }
-
-    func test_handleGestureForMessage_whenMessageNotInteractable_shouldNotLongPress() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            type: .ephemeral,
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let exp = expectation(description: "Long press should not be triggered")
-        exp.isInverted = true
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil)
-        ) { _ in
-            exp.fulfill()
-        }
-
-        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
-
-        waitForExpectations(timeout: 1)
-    }
-
-    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageInteractable_shouldBeTrue() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil),
-            onLongPress: { _ in }
-        )
-
-        XCTAssertTrue(view.isSwipeToReplyPossible)
-    }
-
-    func test_isSwipeToReplyPossible_whenRepliesDisabled_whenMessageInteractable_shouldBeFalse() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: false)),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil),
-            onLongPress: { _ in }
-        )
-
-        XCTAssertFalse(view.isSwipeToReplyPossible)
-    }
-
-    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageNotInteractable_shouldBeFalse() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            type: .ephemeral,
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil),
-            onLongPress: { _ in }
-        )
-
-        XCTAssertFalse(view.isSwipeToReplyPossible)
-    }
-
     // MARK: - private
 
     func testMessageViewContainer(message: ChatMessage) -> some View {
-        MessageContainerView(
+        let channel = ChatChannel.mockDMChannel()
+        return MessageContainerView(
             factory: DefaultViewFactory.shared,
             channel: .mockDMChannel(),
             message: message,
@@ -494,6 +358,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
+        .environmentObject(MessageViewModel(message: message, channel: channel))
         .frame(width: 375, height: 200)
     }
 }

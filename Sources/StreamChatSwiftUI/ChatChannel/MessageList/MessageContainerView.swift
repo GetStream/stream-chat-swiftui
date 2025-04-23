@@ -7,8 +7,8 @@ import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
-    @EnvironmentObject private var channelViewModel: ChatChannelViewModel
-    @EnvironmentObject private var messageViewModel: MessageViewModel
+    @EnvironmentObject var channelViewModel: ChatChannelViewModel
+    @EnvironmentObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
     
     @Injected(\.fonts) private var fonts
