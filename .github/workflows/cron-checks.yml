@@ -72,6 +72,7 @@ jobs:
       env:
         INSTALL_ALLURE: true
         INSTALL_YEETD: true
+        INSTALL_IPSW: true
         SKIP_MINT_BOOTSTRAP: true
     - uses: ./.github/actions/setup-ios-runtime
       if: ${{ matrix.setup_runtime }}
