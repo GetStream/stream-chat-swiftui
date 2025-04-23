@@ -23,8 +23,47 @@ open class MessageViewModel: ObservableObject {
         self.originalTextMessageIds = originalTextMessageIds
     }
 
-    public var isOriginalTextShown: Bool {
+    public var originalTextShown: Bool {
         originalTextMessageIds.contains(message.id)
+    }
+
+    public var systemMessageShown: Bool {
+        message.type == .system || (message.type == .error && message.isBounced == false)
+    }
+
+    public var reactionsShown: Bool {
+        !message.reactionScores.isEmpty
+            && !message.isDeleted
+            && channel?.config.reactionsEnabled == true
+    }
+
+    public var failureIndicatorShown: Bool {
+        ((message.localState == .sendingFailed || message.isBounced) && !message.text.isEmpty)
+    }
+
+    open var authorAndDateShown: Bool {
+        guard let channel = channel else { return false }
+        return !message.isRightAligned
+            && channel.memberCount > 2
+            && messageListConfig.messageDisplayOptions.showAuthorName
+    }
+
+    open var messageDateShown: Bool {
+        messageListConfig.messageDisplayOptions.showMessageDate
+    }
+
+    public var isPinned: Bool {
+        message.isPinned
+    }
+
+    public var isRightAligned: Bool {
+        message.isRightAligned
+    }
+
+    public var userDisplayInfo: UserDisplayInfo? {
+        guard let channel = channel else { return nil }
+        guard messageListConfig.messageDisplayOptions.showAvatars(for: channel) else { return nil }
+        return message.authorDisplayInfo
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {
@@ -32,14 +71,16 @@ open class MessageViewModel: ObservableObject {
     }
 
     open var textContent: String {
-        if !isOriginalTextShown, let translatedText = translatedText {
+        if !originalTextShown, let translatedText = translatedText {
             return translatedText
         }
 
         return message.adjustedText
     }
 
-    public var translatedText: String? {
+    // MARK: - Helpers
+
+    private var translatedText: String? {
         if let language = channel?.membership?.language,
            let translatedText = message.textContent(for: language) {
             return translatedText
@@ -47,8 +88,6 @@ open class MessageViewModel: ObservableObject {
 
         return nil
     }
-
-    // MARK: - Helpers
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
