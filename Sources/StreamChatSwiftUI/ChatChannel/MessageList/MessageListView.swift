@@ -6,6 +6,7 @@ import StreamChat
 import SwiftUI
 
 public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
+    @EnvironmentObject private var channelViewModel: ChatChannelViewModel
 
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
@@ -37,6 +38,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var scrollDirection = ScrollDirection.up
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
+    @Binding var originalTextMessageIds: Set<MessageId>
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -81,7 +83,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        onJumpToMessage: ((String) -> Bool)? = nil
+        onJumpToMessage: ((String) -> Bool)? = nil,
+        originalTextMessageIds: Binding<Set<MessageId>> = .constant([])
     ) {
         self.factory = factory
         self.channel = channel
@@ -101,6 +104,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         _quotedMessage = quotedMessage
         _scrollPosition = scrollPosition
         _firstUnreadMessageId = firstUnreadMessageId
+        _originalTextMessageIds = originalTextMessageIds
         if !messageRenderingUtil.hasPreviousMessageSet
             || self.showScrollToLatestButton == false
             || self.scrolledId != nil
@@ -149,6 +153,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 isLast: !showsLastInGroupInfo && message == messages.last
                             )
                             .environment(\.channelTranslationLanguage, channel.membership?.language)
+                            .environmentObject(channelViewModel)
+                            .environmentObject(channelViewModel.makeMessageViewModel(
+                                for: message
+                            ))
                             .onAppear {
                                 if index == nil {
                                     index = messageListDateUtils.index(for: message, in: messages)

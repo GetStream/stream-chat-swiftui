@@ -6,33 +6,50 @@ import AVKit
 import StreamChat
 import SwiftUI
 
-open class MessageViewModel: ObservableObject {
+open class ChatMessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
     private var message: ChatMessage
-    private var channel: ChatChannel
+    private var channel: ChatChannel?
+    public var originalTextMessageIds: Set<MessageId>
 
     public init(
         message: ChatMessage,
-        channel: ChatChannel
+        channel: ChatChannel?,
+        originalTextMessageIds: Set<MessageId> = []
     ) {
         self.message = message
         self.channel = channel
+        self.originalTextMessageIds = originalTextMessageIds
+    }
+
+    public var isOriginalTextShown: Bool {
+        originalTextMessageIds.contains(message.id)
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {
-        message.isInteractionEnabled && channel.config.repliesEnabled
+        message.isInteractionEnabled && channel?.config.repliesEnabled == true
     }
 
     open var textContent: String {
-        if let language = channel.membership?.language,
-           let translatedText = message.textContent(for: language) {
+        if !isOriginalTextShown, let translatedText = translatedText {
             return translatedText
         }
 
         return message.adjustedText
     }
+
+    public var translatedText: String? {
+        if let language = channel?.membership?.language,
+           let translatedText = message.textContent(for: language) {
+            return translatedText
+        }
+
+        return nil
+    }
+
+    // MARK: - Helpers
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
@@ -40,6 +57,8 @@ open class MessageViewModel: ObservableObject {
 }
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
+    @EnvironmentObject private var channelViewModel: ChatChannelViewModel
+    @EnvironmentObject private var messageViewModel: ChatMessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
     
     @Injected(\.fonts) private var fonts
@@ -68,8 +87,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private let replyThreshold: CGFloat = 60
     private let paddingValue: CGFloat = 8
 
-    @ObservedObject private var viewModel: MessageViewModel
-
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -80,8 +97,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isLast: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        viewModel: MessageViewModel? = nil
+        onLongPress: @escaping (MessageDisplayInfo) -> Void
     ) {
         self.factory = factory
         self.channel = channel
@@ -93,10 +109,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.onLongPress = onLongPress
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
-        self.viewModel = viewModel ?? MessageViewModel(
-            message: message,
-            channel: channel
-        )
     }
 
     public var body: some View {
@@ -173,7 +185,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
-                            guard viewModel.isSwipeToQuoteReplyPossible else {
+                            guard messageViewModel.isSwipeToQuoteReplyPossible else {
                                 return
                             }
                             // Using updating since onEnded is not called if the gesture is canceled.
@@ -267,9 +279,28 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 
                     if message.textContent(for: translationLanguage) != nil,
                        let localizedName = translationLanguage?.localizedName {
-                        Text(L10n.Message.translatedTo(localizedName))
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.subtitleText))
+                        HStack(spacing: 4) {
+                            Text(L10n.Message.translatedTo(localizedName))
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.subtitleText))
+                            Text("•")
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.subtitleText))
+                            Button(
+                                action: {
+                                    if messageViewModel.isOriginalTextShown {
+                                        channelViewModel.showTranslatedText(for: message)
+                                    } else {
+                                        channelViewModel.showOriginalText(for: message)
+                                    }
+                                },
+                                label: {
+                                    Text(messageViewModel.isOriginalTextShown ? "Show Translation" : "Show Original")
+                                        .font(fonts.footnote)
+                                        .foregroundColor(Color(colors.subtitleText))
+                                }
+                            )
+                        }
                     }
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
@@ -322,7 +353,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
-        .environmentObject(viewModel)
+        .environmentObject(messageViewModel)
     }
 
     private var maximumHorizontalSwipeDisplacement: CGFloat {

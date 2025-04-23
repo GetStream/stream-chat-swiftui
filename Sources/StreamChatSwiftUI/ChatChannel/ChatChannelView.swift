@@ -71,8 +71,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                     }
                                 }
                             },
-                            onJumpToMessage: viewModel.jumpToMessage(messageId:)
+                            onJumpToMessage: viewModel.jumpToMessage(messageId:),
+                            originalTextMessageIds: $viewModel.originalTextMessageIds
                         )
+                        .environmentObject(viewModel)
                         .overlay(
                             viewModel.currentDateString != nil ?
                                 factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
