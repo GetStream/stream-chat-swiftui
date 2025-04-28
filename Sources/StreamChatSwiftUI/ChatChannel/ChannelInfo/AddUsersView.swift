@@ -65,7 +65,8 @@ struct AddUsersView<Factory: ViewFactory>: View {
                                     id: user.id,
                                     name: user.name ?? "",
                                     imageURL: user.imageURL,
-                                    size: CGSize(width: itemSize, height: itemSize)
+                                    size: CGSize(width: itemSize, height: itemSize),
+                                    extraData: user.extraData
                                 )
                                 factory.makeMessageAvatarView(for: userDisplayInfo)
 
