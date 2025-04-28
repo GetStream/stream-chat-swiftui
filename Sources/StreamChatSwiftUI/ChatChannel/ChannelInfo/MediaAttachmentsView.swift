@@ -83,7 +83,8 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                             id: mediaItem.message.author.id,
                                             name: mediaItem.message.author.name ?? "",
                                             imageURL: mediaItem.message.author.imageURL,
-                                            size: .init(width: 24, height: 24)
+                                            size: .init(width: 24, height: 24),
+                                            extraData: mediaItem.message.author.extraData
                                         )
                                     )
                                     .overlay(

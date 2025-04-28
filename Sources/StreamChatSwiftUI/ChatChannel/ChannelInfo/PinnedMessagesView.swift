@@ -71,7 +71,8 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                     id: message.author.id,
                     name: message.author.name ?? "",
                     imageURL: message.author.imageURL,
-                    size: avatarSize
+                    size: avatarSize,
+                    extraData: message.author.extraData
                 )
             )
 

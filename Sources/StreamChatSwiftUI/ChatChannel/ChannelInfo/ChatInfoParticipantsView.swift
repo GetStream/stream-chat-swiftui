@@ -32,7 +32,8 @@ struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                     let displayInfo = UserDisplayInfo(
                         id: participant.chatUser.id,
                         name: participant.chatUser.name ?? "",
-                        imageURL: participant.chatUser.imageURL
+                        imageURL: participant.chatUser.imageURL,
+                        extraData: participant.chatUser.extraData
                     )
                     factory.makeMessageAvatarView(for: displayInfo)
 

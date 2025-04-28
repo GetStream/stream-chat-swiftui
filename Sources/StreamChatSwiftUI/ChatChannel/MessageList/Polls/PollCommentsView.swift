@@ -43,7 +43,8 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                                         let displayInfo = UserDisplayInfo(
                                             id: comment.user?.id ?? "",
                                             name: comment.user?.name ?? "",
-                                            imageURL: comment.user?.imageURL
+                                            imageURL: comment.user?.imageURL,
+                                            extraData: comment.user?.extraData ?? [:]
                                         )
                                         factory.makeMessageAvatarView(for: displayInfo)
                                     }

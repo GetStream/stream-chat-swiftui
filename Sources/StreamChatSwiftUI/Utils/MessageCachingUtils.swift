@@ -34,19 +34,22 @@ public struct UserDisplayInfo {
     public let imageURL: URL?
     public let role: UserRole?
     public let size: CGSize?
+    public let extraData: [String: RawJSON]
 
     public init(
         id: String,
         name: String,
         imageURL: URL?,
         role: UserRole? = nil,
-        size: CGSize? = nil
+        size: CGSize? = nil,
+        extraData: [String: RawJSON] = [:]
     ) {
         self.id = id
         self.name = name
         self.imageURL = imageURL
         self.role = role
         self.size = size
+        self.extraData = extraData
     }
 }
 
@@ -57,7 +60,8 @@ extension ChatMessage {
             id: author.id,
             name: author.name ?? author.id,
             imageURL: author.imageURL,
-            role: author.userRole
+            role: author.userRole,
+            extraData: author.extraData
         )
     }
 

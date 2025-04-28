@@ -228,7 +228,8 @@ struct PollOptionView<Factory: ViewFactory>: View {
                                         id: vote.user?.id ?? "",
                                         name: vote.user?.name ?? "",
                                         imageURL: vote.user?.imageURL,
-                                        size: .init(width: 20, height: 20)
+                                        size: .init(width: 20, height: 20),
+                                        extraData: vote.user?.extraData ?? [:]
                                     )
                                 )
                             }
