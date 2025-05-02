@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `ChatChannelView`.
-open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
+@MainActor open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
@@ -314,18 +314,20 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     return false
                 }
                 loadingMessagesAround = true
-                channelDataSource.loadPageAroundMessageId(baseId) { [weak self] error in
+                channelDataSource.loadPageAroundMessageId(baseId) { [weak self, channelController] error in
                     if error != nil {
                         log.error("Error loading messages around message \(messageId)")
                         return
                     }
                     var toJumpId = messageId
-                    if toJumpId == baseId, let message = self?.channelController.dataStore.message(id: toJumpId) {
+                    if toJumpId == baseId, let message = channelController.dataStore.message(id: toJumpId) {
                         toJumpId = message.messageId
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self?.scrolledId = toJumpId
-                        self?.loadingMessagesAround = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self, toJumpId] in
+                        MainActor.ensureIsolated { [weak self] in
+                            self?.scrolledId = toJumpId
+                            self?.loadingMessagesAround = false
+                        }
                     }
                 }
                 return false
@@ -564,7 +566,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             withTimeInterval: 0.5,
             repeats: false,
             block: { [weak self] _ in
-                self?.currentDate = nil
+                MainActor.ensureIsolated { [weak self] in
+                    self?.currentDate = nil
+                }
             }
         )
     }
@@ -787,13 +791,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     deinit {
-        messageCachingUtils.clearCache()
-        if messageController == nil {
-            utils.channelControllerFactory.clearCurrentController()
-            cleanupAudioPlayer()
-            ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-            if !channelDataSource.hasLoadedAllNextMessages {
-                channelDataSource.loadFirstPage { _ in }
+        MainActor.ensureIsolated {
+            messageCachingUtils.clearCache()
+            if messageController == nil {
+                utils.channelControllerFactory.clearCurrentController()
+                cleanupAudioPlayer()
+                ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+                if !channelDataSource.hasLoadedAllNextMessages {
+                    channelDataSource.loadFirstPage { _ in }
+                }
             }
         }
     }

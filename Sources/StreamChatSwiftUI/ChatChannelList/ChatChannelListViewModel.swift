@@ -9,7 +9,10 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
+@MainActor open class ChatChannelListViewModel:
+    ObservableObject,
+    ChatChannelListControllerDelegate,
+    ChatMessageSearchControllerDelegate {
     
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
@@ -176,8 +179,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if !loadingNextChannels {
             loadingNextChannels = true
             controller?.loadNextChannels(limit: 30) { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
+                MainActor.ensureIsolated { [weak self] in
+                    guard let self = self else { return }
+                    self.loadingNextChannels = false
+                }
             }
         }
     }
@@ -216,8 +221,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
         controller.deleteChannel { [weak self] error in
             if error != nil {
-                // handle error
-                self?.setChannelAlertType(.error)
+                MainActor.ensureIsolated { [weak self] in
+                    self?.setChannelAlertType(.error)
+                }
             }
         }
     }
@@ -232,11 +238,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     // MARK: - ChatChannelListControllerDelegate
 
-    public func controller(
+    nonisolated public func controller(
         _ controller: ChatChannelListController,
         didChangeChannels changes: [ListChange<ChatChannel>]
     ) {
-        handleChannelListChanges(controller)
+        MainActor.ensureIsolated {
+            handleChannelListChanges(controller)
+        }
     }
 
     open func controller(
@@ -268,8 +276,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     
     // MARK: - ChatMessageSearchControllerDelegate
     
-    public func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
-        updateMessageSearchResults()
+    nonisolated public func controller(
+        _ controller: ChatMessageSearchController,
+        didChangeMessages changes: [ListChange<ChatMessage>]
+    ) {
+        MainActor.ensureIsolated {
+            updateMessageSearchResults()
+        }
     }
 
     // MARK: - private
@@ -328,15 +341,17 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         loading = channels.isEmpty
 
         controller?.synchronize { [weak self] error in
-            guard let self = self else { return }
-            self.loading = false
-            if error != nil {
-                // handle error
-                self.setChannelAlertType(.error)
-            } else {
-                // access channels
-                self.updateChannels()
-                self.checkForDeeplinks()
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self else { return }
+                self.loading = false
+                if error != nil {
+                    // handle error
+                    self.setChannelAlertType(.error)
+                } else {
+                    // access channels
+                    self.updateChannels()
+                    self.checkForDeeplinks()
+                }
             }
         }
     }
@@ -375,8 +390,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if !loadingNextChannels {
             loadingNextChannels = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
+                MainActor.ensureIsolated { [weak self] in
+                    guard let self = self else { return }
+                    self.loadingNextChannels = false
+                }
             }
         }
     }
@@ -393,9 +410,11 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         if !loadingNextChannels {
             loadingNextChannels = true
             channelListSearchController.loadNextChannels { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
-                self.updateChannelSearchResults()
+                MainActor.ensureIsolated { [weak self] in
+                    guard let self = self else { return }
+                    self.loadingNextChannels = false
+                    self.updateChannelSearchResults()
+                }
             }
         }
     }
@@ -405,9 +424,11 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         messageSearchController = chatClient.messageSearchController()
         loadingSearchResults = true
         messageSearchController?.search(text: searchText) { [weak self] _ in
-            self?.loadingSearchResults = false
-            self?.messageSearchController?.delegate = self
-            self?.updateMessageSearchResults()
+            MainActor.ensureIsolated { [weak self] in
+                self?.loadingSearchResults = false
+                self?.messageSearchController?.delegate = self
+                self?.updateMessageSearchResults()
+            }
         }
     }
 
@@ -425,8 +446,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         channelListSearchController = chatClient.channelListController(query: query)
         loadingSearchResults = true
         channelListSearchController?.synchronize { [weak self] _ in
-            self?.loadingSearchResults = false
-            self?.updateChannelSearchResults()
+            MainActor.ensureIsolated { [weak self] in
+                self?.loadingSearchResults = false
+                self?.updateChannelSearchResults()
+            }
         }
     }
 
@@ -435,10 +458,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
 
-        queue.async { [weak self] in
+        queue.async { [weak self, chatClient] in
             let results: [ChannelSelectionInfo] = messageSearchController.messages.compactMap { message in
                 guard let channelId = message.cid else { return nil }
-                guard let channel = self?.chatClient.channelController(for: channelId).channel else {
+                guard let channel = chatClient.channelController(for: channelId).channel else {
                     return nil
                 }
                 return ChannelSelectionInfo(
@@ -447,7 +470,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                     searchType: .messages
                 )
             }
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 self?.searchResults = results
             }
         }
@@ -480,11 +503,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     private func observeClientIdChange() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
-            guard let self = self else { return }
-            if self.chatClient.currentUserId != nil {
-                self.stopTimer()
-                self.makeDefaultChannelListController()
-                self.setupChannelListController()
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self else { return }
+                if self.chatClient.currentUserId != nil {
+                    self.stopTimer()
+                    self.makeDefaultChannelListController()
+                    self.setupChannelListController()
+                }
             }
         })
     }
@@ -597,13 +622,13 @@ public enum ChannelPopupType {
 }
 
 /// The type of data the channel list should perform a search.
-public struct ChannelListSearchType: Equatable {
+public struct ChannelListSearchType: Equatable, Sendable {
     let type: String
 
     private init(type: String) {
         self.type = type
     }
 
-    public static var channels = Self(type: "channels")
-    public static var messages = Self(type: "messages")
+    public static let channels = Self(type: "channels")
+    public static let messages = Self(type: "messages")
 }

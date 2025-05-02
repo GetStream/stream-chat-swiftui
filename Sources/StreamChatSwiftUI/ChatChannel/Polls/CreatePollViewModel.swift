@@ -7,7 +7,7 @@ import Foundation
 import StreamChat
 import SwiftUI
 
-class CreatePollViewModel: ObservableObject {
+@MainActor class CreatePollViewModel: ObservableObject {
     
     @Injected(\.utils) var utils
     
@@ -102,7 +102,7 @@ class CreatePollViewModel: ObservableObject {
             .store(in: &cancellables)
     }
         
-    func createPoll(completion: @escaping () -> Void) {
+    func createPoll(completion: @escaping @Sendable() -> Void) {
         let pollOptions = options
             .map(\.trimmed)
             .filter { !$0.isEmpty }
@@ -123,7 +123,9 @@ class CreatePollViewModel: ObservableObject {
                 completion()
             case let .failure(error):
                 log.error("Error creating a poll: \(error.localizedDescription)")
-                self?.errorShown = true
+                MainActor.ensureIsolated { [weak self] in
+                    self?.errorShown = true
+                }
             }
         }
     }

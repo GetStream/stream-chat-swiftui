@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageComposerView`.
-open class MessageComposerViewModel: ObservableObject {
+@MainActor open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) internal var utils
 
@@ -352,7 +352,7 @@ open class MessageComposerViewModel: ObservableObject {
         skipPush: Bool = false,
         skipEnrichUrl: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: @escaping () -> Void
+        completion: @escaping @Sendable() -> Void
     ) {
         defer {
             checkChannelCooldown()
@@ -401,7 +401,9 @@ open class MessageComposerViewModel: ObservableObject {
                     case .success:
                         completion()
                     case .failure:
-                        self?.errorShown = true
+                        MainActor.ensureIsolated { [weak self] in
+                            self?.errorShown = true
+                        }
                     }
                 }
             } else {
@@ -419,7 +421,9 @@ open class MessageComposerViewModel: ObservableObject {
                     case .success:
                         completion()
                     case .failure:
-                        self?.errorShown = true
+                        MainActor.ensureIsolated { [weak self] in
+                            self?.errorShown = true
+                        }
                     }
                 }
             }
@@ -703,7 +707,7 @@ open class MessageComposerViewModel: ObservableObject {
     private func edit(
         message: ChatMessage,
         attachments: [AnyAttachmentPayload]?,
-        completion: @escaping () -> Void
+        completion: @escaping @Sendable() -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
             return
@@ -724,7 +728,9 @@ open class MessageComposerViewModel: ObservableObject {
             attachments: newAttachments
         ) { [weak self] error in
             if error != nil {
-                self?.errorShown = true
+                MainActor.ensureIsolated { [weak self] in
+                    self?.errorShown = true
+                }
             } else {
                 completion()
             }
@@ -806,10 +812,12 @@ open class MessageComposerViewModel: ObservableObject {
                 withTimeInterval: 1,
                 repeats: true,
                 block: { [weak self] _ in
-                    self?.cooldownDuration -= 1
-                    if self?.cooldownDuration == 0 {
-                        self?.timer?.invalidate()
-                        self?.timer = nil
+                    MainActor.ensureIsolated { [weak self] in
+                        self?.cooldownDuration -= 1
+                        if self?.cooldownDuration == 0 {
+                            self?.timer?.invalidate()
+                            self?.timer = nil
+                        }
                     }
                 }
             )
@@ -887,27 +895,29 @@ open class MessageComposerViewModel: ObservableObject {
 }
 
 extension MessageComposerViewModel: EventsControllerDelegate {
-    public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
-        if let event = event as? DraftUpdatedEvent {
-            let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
-            let isFromSameChannel = channelController.cid == event.cid && messageController == nil
-            if isFromSameThread || isFromSameChannel {
-                fillDraftMessage()
+    nonisolated public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
+        MainActor.ensureIsolated {
+            if let event = event as? DraftUpdatedEvent {
+                let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
+                let isFromSameChannel = channelController.cid == event.cid && messageController == nil
+                if isFromSameThread || isFromSameChannel {
+                    fillDraftMessage()
+                }
             }
-        }
-
-        if let event = event as? DraftDeletedEvent {
-            let isFromSameThread = messageController?.messageId == event.threadId
-            let isFromSameChannel = channelController.cid == event.cid && messageController == nil
-            if isFromSameThread || isFromSameChannel {
-                clearInputData()
+            
+            if let event = event as? DraftDeletedEvent {
+                let isFromSameThread = messageController?.messageId == event.threadId
+                let isFromSameChannel = channelController.cid == event.cid && messageController == nil
+                if isFromSameThread || isFromSameChannel {
+                    clearInputData()
+                }
             }
         }
     }
 }
 
 // The assets added to the composer.
-struct ComposerAssets {
+struct ComposerAssets: Sendable {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
@@ -920,7 +930,7 @@ struct ComposerAssets {
 
 // A asset containing file information.
 // If it has a payload, it means that the file is already uploaded to the server.
-struct FileAddedAsset {
+struct FileAddedAsset: Sendable {
     var url: URL
     var payload: FileAttachmentPayload?
 }
@@ -970,7 +980,7 @@ class MessageAttachmentsConverter {
         completion: @escaping (ComposerAssets) -> Void
     ) {
         queue.async {
-            let addedAssets = self.attachmentsToAssets(attachments)
+            let addedAssets = Self.attachmentsToAssets(attachments)
             DispatchQueue.main.async {
                 completion(addedAssets)
             }
@@ -981,7 +991,7 @@ class MessageAttachmentsConverter {
     ///
     /// This operation is synchronous and should only be used if all attachments are already loaded.
     /// Like for example, for draft messages.
-    func attachmentsToAssets(
+    static func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment]
     ) -> ComposerAssets {
         var addedAssets = ComposerAssets()

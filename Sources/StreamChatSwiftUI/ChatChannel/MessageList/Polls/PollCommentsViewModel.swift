@@ -6,7 +6,7 @@ import Combine
 import StreamChat
 import SwiftUI
 
-class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
+@MainActor class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     
     @Injected(\.chatClient) var chatClient
     
@@ -53,11 +53,13 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     func refresh() {
         loadingComments = true
         commentsController.synchronize { [weak self] error in
-            guard let self else { return }
-            self.loadingComments = false
-            self.comments = Array(self.commentsController.votes)
-            if error != nil {
-                self.errorShown = true
+            MainActor.ensureIsolated { [weak self] in
+                guard let self else { return }
+                self.loadingComments = false
+                self.comments = Array(self.commentsController.votes)
+                if error != nil {
+                    self.errorShown = true
+                }
             }
         }
     }
@@ -72,9 +74,11 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     
     func add(comment: String) {
         pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
-            if let error {
-                log.error("Error casting a vote \(error.localizedDescription)")
-                self?.errorShown = true
+            MainActor.ensureIsolated { [weak self] in
+                if let error {
+                    log.error("Error casting a vote \(error.localizedDescription)")
+                    self?.errorShown = true
+                }
             }
         }
         newCommentText = ""
@@ -88,16 +92,18 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         loadComments()
     }
     
-    func controller(
+    nonisolated func controller(
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        if animateChanges {
-            withAnimation {
-                self.comments = Array(self.commentsController.votes)
+        MainActor.ensureIsolated {
+            if animateChanges {
+                withAnimation {
+                    self.comments = Array(self.commentsController.votes)
+                }
+            } else {
+                comments = Array(commentsController.votes)
             }
-        } else {
-            comments = Array(commentsController.votes)
         }
     }
     
@@ -105,9 +111,11 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
         guard !loadingComments, !commentsController.hasLoadedAllVotes else { return }
         loadingComments = true
         commentsController.loadMoreVotes { [weak self] error in
-            self?.loadingComments = false
-            if error != nil {
-                self?.errorShown = true
+            MainActor.ensureIsolated { [weak self] in
+                self?.loadingComments = false
+                if error != nil {
+                    self?.errorShown = true
+                }
             }
         }
     }

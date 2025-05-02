@@ -7,7 +7,7 @@ import Foundation
 import StreamChat
 
 /// The ViewModel for the `ChatThreadListView`.
-open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDelegate, EventsControllerDelegate {
+@MainActor open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDelegate, EventsControllerDelegate {
 
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
@@ -119,15 +119,17 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         isReloading = !isEmpty
         preselectThreadIfNeeded()
         threadListController.synchronize { [weak self] error in
-            self?.isLoading = false
-            self?.isReloading = false
-            self?.hasLoadedThreads = error == nil
-            self?.failedToLoadThreads = error != nil
-            self?.isEmpty = self?.threadListController.threads.isEmpty == true
-            self?.preselectThreadIfNeeded()
-            self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
-            if error == nil {
-                self?.newAvailableThreadIds = []
+            MainActor.ensureIsolated { [weak self] in
+                self?.isLoading = false
+                self?.isReloading = false
+                self?.hasLoadedThreads = error == nil
+                self?.failedToLoadThreads = error != nil
+                self?.isEmpty = self?.threadListController.threads.isEmpty == true
+                self?.preselectThreadIfNeeded()
+                self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
+                if error == nil {
+                    self?.newAvailableThreadIds = []
+                }
             }
         }
     }
@@ -149,30 +151,36 @@ open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDe
         
         isLoadingMoreThreads = true
         threadListController.loadMoreThreads { [weak self] result in
-            self?.isLoadingMoreThreads = false
-            self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
-            let threads = try? result.get()
-            self?.failedToLoadMoreThreads = threads == nil
+            MainActor.ensureIsolated { [weak self] in
+                self?.isLoadingMoreThreads = false
+                self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
+                let threads = try? result.get()
+                self?.failedToLoadMoreThreads = threads == nil
+            }
         }
     }
 
-    public func controller(
+    nonisolated public func controller(
         _ controller: ChatThreadListController,
         didChangeThreads changes: [ListChange<ChatThread>]
     ) {
-        threads = controller.threads
+        MainActor.ensureIsolated {
+            threads = controller.threads
+        }
     }
 
-    public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
-        switch event {
-        case let event as ThreadMessageNewEvent:
-            guard let parentId = event.message.parentMessageId else { break }
-            let isNewThread = threadListController.dataStore.thread(parentMessageId: parentId) == nil
-            if isNewThread {
-                newAvailableThreadIds.insert(parentId)
+    nonisolated public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
+        MainActor.ensureIsolated {
+            switch event {
+            case let event as ThreadMessageNewEvent:
+                guard let parentId = event.message.parentMessageId else { break }
+                let isNewThread = threadListController.dataStore.thread(parentMessageId: parentId) == nil
+                if isNewThread {
+                    newAvailableThreadIds.insert(parentId)
+                }
+            default:
+                break
             }
-        default:
-            break
         }
     }
 

@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct AudioRecordingInfo: Equatable {
+public struct AudioRecordingInfo: Equatable, Sendable {
     /// The waveform of the recording.
     public var waveform: [Float]
     /// The duration of the recording.
@@ -22,58 +22,66 @@ extension AudioRecordingInfo {
 }
 
 extension MessageComposerViewModel: AudioRecordingDelegate {
-    public func audioRecorder(
+    nonisolated public func audioRecorder(
         _ audioRecorder: AudioRecording,
         didUpdateContext: AudioRecordingContext
     ) {
-        audioRecordingInfo.update(
-            with: didUpdateContext.averagePower,
-            duration: didUpdateContext.duration
-        )
+        MainActor.ensureIsolated {
+            audioRecordingInfo.update(
+                with: didUpdateContext.averagePower,
+                duration: didUpdateContext.duration
+            )
+        }
     }
     
-    public func audioRecorder(
+    nonisolated public func audioRecorder(
         _ audioRecorder: AudioRecording,
         didFinishRecordingAtURL location: URL
     ) {
-        if audioRecordingInfo == .initial { return }
-        audioAnalysisFactory?.waveformVisualisation(
-            fromAudioURL: location,
-            for: waveformTargetSamples,
-            completionHandler: { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case let .success(waveform):
-                    DispatchQueue.main.async {
-                        let recording = AddedVoiceRecording(
-                            url: location,
-                            duration: self.audioRecordingInfo.duration,
-                            waveform: waveform
-                        )
-                        if self.recordingState == .stopped {
-                            self.pendingAudioRecording = recording
-                            self.audioRecordingInfo.waveform = waveform
-                        } else {
-                            self.addedVoiceRecordings.append(recording)
+        MainActor.ensureIsolated {
+            if audioRecordingInfo == .initial { return }
+            audioAnalysisFactory?.waveformVisualisation(
+                fromAudioURL: location,
+                for: waveformTargetSamples,
+                completionHandler: { [weak self] result in
+                    MainActor.ensureIsolated { [weak self] in
+                        guard let self else { return }
+                        switch result {
+                        case let .success(waveform):
+                            DispatchQueue.main.async {
+                                let recording = AddedVoiceRecording(
+                                    url: location,
+                                    duration: self.audioRecordingInfo.duration,
+                                    waveform: waveform
+                                )
+                                if self.recordingState == .stopped {
+                                    self.pendingAudioRecording = recording
+                                    self.audioRecordingInfo.waveform = waveform
+                                } else {
+                                    self.addedVoiceRecordings.append(recording)
+                                    self.recordingState = .initial
+                                    self.audioRecordingInfo = .initial
+                                }
+                            }
+                        case let .failure(error):
+                            log.error(error)
                             self.recordingState = .initial
-                            self.audioRecordingInfo = .initial
                         }
                     }
-                case let .failure(error):
-                    log.error(error)
-                    self.recordingState = .initial
                 }
-            }
-        )
+            )
+        }
     }
     
-    public func audioRecorder(
+    nonisolated public func audioRecorder(
         _ audioRecorder: AudioRecording,
         didFailWithError error: Error
     ) {
-        log.error(error)
-        recordingState = .initial
-        audioRecordingInfo = .initial
+        MainActor.ensureIsolated {
+            log.error(error)
+            recordingState = .initial
+            audioRecordingInfo = .initial
+        }
     }
 }
 

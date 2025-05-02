@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `PollAttachmentView`.
-public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
+@MainActor public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     static let numberOfVisibleOptionsShown = 10
     private var isCastingVote = false
@@ -120,8 +120,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         self.pollController = pollController
         pollController.delegate = self
         pollController.synchronize { [weak self] _ in
-            guard let self else { return }
-            self.currentUserVotes = Array(self.pollController.ownVotes)
+            MainActor.ensureIsolated { [weak self] in
+                guard let self else { return }
+                self.currentUserVotes = Array(self.pollController.ownVotes)
+            }
         }
     }
     
@@ -141,8 +143,10 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
                     log.debug("Vote already added")
                 }
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self?.isCastingVote = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                MainActor.ensureIsolated { [weak self] in
+                    self?.isCastingVote = false
+                }
             }
         }
     }
@@ -174,9 +178,11 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         pollController.removePollVote(
             voteId: vote.id
         ) { [weak self] error in
-            self?.isCastingVote = false
-            if let error {
-                log.error("Error removing a vote \(error.localizedDescription)")
+            MainActor.ensureIsolated { [weak self] in
+                self?.isCastingVote = false
+                if let error {
+                    log.error("Error removing a vote \(error.localizedDescription)")
+                }
             }
         }
     }
@@ -188,10 +194,12 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
         guard !isClosingPoll else { return }
         isClosingPoll = true
         pollController.closePoll { [weak self] error in
-            self?.isClosingPoll = false
-            if let error {
-                log.error("Error closing the poll \(error.localizedDescription)")
-                NotificationCenter.default.post(name: .showChannelAlertBannerNotification, object: nil)
+            MainActor.ensureIsolated { [weak self] in
+                self?.isClosingPoll = false
+                if let error {
+                    log.error("Error closing the poll \(error.localizedDescription)")
+                    NotificationCenter.default.post(name: .showChannelAlertBannerNotification, object: nil)
+                }
             }
         }
     }
@@ -224,15 +232,19 @@ public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
     
     // MARK: - PollControllerDelegate
     
-    public func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
-        self.poll = poll.item
+    nonisolated public func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
+        MainActor.ensureIsolated {
+            self.poll = poll.item
+        }
     }
     
-    public func pollController(
+    nonisolated public func pollController(
         _ pollController: PollController,
         didUpdateCurrentUserVotes votes: [ListChange<PollVote>]
     ) {
-        currentUserVotes = Array(pollController.ownVotes)
+        MainActor.ensureIsolated {
+            currentUserVotes = Array(pollController.ownVotes)
+        }
     }
     
     // MARK: - private

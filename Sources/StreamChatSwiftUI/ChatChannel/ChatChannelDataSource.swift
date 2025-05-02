@@ -5,7 +5,7 @@
 import StreamChat
 
 /// Data source providing the chat messages.
-protocol MessagesDataSource: AnyObject {
+@MainActor protocol MessagesDataSource: AnyObject {
 
     /// Called when the messages are updated.
     ///
@@ -31,7 +31,7 @@ protocol MessagesDataSource: AnyObject {
 }
 
 /// The data source for the channel.
-protocol ChannelDataSource: AnyObject {
+@MainActor protocol ChannelDataSource: AnyObject {
 
     /// Delegate implementing the `MessagesDataSource`.
     var delegate: MessagesDataSource? { get set }
@@ -53,7 +53,7 @@ protocol ChannelDataSource: AnyObject {
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     )
     
     /// Loads newer messages.
@@ -62,7 +62,7 @@ protocol ChannelDataSource: AnyObject {
     ///  - completion: called when the messages are loaded.
     func loadNextMessages(
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     )
     
     /// Loads a page around the provided message id.
@@ -71,12 +71,12 @@ protocol ChannelDataSource: AnyObject {
     ///  - completion: called when the messages are loaded.
     func loadPageAroundMessageId(
         _ messageId: MessageId,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     )
     
     /// Loads the first page of the channel.
     ///  - Parameter completion: called when the initial page is loaded.
-    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?)
+    func loadFirstPage(_ completion: (@Sendable(_ error: Error?) -> Void)?)
 }
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
@@ -102,32 +102,36 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
         self.controller.delegate = self
     }
 
-    public func channelController(
+    nonisolated public func channelController(
         _ channelController: ChatChannelController,
         didUpdateMessages changes: [ListChange<ChatMessage>]
     ) {
-        delegate?.dataSource(
-            channelDataSource: self,
-            didUpdateMessages: channelController.messages,
-            changes: changes
-        )
+        MainActor.ensureIsolated {
+            delegate?.dataSource(
+                channelDataSource: self,
+                didUpdateMessages: channelController.messages,
+                changes: changes
+            )
+        }
     }
 
-    func channelController(
+    nonisolated func channelController(
         _ channelController: ChatChannelController,
         didUpdateChannel channel: EntityChange<ChatChannel>
     ) {
-        delegate?.dataSource(
-            channelDataSource: self,
-            didUpdateChannel: channel,
-            channelController: channelController
-        )
+        MainActor.ensureIsolated {
+            delegate?.dataSource(
+                channelDataSource: self,
+                didUpdateChannel: channel,
+                channelController: channelController
+            )
+        }
     }
 
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     ) {
         controller.loadPreviousMessages(
             before: messageId,
@@ -136,18 +140,18 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
         )
     }
     
-    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+    func loadNextMessages(limit: Int, completion: (@Sendable(Error?) -> Void)?) {
         controller.loadNextMessages(limit: limit, completion: completion)
     }
     
     func loadPageAroundMessageId(
         _ messageId: MessageId,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     ) {
         controller.loadPageAroundMessageId(messageId, completion: completion)
     }
     
-    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+    func loadFirstPage(_ completion: (@Sendable(_ error: Error?) -> Void)?) {
         controller.loadFirstPage(completion)
     }
 }
@@ -184,41 +188,47 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         self.messageController = messageController
         self.messageController.delegate = self
         self.messageController.loadPreviousReplies { [weak self] _ in
-            guard let self = self else { return }
-            self.delegate?.dataSource(
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.dataSource(
+                    channelDataSource: self,
+                    didUpdateMessages: self.messages,
+                    changes: []
+                )
+            }
+        }
+    }
+
+    nonisolated func messageController(
+        _ controller: ChatMessageController,
+        didChangeReplies changes: [ListChange<ChatMessage>]
+    ) {
+        MainActor.ensureIsolated {
+            delegate?.dataSource(
                 channelDataSource: self,
-                didUpdateMessages: self.messages,
+                didUpdateMessages: messages,
+                changes: changes
+            )
+        }
+    }
+
+    nonisolated func messageController(
+        _ controller: ChatMessageController,
+        didChangeMessage change: EntityChange<ChatMessage>
+    ) {
+        MainActor.ensureIsolated {
+            delegate?.dataSource(
+                channelDataSource: self,
+                didUpdateMessages: messages,
                 changes: []
             )
         }
     }
 
-    func messageController(
-        _ controller: ChatMessageController,
-        didChangeReplies changes: [ListChange<ChatMessage>]
-    ) {
-        delegate?.dataSource(
-            channelDataSource: self,
-            didUpdateMessages: messages,
-            changes: changes
-        )
-    }
-
-    func messageController(
-        _ controller: ChatMessageController,
-        didChangeMessage change: EntityChange<ChatMessage>
-    ) {
-        delegate?.dataSource(
-            channelDataSource: self,
-            didUpdateMessages: messages,
-            changes: []
-        )
-    }
-
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     ) {
         messageController.loadPreviousReplies(
             before: messageId,
@@ -227,18 +237,18 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         )
     }
     
-    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+    func loadNextMessages(limit: Int, completion: (@Sendable(Error?) -> Void)?) {
         messageController.loadNextReplies(limit: limit, completion: completion)
     }
     
     func loadPageAroundMessageId(
         _ messageId: MessageId,
-        completion: ((Error?) -> Void)?
+        completion: (@Sendable(Error?) -> Void)?
     ) {
         messageController.loadPageAroundReplyId(messageId, completion: completion)
     }
     
-    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+    func loadFirstPage(_ completion: (@Sendable(_ error: Error?) -> Void)?) {
         messageController.loadFirstPage(completion)
     }
 }

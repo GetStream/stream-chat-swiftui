@@ -8,7 +8,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the more channel actions.
-open class MoreChannelActionsViewModel: ObservableObject {
+@MainActor open class MoreChannelActionsViewModel: ObservableObject {
     /// Context provided values.
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient

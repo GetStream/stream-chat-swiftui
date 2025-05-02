@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `PinnedMessagesView`.
-public class PinnedMessagesViewModel: ObservableObject {
+@MainActor public class PinnedMessagesViewModel: ObservableObject {
 
     let channel: ChatChannel
 
@@ -30,15 +30,17 @@ public class PinnedMessagesViewModel: ObservableObject {
     
     private func loadPinnedMessages() {
         channelController?.loadPinnedMessages(completion: { [weak self] result in
-            switch result {
-            case let .success(messages):
-                withAnimation {
-                    self?.pinnedMessages = messages
+            MainActor.ensureIsolated { [weak self] in
+                switch result {
+                case let .success(messages):
+                    withAnimation {
+                        self?.pinnedMessages = messages
+                    }
+                    log.debug("Successfully loaded pinned messages")
+                case let .failure(error):
+                    self?.pinnedMessages = self?.channel.pinnedMessages ?? []
+                    log.error("Error loading pinned messages \(error.localizedDescription)")
                 }
-                log.debug("Successfully loaded pinned messages")
-            case let .failure(error):
-                self?.pinnedMessages = self?.channel.pinnedMessages ?? []
-                log.error("Error loading pinned messages \(error.localizedDescription)")
             }
         })
     }

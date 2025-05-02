@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `AddUsersView`.
-class AddUsersViewModel: ObservableObject {
+@MainActor class AddUsersViewModel: ObservableObject {
 
     @Injected(\.chatClient) private var chatClient
 
@@ -46,9 +46,11 @@ class AddUsersViewModel: ObservableObject {
         if !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers { [weak self] _ in
-                guard let self = self else { return }
-                self.users = self.searchController.userArray
-                self.loadingNextUsers = false
+                MainActor.ensureIsolated { [weak self] in
+                    guard let self = self else { return }
+                    self.users = self.searchController.userArray
+                    self.loadingNextUsers = false
+                }
             }
         }
     }
@@ -57,16 +59,20 @@ class AddUsersViewModel: ObservableObject {
         let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
         let query = UserListQuery(filter: filter)
         searchController.search(query: query) { [weak self] error in
-            guard let self = self, error == nil else { return }
-            self.users = self.searchController.userArray
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self, error == nil else { return }
+                self.users = self.searchController.userArray
+            }
         }
     }
 
     private func searchUsers(term: String) {
         searchController.search(term: searchText) { [weak self] error in
-            guard let self = self, error == nil else { return }
-            self.users = self.searchController.userArray.filter { user in
-                !self.loadedUserIds.contains(user.id)
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self, error == nil else { return }
+                self.users = self.searchController.userArray.filter { user in
+                    !self.loadedUserIds.contains(user.id)
+                }
             }
         }
     }
