@@ -78,6 +78,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
             } label: {
                 EmptyView()
             }
+            .opacity(0) // Fixes showing accessibility button shape
 
             NavigationLink(isActive: $isNewChatShown) {
                 NewChatView(isNewChatShown: $isNewChatShown)
@@ -85,6 +86,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                 EmptyView()
             }
             .isDetailLink(UIDevice.current.userInterfaceIdiom == .pad)
+            .opacity(0) // Fixes showing accessibility button shape
             .alert(isPresented: $logoutAlertShown) {
                 Alert(
                     title: Text("Sign out"),

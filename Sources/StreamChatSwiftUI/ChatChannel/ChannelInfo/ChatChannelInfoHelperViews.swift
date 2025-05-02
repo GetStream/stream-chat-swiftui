@@ -264,7 +264,8 @@ struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
                 id: participant?.chatUser.id ?? "",
                 name: participant?.chatUser.name ?? "",
                 imageURL: participant?.chatUser.imageURL,
-                size: .init(width: 64, height: 64)
+                size: .init(width: 64, height: 64),
+                extraData: participant?.chatUser.extraData ?? [:]
             )
             factory.makeMessageAvatarView(for: displayInfo)
             

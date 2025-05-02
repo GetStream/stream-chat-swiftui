@@ -4,9 +4,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Add extra data to user display info [#819](https://github.com/GetStream/stream-chat-swiftui/pull/819)
+
+# [4.78.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.78.0)
+_April 24, 2025_
+
+### ✅ Added
+- Add factory methods for gallery and video player view [#808](https://github.com/GetStream/stream-chat-swiftui/pull/808)
+- Add support for editing message attachments [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+### 🐞 Fixed
+- Fix scrolling to the bottom when editing a message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix having message edit action on Giphy messages [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix being able to long press an unsent Giphy message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix being able to swipe to reply an unsent Giphy message [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+- Fix translated message showing original text in message actions overlay [#810](https://github.com/GetStream/stream-chat-swiftui/pull/810)
+
+### 🔄 Changed
+- Deprecated `ComposerConfig.attachmentPayloadConverter` in favour of `MessageComposerViewModel.convertAddedAssetsToPayloads()` [#806](https://github.com/GetStream/stream-chat-swiftui/pull/806)
+
+# [4.77.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.77.0)
+_April 10, 2025_
+
+### ✅ Added
+- Allow pasting images to the composer [#797](https://github.com/GetStream/stream-chat-swiftui/pull/797)
+- Add `ChatChannelListViewModel.setChannelAlertType` for setting the alert type [#801](https://github.com/GetStream/stream-chat-swiftui/pull/801)
+### 🐞 Fixed
+- Fix allowing to send Polls when the current user does not have the capability [#798](https://github.com/GetStream/stream-chat-swiftui/pull/798)
+- Fix showing a double error indicator when sending attachments without any text [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)
+- Fix showing read indicator when message failed to be sent [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)
+- Fix not showing sending indicator when message is in sending state [#799](https://github.com/GetStream/stream-chat-swiftui/pull/799)
+- Fix empty accessibility button shapes shown in navigation link views [#800](https://github.com/GetStream/stream-chat-swiftui/pull/800)
+
+# [4.76.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.76.0)
+_March 31, 2025_
+
+### ✅ Added
 - Add `minOriginY` to the initializer of `ReactionsOverlayView` for better UI customization [#793](https://github.com/GetStream/stream-chat-swiftui/pull/793)
 ### 🐞 Fixed
 - Fix draft not deleted when attachments are removed from the composer [#791](https://github.com/GetStream/stream-chat-swiftui/pull/791)
+### 🔄 Changed
+- Made `showErrorPopup` open in `ChatChannelListViewModel` [#794](https://github.com/GetStream/stream-chat-swiftui/pull/794)
 
 # [4.75.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.75.0)
 _March 26, 2025_

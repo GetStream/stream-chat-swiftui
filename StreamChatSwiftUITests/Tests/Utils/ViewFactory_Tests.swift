@@ -968,6 +968,38 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is ChannelAvatarView)
     }
+    
+    func test_viewFactory_makeGalleryView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeGalleryView(
+            mediaAttachments: [],
+            message: .mock(),
+            isShown: .constant(true),
+            options: .init(selectedIndex: 0)
+        )
+            
+        // Then
+        XCTAssert(view is GalleryView)
+    }
+    
+    func test_viewFactory_makeVideoPlayerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeVideoPlayerView(
+            attachment: .mock(id: .unique),
+            message: .mock(),
+            isShown: .constant(true),
+            options: .init(selectedIndex: 0)
+        )
+            
+        // Then
+        XCTAssert(view is VideoPlayerView)
+    }
 }
 
 extension ChannelAction: Equatable {

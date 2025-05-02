@@ -573,7 +573,92 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssert(viewModel.mentionedUsers.isEmpty)
     }
-    
+
+    func test_messageComposerVM_canSendPoll() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        let channelConfig = ChannelConfig(pollsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.sendPoll]
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.canSendPoll)
+    }
+
+    func test_messageComposerVM_canSendPoll_whenDoesNotHaveCapability() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        let channelConfig = ChannelConfig(pollsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.banChannelMembers]
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.canSendPoll)
+    }
+
+    func test_messageComposerVM_canSendPoll_whenNotEnabled() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        let channelConfig = ChannelConfig(pollsEnabled: false)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.sendPoll]
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.canSendPoll)
+    }
+
+    func test_messageComposerVM_canSendPoll_whenInsideThread() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        let channelConfig = ChannelConfig(pollsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.sendPoll]
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.canSendPoll)
+    }
+
     func test_addedAsset_extraData() {
         // Given
         let image = UIImage(systemName: "person")!

@@ -111,24 +111,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     Group {
                         if messageDisplayInfo.frame.height > messageContainerHeight {
                             ScrollView {
-                                MessageView(
-                                    factory: factory,
-                                    message: messageDisplayInfo.message,
-                                    contentWidth: messageDisplayInfo.contentWidth,
-                                    isFirst: messageDisplayInfo.isFirst,
-                                    scrolledId: .constant(nil)
-                                )
+                                messageView
                             }
                         } else {
-                            MessageView(
-                                factory: factory,
-                                message: messageDisplayInfo.message,
-                                contentWidth: messageDisplayInfo.contentWidth,
-                                isFirst: messageDisplayInfo.isFirst,
-                                scrolledId: .constant(nil)
-                            )
+                            messageView
                         }
                     }
+                    .environment(\.channelTranslationLanguage, channel.membership?.language)
                     .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     .offset(
@@ -226,6 +215,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 self.orientationChanged = true
             }
         }
+    }
+
+    private var messageView: some View {
+        MessageView(
+            factory: factory,
+            message: messageDisplayInfo.message,
+            contentWidth: messageDisplayInfo.contentWidth,
+            isFirst: messageDisplayInfo.isFirst,
+            scrolledId: .constant(nil)
+        )
     }
 
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {

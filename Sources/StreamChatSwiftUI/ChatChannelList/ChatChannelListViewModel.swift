@@ -202,7 +202,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     public func onDeleteTapped(channel: ChatChannel) {
-        channelAlertType = .deleteChannel(channel)
+        setChannelAlertType(.deleteChannel(channel))
     }
 
     public func onMoreTapped(channel: ChatChannel) {
@@ -217,13 +217,17 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         controller.deleteChannel { [weak self] error in
             if error != nil {
                 // handle error
-                self?.channelAlertType = .error
+                self?.setChannelAlertType(.error)
             }
         }
     }
 
-    public func showErrorPopup(_ error: Error?) {
-        channelAlertType = .error
+    open func showErrorPopup(_ error: Error?) {
+        setChannelAlertType(.error)
+    }
+    
+    open func setChannelAlertType(_ channelAlertType: ChannelAlertType) {
+        self.channelAlertType = channelAlertType
     }
 
     // MARK: - ChatChannelListControllerDelegate
@@ -328,7 +332,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             self.loading = false
             if error != nil {
                 // handle error
-                self.channelAlertType = .error
+                self.setChannelAlertType(.error)
             } else {
                 // access channels
                 self.updateChannels()

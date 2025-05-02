@@ -57,7 +57,8 @@ struct DemoAppChatChannelListItem: View {
                                         currentUserId: chatClient.currentUserId,
                                         message: channel.latestMessages.first
                                     ),
-                                    showReadCount: false
+                                    showReadCount: false,
+                                    localState: channel.latestMessages.first?.localState
                                 )
                             }
                             SubtitleText(text: injectedChannelInfo?.timestamp ?? channel.timestampText)
@@ -168,6 +169,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
             } label: {
                 EmptyView()
             }
+            .opacity(0) // Fixes showing accessibility button shape
         }
     }
 

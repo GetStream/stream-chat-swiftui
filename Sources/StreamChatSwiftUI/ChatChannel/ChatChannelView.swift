@@ -115,7 +115,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         messageController: viewModel.messageController,
                         quotedMessage: $viewModel.quotedMessage,
                         editedMessage: $viewModel.editedMessage,
-                        onMessageSent: viewModel.scrollToLastMessage
+                        onMessageSent: {
+                            viewModel.messageSentTapped()
+                        }
                     )
                     .opacity((
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
@@ -134,6 +136,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     } label: {
                         EmptyView()
                     }
+                    .opacity(0) // Fixes showing accessibility button shape
                 }
                 .accentColor(colors.tintColor)
                 .overlay(

@@ -261,7 +261,43 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    func test_imageAttachments_failed_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploadingFailed)],
+            localState: .sendingFailed
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_imageAttachments_failedWhenMessageTextIsEmpty_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploadingFailed)],
+            localState: .sendingFailed
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_translatedText_participant_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -301,6 +337,146 @@ class MessageContainerView_Tests: StreamChatTestCase {
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_handleGestureForMessage_whenMessageIsInteractable_shouldLongPress() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+
+        let exp = expectation(description: "Long press triggered")
+        let view = MessageContainerView(
+            factory: DefaultViewFactory.shared,
+            channel: .mockDMChannel(),
+            message: message,
+            width: defaultScreenSize.width,
+            showsAllInfo: true,
+            isInThread: false,
+            isLast: false,
+            scrolledId: .constant(nil),
+            quotedMessage: .constant(nil)
+        ) { _ in
+            exp.fulfill()
+        }
+
+        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
+
+        waitForExpectations(timeout: defaultTimeout) { error in
+            XCTAssertNil(error, "Long press was not triggered")
+        }
+    }
+
+    func test_handleGestureForMessage_whenMessageNotInteractable_shouldNotLongPress() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            type: .ephemeral,
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+
+        let exp = expectation(description: "Long press should not be triggered")
+        exp.isInverted = true
+        let view = MessageContainerView(
+            factory: DefaultViewFactory.shared,
+            channel: .mockDMChannel(),
+            message: message,
+            width: defaultScreenSize.width,
+            showsAllInfo: true,
+            isInThread: false,
+            isLast: false,
+            scrolledId: .constant(nil),
+            quotedMessage: .constant(nil)
+        ) { _ in
+            exp.fulfill()
+        }
+
+        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageInteractable_shouldBeTrue() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+
+        let view = MessageContainerView(
+            factory: DefaultViewFactory.shared,
+            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
+            message: message,
+            width: defaultScreenSize.width,
+            showsAllInfo: true,
+            isInThread: false,
+            isLast: false,
+            scrolledId: .constant(nil),
+            quotedMessage: .constant(nil),
+            onLongPress: { _ in }
+        )
+
+        XCTAssertTrue(view.isSwipeToReplyPossible)
+    }
+
+    func test_isSwipeToReplyPossible_whenRepliesDisabled_whenMessageInteractable_shouldBeFalse() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+
+        let view = MessageContainerView(
+            factory: DefaultViewFactory.shared,
+            channel: .mockDMChannel(config: .mock(repliesEnabled: false)),
+            message: message,
+            width: defaultScreenSize.width,
+            showsAllInfo: true,
+            isInThread: false,
+            isLast: false,
+            scrolledId: .constant(nil),
+            quotedMessage: .constant(nil),
+            onLongPress: { _ in }
+        )
+
+        XCTAssertFalse(view.isSwipeToReplyPossible)
+    }
+
+    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageNotInteractable_shouldBeFalse() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            type: .ephemeral,
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+
+        let view = MessageContainerView(
+            factory: DefaultViewFactory.shared,
+            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
+            message: message,
+            width: defaultScreenSize.width,
+            showsAllInfo: true,
+            isInThread: false,
+            isLast: false,
+            scrolledId: .constant(nil),
+            quotedMessage: .constant(nil),
+            onLongPress: { _ in }
+        )
+
+        XCTAssertFalse(view.isSwipeToReplyPossible)
     }
 
     // MARK: - private

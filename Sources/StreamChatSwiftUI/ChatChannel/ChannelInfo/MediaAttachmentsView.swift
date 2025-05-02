@@ -58,6 +58,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                 if !mediaItem.isVideo, let imageAttachment = mediaItem.imageAttachment {
                                     let index = viewModel.allImageAttachments.firstIndex { $0.id == imageAttachment.id } ?? 0
                                     ImageAttachmentContentView(
+                                        factory: factory,
                                         mediaItem: mediaItem,
                                         imageAttachment: imageAttachment,
                                         allImageAttachments: viewModel.allImageAttachments,
@@ -66,8 +67,9 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                     )
                                 } else if let videoAttachment = mediaItem.videoAttachment {
                                     VideoAttachmentContentView(
+                                        factory: factory,
                                         attachment: videoAttachment,
-                                        author: mediaItem.author,
+                                        message: mediaItem.message,
                                         width: Self.itemWidth,
                                         ratio: 1,
                                         cornerRadius: 0
@@ -78,10 +80,11 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                 BottomRightView {
                                     factory.makeMessageAvatarView(
                                         for: UserDisplayInfo(
-                                            id: mediaItem.author.id,
-                                            name: mediaItem.author.name ?? "",
-                                            imageURL: mediaItem.author.imageURL,
-                                            size: .init(width: 24, height: 24)
+                                            id: mediaItem.message.author.id,
+                                            name: mediaItem.message.author.name ?? "",
+                                            imageURL: mediaItem.message.author.imageURL,
+                                            size: .init(width: 24, height: 24),
+                                            extraData: mediaItem.message.author.extraData
                                         )
                                     )
                                     .overlay(
@@ -108,10 +111,11 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
     }
 }
 
-struct ImageAttachmentContentView: View {
+struct ImageAttachmentContentView<Factory: ViewFactory>: View {
 
     @State private var galleryShown = false
 
+    let factory: Factory
     let mediaItem: MediaItem
     let imageAttachment: ChatMessageImageAttachment
     let allImageAttachments: [ChatMessageImageAttachment]
@@ -134,11 +138,11 @@ struct ImageAttachmentContentView: View {
             .clipped()
         }
         .fullScreenCover(isPresented: $galleryShown) {
-            GalleryView(
-                imageAttachments: allImageAttachments,
-                author: mediaItem.author,
+            factory.makeGalleryView(
+                mediaAttachments: allImageAttachments.map { MediaAttachment(from: $0) },
+                message: mediaItem.message,
                 isShown: $galleryShown,
-                selected: index
+                options: .init(selectedIndex: index)
             )
         }
     }

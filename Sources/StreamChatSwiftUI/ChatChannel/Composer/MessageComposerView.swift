@@ -102,9 +102,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         quotedMessage: quotedMessage,
                         editedMessage: editedMessage
                     ) {
+                        // Calling onMessageSent() before erasing the edited and quoted message
+                        // so that onMessageSent can use them for state handling.
+                        onMessageSent()
                         quotedMessage = nil
                         editedMessage = nil
-                        onMessageSent()
                     }
                 }
                 .environmentObject(viewModel)
@@ -208,11 +210,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         )
         .modifier(factory.makeComposerViewModifier())
         .onChange(of: editedMessage) { _ in
-            viewModel.text = editedMessage?.text ?? ""
+            viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
                 becomeFirstResponder()
                 editedMessageWillShow = true
-                viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
         .onAppear(perform: {
@@ -374,6 +375,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     maxMessageLength: maxMessageLength,
                     currentHeight: textFieldHeight
                 )
+                .environmentObject(viewModel)
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
