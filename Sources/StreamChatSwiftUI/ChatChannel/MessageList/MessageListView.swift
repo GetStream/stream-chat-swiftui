@@ -635,7 +635,7 @@ extension EnvironmentValues {
         }
     }
 
-    var chatChannelViewModel: ChatChannelViewModel? {
+    var channelViewModel: ChatChannelViewModel? {
         get {
             self[ChatChannelViewModelKey.self]
         }

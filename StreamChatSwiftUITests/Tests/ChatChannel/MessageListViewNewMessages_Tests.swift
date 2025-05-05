@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
@@ -101,6 +102,9 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
         channel: ChatChannel
     ) -> some View {
         let messages = LazyCachedMapCollection(source: messages, map: { $0 })
+        let channelController = ChatChannelController_Mock.mock(client: chatClient)
+        channelController.channel_mock = channel
+        channelController.messages_mock = Array(messages)
         let messageListView = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,
@@ -117,6 +121,7 @@ final class MessageListViewNewMessages_Tests: StreamChatTestCase {
             onScrollToBottom: {},
             onLongPress: { _ in }
         )
+        .environmentObject(ChatChannelViewModel(channelController: channelController))
 
         return messageListView
     }

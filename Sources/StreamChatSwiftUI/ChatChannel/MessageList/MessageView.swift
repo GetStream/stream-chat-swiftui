@@ -6,8 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct MessageView<Factory: ViewFactory>: View {
-    @Environment(\.messageViewModel) var messageViewModel
-
     @Injected(\.utils) private var utils
 
     private var messageTypeResolver: MessageTypeResolving {
@@ -254,7 +252,7 @@ struct StreamTextView: View {
 public struct LinkDetectionTextView: View {
     @Environment(\.layoutDirection) var layoutDirection
     @Environment(\.channelTranslationLanguage) var translationLanguage
-    @Environment(\.messageViewModel) var viewModel
+    @Environment(\.messageViewModel) var messageViewModel
 
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -284,7 +282,7 @@ public struct LinkDetectionTextView: View {
     }
     
     var displayText: AttributedString {
-        let text = viewModel?.textContent ?? ""
+        let text = messageViewModel?.textContent ?? message.text
 
         // Markdown
         let attributes = AttributeContainer()
