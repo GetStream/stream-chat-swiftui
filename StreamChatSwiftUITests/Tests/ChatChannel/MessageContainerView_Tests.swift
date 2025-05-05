@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
@@ -318,7 +319,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
-        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_translatedText_myMessageIsNotTranslated_snapshot() {
@@ -342,13 +343,120 @@ class MessageContainerView_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
+    func test_translatedText_showOriginalTranslatedButtonEnabled_originalTextShown_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
+        )
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true)
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        // When
+        let messageViewModel = MessageViewModel_Mock(
+            message: message,
+            channel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        messageViewModel.mockOriginalTextShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
+            .environment(\.channelTranslationLanguage, .spanish)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_translatedText_showOriginalTranslatedButtonEnabled_translatedTextShown_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
+        )
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true)
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        // When
+        let messageViewModel = MessageViewModel_Mock(
+            message: message,
+            channel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        messageViewModel.mockOriginalTextShown = false
+        let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
+            .environment(\.channelTranslationLanguage, .spanish)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_translatedText_showOriginalTranslatedButtonDisabled_translatedTextShown_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
+        )
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: false)
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        // When
+        let messageViewModel = MessageViewModel_Mock(
+            message: message,
+            channel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
+            .environment(\.channelTranslationLanguage, .spanish)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
-    func testMessageViewContainer(message: ChatMessage) -> some View {
-        let channel = ChatChannel.mockDMChannel()
-        return MessageContainerView(
+    func testMessageViewContainer(
+        message: ChatMessage,
+        channel: ChatChannel? = nil,
+        messageViewModel: MessageViewModel? = nil
+    ) -> some View {
+        MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(),
+            channel: channel ?? .mockDMChannel(),
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -358,7 +466,16 @@ class MessageContainerView_Tests: StreamChatTestCase {
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
-        .environmentObject(MessageViewModel(message: message, channel: channel))
+        .environmentObject(ChatChannelViewModel(channelController: ChatChannelController_Mock.mock()))
+        .environmentObject(messageViewModel ?? MessageViewModel(message: message, channel: channel))
         .frame(width: 375, height: 200)
+    }
+}
+
+class MessageViewModel_Mock: MessageViewModel {
+    var mockOriginalTextShown: Bool = false
+
+    override var originalTextShown: Bool {
+        mockOriginalTextShown
     }
 }
