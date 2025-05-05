@@ -90,6 +90,8 @@
 "message.polls.votes" = "%d votes";
 
 "message.translatedTo" = "Translated to %@";
+"message.showOriginal" = "Show Original";
+"message.showTranslation" = "Show Translation";
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";

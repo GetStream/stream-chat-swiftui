@@ -130,7 +130,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     @Published public private(set) var channel: ChatChannel?
-    
+
+    /// The message ids of the translated messages that should show the original text.
+    @Published public var originalTextMessageIds: Set<MessageId> = []
+
     public var isMessageThread: Bool {
         messageController != nil
     }
@@ -158,7 +161,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelDataSource.delegate = self
         messages = channelDataSource.messages
         channel = channelController.channel
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
                 let message = channelController.dataStore.message(id: parentMessageId)
@@ -221,7 +224,30 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkHeaderType()
         checkUnreadCount()
     }
-    
+
+    /// Show the original text for the given translated message.
+    public func showOriginalText(for message: ChatMessage) {
+        originalTextMessageIds.insert(message.id)
+    }
+
+    /// Show the translated text for the given translated message.
+    public func showTranslatedText(for message: ChatMessage) {
+        originalTextMessageIds.remove(message.id)
+    }
+
+    /// Creates a view model for the given message.
+    ///
+    /// You can override this method to provide a custom view model.
+    open func makeMessageViewModel(
+        for message: ChatMessage
+    ) -> MessageViewModel {
+        MessageViewModel(
+            message: message,
+            channel: channel,
+            originalTextMessageIds: originalTextMessageIds
+        )
+    }
+
     @objc
     private func selectedMessageThread(notification: Notification) {
         if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {

@@ -252,7 +252,8 @@ struct StreamTextView: View {
 public struct LinkDetectionTextView: View {
     @Environment(\.layoutDirection) var layoutDirection
     @Environment(\.channelTranslationLanguage) var translationLanguage
-    
+    @Environment(\.messageViewModel) var messageViewModel
+
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     @Injected(\.utils) var utils
@@ -262,8 +263,6 @@ public struct LinkDetectionTextView: View {
     var text: LocalizedStringKey {
         LocalizedStringKey(message.adjustedText)
     }
-    
-    @State var displayedText: AttributedString?
     
     @State var linkDetector = TextLinkDetector()
     
@@ -275,30 +274,16 @@ public struct LinkDetectionTextView: View {
     
     public var body: some View {
         Group {
-            if let displayedText {
-                Text(displayedText)
-            } else {
-                Text(message.adjustedText)
-            }
+            Text(displayText)
         }
         .foregroundColor(textColor(for: message))
         .font(fonts.body)
         .tint(tintColor)
-        .onAppear {
-            displayedText = attributedString(for: message)
-        }
-        .onChange(of: message, perform: { updated in
-            displayedText = attributedString(for: updated)
-        })
     }
     
-    private func attributedString(for message: ChatMessage) -> AttributedString {
-        var text = message.adjustedText
-        
-        // Translation
-        if let translatedText = message.textContent(for: translationLanguage) {
-            text = translatedText
-        }
+    var displayText: AttributedString {
+        let text = messageViewModel?.textContent ?? message.text
+
         // Markdown
         let attributes = AttributeContainer()
             .foregroundColor(textColor(for: message))

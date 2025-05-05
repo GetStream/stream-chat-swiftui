@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
@@ -123,7 +124,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -139,7 +142,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -160,7 +165,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -205,6 +212,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             width: 2 * defaultScreenSize.width / 3,
             scrolledId: .constant(nil)
         )
+        .environmentObject(MessageViewModel(message: message, channel: nil))
         .frame(width: 200)
         .padding()
 
@@ -230,6 +238,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
+        .environmentObject(MessageViewModel(message: message, channel: nil))
         .frame(width: 200)
 
         // Then
@@ -256,6 +265,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isFirst: true,
             scrolledId: .constant(nil)
         )
+        .environmentObject(MessageViewModel(message: message, channel: nil))
         .frame(width: 200)
 
         // Then
@@ -264,6 +274,8 @@ class MessageContainerView_Tests: StreamChatTestCase {
 
     func test_imageAttachments_failed_snapshot() {
         // Given
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -274,7 +286,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -292,7 +306,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -315,7 +331,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
-        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_translatedText_myMessageIsNotTranslated_snapshot() {
@@ -339,152 +355,124 @@ class MessageContainerView_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
-    func test_handleGestureForMessage_whenMessageIsInteractable_shouldLongPress() {
+    func test_translatedText_showOriginalTranslatedButtonEnabled_originalTextShown_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Hello",
-            localState: nil,
-            isSentByCurrentUser: true
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
         )
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true)
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
-        let exp = expectation(description: "Long press triggered")
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(),
+        // When
+        let messageViewModel = MessageViewModel_Mock(
             message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil)
-        ) { _ in
-            exp.fulfill()
-        }
-
-        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
-
-        waitForExpectations(timeout: defaultTimeout) { error in
-            XCTAssertNil(error, "Long press was not triggered")
-        }
+            channel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        messageViewModel.mockOriginalTextShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
+            .environment(\.channelTranslationLanguage, .spanish)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_handleGestureForMessage_whenMessageNotInteractable_shouldNotLongPress() {
+    func test_translatedText_showOriginalTranslatedButtonEnabled_translatedTextShown_snapshot() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Hello",
-            type: .ephemeral,
-            localState: nil,
-            isSentByCurrentUser: true
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
         )
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true)
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
-        let exp = expectation(description: "Long press should not be triggered")
-        exp.isInverted = true
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(),
+        // When
+        let messageViewModel = MessageViewModel_Mock(
             message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil)
-        ) { _ in
-            exp.fulfill()
-        }
+            channel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
+        )
+        messageViewModel.mockOriginalTextShown = false
+        let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
+            .environment(\.channelTranslationLanguage, .spanish)
 
-        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
-
-        waitForExpectations(timeout: 1)
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageInteractable_shouldBeTrue() {
+    func test_translatedText_showOriginalTranslatedButtonDisabled_translatedTextShown_snapshot() {
+        // Given
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Hello",
-            localState: nil,
-            isSentByCurrentUser: true
+            author: .mock(id: .unique),
+            translations: [
+                .spanish: "Hola"
+            ]
         )
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: .init(
+                messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: false)
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
+        // When
+        let messageViewModel = MessageViewModel_Mock(
             message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil),
-            onLongPress: { _ in }
+            channel: .mock(
+                cid: .unique,
+                membership: .mock(id: .unique, language: .spanish)
+            )
         )
+        let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
+            .environment(\.channelTranslationLanguage, .spanish)
 
-        XCTAssertTrue(view.isSwipeToReplyPossible)
-    }
-
-    func test_isSwipeToReplyPossible_whenRepliesDisabled_whenMessageInteractable_shouldBeFalse() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: false)),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil),
-            onLongPress: { _ in }
-        )
-
-        XCTAssertFalse(view.isSwipeToReplyPossible)
-    }
-
-    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageNotInteractable_shouldBeFalse() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello",
-            type: .ephemeral,
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-
-        let view = MessageContainerView(
-            factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
-            message: message,
-            width: defaultScreenSize.width,
-            showsAllInfo: true,
-            isInThread: false,
-            isLast: false,
-            scrolledId: .constant(nil),
-            quotedMessage: .constant(nil),
-            onLongPress: { _ in }
-        )
-
-        XCTAssertFalse(view.isSwipeToReplyPossible)
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     // MARK: - private
 
-    func testMessageViewContainer(message: ChatMessage) -> some View {
-        MessageContainerView(
+    func testMessageViewContainer(
+        message: ChatMessage,
+        channel: ChatChannel? = nil,
+        messageViewModel: MessageViewModel? = nil
+    ) -> some View {
+        let defaultChannel = ChatChannel.mockDMChannel(memberCount: 3)
+        let channelController = ChatChannelController_Mock.mock()
+        channelController.channel_mock = channel ?? defaultChannel
+        let defaultViewModel = MessageViewModel(message: message, channel: channel)
+        return MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(),
+            channel: channel ?? defaultChannel,
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -494,6 +482,31 @@ class MessageContainerView_Tests: StreamChatTestCase {
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
+        .environmentObject(ChatChannelViewModel(channelController: channelController))
+        .environmentObject(messageViewModel ?? defaultViewModel)
         .frame(width: 375, height: 200)
+    }
+}
+
+class MessageViewModel_Mock: MessageViewModel {
+    var mockOriginalTextShown: Bool = false
+    var mockAuthorAndDateShown: Bool = false
+    var mockMessageDateShown: Bool = false
+    var mockTextContent: String?
+
+    override var textContent: String {
+        mockTextContent ?? super.textContent
+    }
+
+    override var originalTextShown: Bool {
+        mockOriginalTextShown
+    }
+
+    override var authorAndDateShown: Bool {
+        mockAuthorAndDateShown
+    }
+
+    override var messageDateShown: Bool {
+        mockMessageDateShown
     }
 }

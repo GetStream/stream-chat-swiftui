@@ -146,6 +146,7 @@ public struct MessageDisplayOptions {
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
     public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
+    public let showOriginalTranslatedButton: Bool
 
     public init(
         showAvatars: Bool = true,
@@ -165,7 +166,8 @@ public struct MessageDisplayOptions {
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
         reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
-        dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
+        dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator,
+        showOriginalTranslatedButton: Bool = false
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
@@ -184,6 +186,7 @@ public struct MessageDisplayOptions {
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
         self.dateSeparator = dateSeparator
         self.reactionsPlacement = reactionsPlacement
+        self.showOriginalTranslatedButton = showOriginalTranslatedButton
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {

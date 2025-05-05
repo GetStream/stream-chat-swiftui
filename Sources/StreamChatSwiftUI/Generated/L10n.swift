@@ -352,6 +352,10 @@ internal enum L10n {
     internal static var deletedMessagePlaceholder: String { L10n.tr("Localizable", "message.deleted-message-placeholder") }
     /// Only visible to you
     internal static var onlyVisibleToYou: String { L10n.tr("Localizable", "message.only-visible-to-you") }
+    /// Show Original
+    internal static var showOriginal: String { L10n.tr("Localizable", "message.showOriginal") }
+    /// Show Translation
+    internal static var showTranslation: String { L10n.tr("Localizable", "message.showTranslation") }
     /// Translated to %@
     internal static func translatedTo(_ p1: Any) -> String {
       return L10n.tr("Localizable", "message.translatedTo", String(describing: p1))

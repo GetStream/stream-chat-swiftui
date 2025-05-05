@@ -370,7 +370,17 @@ extension ViewFactory {
     public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
         EmptyView()
     }
-    
+
+    public func makeMessageTranslationFooterView(
+        channelViewModel: ChatChannelViewModel,
+        messageViewModel: MessageViewModel
+    ) -> some View {
+        MessageTranslationFooterView(
+            channelViewModel: channelViewModel,
+            messageViewModel: messageViewModel
+        )
+    }
+
     public func makeImageAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
