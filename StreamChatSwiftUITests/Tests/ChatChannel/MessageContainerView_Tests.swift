@@ -124,7 +124,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -140,7 +142,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -161,7 +165,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -268,6 +274,8 @@ class MessageContainerView_Tests: StreamChatTestCase {
 
     func test_imageAttachments_failed_snapshot() {
         // Given
+        let utils = Utils(dateFormatter: EmptyDateFormatter())
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -278,7 +286,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -296,7 +306,9 @@ class MessageContainerView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = testMessageViewContainer(message: message)
+        let viewModel = MessageViewModel_Mock(message: message, channel: .mockDMChannel())
+        viewModel.mockMessageDateShown = true
+        let view = testMessageViewContainer(message: message, messageViewModel: viewModel)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -454,9 +466,13 @@ class MessageContainerView_Tests: StreamChatTestCase {
         channel: ChatChannel? = nil,
         messageViewModel: MessageViewModel? = nil
     ) -> some View {
-        MessageContainerView(
+        let defaultChannel = ChatChannel.mockDMChannel(memberCount: 3)
+        let channelController = ChatChannelController_Mock.mock()
+        channelController.channel_mock = channel ?? defaultChannel
+        let defaultViewModel = MessageViewModel(message: message, channel: channel)
+        return MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: channel ?? .mockDMChannel(),
+            channel: channel ?? defaultChannel,
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -466,16 +482,31 @@ class MessageContainerView_Tests: StreamChatTestCase {
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
-        .environmentObject(ChatChannelViewModel(channelController: ChatChannelController_Mock.mock()))
-        .environmentObject(messageViewModel ?? MessageViewModel(message: message, channel: channel))
+        .environmentObject(ChatChannelViewModel(channelController: channelController))
+        .environmentObject(messageViewModel ?? defaultViewModel)
         .frame(width: 375, height: 200)
     }
 }
 
 class MessageViewModel_Mock: MessageViewModel {
     var mockOriginalTextShown: Bool = false
+    var mockAuthorAndDateShown: Bool = false
+    var mockMessageDateShown: Bool = false
+    var mockTextContent: String?
+
+    override var textContent: String {
+        mockTextContent ?? super.textContent
+    }
 
     override var originalTextShown: Bool {
         mockOriginalTextShown
+    }
+
+    override var authorAndDateShown: Bool {
+        mockAuthorAndDateShown
+    }
+
+    override var messageDateShown: Bool {
+        mockMessageDateShown
     }
 }
