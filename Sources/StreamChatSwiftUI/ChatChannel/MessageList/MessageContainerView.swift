@@ -301,7 +301,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
-        .environmentObject(messageViewModel)
+        .environment(\.messageViewModel, messageViewModel)
     }
 
     private var maximumHorizontalSwipeDisplacement: CGFloat {

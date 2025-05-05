@@ -608,6 +608,14 @@ private struct ChannelTranslationLanguageKey: EnvironmentKey {
     static let defaultValue: TranslationLanguage? = nil
 }
 
+private struct MessageViewModelKey: EnvironmentKey {
+    static let defaultValue: MessageViewModel? = nil
+}
+
+private struct ChatChannelViewModelKey: EnvironmentKey {
+    static let defaultValue: ChatChannelViewModel? = nil
+}
+
 extension EnvironmentValues {
     var channelTranslationLanguage: TranslationLanguage? {
         get {
@@ -615,6 +623,24 @@ extension EnvironmentValues {
         }
         set {
             self[ChannelTranslationLanguageKey.self] = newValue
+        }
+    }
+
+    var messageViewModel: MessageViewModel? {
+        get {
+            self[MessageViewModelKey.self]
+        }
+        set {
+            self[MessageViewModelKey.self] = newValue
+        }
+    }
+
+    var chatChannelViewModel: ChatChannelViewModel? {
+        get {
+            self[ChatChannelViewModelKey.self]
+        }
+        set {
+            self[ChatChannelViewModelKey.self] = newValue
         }
     }
 }
