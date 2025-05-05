@@ -157,6 +157,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 messageDisplayInfo = nil
                             }
                         )
+                        .environment(\.messageViewModel, viewModel.makeMessageViewModel(for: messageDisplayInfo!.message))
                         .transition(.identity)
                         .edgesIgnoringSafeArea(.all)
                         : nil
