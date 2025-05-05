@@ -78,9 +78,7 @@ open class MessageViewModel: ObservableObject {
         return message.adjustedText
     }
 
-    // MARK: - Helpers
-
-    private var translatedText: String? {
+    public var translatedText: String? {
         if let language = channel?.membership?.language,
            let translatedText = message.textContent(for: language) {
             return translatedText
@@ -88,6 +86,20 @@ open class MessageViewModel: ObservableObject {
 
         return nil
     }
+
+    public var translatedLanguageText: String? {
+        guard let localizedName = channel?.membership?.language?.localizedName else {
+            return nil
+        }
+        
+        return L10n.Message.translatedTo(localizedName)
+    }
+
+    public var originalTranslationButtonText: String {
+        originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal
+    }
+
+    // MARK: - Helpers
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig

@@ -225,30 +225,11 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
 
-                    if message.textContent(for: translationLanguage) != nil,
-                       let localizedName = translationLanguage?.localizedName {
-                        HStack(spacing: 4) {
-                            Text(L10n.Message.translatedTo(localizedName))
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.subtitleText))
-                            Text("•")
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.subtitleText))
-                            Button(
-                                action: {
-                                    if messageViewModel.originalTextShown {
-                                        channelViewModel.showTranslatedText(for: message)
-                                    } else {
-                                        channelViewModel.showOriginalText(for: message)
-                                    }
-                                },
-                                label: {
-                                    Text(messageViewModel.originalTextShown ? "Show Translation" : "Show Original")
-                                        .font(fonts.footnote)
-                                        .foregroundColor(Color(colors.subtitleText))
-                                }
-                            )
-                        }
+                    if messageViewModel.translatedText != nil {
+                        factory.makeMessageTranslationFooterView(
+                            channelViewModel: channelViewModel,
+                            messageViewModel: messageViewModel
+                        )
                     }
 
                     if showsAllInfo && !message.isDeleted {

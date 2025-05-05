@@ -533,6 +533,7 @@
 		ADE442EE2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */; };
 		ADE442F02CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */; };
 		ADE442F22CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */; };
+		ADF544382DC93C2A0024A0B3 /* MessageTranslationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */; };
 		C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A465A284665B100EF498E /* SDKIdentifier.swift */; };
 		E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E3A1C01B282BAC66002D1E26 /* Sentry */; };
 /* End PBXBuildFile section */
@@ -1135,6 +1136,7 @@
 		ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListViewModel_Tests.swift; sourceTree = "<group>"; };
 		ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListView_Tests.swift; sourceTree = "<group>"; };
 		ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListItemView_Tests.swift; sourceTree = "<group>"; };
+		ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTranslationFooterView.swift; sourceTree = "<group>"; };
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1791,6 +1793,7 @@
 				AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */,
 				84DEC8E02760D24100172876 /* MessageRepliesView.swift */,
 				8465FD0D2746A95600AF091E /* MessageAvatarView.swift */,
+				ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */,
 				8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */,
 				84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */,
 				8465FD002746A95600AF091E /* FileAttachmentPreview.swift */,
@@ -2678,6 +2681,7 @@
 				82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */,
 				82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */,
 				82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */,
+				ADF544382DC93C2A0024A0B3 /* MessageTranslationFooterView.swift in Sources */,
 				84EADEB52B28935B0046B50C /* RecordingView.swift in Sources */,
 				84AB7B262773619F00631A10 /* MentionUsersView.swift in Sources */,
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
