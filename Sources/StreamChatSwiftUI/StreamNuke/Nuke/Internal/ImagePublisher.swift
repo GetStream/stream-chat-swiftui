@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2020-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2020-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 import Combine
@@ -47,7 +47,7 @@ private final class ImageSubscription<S>: Subscription where S: Subscriber, S: S
 
     func request(_ demand: Subscribers.Demand) {
         guard demand > 0 else { return }
-        guard let subscriber = subscriber else { return }
+        guard let subscriber else { return }
 
         if let image = pipeline.cache[request] {
             _ = subscriber.receive(ImageResponse(container: image, request: request, cacheType: .memory))
@@ -60,9 +60,8 @@ private final class ImageSubscription<S>: Subscription where S: Subscriber, S: S
 
         task = pipeline.loadImage(
              with: request,
-             queue: nil,
              progress: { response, _, _ in
-                 if let response = response {
+                 if let response {
                     // Send progressively decoded image (if enabled and if any)
                      _ = subscriber.receive(response)
                  }

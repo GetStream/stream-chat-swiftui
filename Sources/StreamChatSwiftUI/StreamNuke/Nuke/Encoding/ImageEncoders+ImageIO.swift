@@ -1,10 +1,16 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 import CoreGraphics
 import ImageIO
+
+#if !os(macOS)
+import UIKit
+#else
+import AppKit
+#endif
 
 extension ImageEncoders {
     /// An Image I/O based encoder.
@@ -24,38 +30,38 @@ extension ImageEncoders {
             self.compressionRatio = compressionRatio
         }
 
-        private static let lock = NSLock()
-        private static var availability = [NukeAssetType: Bool]()
+        private static let availability = Atomic<[NukeAssetType: Bool]>(value: [:])
 
         /// Returns `true` if the encoding is available for the given format on
         /// the current hardware. Some of the most recent formats might not be
         /// available so its best to check before using them.
         static func isSupported(type: NukeAssetType) -> Bool {
-            lock.lock()
-            defer { lock.unlock() }
-            if let isAvailable = availability[type] {
+            if let isAvailable = availability.value[type] {
                 return isAvailable
             }
             let isAvailable = CGImageDestinationCreateWithData(
                 NSMutableData() as CFMutableData, type.rawValue as CFString, 1, nil
             ) != nil
-            availability[type] = isAvailable
+            availability.withLock { $0[type] = isAvailable }
             return isAvailable
         }
 
         func encode(_ image: PlatformImage) -> Data? {
-            let data = NSMutableData()
-            let options: NSDictionary = [
+            guard let source = image.cgImage,
+                let data = CFDataCreateMutable(nil, 0),
+                  let destination = CGImageDestinationCreateWithData(data, type.rawValue as CFString, 1, nil) else {
+                return nil
+            }
+            var options: [CFString: Any] = [
                 kCGImageDestinationLossyCompressionQuality: compressionRatio
             ]
-            guard let source = image.cgImage,
-                let destination = CGImageDestinationCreateWithData(
-                    data as CFMutableData, type.rawValue as CFString, 1, nil
-                ) else {
-                    return nil
+#if canImport(UIKit)
+            options[kCGImagePropertyOrientation] = CGImagePropertyOrientation(image.imageOrientation).rawValue
+#endif
+            CGImageDestinationAddImage(destination, source, options as CFDictionary)
+            guard CGImageDestinationFinalize(destination) else {
+                return nil
             }
-            CGImageDestinationAddImage(destination, source, options)
-            CGImageDestinationFinalize(destination)
             return data as Data
         }
     }

@@ -1,10 +1,13 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
 enum ImageDecompression {
+    static func isDecompressionNeeded(for response: ImageResponse) -> Bool {
+        isDecompressionNeeded(for: response.image) ?? false
+    }
 
     static func decompress(image: PlatformImage, isUsingPrepareForDisplay: Bool = false) -> PlatformImage {
         image.decompressed(isUsingPrepareForDisplay: isUsingPrepareForDisplay) ?? image
@@ -12,17 +15,18 @@ enum ImageDecompression {
 
     // MARK: Managing Decompression State
 
-    static var isDecompressionNeededAK = "ImageDecompressor.isDecompressionNeeded.AssociatedKey"
+#if swift(>=5.10)
+    // Safe because it's never mutated.
+    nonisolated(unsafe) static let isDecompressionNeededAK = malloc(1)!
+#else
+    static let isDecompressionNeededAK = malloc(1)!
+#endif
 
     static func setDecompressionNeeded(_ isDecompressionNeeded: Bool, for image: PlatformImage) {
-        withUnsafePointer(to: &isDecompressionNeededAK) { keyPointer in
-            objc_setAssociatedObject(image, keyPointer, isDecompressionNeeded, .OBJC_ASSOCIATION_RETAIN)
-        }
+        objc_setAssociatedObject(image, isDecompressionNeededAK, isDecompressionNeeded, .OBJC_ASSOCIATION_RETAIN)
     }
 
     static func isDecompressionNeeded(for image: PlatformImage) -> Bool? {
-        return withUnsafePointer(to: &isDecompressionNeededAK) { keyPointer in
-            objc_getAssociatedObject(image, keyPointer) as? Bool
-        }
+        objc_getAssociatedObject(image, isDecompressionNeededAK) as? Bool
     }
 }

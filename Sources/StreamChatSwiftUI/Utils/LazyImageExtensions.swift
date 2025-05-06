@@ -6,13 +6,13 @@ import SwiftUI
 
 extension LazyImage {
 
-    init(imageURL: URL?) where Content == NukeImage {
+    init(imageURL: URL?) where Content == Image {
         let imageCDN = InjectedValues[\.utils].imageCDN
         guard let imageURL = imageURL else {
             #if COCOAPODS
             self.init(source: imageURL)
             #else
-            self.init(url: imageURL, resizingMode: .aspectFill)
+            self.init(url: imageURL)
             #endif
             return
         }
@@ -21,7 +21,7 @@ extension LazyImage {
         #if COCOAPODS
         self.init(source: imageRequest)
         #else
-        self.init(request: imageRequest, resizingMode: .aspectFill)
+        self.init(request: imageRequest)
         #endif
     }
 

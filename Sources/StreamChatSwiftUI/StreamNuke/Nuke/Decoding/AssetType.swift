@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -36,10 +36,6 @@ struct NukeAssetType: ExpressibleByStringLiteral, Hashable, Sendable {
     static let m4v: NukeAssetType = "public.m4v"
 
     static let mov: NukeAssetType = "public.mov"
-
-    var isVideo: Bool {
-        self == .mp4 || self == .m4v || self == .mov
-    }
 }
 
 extension NukeAssetType {
@@ -57,7 +53,7 @@ extension NukeAssetType {
                 return false
             }
             return zip(numbers.indices, numbers).allSatisfy { index, number in
-                guard let number = number else { return true }
+                guard let number else { return true }
                 guard (index + offset) < data.count else { return false }
                 return data[index + offset] == number
             }
@@ -79,7 +75,10 @@ extension NukeAssetType {
         // https://en.wikipedia.org/wiki/List_of_file_signatures
         if _match([0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6F, 0x6D], offset: 4) { return .mp4 }
 
+        // https://www.garykessler.net/library/file_sigs.html
         if _match([0x66, 0x74, 0x79, 0x70, 0x6D, 0x70, 0x34, 0x32], offset: 4) { return .m4v }
+
+        if _match([0x66, 0x74, 0x79, 0x70, 0x4D, 0x34, 0x56, 0x20], offset: 4) { return .m4v }
 
         // MOV magic numbers https://www.garykessler.net/library/file_sigs.html
         if _match([0x66, 0x74, 0x79, 0x70, 0x71, 0x74, 0x20, 0x20], offset: 4) { return .mov }
