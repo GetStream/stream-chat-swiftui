@@ -89,7 +89,7 @@ struct EmptyViewModifier: ViewModifier {
 
 extension CGSize {
     /// Default size of the avatar used in the channel list.
-    public static var defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
+    public static let defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
 }
 
 /// Provides access to the the app's tab bar (if present).
@@ -127,9 +127,9 @@ struct TabBarAccessor: UIViewControllerRepresentable {
 }
 
 var isIphone: Bool {
-    UIDevice.current.userInterfaceIdiom == .phone
+    UITraitCollection.current.userInterfaceIdiom == .phone
 }
 
 var isIPad: Bool {
-    UIDevice.current.userInterfaceIdiom == .pad
+    UITraitCollection.current.userInterfaceIdiom == .pad
 }
