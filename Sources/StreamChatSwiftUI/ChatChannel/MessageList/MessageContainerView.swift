@@ -36,7 +36,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private let paddingValue: CGFloat = 8
 
     var isSwipeToReplyPossible: Bool {
-        message.isInteractionEnabled && channel.config.repliesEnabled
+        message.isInteractionEnabled && channel.canQuoteMessage
     }
 
     public init(
