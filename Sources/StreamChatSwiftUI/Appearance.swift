@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// An object containing visual configuration for the whole application.
-public class Appearance {
+@preconcurrency @MainActor public class Appearance {
     public var colors: ColorPalette
     public var images: Images
     public var fonts: Fonts
@@ -34,7 +34,9 @@ public extension Appearance {
 
 /// Provides the default value of the `Appearance` class.
 public struct AppearanceKey: EnvironmentKey {
-    public static let defaultValue: Appearance = Appearance()
+    public static var defaultValue: Appearance {
+        MainActor.ensureIsolated { Appearance() }
+    }
 }
 
 extension EnvironmentValues {

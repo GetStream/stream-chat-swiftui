@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 
 /// Provides the colors used throughout the SDK.
-public struct ColorPalette {
+public struct ColorPalette: Sendable {
     public init() {
         // Public init.
     }
@@ -27,9 +27,9 @@ public struct ColorPalette {
 
     // MARK: - Text interactions
 
-    public var highlightedColorForColor: (UIColor) -> UIColor = { $0.withAlphaComponent(0.5) }
-    public var disabledColorForColor: (UIColor) -> UIColor = { _ in .streamDisabled }
-    public var unselectedColorForColor: (UIColor) -> UIColor = { _ in .lightGray }
+    public var highlightedColorForColor: @Sendable(UIColor) -> UIColor = { $0.withAlphaComponent(0.5) }
+    public var disabledColorForColor: @Sendable(UIColor) -> UIColor = { _ in .streamDisabled }
+    public var unselectedColorForColor: @Sendable(UIColor) -> UIColor = { _ in .lightGray }
 
     // MARK: - Background
 

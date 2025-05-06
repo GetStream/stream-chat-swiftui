@@ -7,52 +7,52 @@ import StreamChat
 
 extension InjectedValues {
     /// Provides access to the `ChatClient` instance.
-    @MainActor public var chatClient: ChatClient {
+    public var chatClient: ChatClient {
         get {
-            streamChat.chatClient
+            MainActor.ensureIsolated { [streamChat] in streamChat.chatClient }
         }
         set {
-            streamChat.chatClient = newValue
+            MainActor.ensureIsolated { [streamChat] in streamChat.chatClient = newValue }
         }
     }
 
     /// Provides access to the `ColorPalette` instance.
-    @MainActor public var colors: ColorPalette {
+    public var colors: ColorPalette {
         get {
-            streamChat.appearance.colors
+            MainActor.ensureIsolated { [streamChat] in streamChat.appearance.colors }
         }
         set {
-            streamChat.appearance.colors = newValue
+            MainActor.ensureIsolated { [streamChat] in streamChat.appearance.colors = newValue }
         }
     }
 
     /// Provides access to the `Utils` instance.
-    @MainActor public var utils: Utils {
+    public var utils: Utils {
         get {
-            streamChat.utils
+            MainActor.ensureIsolated { [streamChat] in streamChat.utils }
         }
         set {
-            streamChat.utils = newValue
+            MainActor.ensureIsolated { [streamChat] in streamChat.utils = newValue }
         }
     }
 
     /// Provides access to the `Images` instance.
-    @MainActor public var images: Images {
+    public var images: Images {
         get {
-            streamChat.appearance.images
+            MainActor.ensureIsolated { [streamChat] in streamChat.appearance.images }
         }
         set {
-            streamChat.appearance.images = newValue
+            MainActor.ensureIsolated { [streamChat] in streamChat.appearance.images = newValue }
         }
     }
 
     /// Provides access to the `Fonts` instance.
-    @MainActor public var fonts: Fonts {
+    public var fonts: Fonts {
         get {
-            streamChat.appearance.fonts
+            MainActor.ensureIsolated { [streamChat] in streamChat.appearance.fonts }
         }
         set {
-            streamChat.appearance.fonts = newValue
+            MainActor.ensureIsolated { [streamChat] in streamChat.appearance.fonts = newValue }
         }
     }
 }

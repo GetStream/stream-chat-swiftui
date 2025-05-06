@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Provides access to fonts used in the SDK.
-public struct Fonts {
+public struct Fonts: Sendable {
     public init() {
         // Public init.
     }
