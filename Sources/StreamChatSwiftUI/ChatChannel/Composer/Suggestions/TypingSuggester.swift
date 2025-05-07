@@ -33,7 +33,7 @@ public struct TypingSuggestionOptions {
 }
 
 /// A structure that contains the information of the typing suggestion.
-public struct TypingSuggestion {
+public struct TypingSuggestion: Sendable {
     /// A String representing the currently typing text.
     public let text: String
     /// A NSRange that stores the location of the typing suggestion in relation with the whole input.

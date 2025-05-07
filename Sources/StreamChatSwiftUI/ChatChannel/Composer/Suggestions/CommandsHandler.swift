@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// Defines methods for handling commands.
-public protocol CommandHandler {
+@preconcurrency @MainActor public protocol CommandHandler {
 
     /// Identifier of the command.
     var id: String { get }
@@ -64,7 +64,7 @@ public protocol CommandHandler {
     ///  - completion: called when the command is executed.
     func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     )
 }
 
@@ -112,7 +112,7 @@ public struct ComposerCommand {
 }
 
 /// Provides information about the suggestion.
-public struct SuggestionInfo {
+public struct SuggestionInfo: @unchecked Sendable {
     /// Identifies the suggestion.
     public let key: String
     /// Any value that can be passed to the suggestion.

@@ -66,5 +66,5 @@ public struct MessageAvatarView: View {
 }
 
 extension CGSize {
-    public static var messageAvatarSize = CGSize(width: 36, height: 36)
+    @preconcurrency @MainActor public static var messageAvatarSize = CGSize(width: 36, height: 36)
 }

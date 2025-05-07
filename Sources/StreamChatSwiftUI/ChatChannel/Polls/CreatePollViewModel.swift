@@ -102,7 +102,7 @@ import SwiftUI
             .store(in: &cancellables)
     }
         
-    func createPoll(completion: @escaping @Sendable() -> Void) {
+    func createPoll(completion: @escaping @MainActor() -> Void) {
         let pollOptions = options
             .map(\.trimmed)
             .filter { !$0.isEmpty }
@@ -117,13 +117,13 @@ import SwiftUI
             votingVisibility: anonymousPoll ? .anonymous : .public,
             options: pollOptions
         ) { [weak self] result in
-            switch result {
-            case let .success(messageId):
-                log.debug("Created poll in message with id \(messageId)")
-                completion()
-            case let .failure(error):
-                log.error("Error creating a poll: \(error.localizedDescription)")
-                MainActor.ensureIsolated { [weak self] in
+            MainActor.ensureIsolated { [weak self] in
+                switch result {
+                case let .success(messageId):
+                    log.debug("Created poll in message with id \(messageId)")
+                    completion()
+                case let .failure(error):
+                    log.error("Error creating a poll: \(error.localizedDescription)")
                     self?.errorShown = true
                 }
             }

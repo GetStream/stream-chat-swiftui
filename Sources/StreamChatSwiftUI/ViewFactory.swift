@@ -100,8 +100,8 @@ import SwiftUI
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MoreActionsView
 
     /// Returns the supported  channel actions.
@@ -112,8 +112,8 @@ import SwiftUI
     /// - Returns: list of `ChannelAction` items.
     func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction]
 
     associatedtype TrailingSwipeActionsViewType: View
@@ -846,8 +846,8 @@ import SwiftUI
     func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction]
 
     associatedtype SendInChannelViewType: View
@@ -871,8 +871,8 @@ import SwiftUI
     func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageActionsViewType
 
     associatedtype ReactionsUsersViewType: View

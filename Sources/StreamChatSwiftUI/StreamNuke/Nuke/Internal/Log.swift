@@ -8,7 +8,7 @@ import os
 func signpost(_ object: AnyObject, _ name: StaticString, _ type: OSSignpostType, _ message: @autoclosure () -> String) {
     guard ImagePipeline.Configuration.isSignpostLoggingEnabled else { return }
 
-    let nukeLog = log.value
+    let nukeLog = nukeLog.value
     let signpostId = OSSignpostID(log: nukeLog, object: object)
     os_signpost(type, log: nukeLog, name: name, signpostID: signpostId, "%{public}s", message())
 }
@@ -16,7 +16,7 @@ func signpost(_ object: AnyObject, _ name: StaticString, _ type: OSSignpostType,
 func signpost<T>(_ name: StaticString, _ work: () throws -> T) rethrows -> T {
     guard ImagePipeline.Configuration.isSignpostLoggingEnabled else { return try work() }
 
-    let nukeLog = log.value
+    let nukeLog = nukeLog.value
     let signpostId = OSSignpostID(log: nukeLog)
     os_signpost(.begin, log: nukeLog, name: name, signpostID: signpostId)
     let result = try work()

@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// An object containing visual configuration for the whole application.
-@preconcurrency @MainActor public class Appearance {
+public class Appearance {
     public var colors: ColorPalette
     public var images: Images
     public var fonts: Fonts
@@ -21,6 +21,7 @@ import SwiftUI
     }
 
     /// Provider for custom localization which is dependent on App Bundle.
+    nonisolated(unsafe)
     public static var localizationProvider: @Sendable(_ key: String, _ table: String) -> String = { key, table in
         Bundle.streamChatUI.localizedString(forKey: key, value: nil, table: table)
     }
@@ -29,14 +30,12 @@ import SwiftUI
 // MARK: - Appearance + Default
 
 public extension Appearance {
-    static var `default`: Appearance = .init()
+    nonisolated(unsafe) static var `default`: Appearance = .init()
 }
 
 /// Provides the default value of the `Appearance` class.
 public struct AppearanceKey: EnvironmentKey {
-    public static var defaultValue: Appearance {
-        MainActor.ensureIsolated { Appearance() }
-    }
+    public static var defaultValue: Appearance { .init() }
 }
 
 extension EnvironmentValues {

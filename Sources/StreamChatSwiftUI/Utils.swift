@@ -7,7 +7,7 @@ import StreamChat
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
-@preconcurrency @MainActor public class Utils {
+public class Utils {
     // TODO: Make it public in future versions.
     internal var messagePreviewFormatter = MessagePreviewFormatter()
     var markdownFormatter = MarkdownFormatter()
@@ -57,6 +57,7 @@ import StreamChat
         }
     }
 
+    @preconcurrency @MainActor
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     var messageCachingUtils = MessageCachingUtils()

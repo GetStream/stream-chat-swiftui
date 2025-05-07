@@ -100,15 +100,15 @@ public struct ChannelAction: Identifiable, Sendable {
 
     public let title: String
     public let iconName: String
-    public let action: () -> Void
+    public let action: @MainActor() -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
-    public var navigationDestination: AnyView?
+    nonisolated(unsafe) public var navigationDestination: AnyView?
 
     public init(
         title: String,
         iconName: String,
-        action: @escaping () -> Void,
+        action: @escaping @MainActor() -> Void,
         confirmationPopup: ConfirmationPopup?,
         isDestructive: Bool
     ) {
@@ -121,7 +121,7 @@ public struct ChannelAction: Identifiable, Sendable {
 }
 
 /// Model describing confirmation popup data.
-public struct ConfirmationPopup {
+public struct ConfirmationPopup: Sendable {
     public init(title: String, message: String?, buttonTitle: String) {
         self.title = title
         self.message = message

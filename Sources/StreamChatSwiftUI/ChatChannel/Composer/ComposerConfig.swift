@@ -52,7 +52,7 @@ public struct ComposerConfig {
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
     }
     
-    public static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { _ in
+    nonisolated(unsafe) public static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { _ in
         /// This now returns empty array by default since attachmentPayloadConverter has been deprecated.
         []
     }
@@ -64,7 +64,7 @@ public enum GallerySupportedTypes {
     case videos
 }
 
-public struct PaddingsConfig {
+public struct PaddingsConfig: Sendable {
     public let top: CGFloat
     public let bottom: CGFloat
     public let leading: CGFloat

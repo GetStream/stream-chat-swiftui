@@ -300,8 +300,8 @@ class CustomFactory: ViewFactory {
 
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> some View {
         VStack {
             Text("This is our custom view")

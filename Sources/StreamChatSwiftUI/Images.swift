@@ -7,7 +7,7 @@ import StreamChat
 import UIKit
 
 /// Provides access to the images used in the SDK.
-@preconcurrency @MainActor public class Images {
+public class Images {
     public init() {
         // Public init.
     }

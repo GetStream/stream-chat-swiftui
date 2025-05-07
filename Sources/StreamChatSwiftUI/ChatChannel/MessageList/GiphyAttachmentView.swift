@@ -103,7 +103,7 @@ struct LazyGiphyView: View {
     var body: some View {
         LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {
-                NukeImage(imageContainer)
+                Image(uiImage: imageContainer.image)
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
             } else {

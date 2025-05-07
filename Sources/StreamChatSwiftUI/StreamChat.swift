@@ -7,7 +7,7 @@ import StreamChat
 /// Main interface to the SwiftUI SDK.
 ///
 /// Provides context for the views and view models. Must be initialized with a `ChatClient` on app start.
-@preconcurrency @MainActor public class StreamChat {
+public class StreamChat {
     var chatClient: ChatClient
     var appearance: Appearance
     var utils: Utils

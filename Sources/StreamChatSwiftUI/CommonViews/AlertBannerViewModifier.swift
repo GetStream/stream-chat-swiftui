@@ -61,7 +61,9 @@ private struct AlertBannerViewModifier: ViewModifier {
             guard newValue else { return }
             timer?.invalidate()
             timer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { _ in
-                isPresented = false
+                MainActor.ensureIsolated {
+                    isPresented = false
+                }
             }
         }
     }

@@ -42,13 +42,15 @@ import SwiftUI
 
     // MARK: - ChatMessageControllerDelegate
 
-    public func messageController(
+    nonisolated public func messageController(
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
-        if let message = controller.message {
-            withAnimation {
-                self.message = message
+        MainActor.ensureIsolated {
+            if let message = controller.message {
+                withAnimation {
+                    self.message = message
+                }
             }
         }
     }

@@ -89,7 +89,7 @@ public struct HideKeyboardOnTapGesture: ViewModifier {
 }
 
 /// Resigns first responder and hides the keyboard.
-public func resignFirstResponder() {
+@MainActor public func resignFirstResponder() {
     UIApplication.shared.sendAction(
         #selector(UIResponder.resignFirstResponder),
         to: nil,

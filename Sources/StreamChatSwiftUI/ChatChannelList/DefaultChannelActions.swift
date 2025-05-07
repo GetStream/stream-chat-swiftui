@@ -16,8 +16,8 @@ extension ChannelAction {
     @MainActor public static func defaultActions(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction] {
         var actions = [ChannelAction]()
 
@@ -83,16 +83,18 @@ extension ChannelAction {
     @MainActor private static func muteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let muteAction = {
+        let muteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.muteChannel { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
+                MainActor.ensureIsolated {
+                    if let error = error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
                 }
             }
         }
@@ -114,16 +116,18 @@ extension ChannelAction {
     @MainActor private static func unmuteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let unMuteAction = {
+        let unMuteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.unmuteChannel { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
+                MainActor.ensureIsolated {
+                    if let error = error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
                 }
             }
         }
@@ -146,16 +150,18 @@ extension ChannelAction {
     @MainActor private static func deleteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let deleteConversationAction = {
+        let deleteConversationAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.deleteChannel { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
+                MainActor.ensureIsolated {
+                    if let error = error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
                 }
             }
         }
@@ -179,16 +185,18 @@ extension ChannelAction {
         for channel: ChatChannel,
         chatClient: ChatClient,
         userId: String,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let leaveAction = {
+        let leaveAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.removeMembers(userIds: [userId]) { error in
-                if let error = error {
-                    onError(error)
-                } else {
-                    onDismiss()
+                MainActor.ensureIsolated {
+                    if let error = error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
                 }
             }
         }
