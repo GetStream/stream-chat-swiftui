@@ -136,7 +136,7 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
-                channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage]),
+                channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .readEvents]),
                 currentSnapshot: self.overlayImage,
                 messageDisplayInfo: messageDisplayInfo,
                 onBackgroundTap: {},

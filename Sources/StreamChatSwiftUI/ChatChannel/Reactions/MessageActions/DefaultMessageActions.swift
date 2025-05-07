@@ -131,7 +131,7 @@ public extension MessageAction {
                 )
                 messageActions.append(markThreadUnreadAction)
             }
-        } else if !message.isSentByCurrentUser {
+        } else if !message.isSentByCurrentUser && channel.canReceiveReadEvents {
             if !message.isPartOfThread || message.showReplyInChannel {
                 let markUnreadAction = markAsUnreadAction(
                     for: message,
