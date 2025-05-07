@@ -647,7 +647,9 @@ import SwiftUI
         selectedRangeLocation = message.text.count
 
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            self?.updateComposerAssets(assets)
+            MainActor.ensureIsolated {
+                self?.updateComposerAssets(assets)
+            }
         }
     }
 
@@ -977,7 +979,7 @@ class MessageAttachmentsConverter {
     /// This operation is asynchronous to make sure loading expensive assets are not done in the main thread.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping (ComposerAssets) -> Void
+        completion: @escaping @Sendable(ComposerAssets) -> Void
     ) {
         queue.async {
             let addedAssets = Self.attachmentsToAssets(attachments)
