@@ -11,7 +11,8 @@ import XCTest
 
 @MainActor final class MessageListViewNewMessages_Tests: StreamChatTestCase {
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         let messageListConfig = MessageListConfig(showNewMessagesSeparator: true)
         let utils = Utils(dateFormatter: EmptyDateFormatter(), messageListConfig: messageListConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)

@@ -12,7 +12,8 @@ import XCTest
 
 @MainActor class ChatChannelView_Tests: StreamChatTestCase {
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         DelayedRenderingViewModifier.isEnabled = false

@@ -9,7 +9,8 @@ import StreamSwiftTestHelpers
 import XCTest
 
 @MainActor class MessageListViewAvatars_Tests: StreamChatTestCase {
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         DelayedRenderingViewModifier.isEnabled = false
     }
     

@@ -21,7 +21,7 @@ open class StreamChatTestCase: XCTestCase {
 
     public var streamChat: StreamChat?
 
-    override open func setUp() {
+    @MainActor override open func setUp() {
         super.setUp()
         streamChat = StreamChat(chatClient: chatClient)
     }

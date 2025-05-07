@@ -12,7 +12,7 @@ import XCTest
 
 @MainActor class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
 
-    @MainActor override func setUpWithError() throws {
+    override func setUp() {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(
             showMessageDate: false,

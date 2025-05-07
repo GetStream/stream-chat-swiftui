@@ -11,7 +11,7 @@ import XCTest
 
 @MainActor final class ChatChannelListItemView_Tests: StreamChatTestCase {
         
-    override func setUpWithError() throws {
+    override func setUp() {
         super.setUp()
         let circleImage = UIImage.circleImage
         streamChat?.utils.channelHeaderLoader.placeholder1 = circleImage

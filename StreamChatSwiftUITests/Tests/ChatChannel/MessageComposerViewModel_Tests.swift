@@ -22,7 +22,7 @@ import XCTest
         )
     }
     
-    @MainActor override func setUpWithError() throws {
+    override func setUp() {
         super.setUp()
         mockURL = generateURL()
         writeMockData(for: mockURL)
