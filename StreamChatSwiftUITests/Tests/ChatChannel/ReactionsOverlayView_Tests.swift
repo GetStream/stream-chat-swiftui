@@ -9,7 +9,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ReactionsOverlayView_Tests: StreamChatTestCase {
+@MainActor class ReactionsOverlayView_Tests: StreamChatTestCase {
     
     private static let screenSize = CGSize(width: 393, height: 852)
 

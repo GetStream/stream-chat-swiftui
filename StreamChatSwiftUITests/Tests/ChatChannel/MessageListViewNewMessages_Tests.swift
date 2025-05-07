@@ -9,10 +9,9 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-final class MessageListViewNewMessages_Tests: StreamChatTestCase {
+@MainActor final class MessageListViewNewMessages_Tests: StreamChatTestCase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
         let messageListConfig = MessageListConfig(showNewMessagesSeparator: true)
         let utils = Utils(dateFormatter: EmptyDateFormatter(), messageListConfig: messageListConfig)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)

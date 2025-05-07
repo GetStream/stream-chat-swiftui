@@ -5,9 +5,9 @@
 import Foundation
 @testable import StreamChat
 
-class InternetConnectionMock: InternetConnection {
-    private(set) var monitorMock: InternetConnectionMonitorMock!
-    private(set) var init_notificationCenter: NotificationCenter!
+class InternetConnectionMock: InternetConnection, @unchecked Sendable {
+    @Atomic private(set) var monitorMock: InternetConnectionMonitorMock!
+    @Atomic private(set) var init_notificationCenter: NotificationCenter!
 
     init(
         monitor: InternetConnectionMonitorMock = .init(),
@@ -19,7 +19,7 @@ class InternetConnectionMock: InternetConnection {
     }
 }
 
-class InternetConnectionMonitorMock: InternetConnectionMonitor {
+class InternetConnectionMonitorMock: InternetConnectionMonitor, @unchecked Sendable {
     weak var delegate: InternetConnectionDelegate?
 
     var status: InternetConnection.Status = .unknown {
@@ -28,7 +28,7 @@ class InternetConnectionMonitorMock: InternetConnectionMonitor {
         }
     }
 
-    var isStarted = false
+    @Atomic var isStarted = false
 
     func start() {
         isStarted = true

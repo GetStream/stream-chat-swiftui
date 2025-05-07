@@ -5,15 +5,15 @@
 import Foundation
 @testable import StreamChat
 
-class TestRequestEncoder: RequestEncoder {
+class TestRequestEncoder: RequestEncoder, @unchecked Sendable {
     let init_baseURL: URL
     let init_apiKey: APIKey
 
     weak var connectionDetailsProviderDelegate: ConnectionDetailsProviderDelegate?
 
-    var encodeRequest: Result<URLRequest, Error>? = .success(URLRequest(url: .unique()))
-    var encodeRequest_endpoint: AnyEndpoint?
-    var encodeRequest_completion: ((Result<URLRequest, Error>) -> Void)?
+    @Atomic var encodeRequest: Result<URLRequest, Error>? = .success(URLRequest(url: .unique()))
+    @Atomic var encodeRequest_endpoint: AnyEndpoint?
+    @Atomic var encodeRequest_completion: ((Result<URLRequest, Error>) -> Void)?
 
     func encodeRequest<ResponsePayload>(
         for endpoint: Endpoint<ResponsePayload>,
@@ -33,12 +33,12 @@ class TestRequestEncoder: RequestEncoder {
     }
 }
 
-class TestRequestDecoder: RequestDecoder {
-    var decodeRequestResponse: Result<Any, Error>?
+class TestRequestDecoder: RequestDecoder, @unchecked Sendable {
+    @Atomic var decodeRequestResponse: Result<Any, Error>?
 
-    var decodeRequestResponse_data: Data?
-    var decodeRequestResponse_response: HTTPURLResponse?
-    var decodeRequestResponse_error: Error?
+    @Atomic var decodeRequestResponse_data: Data?
+    @Atomic var decodeRequestResponse_response: HTTPURLResponse?
+    @Atomic var decodeRequestResponse_error: Error?
 
     func decodeRequestResponse<ResponseType>(data: Data?, response: URLResponse?, error: Error?) throws -> ResponseType
         where ResponseType: Decodable {

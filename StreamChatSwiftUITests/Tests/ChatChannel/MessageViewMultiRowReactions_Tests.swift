@@ -9,7 +9,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
+@MainActor final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
 
     override public func setUp() {
         super.setUp()

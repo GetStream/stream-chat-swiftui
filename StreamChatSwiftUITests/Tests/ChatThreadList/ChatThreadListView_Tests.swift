@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ChatThreadListView_Tests: StreamChatTestCase {
+@MainActor class ChatThreadListView_Tests: StreamChatTestCase {
 
     func test_chatThreadListView_empty() {
         let view = makeView(.empty())

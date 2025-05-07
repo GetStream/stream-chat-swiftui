@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-final class CreatePollViewModel_Tests: StreamChatTestCase {
+@MainActor final class CreatePollViewModel_Tests: StreamChatTestCase {
     
     // MARK: - Can Show Discard Confirmation
     

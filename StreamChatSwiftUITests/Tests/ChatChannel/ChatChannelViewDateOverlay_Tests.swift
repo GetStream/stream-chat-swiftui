@@ -10,10 +10,9 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
+@MainActor class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
         DateFormatter.messageListDateOverlay = {
             let df = DateFormatter()
             df.setLocalizedDateFormatFromTemplate("MMMdd")

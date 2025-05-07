@@ -9,9 +9,8 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageListView_Tests: StreamChatTestCase {
-    override func setUp() {
-        super.setUp()
+@MainActor class MessageListView_Tests: StreamChatTestCase {
+    override func setUpWithError() throws {
         DelayedRenderingViewModifier.isEnabled = false
     }
     

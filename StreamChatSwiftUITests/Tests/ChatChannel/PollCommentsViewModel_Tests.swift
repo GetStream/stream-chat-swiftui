@@ -7,7 +7,7 @@
 @testable import StreamChatTestTools
 import XCTest
 
-final class PollCommentsViewModel_Tests: StreamChatTestCase {
+@MainActor final class PollCommentsViewModel_Tests: StreamChatTestCase {
     func test_pollCommentsViewModel_synchronizeCalled() {
         // Given
         let commentsController = makeCommentsController()

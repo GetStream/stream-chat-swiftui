@@ -8,7 +8,7 @@ import Combine
 @testable import StreamChatTestTools
 import XCTest
 
-class FileAttachmentsViewModel_Tests: StreamChatTestCase {
+@MainActor class FileAttachmentsViewModel_Tests: StreamChatTestCase {
 
     func test_fileAttachmentsViewModel_notEmpty() {
         // Given

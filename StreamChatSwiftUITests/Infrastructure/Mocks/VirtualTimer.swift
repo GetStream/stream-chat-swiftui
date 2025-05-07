@@ -123,12 +123,12 @@ class VirtualTime {
 
 extension VirtualTime {
     /// Internal representation of a timer scheduled with `VirtualTime`. Not meant to be used directly.
-    class TimerControl {
-        private(set) var isActive = true
+    class TimerControl: @unchecked Sendable {
+        @Atomic private(set) var isActive = true
 
-        var repeatingPeriod: TimeInterval
-        var scheduledFireTime: TimeInterval
-        var callback: (TimerControl) -> Void
+        @Atomic var repeatingPeriod: TimeInterval
+        @Atomic var scheduledFireTime: TimeInterval
+        @Atomic var callback: (TimerControl) -> Void
 
         init(scheduledFireTime: TimeInterval, repeatingPeriod: TimeInterval, callback: @escaping (TimerControl) -> Void) {
             self.repeatingPeriod = repeatingPeriod

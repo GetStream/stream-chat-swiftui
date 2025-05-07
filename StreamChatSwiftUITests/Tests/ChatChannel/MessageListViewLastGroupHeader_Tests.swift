@@ -10,9 +10,9 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
+@MainActor class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
 
-    override func setUp() {
+    @MainActor override func setUpWithError() throws {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(
             showMessageDate: false,

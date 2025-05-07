@@ -10,10 +10,9 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ChatChannelView_Tests: StreamChatTestCase {
+@MainActor class ChatChannelView_Tests: StreamChatTestCase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         DelayedRenderingViewModifier.isEnabled = false

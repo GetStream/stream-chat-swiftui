@@ -8,7 +8,7 @@
 import SwiftUI
 import XCTest
 
-class MessageComposerViewModel_Tests: StreamChatTestCase {
+@MainActor class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     private let testImage = UIImage(systemName: "checkmark")!
     private var mockURL: URL!
@@ -22,7 +22,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         )
     }
     
-    override func setUp() {
+    @MainActor override func setUpWithError() throws {
         super.setUp()
         mockURL = generateURL()
         writeMockData(for: mockURL)
@@ -316,6 +316,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
     func test_messageComposerVM_sendNewMessage() {
         // Given
         let viewModel = makeComposerViewModel()
+        let expectation = XCTestExpectation()
         
         // When
         viewModel.text = "test"
@@ -325,12 +326,15 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
             quotedMessage: nil,
             editedMessage: nil
         ) {
-            // Then
-            XCTAssert(viewModel.errorShown == false)
-            XCTAssert(viewModel.text == "")
-            XCTAssert(viewModel.addedAssets.isEmpty)
-            XCTAssert(viewModel.addedFileURLs.isEmpty)
+            expectation.fulfill()
         }
+        
+        // Then
+        wait(for: [expectation], timeout: defaultTimeout)
+        XCTAssert(viewModel.errorShown == false)
+        XCTAssert(viewModel.text == "")
+        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(viewModel.addedFileURLs.isEmpty)
     }
     
     func test_messageComposerVM_notInThread() {
@@ -1204,7 +1208,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
 }
 
 enum MessageComposerTestUtils {
-    static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
+    @MainActor static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
         let channelController = makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(
             channelController: channelController,
