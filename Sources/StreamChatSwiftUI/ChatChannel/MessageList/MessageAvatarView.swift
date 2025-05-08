@@ -36,23 +36,29 @@ public struct MessageAvatarView: View {
                 preferredSize: size
             )
 
-            LazyImage(imageURL: adjustedURL)
-                .onDisappear(.cancel)
-                .priority(.normal)
-                .clipShape(Circle())
-                .frame(
-                    width: size.width,
-                    height: size.height
-                )
-                .overlay(
-                    showOnlineIndicator ?
-                        TopRightView {
-                            OnlineIndicatorView(indicatorSize: size.width * 0.3)
-                        }
-                        .offset(x: 3, y: -1)
-                        : nil
-                )
-                .accessibilityIdentifier("MessageAvatarView")
+            LazyImage(imageURL: adjustedURL) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                }
+            }
+            .onDisappear(.cancel)
+            .priority(.normal)
+            .clipShape(Circle())
+            .frame(
+                width: size.width,
+                height: size.height
+            )
+            .overlay(
+                showOnlineIndicator ?
+                    TopRightView {
+                        OnlineIndicatorView(indicatorSize: size.width * 0.3)
+                    }
+                    .offset(x: 3, y: -1)
+                    : nil
+            )
+            .accessibilityIdentifier("MessageAvatarView")
         } else {
             Image(uiImage: images.userAvatarPlaceholder2)
                 .resizable()
