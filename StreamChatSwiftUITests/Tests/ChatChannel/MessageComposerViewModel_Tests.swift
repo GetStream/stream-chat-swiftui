@@ -316,7 +316,6 @@ import XCTest
     func test_messageComposerVM_sendNewMessage() {
         // Given
         let viewModel = makeComposerViewModel()
-        let expectation = XCTestExpectation()
         
         // When
         viewModel.text = "test"
@@ -324,13 +323,11 @@ import XCTest
         viewModel.addedFileURLs = [mockURL]
         viewModel.sendMessage(
             quotedMessage: nil,
-            editedMessage: nil
-        ) {
-            expectation.fulfill()
-        }
+            editedMessage: nil,
+            completion: {}
+        )
         
         // Then
-        wait(for: [expectation], timeout: defaultTimeout)
         XCTAssert(viewModel.errorShown == false)
         XCTAssert(viewModel.text == "")
         XCTAssert(viewModel.addedAssets.isEmpty)

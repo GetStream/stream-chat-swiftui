@@ -77,7 +77,7 @@ extension CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         // optional method.
     }
@@ -211,7 +211,7 @@ public class CommandsHandler: CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         if let handler = commandHandler(for: composerCommand) {
             handler.executeOnMessageSent(

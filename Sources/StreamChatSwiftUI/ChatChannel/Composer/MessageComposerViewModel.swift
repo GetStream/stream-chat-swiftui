@@ -362,8 +362,10 @@ import SwiftUI
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
-                self?.clearInputData()
-                completion()
+                MainActor.ensureIsolated {
+                    self?.clearInputData()
+                    completion()
+                }
             }
             
             if composerCommand.replacesMessageSent {
