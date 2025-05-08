@@ -72,7 +72,38 @@ import XCTest
         XCTAssert(messageActions[4].title == "Mark Unread")
         XCTAssert(messageActions[5].title == "Mute User")
     }
-    
+
+    func test_messageActions_otherUserDefaultReadEventsDisabled() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage])
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssert(messageActions.count == 5)
+        XCTAssert(messageActions[0].title == "Reply")
+        XCTAssert(messageActions[1].title == "Thread Reply")
+        XCTAssert(messageActions[2].title == "Pin to conversation")
+        XCTAssert(messageActions[3].title == "Copy Message")
+        XCTAssert(messageActions[4].title == "Mute User")
+    }
+
     func test_messageActions_otherUserDefaultBlockingEnabled() {
         // Given
         streamChat = StreamChat(
@@ -297,7 +328,7 @@ import XCTest
     
     private var mockDMChannel: ChatChannel {
         ChatChannel.mockDMChannel(
-            ownCapabilities: [.sendMessage, .uploadFile, .pinMessage]
+            ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .readEvents]
         )
     }
 }

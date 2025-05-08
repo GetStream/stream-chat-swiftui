@@ -20,7 +20,7 @@ import XCTest
                 text: "test",
                 author: .mock(id: .unique)
             ),
-            channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage]),
+            channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .readEvents]),
             chatClient: chatClient,
             onFinish: { _ in },
             onError: { _ in }

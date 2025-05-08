@@ -403,7 +403,7 @@ import XCTest
         waitForExpectations(timeout: 1)
     }
 
-    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageInteractable_shouldBeTrue() {
+    func test_isSwipeToReplyPossible_whenCanQuoteReply_whenMessageInteractable_shouldBeTrue() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -414,7 +414,7 @@ import XCTest
 
         let view = MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
+            channel: .mockDMChannel(ownCapabilities: [.quoteMessage]),
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -428,7 +428,7 @@ import XCTest
         XCTAssertTrue(view.isSwipeToReplyPossible)
     }
 
-    func test_isSwipeToReplyPossible_whenRepliesDisabled_whenMessageInteractable_shouldBeFalse() {
+    func test_isSwipeToReplyPossible_whenCanNotQuoteReply_whenMessageInteractable_shouldBeFalse() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -439,7 +439,7 @@ import XCTest
 
         let view = MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: false)),
+            channel: .mockDMChannel(ownCapabilities: []),
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -453,7 +453,7 @@ import XCTest
         XCTAssertFalse(view.isSwipeToReplyPossible)
     }
 
-    func test_isSwipeToReplyPossible_whenRepliesEnabled_whenMessageNotInteractable_shouldBeFalse() {
+    func test_isSwipeToReplyPossible_whenCanQuoteReply_whenMessageNotInteractable_shouldBeFalse() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -465,7 +465,7 @@ import XCTest
 
         let view = MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: .mockDMChannel(config: .mock(repliesEnabled: true)),
+            channel: .mockDMChannel(ownCapabilities: [.quoteMessage]),
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
