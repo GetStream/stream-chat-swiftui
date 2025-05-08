@@ -352,7 +352,7 @@ import SwiftUI
         skipPush: Bool = false,
         skipEnrichUrl: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: @escaping @Sendable() -> Void
+        completion: @escaping @MainActor() -> Void
     ) {
         defer {
             checkChannelCooldown()
@@ -398,12 +398,12 @@ import SwiftUI
                     skipPush: skipPush,
                     skipEnrichUrl: skipEnrichUrl,
                     extraData: extraData
-                ) { [weak self] in
-                    switch $0 {
-                    case .success:
-                        completion()
-                    case .failure:
-                        MainActor.ensureIsolated { [weak self] in
+                ) { [weak self] result in
+                    MainActor.ensureIsolated { [weak self] in
+                        switch result {
+                        case .success:
+                            completion()
+                        case .failure:
                             self?.errorShown = true
                         }
                     }
@@ -418,12 +418,12 @@ import SwiftUI
                     skipPush: skipPush,
                     skipEnrichUrl: skipEnrichUrl,
                     extraData: extraData
-                ) { [weak self] in
-                    switch $0 {
-                    case .success:
-                        completion()
-                    case .failure:
-                        MainActor.ensureIsolated { [weak self] in
+                ) { [weak self] result in
+                    MainActor.ensureIsolated { [weak self] in
+                        switch result {
+                        case .success:
+                            completion()
+                        case .failure:
                             self?.errorShown = true
                         }
                     }
@@ -711,7 +711,7 @@ import SwiftUI
     private func edit(
         message: ChatMessage,
         attachments: [AnyAttachmentPayload]?,
-        completion: @escaping @Sendable() -> Void
+        completion: @escaping @MainActor() -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
             return
@@ -731,12 +731,12 @@ import SwiftUI
             text: adjustedText,
             attachments: newAttachments
         ) { [weak self] error in
-            if error != nil {
-                MainActor.ensureIsolated { [weak self] in
+            MainActor.ensureIsolated { [weak self] in
+                if error != nil {
                     self?.errorShown = true
+                } else {
+                    completion()
                 }
-            } else {
-                completion()
             }
         }
         

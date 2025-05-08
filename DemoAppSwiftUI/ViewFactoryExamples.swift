@@ -22,8 +22,8 @@ class DemoAppFactory: ViewFactory {
     
     func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @Sendable() -> Void,
+        onError: @escaping @Sendable(Error) -> Void
     ) -> [ChannelAction] {
         var actions = ChannelAction.defaultActions(
             for: channel,
@@ -259,8 +259,8 @@ class CustomFactory: ViewFactory {
     // Example for an injected action. Uncomment to see it in action.
     func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @Sendable() -> Void,
+        onError: @escaping @Sendable(Error) -> Void
     ) -> [ChannelAction] {
         var defaultActions = ChannelAction.defaultActions(
             for: channel,
@@ -269,7 +269,7 @@ class CustomFactory: ViewFactory {
             onError: onError
         )
 
-        let freeze = {
+        let freeze: @MainActor @Sendable() -> Void = {
             let controller = self.chatClient.channelController(for: channel.cid)
             controller.freezeChannel { error in
                 if let error = error {

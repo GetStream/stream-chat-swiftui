@@ -160,7 +160,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 )
                 .offset(y: -composerHeight)
-                .animation(nil) : nil,
+                .animation(.none, value: viewModel.showCommandsOverlay) : nil,
             alignment: .bottom
         )
         .modifier(factory.makeComposerViewModifier())

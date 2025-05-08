@@ -82,7 +82,7 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
                 return
             }
 
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 AppState.shared.userState = .loggedIn
                 self?.notificationChannelId = cid.description
             }
