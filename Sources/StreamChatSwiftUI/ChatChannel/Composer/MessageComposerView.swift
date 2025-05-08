@@ -192,19 +192,20 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .overlay(
-            factory.makeCommandsContainerView(
-                suggestions: suggestions,
-                handleCommand: { commandInfo in
-                    viewModel.handleCommand(
-                        for: $viewModel.text,
-                        selectedRangeLocation: $viewModel.selectedRangeLocation,
-                        command: $viewModel.composerCommand,
-                        extraData: commandInfo
-                    )
-                }
-            )
-            .offset(y: -composerHeight)
-            .animation(nil),
+            viewModel.showCommandsOverlay ?
+                factory.makeCommandsContainerView(
+                    suggestions: viewModel.suggestions,
+                    handleCommand: { commandInfo in
+                        viewModel.handleCommand(
+                            for: $viewModel.text,
+                            selectedRangeLocation: $viewModel.selectedRangeLocation,
+                            command: $viewModel.composerCommand,
+                            extraData: commandInfo
+                        )
+                    }
+                )
+                .offset(y: -composerHeight)
+                .animation(nil) : nil,
             alignment: .bottom
         )
         .modifier(factory.makeComposerViewModifier())
@@ -222,14 +223,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             viewModel.updateDraftMessage(quotedMessage: quotedMessage)
         })
         .accessibilityElement(children: .contain)
-    }
-
-    var suggestions: [String: Any] {
-        var suggestions = viewModel.suggestions
-        if !viewModel.showCommandsOverlay {
-            suggestions.removeValue(forKey: "instantCommands")
-        }
-        return suggestions
     }
 }
 
