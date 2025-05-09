@@ -60,9 +60,9 @@ import UIKit
     func setupRemoteNotifications() {
         UNUserNotificationCenter
             .current()
-            .requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+            .requestAuthorization(options: [.alert, .sound, .badge]) { @Sendable granted, _ in
                 if granted {
-                    DispatchQueue.main.async {
+                    Task { @MainActor in
                         UIApplication.shared.registerForRemoteNotifications()
                     }
                 }
