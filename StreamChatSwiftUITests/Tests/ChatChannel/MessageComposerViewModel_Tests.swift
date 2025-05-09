@@ -659,6 +659,106 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertFalse(viewModel.canSendPoll)
     }
 
+    func test_showCommandsOverlay() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [.init()])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = .init(id: "test", typingSuggestion: .empty, displayInfo: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.showCommandsOverlay)
+    }
+
+    func test_showCommandsOverlay_whenComposerCommandIsNil_returnsFalse() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [.init()])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = nil
+
+        // Then
+        XCTAssertFalse(viewModel.showCommandsOverlay)
+    }
+
+    func test_showCommandsOverlay_whenCommandsAreDisabled_returnsFalse() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = .init(id: "test", typingSuggestion: .empty, displayInfo: nil)
+
+        // Then
+        XCTAssertFalse(viewModel.showCommandsOverlay)
+    }
+
+    func test_showCommandsOverlay_whenCommandsAreDisabledButIsMentions_returnsTrue() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = .init(id: "mentions", typingSuggestion: .empty, displayInfo: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.showCommandsOverlay)
+    }
+
     func test_addedAsset_extraData() {
         // Given
         let image = UIImage(systemName: "person")!
