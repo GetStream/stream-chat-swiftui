@@ -22,8 +22,8 @@ class DemoAppFactory: ViewFactory {
     
     func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping @Sendable() -> Void,
-        onError: @escaping @Sendable(Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction] {
         var actions = ChannelAction.defaultActions(
             for: channel,
@@ -80,8 +80,8 @@ class DemoAppFactory: ViewFactory {
     
     private func archiveChannelAction(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
         ChannelAction(
             title: channel.isArchived ? "Unarchive Channel" : "Archive Channel",
@@ -91,18 +91,22 @@ class DemoAppFactory: ViewFactory {
                 let channelController = self.chatClient.channelController(for: channel.cid)
                 if channel.isArchived {
                     channelController.unarchive { error in
-                        if let error = error {
-                            onError(error)
-                        } else {
-                            onDismiss()
+                        Task { @MainActor in
+                            if let error = error {
+                                onError(error)
+                            } else {
+                                onDismiss()
+                            }
                         }
                     }
                 } else {
                     channelController.archive { error in
-                        if let error = error {
-                            onError(error)
-                        } else {
-                            onDismiss()
+                        Task { @MainActor in
+                            if let error = error {
+                                onError(error)
+                            } else {
+                                onDismiss()
+                            }
                         }
                     }
                 }
@@ -114,8 +118,8 @@ class DemoAppFactory: ViewFactory {
     
     private func pinChannelAction(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
         let pinChannel = ChannelAction(
             title: channel.isPinned ? "Unpin Channel" : "Pin Channel",
@@ -125,18 +129,22 @@ class DemoAppFactory: ViewFactory {
                 let channelController = self.chatClient.channelController(for: channel.cid)
                 if channel.isPinned {
                     channelController.unpin { error in
-                        if let error = error {
-                            onError(error)
-                        } else {
-                            onDismiss()
+                        Task { @MainActor in
+                            if let error = error {
+                                onError(error)
+                            } else {
+                                onDismiss()
+                            }
                         }
                     }
                 } else {
                     channelController.pin { error in
-                        if let error = error {
-                            onError(error)
-                        } else {
-                            onDismiss()
+                        Task { @MainActor in
+                            if let error = error {
+                                onError(error)
+                            } else {
+                                onDismiss()
+                            }
                         }
                     }
                 }

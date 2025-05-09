@@ -6,7 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+@MainActor class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     @Injected(\.chatClient) var chatClient
 
@@ -99,20 +99,24 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         if !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers(limit: 50) { [weak self] _ in
-                guard let self = self else { return }
-                self.chatUsers = self.searchController.userArray
-                self.loadingNextUsers = false
+                Task { @MainActor in
+                    guard let self = self else { return }
+                    self.chatUsers = self.searchController.userArray
+                    self.loadingNextUsers = false
+                }
             }
         }
     }
 
     // MARK: - ChatUserSearchControllerDelegate
 
-    func controller(
+    nonisolated func controller(
         _ controller: ChatUserSearchController,
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
-        chatUsers = controller.userArray
+        Task { @MainActor in
+            chatUsers = controller.userArray
+        }
     }
 
     // MARK: - private
@@ -120,10 +124,12 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private func searchUsers(with term: String?) {
         state = .loading
         searchController.search(term: term) { [weak self] error in
-            if error != nil {
-                self?.state = .error
-            } else {
-                self?.state = .loaded
+            Task { @MainActor in
+                if error != nil {
+                    self?.state = .error
+                } else {
+                    self?.state = .loaded
+                }
             }
         }
     }
@@ -137,13 +143,15 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             extraData: [:]
         )
         channelController?.synchronize { [weak self] error in
-            if error != nil {
-                self?.state = .error
-                self?.updatingSelectedUsers = false
-            } else {
-                withAnimation {
-                    self?.state = .channel
+            Task { @MainActor in
+                if error != nil {
+                    self?.state = .error
                     self?.updatingSelectedUsers = false
+                } else {
+                    withAnimation {
+                        self?.state = .channel
+                        self?.updatingSelectedUsers = false
+                    }
                 }
             }
         }

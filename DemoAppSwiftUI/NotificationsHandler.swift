@@ -10,7 +10,7 @@ import UIKit
 /// Handles push notifications in the demo app.
 /// When a notification is received, the channel id is extracted from the notification object.
 /// The code below shows an example how to use it to navigate directly to the corresponding screen.
-class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
+@MainActor class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
 
     @Injected(\.chatClient) private var chatClient
 
@@ -20,7 +20,7 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
 
     override private init() {}
 
-    func userNotificationCenter(
+    nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
@@ -41,16 +41,19 @@ class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenter
             return
         }
 
-        if AppState.shared.userState == .loggedIn {
-            notificationChannelId = cid.description
-        } else if let userId = UserDefaults(suiteName: applicationGroupIdentifier)?.string(forKey: currentUserIdRegisteredForPush),
-                  let userCredentials = UserCredentials.builtInUsersByID(id: userId),
-                  let token = try? Token(rawValue: userCredentials.token) {
-            loginAndNavigateToChannel(
-                userCredentials: userCredentials,
-                token: token,
-                cid: cid
-            )
+        Task { @MainActor in
+            if AppState.shared.userState == .loggedIn {
+                notificationChannelId = cid.description
+            } else if
+                let userId = UserDefaults(suiteName: applicationGroupIdentifier)?.string(forKey: currentUserIdRegisteredForPush),
+                let userCredentials = UserCredentials.builtInUsersByID(id: userId),
+                let token = try? Token(rawValue: userCredentials.token) {
+                loginAndNavigateToChannel(
+                    userCredentials: userCredentials,
+                    token: token,
+                    cid: cid
+                )
+            }
         }
     }
 

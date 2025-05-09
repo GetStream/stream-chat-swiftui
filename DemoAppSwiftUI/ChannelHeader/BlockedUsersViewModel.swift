@@ -6,7 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class BlockedUsersViewModel: ObservableObject {
+@MainActor class BlockedUsersViewModel: ObservableObject {
     
     @Injected(\.chatClient) var chatClient
     
@@ -27,8 +27,10 @@ class BlockedUsersViewModel: ObservableObject {
             } else {
                 let controller = chatClient.userController(userId: blockedUserId)
                 controller.synchronize { [weak self] _ in
-                    if let user = controller.user {
-                        self?.blockedUsers.append(user)
+                    Task { @MainActor in
+                        if let user = controller.user {
+                            self?.blockedUsers.append(user)
+                        }
                     }
                 }
             }
@@ -39,8 +41,10 @@ class BlockedUsersViewModel: ObservableObject {
         let unblockController = chatClient.userController(userId: user.id)
         unblockController.unblock { [weak self] error in
             if error == nil {
-                self?.blockedUsers.removeAll { blocked in
-                    blocked.id == user.id
+                Task { @MainActor in
+                    self?.blockedUsers.removeAll { blocked in
+                        blocked.id == user.id
+                    }
                 }
             }
         }

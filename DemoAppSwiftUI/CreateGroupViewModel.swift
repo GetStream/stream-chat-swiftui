@@ -6,7 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+@MainActor class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     @Injected(\.chatClient) var chatClient
 
@@ -75,10 +75,12 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                 members: Set(selectedUsers.map(\.id))
             )
             channelController.synchronize { [weak self] error in
-                if error != nil {
-                    self?.errorShown = true
-                } else {
-                    self?.showGroupConversation = true
+                Task { @MainActor in
+                    if error != nil {
+                        self?.errorShown = true
+                    } else {
+                        self?.showGroupConversation = true
+                    }
                 }
             }
 
@@ -89,11 +91,13 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     // MARK: - ChatUserSearchControllerDelegate
 
-    func controller(
+    nonisolated func controller(
         _ controller: ChatUserSearchController,
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
-        chatUsers = controller.userArray
+        Task { @MainActor in
+            chatUsers = controller.userArray
+        }
     }
 
     // MARK: - private
@@ -101,10 +105,12 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private func searchUsers(with term: String?) {
         state = .loading
         searchController.search(term: term) { [weak self] error in
-            if error != nil {
-                self?.state = .error
-            } else {
-                self?.state = .loaded
+            Task { @MainActor in
+                if error != nil {
+                    self?.state = .error
+                } else {
+                    self?.state = .loaded
+                }
             }
         }
     }
