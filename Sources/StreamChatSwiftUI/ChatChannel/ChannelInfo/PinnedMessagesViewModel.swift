@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `PinnedMessagesView`.
-@MainActor public class PinnedMessagesViewModel: ObservableObject {
+@preconcurrency @MainActor public class PinnedMessagesViewModel: ObservableObject {
 
     let channel: ChatChannel
 

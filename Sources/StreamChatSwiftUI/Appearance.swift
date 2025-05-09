@@ -35,7 +35,7 @@ public extension Appearance {
 
 /// Provides the default value of the `Appearance` class.
 public struct AppearanceKey: EnvironmentKey {
-    public static var defaultValue: Appearance { .init() }
+    public static var defaultValue: Appearance { Appearance() }
 }
 
 extension EnvironmentValues {

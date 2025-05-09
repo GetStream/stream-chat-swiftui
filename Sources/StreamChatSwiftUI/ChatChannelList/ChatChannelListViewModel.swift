@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-@MainActor open class ChatChannelListViewModel:
+@preconcurrency @MainActor open class ChatChannelListViewModel:
     ObservableObject,
     ChatChannelListControllerDelegate,
     ChatMessageSearchControllerDelegate {

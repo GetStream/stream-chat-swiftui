@@ -13,7 +13,7 @@ extension ChannelAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `ChannelAction`.
-    @MainActor public static func defaultActions(
+    @preconcurrency @MainActor public static func defaultActions(
         for channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping @MainActor() -> Void,

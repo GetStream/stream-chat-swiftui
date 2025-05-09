@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageComposerView`.
-@MainActor open class MessageComposerViewModel: ObservableObject {
+@preconcurrency @MainActor open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) internal var utils
 

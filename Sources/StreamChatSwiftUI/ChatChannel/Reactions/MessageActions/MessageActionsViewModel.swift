@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageActionsView`.
-@MainActor open class MessageActionsViewModel: ObservableObject {
+@preconcurrency @MainActor open class MessageActionsViewModel: ObservableObject {
     @Published public var messageActions: [MessageAction]
     @Published public var alertShown = false
     @Published public var alertAction: MessageAction? {

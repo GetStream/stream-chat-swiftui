@@ -12,7 +12,7 @@ public protocol MessageActionsResolving {
     /// - Parameters:
     ///  - info: the message action info.
     ///  - viewModel: used to modify a state after action execution.
-    func resolveMessageAction(
+    @preconcurrency @MainActor func resolveMessageAction(
         info: MessageActionInfo,
         viewModel: ChatChannelViewModel
     )
@@ -29,22 +29,20 @@ public class MessageActionsResolver: MessageActionsResolving {
         info: MessageActionInfo,
         viewModel: ChatChannelViewModel
     ) {
-        MainActor.ensureIsolated {
-            if info.identifier == "inlineReply" {
-                withAnimation {
-                    viewModel.quotedMessage = info.message
-                    viewModel.editedMessage = nil
-                }
-            } else if info.identifier == "edit" {
-                withAnimation {
-                    viewModel.editedMessage = info.message
-                    viewModel.quotedMessage = nil
-                }
-            } else if info.identifier == MessageActionId.markUnread {
-                viewModel.firstUnreadMessageId = info.message.messageId
+        if info.identifier == "inlineReply" {
+            withAnimation {
+                viewModel.quotedMessage = info.message
+                viewModel.editedMessage = nil
             }
-            
-            viewModel.reactionsShown = false
+        } else if info.identifier == "edit" {
+            withAnimation {
+                viewModel.editedMessage = info.message
+                viewModel.quotedMessage = nil
+            }
+        } else if info.identifier == MessageActionId.markUnread {
+            viewModel.firstUnreadMessageId = info.message.messageId
         }
+        
+        viewModel.reactionsShown = false
     }
 }

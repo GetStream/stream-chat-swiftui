@@ -89,7 +89,7 @@ struct EmptyViewModifier: ViewModifier {
 
 extension CGSize {
     /// Default size of the avatar used in the channel list.
-    public static let defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
+    nonisolated(unsafe) public static var defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
 }
 
 /// Provides access to the the app's tab bar (if present).
