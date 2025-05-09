@@ -459,6 +459,13 @@ import SwiftUI
     }
     
     public var showCommandsOverlay: Bool {
+        // Mentions are really not commands, but at the moment this flag controls
+        // if the mentions are displayed or not, so if the command is related to mentions
+        // then we need to ignore if commands are available or not.
+        let isMentionsSuggestions = composerCommand?.id == "mentions"
+        if isMentionsSuggestions {
+            return true
+        }
         let commandAvailable = composerCommand != nil
         let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
         return commandAvailable && configuredCommandsAvailable
