@@ -6,7 +6,7 @@ import Combine
 import StreamChat
 import SwiftUI
 
-class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDelegate {
+@MainActor class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDelegate {
     
     let poll: Poll
     let option: PollOption
@@ -40,13 +40,15 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     
     func refresh() {
         controller.synchronize { [weak self] error in
-            guard let self else { return }
-            self.pollVotes = Array(self.controller.votes)
-            if self.pollVotes.isEmpty {
-                self.loadVotes()
-            }
-            if error != nil {
-                self.errorShown = true
+            MainActor.ensureIsolated { [weak self] in
+                guard let self else { return }
+                self.pollVotes = Array(self.controller.votes)
+                if self.pollVotes.isEmpty {
+                    self.loadVotes()
+                }
+                if error != nil {
+                    self.errorShown = true
+                }
             }
         }
     }
@@ -59,16 +61,18 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         loadVotes()
     }
 
-    func controller(
+    nonisolated func controller(
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        if animateChanges {
-            withAnimation {
-                self.pollVotes = Array(self.controller.votes)
+        MainActor.ensureIsolated {
+            if animateChanges {
+                withAnimation {
+                    self.pollVotes = Array(self.controller.votes)
+                }
+            } else {
+                pollVotes = Array(controller.votes)
             }
-        } else {
-            pollVotes = Array(controller.votes)
         }
     }
     
@@ -76,10 +80,12 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         loadingVotes = true
 
         controller.loadMoreVotes { [weak self] error in
-            guard let self else { return }
-            self.loadingVotes = false
-            if error != nil {
-                self.errorShown = true
+            MainActor.ensureIsolated { [weak self] in
+                guard let self else { return }
+                self.loadingVotes = false
+                if error != nil {
+                    self.errorShown = true
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 #if !os(watchOS)
 import AVKit
@@ -20,19 +20,31 @@ typealias PlatformImage = NSImage
 
 /// An image container with an image and associated metadata.
 struct ImageContainer: @unchecked Sendable {
-    #if os(macOS)
+#if os(macOS)
     /// A fetched image.
-    var image: NSImage
-    #else
+    var image: NSImage {
+        get { ref.image }
+        set { mutate { $0.image = newValue } }
+    }
+#else
     /// A fetched image.
-    var image: UIImage
-    #endif
+    var image: UIImage {
+        get { ref.image }
+        set { mutate { $0.image = newValue } }
+    }
+#endif
 
     /// An image type.
-    var type: NukeAssetType?
+    var type: NukeAssetType? {
+        get { ref.type }
+        set { mutate { $0.type = newValue } }
+    }
 
     /// Returns `true` if the image in the container is a preview of the image.
-    var isPreview: Bool
+    var isPreview: Bool {
+        get { ref.isPreview }
+        set { mutate { $0.isPreview = newValue } }
+    }
 
     /// Contains the original image `data`, but only if the decoder decides to
     /// attach it to the image.
@@ -42,29 +54,22 @@ struct ImageContainer: @unchecked Sendable {
     ///
     /// - note: The `data`, along with the image container itself gets stored
     /// in the memory cache.
-    var data: Data?
-
-    #if !os(watchOS)
-    /// Represents in-memory video asset.
-    var asset: AVAsset?
-    #endif
+    var data: Data? {
+        get { ref.data }
+        set { mutate { $0.data = newValue } }
+    }
 
     /// An metadata provided by the user.
-    var userInfo: [UserInfoKey: Any]
+    var userInfo: [UserInfoKey: Any] {
+        get { ref.userInfo }
+        set { mutate { $0.userInfo = newValue } }
+    }
+
+    private var ref: Container
 
     /// Initializes the container with the given image.
     init(image: PlatformImage, type: NukeAssetType? = nil, isPreview: Bool = false, data: Data? = nil, userInfo: [UserInfoKey: Any] = [:]) {
-        self.image = image
-        self.type = type
-        self.isPreview = isPreview
-        self.data = data
-        self.userInfo = userInfo
-
-        #if !os(watchOS)
-        if type?.isVideo == true {
-            self.asset = data.flatMap { AVDataAsset(data: $0, type: type) }
-        }
-        #endif
+        self.ref = Container(image: image, type: type, isPreview: isPreview, data: data, userInfo: userInfo)
     }
 
     func map(_ closure: (PlatformImage) throws -> PlatformImage) rethrows -> ImageContainer {
@@ -90,5 +95,38 @@ struct ImageContainer: @unchecked Sendable {
 
         /// A user info key to get the scan number (Int).
         static let scanNumberKey: UserInfoKey = "com.github/kean/nuke/scan-number"
+    }
+
+    // MARK: - Copy-on-Write
+
+    private mutating func mutate(_ closure: (Container) -> Void) {
+        if !isKnownUniquelyReferenced(&ref) {
+            ref = Container(ref)
+        }
+        closure(ref)
+    }
+
+    private final class Container: @unchecked Sendable {
+        var image: PlatformImage
+        var type: NukeAssetType?
+        var isPreview: Bool
+        var data: Data?
+        var userInfo: [UserInfoKey: Any]
+
+        init(image: PlatformImage, type: NukeAssetType?, isPreview: Bool, data: Data? = nil, userInfo: [UserInfoKey: Any]) {
+            self.image = image
+            self.type = type
+            self.isPreview = isPreview
+            self.data = data
+            self.userInfo = userInfo
+        }
+
+        init(_ ref: Container) {
+            self.image = ref.image
+            self.type = ref.type
+            self.isPreview = ref.isPreview
+            self.data = ref.data
+            self.userInfo = ref.userInfo
+        }
     }
 }

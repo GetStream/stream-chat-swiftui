@@ -5,11 +5,11 @@
 import Foundation
 @testable import StreamChat
 
-class WebSocketEngineMock: WebSocketEngine {
-    var request: URLRequest
-    var sessionConfiguration: URLSessionConfiguration
-    var isConnected: Bool = false
-    var callbackQueue: DispatchQueue
+class WebSocketEngineMock: WebSocketEngine, @unchecked Sendable {
+    @Atomic var request: URLRequest
+    @Atomic var sessionConfiguration: URLSessionConfiguration
+    @Atomic var isConnected: Bool = false
+    @Atomic var callbackQueue: DispatchQueue
     weak var delegate: WebSocketEngineDelegate?
 
     /// How many times was `connect()` called

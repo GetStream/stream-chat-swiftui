@@ -12,7 +12,7 @@ public protocol VideoPreviewLoader: AnyObject {
     /// - Parameters:
     ///   - url: A video URL.
     ///   - completion: A completion that is called when a preview is loaded. Must be invoked on main queue.
-    func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void)
+    func loadPreviewForVideo(at url: URL, completion: @escaping @Sendable(Result<UIImage, Error>) -> Void)
 }
 
 /// The `VideoPreviewLoader` implemenation used by default.
@@ -36,19 +36,19 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
         NotificationCenter.default.removeObserver(self)
     }
 
-    public func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    public func loadPreviewForVideo(at url: URL, completion: @escaping @Sendable(Result<UIImage, Error>) -> Void) {
         if let cached = cache[url] {
-            return call(completion, with: .success(cached))
+            return Self.call(completion, with: .success(cached))
         }
 
-        utils.fileCDN.adjustedURL(for: url) { result in
+        utils.fileCDN.adjustedURL(for: url) { [cache] result in
 
             let adjustedUrl: URL
             switch result {
             case let .success(url):
                 adjustedUrl = url
             case let .failure(error):
-                self.call(completion, with: .failure(error))
+                Self.call(completion, with: .failure(error))
                 return
             }
 
@@ -57,9 +57,7 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
             let frameTime = CMTime(seconds: 0.1, preferredTimescale: 600)
 
             imageGenerator.appliesPreferredTrackTransform = true
-            imageGenerator.generateCGImagesAsynchronously(forTimes: [.init(time: frameTime)]) { [weak self] _, image, _, _, error in
-                guard let self = self else { return }
-
+            imageGenerator.generateCGImagesAsynchronously(forTimes: [.init(time: frameTime)]) { [cache] _, image, _, _, error in
                 let result: Result<UIImage, Error>
                 if let thumbnail = image {
                     result = .success(.init(cgImage: thumbnail))
@@ -70,19 +68,18 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
                     return
                 }
 
-                self.cache[url] = try? result.get()
-                self.call(completion, with: result)
+                cache[url] = try? result.get()
+                Self.call(completion, with: result)
             }
         }
     }
 
-    private func call(_ completion: @escaping (Result<UIImage, Error>) -> Void, with result: Result<UIImage, Error>) {
-        if Thread.current.isMainThread {
+    private static func call(
+        _ completion: @escaping @Sendable(Result<UIImage, Error>) -> Void,
+        with result: Result<UIImage, Error>
+    ) {
+        MainActor.ensureIsolated {
             completion(result)
-        } else {
-            DispatchQueue.main.async {
-                completion(result)
-            }
         }
     }
 

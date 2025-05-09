@@ -30,8 +30,8 @@ extension ViewFactory {
     
     public func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction] {
         ChannelAction.defaultActions(
             for: channel,
@@ -44,8 +44,8 @@ extension ViewFactory {
     public func makeMoreChannelActionsView(
         for channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> some View {
         MoreChannelActionsView(
             channel: channel,
@@ -833,8 +833,8 @@ extension ViewFactory {
     public func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction] {
         MessageAction.defaultActions(
             factory: self,
@@ -849,8 +849,8 @@ extension ViewFactory {
     public func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> some View {
         let messageActions = supportedMessageActions(
             for: message,

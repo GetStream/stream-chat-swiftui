@@ -206,11 +206,13 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
         }
         .onAppear {
             videoPreviewLoader.loadPreviewForVideo(at: attachment.videoURL) { result in
-                switch result {
-                case let .success(image):
-                    self.previewImage = image
-                case let .failure(error):
-                    self.error = error
+                MainActor.ensureIsolated {
+                    switch result {
+                    case let .success(image):
+                        self.previewImage = image
+                    case let .failure(error):
+                        self.error = error
+                    }
                 }
             }
         }

@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MediaAttachmentsView`.
-class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
+@MainActor class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
 
     @Published var mediaItems = [MediaItem]()
     @Published var loading = false
@@ -48,17 +48,21 @@ class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDe
         if !loadingNextMessages {
             loadingNextMessages = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAttachments()
-                self.loadingNextMessages = false
+                MainActor.ensureIsolated { [weak self] in
+                    guard let self = self else { return }
+                    self.updateAttachments()
+                    self.loadingNextMessages = false
+                }
             }
         }
     }
     
     // MARK: - ChatMessageSearchControllerDelegate
     
-    func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
-        updateAttachments()
+    nonisolated func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
+        MainActor.ensureIsolated {
+            updateAttachments()
+        }
     }
 
     private func loadMessages() {
@@ -69,9 +73,11 @@ class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDe
 
         loading = true
         messageSearchController.search(query: query, completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAttachments()
-            self.loading = false
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self else { return }
+                self.updateAttachments()
+                self.loading = false
+            }
         })
     }
 

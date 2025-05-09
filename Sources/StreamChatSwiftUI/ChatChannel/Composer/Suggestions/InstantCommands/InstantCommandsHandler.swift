@@ -100,7 +100,7 @@ public class InstantCommandsHandler: CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         if let handler = commandHandler(for: composerCommand) {
             handler.executeOnMessageSent(

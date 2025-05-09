@@ -33,13 +33,15 @@ public class MuteCommandHandler: TwoStepMentionCommand {
 
     override public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         if let mutedUser = selectedUser {
             chatClient
                 .userController(userId: mutedUser.id)
                 .mute { [weak self] error in
-                    self?.selectedUser = nil
+                    MainActor.ensureIsolated {
+                        self?.selectedUser = nil
+                    }
                     completion(error)
                 }
 

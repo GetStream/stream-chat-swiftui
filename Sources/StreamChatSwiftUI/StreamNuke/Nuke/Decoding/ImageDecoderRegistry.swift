@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -15,9 +15,6 @@ final class ImageDecoderRegistry: @unchecked Sendable {
     /// Initializes a custom registry.
     init() {
         register(ImageDecoders.Default.init)
-        #if !os(watchOS)
-        register(ImageDecoders.Video.init)
-        #endif
     }
 
     /// Returns a decoder that matches the given context.
@@ -65,7 +62,7 @@ struct ImageDecodingContext: @unchecked Sendable {
     var urlResponse: URLResponse?
     var cacheType: ImageResponse.CacheType?
 
-    init(request: ImageRequest, data: Data, isCompleted: Bool, urlResponse: URLResponse?, cacheType: ImageResponse.CacheType?) {
+    init(request: ImageRequest, data: Data, isCompleted: Bool = true, urlResponse: URLResponse? = nil, cacheType: ImageResponse.CacheType? = nil) {
         self.request = request
         self.data = data
         self.isCompleted = isCompleted

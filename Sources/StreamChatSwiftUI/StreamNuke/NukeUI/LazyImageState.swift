@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -8,11 +8,27 @@ import SwiftUI
 import Combine
 
 /// Describes current image state.
-struct LazyImageState {
+@MainActor
+protocol LazyImageState {
     /// Returns the current fetch result.
-    let result: Result<ImageResponse, Error>?
+    var result: Result<ImageResponse, Error>? { get }
 
-    /// Returns a current error.
+    /// Returns the fetched image.
+    ///
+    /// - note: In case pipeline has `isProgressiveDecodingEnabled` option enabled
+    /// and the image being downloaded supports progressive decoding, the `image`
+    /// might be updated multiple times during the download.
+    var imageContainer: ImageContainer? { get }
+
+    /// Returns `true` if the image is being loaded.
+    var isLoading: Bool { get }
+
+    /// The progress of the image download.
+    var progress: FetchImage.Progress { get }
+}
+
+extension LazyImageState {
+    /// Returns the current error.
     var error: Error? {
         if case .failure(let error) = result {
             return error
@@ -21,35 +37,13 @@ struct LazyImageState {
     }
 
     /// Returns an image view.
-    @MainActor
-    var image: NukeImage? {
+    var image: Image? {
 #if os(macOS)
-        return imageContainer.map { NukeImage($0) }
-#elseif os(watchOS)
-        return imageContainer.map { NukeImage(uiImage: $0.image) }
+        imageContainer.map { Image(nsImage: $0.image) }
 #else
-        return imageContainer.map { NukeImage($0) }
+        imageContainer.map { Image(uiImage: $0.image) }
 #endif
     }
-
-    /// Returns the fetched image.
-    ///
-    /// - note: In case pipeline has `isProgressiveDecodingEnabled` option enabled
-    /// and the image being downloaded supports progressive decoding, the `image`
-    /// might be updated multiple times during the download.
-    let imageContainer: ImageContainer?
-
-    /// Returns `true` if the image is being loaded.
-    let isLoading: Bool
-
-    /// The progress of the image download.
-    let progress: ImageTask.Progress
-
-    @MainActor
-    init(_ fetchImage: FetchImage) {
-        self.result = fetchImage.result
-        self.imageContainer = fetchImage.imageContainer
-        self.isLoading = fetchImage.isLoading
-        self.progress = fetchImage.progress
-    }
 }
+
+extension FetchImage: LazyImageState {}

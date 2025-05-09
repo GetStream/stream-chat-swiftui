@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `FileAttachmentsView`.
-class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
+@MainActor class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
     
     @Published var loading = false
     @Published var attachmentsDataSource = [MonthlyFileAttachments]()
@@ -68,17 +68,21 @@ class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDel
         if !loadingNextMessages {
             loadingNextMessages = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAttachments()
-                self.loadingNextMessages = false
+                MainActor.ensureIsolated { [weak self] in
+                    guard let self = self else { return }
+                    self.updateAttachments()
+                    self.loadingNextMessages = false
+                }
             }
         }
     }
     
     // MARK: - ChatMessageSearchControllerDelegate
     
-    func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
-        updateAttachments()
+    nonisolated func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
+        MainActor.ensureIsolated {
+            updateAttachments()
+        }
     }
 
     private func loadMessages() {
@@ -89,9 +93,11 @@ class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDel
 
         loading = true
         messageSearchController.search(query: query, completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAttachments()
-            self.loading = false
+            MainActor.ensureIsolated { [weak self] in
+                guard let self = self else { return }
+                self.updateAttachments()
+                self.loading = false
+            }
         })
     }
 

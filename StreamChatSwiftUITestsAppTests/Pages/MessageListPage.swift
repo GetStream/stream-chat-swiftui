@@ -371,7 +371,7 @@ class MessageListPage {
 
     enum ComposerMentions {
         static var cells: XCUIElementQuery {
-            app.scrollViews["CommandsContainerView"].otherElements.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView'"))
+            app.scrollViews["CommandsContainerView"].images.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView'"))
         }
     }
 

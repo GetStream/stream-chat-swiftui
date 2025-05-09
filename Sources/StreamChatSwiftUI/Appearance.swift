@@ -21,7 +21,8 @@ public class Appearance {
     }
 
     /// Provider for custom localization which is dependent on App Bundle.
-    public static var localizationProvider: (_ key: String, _ table: String) -> String = { key, table in
+    nonisolated(unsafe)
+    public static var localizationProvider: @Sendable(_ key: String, _ table: String) -> String = { key, table in
         Bundle.streamChatUI.localizedString(forKey: key, value: nil, table: table)
     }
 }
@@ -29,12 +30,12 @@ public class Appearance {
 // MARK: - Appearance + Default
 
 public extension Appearance {
-    static var `default`: Appearance = .init()
+    nonisolated(unsafe) static var `default`: Appearance = .init()
 }
 
 /// Provides the default value of the `Appearance` class.
 public struct AppearanceKey: EnvironmentKey {
-    public static let defaultValue: Appearance = Appearance()
+    public static var defaultValue: Appearance { Appearance() }
 }
 
 extension EnvironmentValues {

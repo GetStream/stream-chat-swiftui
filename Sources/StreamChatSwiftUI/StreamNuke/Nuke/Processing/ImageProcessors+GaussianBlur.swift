@@ -1,11 +1,17 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
-#if os(iOS) || os(tvOS) || os(macOS)
+#if os(iOS) || os(tvOS) || os(macOS) || os(visionOS)
 
 import Foundation
 import CoreImage
+
+#if !os(macOS)
+import UIKit
+#else
+import AppKit
+#endif
 
 extension ImageProcessors {
     /// Blurs an image using `CIGaussianBlur` filter.

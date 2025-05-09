@@ -1,9 +1,18 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 import Combine
+import CoreGraphics
+
+#if canImport(UIKit)
+import UIKit
+#endif
+
+#if canImport(AppKit)
+import AppKit
+#endif
 
 /// Represents an image request that specifies what images to download, how to
 /// process them, set the request priority, and more.
@@ -17,10 +26,9 @@ import Combine
 ///     priority: .high,
 ///     options: [.reloadIgnoringCachedData]
 /// )
-/// let response = try await pipeline.image(for: request)
+/// let image = try await pipeline.image(for: request)
 /// ```
-struct ImageRequest: CustomStringConvertible, Sendable {
-
+struct ImageRequest: CustomStringConvertible, Sendable, ExpressibleByStringLiteral {
     // MARK: Options
 
     /// The relative priority of the request. The priority affects the order in
@@ -78,13 +86,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
 
     /// Returns the ID of the underlying image. For URL-based requests, it's an
     /// image URL. For an async function – a custom ID provided in initializer.
-    var imageId: String? {
-        switch ref.resource {
-        case .url(let url): return url?.absoluteString
-        case .urlRequest(let urlRequest): return urlRequest.url?.absoluteString
-        case .publisher(let publisher): return publisher.id
-        }
-    }
+    var imageId: String? { ref.originalImageId }
 
     /// Returns a debug request description.
     var description: String {
@@ -92,6 +94,11 @@ struct ImageRequest: CustomStringConvertible, Sendable {
     }
 
     // MARK: Initializers
+
+    /// Initializes the request with the given string.
+    init(stringLiteral value: String) {
+        self.init(url: URL(string: value))
+    }
 
     /// Initializes a request with the given `URL`.
     ///
@@ -105,7 +112,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
     /// ```swift
     /// let request = ImageRequest(
     ///     url: URL(string: "http://..."),
-    ///     processors: [ImageProcessors.Resize(size: imageView.bounds.size)],
+    ///     processors: [.resize(size: imageView.bounds.size)],
     ///     priority: .high
     /// )
     /// ```
@@ -137,7 +144,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
     /// ```swift
     /// let request = ImageRequest(
     ///     url: URLRequest(url: URL(string: "http://...")),
-    ///     processors: [ImageProcessors.Resize(size: imageView.bounds.size)],
+    ///     processors: [.resize(size: imageView.bounds.size)],
     ///     priority: .high
     /// )
     /// ```
@@ -272,7 +279,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
         /// Returns a raw value.
         let rawValue: UInt16
 
-        /// Initialializes options with a given raw values.
+        /// Initializes options with a given raw values.
         init(rawValue: UInt16) {
             self.rawValue = rawValue
         }
@@ -312,7 +319,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
         /// Perform data loading immediately, ignoring ``ImagePipeline/Configuration-swift.struct/dataLoadingQueue``. It
         /// can be used to elevate priority of certain tasks.
         ///
-        /// - importajt: If there is an outstanding task for loading the same
+        /// - important: If there is an outstanding task for loading the same
         /// resource but without this option, a new task will be created.
         static let skipDataLoadingQueue = Options(rawValue: 1 << 6)
     }
@@ -350,8 +357,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
         /// ```
         static let imageIdKey: ImageRequest.UserInfoKey = "github.com/kean/nuke/imageId"
 
-        /// The image scale to be used. By default, the scale matches the scale
-        /// of the current display.
+        /// The image scale to be used. By default, the scale is `1`.
         static let scaleKey: ImageRequest.UserInfoKey = "github.com/kean/nuke/scale"
 
         /// Specifies whether the pipeline should retrieve or generate a thumbnail
@@ -360,28 +366,37 @@ struct ImageRequest: CustomStringConvertible, Sendable {
         /// (``ImageProcessors/Resize``).
         ///
         /// - note: You must be using the default image decoder to make it work.
-        static let thumbnailKey: ImageRequest.UserInfoKey = "github.com/kean/nuke/thumbmnailKey"
+        static let thumbnailKey: ImageRequest.UserInfoKey = "github.com/kean/nuke/thumbnail"
     }
 
     /// Thumbnail options.
     ///
     /// For more info, see https://developer.apple.com/documentation/imageio/cgimagesource/image_source_option_dictionary_keys
     struct ThumbnailOptions: Hashable, Sendable {
-        /// The maximum width and height in pixels of a thumbnail. If this key
-        /// is not specified, the width and height of a thumbnail is not limited
-        /// and thumbnails may be as big as the image itself.
-        var maxPixelSize: Float
+        enum TargetSize: Hashable {
+            case fixed(Float)
+            case flexible(size: ImageTargetSize, contentMode: ImageProcessingOptions.ContentMode)
+
+            var parameters: String {
+                switch self {
+                case .fixed(let size):
+                    return "maxPixelSize=\(size)"
+                case let .flexible(size, contentMode):
+                    return "width=\(size.cgSize.width),height=\(size.cgSize.height),contentMode=\(contentMode)"
+                }
+            }
+        }
+
+        let targetSize: TargetSize
 
         /// Whether a thumbnail should be automatically created for an image if
         /// a thumbnail isn't present in the image source file. The thumbnail is
-        /// created from the full image, subject to the limit specified by
-        /// ``maxPixelSize``.
+        /// created from the full image, subject to the limit specified by size.
         var createThumbnailFromImageIfAbsent = true
 
         /// Whether a thumbnail should be created from the full image even if a
         /// thumbnail is present in the image source file. The thumbnail is created
-        /// from the full image, subject to the limit specified by
-        /// ``maxPixelSize``.
+        /// from the full image, subject to the limit specified by size.
         var createThumbnailFromImageAlways = true
 
         /// Whether the thumbnail should be rotated and scaled according to the
@@ -392,20 +407,32 @@ struct ImageRequest: CustomStringConvertible, Sendable {
         /// creation time.
         var shouldCacheImmediately = true
 
-        init(maxPixelSize: Float,
-                    createThumbnailFromImageIfAbsent: Bool = true,
-                    createThumbnailFromImageAlways: Bool = true,
-                    createThumbnailWithTransform: Bool = true,
-                    shouldCacheImmediately: Bool = true) {
-            self.maxPixelSize = maxPixelSize
-            self.createThumbnailFromImageIfAbsent = createThumbnailFromImageIfAbsent
-            self.createThumbnailFromImageAlways = createThumbnailFromImageAlways
-            self.createThumbnailWithTransform = createThumbnailWithTransform
-            self.shouldCacheImmediately = shouldCacheImmediately
+        /// Initializes the options with the given pixel size. The thumbnail is
+        /// resized to fit the target size.
+        ///
+        /// This option performs slightly faster than ``ImageRequest/ThumbnailOptions/init(size:unit:contentMode:)``
+        /// because it doesn't need to read the image size.
+        init(maxPixelSize: Float) {
+            self.targetSize = .fixed(maxPixelSize)
+        }
+
+        /// Initializes the options with the given size.
+        ///
+        /// - parameters:
+        ///   - size: The target size.
+        ///   - unit: Unit of the target size.
+        ///   - contentMode: A target content mode.
+        init(size: CGSize, unit: ImageProcessingOptions.Unit = .points, contentMode: ImageProcessingOptions.ContentMode = .aspectFill) {
+            self.targetSize = .flexible(size: ImageTargetSize(size: size, unit: unit), contentMode: contentMode)
+        }
+
+        /// Generates a thumbnail from the given image data.
+        func makeThumbnail(with data: Data) -> PlatformImage? {
+            StreamChatSwiftUI.makeThumbnail(data: data, options: self)
         }
 
         var identifier: String {
-            "com.github/kean/nuke/thumbnail?mxs=\(maxPixelSize),options=\(createThumbnailFromImageIfAbsent)\(createThumbnailFromImageAlways)\(createThumbnailWithTransform)\(shouldCacheImmediately)"
+            "com.github/kean/nuke/thumbnail?\(targetSize.parameters),options=\(createThumbnailFromImageIfAbsent)\(createThumbnailFromImageAlways)\(createThumbnailWithTransform)\(shouldCacheImmediately)"
         }
     }
 
@@ -435,7 +462,7 @@ struct ImageRequest: CustomStringConvertible, Sendable {
         return imageId ?? ""
     }
 
-    var thubmnail: ThumbnailOptions? {
+    var thumbnail: ThumbnailOptions? {
         ref.userInfo?[.thumbnailKey] as? ThumbnailOptions
     }
 
@@ -461,16 +488,11 @@ extension ImageRequest {
         let resource: Resource
         var priority: Priority
         var options: Options
+        var originalImageId: String?
         var processors: [any ImageProcessing]
         var userInfo: [UserInfoKey: Any]?
         // After trimming the request size in Nuke 10, CoW it is no longer as
         // beneficial, but there still is a measurable difference.
-
-        deinit {
-            #if TRACK_ALLOCATIONS
-            Allocations.decrement("ImageRequest.Container")
-            #endif
-        }
 
         /// Creates a resource with a default processor.
         init(resource: Resource, processors: [any ImageProcessing], priority: Priority, options: Options, userInfo: [UserInfoKey: Any]?) {
@@ -478,11 +500,8 @@ extension ImageRequest {
             self.processors = processors
             self.priority = priority
             self.options = options
+            self.originalImageId = resource.imageId
             self.userInfo = userInfo
-
-            #if TRACK_ALLOCATIONS
-            Allocations.increment("ImageRequest.Container")
-            #endif
         }
 
         /// Creates a copy.
@@ -491,11 +510,8 @@ extension ImageRequest {
             self.processors = ref.processors
             self.priority = ref.priority
             self.options = ref.options
+            self.originalImageId = ref.originalImageId
             self.userInfo = ref.userInfo
-
-            #if TRACK_ALLOCATIONS
-            Allocations.increment("ImageRequest.Container")
-            #endif
         }
     }
 
@@ -510,6 +526,14 @@ extension ImageRequest {
             case .url(let url): return "\(url?.absoluteString ?? "nil")"
             case .urlRequest(let urlRequest): return "\(urlRequest)"
             case .publisher(let data): return "\(data)"
+            }
+        }
+
+        var imageId: String? {
+            switch self {
+            case .url(let url): return url?.absoluteString
+            case .urlRequest(let urlRequest): return urlRequest.url?.absoluteString
+            case .publisher(let publisher): return publisher.id
             }
         }
     }
