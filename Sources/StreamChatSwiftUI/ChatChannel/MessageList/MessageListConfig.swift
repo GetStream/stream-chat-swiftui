@@ -35,7 +35,9 @@ public struct MessageListConfig {
         userBlockingEnabled: Bool = false,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
-        draftMessagesEnabled: Bool = false
+        draftMessagesEnabled: Bool = false,
+        messageListItemSpacing: CGFloat = 8,
+        messageGroupItemSpacing: CGFloat = 2
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -64,6 +66,8 @@ public struct MessageListConfig {
         self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
         self.draftMessagesEnabled = draftMessagesEnabled
+        self.messageListItemSpacing = messageListItemSpacing
+        self.messageGroupItemSpacing = messageGroupItemSpacing
     }
 
     public let messageListType: MessageListType
@@ -102,6 +106,9 @@ public struct MessageListConfig {
     ///
     /// If enabled, the SDK will save the message content as a draft when the user navigates away from the composer.
     public let draftMessagesEnabled: Bool
+    
+    public let messageListItemSpacing: CGFloat
+    public let messageGroupItemSpacing: CGFloat
 }
 
 /// Contains information about the message paddings.
