@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add extra data to user display info [#819](https://github.com/GetStream/stream-chat-swiftui/pull/819)
+- Make message spacing in message list configurable [#830](https://github.com/GetStream/stream-chat-swiftui/pull/830)
 ### 🐞 Fixed
 - Fix swipe to reply enabled when quoting a message is disabled [#824](https://github.com/GetStream/stream-chat-swiftui/pull/824)
 - Fix mark unread action not removed when read events are disabled [#823](https://github.com/GetStream/stream-chat-swiftui/pull/823)

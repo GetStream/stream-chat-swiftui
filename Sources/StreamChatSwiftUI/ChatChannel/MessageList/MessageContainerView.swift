@@ -33,7 +33,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
-    private let paddingValue: CGFloat = 8
+    private var paddingValue: CGFloat {
+        utils.messageListConfig.messagePaddings.singleBottom
+    }
+    private var groupMessageInterItemSpacing: CGFloat {
+        utils.messageListConfig.messagePaddings.groupBottom
+    }
 
     var isSwipeToReplyPossible: Bool {
         message.isInteractionEnabled && channel.canQuoteMessage
@@ -275,7 +280,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             topReactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
         )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
-        .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : 2)
+        .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
         .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
         .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
