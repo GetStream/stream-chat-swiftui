@@ -34,10 +34,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 
     private let replyThreshold: CGFloat = 60
     private var paddingValue: CGFloat {
-        utils.messageListConfig.messageListItemSpacing
+        utils.messageListConfig.messagePaddings.singleBottom
     }
     private var groupMessageInterItemSpacing: CGFloat {
-        utils.messageListConfig.messageGroupItemSpacing
+        utils.messageListConfig.messagePaddings.groupBottom
     }
 
     var isSwipeToReplyPossible: Bool {

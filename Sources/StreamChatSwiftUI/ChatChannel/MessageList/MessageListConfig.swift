@@ -35,9 +35,7 @@ public struct MessageListConfig {
         userBlockingEnabled: Bool = false,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
-        draftMessagesEnabled: Bool = false,
-        messageListItemSpacing: CGFloat = 8,
-        messageGroupItemSpacing: CGFloat = 2
+        draftMessagesEnabled: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -66,8 +64,6 @@ public struct MessageListConfig {
         self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
         self.draftMessagesEnabled = draftMessagesEnabled
-        self.messageListItemSpacing = messageListItemSpacing
-        self.messageGroupItemSpacing = messageGroupItemSpacing
     }
 
     public let messageListType: MessageListType
@@ -106,9 +102,6 @@ public struct MessageListConfig {
     ///
     /// If enabled, the SDK will save the message content as a draft when the user navigates away from the composer.
     public let draftMessagesEnabled: Bool
-    
-    public let messageListItemSpacing: CGFloat
-    public let messageGroupItemSpacing: CGFloat
 }
 
 /// Contains information about the message paddings.
@@ -117,13 +110,19 @@ public struct MessagePaddings {
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
     public let quotedViewPadding: CGFloat
+    public let singleBottom: CGFloat
+    public let groupBottom: CGFloat
 
     public init(
         horizontal: CGFloat = 8,
-        quotedViewPadding: CGFloat = 8
+        quotedViewPadding: CGFloat = 8,
+        singleBottom: CGFloat = 8,
+        groupBottom: CGFloat = 2
     ) {
         self.horizontal = horizontal
         self.quotedViewPadding = quotedViewPadding
+        self.singleBottom = singleBottom
+        self.groupBottom = groupBottom
     }
 }
 
