@@ -13,6 +13,7 @@ public class Utils {
     var markdownFormatter = MarkdownFormatter()
 
     public var dateFormatter: DateFormatter
+    public var channelListDateFormatter: DateFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
     public var imageCDN: ImageCDN
@@ -69,6 +70,7 @@ public class Utils {
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
+        channelListDateFormatter: DateFormatter = ChannelListDateFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
         imageCDN: ImageCDN = StreamImageCDN(),
@@ -93,6 +95,7 @@ public class Utils {
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
+        self.channelListDateFormatter = channelListDateFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
         self.imageCDN = imageCDN
