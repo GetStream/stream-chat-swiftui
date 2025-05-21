@@ -36,6 +36,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private var paddingValue: CGFloat {
         utils.messageListConfig.messagePaddings.singleBottom
     }
+    
     private var groupMessageInterItemSpacing: CGFloat {
         utils.messageListConfig.messagePaddings.groupBottom
     }
