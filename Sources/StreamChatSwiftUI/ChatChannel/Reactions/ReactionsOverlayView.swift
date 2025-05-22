@@ -10,6 +10,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     
     @StateObject var viewModel: ReactionsOverlayViewModel
+    @StateObject var messageViewModel: MessageViewModel
 
     @State private var popIn = false
     @State private var willPopOut = false
@@ -48,6 +49,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory.makeReactionsOverlayViewModel(
                 message: messageDisplayInfo.message
+            )
+        )
+        _messageViewModel = StateObject(
+            wrappedValue: MessageViewModel(
+                message: messageDisplayInfo.message,
+                channel: channel,
+                originalTextTranslationsStore: .shared
             )
         )
         self.channel = channel
@@ -225,6 +233,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             isFirst: messageDisplayInfo.isFirst,
             scrolledId: .constant(nil)
         )
+        .environment(\.messageViewModel, messageViewModel)
     }
 
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {
