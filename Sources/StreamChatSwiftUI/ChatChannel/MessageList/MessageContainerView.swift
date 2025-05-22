@@ -292,6 +292,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
+        // This is needed for the LinkDetectionTextView to work properly.
+        // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.
         .environment(\.messageViewModel, messageViewModel)
     }
 

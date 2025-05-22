@@ -233,6 +233,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             isFirst: messageDisplayInfo.isFirst,
             scrolledId: .constant(nil)
         )
+        // This is needed for the LinkDetectionTextView to work properly.
+        // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.
         .environment(\.messageViewModel, messageViewModel)
     }
 
