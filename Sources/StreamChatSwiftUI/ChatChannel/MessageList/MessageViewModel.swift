@@ -12,7 +12,7 @@ open class MessageViewModel: ObservableObject {
 
     public private(set) var message: ChatMessage
     public private(set) var channel: ChatChannel?
-    private(set) var originalTextTranslationsStore: MessageOriginalTranslationsStore
+    private var originalTextTranslationsStore: MessageOriginalTranslationsStore
     private var cancellables = Set<AnyCancellable>()
 
     public init(
@@ -33,10 +33,12 @@ open class MessageViewModel: ObservableObject {
 
     // MARK: - Inputs
 
+    /// Show the original text of the message.
     public func showOriginalText() {
         originalTextTranslationsStore.showOriginalText(for: message.id)
     }
 
+    /// Hide the original text of the message to show the translated text.
     public func hideOriginalText() {
         originalTextTranslationsStore.hideOriginalText(for: message.id)
     }

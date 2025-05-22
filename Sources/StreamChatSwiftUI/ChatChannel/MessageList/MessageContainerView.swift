@@ -47,7 +47,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        viewModel: MessageViewModel
+        viewModel: MessageViewModel? = nil
     ) {
         self.factory = factory
         self.channel = channel
@@ -57,7 +57,11 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
-        messageViewModel = viewModel
+        messageViewModel = viewModel ?? MessageViewModel(
+            message: message,
+            channel: channel,
+            originalTextTranslationsStore: .shared
+        )
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
     }
