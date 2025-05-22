@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct MessageTranslationFooterView: View {
-    @ObservedObject var channelViewModel: ChatChannelViewModel
     @ObservedObject var messageViewModel: MessageViewModel
 
     @Injected(\.fonts) private var fonts
@@ -14,10 +13,8 @@ public struct MessageTranslationFooterView: View {
     @Injected(\.utils) private var utils
 
     public init(
-        channelViewModel: ChatChannelViewModel,
         messageViewModel: MessageViewModel
     ) {
-        self.channelViewModel = channelViewModel
         self.messageViewModel = messageViewModel
     }
 
@@ -51,9 +48,9 @@ public struct MessageTranslationFooterView: View {
         Button(
             action: {
                 if messageViewModel.originalTextShown {
-                    channelViewModel.showTranslatedText(for: messageViewModel.message)
+                    messageViewModel.hideOriginalText()
                 } else {
-                    channelViewModel.showOriginalText(for: messageViewModel.message)
+                    messageViewModel.showOriginalText()
                 }
             },
             label: {

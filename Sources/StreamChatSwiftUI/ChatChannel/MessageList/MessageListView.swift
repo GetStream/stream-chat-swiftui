@@ -6,8 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
-    @EnvironmentObject private var channelViewModel: ChatChannelViewModel
-
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
@@ -150,10 +148,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 isLast: !showsLastInGroupInfo && message == messages.last
                             )
                             .environment(\.channelTranslationLanguage, channel.membership?.language)
-                            .environmentObject(channelViewModel)
-                            .environmentObject(channelViewModel.makeMessageViewModel(
-                                for: message
-                            ))
                             .onAppear {
                                 if index == nil {
                                     index = messageListDateUtils.index(for: message, in: messages)
@@ -612,10 +606,6 @@ private struct MessageViewModelKey: EnvironmentKey {
     static let defaultValue: MessageViewModel? = nil
 }
 
-private struct ChatChannelViewModelKey: EnvironmentKey {
-    static let defaultValue: ChatChannelViewModel? = nil
-}
-
 extension EnvironmentValues {
     var channelTranslationLanguage: TranslationLanguage? {
         get {
@@ -632,15 +622,6 @@ extension EnvironmentValues {
         }
         set {
             self[MessageViewModelKey.self] = newValue
-        }
-    }
-
-    var channelViewModel: ChatChannelViewModel? {
-        get {
-            self[ChatChannelViewModelKey.self]
-        }
-        set {
-            self[ChatChannelViewModelKey.self] = newValue
         }
     }
 }

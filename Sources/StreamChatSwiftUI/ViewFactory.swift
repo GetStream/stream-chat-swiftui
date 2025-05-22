@@ -362,11 +362,9 @@ public protocol ViewFactory: AnyObject {
     associatedtype MessageTranslationFooterViewType: View
     /// Creates a view to display translation information below a message if it has been translated.
     /// - Parameters:
-    ///   - channelViewModel: The channel view model used by default to show or hide the translation.
     ///   - messageViewModel: The message view model used to display information about the message.
     /// - Returns: A view to display translation information of the message.
     func makeMessageTranslationFooterView(
-        channelViewModel: ChatChannelViewModel,
         messageViewModel: MessageViewModel
     ) -> MessageTranslationFooterViewType
 

@@ -7,8 +7,7 @@ import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
-    @EnvironmentObject var channelViewModel: ChatChannelViewModel
-    @EnvironmentObject var messageViewModel: MessageViewModel
+    @ObservedObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
     
     @Injected(\.fonts) private var fonts
@@ -47,7 +46,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isLast: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        viewModel: MessageViewModel
     ) {
         self.factory = factory
         self.channel = channel
@@ -57,6 +57,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
+        messageViewModel = viewModel
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
     }
@@ -227,7 +228,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 
                     if messageViewModel.translatedText != nil {
                         factory.makeMessageTranslationFooterView(
-                            channelViewModel: channelViewModel,
                             messageViewModel: messageViewModel
                         )
                     }
@@ -282,6 +282,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
+        .id(message.id + messageViewModel.textContent)
         .environment(\.messageViewModel, messageViewModel)
     }
 

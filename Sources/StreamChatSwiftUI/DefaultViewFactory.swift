@@ -341,7 +341,12 @@ extension ViewFactory {
             isLast: isLast,
             scrolledId: scrolledId,
             quotedMessage: quotedMessage,
-            onLongPress: onLongPress
+            onLongPress: onLongPress,
+            viewModel: MessageViewModel(
+                message: message,
+                channel: channel,
+                originalTextTranslationsStore: .shared
+            )
         )
     }
     
@@ -372,11 +377,9 @@ extension ViewFactory {
     }
 
     public func makeMessageTranslationFooterView(
-        channelViewModel: ChatChannelViewModel,
         messageViewModel: MessageViewModel
     ) -> some View {
         MessageTranslationFooterView(
-            channelViewModel: channelViewModel,
             messageViewModel: messageViewModel
         )
     }

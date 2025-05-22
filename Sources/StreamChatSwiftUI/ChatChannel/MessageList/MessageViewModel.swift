@@ -2,6 +2,7 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import StreamChat
 
 /// The view model that contains the logic for displaying a message in the message list view.
@@ -11,20 +12,39 @@ open class MessageViewModel: ObservableObject {
 
     public private(set) var message: ChatMessage
     public private(set) var channel: ChatChannel?
-    public private(set) var originalTextMessageIds: Set<MessageId>
+    private(set) var originalTextTranslationsStore: MessageOriginalTranslationsStore
+    private var cancellables = Set<AnyCancellable>()
 
     public init(
         message: ChatMessage,
         channel: ChatChannel?,
-        originalTextMessageIds: Set<MessageId> = []
+        originalTextTranslationsStore: MessageOriginalTranslationsStore
     ) {
         self.message = message
         self.channel = channel
-        self.originalTextMessageIds = originalTextMessageIds
+        self.originalTextTranslationsStore = originalTextTranslationsStore
+        self.originalTextTranslationsStore.$originalTextMessageIds.sink(
+            receiveValue: { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+        )
+        .store(in: &cancellables)
     }
 
+    // MARK: - Inputs
+
+    public func showOriginalText() {
+        originalTextTranslationsStore.showOriginalText(for: message.id)
+    }
+
+    public func hideOriginalText() {
+        originalTextTranslationsStore.hideOriginalText(for: message.id)
+    }
+
+    // MARK: - Outputs
+
     public var originalTextShown: Bool {
-        originalTextMessageIds.contains(message.id)
+        originalTextTranslationsStore.shouldShowOriginalText(for: message.id)
     }
 
     public var systemMessageShown: Bool {
@@ -103,5 +123,26 @@ open class MessageViewModel: ObservableObject {
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
+    }
+}
+
+/// A singleton store that keeps track of which messages have their original text shown.
+public class MessageOriginalTranslationsStore: ObservableObject {
+    private init() {}
+
+    public static let shared = MessageOriginalTranslationsStore()
+
+    @Published var originalTextMessageIds: Set<MessageId> = []
+
+    public func shouldShowOriginalText(for messageId: MessageId) -> Bool {
+        originalTextMessageIds.contains(messageId)
+    }
+
+    public func showOriginalText(for messageId: MessageId) {
+        originalTextMessageIds.insert(messageId)
+    }
+
+    public func hideOriginalText(for messageId: MessageId) {
+        originalTextMessageIds.remove(messageId)
     }
 }
