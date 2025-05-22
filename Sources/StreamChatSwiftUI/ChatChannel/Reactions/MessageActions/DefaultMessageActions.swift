@@ -145,8 +145,8 @@ public extension MessageAction {
             }
         }
 
-        if message.isSentByCurrentUser {
-            if message.poll == nil && message.giphyAttachments.isEmpty {
+        if message.poll == nil, message.giphyAttachments.isEmpty {
+            if channel.canUpdateAnyMessage || channel.canUpdateOwnMessage && message.isSentByCurrentUser {
                 let editAction = editMessageAction(
                     for: message,
                     channel: channel,
@@ -154,7 +154,9 @@ public extension MessageAction {
                 )
                 messageActions.append(editAction)
             }
-
+        }
+        
+        if message.isSentByCurrentUser {
             let deleteAction = deleteMessageAction(
                 for: message,
                 channel: channel,

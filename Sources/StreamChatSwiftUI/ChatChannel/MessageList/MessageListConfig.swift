@@ -110,13 +110,19 @@ public struct MessagePaddings {
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
     public let quotedViewPadding: CGFloat
+    public let singleBottom: CGFloat
+    public let groupBottom: CGFloat
 
     public init(
         horizontal: CGFloat = 8,
-        quotedViewPadding: CGFloat = 8
+        quotedViewPadding: CGFloat = 8,
+        singleBottom: CGFloat = 8,
+        groupBottom: CGFloat = 2
     ) {
         self.horizontal = horizontal
         self.quotedViewPadding = quotedViewPadding
+        self.singleBottom = singleBottom
+        self.groupBottom = groupBottom
     }
 }
 
