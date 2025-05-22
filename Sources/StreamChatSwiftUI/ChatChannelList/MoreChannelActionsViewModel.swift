@@ -93,14 +93,14 @@ import UIKit
 }
 
 /// Model describing a channel action.
-public struct ChannelAction: Identifiable, Sendable {
+public struct ChannelAction: Identifiable, @unchecked Sendable {
     public var id: String {
         "\(title)-\(iconName)"
     }
 
     public let title: String
     public let iconName: String
-    public let action: @MainActor() -> Void
+    public let action: () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
     nonisolated(unsafe) public var navigationDestination: AnyView?
@@ -108,7 +108,7 @@ public struct ChannelAction: Identifiable, Sendable {
     public init(
         title: String,
         iconName: String,
-        action: @escaping @MainActor() -> Void,
+        action: @escaping () -> Void,
         confirmationPopup: ConfirmationPopup?,
         isDestructive: Bool
     ) {

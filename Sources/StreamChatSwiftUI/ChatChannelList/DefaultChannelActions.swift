@@ -16,8 +16,8 @@ extension ChannelAction {
     @preconcurrency @MainActor public static func defaultActions(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) -> [ChannelAction] {
         var actions = [ChannelAction]()
 
@@ -83,18 +83,18 @@ extension ChannelAction {
     @MainActor private static func muteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) -> ChannelAction {
+        nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+        nonisolated(unsafe) let unsafeOnError = onError
         let muteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.muteChannel { error in
-                MainActor.ensureIsolated {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onDismiss()
-                    }
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnDismiss()
                 }
             }
         }
@@ -116,18 +116,18 @@ extension ChannelAction {
     @MainActor private static func unmuteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) -> ChannelAction {
+        nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+        nonisolated(unsafe) let unsafeOnError = onError
         let unMuteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.unmuteChannel { error in
-                MainActor.ensureIsolated {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onDismiss()
-                    }
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnDismiss()
                 }
             }
         }
@@ -150,18 +150,18 @@ extension ChannelAction {
     @MainActor private static func deleteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) -> ChannelAction {
+        nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+        nonisolated(unsafe) let unsafeOnError = onError
         let deleteConversationAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.deleteChannel { error in
-                MainActor.ensureIsolated {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onDismiss()
-                    }
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnDismiss()
                 }
             }
         }
@@ -185,18 +185,18 @@ extension ChannelAction {
         for channel: ChatChannel,
         chatClient: ChatClient,
         userId: String,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) -> ChannelAction {
+        nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+        nonisolated(unsafe) let unsafeOnError = onError
         let leaveAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.removeMembers(userIds: [userId]) { error in
-                MainActor.ensureIsolated {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onDismiss()
-                    }
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnDismiss()
                 }
             }
         }

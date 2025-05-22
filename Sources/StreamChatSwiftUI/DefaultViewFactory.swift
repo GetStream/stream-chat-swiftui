@@ -30,8 +30,8 @@ extension ViewFactory {
     
     public func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) -> [ChannelAction] {
         ChannelAction.defaultActions(
             for: channel,
