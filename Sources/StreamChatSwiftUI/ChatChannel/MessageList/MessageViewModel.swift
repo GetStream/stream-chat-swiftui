@@ -129,6 +129,8 @@ open class MessageViewModel: ObservableObject {
 }
 
 /// A singleton store that keeps track of which messages have their original text shown.
+///
+/// **Note:** This is not thread-safe, it should only be used on the main thread.
 public class MessageOriginalTranslationsStore: ObservableObject {
     private init() {}
 
