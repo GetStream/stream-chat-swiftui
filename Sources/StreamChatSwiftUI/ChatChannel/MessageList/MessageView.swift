@@ -263,9 +263,9 @@ public struct LinkDetectionTextView: View {
     var text: LocalizedStringKey {
         LocalizedStringKey(message.adjustedText)
     }
-    
+
+    @ObservedObject var originalTranslationsStore = MessageOriginalTranslationsStore.shared
     @State var linkDetector = TextLinkDetector()
-    
     @State var tintColor = InjectedValues[\.colors].tintColor
         
     public init(message: ChatMessage) {

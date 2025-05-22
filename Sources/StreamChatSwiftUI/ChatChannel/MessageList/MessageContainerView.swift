@@ -292,7 +292,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
-        .id(message.id + messageViewModel.textContent)
         .environment(\.messageViewModel, messageViewModel)
     }
 
