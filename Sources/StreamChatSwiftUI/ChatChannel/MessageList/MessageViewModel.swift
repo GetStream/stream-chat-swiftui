@@ -149,4 +149,8 @@ public class MessageOriginalTranslationsStore: ObservableObject {
     public func hideOriginalText(for messageId: MessageId) {
         originalTextMessageIds.remove(messageId)
     }
+
+    public func clear() {
+        originalTextMessageIds.removeAll()
+    }
 }
