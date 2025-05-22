@@ -66,7 +66,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         messageViewModel = viewModel ?? MessageViewModel(
             message: message,
             channel: channel,
-            originalTextTranslationsStore: .shared
+            originalTranslationsStore: .shared
         )
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage

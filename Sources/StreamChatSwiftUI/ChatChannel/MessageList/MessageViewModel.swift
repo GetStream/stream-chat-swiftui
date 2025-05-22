@@ -12,18 +12,18 @@ open class MessageViewModel: ObservableObject {
 
     public private(set) var message: ChatMessage
     public private(set) var channel: ChatChannel?
-    private var originalTextTranslationsStore: MessageOriginalTranslationsStore
+    private var originalTranslationsStore: MessageOriginalTranslationsStore
     private var cancellables = Set<AnyCancellable>()
 
     public init(
         message: ChatMessage,
         channel: ChatChannel?,
-        originalTextTranslationsStore: MessageOriginalTranslationsStore
+        originalTranslationsStore: MessageOriginalTranslationsStore
     ) {
         self.message = message
         self.channel = channel
-        self.originalTextTranslationsStore = originalTextTranslationsStore
-        self.originalTextTranslationsStore.$originalTextMessageIds.sink(
+        self.originalTranslationsStore = originalTranslationsStore
+        self.originalTranslationsStore.$originalTextMessageIds.sink(
             receiveValue: { [weak self] _ in
                 self?.objectWillChange.send()
             }
@@ -35,18 +35,18 @@ open class MessageViewModel: ObservableObject {
 
     /// Show the original text of the message.
     public func showOriginalText() {
-        originalTextTranslationsStore.showOriginalText(for: message.id)
+        originalTranslationsStore.showOriginalText(for: message.id)
     }
 
     /// Hide the original text of the message to show the translated text.
     public func hideOriginalText() {
-        originalTextTranslationsStore.hideOriginalText(for: message.id)
+        originalTranslationsStore.hideOriginalText(for: message.id)
     }
 
     // MARK: - Outputs
 
     public var originalTextShown: Bool {
-        originalTextTranslationsStore.shouldShowOriginalText(for: message.id)
+        originalTranslationsStore.shouldShowOriginalText(for: message.id)
     }
 
     public var systemMessageShown: Bool {

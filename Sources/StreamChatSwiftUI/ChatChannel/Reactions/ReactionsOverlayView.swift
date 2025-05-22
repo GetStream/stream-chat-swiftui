@@ -55,7 +55,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             wrappedValue: MessageViewModel(
                 message: messageDisplayInfo.message,
                 channel: channel,
-                originalTextTranslationsStore: .shared
+                originalTranslationsStore: .shared
             )
         )
         self.channel = channel
