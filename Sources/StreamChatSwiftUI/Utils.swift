@@ -13,7 +13,11 @@ public class Utils {
     var markdownFormatter = MarkdownFormatter()
 
     public var dateFormatter: DateFormatter
-    public var channelListDateFormatter: DateFormatter
+    
+    /// Date formatter where the format depends on the time passed.
+    ///
+    /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
+    public var messageRelativeDateFormatter: DateFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
     public var imageCDN: ImageCDN
@@ -26,6 +30,7 @@ public class Utils {
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
     public var commandsConfig: CommandsConfig
+    public var channelListConfig: ChannelListConfig
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
     public var pollsConfig: PollsConfig
@@ -70,7 +75,7 @@ public class Utils {
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
-        channelListDateFormatter: DateFormatter = ChannelListDateFormatter(),
+        messageRelativeDateFormatter: DateFormatter = MessageRelativeDateFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
         imageCDN: ImageCDN = StreamImageCDN(),
@@ -81,6 +86,7 @@ public class Utils {
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
+        channelListConfig: ChannelListConfig = ChannelListConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         pollsConfig: PollsConfig = PollsConfig(),
@@ -95,7 +101,7 @@ public class Utils {
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
-        self.channelListDateFormatter = channelListDateFormatter
+        self.messageRelativeDateFormatter = messageRelativeDateFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
         self.imageCDN = imageCDN
@@ -108,6 +114,7 @@ public class Utils {
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
         self.commandsConfig = commandsConfig
+        self.channelListConfig = channelListConfig
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig
         self.snapshotCreator = snapshotCreator

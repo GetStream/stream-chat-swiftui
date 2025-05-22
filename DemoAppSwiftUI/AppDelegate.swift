@@ -63,6 +63,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         #endif
 
         let utils = Utils(
+            channelListConfig: ChannelListConfig(
+                messageRelativeDateFormatEnabled: true
+            ),
             messageListConfig: MessageListConfig(
                 dateIndicatorPlacement: .messageList,
                 userBlockingEnabled: true,

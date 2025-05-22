@@ -7,24 +7,26 @@ import Foundation
 @testable import StreamChatSwiftUI
 import XCTest
 
-final class ChannelListDateFormatter_Tests: StreamChatTestCase {
-    private var formatter: ChannelListDateFormatter!
+final class MessageRelativeDateFormatter_Tests: StreamChatTestCase {
+    private var formatter: MessageRelativeDateFormatter!
     
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        formatter = ChannelListDateFormatter()
+    override func setUp() {
+        super.setUp()
+        formatter = MessageRelativeDateFormatter()
         formatter.locale = Locale(identifier: "en_UK")
+        formatter.todayFormatter.locale = Locale(identifier: "en_UK")
+        formatter.yesterdayFormatter.locale = Locale(identifier: "en_UK")
     }
     
-    override func tearDownWithError() throws {
-        try super.tearDownWithError()
+    override func tearDown() {
+        super.tearDown()
         formatter = nil
     }
     
     func test_showingTimeOnly() throws {
         let date = try XCTUnwrap(Calendar.current.date(bySettingHour: 1, minute: 2, second: 3, of: Date()))
         let result = formatter.string(from: date)
-        let expected = formatter.time.string(from: date)
+        let expected = formatter.todayFormatter.string(from: date)
         XCTAssertEqual(expected, result)
         XCTAssertEqual("01:02", result)
     }
@@ -32,7 +34,7 @@ final class ChannelListDateFormatter_Tests: StreamChatTestCase {
     func test_showingYesterday() throws {
         let date = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
         let result = formatter.string(from: date)
-        let expected = formatter.shortRelativeDate.string(from: date)
+        let expected = formatter.yesterdayFormatter.string(from: date)
         XCTAssertEqual(expected, result)
         XCTAssertEqual("Yesterday", result)
     }
@@ -40,7 +42,7 @@ final class ChannelListDateFormatter_Tests: StreamChatTestCase {
     func test_showingWeekday() throws {
         let date = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -6, to: Date()))
         let result = formatter.string(from: date)
-        let expected = formatter.weekday.string(from: date)
+        let expected = formatter.weekdayFormatter.string(from: date)
         XCTAssertEqual(expected, result)
     }
     

@@ -4,10 +4,8 @@
 
 import Foundation
 
-/// A formatter that converts last message timestamps in the channel list.
-///
-/// Shows time, relative date, weekday or short date based on days passed.
-public final class ChannelListDateFormatter: DateFormatter, @unchecked Sendable {
+/// A formatter that converts message timestamps to a format which depends on the time passed.
+public final class MessageRelativeDateFormatter: DateFormatter, @unchecked Sendable {
     override public init() {
         super.init()
         locale = .autoupdatingCurrent
@@ -22,33 +20,23 @@ public final class ChannelListDateFormatter: DateFormatter, @unchecked Sendable 
     
     override public func string(from date: Date) -> String {
         if calendar.isDateInToday(date) {
-            return time.string(from: date)
+            return todayFormatter.string(from: date)
         }
         if calendar.isDateInYesterday(date) {
-            return shortRelativeDate.string(from: date)
+            return yesterdayFormatter.string(from: date)
         }
         if calendar.isDateInLastWeek(date) {
-            return weekday.string(from: date)
+            return weekdayFormatter.string(from: date)
         }
 
         return super.string(from: date)
     }
-    
-    override public var locale: Locale! {
-        didSet {
-            [time, shortRelativeDate, weekday].forEach { $0.locale = locale }
-        }
+
+    var todayFormatter: DateFormatter {
+        InjectedValues[\.utils].dateFormatter
     }
     
-    let time: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = .autoupdatingCurrent
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
-
-    let shortRelativeDate: DateFormatter = {
+    let yesterdayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = .autoupdatingCurrent
         formatter.dateStyle = .short
@@ -57,7 +45,7 @@ public final class ChannelListDateFormatter: DateFormatter, @unchecked Sendable 
         return formatter
     }()
 
-    let weekday: DateFormatter = {
+    let weekdayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = .autoupdatingCurrent
         formatter.setLocalizedDateFormatFromTemplate("EEEE")
