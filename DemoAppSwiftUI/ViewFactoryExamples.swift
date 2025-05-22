@@ -19,44 +19,7 @@ class DemoAppFactory: ViewFactory {
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
-
-    func supportedMessageActions(
-        for message: ChatMessage,
-        channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (any Error) -> Void
-    ) -> [MessageAction] {
-        let originalTranslationStore = MessageOriginalTranslationsStore.shared
-        let originalTextShown = originalTranslationStore.shouldShowOriginalText(for: message.id)
-        let originalTranslationAction = MessageAction(
-            title: originalTextShown ? "Show Translation" : "Show Original",
-            iconName: "translate",
-            action: {
-                if originalTextShown {
-                    originalTranslationStore.hideOriginalText(for: message.id)
-                } else {
-                    originalTranslationStore.showOriginalText(for: message.id)
-                }
-                onFinish(
-                    MessageActionInfo(
-                        message: message,
-                        identifier: "showOriginalText"
-                    )
-                )
-            },
-            confirmationPopup: nil,
-            isDestructive: false
-        )
-        return MessageAction.defaultActions(
-            factory: self,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: onFinish,
-            onError: onError
-        ) + [originalTranslationAction]
-    }
-
+    
     func supportedMoreChannelActions(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,

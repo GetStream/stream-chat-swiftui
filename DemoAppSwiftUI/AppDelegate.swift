@@ -64,7 +64,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         let utils = Utils(
             messageListConfig: MessageListConfig(
-                messageDisplayOptions: .init(showOriginalTranslatedButton: false),
+                messageDisplayOptions: .init(showOriginalTranslatedButton: true),
                 dateIndicatorPlacement: .messageList,
                 userBlockingEnabled: true,
                 bouncedMessagesAlertActionsEnabled: true,
