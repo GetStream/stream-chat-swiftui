@@ -131,7 +131,7 @@ public extension MessageAction {
                 )
                 messageActions.append(markThreadUnreadAction)
             }
-        } else if !message.isSentByCurrentUser {
+        } else if !message.isSentByCurrentUser && channel.canReceiveReadEvents {
             if !message.isPartOfThread || message.showReplyInChannel {
                 let markUnreadAction = markAsUnreadAction(
                     for: message,
@@ -145,8 +145,8 @@ public extension MessageAction {
             }
         }
 
-        if message.isSentByCurrentUser {
-            if message.poll == nil && message.giphyAttachments.isEmpty {
+        if message.poll == nil, message.giphyAttachments.isEmpty {
+            if channel.canUpdateAnyMessage || channel.canUpdateOwnMessage && message.isSentByCurrentUser {
                 let editAction = editMessageAction(
                     for: message,
                     channel: channel,
@@ -154,7 +154,9 @@ public extension MessageAction {
                 )
                 messageActions.append(editAction)
             }
-
+        }
+        
+        if message.isSentByCurrentUser {
             let deleteAction = deleteMessageAction(
                 for: message,
                 channel: channel,

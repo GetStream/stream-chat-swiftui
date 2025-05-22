@@ -72,7 +72,38 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssert(messageActions[4].title == "Mark Unread")
         XCTAssert(messageActions[5].title == "Mute User")
     }
-    
+
+    func test_messageActions_otherUserDefaultReadEventsDisabled() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage])
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssert(messageActions.count == 5)
+        XCTAssert(messageActions[0].title == "Reply")
+        XCTAssert(messageActions[1].title == "Thread Reply")
+        XCTAssert(messageActions[2].title == "Pin to conversation")
+        XCTAssert(messageActions[3].title == "Copy Message")
+        XCTAssert(messageActions[4].title == "Mute User")
+    }
+
     func test_messageActions_otherUserDefaultBlockingEnabled() {
         // Given
         streamChat = StreamChat(
@@ -292,12 +323,64 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssertEqual(messageActions[3].title, "Copy Message")
         XCTAssertEqual(messageActions[4].title, "Delete Message")
     }
+    
+    func test_messageActions_currentUser_editingDisabledWhenNoUpdateCapabilities() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(ownCapabilities: [])
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: chatClient.currentUserId!),
+            isSentByCurrentUser: true
+        )
+        let factory = DefaultViewFactory.shared
+        
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+        
+        // Then
+        XCTAssertFalse(messageActions.contains(where: { $0.title == "Edit Message" }))
+    }
+    
+    func test_messageActions_otherUser_editingEnabledWhenUpdateAnyMessageCapability() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(ownCapabilities: [.updateAnyMessage])
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+        
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+        
+        // Then
+        XCTAssertTrue(messageActions.contains(where: { $0.title == "Edit Message" }))
+    }
 
     // MARK: - Private
     
     private var mockDMChannel: ChatChannel {
         ChatChannel.mockDMChannel(
-            ownCapabilities: [.sendMessage, .uploadFile, .pinMessage]
+            ownCapabilities: [.updateOwnMessage, .sendMessage, .uploadFile, .pinMessage, .readEvents]
         )
     }
 }

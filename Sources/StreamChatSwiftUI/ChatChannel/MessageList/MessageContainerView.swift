@@ -34,7 +34,13 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
-    private let paddingValue: CGFloat = 8
+    private var paddingValue: CGFloat {
+        utils.messageListConfig.messagePaddings.singleBottom
+    }
+    
+    private var groupMessageInterItemSpacing: CGFloat {
+        utils.messageListConfig.messagePaddings.groupBottom
+    }
 
     public init(
         factory: Factory,
@@ -275,7 +281,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 .reactionsTopPadding(message) : 0
         )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
-        .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : 2)
+        .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
         .background(messageViewModel.isPinned ? Color(colors.pinnedBackground) : nil)
         .padding(.bottom, messageViewModel.isPinned ? paddingValue / 2 : 0)

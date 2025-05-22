@@ -459,8 +459,6 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    // MARK: - private
-
     func testMessageViewContainer(
         message: ChatMessage,
         channel: ChatChannel? = nil,
