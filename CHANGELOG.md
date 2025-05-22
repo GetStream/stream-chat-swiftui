@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix swipe to reply enabled when quoting a message is disabled [#824](https://github.com/GetStream/stream-chat-swiftui/pull/824)
 - Fix mark unread action not removed when read events are disabled [#823](https://github.com/GetStream/stream-chat-swiftui/pull/823)
 - Fix user mentions not working when commands are disabled [#826](https://github.com/GetStream/stream-chat-swiftui/pull/826)
+- Fix edit message action shown when user does not have permissions [#835](https://github.com/GetStream/stream-chat-swiftui/pull/835)
 
 # [4.78.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.78.0)
 _April 24, 2025_
