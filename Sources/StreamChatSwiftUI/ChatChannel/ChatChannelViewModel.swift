@@ -490,7 +490,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messageActionExecuted(.init(message: message, identifier: "edit"))
     }
 
-    public func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
+    open func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
         utils.messageActionsResolver.resolveMessageAction(
             info: messageActionInfo,
             viewModel: self
