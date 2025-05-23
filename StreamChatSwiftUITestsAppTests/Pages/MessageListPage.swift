@@ -190,7 +190,7 @@ class MessageListPage {
         }
         
         static func giphyImage(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["GiphyAttachmentView"].images.firstMatch
+            messageCell.images["GiphyAttachmentView"].firstMatch
         }
 
         static func giphyLabel(in messageCell: XCUIElement) -> XCUIElement {
