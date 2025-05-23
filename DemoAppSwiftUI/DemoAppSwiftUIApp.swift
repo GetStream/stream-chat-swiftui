@@ -72,7 +72,7 @@ struct DemoAppSwiftUIApp: App {
     }
 }
 
-class AppState: ObservableObject, CurrentChatUserControllerDelegate {
+@MainActor class AppState: ObservableObject, CurrentChatUserControllerDelegate {
     @Injected(\.chatClient) var chatClient: ChatClient
 
     // Recreate the content view when channel query changes.
@@ -123,13 +123,15 @@ class AppState: ObservableObject, CurrentChatUserControllerDelegate {
         contentIdentifier = identifier.rawValue
     }
 
-    func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
-        unreadCount = didChangeCurrentUserUnreadCount
-        let totalUnreadBadge = unreadCount.channels + unreadCount.threads
-        if #available(iOS 16.0, *) {
-            UNUserNotificationCenter.current().setBadgeCount(totalUnreadBadge)
-        } else {
-            UIApplication.shared.applicationIconBadgeNumber = totalUnreadBadge
+    nonisolated func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
+        Task { @MainActor in
+            unreadCount = didChangeCurrentUserUnreadCount
+            let totalUnreadBadge = unreadCount.channels + unreadCount.threads
+            if #available(iOS 16.0, *) {
+                UNUserNotificationCenter.current().setBadgeCount(totalUnreadBadge)
+            } else {
+                UIApplication.shared.applicationIconBadgeNumber = totalUnreadBadge
+            }
         }
     }
 }

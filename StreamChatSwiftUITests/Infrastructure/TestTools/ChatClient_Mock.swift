@@ -22,7 +22,15 @@ public extension ChatClient {
             config: config,
             workerBuilders: [],
             environment: .init(
-                apiClientBuilder: APIClient_Spy.init,
+                apiClientBuilder: {
+                    APIClient_Spy(
+                        sessionConfiguration: $0,
+                        requestEncoder: $1,
+                        requestDecoder: $2,
+                        attachmentDownloader: $3,
+                        attachmentUploader: $4
+                    )
+                },
                 webSocketClientBuilder: {
                     WebSocketClient_Mock(
                         sessionConfiguration: $0,
@@ -38,7 +46,15 @@ public extension ChatClient {
                         chatClientConfig: $1
                     )
                 },
-                authenticationRepositoryBuilder: AuthenticationRepository_Mock.init
+                authenticationRepositoryBuilder: {
+                    AuthenticationRepository_Mock(
+                        apiClient: $0,
+                        databaseContainer: $1,
+                        connectionRepository: $2,
+                        tokenExpirationRetryStrategy: $3,
+                        timerType: $4
+                    )
+                }
             )
         )
     }

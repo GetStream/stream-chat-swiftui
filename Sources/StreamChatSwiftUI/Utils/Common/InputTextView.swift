@@ -5,7 +5,7 @@
 import UIKit
 
 struct TextSizeConstants {
-    static let composerConfig = InjectedValues[\.utils].composerConfig
+    static var composerConfig: ComposerConfig { InjectedValues[\.utils].composerConfig }
     static let defaultInputViewHeight: CGFloat = 38.0
     static var minimumHeight: CGFloat {
         composerConfig.inputViewMinHeight

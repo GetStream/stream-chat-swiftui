@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 #if !os(macOS)
 import UIKit
@@ -27,7 +27,7 @@ extension ImageDecoders {
         private var scanner = ProgressiveJPEGScanner()
 
         private var isPreviewForGIFGenerated = false
-        private var scale: CGFloat?
+        private var scale: CGFloat = 1.0
         private var thumbnail: ImageRequest.ThumbnailOptions?
         private let lock = NSLock()
 
@@ -38,8 +38,8 @@ extension ImageDecoders {
         /// Returns `nil` if progressive decoding is not allowed for the given
         /// content.
         init?(context: ImageDecodingContext) {
-            self.scale = context.request.scale.map { CGFloat($0) }
-            self.thumbnail = context.request.thubmnail
+            self.scale = context.request.scale.map { CGFloat($0) } ?? self.scale
+            self.thumbnail = context.request.thumbnail
 
             if !context.isCompleted && !isProgressiveDecodingAllowed(for: context.data) {
                 return nil // Progressive decoding not allowed for this image
@@ -51,8 +51,10 @@ extension ImageDecoders {
             defer { lock.unlock() }
 
             func makeImage() -> PlatformImage? {
-                if let thumbnail = self.thumbnail {
-                    return makeThumbnail(data: data, options: thumbnail)
+                if let thumbnail {
+                    return makeThumbnail(data: data,
+                                         options: thumbnail,
+                                         scale: scale)
                 }
                 return ImageDecoders.Default._decode(data, scale: scale)
             }
@@ -162,12 +164,12 @@ private struct ProgressiveJPEGScanner: Sendable {
 }
 
 extension ImageDecoders.Default {
-    private static func _decode(_ data: Data, scale: CGFloat?) -> PlatformImage? {
-        #if os(macOS)
+    private static func _decode(_ data: Data, scale: CGFloat) -> PlatformImage? {
+#if os(macOS)
         return NSImage(data: data)
-        #else
-        return UIImage(data: data, scale: scale ?? Screen.scale)
-        #endif
+#else
+        return UIImage(data: data, scale: scale)
+#endif
     }
 }
 

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -77,11 +77,11 @@ extension ImagePipeline {
         /// ```swift
         /// let url = URL(string: "http://example.com/image")
         /// pipeline.loadImage(with: ImageRequest(url: url, processors: [
-        ///     ImageProcessors.Resize(size: CGSize(width: 44, height: 44)),
-        ///     ImageProcessors.GaussianBlur(radius: 8)
+        ///     .resize(size: CGSize(width: 44, height: 44)),
+        ///     .gaussianBlur(radius: 8)
         /// ]))
         /// pipeline.loadImage(with: ImageRequest(url: url, processors: [
-        ///     ImageProcessors.Resize(size: CGSize(width: 44, height: 44))
+        ///     .resize(size: CGSize(width: 44, height: 44))
         /// ]))
         /// ```
         ///
@@ -114,9 +114,19 @@ extension ImagePipeline {
         /// `Last-Modified`). Resumable downloads are enabled by default.
         var isResumableDataEnabled = true
 
+        /// If enabled, the pipeline will load the local resources (`file` and
+        /// `data` schemes) inline without using the data loader. By default, `true`.
+        var isLocalResourcesSupportEnabled = true
+
         /// A queue on which all callbacks, like `progress` and `completion`
         /// callbacks are called. `.main` by default.
-        var callbackQueue = DispatchQueue.main
+        @available(*, deprecated, message: "`ImagePipeline` no longer supports changing the callback queue")
+        var callbackQueue: DispatchQueue {
+            get { _callbackQueue }
+            set { _callbackQueue = newValue }
+        }
+
+        var _callbackQueue = DispatchQueue.main
 
         // MARK: - Options (Shared)
 
@@ -125,7 +135,12 @@ extension ImagePipeline {
         /// metrics in `os_signpost` Instrument. For more information see
         /// https://developer.apple.com/documentation/os/logging and
         /// https://developer.apple.com/videos/play/wwdc2018/405/.
-        static var isSignpostLoggingEnabled = false
+        static var isSignpostLoggingEnabled: Bool {
+            get { _isSignpostLoggingEnabled.value }
+            set { _isSignpostLoggingEnabled.value = newValue }
+        }
+
+        private static let _isSignpostLoggingEnabled = Atomic(value: false)
 
         private var isCustomImageCacheProvided = false
 
@@ -136,7 +151,8 @@ extension ImagePipeline {
         /// Data loading queue. Default maximum concurrent task count is 6.
         var dataLoadingQueue = OperationQueue(maxConcurrentCount: 6)
 
-        /// Data caching queue. Default maximum concurrent task count is 2.
+        // Deprecated in Nuke 12.6
+        @available(*, deprecated, message: "The pipeline now performs cache lookup on the internal queue, reducing the amount of context switching")
         var dataCachingQueue = OperationQueue(maxConcurrentCount: 2)
 
         /// Image decoding queue. Default maximum concurrent task count is 1.
@@ -201,7 +217,7 @@ extension ImagePipeline {
             config.dataLoader = dataLoader
 
             let dataCache = try? DataCache(name: name)
-            if let sizeLimit = sizeLimit {
+            if let sizeLimit {
                 dataCache?.sizeLimit = sizeLimit
             }
             config.dataCache = dataCache
@@ -212,34 +228,39 @@ extension ImagePipeline {
 
     /// Determines what images are stored in the disk cache.
     enum DataCachePolicy: Sendable {
-        /// For requests with processors, encode and store processed images.
-        /// For requests with no processors, store original image data, unless
-        /// the resource is local (file:// or data:// scheme is used).
+        /// Store original image data for requests with no processors. Store
+        /// _only_ processed images for requests with processors.
         ///
-        /// - important: With this policy, the pipeline ``ImagePipeline/loadData(with:completion:)`` method
-        /// will not store the images in the disk cache for requests with
+        /// - note: Store only processed images for local resources (file:// or
+        /// data:// URL scheme).
+        ///
+        /// - important: With this policy, the pipeline's ``ImagePipeline/loadData(with:completion:)-6cwk3``
+        /// method will not store the images in the disk cache for requests with
         /// any processors applied – this method only loads data and doesn't
         /// decode images.
         case automatic
 
-        /// For all requests, only store the original image data, unless
-        /// the resource is local (file:// or data:// scheme is used).
+        /// Store only original image data.
+        ///
+        /// - note: If the resource is local (file:// or data:// URL scheme),
+        /// data isn't stored.
         case storeOriginalData
 
-        /// For all requests, encode and store decoded images after all
-        /// processors are applied.
+        /// Encode and store images.
         ///
         /// - note: This is useful if you want to store images in a format
         /// different than provided by a server, e.g. decompressed. In other
         /// scenarios, consider using ``automatic`` policy instead.
         ///
-        /// - important: With this policy, the pipeline ``ImagePipeline/loadData(with:completion:)`` method
-        /// will not store the images in the disk cache – this method only
+        /// - important: With this policy, the pipeline's ``ImagePipeline/loadData(with:completion:)-6cwk3``
+        /// method will not store the images in the disk cache – this method only
         /// loads data and doesn't decode images.
         case storeEncodedImages
 
-        /// For requests with processors, encode and store processed images.
-        /// For all requests, store original image data.
+        /// Stores both processed images and the original image data.
+        ///
+        /// - note: If the resource is local (has file:// or data:// scheme),
+        /// only the processed images are stored.
         case storeAll
     }
 }

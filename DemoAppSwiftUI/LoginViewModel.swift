@@ -6,7 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class LoginViewModel: ObservableObject {
+@MainActor class LoginViewModel: ObservableObject {
 
     @Published var demoUsers = UserCredentials.builtInUsers
     @Published var loading = false
@@ -42,7 +42,7 @@ class LoginViewModel: ObservableObject {
                 return
             }
 
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor [weak self] in
                 withAnimation {
                     self?.loading = false
                     UnsecureRepository.shared.save(user: credentials)
@@ -64,7 +64,7 @@ class LoginViewModel: ObservableObject {
                 return
             }
 
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor [weak self] in
                 withAnimation {
                     self?.loading = false
                     AppState.shared.userState = .loggedIn
