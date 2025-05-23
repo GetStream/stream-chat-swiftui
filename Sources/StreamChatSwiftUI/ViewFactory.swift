@@ -359,6 +359,15 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(for message: ChatMessage) -> MessageAuthorAndDateViewType
 
+    associatedtype MessageTranslationFooterViewType: View
+    /// Creates a view to display translation information below a message if it has been translated.
+    /// - Parameters:
+    ///   - messageViewModel: The message view model used to display information about the message.
+    /// - Returns: A view to display translation information of the message.
+    func makeMessageTranslationFooterView(
+        messageViewModel: MessageViewModel
+    ) -> MessageTranslationFooterViewType
+
     associatedtype LastInGroupHeaderView: View
     /// Creates a view shown as a header of the last message in a group.
     /// - Parameter message: the chat message for which the header will be displayed.

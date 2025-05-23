@@ -59,6 +59,8 @@ public class Utils {
 
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
+    public var originalTranslationsStore = MessageOriginalTranslationsStore()
+
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()

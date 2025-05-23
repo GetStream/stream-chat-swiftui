@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Add extra data to user display info [#819](https://github.com/GetStream/stream-chat-swiftui/pull/819)
 - Make message spacing in message list configurable [#830](https://github.com/GetStream/stream-chat-swiftui/pull/830)
+- Add `MessageViewModel` to `MessageContainerView` to make it easier to customise presentation logic [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
+- Add `MessageListConfig.messaeDisplayOptions.showOriginalTranslatedButton` to enable showing original text in translated message [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
+- Add `Utils.originalTranslationsStore` to keep track of messages that should show the original text [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
 ### 🐞 Fixed
 - Fix swipe to reply enabled when quoting a message is disabled [#824](https://github.com/GetStream/stream-chat-swiftui/pull/824)
 - Fix mark unread action not removed when read events are disabled [#823](https://github.com/GetStream/stream-chat-swiftui/pull/823)
