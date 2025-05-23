@@ -5,8 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-@testable import StreamChatTestTools
-import SwiftUI
+import StreamSwiftTestHelpers
 import XCTest
 
 class MessageListViewAvatars_Tests: StreamChatTestCase {
@@ -26,7 +25,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel()
 
         // When
-        let view = makeMessageListView(with: channel)
+        let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -38,7 +37,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockNonDMChannel()
 
         // When
-        let view = makeMessageListView(with: channel)
+        let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -50,7 +49,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockDMChannel()
 
         // When
-        let view = makeMessageListView(with: channel)
+        let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -62,7 +61,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         let channel = ChatChannel.mockNonDMChannel()
 
         // When
-        let view = makeMessageListView(with: channel)
+        let view = makeMessageListView(with: channel).applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -78,7 +77,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    private func makeMessageListView(with channel: ChatChannel) -> some SwiftUI.View {
+    private func makeMessageListView(with channel: ChatChannel) -> MessageListView<DefaultViewFactory> {
         let temp = [ChatMessage.mock(
             id: .unique,
             cid: channel.cid,
@@ -86,10 +85,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
             author: .mock(id: .unique)
         )]
         let messages = LazyCachedMapCollection(source: temp, map: { $0 })
-        let channelController = ChatChannelController_Mock.mock(client: chatClient)
-        channelController.channel_mock = channel
-        channelController.messages_mock = Array(messages)
-        return MessageListView(
+        let messageListView = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,
             messages: messages,
@@ -105,7 +101,7 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
             onScrollToBottom: {},
             onLongPress: { _ in }
         )
-        .applyDefaultSize()
-        .environmentObject(ChatChannelViewModel(channelController: channelController))
+
+        return messageListView
     }
 }
