@@ -5,7 +5,6 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-@testable import StreamChatTestTools
 import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
@@ -46,9 +45,7 @@ final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
             ]
         )
         let channel = ChatChannel.mockDMChannel()
-        let channelController = ChatChannelController_Mock.mock(client: chatClient)
-        channelController.channel_mock = channel
-
+        
         // When
         let view = MessageContainerView(
             factory: viewFactory,
@@ -61,8 +58,6 @@ final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
-        .environmentObject(ChatChannelViewModel(channelController: channelController))
-        .environmentObject(MessageViewModel(message: message, channel: channel))
         .applyDefaultSize()
         
         // Then
