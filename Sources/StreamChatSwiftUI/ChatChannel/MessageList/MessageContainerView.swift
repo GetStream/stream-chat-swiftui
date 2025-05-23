@@ -66,8 +66,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         _messageViewModel = .init(
             wrappedValue: viewModel ?? MessageViewModel(
                 message: message,
-                channel: channel,
-                originalTranslationsStore: .shared
+                channel: channel
             )
         )
         _scrolledId = scrolledId

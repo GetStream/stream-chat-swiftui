@@ -498,7 +498,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     @objc public func onViewAppear() {
-        MessageOriginalTranslationsStore.shared.clear()
+        utils.originalTranslationsStore.clear()
         setActive()
         messages = channelDataSource.messages
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId

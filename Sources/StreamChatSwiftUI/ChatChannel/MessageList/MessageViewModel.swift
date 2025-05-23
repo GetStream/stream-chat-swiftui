@@ -12,18 +12,15 @@ open class MessageViewModel: ObservableObject {
 
     public private(set) var message: ChatMessage
     public private(set) var channel: ChatChannel?
-    private var originalTranslationsStore: MessageOriginalTranslationsStore
     private var cancellables = Set<AnyCancellable>()
 
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
-        originalTranslationsStore: MessageOriginalTranslationsStore
+        channel: ChatChannel?
     ) {
         self.message = message
         self.channel = channel
-        self.originalTranslationsStore = originalTranslationsStore
-        self.originalTranslationsStore.$originalTextMessageIds.sink(
+        utils.originalTranslationsStore.$originalTextMessageIds.sink(
             receiveValue: { [weak self] _ in
                 self?.objectWillChange.send()
             }
@@ -35,18 +32,18 @@ open class MessageViewModel: ObservableObject {
 
     /// Show the original text of the message.
     public func showOriginalText() {
-        originalTranslationsStore.showOriginalText(for: message.id)
+        utils.originalTranslationsStore.showOriginalText(for: message.id)
     }
 
     /// Hide the original text of the message to show the translated text.
     public func hideOriginalText() {
-        originalTranslationsStore.hideOriginalText(for: message.id)
+        utils.originalTranslationsStore.hideOriginalText(for: message.id)
     }
 
     // MARK: - Outputs
 
     public var originalTextShown: Bool {
-        originalTranslationsStore.shouldShowOriginalText(for: message.id)
+        utils.originalTranslationsStore.shouldShowOriginalText(for: message.id)
     }
 
     public var systemMessageShown: Bool {
@@ -132,9 +129,7 @@ open class MessageViewModel: ObservableObject {
 ///
 /// **Note:** This is not thread-safe, it should only be used on the main thread.
 public class MessageOriginalTranslationsStore: ObservableObject {
-    private init() {}
-
-    public static let shared = MessageOriginalTranslationsStore()
+    internal init() {}
 
     @Published var originalTextMessageIds: Set<MessageId> = []
 
