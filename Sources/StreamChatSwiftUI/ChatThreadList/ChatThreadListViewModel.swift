@@ -122,7 +122,7 @@ import StreamChat
         isReloading = !isEmpty
         preselectThreadIfNeeded()
         threadListController.synchronize { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.isLoading = false
                 self?.isReloading = false
                 self?.hasLoadedThreads = error == nil
@@ -154,7 +154,7 @@ import StreamChat
         
         isLoadingMoreThreads = true
         threadListController.loadMoreThreads { [weak self] result in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.isLoadingMoreThreads = false
                 self?.hasLoadedAllThreads = self?.threadListController.hasLoadedAllThreads ?? false
                 let threads = try? result.get()
@@ -167,13 +167,13 @@ import StreamChat
         _ controller: ChatThreadListController,
         didChangeThreads changes: [ListChange<ChatThread>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             threads = controller.threads
         }
     }
 
     nonisolated public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             switch event {
             case let event as ThreadMessageNewEvent:
                 guard let parentId = event.message.parentMessageId else { break }

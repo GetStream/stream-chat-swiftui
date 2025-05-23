@@ -324,7 +324,7 @@ import SwiftUI
                         toJumpId = message.messageId
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self, toJumpId] in
-                        MainActor.ensureIsolated { [weak self] in
+                        StreamConcurrency.onMain { [weak self] in
                             self?.scrolledId = toJumpId
                             self?.loadingMessagesAround = false
                         }
@@ -566,7 +566,7 @@ import SwiftUI
             withTimeInterval: 0.5,
             repeats: false,
             block: { [weak self] _ in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     self?.currentDate = nil
                 }
             }
@@ -791,7 +791,7 @@ import SwiftUI
     }
     
     deinit {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             messageCachingUtils.clearCache()
             if messageController == nil {
                 utils.channelControllerFactory.clearCurrentController()

@@ -39,7 +39,7 @@ public class MuteCommandHandler: TwoStepMentionCommand {
             chatClient
                 .userController(userId: mutedUser.id)
                 .mute { [weak self] error in
-                    MainActor.ensureIsolated {
+                    StreamConcurrency.onMain {
                         self?.selectedUser = nil
                     }
                     completion(error)

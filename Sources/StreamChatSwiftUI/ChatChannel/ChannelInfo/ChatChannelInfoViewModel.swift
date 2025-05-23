@@ -199,7 +199,7 @@ import SwiftUI
         _ channelController: ChatChannelController,
         didUpdateChannel channel: EntityChange<ChatChannel>
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             if let channel = channelController.channel {
                 self.channel = channel
                 if self.channel.lastActiveMembers.count > participants.count {
@@ -226,7 +226,7 @@ import SwiftUI
     private func removeUserFromConversation(completion: @escaping @MainActor() -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 if error != nil {
                     self?.errorShown = true
                 } else {
@@ -238,7 +238,7 @@ import SwiftUI
 
     private func deleteChannel(completion: @escaping @MainActor() -> Void) {
         channelController.deleteChannel { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 if error != nil {
                     self?.errorShown = true
                 } else {
@@ -255,7 +255,7 @@ import SwiftUI
 
         loadingUsers = true
         memberListController.loadNextMembers { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self else { return }
                 self.loadingUsers = false
                 if error == nil {

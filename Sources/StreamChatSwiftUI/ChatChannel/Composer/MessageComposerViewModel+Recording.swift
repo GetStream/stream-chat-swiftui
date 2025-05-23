@@ -26,7 +26,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         _ audioRecorder: AudioRecording,
         didUpdateContext: AudioRecordingContext
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             audioRecordingInfo.update(
                 with: didUpdateContext.averagePower,
                 duration: didUpdateContext.duration
@@ -38,13 +38,13 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         _ audioRecorder: AudioRecording,
         didFinishRecordingAtURL location: URL
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             if audioRecordingInfo == .initial { return }
             audioAnalysisFactory?.waveformVisualisation(
                 fromAudioURL: location,
                 for: waveformTargetSamples,
                 completionHandler: { [weak self] result in
-                    MainActor.ensureIsolated { [weak self] in
+                    StreamConcurrency.onMain { [weak self] in
                         guard let self else { return }
                         switch result {
                         case let .success(waveform):
@@ -77,7 +77,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         _ audioRecorder: AudioRecording,
         didFailWithError error: Error
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             log.error(error)
             recordingState = .initial
             audioRecordingInfo = .initial

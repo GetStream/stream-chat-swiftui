@@ -30,7 +30,7 @@ import SwiftUI
     
     private func loadPinnedMessages() {
         channelController?.loadPinnedMessages(completion: { [weak self] result in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 switch result {
                 case let .success(messages):
                     withAnimation {

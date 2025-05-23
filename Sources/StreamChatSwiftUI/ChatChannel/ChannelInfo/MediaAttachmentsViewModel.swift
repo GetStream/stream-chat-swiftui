@@ -48,7 +48,7 @@ import SwiftUI
         if !loadingNextMessages {
             loadingNextMessages = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     guard let self = self else { return }
                     self.updateAttachments()
                     self.loadingNextMessages = false
@@ -60,7 +60,7 @@ import SwiftUI
     // MARK: - ChatMessageSearchControllerDelegate
     
     nonisolated func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             updateAttachments()
         }
     }
@@ -73,7 +73,7 @@ import SwiftUI
 
         loading = true
         messageSearchController.search(query: query, completion: { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self else { return }
                 self.updateAttachments()
                 self.loading = false

@@ -179,7 +179,7 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             controller?.loadNextChannels(limit: 30) { [weak self] _ in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     guard let self = self else { return }
                     self.loadingNextChannels = false
                 }
@@ -221,7 +221,7 @@ import UIKit
 
         controller.deleteChannel { [weak self] error in
             if error != nil {
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     self?.setChannelAlertType(.error)
                 }
             }
@@ -242,7 +242,7 @@ import UIKit
         _ controller: ChatChannelListController,
         didChangeChannels changes: [ListChange<ChatChannel>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             handleChannelListChanges(controller)
         }
     }
@@ -280,7 +280,7 @@ import UIKit
         _ controller: ChatMessageSearchController,
         didChangeMessages changes: [ListChange<ChatMessage>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             updateMessageSearchResults()
         }
     }
@@ -341,7 +341,7 @@ import UIKit
         loading = channels.isEmpty
 
         controller?.synchronize { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self else { return }
                 self.loading = false
                 if error != nil {
@@ -390,7 +390,7 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     guard let self = self else { return }
                     self.loadingNextChannels = false
                 }
@@ -410,7 +410,7 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             channelListSearchController.loadNextChannels { [weak self] _ in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     guard let self = self else { return }
                     self.loadingNextChannels = false
                     self.updateChannelSearchResults()
@@ -424,7 +424,7 @@ import UIKit
         messageSearchController = chatClient.messageSearchController()
         loadingSearchResults = true
         messageSearchController?.search(text: searchText) { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.loadingSearchResults = false
                 self?.messageSearchController?.delegate = self
                 self?.updateMessageSearchResults()
@@ -446,7 +446,7 @@ import UIKit
         channelListSearchController = chatClient.channelListController(query: query)
         loadingSearchResults = true
         channelListSearchController?.synchronize { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.loadingSearchResults = false
                 self?.updateChannelSearchResults()
             }
@@ -503,7 +503,7 @@ import UIKit
     private func observeClientIdChange() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self else { return }
                 if self.chatClient.currentUserId != nil {
                     self.stopTimer()

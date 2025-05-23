@@ -61,7 +61,7 @@ private struct AlertBannerViewModifier: ViewModifier {
             guard newValue else { return }
             timer?.invalidate()
             timer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { _ in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     isPresented = false
                 }
             }

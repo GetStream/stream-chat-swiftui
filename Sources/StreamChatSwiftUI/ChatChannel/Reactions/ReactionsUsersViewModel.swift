@@ -42,14 +42,14 @@ import SwiftUI
 
         isLoading = true
         messageController.loadNextReactions { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.isLoading = false
             }
         }
     }
 
     nonisolated func messageController(_ controller: ChatMessageController, didChangeReactions reactions: [ChatMessageReaction]) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             self.reactions = reactions
         }
     }

@@ -206,7 +206,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
         }
         .onAppear {
             videoPreviewLoader.loadPreviewForVideo(at: attachment.videoURL) { result in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     switch result {
                     case let .success(image):
                         self.previewImage = image

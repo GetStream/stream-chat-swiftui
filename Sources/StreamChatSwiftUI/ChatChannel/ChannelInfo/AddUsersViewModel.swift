@@ -46,7 +46,7 @@ import SwiftUI
         if !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers { [weak self] _ in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     guard let self = self else { return }
                     self.users = self.searchController.userArray
                     self.loadingNextUsers = false
@@ -59,7 +59,7 @@ import SwiftUI
         let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
         let query = UserListQuery(filter: filter)
         searchController.search(query: query) { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self, error == nil else { return }
                 self.users = self.searchController.userArray
             }
@@ -68,7 +68,7 @@ import SwiftUI
 
     private func searchUsers(term: String) {
         searchController.search(term: searchText) { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self, error == nil else { return }
                 self.users = self.searchController.userArray.filter { user in
                     !self.loadedUserIds.contains(user.id)

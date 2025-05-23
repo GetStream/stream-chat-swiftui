@@ -117,7 +117,7 @@ import SwiftUI
             votingVisibility: anonymousPoll ? .anonymous : .public,
             options: pollOptions
         ) { [weak self] result in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 switch result {
                 case let .success(messageId):
                     log.debug("Created poll in message with id \(messageId)")

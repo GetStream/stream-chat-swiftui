@@ -102,7 +102,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         quotedMessage: quotedMessage,
                         editedMessage: editedMessage
                     ) {
-                        MainActor.ensureIsolated {
+                        StreamConcurrency.onMain {
                             // Calling onMessageSent() before erasing the edited and quoted message
                             // so that onMessageSent can use them for state handling.
                             onMessageSent()

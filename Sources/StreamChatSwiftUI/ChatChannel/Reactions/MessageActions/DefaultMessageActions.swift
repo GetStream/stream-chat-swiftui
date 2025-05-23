@@ -301,7 +301,7 @@ public extension MessageAction {
 
         let pinMessage: @MainActor() -> Void = {
             messageController.pin(MessagePinning.noExpiration) { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -343,7 +343,7 @@ public extension MessageAction {
 
         let pinMessage: @MainActor() -> Void = {
             messageController.unpin { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -434,7 +434,7 @@ public extension MessageAction {
 
         let deleteAction: @MainActor() -> Void = {
             messageController.deleteMessage { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -482,7 +482,7 @@ public extension MessageAction {
 
         let flagAction: @MainActor() -> Void = {
             messageController.flag { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -528,7 +528,7 @@ public extension MessageAction {
             .makeChannelController(for: channel.cid)
         let action: @MainActor() -> Void = {
             channelController.markUnread(from: message.id) { result in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if case let .failure(error) = result {
                         onError(error)
                     } else {
@@ -563,7 +563,7 @@ public extension MessageAction {
     ) -> MessageAction {
         let action: @MainActor() -> Void = {
             messageController.markThreadUnread() { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error {
                         onError(error)
                     } else {
@@ -601,7 +601,7 @@ public extension MessageAction {
         let muteController = chatClient.userController(userId: userToMute.id)
         let muteAction: @MainActor() -> Void = {
             muteController.mute { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -640,7 +640,7 @@ public extension MessageAction {
         let blockController = chatClient.userController(userId: userToBlock.id)
         let blockAction: @MainActor() -> Void = {
             blockController.block { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -683,7 +683,7 @@ public extension MessageAction {
         let unmuteController = chatClient.userController(userId: userToUnmute.id)
         let unmuteAction: @MainActor() -> Void = {
             unmuteController.unmute { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -722,7 +722,7 @@ public extension MessageAction {
         let blockController = chatClient.userController(userId: userToUnblock.id)
         let unblockAction: @MainActor() -> Void = {
             blockController.unblock { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {
@@ -768,7 +768,7 @@ public extension MessageAction {
 
         let resendAction: @MainActor() -> Void = {
             messageController.resendMessage { error in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     if let error = error {
                         onError(error)
                     } else {

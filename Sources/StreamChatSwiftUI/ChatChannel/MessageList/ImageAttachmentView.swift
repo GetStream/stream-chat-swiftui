@@ -400,7 +400,7 @@ struct LazyLoadingImage: View {
                 resize: resize,
                 preferredSize: CGSize(width: width, height: height)
             ) { result in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     switch result {
                     case let .success(image):
                         self.image = image

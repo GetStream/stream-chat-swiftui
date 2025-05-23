@@ -78,7 +78,7 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
         _ completion: @escaping @Sendable(Result<UIImage, Error>) -> Void,
         with result: Result<UIImage, Error>
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             completion(result)
         }
     }

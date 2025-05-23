@@ -40,7 +40,7 @@ import SwiftUI
     
     func refresh() {
         controller.synchronize { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self else { return }
                 self.pollVotes = Array(self.controller.votes)
                 if self.pollVotes.isEmpty {
@@ -65,7 +65,7 @@ import SwiftUI
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             if animateChanges {
                 withAnimation {
                     self.pollVotes = Array(self.controller.votes)
@@ -80,7 +80,7 @@ import SwiftUI
         loadingVotes = true
 
         controller.loadMoreVotes { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self else { return }
                 self.loadingVotes = false
                 if error != nil {

@@ -106,7 +106,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
         _ channelController: ChatChannelController,
         didUpdateMessages changes: [ListChange<ChatMessage>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             delegate?.dataSource(
                 channelDataSource: self,
                 didUpdateMessages: channelController.messages,
@@ -119,7 +119,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
         _ channelController: ChatChannelController,
         didUpdateChannel channel: EntityChange<ChatChannel>
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             delegate?.dataSource(
                 channelDataSource: self,
                 didUpdateChannel: channel,
@@ -188,7 +188,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         self.messageController = messageController
         self.messageController.delegate = self
         self.messageController.loadPreviousReplies { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self = self else { return }
                 self.delegate?.dataSource(
                     channelDataSource: self,
@@ -203,7 +203,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         _ controller: ChatMessageController,
         didChangeReplies changes: [ListChange<ChatMessage>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             delegate?.dataSource(
                 channelDataSource: self,
                 didUpdateMessages: messages,
@@ -216,7 +216,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             delegate?.dataSource(
                 channelDataSource: self,
                 didUpdateMessages: messages,

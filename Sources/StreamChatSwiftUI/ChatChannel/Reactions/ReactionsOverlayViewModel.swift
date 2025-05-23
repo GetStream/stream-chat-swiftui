@@ -46,7 +46,7 @@ import SwiftUI
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             if let message = controller.message {
                 withAnimation {
                     self.message = message

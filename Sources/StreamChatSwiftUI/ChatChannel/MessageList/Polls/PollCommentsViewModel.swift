@@ -53,7 +53,7 @@ import SwiftUI
     func refresh() {
         loadingComments = true
         commentsController.synchronize { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self else { return }
                 self.loadingComments = false
                 self.comments = Array(self.commentsController.votes)
@@ -74,7 +74,7 @@ import SwiftUI
     
     func add(comment: String) {
         pollController.castPollVote(answerText: comment, optionId: nil) { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 if let error {
                     log.error("Error casting a vote \(error.localizedDescription)")
                     self?.errorShown = true
@@ -96,7 +96,7 @@ import SwiftUI
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             if animateChanges {
                 withAnimation {
                     self.comments = Array(self.commentsController.votes)
@@ -111,7 +111,7 @@ import SwiftUI
         guard !loadingComments, !commentsController.hasLoadedAllVotes else { return }
         loadingComments = true
         commentsController.loadMoreVotes { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.loadingComments = false
                 if error != nil {
                     self?.errorShown = true

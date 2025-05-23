@@ -120,7 +120,7 @@ import SwiftUI
         self.pollController = pollController
         pollController.delegate = self
         pollController.synchronize { [weak self] _ in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 guard let self else { return }
                 self.currentUserVotes = Array(self.pollController.ownVotes)
             }
@@ -144,7 +144,7 @@ import SwiftUI
                 }
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-                MainActor.ensureIsolated { [weak self] in
+                StreamConcurrency.onMain { [weak self] in
                     self?.isCastingVote = false
                 }
             }
@@ -178,7 +178,7 @@ import SwiftUI
         pollController.removePollVote(
             voteId: vote.id
         ) { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.isCastingVote = false
                 if let error {
                     log.error("Error removing a vote \(error.localizedDescription)")
@@ -194,7 +194,7 @@ import SwiftUI
         guard !isClosingPoll else { return }
         isClosingPoll = true
         pollController.closePoll { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 self?.isClosingPoll = false
                 if let error {
                     log.error("Error closing the poll \(error.localizedDescription)")
@@ -233,7 +233,7 @@ import SwiftUI
     // MARK: - PollControllerDelegate
     
     nonisolated public func pollController(_ pollController: PollController, didUpdatePoll poll: EntityChange<Poll>) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             self.poll = poll.item
         }
     }
@@ -242,7 +242,7 @@ import SwiftUI
         _ pollController: PollController,
         didUpdateCurrentUserVotes votes: [ListChange<PollVote>]
     ) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             currentUserVotes = Array(pollController.ownVotes)
         }
     }

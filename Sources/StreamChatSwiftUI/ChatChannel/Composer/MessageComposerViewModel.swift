@@ -362,7 +362,7 @@ import SwiftUI
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
-                MainActor.ensureIsolated {
+                StreamConcurrency.onMain {
                     self?.clearInputData()
                     completion()
                 }
@@ -399,7 +399,7 @@ import SwiftUI
                     skipEnrichUrl: skipEnrichUrl,
                     extraData: extraData
                 ) { [weak self] result in
-                    MainActor.ensureIsolated { [weak self] in
+                    StreamConcurrency.onMain { [weak self] in
                         switch result {
                         case .success:
                             completion()
@@ -419,7 +419,7 @@ import SwiftUI
                     skipEnrichUrl: skipEnrichUrl,
                     extraData: extraData
                 ) { [weak self] result in
-                    MainActor.ensureIsolated { [weak self] in
+                    StreamConcurrency.onMain { [weak self] in
                         switch result {
                         case .success:
                             completion()
@@ -658,7 +658,7 @@ import SwiftUI
         selectedRangeLocation = message.text.count
 
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            MainActor.ensureIsolated {
+            StreamConcurrency.onMain {
                 self?.updateComposerAssets(assets)
             }
         }
@@ -740,7 +740,7 @@ import SwiftUI
             text: adjustedText,
             attachments: newAttachments
         ) { [weak self] error in
-            MainActor.ensureIsolated { [weak self] in
+            StreamConcurrency.onMain { [weak self] in
                 if error != nil {
                     self?.errorShown = true
                 } else {
@@ -825,7 +825,7 @@ import SwiftUI
                 withTimeInterval: 1,
                 repeats: true,
                 block: { [weak self] _ in
-                    MainActor.ensureIsolated { [weak self] in
+                    StreamConcurrency.onMain { [weak self] in
                         self?.cooldownDuration -= 1
                         if self?.cooldownDuration == 0 {
                             self?.timer?.invalidate()
@@ -909,7 +909,7 @@ import SwiftUI
 
 extension MessageComposerViewModel: EventsControllerDelegate {
     nonisolated public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
-        MainActor.ensureIsolated {
+        StreamConcurrency.onMain {
             if let event = event as? DraftUpdatedEvent {
                 let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
                 let isFromSameChannel = channelController.cid == event.cid && messageController == nil
