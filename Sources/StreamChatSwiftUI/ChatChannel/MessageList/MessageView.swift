@@ -285,6 +285,9 @@ public struct LinkDetectionTextView: View {
         .foregroundColor(textColor(for: message))
         .font(fonts.body)
         .tint(tintColor)
+        .onChange(of: message) { message in
+            messageViewModel?.message = message
+        }
     }
     
     var displayText: AttributedString {

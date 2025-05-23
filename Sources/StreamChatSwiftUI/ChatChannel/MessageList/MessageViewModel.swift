@@ -10,7 +10,7 @@ open class MessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
-    public private(set) var message: ChatMessage
+    public internal(set) var message: ChatMessage
     public private(set) var channel: ChatChannel?
     private var cancellables = Set<AnyCancellable>()
 
