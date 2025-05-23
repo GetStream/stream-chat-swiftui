@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
-    @ObservedObject var messageViewModel: MessageViewModel
+    @StateObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
     
     @Injected(\.fonts) private var fonts
@@ -63,10 +63,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
-        messageViewModel = viewModel ?? MessageViewModel(
-            message: message,
-            channel: channel,
-            originalTranslationsStore: .shared
+        _messageViewModel = .init(
+            wrappedValue: viewModel ?? MessageViewModel(
+                message: message,
+                channel: channel,
+                originalTranslationsStore: .shared
+            )
         )
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage

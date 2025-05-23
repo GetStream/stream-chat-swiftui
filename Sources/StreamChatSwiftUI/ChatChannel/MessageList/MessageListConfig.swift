@@ -148,11 +148,11 @@ public struct MessageDisplayOptions {
     public let otherUserMessageTransition: AnyTransition
     public let shouldAnimateReactions: Bool
     public let reactionsPlacement: ReactionsPlacement
+    public let showOriginalTranslatedButton: Bool
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
     public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
-    public let showOriginalTranslatedButton: Bool
 
     public init(
         showAvatars: Bool = true,
@@ -168,12 +168,12 @@ public struct MessageDisplayOptions {
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
         reactionsPlacement: ReactionsPlacement = .top,
+        showOriginalTranslatedButton: Bool = false,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
         reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
-        dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator,
-        showOriginalTranslatedButton: Bool = false
+        dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
     ) {
         self.showAvatars = showAvatars
         self.showAuthorName = showAuthorName
