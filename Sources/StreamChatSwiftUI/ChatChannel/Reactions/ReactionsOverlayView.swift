@@ -44,15 +44,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         minOriginY: CGFloat = 100,
         bottomOffset: CGFloat = 0,
         onBackgroundTap: @escaping () -> Void,
-        onActionExecuted: @escaping (MessageActionInfo) -> Void
+        onActionExecuted: @escaping (MessageActionInfo) -> Void,
+        viewModel: ReactionsOverlayViewModel? = nil,
+        messageViewModel: MessageViewModel? = nil
     ) {
         _viewModel = StateObject(
-            wrappedValue: ViewModelsFactory.makeReactionsOverlayViewModel(
+            wrappedValue: viewModel ?? ViewModelsFactory.makeReactionsOverlayViewModel(
                 message: messageDisplayInfo.message
             )
         )
         _messageViewModel = StateObject(
-            wrappedValue: MessageViewModel(
+            wrappedValue: messageViewModel ?? MessageViewModel(
                 message: messageDisplayInfo.message,
                 channel: channel
             )
