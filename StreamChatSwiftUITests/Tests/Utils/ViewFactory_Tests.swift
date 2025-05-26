@@ -982,7 +982,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
             
         // Then
-        XCTAssert(view is GalleryView)
+        XCTAssert(view is GalleryView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeVideoPlayerView() {
@@ -998,7 +998,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
             
         // Then
-        XCTAssert(view is VideoPlayerView)
+        XCTAssert(view is VideoPlayerView<DefaultViewFactory>)
     }
 }
 
