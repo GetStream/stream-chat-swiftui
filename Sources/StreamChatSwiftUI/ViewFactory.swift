@@ -464,6 +464,19 @@ public protocol ViewFactory: AnyObject {
         options: MediaViewsOptions
     ) -> GalleryViewType
     
+    associatedtype GalleryHeaderViewType: View
+    /// Creates the gallery header view presented with a sheet.
+    /// - Parameters:
+    ///  - title: The title displayed in the header.
+    ///  - subtitle: The subtitle displayed in the header.
+    ///  - shown: Binding controlling whether the gallery is shown.
+    /// - Returns: View displayed in the gallery header slot.
+    func makeGalleryHeaderView(
+        title: String,
+        subtitle: String,
+        shown: Binding<Bool>
+    ) -> GalleryHeaderViewType
+    
     associatedtype VideoPlayerViewType: View
     /// Creates the video player view.
     /// - Parameters:
@@ -478,6 +491,19 @@ public protocol ViewFactory: AnyObject {
         isShown: Binding<Bool>,
         options: MediaViewsOptions
     ) -> VideoPlayerViewType
+    
+    associatedtype VideoPlayerHeaderViewType: View
+    /// Creates the video player header view presented with a sheet.
+    /// - Parameters:
+    ///  - title: The title displayed in the header.
+    ///  - subtitle: The subtitle displayed in the header.
+    ///  - shown: Binding controlling whether the video player is shown.
+    /// - Returns: View displayed in the video player header slot.
+    func makeVideoPlayerHeaderView(
+        title: String,
+        subtitle: String,
+        shown: Binding<Bool>
+    ) -> VideoPlayerHeaderViewType
 
     associatedtype DeletedMessageViewType: View
     /// Creates the deleted message view.
