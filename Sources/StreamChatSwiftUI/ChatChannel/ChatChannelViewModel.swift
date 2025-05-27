@@ -130,7 +130,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     @Published public private(set) var channel: ChatChannel?
-    
+
     public var isMessageThread: Bool {
         messageController != nil
     }
@@ -158,7 +158,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         channelDataSource.delegate = self
         messages = channelDataSource.messages
         channel = channelController.channel
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             if let scrollToMessage, let parentMessageId = scrollToMessage.parentMessageId, messageController == nil {
                 let message = channelController.dataStore.message(id: parentMessageId)
@@ -221,7 +221,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         checkHeaderType()
         checkUnreadCount()
     }
-    
+
     @objc
     private func selectedMessageThread(notification: Notification) {
         if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {
@@ -490,7 +490,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         messageActionExecuted(.init(message: message, identifier: "edit"))
     }
 
-    public func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
+    open func messageActionExecuted(_ messageActionInfo: MessageActionInfo) {
         utils.messageActionsResolver.resolveMessageAction(
             info: messageActionInfo,
             viewModel: self
@@ -498,6 +498,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     @objc public func onViewAppear() {
+        utils.originalTranslationsStore.clear()
         setActive()
         messages = channelDataSource.messages
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId

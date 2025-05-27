@@ -525,6 +525,7 @@
 		AD3AB65C2CB730090014D4D7 /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65B2CB730090014D4D7 /* Shimmer.swift */; };
 		AD3AB65E2CB731360014D4D7 /* ChatThreadListLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */; };
 		AD3AB6602CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */; };
+		AD51D9182DB9543A0068D0B0 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */; };
 		AD5C0A5F2D6FDD9700E1E500 /* BouncedMessageActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */; };
 		AD6B7E052D356E8800ADEF39 /* ReactionsUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */; };
 		ADE0F55E2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */; };
@@ -535,6 +536,7 @@
 		ADE442EE2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */; };
 		ADE442F02CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */; };
 		ADE442F22CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */; };
+		ADF544382DC93C2A0024A0B3 /* MessageTranslationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */; };
 		C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A465A284665B100EF498E /* SDKIdentifier.swift */; };
 		E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E3A1C01B282BAC66002D1E26 /* Sentry */; };
 /* End PBXBuildFile section */
@@ -1129,6 +1131,7 @@
 		AD3AB65B2CB730090014D4D7 /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
 		AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListLoadingView.swift; sourceTree = "<group>"; };
 		AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListHeaderViewModifier.swift; sourceTree = "<group>"; };
+		AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
 		AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BouncedMessageActionsModifier.swift; sourceTree = "<group>"; };
 		AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersViewModel.swift; sourceTree = "<group>"; };
 		ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListErrorBannerView.swift; sourceTree = "<group>"; };
@@ -1139,6 +1142,7 @@
 		ADE442ED2CBDAAAA0066CDF7 /* ChatThreadListViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListViewModel_Tests.swift; sourceTree = "<group>"; };
 		ADE442EF2CBDAAB70066CDF7 /* ChatThreadListView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListView_Tests.swift; sourceTree = "<group>"; };
 		ADE442F12CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListItemView_Tests.swift; sourceTree = "<group>"; };
+		ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTranslationFooterView.swift; sourceTree = "<group>"; };
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1792,8 +1796,10 @@
 				8465FCFF2746A95600AF091E /* MessageListView.swift */,
 				8465FD052746A95600AF091E /* MessageContainerView.swift */,
 				8465FD0E2746A95600AF091E /* MessageView.swift */,
+				AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */,
 				84DEC8E02760D24100172876 /* MessageRepliesView.swift */,
 				8465FD0D2746A95600AF091E /* MessageAvatarView.swift */,
+				ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */,
 				8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */,
 				84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */,
 				8465FD002746A95600AF091E /* FileAttachmentPreview.swift */,
@@ -2684,6 +2690,7 @@
 				82D64BEA2AD7E5B700C5C79E /* TaskFetchOriginalImageData.swift in Sources */,
 				82D64BDB2AD7E5B700C5C79E /* UIImageView.swift in Sources */,
 				82D64BD02AD7E5B700C5C79E /* NukeVideoPlayerView.swift in Sources */,
+				ADF544382DC93C2A0024A0B3 /* MessageTranslationFooterView.swift in Sources */,
 				84EADEB52B28935B0046B50C /* RecordingView.swift in Sources */,
 				84AB7B262773619F00631A10 /* MentionUsersView.swift in Sources */,
 				8465FDA82746A95700AF091E /* ImageLoading.swift in Sources */,
@@ -2799,6 +2806,7 @@
 				82D64C0C2AD7E5B700C5C79E /* ImageEncoders.swift in Sources */,
 				8465FD832746A95700AF091E /* LinkAttachmentView.swift in Sources */,
 				4FCD7DA72D632121000EEB0F /* MarkdownFormatter.swift in Sources */,
+				AD51D9182DB9543A0068D0B0 /* MessageViewModel.swift in Sources */,
 				82D64C082AD7E5B700C5C79E /* Operation.swift in Sources */,
 				82D64BEB2AD7E5B700C5C79E /* ImagePipelineTask.swift in Sources */,
 				AD2DDA612CB040EA0040B8D4 /* NoThreadsView.swift in Sources */,

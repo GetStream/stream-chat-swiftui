@@ -67,6 +67,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 messageRelativeDateFormatEnabled: true
             ),
             messageListConfig: MessageListConfig(
+                messageDisplayOptions: .init(showOriginalTranslatedButton: true),
                 dateIndicatorPlacement: .messageList,
                 userBlockingEnabled: true,
                 bouncedMessagesAlertActionsEnabled: true,
