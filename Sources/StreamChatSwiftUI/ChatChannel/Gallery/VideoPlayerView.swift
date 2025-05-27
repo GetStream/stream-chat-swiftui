@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View used for displaying videos.
-public struct VideoPlayerView: View {
+public struct VideoPlayerView<Factory: ViewFactory>: View {
     @Environment(\.presentationMode) var presentationMode
 
     @Injected(\.fonts) private var fonts
@@ -18,6 +18,7 @@ public struct VideoPlayerView: View {
         utils.fileCDN
     }
 
+    private let viewFactory: Factory
     let attachment: ChatMessageVideoAttachment
     let author: ChatUser
     @Binding var isShown: Bool
@@ -26,10 +27,12 @@ public struct VideoPlayerView: View {
     @State private var error: Error?
 
     public init(
+        viewFactory: Factory = DefaultViewFactory.shared,
         attachment: ChatMessageVideoAttachment,
         author: ChatUser,
         isShown: Binding<Bool>
     ) {
+        self.viewFactory = viewFactory
         self.attachment = attachment
         self.author = author
         _isShown = isShown
@@ -37,10 +40,10 @@ public struct VideoPlayerView: View {
 
     public var body: some View {
         VStack {
-            GalleryHeaderView(
+            viewFactory.makeVideoPlayerHeaderView(
                 title: author.name ?? "",
                 subtitle: author.onlineText,
-                isShown: $isShown
+                shown: $isShown
             )
             if let avPlayer {
                 VideoPlayer(player: avPlayer)

@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
-public struct GalleryView: View {
+public struct GalleryView<Factory: ViewFactory>: View {
 
     @Environment(\.presentationMode) var presentationMode
 
@@ -15,6 +15,7 @@ public struct GalleryView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
 
+    private let viewFactory: Factory
     var mediaAttachments: [MediaAttachment]
     var author: ChatUser
     @Binding var isShown: Bool
@@ -23,6 +24,7 @@ public struct GalleryView: View {
     @State private var gridShown = false
 
     public init(
+        viewFactory: Factory = DefaultViewFactory.shared,
         imageAttachments: [ChatMessageImageAttachment],
         author: ChatUser,
         isShown: Binding<Bool>,
@@ -30,6 +32,7 @@ public struct GalleryView: View {
     ) {
         let mediaAttachments = imageAttachments.map { MediaAttachment(from: $0) }
         self.init(
+            viewFactory: viewFactory,
             mediaAttachments: mediaAttachments,
             author: author,
             isShown: isShown,
@@ -38,11 +41,13 @@ public struct GalleryView: View {
     }
     
     public init(
+        viewFactory: Factory = DefaultViewFactory.shared,
         mediaAttachments: [MediaAttachment],
         author: ChatUser,
         isShown: Binding<Bool>,
         selected: Int
     ) {
+        self.viewFactory = viewFactory
         self.mediaAttachments = mediaAttachments
         self.author = author
         _isShown = isShown
@@ -52,10 +57,10 @@ public struct GalleryView: View {
     public var body: some View {
         GeometryReader { reader in
             VStack {
-                GalleryHeaderView(
+                viewFactory.makeGalleryHeaderView(
                     title: author.name ?? "",
                     subtitle: author.onlineText,
-                    isShown: $isShown
+                    shown: $isShown
                 )
 
                 TabView(selection: $selected) {

@@ -982,7 +982,22 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
             
         // Then
-        XCTAssert(view is GalleryView)
+        XCTAssert(view is GalleryView<DefaultViewFactory>)
+    }
+    
+    func test_viewFactory_makeGalleryHeaderView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeGalleryHeaderView(
+            title: .unique,
+            subtitle: .unique,
+            shown: .constant(true)
+        )
+            
+        // Then
+        XCTAssert(view is GalleryHeaderView)
     }
     
     func test_viewFactory_makeVideoPlayerView() {
@@ -998,7 +1013,22 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
             
         // Then
-        XCTAssert(view is VideoPlayerView)
+        XCTAssert(view is VideoPlayerView<DefaultViewFactory>)
+    }
+    
+    func test_viewFactory_makeVideoPlayerHeaderView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeVideoPlayerHeaderView(
+            title: .unique,
+            subtitle: .unique,
+            shown: .constant(true)
+        )
+            
+        // Then
+        XCTAssert(view is GalleryHeaderView)
     }
 }
 
