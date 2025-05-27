@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Add extra data to user display info [#819](https://github.com/GetStream/stream-chat-swiftui/pull/819)
 - Make message spacing in message list configurable [#830](https://github.com/GetStream/stream-chat-swiftui/pull/830)
+- Show time, relative date, weekday, or short date for last message in channel list and search [#833](https://github.com/GetStream/stream-chat-swiftui/pull/833)
+  - Set `ChannelListConfig.messageRelativeDateFormatEnabled` to true for enabling it
 - Add `MessageViewModel` to `MessageContainerView` to make it easier to customise presentation logic [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
 - Add `MessageListConfig.messaeDisplayOptions.showOriginalTranslatedButton` to enable showing original text in translated message [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
 - Add `Utils.originalTranslationsStore` to keep track of messages that should show the original text [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
