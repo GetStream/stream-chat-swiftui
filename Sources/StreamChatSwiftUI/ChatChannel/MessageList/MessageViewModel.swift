@@ -57,7 +57,7 @@ open class MessageViewModel: ObservableObject {
     }
 
     public var failureIndicatorShown: Bool {
-        ((message.localState == .sendingFailed || message.isBounced) && !message.text.isEmpty)
+        message.isLastActionFailed && !message.text.isEmpty
     }
 
     open var authorAndDateShown: Bool {

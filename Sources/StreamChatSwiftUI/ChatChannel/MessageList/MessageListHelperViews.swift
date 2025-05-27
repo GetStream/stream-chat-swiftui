@@ -141,8 +141,7 @@ public struct MessageReadIndicatorView: View {
     }
 
     private var isMessageSending: Bool {
-        localState == .sending
-            || localState == .pendingSend
+        localState == .sending || localState == .pendingSend || localState == .syncing
     }
 }
 
