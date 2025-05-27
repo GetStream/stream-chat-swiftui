@@ -25,6 +25,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
     
+    var onLoadPreviousMessages: () -> Void
+    var onLoadNextMessages: () -> Void
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: () -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
@@ -77,6 +79,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         scrollPosition: Binding<String?> = .constant(nil),
         loadingNextMessages: Bool = false,
         firstUnreadMessageId: Binding<MessageId?> = .constant(nil),
+        onLoadPreviousMessages: @escaping () -> Void = { /* set for enabling content offset based loading */ },
+        onLoadNextMessages: @escaping () -> Void = { /* set for enabling content offset based loading */ },
         onMessageAppear: @escaping (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping () -> Void,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
@@ -90,6 +94,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.listId = listId
         self.isMessageThread = isMessageThread
         self.onMessageAppear = onMessageAppear
+        self.onLoadPreviousMessages = onLoadPreviousMessages
+        self.onLoadNextMessages = onLoadNextMessages
         self.onScrollToBottom = onScrollToBottom
         self.onLongPress = onLongPress
         self.onJumpToMessage = onJumpToMessage
@@ -206,6 +212,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     .delayedRendering()
                     .modifier(factory.makeMessageListModifier())
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
+                    .onScrollPaginationChanged(
+                        in: .named(scrollAreaId),
+                        flipped: true,
+                        onBottomThreshold: onLoadPreviousMessages,
+                        onTopThreshold: onLoadNextMessages
+                    )
                 }
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(

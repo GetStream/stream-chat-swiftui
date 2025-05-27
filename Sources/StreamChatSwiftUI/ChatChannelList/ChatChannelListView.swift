@@ -244,12 +244,14 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     },
                     channelNaming: viewModel.name(forChannel:),
                     channelDestination: viewFactory.makeChannelDestination(),
+                    onLoadMoreChannels: viewModel.loadMoreChannels,
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
                 )
                 .onAppear {
                     viewModel.preselectChannelIfNeeded()
+                    viewModel.usesContentOffsetBasedLoadMore = true
                 }
             }
 

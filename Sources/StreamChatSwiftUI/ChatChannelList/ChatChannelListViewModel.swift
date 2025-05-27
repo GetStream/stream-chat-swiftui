@@ -40,6 +40,9 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     /// Index of the selected channel.
     private var selectedChannelIndex: Int?
+    
+    // Clean it up in v5 because it requires public API changes
+    var usesContentOffsetBasedLoadMore = false
 
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
@@ -163,23 +166,23 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         channelNamer(channel, chatClient.currentUserId) ?? ""
     }
 
-    /// Checks if there are new channels to be loaded.
+    /// Loads the next page of channels.
+    public func loadMoreChannels() {
+        usesContentOffsetBasedLoadMore = true
+        _loadMoreChannels()
+    }
+        
+    /// Notifies that a channel for the specified index appeared.
     ///
     /// - Parameter index: the currently displayed index.
     public func checkForChannels(index: Int) {
         handleChannelAppearance()
 
-        if index < (controller?.channels.count ?? 0) - 15 {
+        if index < (controller?.channels.count ?? 0) - 15 || usesContentOffsetBasedLoadMore {
             return
         }
 
-        if !loadingNextChannels {
-            loadingNextChannels = true
-            controller?.loadNextChannels(limit: 30) { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
-            }
-        }
+        _loadMoreChannels()
     }
 
     public func loadAdditionalSearchResults(index: Int) {
@@ -274,6 +277,16 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     // MARK: - private
 
+    private func _loadMoreChannels() {
+        if !loadingNextChannels {
+            loadingNextChannels = true
+            controller?.loadNextChannels(limit: 30) { [weak self] _ in
+                guard let self = self else { return }
+                self.loadingNextChannels = false
+            }
+        }
+    }
+    
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
         if selectedChannel != nil || !searchText.isEmpty {
             queuedChannelsChanges = controller.channels

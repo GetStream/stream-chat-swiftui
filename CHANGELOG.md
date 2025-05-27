@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix mark unread action not removed when read events are disabled [#823](https://github.com/GetStream/stream-chat-swiftui/pull/823)
 - Fix user mentions not working when commands are disabled [#826](https://github.com/GetStream/stream-chat-swiftui/pull/826)
 - Fix edit message action shown when user does not have permissions [#835](https://github.com/GetStream/stream-chat-swiftui/pull/835)
+- Fix quickly scrolling in channel list stops loading next pages [#838](https://github.com/GetStream/stream-chat-swiftui/pull/838)
+### 🔄 Changed
+- `ChannelList` and `ChatChannelView` use content offset based load more instead of using item's `onAppear` [#838](https://github.com/GetStream/stream-chat-swiftui/pull/838)
 
 # [4.78.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.78.0)
 _April 24, 2025_

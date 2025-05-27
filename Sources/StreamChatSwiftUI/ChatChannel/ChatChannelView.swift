@@ -58,6 +58,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             scrollPosition: $viewModel.scrollPosition,
                             loadingNextMessages: viewModel.loadingNextMessages,
                             firstUnreadMessageId: $viewModel.firstUnreadMessageId,
+                            onLoadPreviousMessages: viewModel.loadMorePreviousMessages,
+                            onLoadNextMessages: viewModel.loadMoreNextMessages,
                             onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
                             onScrollToBottom: viewModel.scrollToLastMessage,
                             onLongPress: { displayInfo in
@@ -178,6 +180,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             if utils.messageListConfig.becomesFirstResponderOnOpen {
                 keyboardShown = true
             }
+            viewModel.usesContentOffsetBasedLoadMore = true
         }
         .onDisappear {
             viewModel.onViewDissappear()

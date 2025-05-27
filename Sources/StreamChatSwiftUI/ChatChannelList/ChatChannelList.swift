@@ -22,6 +22,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var onItemAppear: (Int) -> Void
     private var channelNaming: (ChatChannel) -> String
     private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
+    private var onLoadMoreChannels: () -> Void
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
@@ -38,6 +39,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         onItemAppear: @escaping (Int) -> Void,
         channelNaming: ((ChatChannel) -> String)? = nil,
         channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
+        onLoadMoreChannels: @escaping () -> Void = { /* set for enabling content offset based loading */ },
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void = { _ in }
@@ -67,6 +69,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
                 channel.shouldShowOnlineIndicator
             }
         }
+        self.onLoadMoreChannels = onLoadMoreChannels
         self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
@@ -99,6 +102,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
             onItemAppear: onItemAppear,
             channelNaming: channelNaming,
             channelDestination: channelDestination,
+            onLoadMoreChannels: onLoadMoreChannels,
             trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
@@ -118,6 +122,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     private var imageLoader: (ChatChannel) -> UIImage
     private var onItemTap: (ChatChannel) -> Void
     private var onItemAppear: (Int) -> Void
+    private var onLoadMoreChannels: () -> Void
     private var channelNaming: (ChatChannel) -> String
     private var channelDestination: (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
@@ -135,6 +140,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         onItemAppear: @escaping (Int) -> Void,
         channelNaming: @escaping (ChatChannel) -> String,
         channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
+        onLoadMoreChannels: @escaping () -> Void = { /* set for enabling content offset based loading */ },
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
@@ -147,6 +153,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         self.channelDestination = channelDestination
         self.imageLoader = imageLoader
         self.onlineIndicatorShown = onlineIndicatorShown
+        self.onLoadMoreChannels = onLoadMoreChannels
         self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
@@ -189,6 +196,9 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
             factory.makeChannelListFooterView()
         }
         .modifier(factory.makeChannelListModifier())
+        .onScrollPaginationChanged(
+            onBottomThreshold: onLoadMoreChannels
+        )
     }
 }
 

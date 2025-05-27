@@ -51,6 +51,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var onlineIndicatorShown = false
     private var lastReadMessageId: String?
     private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
+    // Clean it up in v5 because it requires public API changes
+    var usesContentOffsetBasedLoadMore = false
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -339,11 +341,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         let message = messages[index]
-        if scrollDirection == .up {
-            checkForOlderMessages(index: index)
-        } else {
-            checkForNewerMessages(index: index)
+        if !usesContentOffsetBasedLoadMore {
+            if scrollDirection == .up {
+                checkForOlderMessages(index: index)
+            } else {
+                checkForNewerMessages(index: index)
+            }
         }
+        
         if let firstUnreadMessageId, firstUnreadMessageId.contains(message.id), hasSetInitialCanMarkRead {
             canMarkRead = true
         }
@@ -513,10 +518,27 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         isActive = true
     }
     
+    /// Loads the previous page of messages.
+    public func loadMorePreviousMessages() {
+        usesContentOffsetBasedLoadMore = true
+        _loadMorePreviousMessages()
+    }
+    
+    /// Loads the next page of messages.
+    public func loadMoreNextMessages() {
+        usesContentOffsetBasedLoadMore = true
+        _loadMoreNextMessages()
+    }
+    
     // MARK: - private
     
     private func checkForOlderMessages(index: Int) {
+        guard !usesContentOffsetBasedLoadMore else { return }
         guard index >= channelDataSource.messages.count - 25 else { return }
+        _loadMorePreviousMessages()
+    }
+    
+    private func _loadMorePreviousMessages() {
         guard !loadingPreviousMessages else { return }
         guard !channelController.hasLoadedAllPreviousMessages else { return }
         
@@ -533,16 +555,21 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         )
     }
-        
+
     private func checkForNewerMessages(index: Int) {
+        guard !usesContentOffsetBasedLoadMore else { return }
         guard index <= 5 else { return }
+        _loadMoreNextMessages()
+    }
+    
+    private func _loadMoreNextMessages() {
         guard !loadingNextMessages else { return }
         guard !channelController.hasLoadedAllNextMessages else { return }
         
         loadingNextMessages = true
         
         if scrollPosition != messages.first?.messageId {
-            scrollPosition = messages[index].messageId
+            scrollPosition = messages.first?.messageId
         }
 
         channelDataSource.loadNextMessages(limit: Self.newerMessagesLimit) { [weak self] _ in
