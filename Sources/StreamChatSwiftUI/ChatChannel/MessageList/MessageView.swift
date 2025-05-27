@@ -259,16 +259,13 @@ public struct LinkDetectionTextView: View {
     @Injected(\.utils) var utils
     
     var message: ChatMessage
-    
-    var text: LocalizedStringKey {
-        LocalizedStringKey(message.adjustedText)
-    }
 
     // The translations store is used to detect changes so the textContent is re-rendered.
     // The @Environment(\.messageViewModel) is not reactive like @EnvironmentObject.
     // TODO: On v5 the TextView should be refactored and not depend directly on the view model.
     @ObservedObject var originalTranslationsStore = InjectedValues[\.utils].originalTranslationsStore
 
+    @State var text: AttributedString?
     @State var linkDetector = TextLinkDetector()
     @State var tintColor = InjectedValues[\.colors].tintColor
         
@@ -280,13 +277,14 @@ public struct LinkDetectionTextView: View {
     
     public var body: some View {
         Group {
-            Text(displayText)
+            Text(text ?? displayText)
         }
         .foregroundColor(textColor(for: message))
         .font(fonts.body)
         .tint(tintColor)
         .onChange(of: message) { message in
             messageViewModel?.message = message
+            text = displayText
         }
     }
     
