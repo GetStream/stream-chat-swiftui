@@ -1012,7 +1012,7 @@ extension ViewFactory {
             currentUserId: chatClient.currentUserId,
             message: message
         )
-        let showReadCount = channel.memberCount > 2
+        let showReadCount = channel.memberCount > 2 && !message.isLastActionFailed
         return MessageReadIndicatorView(
             readUsers: readUsers,
             showReadCount: showReadCount,
