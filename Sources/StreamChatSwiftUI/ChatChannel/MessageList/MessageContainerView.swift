@@ -100,7 +100,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
 
                     factory.makeMessageView(
-                        message: message,
+                        for: message,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId

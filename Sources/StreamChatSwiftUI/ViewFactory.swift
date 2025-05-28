@@ -341,7 +341,7 @@ public protocol ViewFactory: AnyObject {
     ///  - scrolledId: binding of the currently scrolled id. Use it to force scrolling to the particular message.
     /// - Returns: view shown in the message slot.
     func makeMessageView(
-        message: ChatMessage,
+        for message: ChatMessage,
         contentWidth: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>

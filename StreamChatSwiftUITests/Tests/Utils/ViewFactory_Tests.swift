@@ -167,6 +167,22 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is DefaultChannelHeaderModifier<DefaultViewFactory>)
     }
+    
+    func test_viewFactory_makeMessageView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeMessageView(
+            for: message,
+            contentWidth: 300,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        
+        // Then
+        XCTAssert(view is MessageView<DefaultViewFactory>)
+    }
 
     func test_viewFactory_makeMessageTextView() {
         // Given

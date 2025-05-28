@@ -346,7 +346,7 @@ extension ViewFactory {
     }
     
     public func makeMessageView(
-        message: ChatMessage,
+        for message: ChatMessage,
         contentWidth: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
