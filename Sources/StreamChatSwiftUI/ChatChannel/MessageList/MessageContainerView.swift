@@ -99,8 +99,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         )
                     }
 
-                    MessageView(
-                        factory: factory,
+                    factory.makeMessageView(
                         message: message,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,

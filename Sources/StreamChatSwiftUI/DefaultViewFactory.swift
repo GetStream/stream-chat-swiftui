@@ -345,6 +345,21 @@ extension ViewFactory {
         )
     }
     
+    public func makeMessageView(
+        message: ChatMessage,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) -> some View {
+        MessageView(
+            factory: self,
+            message: message,
+            contentWidth: contentWidth,
+            isFirst: isFirst,
+            scrolledId: scrolledId
+        )
+    }
+    
     public func makeMessageTextView(
         for message: ChatMessage,
         isFirst: Bool,

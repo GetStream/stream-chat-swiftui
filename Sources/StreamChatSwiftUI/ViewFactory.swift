@@ -331,6 +331,21 @@ public protocol ViewFactory: AnyObject {
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         isLast: Bool
     ) -> MessageContainerViewType
+    
+    associatedtype MessageViewType: View
+    /// Creates the message view.
+    /// - Parameters:
+    ///  - message: the chat message.
+    ///  - contentWidth: the available width for the message.
+    ///  - isFirst: whether it is first in the group (latest creation date).
+    ///  - scrolledId: binding of the currently scrolled id. Use it to force scrolling to the particular message.
+    /// - Returns: view shown in the message slot.
+    func makeMessageView(
+        message: ChatMessage,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) -> MessageViewType
 
     associatedtype MessageTextViewType: View
     /// Creates the message text view.
