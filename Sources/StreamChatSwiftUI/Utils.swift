@@ -8,8 +8,6 @@ import StreamChat
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
 public class Utils {
-    // TODO: Make it public in future versions.
-    internal var messagePreviewFormatter = MessagePreviewFormatter()
     var markdownFormatter = MarkdownFormatter()
 
     public var dateFormatter: DateFormatter
@@ -29,6 +27,7 @@ public class Utils {
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
+    public var messagePreviewFormatter: MessagePreviewFormatter
     public var commandsConfig: CommandsConfig
     public var channelListConfig: ChannelListConfig
     public var messageListConfig: MessageListConfig
@@ -87,6 +86,7 @@ public class Utils {
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
+        messagePreviewFormatter: MessagePreviewFormatter = MessagePreviewFormatter(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         channelListConfig: ChannelListConfig = ChannelListConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
@@ -115,6 +115,7 @@ public class Utils {
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
+        self.messagePreviewFormatter = messagePreviewFormatter
         self.commandsConfig = commandsConfig
         self.channelListConfig = channelListConfig
         self.messageListConfig = messageListConfig
