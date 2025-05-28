@@ -296,6 +296,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         // This is needed for the LinkDetectionTextView to work properly.
         // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.
         .environment(\.messageViewModel, messageViewModel)
+        .onChange(of: message, perform: { message in messageViewModel.message = message })
+        .onChange(of: channel) { channel in messageViewModel.channel = channel }
     }
 
     private var maximumHorizontalSwipeDisplacement: CGFloat {
