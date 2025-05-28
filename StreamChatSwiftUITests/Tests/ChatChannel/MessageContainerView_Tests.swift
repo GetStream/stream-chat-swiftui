@@ -167,6 +167,42 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageContainerView_sendingFailed_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: [],
+            localState: .sendingFailed
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel())
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageContainerView_editingFailed_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: [],
+            localState: .syncingFailed
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel())
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_videoAttachment_snapshotNoText() {
         // Given
         let attachment = ChatChannelTestHelpers.videoAttachment
