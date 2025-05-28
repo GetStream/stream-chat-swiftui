@@ -5,19 +5,9 @@
 import StreamChat
 import SwiftUI
 
-/// Provides message preview representation for lists.
-public protocol MessagePreviewFormatting {
-    /// Formats the message including the author's name.
-    func format(_ previewMessage: ChatMessage, in channel: ChatChannel) -> String
-    /// Formats only the content of the message without the author's name.
-    func formatContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String
-    /// Formats only the attachment content of the message in case it contains attachments.
-    func formatAttachmentContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String?
-}
-
 /// A formatter that converts a message to a text preview representation.
 /// By default it is used to show message previews in the Channel List and Thread List.
-open class MessagePreviewFormatter: MessagePreviewFormatting {
+open class MessagePreviewFormatter {
     @Injected(\.chatClient) var chatClient
 
     public init() {}

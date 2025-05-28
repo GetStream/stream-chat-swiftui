@@ -27,7 +27,7 @@ public class Utils {
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
-    public var messagePreviewFormatter: MessagePreviewFormatting
+    public var messagePreviewFormatter: MessagePreviewFormatter
     public var commandsConfig: CommandsConfig
     public var channelListConfig: ChannelListConfig
     public var messageListConfig: MessageListConfig
@@ -86,7 +86,7 @@ public class Utils {
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
-        messagePreviewFormatter: MessagePreviewFormatting = MessagePreviewFormatter(),
+        messagePreviewFormatter: MessagePreviewFormatter = MessagePreviewFormatter(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         channelListConfig: ChannelListConfig = ChannelListConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
