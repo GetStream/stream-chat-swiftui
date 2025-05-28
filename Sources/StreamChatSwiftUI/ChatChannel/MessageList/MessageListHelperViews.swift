@@ -124,7 +124,7 @@ public struct MessageReadIndicatorView: View {
             .customizable()
             .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
-            .opacity(localState == .sendingFailed ? 0.0 : 1)
+            .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(
                 Text(
                     readUsers.isEmpty ? L10n.Message.ReadStatus.seenByNoOne : L10n.Message.ReadStatus.seenByOthers
@@ -141,8 +141,7 @@ public struct MessageReadIndicatorView: View {
     }
 
     private var isMessageSending: Bool {
-        localState == .sending
-            || localState == .pendingSend
+        localState == .sending || localState == .pendingSend || localState == .syncing
     }
 }
 
