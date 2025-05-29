@@ -8,11 +8,14 @@ import StreamChat
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
 public class Utils {
-    // TODO: Make it public in future versions.
-    internal var messagePreviewFormatter = MessagePreviewFormatter()
     var markdownFormatter = MarkdownFormatter()
 
     public var dateFormatter: DateFormatter
+    
+    /// Date formatter where the format depends on the time passed.
+    ///
+    /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
+    public var messageRelativeDateFormatter: DateFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
     public var imageCDN: ImageCDN
@@ -24,7 +27,9 @@ public class Utils {
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
+    public var messagePreviewFormatter: MessagePreviewFormatter
     public var commandsConfig: CommandsConfig
+    public var channelListConfig: ChannelListConfig
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
     public var pollsConfig: PollsConfig
@@ -60,6 +65,8 @@ public class Utils {
     @preconcurrency @MainActor
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
+    public var originalTranslationsStore = MessageOriginalTranslationsStore()
+
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
@@ -70,6 +77,7 @@ public class Utils {
 
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
+        messageRelativeDateFormatter: DateFormatter = MessageRelativeDateFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
         imageCDN: ImageCDN = StreamImageCDN(),
@@ -79,7 +87,9 @@ public class Utils {
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
+        messagePreviewFormatter: MessagePreviewFormatter = MessagePreviewFormatter(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
+        channelListConfig: ChannelListConfig = ChannelListConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         pollsConfig: PollsConfig = PollsConfig(),
@@ -94,6 +104,7 @@ public class Utils {
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
         self.dateFormatter = dateFormatter
+        self.messageRelativeDateFormatter = messageRelativeDateFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
         self.imageCDN = imageCDN
@@ -105,7 +116,9 @@ public class Utils {
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
+        self.messagePreviewFormatter = messagePreviewFormatter
         self.commandsConfig = commandsConfig
+        self.channelListConfig = channelListConfig
         self.messageListConfig = messageListConfig
         self.composerConfig = composerConfig
         self.snapshotCreator = snapshotCreator

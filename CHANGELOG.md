@@ -3,14 +3,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.79.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.79.0)
+_May 29, 2025_
+
 ### ✅ Added
 - Add extra data to user display info [#819](https://github.com/GetStream/stream-chat-swiftui/pull/819)
 - Make message spacing in message list configurable [#830](https://github.com/GetStream/stream-chat-swiftui/pull/830)
+- Show time, relative date, weekday, or short date for last message in channel list and search [#833](https://github.com/GetStream/stream-chat-swiftui/pull/833)
+  - Set `ChannelListConfig.messageRelativeDateFormatEnabled` to true for enabling it
+- Add `MessageViewModel` to `MessageContainerView` to make it easier to customise presentation logic [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
+- Add `MessageListConfig.messaeDisplayOptions.showOriginalTranslatedButton` to enable showing original text in translated message [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
+- Add `Utils.originalTranslationsStore` to keep track of messages that should show the original text [#815](https://github.com/GetStream/stream-chat-swiftui/pull/815)
+- Add `ViewFactory.makeGalleryHeaderView` for customising header view in `GalleryView` [#837](https://github.com/GetStream/stream-chat-swiftui/pull/837)
+- Add `ViewFactory.makeVideoPlayerHeaderView` for customising header view in `VideoPlayerView` [#837](https://github.com/GetStream/stream-chat-swiftui/pull/837)
+- Add `Utils.messagePreviewFormatter` for customising message previews in lists [#839](https://github.com/GetStream/stream-chat-swiftui/pull/839)
 ### 🐞 Fixed
 - Fix swipe to reply enabled when quoting a message is disabled [#824](https://github.com/GetStream/stream-chat-swiftui/pull/824)
 - Fix mark unread action not removed when read events are disabled [#823](https://github.com/GetStream/stream-chat-swiftui/pull/823)
 - Fix user mentions not working when commands are disabled [#826](https://github.com/GetStream/stream-chat-swiftui/pull/826)
 - Fix edit message action shown when user does not have permissions [#835](https://github.com/GetStream/stream-chat-swiftui/pull/835)
+- Fix error indicator not shown when editing a message fails [#840](https://github.com/GetStream/stream-chat-swiftui/pull/840)
+- Fix read indicator shown for failed edited messages [#840](https://github.com/GetStream/stream-chat-swiftui/pull/840)
+- Fix "clock" pending icon not shown when message is syncing (pending to be edited) [#840](https://github.com/GetStream/stream-chat-swiftui/pull/840)
 
 # [4.78.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.78.0)
 _April 24, 2025_

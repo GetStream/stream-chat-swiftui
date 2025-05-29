@@ -359,6 +359,15 @@ import SwiftUI
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(for message: ChatMessage) -> MessageAuthorAndDateViewType
 
+    associatedtype MessageTranslationFooterViewType: View
+    /// Creates a view to display translation information below a message if it has been translated.
+    /// - Parameters:
+    ///   - messageViewModel: The message view model used to display information about the message.
+    /// - Returns: A view to display translation information of the message.
+    func makeMessageTranslationFooterView(
+        messageViewModel: MessageViewModel
+    ) -> MessageTranslationFooterViewType
+
     associatedtype LastInGroupHeaderView: View
     /// Creates a view shown as a header of the last message in a group.
     /// - Parameter message: the chat message for which the header will be displayed.
@@ -455,6 +464,19 @@ import SwiftUI
         options: MediaViewsOptions
     ) -> GalleryViewType
     
+    associatedtype GalleryHeaderViewType: View
+    /// Creates the gallery header view presented with a sheet.
+    /// - Parameters:
+    ///  - title: The title displayed in the header.
+    ///  - subtitle: The subtitle displayed in the header.
+    ///  - shown: Binding controlling whether the gallery is shown.
+    /// - Returns: View displayed in the gallery header slot.
+    func makeGalleryHeaderView(
+        title: String,
+        subtitle: String,
+        shown: Binding<Bool>
+    ) -> GalleryHeaderViewType
+    
     associatedtype VideoPlayerViewType: View
     /// Creates the video player view.
     /// - Parameters:
@@ -469,6 +491,19 @@ import SwiftUI
         isShown: Binding<Bool>,
         options: MediaViewsOptions
     ) -> VideoPlayerViewType
+    
+    associatedtype VideoPlayerHeaderViewType: View
+    /// Creates the video player header view presented with a sheet.
+    /// - Parameters:
+    ///  - title: The title displayed in the header.
+    ///  - subtitle: The subtitle displayed in the header.
+    ///  - shown: Binding controlling whether the video player is shown.
+    /// - Returns: View displayed in the video player header slot.
+    func makeVideoPlayerHeaderView(
+        title: String,
+        subtitle: String,
+        shown: Binding<Bool>
+    ) -> VideoPlayerHeaderViewType
 
     associatedtype DeletedMessageViewType: View
     /// Creates the deleted message view.

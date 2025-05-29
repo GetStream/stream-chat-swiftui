@@ -7,6 +7,7 @@ import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
+    @StateObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
     
     @Injected(\.fonts) private var fonts
@@ -41,10 +42,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         utils.messageListConfig.messagePaddings.groupBottom
     }
 
-    var isSwipeToReplyPossible: Bool {
-        message.isInteractionEnabled && channel.canQuoteMessage
-    }
-
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -55,7 +52,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isLast: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void
+        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        viewModel: MessageViewModel? = nil
     ) {
         self.factory = factory
         self.channel = channel
@@ -65,21 +63,27 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
+        _messageViewModel = .init(
+            wrappedValue: viewModel ?? MessageViewModel(
+                message: message,
+                channel: channel
+            )
+        )
         _scrolledId = scrolledId
         _quotedMessage = quotedMessage
     }
 
     public var body: some View {
         HStack(alignment: .bottom) {
-            if message.type == .system || (message.type == .error && message.isBounced == false) {
+            if messageViewModel.systemMessageShown {
                 factory.makeSystemMessageView(message: message)
             } else {
-                if message.isRightAligned {
+                if messageViewModel.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
-                    if messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
+                    if let userDisplayInfo = messageViewModel.userDisplayInfo {
                         factory.makeMessageAvatarView(
-                            for: message.authorDisplayInfo
+                            for: userDisplayInfo
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
@@ -87,8 +91,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                 }
 
-                VStack(alignment: message.isRightAligned ? .trailing : .leading) {
-                    if isMessagePinned {
+                VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading) {
+                    if messageViewModel.isPinned {
                         MessagePinDetailsView(
                             message: message,
                             reactionsShown: topReactionsShown
@@ -115,9 +119,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                     }
                                 )
                                 : nil
-
-                            ((message.localState == .sendingFailed || message.isBounced) && !message.text.isEmpty) ?
-                                SendFailureIndicator() : nil
+                            messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
                         }
                     )
                     .background(
@@ -143,7 +145,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             coordinateSpace: .local
                         )
                         .updating($offset) { (value, gestureState, _) in
-                            guard isSwipeToReplyPossible else {
+                            guard messageViewModel.isSwipeToQuoteReplyPossible else {
                                 return
                             }
                             // Using updating since onEnded is not called if the gesture is canceled.
@@ -235,12 +237,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
 
-                    if message.textContent(for: translationLanguage) != nil,
-                       let localizedName = translationLanguage?.localizedName {
-                        Text(L10n.Message.translatedTo(localizedName))
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.subtitleText))
+                    if messageViewModel.translatedText != nil {
+                        factory.makeMessageTranslationFooterView(
+                            messageViewModel: messageViewModel
+                        )
                     }
+
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
@@ -249,15 +251,13 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                     message: message
                                 )
 
-                                if messageListConfig.messageDisplayOptions.showMessageDate {
+                                if messageViewModel.messageDateShown {
                                     factory.makeMessageDateView(for: message)
                                 }
                             }
-                        } else if !message.isRightAligned
-                            && channel.memberCount > 2
-                            && messageListConfig.messageDisplayOptions.showAuthorName {
+                        } else if messageViewModel.authorAndDateShown {
                             factory.makeMessageAuthorAndDateView(for: message)
-                        } else if messageListConfig.messageDisplayOptions.showMessageDate {
+                        } else if messageViewModel.messageDateShown {
                             factory.makeMessageDateView(for: message)
                         }
                     }
@@ -271,20 +271,21 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         : nil
                 )
 
-                if !message.isRightAligned {
+                if !messageViewModel.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 }
             }
         }
         .padding(
             .top,
-            topReactionsShown && !isMessagePinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0
+            topReactionsShown && !messageViewModel.isPinned ? messageListConfig.messageDisplayOptions
+                .reactionsTopPadding(message) : 0
         )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
-        .padding(.bottom, showsAllInfo || isMessagePinned ? paddingValue : groupMessageInterItemSpacing)
+        .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
-        .background(isMessagePinned ? Color(colors.pinnedBackground) : nil)
-        .padding(.bottom, isMessagePinned ? paddingValue / 2 : 0)
+        .background(messageViewModel.isPinned ? Color(colors.pinnedBackground) : nil)
+        .padding(.bottom, messageViewModel.isPinned ? paddingValue / 2 : 0)
         .transition(
             message.isSentByCurrentUser ?
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
@@ -292,14 +293,15 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
+        // This is needed for the LinkDetectionTextView to work properly.
+        // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.
+        .environment(\.messageViewModel, messageViewModel)
+        .onChange(of: message, perform: { message in messageViewModel.message = message })
+        .onChange(of: channel) { channel in messageViewModel.channel = channel }
     }
 
     private var maximumHorizontalSwipeDisplacement: CGFloat {
         replyThreshold + 30
-    }
-
-    private var isMessagePinned: Bool {
-        message.pinDetails != nil
     }
 
     private var contentWidth: CGFloat {
@@ -307,7 +309,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         let minimumWidth: CGFloat = 240
         let available = max(minimumWidth, (width ?? 0) - spacerWidth) - 2 * padding
         let avatarSize: CGFloat = CGSize.messageAvatarSize.width + padding
-        let totalWidth = message.isRightAligned ? available : available - avatarSize
+        let totalWidth = messageViewModel.isRightAligned ? available : available - avatarSize
         return totalWidth
     }
 

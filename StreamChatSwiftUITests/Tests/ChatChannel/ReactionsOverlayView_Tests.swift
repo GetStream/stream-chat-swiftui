@@ -241,15 +241,17 @@ import XCTest
             contentWidth: self.messageDisplayInfo.contentWidth,
             isFirst: true
         )
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: "test", language: .portuguese))
         let view = VerticallyCenteredView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
-                channel: .mock(cid: .unique, membership: .mock(id: "test", language: .portuguese)),
+                channel: channel,
                 currentSnapshot: self.overlayImage,
                 messageDisplayInfo: messageDisplayInfo,
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
+            .environment(\.messageViewModel, MessageViewModel(message: testMessage, channel: channel))
         }
 
         // Then

@@ -10,6 +10,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     
     @StateObject var viewModel: ReactionsOverlayViewModel
+    @StateObject var messageViewModel: MessageViewModel
 
     @State private var popIn = false
     @State private var willPopOut = false
@@ -43,11 +44,19 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         minOriginY: CGFloat = 100,
         bottomOffset: CGFloat = 0,
         onBackgroundTap: @escaping () -> Void,
-        onActionExecuted: @escaping (MessageActionInfo) -> Void
+        onActionExecuted: @escaping (MessageActionInfo) -> Void,
+        viewModel: ReactionsOverlayViewModel? = nil,
+        messageViewModel: MessageViewModel? = nil
     ) {
         _viewModel = StateObject(
-            wrappedValue: ViewModelsFactory.makeReactionsOverlayViewModel(
+            wrappedValue: viewModel ?? ViewModelsFactory.makeReactionsOverlayViewModel(
                 message: messageDisplayInfo.message
+            )
+        )
+        _messageViewModel = StateObject(
+            wrappedValue: messageViewModel ?? MessageViewModel(
+                message: messageDisplayInfo.message,
+                channel: channel
             )
         )
         self.channel = channel
@@ -225,6 +234,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             isFirst: messageDisplayInfo.isFirst,
             scrolledId: .constant(nil)
         )
+        // This is needed for the LinkDetectionTextView to work properly.
+        // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.
+        .environment(\.messageViewModel, messageViewModel)
     }
 
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {

@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
-
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
@@ -603,6 +602,10 @@ private struct ChannelTranslationLanguageKey: EnvironmentKey {
     static let defaultValue: TranslationLanguage? = nil
 }
 
+private struct MessageViewModelKey: EnvironmentKey {
+    static let defaultValue: MessageViewModel? = nil
+}
+
 extension EnvironmentValues {
     var channelTranslationLanguage: TranslationLanguage? {
         get {
@@ -610,6 +613,15 @@ extension EnvironmentValues {
         }
         set {
             self[ChannelTranslationLanguageKey.self] = newValue
+        }
+    }
+
+    var messageViewModel: MessageViewModel? {
+        get {
+            self[MessageViewModelKey.self]
+        }
+        set {
+            self[MessageViewModelKey.self] = newValue
         }
     }
 }

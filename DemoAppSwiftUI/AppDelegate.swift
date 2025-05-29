@@ -63,7 +63,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         #endif
 
         let utils = Utils(
+            channelListConfig: ChannelListConfig(
+                messageRelativeDateFormatEnabled: true
+            ),
             messageListConfig: MessageListConfig(
+                messageDisplayOptions: .init(showOriginalTranslatedButton: true),
                 dateIndicatorPlacement: .messageList,
                 userBlockingEnabled: true,
                 bouncedMessagesAlertActionsEnabled: true,

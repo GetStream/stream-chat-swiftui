@@ -148,6 +148,7 @@ public struct MessageDisplayOptions {
     public let otherUserMessageTransition: AnyTransition
     public let shouldAnimateReactions: Bool
     public let reactionsPlacement: ReactionsPlacement
+    public let showOriginalTranslatedButton: Bool
     public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
@@ -167,6 +168,7 @@ public struct MessageDisplayOptions {
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
         reactionsPlacement: ReactionsPlacement = .top,
+        showOriginalTranslatedButton: Bool = false,
         messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
@@ -190,6 +192,7 @@ public struct MessageDisplayOptions {
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
         self.dateSeparator = dateSeparator
         self.reactionsPlacement = reactionsPlacement
+        self.showOriginalTranslatedButton = showOriginalTranslatedButton
     }
 
     public func showAvatars(for channel: ChatChannel) -> Bool {
