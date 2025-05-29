@@ -72,12 +72,51 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageReadIndicatorView_snapshotSyncing() {
+        // Given
+        let view = MessageReadIndicatorView(
+            readUsers: [],
+            showReadCount: false,
+            localState: .syncing
+        )
+        .frame(width: 50, height: 16)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageReadIndicatorView_snapshotSyncing_whenShowReadCount() {
+        // Given
+        let view = MessageReadIndicatorView(
+            readUsers: [.mock(id: .unique)],
+            showReadCount: true,
+            localState: .syncing
+        )
+        .frame(width: 50, height: 16)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageReadIndicatorView_snapshotMessageFailed() {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
             showReadCount: false,
             localState: .sendingFailed
+        )
+        .frame(width: 50, height: 16)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageReadIndicatorView_snapshotMessageEditingFailed() {
+        // Given
+        let view = MessageReadIndicatorView(
+            readUsers: [],
+            showReadCount: false,
+            localState: .syncingFailed
         )
         .frame(width: 50, height: 16)
 

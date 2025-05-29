@@ -460,11 +460,20 @@ extension ViewFactory {
         options: MediaViewsOptions
     ) -> some View {
         GalleryView(
+            viewFactory: self,
             mediaAttachments: mediaAttachments,
             author: message.author,
             isShown: isShown,
             selected: options.selectedIndex
         )
+    }
+    
+    public func makeGalleryHeaderView(
+        title: String,
+        subtitle: String,
+        shown: Binding<Bool>
+    ) -> some View {
+        GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
     }
     
     public func makeVideoPlayerView(
@@ -474,10 +483,19 @@ extension ViewFactory {
         options: MediaViewsOptions
     ) -> some View {
         VideoPlayerView(
+            viewFactory: self,
             attachment: attachment,
             author: message.author,
             isShown: isShown
         )
+    }
+    
+    public func makeVideoPlayerHeaderView(
+        title: String,
+        subtitle: String,
+        shown: Binding<Bool>
+    ) -> some View {
+        GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
     }
     
     public func makeDeletedMessageView(
@@ -994,7 +1012,7 @@ extension ViewFactory {
             currentUserId: chatClient.currentUserId,
             message: message
         )
-        let showReadCount = channel.memberCount > 2
+        let showReadCount = channel.memberCount > 2 && !message.isLastActionFailed
         return MessageReadIndicatorView(
             readUsers: readUsers,
             showReadCount: showReadCount,

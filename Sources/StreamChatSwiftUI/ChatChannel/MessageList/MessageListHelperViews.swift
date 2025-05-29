@@ -112,7 +112,7 @@ public struct MessageReadIndicatorView: View {
     
     public var body: some View {
         HStack(spacing: 2) {
-            if showReadCount && !readUsers.isEmpty {
+            if showReadCount && shouldShowReads {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
                     .foregroundColor(colors.tintColor)
@@ -122,9 +122,9 @@ public struct MessageReadIndicatorView: View {
                 uiImage: image
             )
             .customizable()
-            .foregroundColor(!readUsers.isEmpty ? colors.tintColor : Color(colors.textLowEmphasis))
+            .foregroundColor(shouldShowReads ? colors.tintColor : Color(colors.textLowEmphasis))
             .frame(height: 16)
-            .opacity(localState == .sendingFailed ? 0.0 : 1)
+            .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(
                 Text(
                     readUsers.isEmpty ? L10n.Message.ReadStatus.seenByNoOne : L10n.Message.ReadStatus.seenByOthers
@@ -137,12 +137,15 @@ public struct MessageReadIndicatorView: View {
     }
     
     private var image: UIImage {
-        !readUsers.isEmpty ? images.readByAll : (isMessageSending ? images.messageReceiptSending : images.messageSent)
+        shouldShowReads ? images.readByAll : (isMessageSending ? images.messageReceiptSending : images.messageSent)
     }
 
     private var isMessageSending: Bool {
-        localState == .sending
-            || localState == .pendingSend
+        localState == .sending || localState == .pendingSend || localState == .syncing
+    }
+
+    private var shouldShowReads: Bool {
+        !readUsers.isEmpty && !isMessageSending
     }
 }
 

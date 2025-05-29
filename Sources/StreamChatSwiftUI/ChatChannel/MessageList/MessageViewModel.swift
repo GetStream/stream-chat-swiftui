@@ -10,8 +10,8 @@ open class MessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
-    public internal(set) var message: ChatMessage
-    public private(set) var channel: ChatChannel?
+    @Published public internal(set) var message: ChatMessage
+    @Published public internal(set) var channel: ChatChannel?
     private var cancellables = Set<AnyCancellable>()
 
     public init(
@@ -57,7 +57,7 @@ open class MessageViewModel: ObservableObject {
     }
 
     public var failureIndicatorShown: Bool {
-        ((message.localState == .sendingFailed || message.isBounced) && !message.text.isEmpty)
+        message.isLastActionFailed && !message.text.isEmpty
     }
 
     open var authorAndDateShown: Bool {

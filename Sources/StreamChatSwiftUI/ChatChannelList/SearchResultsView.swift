@@ -158,7 +158,10 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
 
     private var timestampText: String {
         if let lastMessageAt = searchResult.channel.lastMessageAt {
-            return utils.dateFormatter.string(from: lastMessageAt)
+            let formatter = utils.channelListConfig.messageRelativeDateFormatEnabled ?
+                utils.messageRelativeDateFormatter :
+                utils.dateFormatter
+            return formatter.string(from: lastMessageAt)
         } else {
             return ""
         }
