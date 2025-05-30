@@ -50,7 +50,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var channelName = ""
     private var onlineIndicatorShown = false
     private var lastReadMessageId: String?
-    private let throttler = Throttler(interval: 3, broadcastLatestEvent: true)
+    var throttler = Throttler(interval: 3, broadcastLatestEvent: true)
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -574,9 +574,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         guard let channel, channel.unreadCount.messages > 0 else { return }
         throttler.throttle { [weak self] in
             self?.channelController.markRead()
-            DispatchQueue.main.async {
-                self?.firstUnreadMessageId = nil
-            }
+            // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
         }
     }
     
