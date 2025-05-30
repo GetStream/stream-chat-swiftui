@@ -87,6 +87,7 @@
 		4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD99F2BFC7C6100599AA6 /* ChatClient+Extensions.swift */; };
 		4F7DD9A22BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7DD9A12BFCB2EF00599AA6 /* ChatClientExtensions_Tests.swift */; };
 		4F889C562D7F000700A7BDAF /* ChatMessageExtensions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F889C552D7F000700A7BDAF /* ChatMessageExtensions_Tests.swift */; };
+		4F8BFD0E2DE98B8400F47C0A /* NoThreadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2DDA602CB040EA0040B8D4 /* NoThreadsView.swift */; };
 		4F8D64402DDDCF9300026C09 /* MessageRelativeDateFormatter_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8D643F2DDDCF9300026C09 /* MessageRelativeDateFormatter_Tests.swift */; };
 		4F9173FD2DDDFFE8003C30B5 /* ChannelListConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9173FC2DDDFFE3003C30B5 /* ChannelListConfig.swift */; };
 		4FA3741A2D799CA400294721 /* AppConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA374192D799CA400294721 /* AppConfigurationView.swift */; };
@@ -2745,6 +2746,7 @@
 				84EADEBD2B28C2EC0046B50C /* RecordingState.swift in Sources */,
 				4F7DD9A02BFC7C6100599AA6 /* ChatClient+Extensions.swift in Sources */,
 				9D9A54512CB89EAA00A76D9E /* FileCDN.swift in Sources */,
+				4F8BFD0E2DE98B8400F47C0A /* NoThreadsView.swift in Sources */,
 				8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */,
 				841B2EF4278DB9E500ED619E /* MessageListHelperViews.swift in Sources */,
 				84EADEB22B2883C60046B50C /* TrailingComposerView.swift in Sources */,

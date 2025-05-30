@@ -20,8 +20,8 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
@@ -239,7 +239,7 @@ public extension MessageAction {
     /// The action to copy the message text.
     static func copyMessageAction(
         for message: ChatMessage,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
         let copyAction = MessageAction(
             id: MessageActionId.copy,
@@ -265,7 +265,7 @@ public extension MessageAction {
     static func editMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
         let editAction = MessageAction(
             id: MessageActionId.edit,
@@ -291,27 +291,27 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let pinMessage: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let pinMessage = {
             messageController.pin(MessagePinning.noExpiration) { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "pin"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "pin"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -333,27 +333,27 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let pinMessage: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let pinMessage = {
             messageController.unpin { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "unpin"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "unpin"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -374,14 +374,15 @@ public extension MessageAction {
     static func replyAction(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let replyAction = MessageAction(
             id: MessageActionId.reply,
             title: L10n.Message.Actions.inlineReply,
             iconName: "icn_inline_reply",
             action: {
-                onFinish(
+                unsafeOnFinish(
                     MessageActionInfo(
                         message: message,
                         identifier: "inlineReply"
@@ -424,27 +425,27 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let deleteAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let deleteAction = {
             messageController.deleteMessage { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "delete"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "delete"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -472,27 +473,27 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let flagAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let flagAction = {
             messageController.flag { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "flag"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "flag"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -520,25 +521,25 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let channelController = InjectedValues[\.utils]
             .channelControllerFactory
             .makeChannelController(for: channel.cid)
-        let action: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let action = {
             channelController.markUnread(from: message.id) { result in
-                StreamConcurrency.onMain {
-                    if case let .failure(error) = result {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: MessageActionId.markUnread
-                            )
+                if case let .failure(error) = result {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: MessageActionId.markUnread
                         )
-                    }
+                    )
                 }
             }
         }
@@ -558,22 +559,22 @@ public extension MessageAction {
     static func markThreadAsUnreadAction(
         messageController: ChatMessageController,
         message: ChatMessage,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
-        let action: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let action = {
             messageController.markThreadUnread() { error in
-                StreamConcurrency.onMain {
-                    if let error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: MessageActionId.markUnread
-                            )
+                if let error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: MessageActionId.markUnread
                         )
-                    }
+                    )
                 }
             }
         }
@@ -595,23 +596,23 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToMute: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let muteController = chatClient.userController(userId: userToMute.id)
-        let muteAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let muteAction = {
             muteController.mute { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "mute"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "mute"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -634,23 +635,23 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToBlock: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToBlock.id)
-        let blockAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let blockAction = {
             blockController.block { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "block"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "block"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -677,23 +678,23 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToUnmute: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let unmuteController = chatClient.userController(userId: userToUnmute.id)
-        let unmuteAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let unmuteAction = {
             unmuteController.unmute { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "unmute"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "unmute"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -716,23 +717,23 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToUnblock: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToUnblock.id)
-        let unblockAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let unblockAction = {
             blockController.unblock { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "unblock"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "unblock"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -758,27 +759,27 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let resendAction: @MainActor() -> Void = {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
+        let resendAction = {
             messageController.resendMessage { error in
-                StreamConcurrency.onMain {
-                    if let error = error {
-                        onError(error)
-                    } else {
-                        onFinish(
-                            MessageActionInfo(
-                                message: message,
-                                identifier: "resend"
-                            )
+                if let error = error {
+                    unsafeOnError(error)
+                } else {
+                    unsafeOnFinish(
+                        MessageActionInfo(
+                            message: message,
+                            identifier: "resend"
                         )
-                    }
+                    )
                 }
             }
         }
@@ -800,8 +801,8 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
@@ -832,8 +833,8 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping (MessageActionInfo) -> Void,
+        onError: @escaping (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
