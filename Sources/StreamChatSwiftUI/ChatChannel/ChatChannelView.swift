@@ -190,11 +190,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .background(
-            isIphone ?
-                Color(colors.background)
+            Color(colors.background)
                 .ignoresSafeArea(.keyboard)
                 .allowsHitTesting(false)
-                : nil
         ).background(
             TabBarAccessor { _ in
                 self.tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
