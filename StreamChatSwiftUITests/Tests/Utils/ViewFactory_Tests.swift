@@ -134,7 +134,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         let view = viewFactory.makeMessageAvatarView(for: userInfo)
 
         // Then
-        XCTAssert(view is MessageAvatarView)
+        XCTAssert(view is MessageAvatarView<Image>)
     }
 
     func test_viewFactory_makeQuotedMessageAvatarView() {
@@ -154,7 +154,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
 
         // Then
-        XCTAssert(view is MessageAvatarView)
+        XCTAssert(view is MessageAvatarView<Image>)
     }
 
     func test_viewFactory_makeChannelHeaderViewModifier() {
