@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add placeholder closure to `MessageAvatarView` [#848](https://github.com/GetStream/stream-chat-swiftui/pull/848)
 ### 🐞 Fixed
 - Fix `ChatChannelView` keyboard background not using color from palette [#845](https://github.com/GetStream/stream-chat-swiftui/pull/845)
 

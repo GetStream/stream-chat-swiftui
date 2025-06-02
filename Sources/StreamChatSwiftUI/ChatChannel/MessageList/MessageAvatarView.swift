@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct MessageAvatarView: View {
+public struct MessageAvatarView<Placeholder>: View where Placeholder: View {
 
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
@@ -18,15 +18,21 @@ public struct MessageAvatarView: View {
     var avatarURL: URL?
     var size: CGSize
     var showOnlineIndicator: Bool = false
+    @ViewBuilder private let placeholder: () -> Placeholder
 
     public init(
         avatarURL: URL?,
         size: CGSize = CGSize.messageAvatarSize,
-        showOnlineIndicator: Bool = false
+        showOnlineIndicator: Bool = false,
+        placeholder: @escaping () -> Placeholder = {
+            Image(uiImage: InjectedValues[\.images].userAvatarPlaceholder2)
+                .resizable()
+        }
     ) {
         self.avatarURL = avatarURL
         self.size = size
         self.showOnlineIndicator = showOnlineIndicator
+        self.placeholder = placeholder
     }
 
     public var body: some View {
@@ -36,26 +42,32 @@ public struct MessageAvatarView: View {
                 preferredSize: size
             )
 
-            LazyImage(imageURL: adjustedURL)
-                .onDisappear(.cancel)
-                .priority(.normal)
-                .clipShape(Circle())
-                .frame(
-                    width: size.width,
-                    height: size.height
-                )
-                .overlay(
-                    showOnlineIndicator ?
-                        TopRightView {
-                            OnlineIndicatorView(indicatorSize: size.width * 0.3)
-                        }
-                        .offset(x: 3, y: -1)
-                        : nil
-                )
-                .accessibilityIdentifier("MessageAvatarView")
+            LazyImage(imageURL: adjustedURL) { content in
+                if let image = content.image {
+                    image
+                } else {
+                    placeholder()
+                }
+            }
+            .onDisappear(.cancel)
+            .priority(.normal)
+            .clipShape(Circle())
+            .frame(
+                width: size.width,
+                height: size.height
+            )
+            .overlay(
+                showOnlineIndicator ?
+                    TopRightView {
+                        OnlineIndicatorView(indicatorSize: size.width * 0.3)
+                    }
+                    .offset(x: 3, y: -1)
+                    : nil
+            )
+            .accessibilityIdentifier("MessageAvatarView")
         } else {
-            Image(uiImage: images.userAvatarPlaceholder2)
-                .resizable()
+            placeholder()
+                .clipShape(Circle())
                 .frame(
                     width: size.width,
                     height: size.height
