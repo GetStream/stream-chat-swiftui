@@ -553,6 +553,25 @@ import XCTest
         // Then
         XCTAssertEqual(3, viewModel.messages.count)
     }
+    
+    func test_chatChannelVM_keepFirstUnreadIndexSetAfterMarkingTheChannelAsRead() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let message3 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2, message3])
+        channelController.channel_mock = .mock(cid: .unique, unreadCount: ChannelUnreadCount(messages: 1, mentions: 0))
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.firstUnreadMessageId = message1.id
+        viewModel.throttler = Throttler_Mock(interval: 0)
+        
+        // When
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+        
+        // Then
+        XCTAssertEqual(1, channelController.markReadCallCount)
+        XCTAssertNotNil(viewModel.firstUnreadMessageId)
+    }
 
     // MARK: - private
 
@@ -563,5 +582,11 @@ import XCTest
             chatClient: chatClient,
             messages: messages
         )
+    }
+}
+
+private class Throttler_Mock: Throttler {
+    override func throttle(_ action: @escaping () -> Void) {
+        action()
     }
 }
