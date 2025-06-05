@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.79.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.79.1)
+_June 03, 2025_
+
 ### 🐞 Fixed
 - Fix `ChatChannelView` keyboard background not using color from palette [#845](https://github.com/GetStream/stream-chat-swiftui/pull/845)
 - Fix removing new messages separator when scrolling in the channel view [#846](https://github.com/GetStream/stream-chat-swiftui/pull/846)
