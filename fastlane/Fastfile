@@ -241,7 +241,9 @@ lane :swiftui_testflight_build do |options|
     app_version: app_version,
     app_target: 'DemoAppSwiftUI',
     app_identifier: 'io.getstream.iOS.DemoAppSwiftUI',
-    configuration: configuration
+    configuration: configuration,
+    use_changelog: true,
+    is_manual_upload: is_manual_upload
   )
 end
 
