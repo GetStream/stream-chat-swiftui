@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-class ReactionsUsersViewModel: ObservableObject, ChatMessageControllerDelegate {
+@MainActor class ReactionsUsersViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Published var reactions: [ChatMessageReaction] = []
 
     var totalReactionsCount: Int {
@@ -42,11 +42,15 @@ class ReactionsUsersViewModel: ObservableObject, ChatMessageControllerDelegate {
 
         isLoading = true
         messageController.loadNextReactions { [weak self] _ in
-            self?.isLoading = false
+            StreamConcurrency.onMain { [weak self] in
+                self?.isLoading = false
+            }
         }
     }
 
-    func messageController(_ controller: ChatMessageController, didChangeReactions reactions: [ChatMessageReaction]) {
-        self.reactions = reactions
+    nonisolated func messageController(_ controller: ChatMessageController, didChangeReactions reactions: [ChatMessageReaction]) {
+        StreamConcurrency.onMain {
+            self.reactions = reactions
+        }
     }
 }

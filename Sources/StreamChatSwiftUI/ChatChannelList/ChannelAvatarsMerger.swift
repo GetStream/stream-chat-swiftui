@@ -4,7 +4,7 @@
 
 import UIKit
 
-public protocol ChannelAvatarsMerging {
+public protocol ChannelAvatarsMerging: Sendable {
     /// Creates a merged avatar from the provided user images.
     /// - Parameter avatars: the avatars to be merged.
     /// - Returns: optional image, if the creation succeeded.
@@ -12,23 +12,23 @@ public protocol ChannelAvatarsMerging {
 }
 
 /// Default implementation of `ChannelAvatarsMerging`.
-public class ChannelAvatarsMerger: ChannelAvatarsMerging {
+public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
     public init() {
         // Public init.
     }
 
-    @Injected(\.utils) private var utils
-    @Injected(\.images) private var images
+    private var images: Images { InjectedValues[\.images] }
+    private var utils: Utils { InjectedValues[\.utils] }
 
     /// Context provided utils.
-    private lazy var imageProcessor = utils.imageProcessor
-    private lazy var imageMerger = utils.imageMerger
+    private var imageProcessor: ImageProcessor { utils.imageProcessor }
+    private var imageMerger: ImageMerging { utils.imageMerger }
 
     /// Placeholder images.
-    private lazy var placeholder1 = images.userAvatarPlaceholder1
-    private lazy var placeholder2 = images.userAvatarPlaceholder2
-    private lazy var placeholder3 = images.userAvatarPlaceholder3
-    private lazy var placeholder4 = images.userAvatarPlaceholder4
+    private var placeholder1: UIImage { images.userAvatarPlaceholder1 }
+    private var placeholder2: UIImage { images.userAvatarPlaceholder2 }
+    private var placeholder3: UIImage { images.userAvatarPlaceholder3 }
+    private var placeholder4: UIImage { images.userAvatarPlaceholder4 }
 
     /// Creates a merged avatar from the given images
     /// - Parameter avatars: The individual avatars

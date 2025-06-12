@@ -7,7 +7,7 @@ import Foundation
 import StreamChat
 import UIKit
 
-open class ChannelHeaderLoader: ObservableObject {
+@preconcurrency @MainActor open class ChannelHeaderLoader: ObservableObject {
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
@@ -36,7 +36,7 @@ open class ChannelHeaderLoader: ObservableObject {
     private var loadedImages = [ChannelId: UIImage]()
     private let didLoadImage = PassthroughSubject<ChannelId, Never>()
 
-    public init() {
+    nonisolated public init() {
         // Public init.
     }
 
@@ -119,8 +119,8 @@ open class ChannelHeaderLoader: ObservableObject {
             imageCDN: imageCDN
         ) { [weak self] images in
             guard let self = self else { return }
-            DispatchQueue.global(qos: .userInteractive).async {
-                let image = self.channelAvatarsMerger.createMergedAvatar(from: images)
+            DispatchQueue.global(qos: .userInteractive).async { [channelAvatarsMerger] in
+                let image = channelAvatarsMerger.createMergedAvatar(from: images)
                 DispatchQueue.main.async {
                     if let image = image {
                         self.didFinishedLoading(for: cid, image: image)

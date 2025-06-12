@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// Factory used to create views.
-public protocol ViewFactory: AnyObject {
+@preconcurrency @MainActor public protocol ViewFactory: AnyObject {
     var chatClient: ChatClient { get }
 
     /// Returns the navigation bar display mode.
@@ -100,8 +100,8 @@ public protocol ViewFactory: AnyObject {
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MoreActionsView
 
     /// Returns the supported  channel actions.
@@ -881,8 +881,8 @@ public protocol ViewFactory: AnyObject {
     func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction]
 
     associatedtype SendInChannelViewType: View
@@ -906,8 +906,8 @@ public protocol ViewFactory: AnyObject {
     func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageActionsViewType
 
     associatedtype ReactionsUsersViewType: View
