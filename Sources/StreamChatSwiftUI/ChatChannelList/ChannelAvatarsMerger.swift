@@ -21,14 +21,14 @@ public class ChannelAvatarsMerger: ChannelAvatarsMerging {
     @Injected(\.images) private var images
 
     /// Context provided utils.
-    private lazy var imageProcessor = utils.imageProcessor
-    private lazy var imageMerger = utils.imageMerger
+    private var imageProcessor: ImageProcessor { utils.imageProcessor }
+    private var imageMerger: ImageMerging { utils.imageMerger }
 
     /// Placeholder images.
-    private lazy var placeholder1 = images.userAvatarPlaceholder1
-    private lazy var placeholder2 = images.userAvatarPlaceholder2
-    private lazy var placeholder3 = images.userAvatarPlaceholder3
-    private lazy var placeholder4 = images.userAvatarPlaceholder4
+    private var placeholder1: UIImage { images.userAvatarPlaceholder1 }
+    private var placeholder2: UIImage { images.userAvatarPlaceholder2 }
+    private var placeholder3: UIImage { images.userAvatarPlaceholder3 }
+    private var placeholder4: UIImage { images.userAvatarPlaceholder4 }
 
     /// Creates a merged avatar from the given images
     /// - Parameter avatars: The individual avatars
