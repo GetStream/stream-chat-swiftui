@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		402C54482B6AAC0100672BFB /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4F03F18F2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */; };
 		4F077EF82C85E05700F06D83 /* DelayedRenderingViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
 		4F65F1862D06EEA7009F69A8 /* ChooseChannelQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */; };
@@ -610,6 +611,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarsMerger_Tests.swift; sourceTree = "<group>"; };
 		4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedRenderingViewModifier.swift; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
 		4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseChannelQueryView.swift; sourceTree = "<group>"; };
@@ -2020,17 +2022,18 @@
 		84C94C7D27567CC2007FE2B9 /* ChatChannelList */ = {
 			isa = PBXGroup;
 			children = (
-				84C94C7F27567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift */,
-				84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */,
+				4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */,
 				84C94D67275A6AFD007FE2B9 /* ChannelHeaderLoader_Tests.swift */,
+				849894942AD96CCC004ACB41 /* ChatChannelListItemView_Tests.swift */,
 				84C94D412757C16D007FE2B9 /* ChatChannelListTestHelpers.swift */,
 				848399EB275FB41B003075E4 /* ChatChannelListView_Tests.swift */,
-				84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */,
+				84C94C7F27567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift */,
+				84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */,
 				91B763A5283EB39600B458A9 /* MoreChannelActionsFullScreenWrappingView_Tests.swift */,
+				84DEC8DA27609FA200172876 /* MoreChannelActionsView_Tests.swift */,
+				84C94D432757C704007FE2B9 /* MoreChannelActionsViewModel_Tests.swift */,
 				84DEC8DC2760A10500172876 /* NoChannelsView_Tests.swift */,
 				8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */,
-				84D6B55927DF6EC7009C6D07 /* LoadingView_Tests.swift */,
-				849894942AD96CCC004ACB41 /* ChatChannelListItemView_Tests.swift */,
 			);
 			path = ChatChannelList;
 			sourceTree = "<group>";
@@ -3082,6 +3085,7 @@
 				84C94D66275A660B007FE2B9 /* MessageActionsViewModel_Tests.swift in Sources */,
 				84C94D0827578BF2007FE2B9 /* MockFunc.swift in Sources */,
 				84B2B5CA281947E100479CEE /* ViewFrameUtils.swift in Sources */,
+				4F03F18F2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift in Sources */,
 				8423C342277CBA280092DCF1 /* TypingSuggester_Tests.swift in Sources */,
 				84507C9A281ACCD70081DDC2 /* AddUsersView_Tests.swift in Sources */,
 				4F8D64402DDDCF9300026C09 /* MessageRelativeDateFormatter_Tests.swift in Sources */,
