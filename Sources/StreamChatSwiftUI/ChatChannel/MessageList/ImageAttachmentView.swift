@@ -361,8 +361,9 @@ struct LazyLoadingImage: View {
                     // NOTE: needed because of bug with SwiftUI.
                     // The click area expands outside the image view (although not visible).
                     Rectangle()
-                        .opacity(0.000001)
+                        .fill(.clear)
                         .frame(width: width, height: height)
+                        .contentShape(.rect)
                         .clipped()
                         .allowsHitTesting(true)
                         .highPriorityGesture(

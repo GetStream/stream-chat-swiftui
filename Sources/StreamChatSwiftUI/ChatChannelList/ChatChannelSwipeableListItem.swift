@@ -14,6 +14,9 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 
     @GestureState private var offset: CGSize = .zero
 
+    /// The channel id of the swipable item.
+    ///
+    /// - Note: Setting this to nil will reset the swiped state.
     @Binding var swipedChannelId: String?
 
     private let numberOfTrailingItems: Int

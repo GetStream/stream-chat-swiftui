@@ -96,8 +96,9 @@ public struct PhotoAttachmentCell: View {
                         
                         // Needed because of SwiftUI bug with tap area of Image.
                         Rectangle()
-                            .opacity(0.000001)
+                            .fill(.clear)
                             .frame(width: reader.size.width, height: reader.size.height)
+                            .contentShape(.rect)
                             .clipped()
                             .allowsHitTesting(true)
                             .onTapGesture {

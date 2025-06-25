@@ -585,7 +585,7 @@ import XCTest
     }
 }
 
-private class Throttler_Mock: Throttler {
+private class Throttler_Mock: StreamChatSwiftUI.Throttler {
     override func throttle(_ action: @escaping () -> Void) {
         action()
     }

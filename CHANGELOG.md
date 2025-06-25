@@ -3,7 +3,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix tapping on invisible areas on iOS 26 [#868](https://github.com/GetStream/stream-chat-swiftui/pull/868)
+
+# [4.80.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.80.0)
+_June 17, 2025_
+
+### 🐞 Fixed
+- Fix showing unmute user message action just after muting the user [#847](https://github.com/GetStream/stream-chat-swiftui/pull/847)
+- Fix rare concurrency crash in `ChannelAvatarsMerger.createMergedAvatar(from:)` [#858](https://github.com/GetStream/stream-chat-swiftui/pull/858)
 
 # [4.79.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.79.1)
 _June 03, 2025_

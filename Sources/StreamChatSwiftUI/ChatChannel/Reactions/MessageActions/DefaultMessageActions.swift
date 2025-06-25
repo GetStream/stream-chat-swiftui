@@ -182,7 +182,7 @@ public extension MessageAction {
             if channel.config.mutesEnabled {
                 let author = message.author
                 let currentUser = chatClient.currentUserController().currentUser
-                let isMuted = currentUser?.mutedUsers.contains(message.author) ?? false
+                let isMuted = currentUser?.mutedUsers.contains(where: { $0.id == author.id }) ?? false
                 if isMuted {
                     let unmuteAction = unmuteAction(
                         for: message,
