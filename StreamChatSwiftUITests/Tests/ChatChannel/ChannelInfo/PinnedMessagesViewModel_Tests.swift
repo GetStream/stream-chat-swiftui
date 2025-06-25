@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class PinnedMessagesViewModel_Tests: StreamChatTestCase {
+@MainActor class PinnedMessagesViewModel_Tests: StreamChatTestCase {
 
     func test_pinnedMessagesVM_notEmpty() {
         // Given

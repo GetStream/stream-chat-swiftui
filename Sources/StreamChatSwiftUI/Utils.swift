@@ -62,6 +62,7 @@ public class Utils {
         }
     }
 
+    @preconcurrency @MainActor
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     public var originalTranslationsStore = MessageOriginalTranslationsStore()

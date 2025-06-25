@@ -33,14 +33,16 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
 
     override public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         if let mutedUser = selectedUser {
             chatClient
                 .userController(userId: mutedUser.id)
                 .unmute { [weak self] error in
-                    self?.selectedUser = nil
-                    completion(error)
+                    StreamConcurrency.onMain { [weak self] in
+                        self?.selectedUser = nil
+                        completion(error)
+                    }
                 }
 
             return

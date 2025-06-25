@@ -7,7 +7,7 @@
 @testable import StreamChatTestTools
 import XCTest
 
-class MessageActions_Tests: StreamChatTestCase {
+@MainActor class MessageActions_Tests: StreamChatTestCase {
 
     func test_messageActions_currentUserDefault() {
         // Given

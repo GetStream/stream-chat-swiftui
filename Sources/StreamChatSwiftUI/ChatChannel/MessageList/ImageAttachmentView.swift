@@ -401,12 +401,14 @@ struct LazyLoadingImage: View {
                 resize: resize,
                 preferredSize: CGSize(width: width, height: height)
             ) { result in
-                switch result {
-                case let .success(image):
-                    self.image = image
-                    onImageLoaded(image)
-                case let .failure(error):
-                    self.error = error
+                StreamConcurrency.onMain {
+                    switch result {
+                    case let .success(image):
+                        self.image = image
+                        onImageLoaded(image)
+                    case let .failure(error):
+                        self.error = error
+                    }
                 }
             }
         }
@@ -442,7 +444,7 @@ public struct MediaAttachment {
     func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
-        completion: @escaping (Result<UIImage, Error>) -> Void
+        completion: @escaping @Sendable(Result<UIImage, Error>) -> Void
     ) {
         if type == .image {
             utils.imageLoader.loadImage(

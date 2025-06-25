@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -53,6 +53,10 @@ final class LazyImageView: _PlatformBaseView {
         }
     }
 
+    /// Displays the placeholder image or view in the case of a failure.
+    /// `false` by default.
+    var showPlaceholderOnFailure = false
+
     private var placeholderViewConstraints: [NSLayoutConstraint] = []
 
     // MARK: Failure View
@@ -99,8 +103,19 @@ final class LazyImageView: _PlatformBaseView {
 
     // MARK: Underlying Views
 
+#if os(macOS)
     /// Returns the underlying image view.
-    let imageView = ImageView()
+    let imageView = NSImageView()
+#else
+    let imageView = UIImageView()
+#endif
+
+    /// Creates a custom view for displaying the given image response.
+    ///
+    /// Return `nil` to use the default platform image view.
+    var makeImageView: ((ImageContainer) -> _PlatformBaseView?)?
+
+    private var customImageView: _PlatformBaseView?
 
     // MARK: Managing Image Tasks
 
@@ -114,7 +129,7 @@ final class LazyImageView: _PlatformBaseView {
     /// dynamically. `nil` by default.
     var priority: ImageRequest.Priority? {
         didSet {
-            if let priority = self.priority {
+            if let priority {
                 imageTask?.priority = priority
             }
         }
@@ -149,8 +164,6 @@ final class LazyImageView: _PlatformBaseView {
     // MARK: Other Options
 
     /// `true` by default. If disabled, progressive image scans will be ignored.
-    ///
-    /// This option also affects the previews for animated images or videos.
     var isProgressiveImageRenderingEnabled = true
 
     /// `true` by default. If enabled, the image view will be cleared before the
@@ -185,12 +198,7 @@ final class LazyImageView: _PlatformBaseView {
 
         placeholderView = {
             let view = _PlatformBaseView()
-            let color: _PlatformColor
-            if #available(iOS 13.0, *) {
-                color = .secondarySystemBackground
-            } else {
-                color = _PlatformColor.lightGray.withAlphaComponent(0.5)
-            }
+            let color = _PlatformColor.secondarySystemBackground
 #if os(macOS)
             view.wantsLayer = true
             view.layer?.backgroundColor = color.cgColor
@@ -214,13 +222,6 @@ final class LazyImageView: _PlatformBaseView {
     var request: ImageRequest? {
         didSet { load(request) }
     }
-    ///
-    // Deprecated in Nuke 11.0
-    @available(*, deprecated, message: "Please `request` or `url` properties instead")
-    var source: (any ImageRequestConvertible)? {
-        get { request }
-        set { request = newValue?.asImageRequest() }
-    }
 
     override func updateConstraints() {
         super.updateConstraints()
@@ -233,8 +234,10 @@ final class LazyImageView: _PlatformBaseView {
     func reset() {
         cancel()
 
-        imageView.imageContainer = nil
+        imageView.image = nil
         imageView.isHidden = true
+
+        customImageView?.removeFromSuperview()
 
         setPlaceholderViewHidden(true)
         setFailureViewHidden(true)
@@ -262,15 +265,15 @@ final class LazyImageView: _PlatformBaseView {
             isResetNeeded = true
         }
 
-        guard var request = request else {
+        guard var request else {
             handle(result: .failure(ImagePipeline.Error.imageRequestMissing), isSync: true)
             return
         }
 
-        if let processors = self.processors, !processors.isEmpty, !request.processors.isEmpty {
+        if let processors, !processors.isEmpty, request.processors.isEmpty {
             request.processors = processors
         }
-        if let priority = self.priority {
+        if let priority {
             request.priority = priority
         }
 
@@ -291,9 +294,9 @@ final class LazyImageView: _PlatformBaseView {
             with: request,
             queue: .main,
             progress: { [weak self] response, completed, total in
-                guard let self = self else { return }
+                guard let self else { return }
                 let progress = ImageTask.Progress(completed: completed, total: total)
-                if let response = response {
+                if let response {
                     self.handle(preview: response)
                     self.onPreview?(response)
                 } else {
@@ -324,7 +327,11 @@ final class LazyImageView: _PlatformBaseView {
         case let .success(response):
             display(response.container, isFromMemory: isSync)
         case .failure:
-            setFailureViewHidden(false)
+            if showPlaceholderOnFailure {
+                setPlaceholderViewHidden(false)
+            } else {
+                setFailureViewHidden(false)
+            }
         }
 
         imageTask = nil
@@ -338,8 +345,14 @@ final class LazyImageView: _PlatformBaseView {
     private func display(_ container: ImageContainer, isFromMemory: Bool) {
         resetIfNeeded()
 
-        imageView.imageContainer = container
-        imageView.isHidden = false
+        if let view = makeImageView?(container) {
+            addSubview(view)
+            view.pinToSuperview()
+            customImageView = view
+        } else {
+            imageView.image = container.image
+            imageView.isHidden = false
+        }
 
         if !isFromMemory, let transition = transition {
             runTransition(transition, container)
@@ -353,7 +366,7 @@ final class LazyImageView: _PlatformBaseView {
     }
 
     private func setPlaceholderImage(_ placeholderImage: PlatformImage?) {
-        guard let placeholderImage = placeholderImage else {
+        guard let placeholderImage else {
             placeholderView = nil
             return
         }
@@ -361,14 +374,14 @@ final class LazyImageView: _PlatformBaseView {
     }
 
     private func setPlaceholderView(_ oldView: _PlatformBaseView?, _ newView: _PlatformBaseView?) {
-        if let oldView = oldView {
+        if let oldView {
             oldView.removeFromSuperview()
         }
-        if let newView = newView {
+        if let newView {
             newView.isHidden = !imageView.isHidden
             insertSubview(newView, at: 0)
             setNeedsUpdateConstraints()
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
             if let spinner = newView as? UIActivityIndicatorView {
                 spinner.startAnimating()
             }
@@ -388,7 +401,7 @@ final class LazyImageView: _PlatformBaseView {
     }
 
     private func setFailureImage(_ failureImage: PlatformImage?) {
-        guard let failureImage = failureImage else {
+        guard let failureImage else {
             failureView = nil
             return
         }
@@ -396,10 +409,10 @@ final class LazyImageView: _PlatformBaseView {
     }
 
     private func setFailureView(_ oldView: _PlatformBaseView?, _ newView: _PlatformBaseView?) {
-        if let oldView = oldView {
+        if let oldView {
             oldView.removeFromSuperview()
         }
-        if let newView = newView {
+        if let newView {
             newView.isHidden = true
             insertSubview(newView, at: 0)
             setNeedsUpdateConstraints()
@@ -422,8 +435,12 @@ final class LazyImageView: _PlatformBaseView {
         }
     }
 
-#if os(iOS) || os(tvOS)
-
+#if os(macOS)
+    private func runFadeInTransition(duration: TimeInterval) {
+        guard !imageView.isHidden else { return }
+        imageView.layer?.animateOpacity(duration: duration)
+    }
+#else
     private func runFadeInTransition(duration: TimeInterval) {
         guard !imageView.isHidden else { return }
         imageView.alpha = 0
@@ -431,14 +448,6 @@ final class LazyImageView: _PlatformBaseView {
             self.imageView.alpha = 1
         }
     }
-
-#elseif os(macOS)
-
-    private func runFadeInTransition(duration: TimeInterval) {
-        guard !imageView.isHidden else { return }
-        imageView.layer?.animateOpacity(duration: duration)
-    }
-
 #endif
 
     // MARK: Misc

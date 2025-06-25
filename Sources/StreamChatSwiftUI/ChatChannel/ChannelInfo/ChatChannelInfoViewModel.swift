@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+@preconcurrency @MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
 
     @Injected(\.chatClient) private var chatClient
 
@@ -172,7 +172,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping () -> Void) {
+    public func leaveConversationTapped(completion: @escaping @MainActor() -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
         } else {
@@ -195,20 +195,22 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         )
     }
 
-    public func channelController(
+    nonisolated public func channelController(
         _ channelController: ChatChannelController,
         didUpdateChannel channel: EntityChange<ChatChannel>
     ) {
-        if let channel = channelController.channel {
-            self.channel = channel
-            if self.channel.lastActiveMembers.count > participants.count {
-                participants = channel.lastActiveMembers.map { member in
-                    ParticipantInfo(
-                        chatUser: member,
-                        displayName: member.name ?? member.id,
-                        onlineInfoText: onlineInfo(for: member),
-                        isDeactivated: member.isDeactivated
-                    )
+        StreamConcurrency.onMain {
+            if let channel = channelController.channel {
+                self.channel = channel
+                if self.channel.lastActiveMembers.count > participants.count {
+                    participants = channel.lastActiveMembers.map { member in
+                        ParticipantInfo(
+                            chatUser: member,
+                            displayName: member.name ?? member.id,
+                            onlineInfoText: onlineInfo(for: member),
+                            isDeactivated: member.isDeactivated
+                        )
+                    }
                 }
             }
         }
@@ -221,23 +223,27 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     // MARK: - private
 
-    private func removeUserFromConversation(completion: @escaping () -> Void) {
+    private func removeUserFromConversation(completion: @escaping @MainActor() -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
-            if error != nil {
-                self?.errorShown = true
-            } else {
-                completion()
+            StreamConcurrency.onMain { [weak self] in
+                if error != nil {
+                    self?.errorShown = true
+                } else {
+                    completion()
+                }
             }
         }
     }
 
-    private func deleteChannel(completion: @escaping () -> Void) {
+    private func deleteChannel(completion: @escaping @MainActor() -> Void) {
         channelController.deleteChannel { [weak self] error in
-            if error != nil {
-                self?.errorShown = true
-            } else {
-                completion()
+            StreamConcurrency.onMain { [weak self] in
+                if error != nil {
+                    self?.errorShown = true
+                } else {
+                    completion()
+                }
             }
         }
     }
@@ -249,19 +255,21 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
         loadingUsers = true
         memberListController.loadNextMembers { [weak self] error in
-            guard let self = self else { return }
-            self.loadingUsers = false
-            if error == nil {
-                let newMembers = self.memberListController.members.map { member in
-                    ParticipantInfo(
-                        chatUser: member,
-                        displayName: member.name ?? member.id,
-                        onlineInfoText: self.onlineInfo(for: member),
-                        isDeactivated: member.isDeactivated
-                    )
-                }
-                if newMembers.count > self.participants.count {
-                    self.participants = newMembers
+            StreamConcurrency.onMain { [weak self] in
+                guard let self = self else { return }
+                self.loadingUsers = false
+                if error == nil {
+                    let newMembers = self.memberListController.members.map { member in
+                        ParticipantInfo(
+                            chatUser: member,
+                            displayName: member.name ?? member.id,
+                            onlineInfoText: self.onlineInfo(for: member),
+                            isDeactivated: member.isDeactivated
+                        )
+                    }
+                    if newMembers.count > self.participants.count {
+                        self.participants = newMembers
+                    }
                 }
             }
         }

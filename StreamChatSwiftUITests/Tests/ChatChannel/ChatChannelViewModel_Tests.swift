@@ -8,7 +8,7 @@
 import SwiftUI
 import XCTest
 
-class ChatChannelViewModel_Tests: StreamChatTestCase {
+@MainActor class ChatChannelViewModel_Tests: StreamChatTestCase {
     func test_chatChannelVM_channelIsUpdated() {
         // Given
         let cid = ChannelId.unique
@@ -585,7 +585,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
     }
 }
 
-private class Throttler_Mock: Throttler {
+private class Throttler_Mock: StreamChatSwiftUI.Throttler {
     override func throttle(_ action: @escaping () -> Void) {
         action()
     }

@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class FileAttachmentsView_Tests: StreamChatTestCase {
+@MainActor class FileAttachmentsView_Tests: StreamChatTestCase {
 
     func test_fileAttachmentsView_nonEmptySnapshot() {
         // Given

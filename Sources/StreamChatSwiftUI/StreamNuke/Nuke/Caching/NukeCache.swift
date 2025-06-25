@@ -1,10 +1,10 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
 import UIKit.UIApplication
 #endif
 
@@ -20,8 +20,8 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
     }
 
     var conf: Configuration {
-        get { lock.sync { _conf } }
-        set { lock.sync { _conf = newValue } }
+        get { withLock { _conf } }
+        set { withLock { _conf = newValue } }
     }
 
     private var _conf: Configuration {
@@ -29,48 +29,48 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
     }
 
     var totalCost: Int {
-        lock.sync { _totalCost }
+        withLock { _totalCost }
     }
 
     var totalCount: Int {
-        lock.sync { map.count }
+        withLock { map.count }
     }
 
     private var _totalCost = 0
     private var map = [Key: LinkedList<Entry>.Node]()
     private let list = LinkedList<Entry>()
-    private let lock = NSLock()
+    private let lock: os_unfair_lock_t
     private let memoryPressure: DispatchSourceMemoryPressure
     private var notificationObserver: AnyObject?
 
     init(costLimit: Int, countLimit: Int) {
         self._conf = Configuration(costLimit: costLimit, countLimit: countLimit, ttl: nil, entryCostLimit: 0.1)
 
+        self.lock = .allocate(capacity: 1)
+        self.lock.initialize(to: os_unfair_lock())
+
         self.memoryPressure = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
         self.memoryPressure.setEventHandler { [weak self] in
-            self?.removeAll()
+            self?.removeAllCachedValues()
         }
         self.memoryPressure.resume()
 
-#if os(iOS) || os(tvOS)
-        self.registerForEnterBackground()
-#endif
-
-#if TRACK_ALLOCATIONS
-        Allocations.increment("Cache")
+#if os(iOS) || os(tvOS) || os(visionOS)
+        Task {
+            await registerForEnterBackground()
+        }
 #endif
     }
 
     deinit {
-        memoryPressure.cancel()
+        lock.deinitialize(count: 1)
+        lock.deallocate()
 
-#if TRACK_ALLOCATIONS
-        Allocations.decrement("Cache")
-#endif
+        memoryPressure.cancel()
     }
 
-#if os(iOS) || os(tvOS)
-    private func registerForEnterBackground() {
+#if os(iOS) || os(tvOS) || os(visionOS)
+    @MainActor private func registerForEnterBackground() {
         notificationObserver = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) { [weak self] _ in
             self?.clearCacheOnEnterBackground()
         }
@@ -78,8 +78,8 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
 #endif
 
     func value(forKey key: Key) -> Value? {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
 
         guard let node = map[key] else {
             return nil
@@ -98,13 +98,13 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
     }
 
     func set(_ value: Value, forKey key: Key, cost: Int = 0, ttl: TimeInterval? = nil) {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
 
         // Take care of overflow or cache size big enough to fit any
         // reasonable content (and also of costLimit = Int.max).
         let sanitizedEntryLimit = max(0, min(_conf.entryCostLimit, 1))
-        guard _conf.costLimit > 2147483647 || cost < Int(sanitizedEntryLimit * Double(_conf.costLimit)) else {
+        guard _conf.costLimit > 2_147_483_647 || cost < Int(sanitizedEntryLimit * Double(_conf.costLimit)) else {
             return
         }
 
@@ -117,8 +117,8 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
 
     @discardableResult
     func removeValue(forKey key: Key) -> Value? {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
 
         guard let node = map[key] else {
             return nil
@@ -129,7 +129,10 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
 
     private func _add(_ element: Entry) {
         if let existingNode = map[element.key] {
-            _remove(node: existingNode)
+            // This is slightly faster than calling _remove because of the
+            // skipped dictionary access
+            list.remove(existingNode)
+            _totalCost -= existingNode.value.cost
         }
         map[element.key] = list.append(element)
         _totalCost += element.cost
@@ -141,12 +144,12 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
         _totalCost -= node.value.cost
     }
 
-    func removeAll() {
-        lock.lock()
-        defer { lock.unlock() }
+    func removeAllCachedValues() {
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
 
         map.removeAll()
-        list.removeAll()
+        list.removeAllElements()
         _totalCost = 0
     }
 
@@ -155,8 +158,8 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
         // This behavior is similar to `NSCache` (which removes all
         // items). This feature is not documented and may be subject
         // to change in future Nuke versions.
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
 
         _trim(toCost: Int(Double(_conf.costLimit) * 0.1))
         _trim(toCount: Int(Double(_conf.countLimit) * 0.1))
@@ -168,7 +171,7 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
     }
 
     func trim(toCost limit: Int) {
-        lock.sync { _trim(toCost: limit) }
+        withLock { _trim(toCost: limit) }
     }
 
     private func _trim(toCost limit: Int) {
@@ -176,7 +179,7 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
     }
 
     func trim(toCount limit: Int) {
-        lock.sync { _trim(toCount: limit) }
+        withLock { _trim(toCount: limit) }
     }
 
     private func _trim(toCount limit: Int) {
@@ -189,13 +192,19 @@ final class NukeCache<Key: Hashable, Value>: @unchecked Sendable {
         }
     }
 
+    private func withLock<T>(_ closure: () -> T) -> T {
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
+        return closure()
+    }
+
     private struct Entry {
         let value: Value
         let key: Key
         let cost: Int
         let expiration: Date?
         var isExpired: Bool {
-            guard let expiration = expiration else {
+            guard let expiration else {
                 return false
             }
             return expiration.timeIntervalSinceNow < 0
