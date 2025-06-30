@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `Utils.channelListConfig.showChannelListDividerOnLastItem` [#869](https://github.com/GetStream/stream-chat-swiftui/pull/869)
+
 ### 🐞 Fixed
 - Fix tapping on invisible areas on iOS 26 [#868](https://github.com/GetStream/stream-chat-swiftui/pull/868)
 
