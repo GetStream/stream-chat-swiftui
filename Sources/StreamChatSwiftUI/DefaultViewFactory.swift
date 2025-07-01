@@ -73,6 +73,7 @@ extension ViewFactory {
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> some View {
+        let utils = InjectedValues[\.utils]
         let listItem = ChatChannelNavigatableListItem(
             factory: self,
             channel: channel,
@@ -80,7 +81,7 @@ extension ViewFactory {
             avatar: avatar,
             onlineIndicatorShown: onlineIndicatorShown,
             disabled: disabled,
-            handleTabBarVisibility: true,
+            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
             selectedChannel: selectedChannel,
             channelDestination: channelDestination,
             onItemTap: onItemTap
@@ -1072,14 +1073,15 @@ extension ViewFactory {
         threadDestination: @escaping (ChatThread) -> ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>
     ) -> some View {
-        ChatThreadListNavigatableItem(
+        let utils = InjectedValues[\.utils]
+        return ChatThreadListNavigatableItem(
             thread: thread,
             threadListItem: ChatThreadListItem(
                 viewModel: .init(thread: thread)
             ),
             threadDestination: threadDestination,
             selectedThread: selectedThread,
-            handleTabBarVisibility: true
+            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
         )
     }
 
