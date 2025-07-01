@@ -80,6 +80,7 @@ extension ViewFactory {
             avatar: avatar,
             onlineIndicatorShown: onlineIndicatorShown,
             disabled: disabled,
+            handleTabBarVisibility: true,
             selectedChannel: selectedChannel,
             channelDestination: channelDestination,
             onItemTap: onItemTap
