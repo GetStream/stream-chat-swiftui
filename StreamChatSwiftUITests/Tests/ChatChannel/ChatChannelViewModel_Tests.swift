@@ -586,7 +586,7 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
 }
 
 private class Throttler_Mock: Throttler {
-    override func throttle(_ action: @escaping () -> Void) {
+    override func execute(_ action: @escaping () -> Void) {
         action()
     }
 }
