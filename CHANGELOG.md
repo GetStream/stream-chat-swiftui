@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix tapping on invisible areas on iOS 26 [#868](https://github.com/GetStream/stream-chat-swiftui/pull/868)
 - Fix channel view tab bar not hidden on iOS 16.0 [#870](https://github.com/GetStream/stream-chat-swiftui/pull/870)
 - Fix message Actions overlay view not dismissed when opening thread [#873](https://github.com/GetStream/stream-chat-swiftui/pull/873)
+- Fix mute and unmute commands shown in the composer when removed from Dashboard [#872](https://github.com/GetStream/stream-chat-swiftui/pull/872)
+
+### 🔄 Changed
+- Mute and unmute commands are not added by default in the composer [#872](https://github.com/GetStream/stream-chat-swiftui/pull/872)
 
 # [4.80.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.80.0)
 _June 17, 2025_
