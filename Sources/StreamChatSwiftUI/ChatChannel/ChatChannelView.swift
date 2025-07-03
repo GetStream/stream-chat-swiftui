@@ -181,6 +181,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         .onDisappear {
             viewModel.onViewDissappear()
+            viewModel.reactionsShown = false
+            messageDisplayInfo = nil
         }
         .onChange(of: presentationMode.wrappedValue, perform: { newValue in
             if newValue.isPresented == false {
