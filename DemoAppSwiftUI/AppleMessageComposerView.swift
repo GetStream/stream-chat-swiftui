@@ -160,7 +160,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 )
                 .offset(y: -composerHeight)
-                .animation(nil) : nil,
+                .animation(.none, value: viewModel.showCommandsOverlay) : nil,
             alignment: .bottom
         )
         .modifier(factory.makeComposerViewModifier())
@@ -214,7 +214,7 @@ struct BlurredBackground: View {
 }
 
 struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    static let defaultValue: CGFloat? = nil
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()

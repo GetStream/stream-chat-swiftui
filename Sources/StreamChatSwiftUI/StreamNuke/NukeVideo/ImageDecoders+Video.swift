@@ -1,13 +1,22 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(visionOS)
 
 import Foundation
 import AVKit
+import AVFoundation
+
 
 extension ImageDecoders {
+    /// The video decoder.
+    ///
+    /// To enable the video decoder, register it with a shared registry:
+    ///
+    /// ```swift
+    /// ImageDecoderRegistry.shared.register(ImageDecoders.Video.init)
+    /// ```
     final class Video: ImageDecoding, @unchecked Sendable {
         private var didProducePreview = false
         private let type: NukeAssetType
@@ -21,7 +30,9 @@ extension ImageDecoders {
         }
 
         func decode(_ data: Data) throws -> ImageContainer {
-            ImageContainer(image: PlatformImage(), type: type, data: data)
+            ImageContainer(image: PlatformImage(), type: type, data: data, userInfo: [
+                .videoAssetKey: AVDataAsset(data: data, type: type)
+            ])
         }
 
         func decodePartiallyDownloadedData(_ data: Data) -> ImageContainer? {
@@ -36,9 +47,16 @@ extension ImageDecoders {
                 return nil
             }
             didProducePreview = true
-            return ImageContainer(image: preview, type: type, isPreview: true, data: data)
+            return ImageContainer(image: preview, type: type, isPreview: true, data: data, userInfo: [
+                .videoAssetKey: AVDataAsset(data: data, type: type)
+            ])
         }
     }
+}
+
+extension ImageContainer.UserInfoKey {
+    /// A key for a video asset (`AVAsset`)
+    static let videoAssetKey: ImageContainer.UserInfoKey = "com.github/kean/nuke/video-asset"
 }
 
 private func makePreview(for data: Data, type: NukeAssetType) -> PlatformImage? {
@@ -50,4 +68,12 @@ private func makePreview(for data: Data, type: NukeAssetType) -> PlatformImage? 
     return PlatformImage(cgImage: cgImage)
 }
 
+#endif
+
+#if os(macOS)
+extension NSImage {
+    convenience init(cgImage: CGImage) {
+        self.init(cgImage: cgImage, size: .zero)
+    }
+}
 #endif

@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
+@MainActor class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
 
     func test_chatChannelInfoVM_initialGroupParticipants() {
         // Given

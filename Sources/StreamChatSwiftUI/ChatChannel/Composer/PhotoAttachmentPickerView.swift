@@ -180,8 +180,10 @@ public struct PhotoAttachmentCell: View {
                 if let assetURL = assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
                     compressing = true
                     assetLoader.compressAsset(at: assetURL, type: assetType) { url in
-                        self.assetURL = url
-                        self.compressing = false
+                        StreamConcurrency.onMain {
+                            self.assetURL = url
+                            self.compressing = false
+                        }
                     }
                 }
             }

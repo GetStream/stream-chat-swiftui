@@ -1,11 +1,13 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
-#if !os(macOS)
+#if canImport(UIKit)
 import UIKit
-#else
-import Cocoa
+#endif
+
+#if canImport(AppKit)
+import AppKit
 #endif
 
 import ImageIO
@@ -23,7 +25,10 @@ protocol ImageEncoding: Sendable {
 
 extension ImageEncoding {
     func encode(_ container: ImageContainer, context: ImageEncodingContext) -> Data? {
-        self.encode(container.image)
+        if container.type == .gif {
+            return container.data
+        }
+        return self.encode(container.image)
     }
 }
 

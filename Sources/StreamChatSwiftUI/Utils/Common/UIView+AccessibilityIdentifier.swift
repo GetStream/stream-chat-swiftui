@@ -21,7 +21,7 @@ extension NSObject {
 }
 
 // Protocol that provides accessibility features
-protocol AccessibilityView {
+@MainActor protocol AccessibilityView {
     // Identifier for view
     var accessibilityViewIdentifier: String { get }
 

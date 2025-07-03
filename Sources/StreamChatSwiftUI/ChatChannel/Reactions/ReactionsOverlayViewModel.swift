@@ -6,7 +6,7 @@ import Combine
 import StreamChat
 import SwiftUI
 
-open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
+@preconcurrency @MainActor open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 
@@ -42,13 +42,15 @@ open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDel
 
     // MARK: - ChatMessageControllerDelegate
 
-    public func messageController(
+    nonisolated public func messageController(
         _ controller: ChatMessageController,
         didChangeMessage change: EntityChange<ChatMessage>
     ) {
-        if let message = controller.message {
-            withAnimation {
-                self.message = message
+        StreamConcurrency.onMain {
+            if let message = controller.message {
+                withAnimation {
+                    self.message = message
+                }
             }
         }
     }

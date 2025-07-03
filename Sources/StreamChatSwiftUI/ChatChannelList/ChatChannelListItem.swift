@@ -268,7 +268,7 @@ public struct UnreadIndicatorView: View {
     }
 }
 
-public struct InjectedChannelInfo {
+public struct InjectedChannelInfo: Sendable {
     public var subtitle: String?
     public var unreadCount: Int
     public var timestamp: String?

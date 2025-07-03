@@ -299,12 +299,14 @@ public extension MessageAction {
             messageId: message.id
         )
 
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let pinMessage = {
             messageController.pin(MessagePinning.noExpiration) { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "pin"
@@ -339,12 +341,14 @@ public extension MessageAction {
             messageId: message.id
         )
 
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let pinMessage = {
             messageController.unpin { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "unpin"
@@ -372,12 +376,13 @@ public extension MessageAction {
         channel: ChatChannel,
         onFinish: @escaping (MessageActionInfo) -> Void
     ) -> MessageAction {
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let replyAction = MessageAction(
             id: MessageActionId.reply,
             title: L10n.Message.Actions.inlineReply,
             iconName: "icn_inline_reply",
             action: {
-                onFinish(
+                unsafeOnFinish(
                     MessageActionInfo(
                         message: message,
                         identifier: "inlineReply"
@@ -428,12 +433,14 @@ public extension MessageAction {
             messageId: message.id
         )
 
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let deleteAction = {
             messageController.deleteMessage { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "delete"
@@ -474,12 +481,14 @@ public extension MessageAction {
             messageId: message.id
         )
 
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let flagAction = {
             messageController.flag { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "flag"
@@ -518,12 +527,14 @@ public extension MessageAction {
         let channelController = InjectedValues[\.utils]
             .channelControllerFactory
             .makeChannelController(for: channel.cid)
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let action = {
             channelController.markUnread(from: message.id) { result in
                 if case let .failure(error) = result {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: MessageActionId.markUnread
@@ -551,12 +562,14 @@ public extension MessageAction {
         onFinish: @escaping (MessageActionInfo) -> Void,
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let action = {
             messageController.markThreadUnread() { error in
                 if let error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: MessageActionId.markUnread
@@ -587,12 +600,14 @@ public extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let muteController = chatClient.userController(userId: userToMute.id)
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let muteAction = {
             muteController.mute { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "mute"
@@ -624,12 +639,14 @@ public extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToBlock.id)
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let blockAction = {
             blockController.block { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "block"
@@ -665,12 +682,14 @@ public extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let unmuteController = chatClient.userController(userId: userToUnmute.id)
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let unmuteAction = {
             unmuteController.unmute { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "unmute"
@@ -702,12 +721,14 @@ public extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToUnblock.id)
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let unblockAction = {
             blockController.unblock { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "unblock"
@@ -746,12 +767,14 @@ public extension MessageAction {
             messageId: message.id
         )
 
+        nonisolated(unsafe) let unsafeOnError = onError
+        nonisolated(unsafe) let unsafeOnFinish = onFinish
         let resendAction = {
             messageController.resendMessage { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onFinish(
+                    unsafeOnFinish(
                         MessageActionInfo(
                             message: message,
                             identifier: "resend"

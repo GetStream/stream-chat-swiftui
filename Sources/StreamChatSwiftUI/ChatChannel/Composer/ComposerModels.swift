@@ -16,7 +16,7 @@ public enum AttachmentPickerState {
 }
 
 /// Struct representing an asset added to the composer.
-public struct AddedAsset: Identifiable, Equatable {
+public struct AddedAsset: Identifiable, Equatable, Sendable {
     
     public static func == (lhs: AddedAsset, rhs: AddedAsset) -> Bool {
         lhs.id == rhs.id
@@ -107,12 +107,12 @@ extension AnyChatMessageAttachment {
 }
 
 /// Type of asset added to the composer.
-public enum AssetType {
+public enum AssetType: Sendable {
     case image
     case video
 }
 
-public struct CustomAttachment: Identifiable, Equatable {
+public struct CustomAttachment: Identifiable, Equatable, Sendable {
     
     public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
         lhs.id == rhs.id
@@ -128,7 +128,7 @@ public struct CustomAttachment: Identifiable, Equatable {
 }
 
 /// Represents an added voice recording.
-public struct AddedVoiceRecording: Identifiable, Equatable {
+public struct AddedVoiceRecording: Identifiable, Equatable, Sendable {
     public var id: String {
         url.absoluteString
     }
