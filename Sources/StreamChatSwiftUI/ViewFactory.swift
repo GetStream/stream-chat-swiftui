@@ -504,6 +504,17 @@ public protocol ViewFactory: AnyObject {
         subtitle: String,
         shown: Binding<Bool>
     ) -> VideoPlayerHeaderViewType
+    
+    associatedtype VideoPlayerFooterViewType: View
+    /// Creates the video player footer view presented with a sheet.
+    /// - Parameters:
+    ///  - attachment: the video attachment that will be displayed.
+    ///  - shown: Binding controlling whether the video player is shown.
+    /// - Returns: View displayed in the video player footer slot.
+    func makeVideoPlayerFooterView(
+        attachment: ChatMessageVideoAttachment,
+        shown: Binding<Bool>
+    ) -> VideoPlayerFooterViewType
 
     associatedtype DeletedMessageViewType: View
     /// Creates the deleted message view.
