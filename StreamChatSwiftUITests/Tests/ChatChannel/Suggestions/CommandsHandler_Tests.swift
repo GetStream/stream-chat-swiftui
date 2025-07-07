@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
 class CommandsHandler_Tests: StreamChatTestCase {
@@ -166,6 +167,39 @@ class CommandsHandler_Tests: StreamChatTestCase {
         // Then
         XCTAssert(id == "main")
         XCTAssert(displayInfo == nil)
+    }
+
+    func test_defaultCommandsConfig() {
+        // Given
+        let channelController = ChatChannelController_Mock.mock()
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: .mock(commands: [.init(name: "mute"), .init(name: "unmute"), .init(name: "giphy")])
+        )
+        let defaultCommandsHandler = DefaultCommandsConfig()
+        let handler = defaultCommandsHandler.makeCommandsHandler(with: channelController)
+
+        XCTAssertNotNil(handler.canHandleCommand(in: "/mention @user", caretLocation: 10))
+        XCTAssertNotNil(handler.canHandleCommand(in: "/mute", caretLocation: 0))
+        XCTAssertNotNil(handler.canHandleCommand(in: "/unmute", caretLocation: 0))
+        XCTAssertNotNil(handler.canHandleCommand(in: "/giphy", caretLocation: 0))
+    }
+
+    func test_defaultCommandsConfig_whenWithoutMutesCommands() {
+        // Given
+        let channelController = ChatChannelController_Mock.mock()
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: .mock(commands: [.init(name: "giphy")])
+        )
+        let defaultCommandsHandler = DefaultCommandsConfig()
+        let handler = defaultCommandsHandler.makeCommandsHandler(with: channelController)
+
+        XCTAssertNil(handler.canHandleCommand(in: "/mute", caretLocation: 0))
+        XCTAssertNil(handler.canHandleCommand(in: "/unmute", caretLocation: 0))
+
+        XCTAssertNotNil(handler.canHandleCommand(in: "/mention @user", caretLocation: 10))
+        XCTAssertNotNil(handler.canHandleCommand(in: "/giphy", caretLocation: 0))
     }
 
     // MARK: - private

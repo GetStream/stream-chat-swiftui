@@ -14,6 +14,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
     private var avatar: UIImage
     private var disabled: Bool
     private var onlineIndicatorShown: Bool
+    private var handleTabBarVisibility: Bool
     @Binding private var selectedChannel: ChannelSelectionInfo?
     private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
     private var onItemTap: (ChatChannel) -> Void
@@ -25,6 +26,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
         avatar: UIImage,
         onlineIndicatorShown: Bool,
         disabled: Bool = false,
+        handleTabBarVisibility: Bool = true,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
         onItemTap: @escaping (ChatChannel) -> Void
@@ -38,6 +40,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
         self.onlineIndicatorShown = onlineIndicatorShown
         self.disabled = disabled
         _selectedChannel = selectedChannel
+        self.handleTabBarVisibility = true
     }
 
     public var body: some View {
@@ -57,7 +60,14 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
                 tag: channel.channelSelectionInfo,
                 selection: $selectedChannel
             ) {
-                LazyView(channelDestination(channel.channelSelectionInfo))
+                LazyView(
+                    channelDestination(channel.channelSelectionInfo)
+                        .modifier(
+                            HideTabBarModifierForiOS16(
+                                handleTabBarVisibility: handleTabBarVisibility
+                            )
+                        )
+                )
             } label: {
                 EmptyView()
             }
@@ -111,5 +121,25 @@ extension ChatChannel {
 
     public var channelSelectionInfo: ChannelSelectionInfo {
         ChannelSelectionInfo(channel: self, message: nil)
+    }
+}
+
+/// Modifier to fix tab bar visibility issue on iOS 16.0, 16.1, 16.2.
+struct HideTabBarModifierForiOS16: ViewModifier {
+    var handleTabBarVisibility: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            if #unavailable(iOS 16.3) {
+                content
+                    .modifier(HideTabBarModifier(
+                        handleTabBarVisibility: handleTabBarVisibility
+                    ))
+            } else {
+                content
+            }
+        } else {
+            content
+        }
     }
 }

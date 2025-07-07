@@ -576,7 +576,7 @@ import SwiftUI
     
     private func sendReadEventIfNeeded(for message: ChatMessage) {
         guard let channel, channel.unreadCount.messages > 0 else { return }
-        throttler.throttle { [weak self] in
+        throttler.execute { [weak self] in
             self?.channelController.markRead()
             // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
         }
@@ -705,7 +705,7 @@ import SwiftUI
     }
 
     private func sendThreadReadEvent() {
-        throttler.throttle { [weak self] in
+        throttler.execute { [weak self] in
             self?.messageController?.markThreadRead()
         }
     }

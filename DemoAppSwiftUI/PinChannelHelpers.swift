@@ -165,7 +165,10 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 tag: channel.channelSelectionInfo,
                 selection: $selectedChannel
             ) {
-                LazyView(channelDestination(channel.channelSelectionInfo))
+                LazyView(
+                    channelDestination(channel.channelSelectionInfo)
+                        .modifier(TabBarVisibilityModifier())
+                )
             } label: {
                 EmptyView()
             }
