@@ -8,7 +8,7 @@
 import SwiftUI
 import XCTest
 
-class MessageComposerViewModel_Tests: StreamChatTestCase {
+@MainActor class MessageComposerViewModel_Tests: StreamChatTestCase {
     
     private let testImage = UIImage(systemName: "checkmark")!
     private var mockURL: URL!
@@ -323,14 +323,15 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         viewModel.addedFileURLs = [mockURL]
         viewModel.sendMessage(
             quotedMessage: nil,
-            editedMessage: nil
-        ) {
-            // Then
-            XCTAssert(viewModel.errorShown == false)
-            XCTAssert(viewModel.text == "")
-            XCTAssert(viewModel.addedAssets.isEmpty)
-            XCTAssert(viewModel.addedFileURLs.isEmpty)
-        }
+            editedMessage: nil,
+            completion: {}
+        )
+        
+        // Then
+        XCTAssert(viewModel.errorShown == false)
+        XCTAssert(viewModel.text == "")
+        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(viewModel.addedFileURLs.isEmpty)
     }
     
     func test_messageComposerVM_notInThread() {
@@ -1304,7 +1305,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
 }
 
 enum MessageComposerTestUtils {
-    static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
+    @MainActor static func makeComposerViewModel(chatClient: ChatClient) -> MessageComposerViewModel {
         let channelController = makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(
             channelController: channelController,

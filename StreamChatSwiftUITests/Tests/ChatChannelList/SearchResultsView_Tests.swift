@@ -7,7 +7,7 @@ import SnapshotTesting
 @testable import StreamChatSwiftUI
 import XCTest
 
-class SearchResultsView_Tests: StreamChatTestCase {
+@MainActor class SearchResultsView_Tests: StreamChatTestCase {
 
     func test_searchResultsView_snapshotResults() {
         // Given

@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// Factory used to create view models.
-public class ViewModelsFactory {
+@preconcurrency @MainActor public class ViewModelsFactory {
     private init() { /* Private init */ }
 
     /// Creates the `ChannelListViewModel`.

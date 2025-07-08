@@ -8,7 +8,7 @@ import Combine
 @testable import StreamChatTestTools
 import XCTest
 
-class AddUsersViewModel_Tests: StreamChatTestCase {
+@MainActor class AddUsersViewModel_Tests: StreamChatTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 

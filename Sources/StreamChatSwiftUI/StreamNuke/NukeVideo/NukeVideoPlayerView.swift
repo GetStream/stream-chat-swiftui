@@ -1,11 +1,14 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
+#if swift(>=6.0)
 import AVKit
-import Foundation
+#else
+@preconcurrency import AVKit
+#endif
 
-#if !os(watchOS)
+import Foundation
 
 @MainActor
 final class NukeVideoPlayerView: _PlatformBaseView {
@@ -17,6 +20,9 @@ final class NukeVideoPlayerView: _PlatformBaseView {
             _playerLayer?.videoGravity = videoGravity
         }
     }
+
+    /// `true` by default. If disabled, the video will resize with the frame without animations
+    var animatesFrameChanges = true
 
     /// `true` by default. If disabled, will only play a video once.
     var isLooping = true {
@@ -53,17 +59,23 @@ final class NukeVideoPlayerView: _PlatformBaseView {
 
     private var _playerLayer: AVPlayerLayer?
 
-    #if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
     override func layoutSubviews() {
         super.layoutSubviews()
 
+        CATransaction.begin()
+        CATransaction.setDisableActions(!animatesFrameChanges)
         _playerLayer?.frame = bounds
+        CATransaction.commit()
     }
-    #elseif os(macOS)
+#elseif os(macOS)
     override func layout() {
         super.layout()
 
+        CATransaction.begin()
+        CATransaction.setDisableActions(!animatesFrameChanges)
         _playerLayer?.frame = bounds
+        CATransaction.commit()
     }
 #endif
 
@@ -101,7 +113,7 @@ final class NukeVideoPlayerView: _PlatformBaseView {
             object: player?.currentItem
         )
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
@@ -117,14 +129,18 @@ final class NukeVideoPlayerView: _PlatformBaseView {
     }
 
     func play() {
-        guard let asset = asset else {
+        guard let asset else {
             return
         }
 
         let playerItem = AVPlayerItem(asset: asset)
         let player = AVQueuePlayer(playerItem: playerItem)
         player.isMuted = true
-        player.preventsDisplaySleepDuringVideoPlayback = false
+#if os(visionOS)
+            player.preventsAutomaticBackgroundingDuringVideoPlayback = false
+#else
+            player.preventsDisplaySleepDuringVideoPlayback = false
+#endif
         player.actionAtItemEnd = isLooping ? .none : .pause
         self.player = player
 
@@ -156,7 +172,7 @@ final class NukeVideoPlayerView: _PlatformBaseView {
         }
     }
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
     override func willMove(toWindow newWindow: UIWindow?) {
         if newWindow != nil && shouldResumeOnInterruption {
             player?.play()
@@ -171,21 +187,9 @@ final class NukeVideoPlayerView: _PlatformBaseView {
     }
 }
 
-extension AVLayerVideoGravity {
-    init(_ contentMode: ImageResizingMode) {
-        switch contentMode {
-        case .fill: self = .resize
-        case .aspectFill: self = .resizeAspectFill
-        default: self = .resizeAspect
-        }
-    }
-}
-
 @MainActor
 extension AVPlayer {
     var nowPlaying: Bool {
         rate != 0 && error == nil
     }
 }
-
-#endif

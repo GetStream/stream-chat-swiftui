@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -24,7 +24,7 @@ struct ImageCacheKey: Hashable, Sendable {
     // This is faster than using AnyHashable (and it shows in performance tests).
     enum Inner: Hashable, Sendable {
         case custom(String)
-        case `default`(CacheKey)
+        case `default`(MemoryCacheKey)
     }
 
     init(key: String) {
@@ -32,6 +32,6 @@ struct ImageCacheKey: Hashable, Sendable {
     }
 
     init(request: ImageRequest) {
-        self.key = .default(request.makeImageCacheKey())
+        self.key = .default(MemoryCacheKey(request))
     }
 }

@@ -6,7 +6,7 @@ import Foundation
 @testable import StreamChat
 @testable import StreamChatTestTools
 
-public class ChatMessageControllerSUI_Mock: ChatMessageController {
+public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Sendable {
     /// Creates a new mock instance of `ChatMessageController`.
     public static func mock(
         chatClient: ChatClient,
