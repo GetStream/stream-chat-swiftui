@@ -4,7 +4,30 @@
 
 import SwiftUI
 
+enum LazyImageContentState {
+    case loaded(UIImage)
+    case placeholder
+    case loading
+    case error(Error)
+}
+
 extension LazyImage {
+
+    init(
+        imageURL: URL?,
+        @ViewBuilder content: @escaping (LazyImageContentState) -> Content
+    ) {
+        let placeholderContent: (LazyImageState) -> Content = { state in
+            if let image = state.image {
+                content(.loaded(image.imageContainer.image))
+            } else if let error = state.error {
+                content(.error(error))
+            } else {
+                content(.loading)
+            }
+        }
+        self.init(imageURL: imageURL, content: placeholderContent)
+    }
 
     init(imageURL: URL?) where Content == NukeImage {
         let imageCDN = InjectedValues[\.utils].imageCDN
