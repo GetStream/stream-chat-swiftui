@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add support for customising the `MessageAvatarView` placeholder [#878](https://github.com/GetStream/stream-chat-swiftui/pull/878)
 
 # [4.81.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.81.0)
 _July 03, 2025_
