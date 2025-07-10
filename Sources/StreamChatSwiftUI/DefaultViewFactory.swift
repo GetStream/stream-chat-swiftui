@@ -500,6 +500,16 @@ extension ViewFactory {
         GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
     }
     
+    public func makeVideoPlayerFooterView(
+        attachment: ChatMessageVideoAttachment,
+        shown: Binding<Bool>
+    ) -> some View {
+        VideoPlayerFooterView(
+            attachment: attachment,
+            shown: shown
+        )
+    }
+    
     public func makeDeletedMessageView(
         for message: ChatMessage,
         isFirst: Bool,
