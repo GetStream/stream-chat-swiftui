@@ -70,7 +70,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         let utils = Utils(
             channelListConfig: ChannelListConfig(
-                messageRelativeDateFormatEnabled: true
+                messageRelativeDateFormatEnabled: true,
+                channelItemMutedStyle: .afterChannelName
             ),
             messageListConfig: MessageListConfig(
                 messageDisplayOptions: .init(showOriginalTranslatedButton: true),
