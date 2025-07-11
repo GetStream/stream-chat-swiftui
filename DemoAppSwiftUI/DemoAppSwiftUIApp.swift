@@ -151,6 +151,13 @@ extension AppState {
             return ChannelListQuery(
                 filter: .containMembers(userIds: [currentUserId]),
                 sort: [
+                    Sorting(key: .default)
+                ]
+            )
+        case .initial where AppConfiguration.default.isChannelPinningFeatureEnabled:
+            return ChannelListQuery(
+                filter: .containMembers(userIds: [currentUserId]),
+                sort: [
                     Sorting(key: .pinnedAt),
                     Sorting(key: .default)
                 ]

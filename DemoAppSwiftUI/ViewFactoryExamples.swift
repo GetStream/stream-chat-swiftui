@@ -32,9 +32,13 @@ class DemoAppFactory: ViewFactory {
             onError: onError
         )
         let archiveChannel = archiveChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
-        let pinChannel = pinChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
         actions.insert(archiveChannel, at: actions.count - 2)
-        actions.insert(pinChannel, at: actions.count - 2)
+
+        if AppConfiguration.default.isChannelPinningFeatureEnabled {
+            let pinChannel = pinChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
+            actions.insert(pinChannel, at: actions.count - 2)
+        }
+
         return actions
     }
     
