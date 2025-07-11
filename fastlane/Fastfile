@@ -492,6 +492,20 @@ lane :lint_pr do
   danger(dangerfile: 'Dangerfile') if is_ci
 end
 
+desc 'Run source code formatting/linting'
+lane :run_swift_format do |options|
+  Dir.chdir('..') do
+    strict = options[:strict] ? '--lint' : nil
+    sources_matrix[:swiftformat_include].each do |path|
+      sh("mint run swiftformat #{strict} --config .swiftformat --exclude #{sources_matrix[:swiftformat_exclude].join(',')} #{path}")
+      next if path.include?('Tests')
+
+      sh("mint run swiftlint lint --config .swiftlint.yml --fix --progress --quiet --reporter json #{path}") unless strict
+      sh("mint run swiftlint lint --config .swiftlint.yml --strict --progress --quiet --reporter json #{path}")
+    end
+  end
+end
+
 lane :install_runtime do |options|
   install_ios_runtime(version: options[:ios], custom_script: 'Scripts/install_ios_runtime.sh')
 end
@@ -515,7 +529,9 @@ lane :sources_matrix do
     sample_apps: ['Sources', 'DemoAppSwiftUI', xcode_project],
     ruby: ['fastlane', 'Gemfile', 'Gemfile.lock'],
     size: ['Sources', xcode_project],
-    sonar: ['Sources']
+    sonar: ['Sources'],
+    swiftformat_include: ['Sources', 'DemoAppSwiftUI', 'StreamChatSwiftUITests'],
+    swiftformat_exclude: ['**/Generated', 'Sources/StreamChatSwiftUI/StreamNuke', 'Sources/StreamChatSwiftUI/StreamSwiftyGif']
   }
 end
 

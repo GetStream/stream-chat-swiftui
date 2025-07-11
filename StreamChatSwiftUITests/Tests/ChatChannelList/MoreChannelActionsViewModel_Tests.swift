@@ -7,7 +7,6 @@
 import XCTest
 
 class MoreChannelActionsViewModel_Tests: StreamChatTestCase {
-
     @Injected(\.images) var images
 
     override func setUp() {

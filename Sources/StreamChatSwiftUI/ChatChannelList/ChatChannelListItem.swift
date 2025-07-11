@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the channel list item.
 public struct ChatChannelListItem<Factory: ViewFactory>: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
@@ -291,7 +290,6 @@ public struct InjectedChannelInfo {
 }
 
 extension ChatChannel {
-
     public var previewMessageText: String? {
         guard let previewMessage else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter

@@ -269,7 +269,6 @@ public enum SwipeDirection {
 }
 
 public struct TrailingSwipeActionsView: View {
-
     @Injected(\.colors) private var colors
 
     var channel: ChatChannel

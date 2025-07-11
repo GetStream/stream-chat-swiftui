@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 final class AudioRecordingNameFormatter_Tests: XCTestCase {
-
     func test_audioRecordingNameFormatter_index0() {
         // Given
         let formatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter()

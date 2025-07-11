@@ -6,7 +6,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct GroupNameView: View, KeyboardReadable {
-
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
 
@@ -73,7 +72,6 @@ struct GroupNameView: View, KeyboardReadable {
 }
 
 struct GroupControlsView: View {
-
     @Injected(\.colors) var colors
 
     @StateObject var viewModel: CreateGroupViewModel

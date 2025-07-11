@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
-
     override public func setUp() {
         super.setUp()
         let reactionsTopPadding: (ChatMessage) -> CGFloat = { message in
@@ -66,7 +65,6 @@ final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
 }
 
 class TestViewFactory: ViewFactory {
-
     @Injected(\.chatClient) public var chatClient
 
     private init() {}
@@ -83,7 +81,6 @@ class TestViewFactory: ViewFactory {
 }
 
 struct CustomReactionsContainer: View {
-    
     @Injected(\.utils) var utils
     
     let chunkSize = 2
@@ -165,7 +162,6 @@ struct ReactionsRow: Identifiable {
 }
 
 struct CustomMessageReactionView: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 
@@ -194,7 +190,6 @@ struct CustomMessageReactionView: View {
     }
 
     var body: some View {
-
         VStack {
             ForEach(reactionsRows) { reactionsRow in
                 HStack {
@@ -248,7 +243,6 @@ struct CustomMessageReactionView: View {
 }
 
 extension Array {
-
     func chunks(chunkSize: Int) -> [[Element]] {
         stride(from: 0, to: count, by: chunkSize).map {
             Array(self[$0..<Swift.min($0 + chunkSize, self.count)])

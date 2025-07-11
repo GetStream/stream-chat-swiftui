@@ -7,7 +7,6 @@ import UIKit
 
 /// View displaying slow mode countdown.
 public struct SlowModeView: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 

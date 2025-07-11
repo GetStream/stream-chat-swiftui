@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the add users popup.
 struct AddUsersView<Factory: ViewFactory>: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 

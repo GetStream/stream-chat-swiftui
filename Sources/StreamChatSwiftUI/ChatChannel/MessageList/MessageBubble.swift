@@ -7,7 +7,6 @@ import SwiftUI
 
 /// Contains info needed for a modifier to be applied to the message view.
 public struct MessageModifierInfo {
-
     public var message: ChatMessage
     public var isFirst: Bool
     public var injectedBackgroundColor: UIColor?
@@ -197,7 +196,6 @@ extension View {
 }
 
 extension ChatMessage {
-
     /// Returns the default corners that will be rounded by the message bubble modifier.
     /// - Parameters:
     ///  - isFirst: whether the message is first.

@@ -8,7 +8,6 @@ import StreamChat
 import SwiftUI
 
 class CreatePollViewModel: ObservableObject {
-    
     @Injected(\.utils) var utils
     
     @Published var question = ""

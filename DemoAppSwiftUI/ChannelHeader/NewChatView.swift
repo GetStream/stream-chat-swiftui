@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct NewChatView: View, KeyboardReadable {
-
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
 
@@ -106,7 +105,6 @@ struct NewChatView: View, KeyboardReadable {
 }
 
 struct TabBarVisibilityModifier: ViewModifier {
-    
     func body(content: Content) -> some View {
         if #available(iOS 16.0, *) {
             content.toolbar(.hidden, for: .tabBar)
@@ -117,7 +115,6 @@ struct TabBarVisibilityModifier: ViewModifier {
 }
 
 struct SelectedUserView: View {
-
     @Injected(\.colors) var colors
 
     var user: ChatUser
@@ -140,7 +137,6 @@ struct SelectedUserView: View {
 }
 
 struct SearchUsersView: View {
-
     @StateObject var viewModel: NewChatViewModel
 
     var body: some View {
@@ -160,7 +156,6 @@ struct SearchUsersView: View {
 }
 
 struct VerticallyCenteredView<Content: View>: View {
-
     var content: () -> Content
 
     var body: some View {
@@ -173,7 +168,6 @@ struct VerticallyCenteredView<Content: View>: View {
 }
 
 struct CreateGroupButton: View {
-
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
 
@@ -201,7 +195,6 @@ struct CreateGroupButton: View {
 }
 
 struct ChatUserView: View {
-
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
 
@@ -235,7 +228,6 @@ struct ChatUserView: View {
 }
 
 struct UsersHeaderView: View {
-
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
 

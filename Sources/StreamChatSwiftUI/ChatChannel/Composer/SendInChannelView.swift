@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the check whether the view should be send in the channel.
 struct SendInChannelView: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 

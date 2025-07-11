@@ -8,7 +8,6 @@
 import XCTest
 
 class MessageActions_Tests: StreamChatTestCase {
-
     func test_messageActions_currentUserDefault() {
         // Given
         let channel = mockDMChannel

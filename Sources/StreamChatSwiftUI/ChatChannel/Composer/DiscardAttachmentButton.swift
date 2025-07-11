@@ -6,7 +6,6 @@ import SwiftUI
 
 /// Button used for discarding attachments.
 public struct DiscardAttachmentButton: View {
-
     var attachmentIdentifier: String
     var onDiscard: (String) -> Void
 

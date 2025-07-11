@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View used as a video player's footer.
 struct VideoPlayerFooterView: View {
-
     @Injected(\.colors) private var colors
 
     let attachment: ChatMessageVideoAttachment

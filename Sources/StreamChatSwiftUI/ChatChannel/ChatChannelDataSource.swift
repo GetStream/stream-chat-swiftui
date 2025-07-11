@@ -6,7 +6,6 @@ import StreamChat
 
 /// Data source providing the chat messages.
 protocol MessagesDataSource: AnyObject {
-
     /// Called when the messages are updated.
     ///
     /// - Parameters:
@@ -32,7 +31,6 @@ protocol MessagesDataSource: AnyObject {
 
 /// The data source for the channel.
 protocol ChannelDataSource: AnyObject {
-
     /// Delegate implementing the `MessagesDataSource`.
     var delegate: MessagesDataSource? { get set }
 
@@ -81,7 +79,6 @@ protocol ChannelDataSource: AnyObject {
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
 class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
-
     let controller: ChatChannelController
     weak var delegate: MessagesDataSource?
     
@@ -154,7 +151,6 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
 
 /// Implementation of the `ChannelDataSource`. Loads the messages in a reply thread.
 class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate {
-
     let channelController: ChatChannelController
     let messageController: ChatMessageController
     

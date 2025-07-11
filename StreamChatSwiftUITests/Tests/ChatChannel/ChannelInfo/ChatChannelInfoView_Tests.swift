@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 class ChatChannelInfoView_Tests: StreamChatTestCase {
-
     func test_chatChannelInfoView_directChannelOfflineSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(

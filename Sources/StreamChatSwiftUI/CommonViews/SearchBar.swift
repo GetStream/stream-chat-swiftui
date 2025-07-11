@@ -6,7 +6,6 @@ import SwiftUI
 
 /// Search bar used in the message search.
 struct SearchBar: View, KeyboardReadable {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images

@@ -73,7 +73,6 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
 }
 
 extension ChatUser {
-
     var onlineText: String {
         if isOnline {
             return L10n.Message.Title.online

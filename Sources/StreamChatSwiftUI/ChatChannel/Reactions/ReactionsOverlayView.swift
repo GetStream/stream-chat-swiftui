@@ -90,7 +90,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
             .transition(.opacity)
             .onTapGesture {
-                dismissReactionsOverlay() { /* No additional handling. */ }
+                dismissReactionsOverlay { /* No additional handling. */ }
             }
             .edgesIgnoringSafeArea(.all)
             .alert(isPresented: $viewModel.errorShown) {

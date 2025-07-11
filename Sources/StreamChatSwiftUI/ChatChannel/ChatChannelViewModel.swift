@@ -8,7 +8,6 @@ import SwiftUI
 
 /// View model for the `ChatChannelView`.
 open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
-    
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
@@ -732,8 +731,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         var animateChanges = false
         for change in changes {
             switch change {
-            case .insert(_, index: _),
-                 .remove(_, index: _):
+            case .insert,
+                 .remove:
                 return true
             case let .update(message, index: index):
                 guard index.row >= messages.startIndex, index.row < messages.endIndex else { continue }
@@ -746,7 +745,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                    || !message.linkAttachments.isEmpty {
                     animateChanges = message.linkAttachments.isEmpty
                 }
-            case .move(_, fromIndex: _, toIndex: _):
+            case .move:
                 continue
             }
         }
@@ -799,7 +798,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 }
 
 extension ChatMessage: Identifiable {
-    
     public var scrollMessageId: String {
         messageId
     }
@@ -861,7 +859,6 @@ extension ChatMessage: Identifiable {
 }
 
 extension ChatChannel {
-    
     var readsString: String {
         reads.map { read in
             "\(read.user.id)-\(read.lastReadAt)"

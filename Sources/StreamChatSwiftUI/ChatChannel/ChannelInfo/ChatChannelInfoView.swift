@@ -7,7 +7,6 @@ import SwiftUI
 
 // View for the channel info screen.
 public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable {
-
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts

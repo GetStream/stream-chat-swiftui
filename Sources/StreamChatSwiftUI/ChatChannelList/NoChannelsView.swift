@@ -8,7 +8,6 @@ import SwiftUI
 ///
 /// Different view can be injected in its place.
 public struct NoChannelsView: View {
-    
     @Injected(\.images) private var images
 
     public var body: some View {

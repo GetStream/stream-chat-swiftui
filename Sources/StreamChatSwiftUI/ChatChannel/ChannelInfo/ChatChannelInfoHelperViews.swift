@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct ChatChannelInfoButton: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
@@ -40,7 +39,6 @@ public struct ChatChannelInfoButton: View {
 }
 
 struct ChannelInfoDivider: View {
-
     @Injected(\.colors) private var colors
 
     var body: some View {
@@ -51,7 +49,6 @@ struct ChannelInfoDivider: View {
 }
 
 public struct ChatInfoOptionsView<Factory: ViewFactory>: View {
-    
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -193,7 +190,6 @@ public struct NavigatableChatInfoItemView<Destination: View>: View {
 }
 
 struct DisclosureIndicatorView: View {
-
     @Injected(\.colors) private var colors
 
     var body: some View {
@@ -203,7 +199,6 @@ struct DisclosureIndicatorView: View {
 }
 
 public struct ChannelInfoItemView<TrailingView: View>: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
@@ -246,7 +241,6 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
 }
 
 struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
@@ -278,7 +272,6 @@ struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
 }
 
 public struct ChatInfoMentionText: View {
-
     @Injected(\.colors) private var colors
 
     var participant: ParticipantInfo?

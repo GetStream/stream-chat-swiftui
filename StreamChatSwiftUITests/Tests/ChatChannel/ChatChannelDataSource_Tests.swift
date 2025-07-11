@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 class ChatChannelDataSource_Tests: StreamChatTestCase {
-
     private let message = ChatMessage.mock(
         id: .unique,
         cid: .unique,
@@ -170,7 +169,6 @@ class ChatChannelDataSource_Tests: StreamChatTestCase {
     // MARK: - private
 
     private class MockMessagesDataSourceHandler: MessagesDataSource {
-
         var updateMessagesCalled = false
         var updateChannelCalled = false
 

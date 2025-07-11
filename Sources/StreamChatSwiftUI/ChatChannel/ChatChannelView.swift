@@ -219,7 +219,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 }
 
 extension PresentationMode: Equatable {
-
     public static func == (lhs: PresentationMode, rhs: PresentationMode) -> Bool {
         lhs.isPresented == rhs.isPresented
     }

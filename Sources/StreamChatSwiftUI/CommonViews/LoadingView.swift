@@ -18,7 +18,6 @@ public struct LoadingView: View {
 
 /// Loading view showing redacted channel list data.
 public struct RedactedLoadingView<Factory: ViewFactory>: View {
-
     public var factory: Factory
 
     public var body: some View {
@@ -42,7 +41,6 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
 }
 
 struct RedactedChannelCell: View {
-
     @Injected(\.colors) private var colors
 
     private let circleSize: CGFloat = 48
@@ -71,7 +69,6 @@ struct RedactedChannelCell: View {
 }
 
 struct RedactedRectangle: View {
-
     var width: CGFloat?
     var redactedColor: Color
 

@@ -8,7 +8,6 @@ import SwiftUI
 
 @available(iOS 15.0, *)
 struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
-        
     @State var text = ""
     @State var shouldShow = false
     
@@ -214,7 +213,7 @@ struct BlurredBackground: View {
 }
 
 struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    static var defaultValue: CGFloat?
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
@@ -241,7 +240,6 @@ struct ComposerAction: Equatable, Identifiable {
 
 @available(iOS 15.0, *)
 struct ComposerActionsView: View {
-    
     @ObservedObject var viewModel: MessageComposerViewModel
     
     @State var composerActions: [ComposerAction] = []
@@ -346,7 +344,6 @@ struct ComposerActionsView: View {
 }
 
 struct ComposerActionView: View {
-    
     private let imageSize: CGFloat = 34
     
     var composerAction: ComposerAction

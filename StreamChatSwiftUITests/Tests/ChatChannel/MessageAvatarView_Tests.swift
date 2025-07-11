@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 class MessageAvatarView_Tests: StreamChatTestCase {
-
     func test_messageAvatarView_defaultPlaceholder_empty() {
         // Given
         let view = MessageAvatarView(

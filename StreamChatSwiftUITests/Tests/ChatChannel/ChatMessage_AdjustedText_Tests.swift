@@ -8,7 +8,6 @@
 import XCTest
 
 class ChatMessage_AdjustedText_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         let composerConfig = ComposerConfig(adjustMessageOnSend: { message in

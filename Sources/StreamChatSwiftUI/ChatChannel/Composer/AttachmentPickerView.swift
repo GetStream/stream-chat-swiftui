@@ -143,7 +143,6 @@ public struct AttachmentSourcePickerView: View {
     }
 
     public var body: some View {
-
         HStack(alignment: .center, spacing: 24) {
             AttachmentPickerButton(
                 icon: images.attachmentPickerPhotos,

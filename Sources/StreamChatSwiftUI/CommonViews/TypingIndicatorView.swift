@@ -6,7 +6,6 @@ import SwiftUI
 
 /// View shown when other users are typing.
 public struct TypingIndicatorView: View {
-
     @State private var isTyping = false
 
     private let animationDuration: CGFloat = 0.75

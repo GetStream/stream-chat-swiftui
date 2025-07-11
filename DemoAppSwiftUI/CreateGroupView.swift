@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct CreateGroupView: View, KeyboardReadable {
-
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
 
@@ -76,7 +75,6 @@ struct CreateGroupView: View, KeyboardReadable {
 }
 
 struct SelectedUserGroupView: View {
-
     @Injected(\.fonts) var fonts
 
     private let avatarSize: CGFloat = 50
@@ -120,7 +118,6 @@ struct SelectedUserGroupView: View {
 }
 
 struct SearchBar: View {
-
     @Injected(\.colors) var colors
 
     @Binding var text: String
@@ -129,7 +126,6 @@ struct SearchBar: View {
 
     var body: some View {
         HStack {
-
             TextField("Search ...", text: $text)
                 .padding(7)
                 .padding(.horizontal, 25)

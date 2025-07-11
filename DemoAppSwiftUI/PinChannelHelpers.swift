@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct DemoAppChatChannelListItem: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils

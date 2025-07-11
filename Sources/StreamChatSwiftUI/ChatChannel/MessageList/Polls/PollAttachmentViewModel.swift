@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View model for the `PollAttachmentView`.
 public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
-    
     static let numberOfVisibleOptionsShown = 10
     private var isCastingVote = false
     @Published private var isClosingPoll = false
