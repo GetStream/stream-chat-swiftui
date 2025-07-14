@@ -8,10 +8,13 @@ import SwiftUI
 /// View displaying pinned messages in the chat info screen.
 public struct PinnedMessagesView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
 
     @StateObject private var viewModel: PinnedMessagesViewModel
     
     let factory: Factory
+    private let channel: ChatChannel
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
@@ -24,6 +27,7 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                 channelController: channelController
             )
         )
+        self.channel = channel
         self.factory = factory
     }
 
@@ -33,7 +37,27 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.pinnedMessages) { message in
-                            PinnedMessageView(factory: factory, message: message, channel: viewModel.channel)
+                            ZStack {
+                                PinnedMessageView(factory: factory, message: message, channel: viewModel.channel)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        viewModel.selectedMessage = message
+                                    }
+                                NavigationLink(
+                                    tag: message,
+                                    selection: $viewModel.selectedMessage
+                                ) {
+                                    LazyView(
+                                        makeMessageDestination(message: message)
+                                            .modifier(HideTabBarModifier(
+                                                handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
+                                            ))
+                                    )
+                                } label: {
+                                    EmptyView()
+                                }
+                                .opacity(0) // Fixes showing accessibility button shape
+                            }
                             Divider()
                         }
                     }
@@ -48,6 +72,26 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
             }
         }
         .navigationTitle(L10n.ChatInfo.PinnedMessages.title)
+    }
+
+    private func makeMessageDestination(message: ChatMessage) -> ChatChannelView<Factory> {
+        let channelController = utils.channelControllerFactory
+            .makeChannelController(for: channel.cid)
+
+        var messageController: ChatMessageController?
+        if let parentMessageId = message.parentMessageId {
+            messageController = chatClient.messageController(
+                cid: channel.cid,
+                messageId: parentMessageId
+            )
+        }
+
+        return ChatChannelView(
+            viewFactory: factory,
+            channelController: channelController,
+            messageController: messageController,
+            scrollToMessage: message
+        )
     }
 }
 
