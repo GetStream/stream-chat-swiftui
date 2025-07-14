@@ -15,7 +15,6 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
     
     let factory: Factory
     private let channel: ChatChannel
-    private var onItemTap: ((ChatMessage) -> Void)?
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
