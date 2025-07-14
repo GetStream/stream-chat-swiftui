@@ -54,10 +54,20 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        ChatTitleView(name: channelName)
+                        HStack(spacing: 6) {
+                            ChatTitleView(name: channelName)
+                            if channel.isMuted, mutedLayoutStyle == .afterChannelName {
+                                mutedIcon
+                                    .frame(maxHeight: 14)
+                                    .padding(.bottom, -2)
+                            }
+                        }
 
                         Spacer()
 
+                        if channel.isMuted, mutedLayoutStyle == .topRightCorner {
+                            mutedIcon
+                        }
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
                             UnreadIndicatorView(
                                 unreadCount: channel.unreadCount.messages
@@ -93,13 +103,14 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         .id("\(channel.id)-base")
     }
 
+    private var mutedLayoutStyle: ChannelItemMutedLayoutStyle {
+        utils.channelListConfig.channelItemMutedStyle
+    }
+
     private var subtitleView: some View {
         HStack(spacing: 4) {
-            if let image = image {
-                Image(uiImage: image)
-                    .customizable()
-                    .frame(maxHeight: 12)
-                    .foregroundColor(Color(colors.subtitleText))
+            if channel.isMuted, mutedLayoutStyle == .default {
+                mutedIcon
             } else {
                 if channel.shouldShowTypingIndicator {
                     TypingIndicatorView()
@@ -113,11 +124,38 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     SubtitleText(text: draftText)
                 }
             } else {
-                SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
+                SubtitleText(text: subtitleText)
             }
             Spacer()
         }
         .accessibilityIdentifier("subtitleView")
+    }
+
+    private var subtitleText: String {
+        if let injectedSubtitle = injectedChannelInfo?.subtitle {
+            return injectedSubtitle
+        }
+        if mutedLayoutStyle != .default {
+            return channelSubtitleText
+        }
+        return channel.subtitleText
+    }
+
+    private var channelSubtitleText: String {
+        if channel.shouldShowTypingIndicator {
+            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+        } else if let previewMessageText = channel.previewMessageText {
+            return previewMessageText
+        } else {
+            return L10n.Channel.Item.emptyMessages
+        }
+    }
+
+    private var mutedIcon: some View {
+        Image(uiImage: images.muted)
+            .customizable()
+            .frame(maxHeight: 12)
+            .foregroundColor(Color(colors.subtitleText))
     }
 
     private var shouldShowReadEvents: Bool {
@@ -344,4 +382,24 @@ extension ChatChannel {
             return ""
         }
     }
+}
+
+/// The style for the muted icon in the channel list item.
+public struct ChannelItemMutedLayoutStyle: Hashable {
+    let identifier: String
+
+    init(_ identifier: String) {
+        self.identifier = identifier
+    }
+
+    /// The default style shows the muted icon and the text "channel is muted" as the subtitle text.
+    public static var `default`: ChannelItemMutedLayoutStyle = .init("default")
+
+    /// This style shows the muted icon at the top right corner of the channel item.
+    /// The subtitle text shows the last message preview text.
+    public static var topRightCorner: ChannelItemMutedLayoutStyle = .init("topRightCorner")
+
+    /// This style shows the muted icon after the channel name.
+    /// The subtitle text shows the last message preview text.
+    public static var afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
 }

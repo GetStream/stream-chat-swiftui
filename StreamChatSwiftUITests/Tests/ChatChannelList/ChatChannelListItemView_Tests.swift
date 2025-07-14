@@ -95,7 +95,83 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    func test_channelListItem_muted_defaultStyle() throws {
+        // Given
+        let message = try mockPollMessage(isSentByCurrentUser: false)
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            latestMessages: [message],
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil),
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_muted_channelNameStyle() throws {
+        // Given
+        streamChat?.utils.channelListConfig.channelItemMutedStyle = .afterChannelName
+        let message = try mockPollMessage(isSentByCurrentUser: false)
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            unreadCount: .mock(messages: 4),
+            latestMessages: [message],
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil),
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_muted_topRightCornerStyle() throws {
+        // Given
+        streamChat?.utils.channelListConfig.channelItemMutedStyle = .topRightCorner
+        let message = try mockPollMessage(isSentByCurrentUser: false)
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            unreadCount: .mock(messages: 4),
+            latestMessages: [message],
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil),
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            avatar: .circleImage,
+            onlineIndicatorShown: true,
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_channelListItem_giphyMessageLatestButPreviewIsAnotherMessage() throws {
         // Given
         let previewMessage = try mockImageMessage(text: "Hi!", isSentByCurrentUser: true)
@@ -345,7 +421,7 @@ final class ChatChannelListItemView_Tests: StreamChatTestCase {
             isSentByCurrentUser: isSentByCurrentUser
         )
     }
-    
+
     private func mockVideoMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
         .mock(
             id: .unique,
