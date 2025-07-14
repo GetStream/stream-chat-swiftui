@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 class ReactionsOverlayView_Tests: StreamChatTestCase {
-    
     private static let screenSize = CGSize(width: 393, height: 852)
 
     private let testMessage = ChatMessage.mock(
@@ -260,7 +259,6 @@ class ReactionsOverlayView_Tests: StreamChatTestCase {
 }
 
 struct VerticallyCenteredView<Content: View>: View {
-
     var content: () -> Content
 
     var body: some View {

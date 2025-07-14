@@ -59,7 +59,6 @@ struct ReactionsOverlayContainer: View {
 }
 
 public extension ChatMessage {
-
     func reactionOffsetX(
         for contentRect: CGRect,
         availableWidth: CGFloat = UIScreen.main.bounds.width,

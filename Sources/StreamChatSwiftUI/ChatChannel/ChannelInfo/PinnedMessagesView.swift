@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View displaying pinned messages in the chat info screen.
 public struct PinnedMessagesView<Factory: ViewFactory>: View {
-    
     @Injected(\.images) private var images
 
     @StateObject private var viewModel: PinnedMessagesViewModel
@@ -53,7 +52,6 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
 }
 
 struct PinnedMessageView<Factory: ViewFactory>: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils

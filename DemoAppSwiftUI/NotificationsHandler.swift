@@ -11,7 +11,6 @@ import UIKit
 /// When a notification is received, the channel id is extracted from the notification object.
 /// The code below shows an example how to use it to navigate directly to the corresponding screen.
 class NotificationsHandler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
-
     @Injected(\.chatClient) private var chatClient
 
     @Published var notificationChannelId: String?

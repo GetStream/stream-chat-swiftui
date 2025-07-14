@@ -7,7 +7,6 @@ import StreamChat
 import SwiftUI
 
 class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
-    
     @Injected(\.chatClient) var chatClient
     
     @Published var comments = [PollVote]()

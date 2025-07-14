@@ -7,7 +7,6 @@
 import XCTest
 
 class InstantCommandsHandler_Tests: StreamChatTestCase {
-
     private var muteCommandHandler: MuteCommandHandler {
         MuteCommandHandler(
             channelController: ChatChannelTestHelpers.makeChannelController(chatClient: chatClient),

@@ -7,7 +7,6 @@
 import XCTest
 
 class MessageTypeResolver_Tests: XCTestCase {
-
     private let standardMessage = ChatMessage.mock(
         id: .unique,
         cid: .unique,

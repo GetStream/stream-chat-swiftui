@@ -120,7 +120,6 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
 }
 
 struct ChannelTitleView: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors

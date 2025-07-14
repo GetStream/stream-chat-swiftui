@@ -8,7 +8,6 @@ import SnapshotTesting
 import XCTest
 
 class NoChannelsView_Tests: StreamChatTestCase {
-
     func test_noChannelsView_snapshot() {
         // Given
         let view = NoChannelsView()

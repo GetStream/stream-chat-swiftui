@@ -6,10 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-import SwiftUI
-
 struct WhatsAppChannelHeaderModifier: ChatChannelHeaderViewModifier {
-    
     let channel: ChatChannel
     
     func body(content: Content) -> some View {
@@ -20,7 +17,6 @@ struct WhatsAppChannelHeaderModifier: ChatChannelHeaderViewModifier {
 }
 
 struct WhatsAppChannelHeader: ToolbarContent {
-    
     @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
     
     @Injected(\.chatClient) var chatClient

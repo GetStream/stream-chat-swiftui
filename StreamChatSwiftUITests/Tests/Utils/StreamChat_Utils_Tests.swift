@@ -8,7 +8,6 @@ import Foundation
 import XCTest
 
 class StreamChat_Utils_Tests: StreamChatTestCase {
-
     private let testURL = URL(string: "https://example.com")!
 
     @Injected(\.utils) var utils

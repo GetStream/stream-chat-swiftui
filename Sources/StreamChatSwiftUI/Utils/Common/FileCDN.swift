@@ -20,7 +20,6 @@ public protocol FileCDN: AnyObject {
 
 /// The `DefaultFileCDN` implemenation used by default.
 public final class DefaultFileCDN: FileCDN {
-
     // Initializer required for subclasses
     public init() {
         // Public init.

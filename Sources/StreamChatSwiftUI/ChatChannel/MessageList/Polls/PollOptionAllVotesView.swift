@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct PollOptionAllVotesView<Factory: ViewFactory>: View {
-
     @StateObject var viewModel: PollOptionAllVotesViewModel
     let factory: Factory
     

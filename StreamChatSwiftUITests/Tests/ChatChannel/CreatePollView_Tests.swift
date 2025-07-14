@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 final class CreatePollView_Tests: StreamChatTestCase {
-
     func test_createPollView_snapshot() {
         // Given
         let view = CreatePollView(

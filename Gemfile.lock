@@ -270,6 +270,7 @@ GEM
       rexml (>= 3.3.9)
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
+    lefthook (1.11.16)
     logger (1.7.0)
     method_source (1.1.0)
     mini_magick (4.13.2)
@@ -424,6 +425,7 @@ DEPENDENCIES
   fastlane-plugin-stream_actions (= 0.3.84)
   fastlane-plugin-versioning
   json
+  lefthook
   plist
   puma
   rackup

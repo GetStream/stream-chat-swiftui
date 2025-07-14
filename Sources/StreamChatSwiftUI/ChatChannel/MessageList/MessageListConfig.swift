@@ -106,7 +106,6 @@ public struct MessageListConfig {
 
 /// Contains information about the message paddings.
 public struct MessagePaddings {
-
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
     public let quotedViewPadding: CGFloat

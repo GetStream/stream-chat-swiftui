@@ -10,7 +10,6 @@ import SwiftUI
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-
     var streamChat: StreamChat?
 
     var chatClient: ChatClient = {

@@ -9,7 +9,6 @@ import SwiftUI
 
 @main
 struct DemoAppSwiftUIApp: App {
-
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Injected(\.chatClient) public var chatClient: ChatClient
 

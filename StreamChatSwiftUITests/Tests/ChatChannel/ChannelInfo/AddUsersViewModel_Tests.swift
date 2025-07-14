@@ -9,7 +9,6 @@ import Combine
 import XCTest
 
 class AddUsersViewModel_Tests: StreamChatTestCase {
-
     private var cancellables = Set<AnyCancellable>()
 
     func test_addUsersViewModel_loadedUsers() {

@@ -10,7 +10,6 @@ import XCTest
 
 /// Base class that sets up the `StreamChat` object.
 open class StreamChatTestCase: XCTestCase {
-
     public static var currentUserId: String = .unique
 
     public var chatClient: ChatClient_Mock = {

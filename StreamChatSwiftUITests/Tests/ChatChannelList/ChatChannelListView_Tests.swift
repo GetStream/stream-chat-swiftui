@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 class ChatChannelListView_Tests: StreamChatTestCase {
-
     func test_chatChannelScreen_snapshot() {
         // Given
         let controller = makeChannelListController()
@@ -139,7 +138,6 @@ class ChatChannelListView_Tests: StreamChatTestCase {
 }
 
 class ChannelAvatarViewFactory: ViewFactory {
-    
     @Injected(\.chatClient) var chatClient
     
     func makeChannelAvatarView(

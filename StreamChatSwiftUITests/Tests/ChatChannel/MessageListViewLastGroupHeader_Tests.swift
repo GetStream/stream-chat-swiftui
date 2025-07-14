@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(
@@ -71,7 +70,6 @@ class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
 }
 
 class CustomHeaderViewFactory: ViewFactory {
-
     @Injected(\.chatClient) var chatClient: ChatClient
 
     func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {

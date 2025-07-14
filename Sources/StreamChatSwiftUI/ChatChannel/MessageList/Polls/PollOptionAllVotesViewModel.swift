@@ -7,7 +7,6 @@ import StreamChat
 import SwiftUI
 
 class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDelegate {
-    
     let poll: Poll
     let option: PollOption
     let controller: PollVoteListController

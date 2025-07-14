@@ -8,7 +8,6 @@ import StreamChatSwiftUI
 import UIKit
 
 class ImageLoader_Mock: ImageLoading {
-
     static let defaultLoadedImage = UIImage(systemName: "checkmark")!
 
     func loadImage(

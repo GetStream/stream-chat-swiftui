@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the chat info participants.
 struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 

@@ -8,7 +8,6 @@
 import XCTest
 
 class CommandsHandler_Tests: StreamChatTestCase {
-
     func test_commandsHandler_commandCanBeExecuted() {
         // Given
         let commandsHandler = makeCommandsHandler()

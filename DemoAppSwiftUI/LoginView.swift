@@ -6,7 +6,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct LoginView: View {
-
     @StateObject var viewModel = LoginViewModel()
 
     var body: some View {
@@ -54,7 +53,6 @@ struct LoginView: View {
 }
 
 struct DemoUserView: View {
-
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
 

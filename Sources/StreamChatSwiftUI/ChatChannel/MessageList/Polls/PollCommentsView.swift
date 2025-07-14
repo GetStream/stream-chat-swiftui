@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct PollCommentsView<Factory: ViewFactory>: View {
-    
     @Injected(\.colors) var colors
     
     @Environment(\.presentationMode) var presentationMode

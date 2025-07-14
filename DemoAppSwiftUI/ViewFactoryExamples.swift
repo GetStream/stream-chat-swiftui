@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class DemoAppFactory: ViewFactory {
-
     @Injected(\.chatClient) public var chatClient
 
     private init() {}
@@ -149,7 +148,6 @@ class DemoAppFactory: ViewFactory {
 }
 
 struct ShowProfileModifier: ViewModifier {
-    
     let messageModifierInfo: MessageModifierInfo
     
     @ObservedObject var mentionsHandler: MentionsHandler
@@ -169,12 +167,10 @@ struct ShowProfileModifier: ViewModifier {
 }
 
 class MentionsHandler: ObservableObject {
-    
     @Published var selectedUser: ChatUser?
 }
 
 struct ProfileURLModifier: ViewModifier {
-    
     @ObservedObject var mentionsHandler: MentionsHandler
     var messageModifierInfo: MessageModifierInfo
     
@@ -215,7 +211,6 @@ struct ProfileURLModifier: ViewModifier {
 }
 
 struct CustomChannelDestination: View {
-
     var channel: ChatChannel
 
     var body: some View {
@@ -226,7 +221,6 @@ struct CustomChannelDestination: View {
 }
 
 class CustomFactory: ViewFactory {
-
     @Injected(\.chatClient) public var chatClient
 
     private init() {}

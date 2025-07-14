@@ -8,7 +8,6 @@ import SwiftUI
 import XCTest
 
 final class ChatMessageBubbles_Tests: StreamChatTestCase {
-
     @Injected(\.colors) var colors
 
     func test_messageBubbleCorners_notFirst() {

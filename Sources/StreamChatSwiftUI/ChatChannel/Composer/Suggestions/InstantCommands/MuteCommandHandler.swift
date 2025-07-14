@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Handles the mute command.
 public class MuteCommandHandler: TwoStepMentionCommand {
-
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 

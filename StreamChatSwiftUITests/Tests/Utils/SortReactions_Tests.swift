@@ -7,7 +7,6 @@ import StreamChat
 import XCTest
 
 final class SortReactions_Tests: StreamChatTestCase {
-    
     @Injected(\.utils) var utils
     @Injected(\.images) var images
 

@@ -12,7 +12,6 @@ enum LazyImageContentState {
 }
 
 extension LazyImage {
-
     init(
         imageURL: URL?,
         @ViewBuilder content: @escaping (LazyImageContentState) -> Content

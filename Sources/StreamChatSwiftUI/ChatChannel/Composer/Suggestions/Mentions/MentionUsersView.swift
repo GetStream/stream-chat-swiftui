@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the mentioned users.
 public struct MentionUsersView: View {
-
     @Injected(\.colors) private var colors
 
     private let itemHeight: CGFloat = 60

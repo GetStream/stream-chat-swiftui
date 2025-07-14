@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Handles the mention command and provides suggestions.
 public struct MentionsCommandHandler: CommandHandler {
-
     public let id: String
     public var displayInfo: CommandDisplayInfo?
 

@@ -6,7 +6,6 @@ import Foundation
 import StreamChat
 
 extension ChatChannel {
-
     /// Returns the online info text for a channel.
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
@@ -79,7 +78,6 @@ extension ChatChannel {
 }
 
 extension ChatUser {
-
     var mentionText: String {
         if let name = self.name, !name.isEmpty {
             return name

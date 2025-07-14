@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 class ViewFactory_Tests: StreamChatTestCase {
-
     private let message = ChatMessage.mock(
         id: .unique,
         cid: .unique,
@@ -1033,7 +1032,6 @@ class ViewFactory_Tests: StreamChatTestCase {
 }
 
 extension ChannelAction: Equatable {
-
     public static func == (lhs: ChannelAction, rhs: ChannelAction) -> Bool {
         lhs.id == rhs.id
     }

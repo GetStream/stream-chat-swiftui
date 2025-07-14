@@ -6,7 +6,10 @@
 --disable redundantType
 --disable extensionAccessControl
 --disable andOperator
---disable blankLinesAtStartOfScope
+--disable hoistPatternLet
+--disable typeSugar
+
+--disable redundantGet # it removes get async throws from getters
 
 # Rules inferred from Swift Standard Library:
 --disable anyObjectProtocol, wrapMultilineStatementBraces
@@ -18,7 +21,6 @@
 --commas inline
 --trimwhitespace nonblank-lines
 --stripunusedargs closure-only
---maxwidth 132
 
 --binarygrouping 4,7
 --octalgrouping none

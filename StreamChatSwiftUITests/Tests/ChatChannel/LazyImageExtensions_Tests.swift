@@ -11,7 +11,6 @@ import XCTest
 
 @MainActor
 final class LazyImageExtensions_Tests: StreamChatTestCase {
-
     func test_imageURL_empty() {
         // Given
         let lazyImageView = LazyImage(imageURL: nil)

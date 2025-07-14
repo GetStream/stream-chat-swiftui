@@ -8,7 +8,6 @@ import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
 public struct GalleryView<Factory: ViewFactory>: View {
-
     @Environment(\.presentationMode) var presentationMode
 
     @Injected(\.colors) private var colors
@@ -146,7 +145,6 @@ public struct GalleryView<Factory: ViewFactory>: View {
 }
 
 struct StreamVideoPlayer: View {
-
     @Injected(\.utils) private var utils
 
     private var fileCDN: FileCDN {
