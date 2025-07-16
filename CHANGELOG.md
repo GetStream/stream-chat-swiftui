@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.82.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.82.0)
+_July 16, 2025_
+
 ### ✅ Added
 - Add support for customising the `MessageAvatarView` placeholder [#878](https://github.com/GetStream/stream-chat-swiftui/pull/878)
 - Add `ViewFactory.makeVideoPlayerFooterView` to customize video player footer [#879](https://github.com/GetStream/stream-chat-swiftui/pull/879)
