@@ -1,7 +1,7 @@
 pre-commit:
   parallel: false
   jobs:
-    - run: mint run swiftformat --config .swiftformat --exclude '**/Generated', 'Sources/StreamChatUI/StreamNuke', 'Sources/StreamChatUI/StreamSwiftyGif', 'Sources/StreamChatUI/StreamDifferenceKit' {staged_files}
+    - run: mint run swiftformat --config .swiftformat --exclude '**/Generated', 'Sources/StreamChatSwiftUI/StreamNuke', 'Sources/StreamChatSwiftUI/StreamSwiftyGif' {staged_files}
       glob: "*.{swift}"
       stage_fixed: true
       skip:
