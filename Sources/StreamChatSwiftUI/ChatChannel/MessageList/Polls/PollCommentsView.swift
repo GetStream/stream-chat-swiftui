@@ -77,6 +77,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                 }
                 .padding()
             }
+            .background(Color(colors.background).ignoresSafeArea())
             .alertBanner(
                 isPresented: $viewModel.errorShown,
                 action: viewModel.refresh
