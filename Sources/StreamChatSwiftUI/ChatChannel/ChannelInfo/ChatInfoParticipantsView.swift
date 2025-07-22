@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View for the chat info participants.
-struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
+public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
@@ -14,7 +14,7 @@ struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
     
-    init(
+    public init(
         factory: Factory = DefaultViewFactory.shared,
         participants: [ParticipantInfo],
         onItemAppear: @escaping (ParticipantInfo) -> Void
@@ -24,7 +24,7 @@ struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
         self.onItemAppear = onItemAppear
     }
 
-    var body: some View {
+    public var body: some View {
         LazyVStack {
             ForEach(participants) { participant in
                 HStack {
