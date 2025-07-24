@@ -2,7 +2,6 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
-import Network
 import Sentry
 import StreamChat
 import StreamChatSwiftUI
@@ -25,11 +24,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        // Xcode 26 beta workaround
-        if #available(iOS 26.0, *) {
-            nw_tls_create_options()
-        }
-        
         /*
          //Customizations, uncomment to customize.
          var colors = ColorPalette()
