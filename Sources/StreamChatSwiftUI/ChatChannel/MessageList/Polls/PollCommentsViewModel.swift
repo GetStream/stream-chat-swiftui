@@ -76,7 +76,6 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
                 self?.errorShown = true
             }
         }
-        newCommentText = ""
     }
     
     func onAppear(comment: PollVote) {
@@ -93,11 +92,16 @@ class PollCommentsViewModel: ObservableObject, PollVoteListControllerDelegate {
     ) {
         if animateChanges {
             withAnimation {
-                self.comments = Array(self.commentsController.votes)
+                self.updateCommentList()
             }
         } else {
-            comments = Array(commentsController.votes)
+            updateCommentList()
         }
+    }
+    
+    private func updateCommentList() {
+        comments = Array(commentsController.votes)
+        newCommentText = comments.first(where: { $0.user?.id == chatClient.currentUserId })?.answerText ?? ""
     }
     
     private func loadComments() {
