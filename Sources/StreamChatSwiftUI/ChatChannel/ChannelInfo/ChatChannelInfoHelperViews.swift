@@ -38,10 +38,12 @@ public struct ChatChannelInfoButton: View {
     }
 }
 
-struct ChannelInfoDivider: View {
+public struct ChannelInfoDivider: View {
     @Injected(\.colors) private var colors
 
-    var body: some View {
+    public init() {}
+    
+    public var body: some View {
         Rectangle()
             .fill(Color(colors.innerBorder))
             .frame(height: 8)
@@ -240,19 +242,19 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
     }
 }
 
-struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
+public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
     let factory: Factory
     var participant: ParticipantInfo?
     
-    init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo?) {
+    public init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo?) {
         self.factory = factory
         self.participant = participant
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             let displayInfo = UserDisplayInfo(
                 id: participant?.chatUser.id ?? "",

@@ -58,7 +58,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
                     if viewModel.showMoreUsersButton {
                         ChatChannelInfoButton(
-                            title: L10n.ChatInfo.Users.loadMore(viewModel.notDisplayedParticipantsCount),
+                            title: viewModel.showMoreUsersButtonTitle,
                             iconName: "chevron.down",
                             foregroundColor: Color(colors.textLowEmphasis)
                         ) {
