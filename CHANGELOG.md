@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add support for showing current poll comment on alert [#891](https://github.com/GetStream/stream-chat-swiftui/pull/891)
 
 ### 🔄 Changed
+- Make `ChatChannelInfoView` subviews public for creating custom info views through composition [#892](https://github.com/GetStream/stream-chat-swiftui/pull/892)
+  - `ChannelTitleView`
+  - `ChannelInfoDivider`
+  - `ChatInfoDirectChannelView`
+  - `ChatInfoParticipantsView`
 
 # [4.82.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.82.0)
 _July 16, 2025_

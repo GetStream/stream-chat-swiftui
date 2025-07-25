@@ -99,6 +99,10 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
             return L10n.Alert.Actions.leaveGroupMessage
         }
     }
+    
+    public var showMoreUsersButtonTitle: String {
+        L10n.ChatInfo.Users.loadMore(notDisplayedParticipantsCount)
+    }
 
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
