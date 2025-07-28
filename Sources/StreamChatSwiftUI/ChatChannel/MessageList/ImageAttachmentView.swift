@@ -484,4 +484,8 @@ enum MediaAttachmentType {
 public struct MediaViewsOptions {
     /// The index of the selected media item.
     public let selectedIndex: Int
+
+    public init(selectedIndex: Int) {
+        self.selectedIndex = selectedIndex
+    }
 }
