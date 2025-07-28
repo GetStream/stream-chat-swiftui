@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Add support for showing current poll comment on alert [#891](https://github.com/GetStream/stream-chat-swiftui/pull/891)
 
+### 🐞 Fixed
+- Fix polls multiple answers minimum value being 1 instead of 2 [#898](https://github.com/GetStream/stream-chat-swiftui/pull/898)
+
 ### 🔄 Changed
 - Make `ChatChannelInfoView` subviews public for creating custom info views through composition [#892](https://github.com/GetStream/stream-chat-swiftui/pull/892)
   - `ChannelTitleView`

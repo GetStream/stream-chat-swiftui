@@ -33,3 +33,6 @@
 --wraparguments before-first
 --wrapparameters before-first
 --wrapcollections before-first
+
+# Exclude paths
+--exclude Sources/StreamChatSwiftUI/Generated,Sources/StreamChatSwiftUI/StreamSwiftyGif,Sources/StreamChatSwiftUI/StreamNuke
