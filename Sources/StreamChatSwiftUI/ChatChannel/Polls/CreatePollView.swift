@@ -119,7 +119,7 @@ public struct CreatePollView: View {
                         if viewModel.multipleAnswers {
                             HStack(alignment: .textFieldToggle) {
                                 VStack(alignment: .leading, spacing: 6) {
-                                    Text(L10n.Composer.Polls.typeNumberFrom1And10)
+                                    Text(L10n.Composer.Polls.typeNumberFrom2And10)
                                         .foregroundColor(Color(colors.alert))
                                         .font(fonts.caption1)
                                         .offset(y: viewModel.showsMaxVotesError ? 0 : 6)

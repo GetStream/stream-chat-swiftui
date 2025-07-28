@@ -148,7 +148,7 @@
 "composer.polls.duplicate-option" = "This is already an option";
 "composer.polls.multiple-answers" = "Multiple answers";
 "composer.polls.suggest-option" = "Suggest an option";
-"composer.polls.type-number-from-1-and-10" = "Type a number from 1 and 10";
+"composer.polls.type-number-from-2-and-10" = "Type a number from 2 and 10";
 "composer.audio-recording.start" = "Start recording audio message";
 "composer.audio-recording.stop" = "Stop recording audio message";
 

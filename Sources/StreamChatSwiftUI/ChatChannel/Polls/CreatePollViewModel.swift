@@ -76,7 +76,7 @@ class CreatePollViewModel: ObservableObject {
             .map { text in
                 guard !text.isEmpty else { return false }
                 let intValue = Int(text) ?? 0
-                return intValue < 1 || intValue > 10
+                return intValue < 2 || intValue > 10
             }
             .combineLatest($maxVotesEnabled)
             .map { $0 && $1 }
@@ -132,6 +132,7 @@ class CreatePollViewModel: ObservableObject {
         guard optionsErrorIndices.isEmpty else { return false }
         guard !showsMaxVotesError else { return false }
         guard options.contains(where: { !$0.trimmed.isEmpty }) else { return false }
+        guard !(maxVotesEnabled && maxVotes.trimmed.isEmpty) else { return false }
         return true
     }
     
