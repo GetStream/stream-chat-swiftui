@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.83.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.83.0)
+_July 29, 2025_
+
 ### ✅ Added
 - Add support for showing current poll comment on alert [#891](https://github.com/GetStream/stream-chat-swiftui/pull/891)
 
