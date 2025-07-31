@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View that displays the message author and the date of sending.
 public struct MessageAuthorAndDateView: View {
-    
     @Injected(\.utils) private var utils
     
     var message: ChatMessage
@@ -33,7 +32,6 @@ public struct MessageAuthorAndDateView: View {
 
 /// View that displays the message author.
 public struct MessageAuthorView: View {
-    
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -162,7 +160,6 @@ struct MessageSpacer: View {
 
 /// View that's displayed when a message is pinned.
 public struct MessagePinDetailsView: View {
-    
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
@@ -193,7 +190,6 @@ public struct MessagePinDetailsView: View {
 }
 
 public struct TopLeftView<Content: View>: View {
-    
     var content: () -> Content
     
     public init(content: @escaping () -> Content) {
@@ -212,7 +208,6 @@ public struct TopLeftView<Content: View>: View {
 }
 
 extension View {
-    
     public func textColor(for message: ChatMessage) -> Color {
         @Injected(\.colors) var colors
         

@@ -764,7 +764,7 @@ import SwiftUI
     }
     
     private func checkPickerSelectionState() {
-        if (!addedAssets.isEmpty || !addedFileURLs.isEmpty) {
+        if !addedAssets.isEmpty || !addedFileURLs.isEmpty {
             pickerTypeState = .collapsed
         }
     }

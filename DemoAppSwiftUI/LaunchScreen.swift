@@ -5,7 +5,6 @@
 import SwiftUI
 
 struct StreamLogoLaunch: View {
-
     @State private var move = false
     let streamBlue = Color(#colorLiteral(red: 0, green: 0.368627451, blue: 1, alpha: 1))
     @State private var swinging = false

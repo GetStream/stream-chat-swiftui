@@ -6,7 +6,6 @@
 @testable import StreamChatSwiftUI
 
 struct ChannelInfoMockUtils {
-
     static func setupMockMembers(
         count: Int,
         currentUserId: String,

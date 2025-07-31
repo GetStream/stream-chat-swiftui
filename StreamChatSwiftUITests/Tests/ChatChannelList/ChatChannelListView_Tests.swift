@@ -139,7 +139,6 @@ import XCTest
 }
 
 class ChannelAvatarViewFactory: ViewFactory {
-    
     @Injected(\.chatClient) var chatClient
     
     func makeChannelAvatarView(

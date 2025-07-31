@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct PollAttachmentView<Factory: ViewFactory>: View {
-    
     @Injected(\.chatClient) var chatClient
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
@@ -184,7 +183,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
 extension PollOption: Identifiable {}
 
 struct PollOptionView<Factory: ViewFactory>: View {
-    
     @ObservedObject var viewModel: PollAttachmentViewModel
     
     let factory: Factory
@@ -263,7 +261,6 @@ struct PollOptionView<Factory: ViewFactory>: View {
 }
 
 struct PollVotesIndicatorView: View {
-    
     @Injected(\.colors) var colors
     
     let alternativeStyle: Bool

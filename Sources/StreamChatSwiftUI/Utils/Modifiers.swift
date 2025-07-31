@@ -80,7 +80,6 @@ struct IconOverImageModifier: ViewModifier {
 }
 
 struct ChangeChannelBarsVisibilityModifier: ViewModifier {
-    
     @Injected(\.utils) private var utils
     
     var shouldShow: Bool

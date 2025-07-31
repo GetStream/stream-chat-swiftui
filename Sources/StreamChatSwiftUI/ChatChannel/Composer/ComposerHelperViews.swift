@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View used to indicate that an asset is a video.
 public struct VideoIndicatorView: View {
-
     @Injected(\.images) private var images
 
     public init() {}
@@ -152,7 +151,6 @@ struct AssetsAccessPermissionView: View {
 
 /// View for the quoted message header.
 struct QuotedMessageHeaderView: View {
-
     @Injected(\.fonts) var fonts
 
     @Binding var quotedMessage: ChatMessage?
@@ -179,7 +177,7 @@ struct QuotedMessageHeaderView: View {
         }
         .frame(height: 32)
         .accessibilityIdentifier("QuotedMessageHeaderView")
-        .onAppear() {
+        .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 showContent = true
             }
@@ -190,7 +188,6 @@ struct QuotedMessageHeaderView: View {
 
 /// View for the edit message header.
 struct EditMessageHeaderView: View {
-
     @Injected(\.fonts) var fonts
 
     @Binding var editedMessage: ChatMessage?

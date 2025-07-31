@@ -10,7 +10,6 @@ import UIKit
 let defaultScreenSize = CGSize(width: 360, height: 700)
 
 extension ChannelAlertType: Equatable {
-
     public static func == (lhs: ChannelAlertType, rhs: ChannelAlertType) -> Bool {
         if case let .deleteChannel(channel1) = lhs,
            case let .deleteChannel(channel2) = rhs {
@@ -26,7 +25,6 @@ extension ChannelAlertType: Equatable {
 }
 
 extension ChannelPopupType: Equatable {
-
     public static func == (lhs: ChannelPopupType, rhs: ChannelPopupType) -> Bool {
         if case let .moreActions(channel1) = lhs,
            case let .moreActions(channel2) = rhs {

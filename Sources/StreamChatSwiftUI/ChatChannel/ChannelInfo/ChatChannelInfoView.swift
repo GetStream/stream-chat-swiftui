@@ -7,7 +7,6 @@ import SwiftUI
 
 // View for the channel info screen.
 public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable {
-
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -59,7 +58,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
                     if viewModel.showMoreUsersButton {
                         ChatChannelInfoButton(
-                            title: L10n.ChatInfo.Users.loadMore(viewModel.notDisplayedParticipantsCount),
+                            title: viewModel.showMoreUsersButtonTitle,
                             iconName: "chevron.down",
                             foregroundColor: Color(colors.textLowEmphasis)
                         ) {

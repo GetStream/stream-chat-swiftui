@@ -31,7 +31,6 @@ public struct FileAttachmentPreview: View {
                         .font(fonts.body)
                         .padding()
                 } else {
-
                     if let adjustedUrl = adjustedUrl {
                         WebView(
                             url: adjustedUrl,

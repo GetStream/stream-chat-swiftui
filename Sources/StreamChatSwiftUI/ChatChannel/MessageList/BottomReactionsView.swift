@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct BottomReactionsView: View {
-    
     @Injected(\.chatClient) var chatClient
     @Injected(\.utils) var utils
     @Injected(\.colors) var colors

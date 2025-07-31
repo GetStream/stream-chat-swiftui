@@ -7,7 +7,6 @@ import StreamChat
 import XCTest
 
 class ChatChannelNamer_Tests: XCTestCase {
-
     var defaultMembers: [ChatChannelMember]!
 
     override func setUp() {

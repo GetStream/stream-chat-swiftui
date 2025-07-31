@@ -275,8 +275,8 @@ internal enum L10n {
       internal static var question: String { L10n.tr("Localizable", "composer.polls.question") }
       /// Suggest an option
       internal static var suggestOption: String { L10n.tr("Localizable", "composer.polls.suggest-option") }
-      /// Type a number from 1 and 10
-      internal static var typeNumberFrom1And10: String { L10n.tr("Localizable", "composer.polls.type-number-from-1-and-10") }
+      /// Type a number from 2 and 10
+      internal static var typeNumberMinMaxRange: String { L10n.tr("Localizable", "composer.polls.type-number-min-max-range") }
     }
     internal enum Quoted {
       /// Giphy

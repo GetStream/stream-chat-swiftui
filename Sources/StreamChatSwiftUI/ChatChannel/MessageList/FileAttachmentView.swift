@@ -116,7 +116,6 @@ public struct FileAttachmentView: View {
 }
 
 public struct FileAttachmentDisplayView: View {
-
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors

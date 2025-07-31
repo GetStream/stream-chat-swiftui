@@ -260,7 +260,6 @@ import XCTest
 }
 
 struct VerticallyCenteredView<Content: View>: View {
-
     var content: () -> Content
 
     var body: some View {

@@ -6,7 +6,6 @@ import SwiftUI
 
 /// View displaying a title and a close button.
 struct TitleWithCloseButton: View {
-
     @Injected(\.fonts) private var fonts
 
     var title: String

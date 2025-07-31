@@ -11,4 +11,6 @@ final class AppConfiguration {
     
     /// The translation language to set on connect.
     var translationLanguage: TranslationLanguage?
+    /// A flag indicating whether the channel pinning feature is enabled.
+    var isChannelPinningFeatureEnabled = false
 }

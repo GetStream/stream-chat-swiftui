@@ -7,7 +7,6 @@ import SwiftUI
 
 /// Default implementation of the commands container.
 struct CommandsContainerView: View {
-
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
 

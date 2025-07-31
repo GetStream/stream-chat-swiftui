@@ -230,7 +230,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
-
     @EnvironmentObject var viewModel: MessageComposerViewModel
     
     @Injected(\.colors) private var colors

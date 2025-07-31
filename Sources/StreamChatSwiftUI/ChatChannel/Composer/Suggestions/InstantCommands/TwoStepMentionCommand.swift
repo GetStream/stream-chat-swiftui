@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Base class that supports two step commands, where the second one is mentioning users.
 open class TwoStepMentionCommand: CommandHandler {
-
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
 

@@ -51,7 +51,6 @@ public struct TypingSuggestion: Sendable {
 }
 
 extension TypingSuggestion {
-
     static let empty = TypingSuggestion(
         text: "",
         locationRange: NSRange(

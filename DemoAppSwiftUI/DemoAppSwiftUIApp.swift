@@ -9,7 +9,6 @@ import SwiftUI
 
 @main
 struct DemoAppSwiftUIApp: App {
-
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Injected(\.chatClient) public var chatClient: ChatClient
 
@@ -150,6 +149,13 @@ extension AppState {
         guard let currentUserId = chatClient.currentUserId else { fatalError("Not logged in") }
         switch identifier {
         case .initial:
+            return ChannelListQuery(
+                filter: .containMembers(userIds: [currentUserId]),
+                sort: [
+                    Sorting(key: .default)
+                ]
+            )
+        case .initial where AppConfiguration.default.isChannelPinningFeatureEnabled:
             return ChannelListQuery(
                 filter: .containMembers(userIds: [currentUserId]),
                 sort: [

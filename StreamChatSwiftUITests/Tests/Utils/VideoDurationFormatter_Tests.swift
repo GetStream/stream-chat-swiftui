@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 final class VideoDurationFormatter_Tests: XCTestCase {
-
     func test_videoDurationFormatter_seconds() {
         // Given
         let formatter: VideoDurationFormatter = DefaultVideoDurationFormatter()

@@ -7,7 +7,6 @@
 import XCTest
 
 class ChatChannelExtensions_Tests: StreamChatTestCase {
-
     func test_typingIndicatorString_unknownValue() {
         // Given
         let channel = ChatChannel.mockDMChannel()

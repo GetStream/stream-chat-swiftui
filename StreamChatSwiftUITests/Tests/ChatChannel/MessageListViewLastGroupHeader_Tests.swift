@@ -71,7 +71,6 @@ import XCTest
 }
 
 class CustomHeaderViewFactory: ViewFactory {
-
     @Injected(\.chatClient) var chatClient: ChatClient
 
     func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {

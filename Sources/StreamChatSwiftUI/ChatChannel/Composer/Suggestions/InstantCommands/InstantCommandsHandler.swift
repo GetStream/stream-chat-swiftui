@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Handler for istant commands.
 public class InstantCommandsHandler: CommandHandler {
-
     public let id: String
     public var displayInfo: CommandDisplayInfo?
 

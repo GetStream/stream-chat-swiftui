@@ -7,7 +7,6 @@ import SwiftUI
 
 /// Config for customizing the composer.
 public struct ComposerConfig {
-
     public var isVoiceRecordingEnabled: Bool
     public var inputViewMinHeight: CGFloat
     public var inputViewMaxHeight: CGFloat

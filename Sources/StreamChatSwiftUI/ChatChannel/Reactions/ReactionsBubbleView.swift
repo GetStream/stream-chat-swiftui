@@ -11,8 +11,8 @@ public struct ReactionsBubbleModifier: ViewModifier {
 
     var message: ChatMessage
 
-    var borderColor: Color? = nil
-    var injectedBackground: UIColor? = nil
+    var borderColor: Color?
+    var injectedBackground: UIColor?
 
     private let cornerRadius: CGFloat = 18
 

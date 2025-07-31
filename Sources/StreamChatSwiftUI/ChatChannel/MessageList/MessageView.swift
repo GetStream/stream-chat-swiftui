@@ -226,7 +226,6 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
 }
 
 struct StreamTextView: View {
-    
     @Injected(\.fonts) var fonts
     
     let message: ChatMessage

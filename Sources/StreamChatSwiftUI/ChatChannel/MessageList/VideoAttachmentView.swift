@@ -66,7 +66,6 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
 }
 
 public struct VideoAttachmentsList<Factory: ViewFactory>: View {
-
     let factory: Factory
     let message: ChatMessage
     let width: CGFloat
@@ -100,7 +99,6 @@ public struct VideoAttachmentsList<Factory: ViewFactory>: View {
 }
 
 public struct VideoAttachmentView<Factory: ViewFactory>: View {
-
     let factory: Factory
     let attachment: ChatMessageVideoAttachment
     let message: ChatMessage
@@ -142,7 +140,6 @@ public struct VideoAttachmentView<Factory: ViewFactory>: View {
 }
 
 struct VideoAttachmentContentView<Factory: ViewFactory>: View {
-
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
 

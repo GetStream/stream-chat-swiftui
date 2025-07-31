@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Handles the unmute command.
 public class UnmuteCommandHandler: TwoStepMentionCommand {
-
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 

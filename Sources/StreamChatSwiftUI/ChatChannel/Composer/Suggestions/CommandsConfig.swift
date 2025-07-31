@@ -7,7 +7,6 @@ import StreamChat
 
 /// Configuration for the commands in the composer.
 public protocol CommandsConfig {
-
     /// The symbol that invokes mentions command.
     var mentionsSymbol: String { get }
 
@@ -24,7 +23,6 @@ public protocol CommandsConfig {
 
 /// Default commands configuration.
 public class DefaultCommandsConfig: CommandsConfig {
-
     public init() {
         // Public init.
     }

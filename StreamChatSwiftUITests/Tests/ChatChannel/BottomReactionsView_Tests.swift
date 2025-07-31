@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 final class BottomReactionsView_Tests: StreamChatTestCase {
-
     func test_bottomReactions_singleRow_otherUser() {
         // Given
         let reactionScores: [MessageReactionType: Int] = [

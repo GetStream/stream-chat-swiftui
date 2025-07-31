@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 class GalleryView_Tests: StreamChatTestCase {
-
     func test_galleryView_snapshotLoading() {
         // Given
         let imageMessage = ChatMessage.mock(

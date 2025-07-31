@@ -61,7 +61,6 @@ public struct ThreadSelectionInfo: Identifiable {
 }
 
 extension ThreadSelectionInfo: Hashable, Equatable {
-
     public static func == (lhs: ThreadSelectionInfo, rhs: ThreadSelectionInfo) -> Bool {
         lhs.id == rhs.id
     }

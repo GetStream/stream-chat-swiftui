@@ -30,9 +30,8 @@ struct ShareButtonView: View {
 
 /// View controller reprensetable which wraps up the activity view controller.
 struct ShareActivityView: UIViewControllerRepresentable {
-
     var activityItems: [Any]
-    var applicationActivities: [UIActivity]? = nil
+    var applicationActivities: [UIActivity]?
 
     func makeUIViewController(
         context: UIViewControllerRepresentableContext<ShareActivityView>

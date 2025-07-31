@@ -5,7 +5,6 @@
 import SwiftUI
 
 public struct StreamLazyImage: View {
-        
     var url: URL?
     var size: CGSize
     

@@ -12,7 +12,6 @@ enum MessageRepliesConstants {
 
 /// View shown below a message, when there are replies to it.
 public struct MessageRepliesView<Factory: ViewFactory>: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 

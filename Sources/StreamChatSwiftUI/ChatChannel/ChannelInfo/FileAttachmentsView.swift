@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View displaying file attachments.
 public struct FileAttachmentsView: View {
-
     @StateObject private var viewModel: FileAttachmentsViewModel
 
     @Injected(\.colors) private var colors
@@ -76,7 +75,6 @@ public struct FileAttachmentsView: View {
 }
 
 struct MonthlyAttachmentsHeader: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 

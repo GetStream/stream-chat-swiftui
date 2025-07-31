@@ -70,7 +70,6 @@ import SwiftUI
 
 /// Default implementations.
 extension CommandHandler {
-
     public var replacesMessageSent: Bool {
         false
     }
@@ -147,7 +146,6 @@ public struct CommandDisplayInfo {
 /// Main commands handler - decides which commands to invoke.
 /// Command is matched if there's an id matching.
 public class CommandsHandler: CommandHandler {
-
     private let commands: [CommandHandler]
     public let id: String = "main"
     public var displayInfo: CommandDisplayInfo?

@@ -2,7 +2,6 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
-import Network
 import Sentry
 import StreamChat
 import StreamChatSwiftUI
@@ -10,7 +9,6 @@ import SwiftUI
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-
     var streamChat: StreamChat?
 
     var chatClient: ChatClient = {
@@ -26,11 +24,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        // Xcode 26 beta workaround
-        if #available(iOS 26.0, *) {
-            nw_tls_create_options()
-        }
-        
         /*
          //Customizations, uncomment to customize.
          var colors = ColorPalette()
@@ -70,7 +63,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         let utils = Utils(
             channelListConfig: ChannelListConfig(
-                messageRelativeDateFormatEnabled: true
+                messageRelativeDateFormatEnabled: true,
+                channelItemMutedStyle: .afterChannelName
             ),
             messageListConfig: MessageListConfig(
                 messageDisplayOptions: .init(showOriginalTranslatedButton: true),

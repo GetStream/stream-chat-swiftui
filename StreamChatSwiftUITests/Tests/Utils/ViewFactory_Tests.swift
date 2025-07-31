@@ -134,7 +134,7 @@ import XCTest
         let view = viewFactory.makeMessageAvatarView(for: userInfo)
 
         // Then
-        XCTAssert(view is MessageAvatarView)
+        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
     }
 
     func test_viewFactory_makeQuotedMessageAvatarView() {
@@ -154,7 +154,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is MessageAvatarView)
+        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
     }
 
     func test_viewFactory_makeChannelHeaderViewModifier() {
@@ -1033,7 +1033,6 @@ import XCTest
 }
 
 extension ChannelAction: Equatable {
-
     public static func == (lhs: ChannelAction, rhs: ChannelAction) -> Bool {
         lhs.id == rhs.id
     }

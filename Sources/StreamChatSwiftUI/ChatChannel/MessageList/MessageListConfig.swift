@@ -24,7 +24,7 @@ public struct MessageListConfig {
         maxTimeIntervalBetweenMessagesInGroup: TimeInterval = 60,
         cacheSizeOnChatDismiss: Int = 1024 * 1024 * 100,
         iPadSplitViewEnabled: Bool = true,
-        scrollingAnchor: UnitPoint = .bottom,
+        scrollingAnchor: UnitPoint = .center,
         showNewMessagesSeparator: Bool = true,
         handleTabBarVisibility: Bool = true,
         messageListAlignment: MessageListAlignment = .standard,
@@ -106,7 +106,6 @@ public struct MessageListConfig {
 
 /// Contains information about the message paddings.
 public struct MessagePaddings {
-
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
     public let quotedViewPadding: CGFloat

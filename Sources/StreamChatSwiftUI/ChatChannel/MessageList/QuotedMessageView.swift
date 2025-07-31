@@ -211,7 +211,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 }
 
 struct VoiceRecordingPreview: View {
-    
     @Injected(\.images) var images
     @Injected(\.utils) var utils
     

@@ -8,7 +8,6 @@ import StreamSwiftTestHelpers
 import XCTest
 
 class TypingIndicatorView_Tests: StreamChatTestCase {
-
     func test_typingIndicatorView_snapshot() {
         // Given
         let view = TypingIndicatorView(isTyping: true)

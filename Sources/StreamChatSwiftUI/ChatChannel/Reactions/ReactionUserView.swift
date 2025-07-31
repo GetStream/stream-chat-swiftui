@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View displaying single user reaction.
 struct ReactionUserView: View {
-
     @Injected(\.chatClient) private var chatClient
     @Injected(\.fonts) private var fonts
 
@@ -54,7 +53,6 @@ struct ReactionUserView: View {
 
 /// Helper view displaying the reaction overlay.
 struct SingleReactionView: View {
-
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
@@ -103,7 +101,6 @@ struct SingleReactionView: View {
 
 /// View displaying the reaction image.
 struct ReactionImageView: View {
-
     @Injected(\.colors) private var colors
 
     var image: UIImage
@@ -135,7 +132,6 @@ struct ReactionImageView: View {
 
 /// View bubbles shown at the bottom of a reaction.
 struct ReactionBubbles: View {
-
     @Injected(\.colors) private var colors
 
     var isSentByCurrentUser: Bool

@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct iMessagePocView: View {
-
     @Injected(\.colors) var colors
 
     @StateObject var viewModel: iMessageChatChannelListViewModel
@@ -106,7 +105,6 @@ struct iMessagePocView: View {
 }
 
 class iMessageChatChannelListViewModel: ChatChannelListViewModel {
-
     @Published var pinnedChannels = [ChatChannel]()
 
     func pinChannelTapped(_ channel: ChatChannel) {
@@ -117,7 +115,6 @@ class iMessageChatChannelListViewModel: ChatChannelListViewModel {
 }
 
 class iMessageViewFactory: ViewFactory {
-
     @Injected(\.chatClient) var chatClient
     @Injected(\.colors) var colors
 

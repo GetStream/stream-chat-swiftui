@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
-
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
     @Injected(\.colors) var colors
@@ -51,7 +50,6 @@ public struct CustomChannelHeader: ToolbarContent {
 }
 
 struct CustomChannelModifier: ChannelListHeaderViewModifier {
-
     @Injected(\.chatClient) var chatClient
 
     var title: String

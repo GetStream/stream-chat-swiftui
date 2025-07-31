@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct JumpToUnreadButton: View {
-    
     @Injected(\.colors) var colors
     
     var unreadCount: Int

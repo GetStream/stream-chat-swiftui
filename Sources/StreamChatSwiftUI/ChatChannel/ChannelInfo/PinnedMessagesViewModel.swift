@@ -12,7 +12,8 @@ import SwiftUI
     let channel: ChatChannel
 
     @Published var pinnedMessages: [ChatMessage]
-    
+    @Published var selectedMessage: ChatMessage?
+
     private var channelController: ChatChannelController?
     
     public init(channel: ChatChannel, channelController: ChatChannelController? = nil) {

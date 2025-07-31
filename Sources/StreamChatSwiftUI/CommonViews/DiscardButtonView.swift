@@ -6,7 +6,6 @@ import SwiftUI
 
 /// View for the discard button.
 public struct DiscardButtonView: View {
-
     @Injected(\.images) private var images
 
     var color = Color.black.opacity(0.8)

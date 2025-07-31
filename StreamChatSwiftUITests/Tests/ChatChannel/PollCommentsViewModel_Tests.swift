@@ -52,7 +52,7 @@ import XCTest
         XCTAssertFalse(viewModel.showsAddCommentButton)
     }
     
-    func test_addComment_whenSuccess_thenCommentTextReset() {
+    func test_addComment_whenSuccess() {
         // Given
         let pollController = makePollController()
         
@@ -66,7 +66,7 @@ import XCTest
         
         // Then
         XCTAssertTrue(pollController.castPollVote_called)
-        XCTAssertEqual("", viewModel.newCommentText)
+        XCTAssertEqual("A", viewModel.newCommentText)
     }
     
     // MARK: - Test Data

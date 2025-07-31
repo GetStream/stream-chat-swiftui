@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the instant commands suggestions.
 struct InstantCommandsView: View {
-
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -79,7 +78,6 @@ struct InstantCommandsView: View {
 
 /// View for the instant commands header.
 struct InstantCommandsHeader: View {
-
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -103,7 +101,6 @@ struct InstantCommandsHeader: View {
 
 /// View for an instant command entry.
 struct InstantCommandView: View {
-
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors

@@ -81,7 +81,6 @@ import SwiftUI
                 }
             }
         }
-        newCommentText = ""
     }
     
     func onAppear(comment: PollVote) {
@@ -96,15 +95,18 @@ import SwiftUI
         _ controller: PollVoteListController,
         didChangeVotes changes: [ListChange<PollVote>]
     ) {
-        StreamConcurrency.onMain {
-            if animateChanges {
-                withAnimation {
-                    self.comments = Array(self.commentsController.votes)
-                }
-            } else {
-                comments = Array(commentsController.votes)
+        if animateChanges {
+            withAnimation {
+                self.updateCommentList()
             }
+        } else {
+            updateCommentList()
         }
+    }
+    
+    private func updateCommentList() {
+        comments = Array(commentsController.votes)
+        newCommentText = comments.first(where: { $0.user?.id == chatClient.currentUserId })?.answerText ?? ""
     }
     
     private func loadComments() {

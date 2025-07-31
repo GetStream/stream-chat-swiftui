@@ -5,6 +5,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🔄 Changed
 
+# [4.83.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.83.0)
+_July 29, 2025_
+
+### ✅ Added
+- Add support for showing current poll comment on alert [#891](https://github.com/GetStream/stream-chat-swiftui/pull/891)
+
+### 🐞 Fixed
+- Fix polls multiple answers minimum value being 1 instead of 2 [#898](https://github.com/GetStream/stream-chat-swiftui/pull/898)
+
+### 🔄 Changed
+- Make `ChatChannelInfoView` subviews public for creating custom info views through composition [#892](https://github.com/GetStream/stream-chat-swiftui/pull/892)
+  - `ChannelTitleView`
+  - `ChannelInfoDivider`
+  - `ChatInfoDirectChannelView`
+  - `ChatInfoParticipantsView`
+- Make `MediaViewsOptions` initializer public [#899](https://github.com/GetStream/stream-chat-swiftui/pull/899)
+
+# [4.82.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.82.0)
+_July 16, 2025_
+
+### ✅ Added
+- Add support for customising the `MessageAvatarView` placeholder [#878](https://github.com/GetStream/stream-chat-swiftui/pull/878)
+- Add `ViewFactory.makeVideoPlayerFooterView` to customize video player footer [#879](https://github.com/GetStream/stream-chat-swiftui/pull/879)
+- Add `utils.channelListConfig.channelItemMutedLayoutStyle` [#881](https://github.com/GetStream/stream-chat-swiftui/pull/881)
+- Add jumping to pinned message when tapping a message in the pinned messages view [#884](https://github.com/GetStream/stream-chat-swiftui/pull/884)
+
+### 🔄 Changed
+- From now on, jumping to a message will centre it in the middle instead of at the top [#884](https://github.com/GetStream/stream-chat-swiftui/pull/884)
+
 # [4.81.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.81.0)
 _July 03, 2025_
 

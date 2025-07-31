@@ -19,14 +19,12 @@ struct ContactAttachmentPayload: AttachmentPayload {
 }
 
 extension ContactAttachmentPayload: Identifiable {
-
     var id: String {
         "\(name)-\(phoneNumber)"
     }
 }
 
 class CustomAttachmentsFactory: ViewFactory {
-
     @Injected(\.chatClient) var chatClient: ChatClient
 
     private let mockContacts = [
@@ -110,7 +108,6 @@ class CustomAttachmentsFactory: ViewFactory {
 }
 
 class CustomMessageTypeResolver: MessageTypeResolving {
-
     func hasCustomAttachment(message: ChatMessage) -> Bool {
         let contactAttachments = message.attachments(payloadType: ContactAttachmentPayload.self)
         return !contactAttachments.isEmpty
@@ -118,7 +115,6 @@ class CustomMessageTypeResolver: MessageTypeResolving {
 }
 
 struct CustomAttachmentSourcePickerView: View {
-
     @Injected(\.colors) var colors
     @Injected(\.images) var images
 
@@ -164,7 +160,6 @@ struct CustomAttachmentSourcePickerView: View {
 }
 
 struct CustomContactAttachmentView: View {
-
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
 
@@ -202,7 +197,6 @@ struct CustomContactAttachmentView: View {
 }
 
 struct CustomContactAttachmentComposerPreview: View {
-
     var addedCustomAttachments: [CustomAttachment]
     var onCustomAttachmentTap: (CustomAttachment) -> Void
 
@@ -238,7 +232,6 @@ struct CustomContactAttachmentComposerPreview: View {
 }
 
 struct CustomContactAttachmentPreview: View {
-
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
 

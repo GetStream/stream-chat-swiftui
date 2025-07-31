@@ -565,7 +565,7 @@ public extension MessageAction {
         nonisolated(unsafe) let unsafeOnError = onError
         nonisolated(unsafe) let unsafeOnFinish = onFinish
         let action = {
-            messageController.markThreadUnread() { error in
+            messageController.markThreadUnread { error in
                 if let error {
                     unsafeOnError(error)
                 } else {

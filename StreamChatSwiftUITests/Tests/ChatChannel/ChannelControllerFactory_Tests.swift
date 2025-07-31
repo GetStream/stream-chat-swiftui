@@ -7,7 +7,6 @@
 import XCTest
 
 class ChannelControllerFactory_Tests: StreamChatTestCase {
-
     func test_channelControllerFactory_creation() {
         // Given
         let factory = ChannelControllerFactory()

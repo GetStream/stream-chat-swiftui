@@ -7,7 +7,6 @@ import StreamChat
 import XCTest
 
 final class PaddingsConfig_Tests: XCTestCase {
-
     func test_paddingsConfig() {
         // Given
         let paddingsConfig = PaddingsConfig(top: 4, bottom: 4, leading: 8, trailing: 8)

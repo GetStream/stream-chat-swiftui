@@ -1,0 +1,56 @@
+included:
+  - Sources
+  - DemoAppSwiftUI
+excluded:
+  - Sources/StreamChatSwiftUI/Generated
+  - Sources/StreamChatSwiftUI/StreamSwiftyGif
+  - Sources/StreamChatSwiftUI/StreamNuke
+
+only_rules:
+  # Currently enabled autocorrectable rules
+  - attribute_name_spacing
+  - closing_brace
+  - colon
+  - comma
+  - comment_spacing
+  - control_statement
+  - custom_rules
+  - duplicate_imports
+  - empty_enum_arguments
+  - empty_parameters
+  - empty_parentheses_with_trailing_closure
+  - explicit_init
+  - joined_default_parameter
+  - leading_whitespace
+  - legacy_cggeometry_functions
+  - legacy_constant
+  - legacy_constructor
+  - legacy_nsgeometry_functions
+  - mark
+  - no_space_in_method_call
+  - prefer_type_checking
+  - private_over_fileprivate
+  - private_unit_test
+  - protocol_property_accessors_order
+  - redundant_discardable_let
+  - redundant_objc_attribute
+  - redundant_optional_initialization
+  - redundant_sendable
+  - redundant_void_return
+  - return_arrow_whitespace
+  - syntactic_sugar
+  - toggle_bool
+  - trailing_comma
+  - trailing_newline
+  - trailing_semicolon
+  - trailing_whitespace
+  - unneeded_break_in_switch
+  - unneeded_override
+  - unused_closure_parameter
+  - unused_control_flow_label
+  - unused_import
+  - vertical_whitespace
+  - void_return
+
+trailing_whitespace:
+  ignores_empty_lines: true

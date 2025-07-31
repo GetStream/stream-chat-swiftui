@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View displaying the search results in the channel list.
 public struct SearchResultsView<Factory: ViewFactory>: View {
-
     @Injected(\.colors) private var colors
 
     var factory: Factory
@@ -84,7 +83,6 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
 
 /// View for one search result item with navigation support.
 struct SearchResultView<Factory: ViewFactory>: View {
-
     var factory: Factory
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResult: ChannelSelectionInfo
@@ -120,7 +118,6 @@ struct SearchResultView<Factory: ViewFactory>: View {
 
 /// The search result item user interface.
 struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
-
     @Injected(\.utils) private var utils
 
     var factory: Factory

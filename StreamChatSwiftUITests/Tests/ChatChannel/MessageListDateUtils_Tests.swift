@@ -7,7 +7,6 @@
 import XCTest
 
 class MessageListDateUtils_Tests: StreamChatTestCase {
-
     let testMessage = ChatMessage.mock(
         id: .unique,
         cid: .unique,

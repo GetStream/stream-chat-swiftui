@@ -7,7 +7,6 @@
 import XCTest
 
 class TypingSuggester_Tests: XCTestCase {
-
     func test_typingSuggester_mentionWholeText() {
         // Given
         let options = TypingSuggestionOptions(symbol: "@")

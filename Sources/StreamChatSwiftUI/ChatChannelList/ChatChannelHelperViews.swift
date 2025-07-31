@@ -61,7 +61,6 @@ public struct AvatarView: View {
 }
 
 public struct ChatTitleView: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
@@ -81,7 +80,6 @@ public struct ChatTitleView: View {
 }
 
 struct EmptyViewModifier: ViewModifier {
-
     public func body(content: Content) -> some View {
         content
     }

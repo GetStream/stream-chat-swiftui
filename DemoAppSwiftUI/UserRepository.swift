@@ -6,7 +6,6 @@ import Foundation
 import StreamChat
 
 protocol UserRepository {
-    
     func save(user: UserCredentials)
         
     func loadCurrentUser() -> UserCredentials?

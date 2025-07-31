@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct PollCommentsView<Factory: ViewFactory>: View {
-    
     @Injected(\.colors) var colors
     
     @Environment(\.presentationMode) var presentationMode
@@ -78,6 +77,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                 }
                 .padding()
             }
+            .background(Color(colors.background).ignoresSafeArea())
             .alertBanner(
                 isPresented: $viewModel.errorShown,
                 action: viewModel.refresh

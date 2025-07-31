@@ -170,7 +170,6 @@ import XCTest
     // MARK: - private
 
     private class MockMessagesDataSourceHandler: MessagesDataSource {
-
         var updateMessagesCalled = false
         var updateChannelCalled = false
 

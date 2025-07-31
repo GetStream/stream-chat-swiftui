@@ -9,7 +9,6 @@ import UIKit
 
 /// Displays an interactive waveform visualisation of an audio file.
 open class WaveformView: UIView {
-    
     @Injected(\.images) var images
     
     open var onSliderChanged: ((TimeInterval) -> Void)?

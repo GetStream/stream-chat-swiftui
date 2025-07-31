@@ -399,7 +399,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 }
 
 struct SendFailureIndicator: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 

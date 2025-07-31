@@ -107,7 +107,6 @@ public struct ChannelSelectionInfo: Identifiable, Sendable {
 }
 
 extension ChannelSelectionInfo: Hashable, Equatable {
-
     public static func == (lhs: ChannelSelectionInfo, rhs: ChannelSelectionInfo) -> Bool {
         lhs.id == rhs.id
     }
@@ -118,7 +117,6 @@ extension ChannelSelectionInfo: Hashable, Equatable {
 }
 
 extension ChatChannel {
-
     public var channelSelectionInfo: ChannelSelectionInfo {
         ChannelSelectionInfo(channel: self, message: nil)
     }

@@ -14,6 +14,12 @@ StreamChatSwiftUI.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.res
 build/
 DerivedData/
 
+# Interface Analyser
+stream-module-interface-analyser/
+interface-analyser-report.md
+public_interface_current.*
+public_interface_previous.*
+
 ## Various settings
 *.pbxuser
 !default.pbxuser

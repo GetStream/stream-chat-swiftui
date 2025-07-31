@@ -81,7 +81,6 @@ import StreamChat
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
 class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
-
     let controller: ChatChannelController
     weak var delegate: MessagesDataSource?
     
@@ -158,7 +157,6 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
 
 /// Implementation of the `ChannelDataSource`. Loads the messages in a reply thread.
 class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate {
-
     let channelController: ChatChannelController
     let messageController: ChatMessageController
     

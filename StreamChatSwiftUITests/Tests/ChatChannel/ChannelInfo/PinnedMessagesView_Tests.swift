@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 class PinnedMessagesView_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())

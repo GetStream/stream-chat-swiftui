@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class CustomMessageResolver: MessageTypeResolving {
-
     func hasCustomAttachment(message: ChatMessage) -> Bool {
         let messageComponents = message.text.components(separatedBy: CharacterSet.whitespacesAndNewlines)
         return !messageComponents.filter { component in
@@ -25,7 +24,6 @@ class CustomMessageResolver: MessageTypeResolving {
 }
 
 struct CustomAttachmentView: View {
-
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool

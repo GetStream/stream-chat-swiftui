@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct PollResultsView<Factory: ViewFactory>: View {
-    
     @Environment(\.presentationMode) var presentationMode
     
     @ObservedObject var viewModel: PollAttachmentViewModel
@@ -78,7 +77,6 @@ struct PollResultsView<Factory: ViewFactory>: View {
 }
 
 struct PollOptionResultsView<Factory: ViewFactory>: View {
-    
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     

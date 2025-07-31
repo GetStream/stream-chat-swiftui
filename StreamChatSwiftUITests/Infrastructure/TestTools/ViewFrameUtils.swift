@@ -5,7 +5,6 @@
 import SwiftUI
 
 extension View {
-
     func applyDefaultSize() -> some View {
         frame(
             width: defaultScreenSize.width,

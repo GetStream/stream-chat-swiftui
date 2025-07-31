@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for an added file displayed in the composer input.
 public struct AddedFileAttachmentsView: View {
-
     @Injected(\.colors) private var colors
 
     var addedFileURLs: [URL]
@@ -44,7 +43,6 @@ public struct AddedFileAttachmentsView: View {
 }
 
 extension URL {
-
     var sizeString: String {
         _ = startAccessingSecurityScopedResource()
         if let file = try? AttachmentFile(url: self) {

@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 private struct PollsBackgroundModifier: ViewModifier {
-    
     @Injected(\.colors) var colors
     
     func body(content: Content) -> some View {
@@ -24,7 +23,6 @@ extension View {
 }
 
 struct PollDateIndicatorView: View {
-    
     @Injected(\.fonts) var fonts
     @Injected(\.utils) var utils
     @Injected(\.colors) var colors
@@ -43,7 +41,6 @@ struct PollDateIndicatorView: View {
 }
 
 class PollsDateFormatter {
-    
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("MMM dd HH:mm")

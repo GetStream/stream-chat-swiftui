@@ -6,7 +6,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct BlockedUsersView: View {
-    
     @StateObject var viewModel = BlockedUsersViewModel()
     
     var body: some View {

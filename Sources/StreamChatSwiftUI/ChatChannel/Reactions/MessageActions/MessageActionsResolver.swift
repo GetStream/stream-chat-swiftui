@@ -7,7 +7,6 @@ import SwiftUI
 
 /// Defines methods for resolving message actions after execution.
 public protocol MessageActionsResolving {
-
     /// Resolves an executed message action.
     /// - Parameters:
     ///  - info: the message action info.
@@ -20,7 +19,6 @@ public protocol MessageActionsResolving {
 
 /// Default implementation of the `MessageActionsResolving` protocol.
 public class MessageActionsResolver: MessageActionsResolving {
-
     public init() {
         // Public init.
     }

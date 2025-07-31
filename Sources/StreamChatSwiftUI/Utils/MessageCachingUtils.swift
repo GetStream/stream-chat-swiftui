@@ -54,7 +54,6 @@ public struct UserDisplayInfo {
 }
 
 extension ChatMessage {
-
     public var authorDisplayInfo: UserDisplayInfo {
         UserDisplayInfo(
             id: author.id,
@@ -66,7 +65,7 @@ extension ChatMessage {
     }
 
     @available(*, deprecated, message: """
-    User display info is not cached anymore and this method returned 
+    User display info is not cached anymore and this method returned
     cached data only. Use `ChatMessage.authorDisplayInfo` instead
     """)
     public func userDisplayInfo(from id: String) -> UserDisplayInfo? {
