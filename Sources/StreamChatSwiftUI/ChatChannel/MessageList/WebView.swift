@@ -39,11 +39,6 @@ struct WebView: UIViewRepresentable {
         var isLoading: Binding<Bool>
         var title: Binding<String?>
         var error: Binding<Error?>
-        
-        private let WebKitErrorDomain = "WebKitErrorDomain"
-        private enum WebKitErrorCode: Int {
-            case pluginHandledLoad = 204
-        }
 
         init(
             webView: WebView,
@@ -76,8 +71,7 @@ struct WebView: UIViewRepresentable {
             didFailProvisionalNavigation navigation: WKNavigation!,
             withError error: Error
         ) {
-            let nsError = error as NSError
-            if nsError.domain == WebKitErrorDomain && nsError.code == WebKitErrorCode.pluginHandledLoad.rawValue {
+            if isPluginHandledLoadResult(error) {
                 return
             }
 
@@ -90,13 +84,17 @@ struct WebView: UIViewRepresentable {
             didFail navigation: WKNavigation!,
             withError error: Error
         ) {
-            let nsError = error as NSError
-            if nsError.domain == WebKitErrorDomain && nsError.code == WebKitErrorCode.pluginHandledLoad.rawValue {
+            if isPluginHandledLoadResult(error) {
                 return
             }
 
             isLoading.wrappedValue = false
             self.error.wrappedValue = error
+        }
+        
+        private func isPluginHandledLoadResult(_ error: Error) -> Bool {
+            let nsError = error as NSError
+            return nsError.domain == "WebKitErrorDomain" && nsError.code == 204
         }
     }
 }
