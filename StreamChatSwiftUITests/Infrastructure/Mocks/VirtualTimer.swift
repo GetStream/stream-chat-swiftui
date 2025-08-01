@@ -123,7 +123,7 @@ class VirtualTime {
 
 extension VirtualTime {
     /// Internal representation of a timer scheduled with `VirtualTime`. Not meant to be used directly.
-    class TimerControl {
+    class TimerControl: @unchecked Sendable {
         private(set) var isActive = true
 
         var repeatingPeriod: TimeInterval

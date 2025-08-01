@@ -1,9 +1,9 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
-import Combine
+@preconcurrency import Combine
 
 final class DataPublisher {
     let id: String
@@ -34,20 +34,27 @@ final class DataPublisher {
 }
 
 private func publisher(from closure: @Sendable @escaping () async throws -> Data) -> AnyPublisher<Data, Error> {
-    let subject = PassthroughSubject<Data, Error>()
-    Task {
-        do {
-            let data = try await closure()
-            subject.send(data)
-            subject.send(completion: .finished)
-        } catch {
-            subject.send(completion: .failure(error))
+    Deferred {
+        Future { promise in
+            let promise = UncheckedSendableBox(value: promise)
+            Task {
+                do {
+                    let data = try await closure()
+                    promise.value(.success(data))
+                } catch {
+                    promise.value(.failure(error))
+                }
+            }
         }
-    }
-    return subject.eraseToAnyPublisher()
+    }.eraseToAnyPublisher()
 }
 
 enum PublisherCompletion {
     case finished
     case failure(Error)
+}
+
+/// - warning: Avoid using it!
+struct UncheckedSendableBox<Value>: @unchecked Sendable {
+    let value: Value
 }

@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageComposerView`.
-open class MessageComposerViewModel: ObservableObject {
+@MainActor open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) internal var utils
 
@@ -352,7 +352,7 @@ open class MessageComposerViewModel: ObservableObject {
         skipPush: Bool = false,
         skipEnrichUrl: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: @escaping () -> Void
+        completion: @escaping @MainActor() -> Void
     ) {
         defer {
             checkChannelCooldown()
@@ -362,8 +362,10 @@ open class MessageComposerViewModel: ObservableObject {
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
-                self?.clearInputData()
-                completion()
+                Task { @MainActor in
+                    self?.clearInputData()
+                    completion()
+                }
             }
             
             if composerCommand.replacesMessageSent {
@@ -599,14 +601,16 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     public func askForPhotosPermission() {
-        PHPhotoLibrary.requestAuthorization { [weak self] (status) in
+        PHPhotoLibrary.requestAuthorization { @Sendable [weak self] (status) in
             guard let self else { return }
             switch status {
             case .authorized, .limited:
                 log.debug("Access to photos granted.")
-                self.fetchAssets()
+                Task { @MainActor [weak self] in
+                    self?.fetchAssets()
+                }
             case .denied, .restricted, .notDetermined:
-                DispatchQueue.main.async { [weak self] in
+                Task { @MainActor [weak self] in
                     self?.imageAssets = PHFetchResult<PHAsset>()
                 }
                 log.debug("Access to photos is denied or not determined, showing the no permissions screen.")
@@ -650,7 +654,9 @@ open class MessageComposerViewModel: ObservableObject {
         selectedRangeLocation = message.text.count
 
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            self?.updateComposerAssets(assets)
+            Task { @MainActor in
+                self?.updateComposerAssets(assets)
+            }
         }
     }
 
@@ -710,7 +716,7 @@ open class MessageComposerViewModel: ObservableObject {
     private func edit(
         message: ChatMessage,
         attachments: [AnyAttachmentPayload]?,
-        completion: @escaping () -> Void
+        completion: @escaping @MainActor() -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
             return
@@ -813,10 +819,12 @@ open class MessageComposerViewModel: ObservableObject {
                 withTimeInterval: 1,
                 repeats: true,
                 block: { [weak self] _ in
-                    self?.cooldownDuration -= 1
-                    if self?.cooldownDuration == 0 {
-                        self?.timer?.invalidate()
-                        self?.timer = nil
+                    Task { @MainActor in
+                        self?.cooldownDuration -= 1
+                        if self?.cooldownDuration == 0 {
+                            self?.timer?.invalidate()
+                            self?.timer = nil
+                        }
                     }
                 }
             )
@@ -914,7 +922,7 @@ extension MessageComposerViewModel: EventsControllerDelegate {
 }
 
 // The assets added to the composer.
-struct ComposerAssets {
+struct ComposerAssets: Sendable {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
@@ -927,7 +935,7 @@ struct ComposerAssets {
 
 // A asset containing file information.
 // If it has a payload, it means that the file is already uploaded to the server.
-struct FileAddedAsset {
+struct FileAddedAsset: Sendable {
     var url: URL
     var payload: FileAttachmentPayload?
 }
@@ -974,10 +982,10 @@ class MessageAttachmentsConverter {
     /// This operation is asynchronous to make sure loading expensive assets are not done in the main thread.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping (ComposerAssets) -> Void
+        completion: @escaping @Sendable(ComposerAssets) -> Void
     ) {
         queue.async {
-            let addedAssets = self.attachmentsToAssets(attachments)
+            let addedAssets = Self.attachmentsToAssets(attachments)
             DispatchQueue.main.async {
                 completion(addedAssets)
             }
@@ -988,7 +996,7 @@ class MessageAttachmentsConverter {
     ///
     /// This operation is synchronous and should only be used if all attachments are already loaded.
     /// Like for example, for draft messages.
-    func attachmentsToAssets(
+    static func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment]
     ) -> ComposerAssets {
         var addedAssets = ComposerAssets()

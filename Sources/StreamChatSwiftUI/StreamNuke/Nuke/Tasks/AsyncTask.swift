@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -50,7 +50,6 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
             guard oldValue != priority else { return }
             operation?.queuePriority = priority.queuePriority
             dependency?.setPriority(priority)
-            dependency2?.setPriority(priority)
         }
     }
 
@@ -64,14 +63,6 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
         }
     }
 
-    // The tasks only ever need up to 2 dependencies and this code is much faster
-    // than creating an array.
-    var dependency2: TaskSubscription? {
-        didSet {
-            dependency2?.setPriority(priority)
-        }
-    }
-
     weak var operation: Foundation.Operation? {
         didSet {
             guard priority != .normal else { return }
@@ -82,23 +73,13 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
     /// Publishes the results of the task.
     var publisher: Publisher { Publisher(task: self) }
 
-    #if TRACK_ALLOCATIONS
-    deinit {
-        Allocations.decrement("AsyncTask")
-    }
-
-    init() {
-        Allocations.increment("AsyncTask")
-    }
-    #endif
-
     /// Override this to start image task. Only gets called once.
     func start() {}
 
     // MARK: - Managing Observers
 
     /// - notes: Returns `nil` if the task was disposed.
-    private func subscribe(priority: TaskPriority = .normal, subscriber: AnyObject? = nil, _ closure: @escaping (Event) -> Void) -> TaskSubscription? {
+    private func subscribe(priority: TaskPriority = .normal, subscriber: AnyObject, _ closure: @escaping (Event) -> Void) -> TaskSubscription? {
         guard !isDisposed else { return nil }
 
         let subscriptionKey = nextSubscriptionKey
@@ -121,7 +102,6 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
 
         // The task may have been completed synchronously by `starter`.
         guard !isDisposed else { return nil }
-
         return subscription
     }
 
@@ -184,7 +164,7 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
         }
 
         inlineSubscription?.closure(event)
-        if let subscriptions = subscriptions {
+        if let subscriptions {
             for subscription in subscriptions.values {
                 subscription.closure(event)
             }
@@ -204,7 +184,6 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
         if reason == .cancelled {
             operation?.cancel()
             dependency?.unsubscribe()
-            dependency2?.unsubscribe()
             onCancelled?()
         }
         onDisposed?()
@@ -213,7 +192,7 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
     // MARK: - Priority
 
     private func updatePriority(suggestedPriority: TaskPriority?) {
-        if let suggestedPriority = suggestedPriority, suggestedPriority >= priority {
+        if let suggestedPriority, suggestedPriority >= priority {
             // No need to recompute, won't go higher than that
             priority = suggestedPriority
             return
@@ -222,7 +201,7 @@ class AsyncTask<Value: Sendable, Error: Sendable>: AsyncTaskSubscriptionDelegate
         var newPriority = inlineSubscription?.priority
         // Same as subscriptions.map { $0?.priority }.max() but without allocating
         // any memory for redundant arrays
-        if let subscriptions = subscriptions {
+        if let subscriptions {
             for subscription in subscriptions.values {
                 if newPriority == nil {
                     newPriority = subscription.priority
@@ -244,7 +223,7 @@ extension AsyncTask {
 
         /// Attaches the subscriber to the task.
         /// - notes: Returns `nil` if the task is already disposed.
-        func subscribe(priority: TaskPriority = .normal, subscriber: AnyObject? = nil, _ closure: @escaping (Event) -> Void) -> TaskSubscription? {
+        func subscribe(priority: TaskPriority = .normal, subscriber: AnyObject, _ closure: @escaping (Event) -> Void) -> TaskSubscription? {
             task.subscribe(priority: priority, subscriber: subscriber, closure)
         }
 
@@ -253,7 +232,7 @@ extension AsyncTask {
         /// - notes: Returns `nil` if the task is already disposed.
         func subscribe<NewValue>(_ task: AsyncTask<NewValue, Error>, onValue: @escaping (Value, Bool) -> Void) -> TaskSubscription? {
             subscribe(subscriber: task) { [weak task] event in
-                guard let task = task else { return }
+                guard let task else { return }
                 switch event {
                 case let .value(value, isCompleted):
                     onValue(value, isCompleted)
@@ -293,14 +272,6 @@ extension AsyncTask {
         case value(Value, isCompleted: Bool)
         case progress(TaskProgress)
         case error(Error)
-
-        var isCompleted: Bool {
-            switch self {
-            case let .value(_, isCompleted): return isCompleted
-            case .progress: return false
-            case .error: return true
-            }
-        }
     }
 }
 

@@ -7,7 +7,8 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+@MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+
     @Injected(\.chatClient) private var chatClient
 
     @Published public var participants = [ParticipantInfo]()
@@ -175,7 +176,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping () -> Void) {
+    public func leaveConversationTapped(completion: @escaping @MainActor() -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
         } else {
@@ -224,7 +225,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     // MARK: - private
 
-    private func removeUserFromConversation(completion: @escaping () -> Void) {
+    private func removeUserFromConversation(completion: @escaping @MainActor() -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
             if error != nil {
@@ -235,7 +236,7 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         }
     }
 
-    private func deleteChannel(completion: @escaping () -> Void) {
+    private func deleteChannel(completion: @escaping @MainActor() -> Void) {
         channelController.deleteChannel { [weak self] error in
             if error != nil {
                 self?.errorShown = true

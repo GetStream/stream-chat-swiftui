@@ -31,7 +31,7 @@ extension ImageCDN {
 }
 
 open class StreamImageCDN: ImageCDN {
-    public static var streamCDNURL = "stream-io-cdn.com"
+    public static let streamCDNURL = "stream-io-cdn.com"
 
     // Initializer required for subclasses
     public init() {
@@ -68,7 +68,7 @@ open class StreamImageCDN: ImageCDN {
             host.contains(StreamImageCDN.streamCDNURL)
         else { return originalURL }
 
-        let scale = UIScreen.main.scale
+        let scale = Screen.scale
         components.queryItems = components.queryItems ?? []
         components.queryItems?.append(contentsOf: [
             URLQueryItem(name: "w", value: String(format: "%.0f", preferredSize.width * scale)),

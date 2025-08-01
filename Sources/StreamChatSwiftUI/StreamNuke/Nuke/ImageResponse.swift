@@ -1,13 +1,15 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
-#if !os(macOS)
-import UIKit.UIImage
-#else
-import AppKit.NSImage
+#if canImport(UIKit)
+import UIKit
+#endif
+
+#if canImport(AppKit)
+import AppKit
 #endif
 
 /// An image response that contains a fetched image and some metadata.
@@ -15,13 +17,13 @@ struct ImageResponse: @unchecked Sendable {
     /// An image container with an image and associated metadata.
     var container: ImageContainer
 
-    #if os(macOS)
+#if os(macOS)
     /// A convenience computed property that returns an image from the container.
     var image: NSImage { container.image }
-    #else
+#else
     /// A convenience computed property that returns an image from the container.
     var image: UIImage { container.image }
-    #endif
+#endif
 
     /// Returns `true` if the image in the container is a preview of the image.
     var isPreview: Bool { container.isPreview }
@@ -51,11 +53,5 @@ struct ImageResponse: @unchecked Sendable {
         case memory
         /// Disk cache (see ``DataCaching``)
         case disk
-    }
-
-    func map(_ transform: (ImageContainer) throws -> ImageContainer) rethrows -> ImageResponse {
-        var response = self
-        response.container = try transform(response.container)
-        return response
     }
 }

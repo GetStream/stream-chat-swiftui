@@ -6,7 +6,8 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `AddUsersView`.
-class AddUsersViewModel: ObservableObject {
+@MainActor class AddUsersViewModel: ObservableObject {
+
     @Injected(\.chatClient) private var chatClient
 
     @Published var users = [ChatUser]()

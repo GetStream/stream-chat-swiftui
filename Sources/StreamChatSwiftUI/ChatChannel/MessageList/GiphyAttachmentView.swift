@@ -102,7 +102,12 @@ struct LazyGiphyView: View {
     var body: some View {
         LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {
-                NukeImage(imageContainer)
+                if imageContainer.type == .gif {
+                    AnimatedGifView(imageContainer: imageContainer)
+                        .frame(width: width)
+                } else {
+                    state.image
+                }
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
             } else {
@@ -117,4 +122,21 @@ struct LazyGiphyView: View {
         .priority(.high)
         .aspectRatio(contentMode: .fit)
     }
+}
+
+/// Recommended implementation by SwiftyGif for rendering gifs in SwiftUI
+/// Nuke dropped gif support and therefore it needs to be implemented separately.
+private struct AnimatedGifView: UIViewRepresentable {
+    let imageContainer: ImageContainer
+
+    func makeUIView(context: Context) -> UIImageView {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        if let gifData = imageContainer.data, let image = try? UIImage(gifData: gifData) {
+            imageView.setGifImage(image)
+        }
+        return imageView
+    }
+
+    func updateUIView(_ uiView: UIImageView, context: Context) {}
 }

@@ -7,7 +7,8 @@
 @testable import StreamChatTestTools
 import XCTest
 
-class ChatChannelListViewModel_Tests: StreamChatTestCase {
+@MainActor class ChatChannelListViewModel_Tests: StreamChatTestCase {
+
     override open func setUp() {
         super.setUp()
         let utils = Utils(

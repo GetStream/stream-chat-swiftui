@@ -9,7 +9,8 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ReactionsUsersView_Tests: StreamChatTestCase {
+@MainActor class ReactionsUsersView_Tests: StreamChatTestCase {
+
     func test_reactionsUsersView_snapshotOneRow() {
         // Given
         let author = ChatUser.mock(id: .unique, name: "Martin")

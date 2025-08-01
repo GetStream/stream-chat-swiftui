@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -11,17 +11,9 @@ final class LinkedList<Element> {
     private(set) var last: Node?
 
     deinit {
-        removeAll()
-
-        #if TRACK_ALLOCATIONS
-        Allocations.decrement("LinkedList")
-        #endif
-    }
-
-    init() {
-        #if TRACK_ALLOCATIONS
-        Allocations.increment("LinkedList")
-        #endif
+        // This way we make sure that the deallocations do no happen recursively
+        // (and potentially overflow the stack).
+        removeAllElements()
     }
 
     var isEmpty: Bool {
@@ -38,7 +30,7 @@ final class LinkedList<Element> {
 
     /// Adds a node to the end of the list.
     func append(_ node: Node) {
-        if let last = last {
+        if let last {
             last.next = node
             node.previous = last
             self.last = node
@@ -61,7 +53,7 @@ final class LinkedList<Element> {
         node.previous = nil
     }
 
-    func removeAll() {
+    func removeAllElements() {
         // avoid recursive Nodes deallocation
         var node = first
         while let next = node?.next {

@@ -7,7 +7,8 @@
 @testable import StreamChatTestTools
 import XCTest
 
-class ChatThreadListViewModel_Tests: StreamChatTestCase {
+@MainActor class ChatThreadListViewModel_Tests: StreamChatTestCase {
+
     func test_viewDidAppear_thenLoadsThreads() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
             query: .init(watch: true),

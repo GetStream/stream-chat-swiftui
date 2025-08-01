@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
   spec.license = { type: 'BSD-3', file: 'LICENSE' }
   spec.author = { 'getstream.io' => 'support@getstream.io' }
   spec.social_media_url = 'https://getstream.io'
-  spec.swift_version = '5.9'
+  spec.swift_version = '6.0'
   spec.platform = :ios, '14.0'
   spec.source = { git: 'https://github.com/GetStream/stream-chat-swiftui.git', tag: spec.version }
   spec.requires_arc = true

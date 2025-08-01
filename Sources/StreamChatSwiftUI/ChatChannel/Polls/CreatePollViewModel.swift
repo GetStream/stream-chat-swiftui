@@ -7,7 +7,8 @@ import Foundation
 import StreamChat
 import SwiftUI
 
-class CreatePollViewModel: ObservableObject {
+@MainActor class CreatePollViewModel: ObservableObject {
+    
     @Injected(\.utils) var utils
     
     @Published var question = ""
@@ -101,7 +102,7 @@ class CreatePollViewModel: ObservableObject {
             .store(in: &cancellables)
     }
         
-    func createPoll(completion: @escaping () -> Void) {
+    func createPoll(completion: @escaping @MainActor() -> Void) {
         let pollOptions = options
             .map(\.trimmed)
             .filter { !$0.isEmpty }

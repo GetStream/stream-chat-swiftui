@@ -33,7 +33,7 @@ final class UnsecureRepository: UserRepository {
         defaults.object(forKey: key.rawValue) as? T
     }
     
-    static let shared = UnsecureRepository()
+    @MainActor static let shared = UnsecureRepository()
 
     func save(user: UserCredentials) {
         let encoder = JSONEncoder()

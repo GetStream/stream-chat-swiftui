@@ -9,7 +9,8 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ChatChannelHeader_Tests: StreamChatTestCase {
+@MainActor class ChatChannelHeader_Tests: StreamChatTestCase {
+
     func test_chatChannelHeaderModifier_snapshot() {
         // Given
         let channel = ChatChannel.mockDMChannel(name: "Test channel")

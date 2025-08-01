@@ -1,12 +1,12 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
 /// Fetches data using the publisher provided with the request.
 /// Unlike `TaskFetchOriginalImageData`, there is no resumable data involved.
-final class TaskFetchWithPublisher: ImagePipelineTask<(Data, URLResponse?)> {
+final class TaskFetchWithPublisher: AsyncPipelineTask<(Data, URLResponse?)>, @unchecked Sendable {
     private lazy var data = Data()
 
     override func start() {
@@ -16,10 +16,10 @@ final class TaskFetchWithPublisher: ImagePipelineTask<(Data, URLResponse?)> {
             // Wrap data request in an operation to limit the maximum number of
             // concurrent data tasks.
             operation = pipeline.configuration.dataLoadingQueue.add { [weak self] finish in
-                guard let self = self else {
+                guard let self else {
                     return finish()
                 }
-                self.async {
+                self.pipeline.queue.async {
                     self.loadData { finish() }
                 }
             }
@@ -39,13 +39,13 @@ final class TaskFetchWithPublisher: ImagePipelineTask<(Data, URLResponse?)> {
 
         let cancellable = publisher.sink(receiveCompletion: { [weak self] result in
             finish() // Finish the operation!
-            guard let self = self else { return }
-            self.async {
+            guard let self else { return }
+            self.pipeline.queue.async {
                 self.dataTaskDidFinish(result)
             }
         }, receiveValue: { [weak self] data in
-            guard let self = self else { return }
-            self.async {
+            guard let self else { return }
+            self.pipeline.queue.async {
                 self.data.append(data)
             }
         })

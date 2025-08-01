@@ -6,7 +6,7 @@ import Combine
 import StreamChat
 import SwiftUI
 
-open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
+@MainActor open class ReactionsOverlayViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 

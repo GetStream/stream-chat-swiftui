@@ -15,7 +15,7 @@ open class NukeImageLoader: ImageLoading {
     open func loadImage(
         using urlRequest: URLRequest,
         cachingKey: String?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
+        completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void
     ) {
         var userInfo: [ImageRequest.UserInfoKey: Any]?
         if let cachingKey = cachingKey {
@@ -28,11 +28,13 @@ open class NukeImageLoader: ImageLoading {
         )
 
         ImagePipeline.shared.loadImage(with: request) { result in
-            switch result {
-            case let .success(imageResponse):
-                completion(.success(imageResponse.image))
-            case let .failure(error):
-                completion(.failure(error))
+            Task { @MainActor in
+                switch result {
+                case let .success(imageResponse):
+                    completion(.success(imageResponse.image))
+                case let .failure(error):
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -43,10 +45,13 @@ open class NukeImageLoader: ImageLoading {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping (([UIImage]) -> Void)
+        completion: @escaping @MainActor @Sendable([UIImage]) -> Void
     ) {
         let group = DispatchGroup()
-        var images: [UIImage] = []
+        final class BatchLoadingResult: @unchecked Sendable {
+            var images: [UIImage] = []
+        }
+        let batchLoadingResult = BatchLoadingResult()
 
         for avatarUrl in urls {
             var placeholderIndex = 0
@@ -61,11 +66,11 @@ open class NukeImageLoader: ImageLoading {
             loadImage(using: imageRequest, cachingKey: cachingKey) { result in
                 switch result {
                 case let .success(image):
-                    images.append(image)
+                    batchLoadingResult.images.append(image)
                 case .failure:
                     if !placeholders.isEmpty {
                         // Rotationally use the placeholders
-                        images.append(placeholders[placeholderIndex])
+                        batchLoadingResult.images.append(placeholders[placeholderIndex])
                         placeholderIndex += 1
                         if placeholderIndex == placeholders.count {
                             placeholderIndex = 0
@@ -77,7 +82,9 @@ open class NukeImageLoader: ImageLoading {
         }
 
         group.notify(queue: .main) {
-            completion(images)
+            StreamConcurrency.onMain {
+                completion(batchLoadingResult.images)
+            }
         }
     }
 
@@ -86,10 +93,12 @@ open class NukeImageLoader: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool = true,
         preferredSize: CGSize? = nil,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
+        completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void
     ) {
         guard var url = url else {
-            completion(.failure(ClientError.Unknown()))
+            StreamConcurrency.onMain {
+                completion(.failure(ClientError.Unknown()))
+            }
             return
         }
 
@@ -116,11 +125,13 @@ open class NukeImageLoader: ImageLoading {
         )
 
         ImagePipeline.shared.loadImage(with: request) { result in
-            switch result {
-            case let .success(imageResponse):
-                completion(.success(imageResponse.image))
-            case let .failure(error):
-                completion(.failure(error))
+            StreamConcurrency.onMain {
+                switch result {
+                case let .success(imageResponse):
+                    completion(.success(imageResponse.image))
+                case let .failure(error):
+                    completion(.failure(error))
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ public protocol MessageActionsResolving {
     /// - Parameters:
     ///  - info: the message action info.
     ///  - viewModel: used to modify a state after action execution.
-    func resolveMessageAction(
+    @MainActor func resolveMessageAction(
         info: MessageActionInfo,
         viewModel: ChatChannelViewModel
     )

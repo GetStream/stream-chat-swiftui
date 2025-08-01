@@ -10,7 +10,8 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
+@MainActor class MessageListViewLastGroupHeader_Tests: StreamChatTestCase {
+
     override func setUp() {
         super.setUp()
         let messageDisplayOptions = MessageDisplayOptions(

@@ -19,7 +19,7 @@ extension View {
 }
 
 struct ScrollViewOffsetPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
+    static let defaultValue: CGFloat? = nil
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
@@ -27,7 +27,7 @@ struct ScrollViewOffsetPreferenceKey: PreferenceKey {
 }
 
 struct WidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
+    static let defaultValue: CGFloat? = nil
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = nextValue() ?? value
@@ -35,7 +35,7 @@ struct WidthPreferenceKey: PreferenceKey {
 }
 
 struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
+    static let defaultValue: CGFloat? = nil
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
@@ -81,7 +81,7 @@ public struct BottomLeftView<Content: View>: View {
 }
 
 /// Returns the top most view controller.
-func topVC() -> UIViewController? {
+@MainActor func topVC() -> UIViewController? {
     // TODO: Refactor ReactionsOverlayView to use a background blur, instead of a snapshot.
     /// Since the current approach is too error-prone and dependent of the app's hierarchy,
 

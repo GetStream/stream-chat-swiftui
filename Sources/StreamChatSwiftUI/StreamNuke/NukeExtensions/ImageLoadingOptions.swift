@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -15,7 +15,7 @@ import AppKit.NSImage
 /// A set of options that control how the image is loaded and displayed.
 struct ImageLoadingOptions {
     /// Shared options.
-    static var shared = ImageLoadingOptions()
+    @MainActor static var shared = ImageLoadingOptions()
 
     /// Placeholder to be displayed when the image is loading. `nil` by default.
     var placeholder: PlatformImage?
@@ -23,7 +23,7 @@ struct ImageLoadingOptions {
     /// Image to be displayed when the request fails. `nil` by default.
     var failureImage: PlatformImage?
 
-    #if os(iOS) || os(tvOS) || os(macOS)
+#if os(iOS) || os(tvOS) || os(macOS) || os(visionOS)
 
     /// The image transition animation performed when displaying a loaded image.
     /// Only runs when the image was not found in memory cache. `nil` by default.
@@ -45,7 +45,7 @@ struct ImageLoadingOptions {
         }
     }
 
-    #endif
+#endif
 
     /// If true, every time you request a new image for a view, the view will be
     /// automatically prepared for reuse: image will be set to `nil`, and animations
@@ -66,7 +66,7 @@ struct ImageLoadingOptions {
     /// request. `[]` by default.
     var processors: [any ImageProcessing] = []
 
-    #if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
 
     /// Content modes to be used for each image type (placeholder, success,
     /// failure). `nil`  by default (don't change content mode).
@@ -130,9 +130,9 @@ struct ImageLoadingOptions {
         }
     }
 
-    #endif
+#endif
 
-    #if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
 
     /// - parameters:
     ///   - placeholder: Placeholder to be displayed when the image is loading.
@@ -153,7 +153,7 @@ struct ImageLoadingOptions {
         self.tintColors = tintColors
     }
 
-    #elseif os(macOS)
+#elseif os(macOS)
 
     init(placeholder: NSImage? = nil, transition: Transition? = nil, failureImage: NSImage? = nil, failureImageTransition: Transition? = nil) {
         self.placeholder = placeholder
@@ -162,20 +162,20 @@ struct ImageLoadingOptions {
         self.failureImageTransition = failureImageTransition
     }
 
-    #elseif os(watchOS)
+#elseif os(watchOS)
 
     init(placeholder: UIImage? = nil, failureImage: UIImage? = nil) {
         self.placeholder = placeholder
         self.failureImage = failureImage
     }
 
-    #endif
+#endif
 
     /// An animated image transition.
     struct Transition {
         var style: Style
 
-        #if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
         enum Style { // internal representation
             case fadeIn(parameters: Parameters)
             case custom((ImageDisplayingView, UIImage) -> Void)
@@ -196,7 +196,7 @@ struct ImageLoadingOptions {
         static func custom(_ closure: @escaping (ImageDisplayingView, UIImage) -> Void) -> Transition {
             Transition(style: .custom(closure))
         }
-        #elseif os(macOS)
+#elseif os(macOS)
         enum Style { // internal representation
             case fadeIn(parameters: Parameters)
             case custom((ImageDisplayingView, NSImage) -> Void)
@@ -215,9 +215,9 @@ struct ImageLoadingOptions {
         static func custom(_ closure: @escaping (ImageDisplayingView, NSImage) -> Void) -> Transition {
             Transition(style: .custom(closure))
         }
-        #else
+#else
         enum Style {}
-        #endif
+#endif
     }
 
     init() {}

@@ -11,7 +11,8 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageComposerView_Tests: StreamChatTestCase {
+@MainActor class MessageComposerView_Tests: StreamChatTestCase {
+
     override func setUp() {
         super.setUp()
         let utils = Utils(
@@ -790,7 +791,7 @@ class SyncAttachmentsConverter: MessageAttachmentsConverter {
         _ attachments: [AnyChatMessageAttachment],
         completion: @escaping (ComposerAssets) -> Void
     ) {
-        let addedAssets = attachmentsToAssets(attachments)
+        let addedAssets = SyncAttachmentsConverter.attachmentsToAssets(attachments)
         completion(addedAssets)
     }
 }

@@ -6,7 +6,7 @@ import Combine
 import StreamChat
 
 /// The view model that contains the logic for displaying a message in the message list view.
-open class MessageViewModel: ObservableObject {
+@MainActor open class MessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 

@@ -7,7 +7,8 @@ import StreamChat
 import SwiftUI
 
 /// Defines methods for handling commands.
-public protocol CommandHandler {
+@MainActor public protocol CommandHandler {
+
     /// Identifier of the command.
     var id: String { get }
 
@@ -63,7 +64,7 @@ public protocol CommandHandler {
     ///  - completion: called when the command is executed.
     func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     )
 }
 
@@ -75,7 +76,7 @@ extension CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         // optional method.
     }
@@ -208,7 +209,7 @@ public class CommandsHandler: CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         if let handler = commandHandler(for: composerCommand) {
             handler.executeOnMessageSent(

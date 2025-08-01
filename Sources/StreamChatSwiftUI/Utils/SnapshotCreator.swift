@@ -9,7 +9,7 @@ public protocol SnapshotCreator {
     /// Creates a snapshot of the provided SwiftUI view.
     ///  - Parameter view: the view whose snapshot would be created.
     ///  - Returns: `UIImage` representing the snapshot of the view.
-    func makeSnapshot(for view: AnyView) -> UIImage
+    @MainActor func makeSnapshot(for view: AnyView) -> UIImage
 }
 
 /// Default implementation of the `SnapshotCreator`.
@@ -25,7 +25,7 @@ public class DefaultSnapshotCreator: SnapshotCreator {
         return makeSnapshot(from: uiView)
     }
 
-    func makeSnapshot(from view: UIView) -> UIImage {
+    @MainActor func makeSnapshot(from view: UIView) -> UIImage {
         let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
         return renderer.image { _ in
             view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)

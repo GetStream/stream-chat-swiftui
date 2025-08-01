@@ -6,7 +6,8 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+@MainActor class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+
     @Injected(\.chatClient) var chatClient
 
     @Published var searchText: String = "" {

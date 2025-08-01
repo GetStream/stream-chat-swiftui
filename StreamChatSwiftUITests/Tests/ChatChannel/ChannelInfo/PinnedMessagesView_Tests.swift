@@ -122,7 +122,8 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
 }
 
 // Temp solution for failing tests.
-class EmptyDateFormatter: DateFormatter {
+class EmptyDateFormatter: DateFormatter, @unchecked Sendable {
+
     override func string(from date: Date) -> String {
         ""
     }

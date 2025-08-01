@@ -5,7 +5,8 @@
 import StreamChat
 
 /// Data source providing the chat messages.
-protocol MessagesDataSource: AnyObject {
+@MainActor protocol MessagesDataSource: AnyObject {
+
     /// Called when the messages are updated.
     ///
     /// - Parameters:
@@ -30,7 +31,8 @@ protocol MessagesDataSource: AnyObject {
 }
 
 /// The data source for the channel.
-protocol ChannelDataSource: AnyObject {
+@MainActor protocol ChannelDataSource: AnyObject {
+
     /// Delegate implementing the `MessagesDataSource`.
     var delegate: MessagesDataSource? { get set }
 
@@ -51,7 +53,7 @@ protocol ChannelDataSource: AnyObject {
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     )
     
     /// Loads newer messages.
@@ -60,7 +62,7 @@ protocol ChannelDataSource: AnyObject {
     ///  - completion: called when the messages are loaded.
     func loadNextMessages(
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     )
     
     /// Loads a page around the provided message id.
@@ -69,12 +71,12 @@ protocol ChannelDataSource: AnyObject {
     ///  - completion: called when the messages are loaded.
     func loadPageAroundMessageId(
         _ messageId: MessageId,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     )
     
     /// Loads the first page of the channel.
     ///  - Parameter completion: called when the initial page is loaded.
-    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?)
+    func loadFirstPage(_ completion: (@MainActor @Sendable(_ error: Error?) -> Void)?)
 }
 
 /// Implementation of `ChannelDataSource`. Loads the messages of the channel.
@@ -124,7 +126,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     ) {
         controller.loadPreviousMessages(
             before: messageId,
@@ -133,18 +135,18 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
         )
     }
     
-    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+    func loadNextMessages(limit: Int, completion: (@MainActor @Sendable(Error?) -> Void)?) {
         controller.loadNextMessages(limit: limit, completion: completion)
     }
     
     func loadPageAroundMessageId(
         _ messageId: MessageId,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     ) {
         controller.loadPageAroundMessageId(messageId, completion: completion)
     }
     
-    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+    func loadFirstPage(_ completion: (@MainActor @Sendable(_ error: Error?) -> Void)?) {
         controller.loadFirstPage(completion)
     }
 }
@@ -214,7 +216,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     func loadPreviousMessages(
         before messageId: MessageId?,
         limit: Int,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     ) {
         messageController.loadPreviousReplies(
             before: messageId,
@@ -223,18 +225,18 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         )
     }
     
-    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+    func loadNextMessages(limit: Int, completion: (@MainActor @Sendable(Error?) -> Void)?) {
         messageController.loadNextReplies(limit: limit, completion: completion)
     }
     
     func loadPageAroundMessageId(
         _ messageId: MessageId,
-        completion: ((Error?) -> Void)?
+        completion: (@MainActor @Sendable(Error?) -> Void)?
     ) {
         messageController.loadPageAroundReplyId(messageId, completion: completion)
     }
     
-    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+    func loadFirstPage(_ completion: (@MainActor @Sendable(_ error: Error?) -> Void)?) {
         messageController.loadFirstPage(completion)
     }
 }

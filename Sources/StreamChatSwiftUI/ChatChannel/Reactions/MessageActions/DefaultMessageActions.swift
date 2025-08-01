@@ -15,7 +15,7 @@ public extension MessageAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `MessageAction`.
-    static func defaultActions<Factory: ViewFactory>(
+    @MainActor static func defaultActions<Factory: ViewFactory>(
         factory: Factory,
         for message: ChatMessage,
         channel: ChatChannel,
@@ -287,7 +287,7 @@ public extension MessageAction {
     }
 
     /// The action to pin the message.
-    static func pinMessageAction(
+    @MainActor static func pinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -327,7 +327,7 @@ public extension MessageAction {
     }
 
     /// The action to unpin the message.
-    static func unpinMessageAction(
+    @MainActor static func unpinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -416,7 +416,7 @@ public extension MessageAction {
     }
 
     /// The action to delete the message.
-    static func deleteMessageAction(
+    @MainActor static func deleteMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -462,7 +462,7 @@ public extension MessageAction {
     }
 
     /// The action to flag the message.
-    static func flagMessageAction(
+    @MainActor static func flagMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -508,7 +508,7 @@ public extension MessageAction {
     }
 
     /// The action to mark the message as unread.
-    static func markAsUnreadAction(
+    @MainActor static func markAsUnreadAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -545,7 +545,7 @@ public extension MessageAction {
     }
 
     /// The action to mark the thread as unread.
-    static func markThreadAsUnreadAction(
+    @MainActor static func markThreadAsUnreadAction(
         messageController: ChatMessageController,
         message: ChatMessage,
         onFinish: @escaping (MessageActionInfo) -> Void,
@@ -578,7 +578,7 @@ public extension MessageAction {
     }
 
     /// The action to mute the user.
-    static func muteAction(
+    @MainActor static func muteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -615,7 +615,7 @@ public extension MessageAction {
     }
 
     /// The action to block the user
-    static func blockUserAction(
+    @MainActor static func blockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -656,7 +656,7 @@ public extension MessageAction {
     }
 
     /// The action to unmute the user.
-    static func unmuteAction(
+    @MainActor static func unmuteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -693,7 +693,7 @@ public extension MessageAction {
     }
 
     /// The action to unblock the user.
-    static func unblockUserAction(
+    @MainActor static func unblockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -734,7 +734,7 @@ public extension MessageAction {
     }
 
     /// The action to resend the message.
-    static func resendMessageAction(
+    @MainActor static func resendMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -774,7 +774,7 @@ public extension MessageAction {
     }
 
     /// The actions for a message that was not sent.
-    static func messageNotSentActions(
+    @MainActor static func messageNotSentActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
@@ -806,7 +806,7 @@ public extension MessageAction {
 
     // MARK: - Helpers
 
-    private static func editAndDeleteActions(
+    @MainActor private static func editAndDeleteActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,

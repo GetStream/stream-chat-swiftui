@@ -8,7 +8,8 @@ import Foundation
 import SwiftUI
 import XCTest
 
-class ViewFactory_Tests: StreamChatTestCase {
+@MainActor class ViewFactory_Tests: StreamChatTestCase {
+
     private let message = ChatMessage.mock(
         id: .unique,
         cid: .unique,

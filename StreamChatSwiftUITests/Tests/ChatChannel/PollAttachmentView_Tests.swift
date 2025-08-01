@@ -8,7 +8,8 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-final class PollAttachmentView_Tests: StreamChatTestCase {
+@MainActor final class PollAttachmentView_Tests: StreamChatTestCase {
+
     func test_pollAttachmentView_snapshotCommentsAndSuggestions() {
         // Given
         let poll = Poll.mock()

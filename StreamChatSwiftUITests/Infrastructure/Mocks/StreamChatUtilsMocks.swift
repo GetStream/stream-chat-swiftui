@@ -9,7 +9,7 @@ import UIKit
 class VideoPreviewLoader_Mock: VideoPreviewLoader {
     var loadPreviewVideoCalled = false
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
     }
 }
@@ -23,7 +23,7 @@ class ImageLoaderUtils_Mock: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
+        completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
     }

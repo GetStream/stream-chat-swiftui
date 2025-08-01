@@ -6,7 +6,8 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+@MainActor class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+
     @Injected(\.chatClient) var chatClient
 
     var channelController: ChatChannelController!

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -8,7 +8,7 @@ import Foundation
 ///
 /// - important: The delegate methods are performed on the pipeline queue in the
 /// background.
-protocol ImagePipelineDelegate: ImageTaskDelegate, Sendable {
+protocol ImagePipelineDelegate: AnyObject, Sendable {
     // MARK: Configuration
 
     /// Returns data loader for the given request.
@@ -59,6 +59,30 @@ protocol ImagePipelineDelegate: ImageTaskDelegate, Sendable {
     func shouldDecompress(response: ImageResponse, for request: ImageRequest, pipeline: ImagePipeline) -> Bool
 
     func decompress(response: ImageResponse, request: ImageRequest, pipeline: ImagePipeline) -> ImageResponse
+
+    // MARK: ImageTask
+
+    /// Gets called when the task is created. Unlike other methods, it is called
+    /// immediately on the caller's queue.
+    func imageTaskCreated(_ task: ImageTask, pipeline: ImagePipeline)
+
+    /// Gets called when the task receives an event.
+    func imageTask(_ task: ImageTask, didReceiveEvent event: ImageTask.Event, pipeline: ImagePipeline)
+
+    /// - warning: Soft-deprecated in Nuke 12.7.
+    func imageTaskDidStart(_ task: ImageTask, pipeline: ImagePipeline)
+
+    /// - warning: Soft-deprecated in Nuke 12.7.
+    func imageTask(_ task: ImageTask, didUpdateProgress progress: ImageTask.Progress, pipeline: ImagePipeline)
+
+    /// - warning: Soft-deprecated in Nuke 12.7.
+    func imageTask(_ task: ImageTask, didReceivePreview response: ImageResponse, pipeline: ImagePipeline)
+
+    /// - warning: Soft-deprecated in Nuke 12.7.
+    func imageTaskDidCancel(_ task: ImageTask, pipeline: ImagePipeline)
+
+    /// - warning: Soft-deprecated in Nuke 12.7.
+    func imageTask(_ task: ImageTask, didCompleteWithResult result: Result<ImageResponse, ImagePipeline.Error>, pipeline: ImagePipeline)
 }
 
 extension ImagePipelineDelegate {
@@ -99,6 +123,20 @@ extension ImagePipelineDelegate {
         response.container.image = ImageDecompression.decompress(image: response.image, isUsingPrepareForDisplay: pipeline.configuration.isUsingPrepareForDisplay)
         return response
     }
+
+    func imageTaskCreated(_ task: ImageTask, pipeline: ImagePipeline) {}
+
+    func imageTask(_ task: ImageTask, didReceiveEvent event: ImageTask.Event, pipeline: ImagePipeline) {}
+
+    func imageTaskDidStart(_ task: ImageTask, pipeline: ImagePipeline) {}
+
+    func imageTask(_ task: ImageTask, didUpdateProgress progress: ImageTask.Progress, pipeline: ImagePipeline) {}
+
+    func imageTask(_ task: ImageTask, didReceivePreview response: ImageResponse, pipeline: ImagePipeline) {}
+
+    func imageTaskDidCancel(_ task: ImageTask, pipeline: ImagePipeline) {}
+
+    func imageTask(_ task: ImageTask, didCompleteWithResult result: Result<ImageResponse, ImagePipeline.Error>, pipeline: ImagePipeline) {}
 }
 
 final class ImagePipelineDefaultDelegate: ImagePipelineDelegate {}

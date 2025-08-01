@@ -17,8 +17,8 @@ extension LazyImage {
         @ViewBuilder content: @escaping (LazyImageContentState) -> Content
     ) {
         let placeholderContent: (LazyImageState) -> Content = { state in
-            if let image = state.image {
-                content(.loaded(image.imageContainer.image))
+            if let image = state.imageContainer?.image {
+                content(.loaded(image))
             } else if let error = state.error {
                 content(.error(error))
             } else {
@@ -26,25 +26,6 @@ extension LazyImage {
             }
         }
         self.init(imageURL: imageURL, content: placeholderContent)
-    }
-
-    init(imageURL: URL?) where Content == NukeImage {
-        let imageCDN = InjectedValues[\.utils].imageCDN
-        guard let imageURL = imageURL else {
-            #if COCOAPODS
-            self.init(source: imageURL)
-            #else
-            self.init(url: imageURL, resizingMode: .aspectFill)
-            #endif
-            return
-        }
-        let urlRequest = imageCDN.urlRequest(forImage: imageURL)
-        let imageRequest = ImageRequest(urlRequest: urlRequest)
-        #if COCOAPODS
-        self.init(source: imageRequest)
-        #else
-        self.init(request: imageRequest, resizingMode: .aspectFill)
-        #endif
     }
 
     init(imageURL: URL?, @ViewBuilder content: @escaping (LazyImageState) -> Content) {

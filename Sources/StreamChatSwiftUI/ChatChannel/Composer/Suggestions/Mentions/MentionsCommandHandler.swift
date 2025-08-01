@@ -151,15 +151,16 @@ public struct MentionsCommandHandler: CommandHandler {
 
     private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
         Future { promise in
+            nonisolated(unsafe) let unsafePromise = promise
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
             userSearchController.search(query: query) { error in
                 if let error = error {
-                    promise(.failure(error))
+                    unsafePromise(.failure(error))
                     return
                 }
                 let users = userSearchController.userArray
                 let suggestionInfo = SuggestionInfo(key: id, value: users)
-                promise(.success(suggestionInfo))
+                unsafePromise(.success(suggestionInfo))
             }
         }
     }

@@ -5,7 +5,7 @@
 import Foundation
 @testable import StreamChat
 
-class TestRequestEncoder: RequestEncoder {
+class TestRequestEncoder: RequestEncoder, @unchecked Sendable {
     let init_baseURL: URL
     let init_apiKey: APIKey
 
@@ -33,7 +33,7 @@ class TestRequestEncoder: RequestEncoder {
     }
 }
 
-class TestRequestDecoder: RequestDecoder {
+class TestRequestDecoder: RequestDecoder, @unchecked Sendable {
     var decodeRequestResponse: Result<Any, Error>?
 
     var decodeRequestResponse_data: Data?

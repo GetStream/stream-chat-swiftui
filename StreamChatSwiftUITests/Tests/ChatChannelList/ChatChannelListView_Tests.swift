@@ -10,7 +10,8 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ChatChannelListView_Tests: StreamChatTestCase {
+@MainActor class ChatChannelListView_Tests: StreamChatTestCase {
+
     func test_chatChannelScreen_snapshot() {
         // Given
         let controller = makeChannelListController()

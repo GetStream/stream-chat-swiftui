@@ -5,15 +5,15 @@
 import Foundation
 @testable import StreamChat
 
-final class EventBatcherMock: EventBatcher {
+final class EventBatcherMock: EventBatcher, @unchecked Sendable {
     var currentBatch: [Event] = []
 
-    let handler: (_ batch: [Event], _ completion: @escaping () -> Void) -> Void
+    let handler: (_ batch: [Event], _ completion: @escaping @Sendable() -> Void) -> Void
 
     init(
         period: TimeInterval = 0,
         timerType: StreamChat.Timer.Type = DefaultTimer.self,
-        handler: @escaping (_ batch: [Event], _ completion: @escaping () -> Void) -> Void
+        handler: @escaping (_ batch: [Event], _ completion: @escaping @Sendable() -> Void) -> Void
     ) {
         self.handler = handler
     }

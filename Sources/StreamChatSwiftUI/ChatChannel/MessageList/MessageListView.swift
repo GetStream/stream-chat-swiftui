@@ -561,7 +561,7 @@ struct TypingIndicatorBottomView: View {
 private class MessageRenderingUtil {
     private var previousTopMessage: ChatMessage?
 
-    static let shared = MessageRenderingUtil()
+    @MainActor static let shared = MessageRenderingUtil()
 
     var hasPreviousMessageSet: Bool {
         previousTopMessage != nil

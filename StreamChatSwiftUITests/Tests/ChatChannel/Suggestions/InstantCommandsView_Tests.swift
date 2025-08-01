@@ -8,7 +8,7 @@
 import StreamSwiftTestHelpers
 import XCTest
 
-class InstantCommandsView_Tests: StreamChatTestCase {
+@MainActor class InstantCommandsView_Tests: StreamChatTestCase {
     func test_instantCommandsView_snapshot() {
         // Given
         let commandDisplayInfo = CommandDisplayInfo(

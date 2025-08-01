@@ -6,7 +6,7 @@ import Foundation
 @testable import StreamChat
 @testable import StreamChatTestTools
 
-public class ChatMessageControllerSUI_Mock: ChatMessageController {
+public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Sendable {
     /// Creates a new mock instance of `ChatMessageController`.
     public static func mock(
         chatClient: ChatClient,
@@ -56,7 +56,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
     }
 
     var synchronize_callCount = 0
-    override public func synchronize(_ completion: ((Error?) -> Void)? = nil) {
+    override public func synchronize(_ completion: (@MainActor @Sendable(Error?) -> Void)? = nil) {
         synchronize_callCount += 1
     }
 
@@ -72,7 +72,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
         showReplyInChannel: Bool = false,
         command: Command? = nil,
         extraData: [String: RawJSON] = [:],
-        completion: ((Result<DraftMessage, any Error>) -> Void)? = nil
+        completion: (@MainActor @Sendable(Result<DraftMessage, any Error>) -> Void)? = nil
     ) {
         updateDraftReply_callCount += 1
         updateDraftReply_text = text
@@ -80,7 +80,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController {
 
     var deleteDraftReply_callCount = 0
 
-    override public func deleteDraftReply(completion: (((any Error)?) -> Void)? = nil) {
+    public override func deleteDraftReply(completion: (@MainActor @Sendable((any Error)?) -> Void)? = nil) {
         deleteDraftReply_callCount += 1
     }
 }
