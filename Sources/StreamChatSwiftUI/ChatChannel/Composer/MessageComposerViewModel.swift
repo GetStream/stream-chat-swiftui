@@ -654,7 +654,7 @@ import SwiftUI
         selectedRangeLocation = message.text.count
 
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            Task { @MainActor in
+            StreamConcurrency.onMain {
                 self?.updateComposerAssets(assets)
             }
         }
