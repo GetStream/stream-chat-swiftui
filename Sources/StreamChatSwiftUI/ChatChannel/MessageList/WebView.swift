@@ -71,6 +71,10 @@ struct WebView: UIViewRepresentable {
             didFailProvisionalNavigation navigation: WKNavigation!,
             withError error: Error
         ) {
+            if isPluginHandledLoadResult(error) {
+                return
+            }
+
             isLoading.wrappedValue = false
             self.error.wrappedValue = error
         }
@@ -80,8 +84,17 @@ struct WebView: UIViewRepresentable {
             didFail navigation: WKNavigation!,
             withError error: Error
         ) {
+            if isPluginHandledLoadResult(error) {
+                return
+            }
+
             isLoading.wrappedValue = false
             self.error.wrappedValue = error
+        }
+        
+        private func isPluginHandledLoadResult(_ error: Error) -> Bool {
+            let nsError = error as NSError
+            return nsError.domain == "WebKitErrorDomain" && nsError.code == 204
         }
     }
 }
