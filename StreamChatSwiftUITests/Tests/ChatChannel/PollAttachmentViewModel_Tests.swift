@@ -8,7 +8,6 @@
 import XCTest
 
 @MainActor final class PollAttachmentViewModel_Tests: StreamChatTestCase {
-
     func test_pollAttachmentViewModel_synchronizeCalled() {
         // Given
         let pollController = makePollController()

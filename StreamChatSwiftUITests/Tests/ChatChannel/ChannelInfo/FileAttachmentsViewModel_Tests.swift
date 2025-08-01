@@ -9,7 +9,6 @@ import Combine
 import XCTest
 
 @MainActor class FileAttachmentsViewModel_Tests: StreamChatTestCase {
-
     func test_fileAttachmentsViewModel_notEmpty() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 10)

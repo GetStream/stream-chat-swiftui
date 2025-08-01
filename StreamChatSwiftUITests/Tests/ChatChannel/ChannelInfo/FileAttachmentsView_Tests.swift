@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class FileAttachmentsView_Tests: StreamChatTestCase {
-
     func test_fileAttachmentsView_nonEmptySnapshot() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)

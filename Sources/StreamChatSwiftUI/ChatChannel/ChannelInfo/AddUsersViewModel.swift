@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View model for the `AddUsersView`.
 @MainActor class AddUsersViewModel: ObservableObject {
-
     @Injected(\.chatClient) private var chatClient
 
     @Published var users = [ChatUser]()

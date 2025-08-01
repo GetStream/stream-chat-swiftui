@@ -8,7 +8,6 @@ import SwiftUI
 
 /// View model for the `FileAttachmentsView`.
 @MainActor class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
-    
     @Published var loading = false
     @Published var attachmentsDataSource = [MonthlyFileAttachments]()
     @Published var selectedAttachment: ChatMessageFileAttachment?

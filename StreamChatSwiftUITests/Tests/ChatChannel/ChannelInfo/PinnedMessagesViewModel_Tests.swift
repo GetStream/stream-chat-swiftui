@@ -7,7 +7,6 @@
 import XCTest
 
 @MainActor class PinnedMessagesViewModel_Tests: StreamChatTestCase {
-
     func test_pinnedMessagesVM_notEmpty() {
         // Given
         let channel = ChatChannel.mockDMChannel(

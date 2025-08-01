@@ -10,7 +10,6 @@ import StreamSwiftTestHelpers
 import XCTest
 
 @MainActor final class ChatChannelListItemView_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         let circleImage = UIImage.circleImage

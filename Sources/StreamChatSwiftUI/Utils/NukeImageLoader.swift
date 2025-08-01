@@ -82,7 +82,7 @@ open class NukeImageLoader: ImageLoading {
         }
 
         group.notify(queue: .main) {
-            StreamConcurrency.onMain {
+            Task { @MainActor in
                 completion(batchLoadingResult.images)
             }
         }
@@ -96,7 +96,7 @@ open class NukeImageLoader: ImageLoading {
         completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void
     ) {
         guard var url = url else {
-            StreamConcurrency.onMain {
+            Task { @MainActor in
                 completion(.failure(ClientError.Unknown()))
             }
             return
@@ -125,7 +125,7 @@ open class NukeImageLoader: ImageLoading {
         )
 
         ImagePipeline.shared.loadImage(with: request) { result in
-            StreamConcurrency.onMain {
+            Task { @MainActor in
                 switch result {
                 case let .success(imageResponse):
                     completion(.success(imageResponse.image))

@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class ChatThreadListView_Tests: StreamChatTestCase {
-
     func test_chatThreadListView_empty() {
         let view = makeView(.empty())
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))

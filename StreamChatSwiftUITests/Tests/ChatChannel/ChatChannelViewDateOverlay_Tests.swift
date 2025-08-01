@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class ChatChannelViewDateOverlay_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         DateFormatter.messageListDateOverlay = {

@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageView_Tests: StreamChatTestCase {
-
     func test_messageViewText_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
@@ -479,7 +478,7 @@ import XCTest
         )
 
         // When
-        adjustAppearance() { appearance in
+        adjustAppearance { appearance in
             appearance.colors.messageCurrentUserBackground = [.orange]
             appearance.colors.background8 = .yellow
             appearance.colors.voiceMessageControlBackground = .cyan
@@ -714,9 +713,9 @@ import XCTest
             size: size,
             mentions: Set(mentions),
             """
-            This is [markdown link](https://getstream.io)  
-            This is plain link: https://getstream.io  
-            This is mention 1: @user_id_1  
+            This is [markdown link](https://getstream.io)
+            This is plain link: https://getstream.io
+            This is mention 1: @user_id_1
             This is mention 2: @Name_2
             """
         )
@@ -835,12 +834,12 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            This is **bold** text  
-            This text is _italicized_  
-            This was ~~mistaken~~ text  
+            This is **bold** text
+            This text is _italicized_
+            This was ~~mistaken~~ text
             This has backslashes for a newline\\
-            This has html line break<br/>Will span two lines  
-            ***All this text is important***  
+            This has html line break<br/>Will span two lines
+            ***All this text is important***
             """
         )
         AssertSnapshot(view, size: size)
@@ -891,7 +890,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Unordered (nested)  
+            Unordered (nested)
             - First list item
                 - First nested
                     - Second nested
@@ -906,7 +905,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Unordered (wrapped text)  
+            Unordered (wrapped text)
             - First list item which has a very long text and when wrapped, should be aligned to the same item
                 - First nested which has a very long text and when wrapped, should be aligned to the same item
                     - Second nested
@@ -940,7 +939,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Unordered (nested)  
+            Unordered (nested)
             1. First list item
                 1. First nested
                     1. Second nested
@@ -955,7 +954,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Mixed (nested)  
+            Mixed (nested)
             1. First list item
                 - First nested
                     1. Second nested

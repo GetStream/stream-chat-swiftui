@@ -80,7 +80,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
 
     var deleteDraftReply_callCount = 0
 
-    public override func deleteDraftReply(completion: (@MainActor @Sendable((any Error)?) -> Void)? = nil) {
+    override public func deleteDraftReply(completion: (@MainActor @Sendable((any Error)?) -> Void)? = nil) {
         deleteDraftReply_callCount += 1
     }
 }

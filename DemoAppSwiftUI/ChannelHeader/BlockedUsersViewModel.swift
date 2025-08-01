@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 @MainActor class BlockedUsersViewModel: ObservableObject {
-
     @Injected(\.chatClient) var chatClient
     
     @Published var blockedUsers = [ChatUser]()

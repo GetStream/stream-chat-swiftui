@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 @MainActor final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
-
     override public func setUp() {
         super.setUp()
         let reactionsTopPadding: (ChatMessage) -> CGFloat = { message in

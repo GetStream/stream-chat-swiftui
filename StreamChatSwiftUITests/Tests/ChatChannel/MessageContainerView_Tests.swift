@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageContainerView_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())

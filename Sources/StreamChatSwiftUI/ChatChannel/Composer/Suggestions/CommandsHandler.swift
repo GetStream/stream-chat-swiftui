@@ -8,7 +8,6 @@ import SwiftUI
 
 /// Defines methods for handling commands.
 @MainActor public protocol CommandHandler {
-
     /// Identifier of the command.
     var id: String { get }
 

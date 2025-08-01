@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageComposerViewModel_Tests: StreamChatTestCase {
-
     private let testImage = UIImage(systemName: "checkmark")!
     private var mockURL: URL!
     

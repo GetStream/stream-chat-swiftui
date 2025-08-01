@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class AddUsersView_Tests: StreamChatTestCase {
-
     func test_addUsersView_snapshot() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)

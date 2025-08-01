@@ -8,7 +8,6 @@ import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
 @MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
-
     @Injected(\.chatClient) private var chatClient
 
     @Published public var participants = [ParticipantInfo]()

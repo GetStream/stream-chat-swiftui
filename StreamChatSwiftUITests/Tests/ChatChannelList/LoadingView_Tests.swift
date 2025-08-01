@@ -9,7 +9,6 @@ import StreamSwiftTestHelpers
 import XCTest
 
 @MainActor class LoadingView_Tests: StreamChatTestCase {
-
     func test_redactedLoadingView_snapshot() {
         // Given
         let factory = DefaultViewFactory.shared

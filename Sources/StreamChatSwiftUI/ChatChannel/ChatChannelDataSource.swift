@@ -6,7 +6,6 @@ import StreamChat
 
 /// Data source providing the chat messages.
 @MainActor protocol MessagesDataSource: AnyObject {
-
     /// Called when the messages are updated.
     ///
     /// - Parameters:
@@ -32,7 +31,6 @@ import StreamChat
 
 /// The data source for the channel.
 @MainActor protocol ChannelDataSource: AnyObject {
-
     /// Delegate implementing the `MessagesDataSource`.
     var delegate: MessagesDataSource? { get set }
 

@@ -8,7 +8,6 @@ import StreamChat
 
 /// The ViewModel for the `ChatThreadListView`.
 @MainActor open class ChatThreadListViewModel: ObservableObject, ChatThreadListControllerDelegate, EventsControllerDelegate {
-
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
 

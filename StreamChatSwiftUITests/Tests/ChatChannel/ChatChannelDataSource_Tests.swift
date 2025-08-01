@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class ChatChannelDataSource_Tests: StreamChatTestCase {
-
     private let message = ChatMessage.mock(
         id: .unique,
         cid: .unique,

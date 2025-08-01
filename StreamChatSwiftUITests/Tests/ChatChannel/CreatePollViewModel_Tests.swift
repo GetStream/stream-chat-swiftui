@@ -7,7 +7,6 @@
 import XCTest
 
 @MainActor final class CreatePollViewModel_Tests: StreamChatTestCase {
-
     // MARK: - Can Show Discard Confirmation
     
     func test_canShowDiscardConfirmation_whenEmpty() {

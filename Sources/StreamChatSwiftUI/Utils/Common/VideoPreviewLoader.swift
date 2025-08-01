@@ -38,7 +38,9 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
 
     public func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void) {
         if let cached = cache[url] {
-            StreamConcurrency.onMain { completion(.success(cached)) }
+            Task { @MainActor in
+                completion(.success(cached))
+            }
             return
         }
 
@@ -49,7 +51,9 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
             case let .success(url):
                 adjustedUrl = url
             case let .failure(error):
-                StreamConcurrency.onMain { completion(.failure(error)) }
+                Task { @MainActor in
+                    completion(.failure(error))
+                }
                 return
             }
 
@@ -70,7 +74,9 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
                 }
 
                 cache[url] = try? result.get()
-                StreamConcurrency.onMain { completion(result) }
+                Task { @MainActor in
+                    completion(result)
+                }
             }
         }
     }

@@ -17,7 +17,6 @@ public enum AttachmentPickerState {
 
 /// Struct representing an asset added to the composer.
 public struct AddedAsset: Identifiable, Equatable, Sendable {
-
     public static func == (lhs: AddedAsset, rhs: AddedAsset) -> Bool {
         lhs.id == rhs.id
     }
@@ -113,7 +112,6 @@ public enum AssetType: Sendable {
 }
 
 public struct CustomAttachment: Identifiable, Equatable, Sendable {
-
     public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
         lhs.id == rhs.id
     }

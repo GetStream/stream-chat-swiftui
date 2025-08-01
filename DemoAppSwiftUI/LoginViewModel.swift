@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 @MainActor class LoginViewModel: ObservableObject {
-
     @Published var demoUsers = UserCredentials.builtInUsers
     @Published var loading = false
     @Published var showsConfiguration = false

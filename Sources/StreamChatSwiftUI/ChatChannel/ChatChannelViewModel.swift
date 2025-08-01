@@ -8,7 +8,6 @@ import SwiftUI
 
 /// View model for the `ChatChannelView`.
 @MainActor open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
-
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images

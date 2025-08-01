@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class ReactionsOverlayView_Tests: StreamChatTestCase {
-
     private static let screenSize = CGSize(width: 393, height: 852)
 
     private let testMessage = ChatMessage.mock(
