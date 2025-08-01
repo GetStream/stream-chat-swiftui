@@ -11,11 +11,6 @@ struct WebView: UIViewRepresentable {
     @Binding var isLoading: Bool
     @Binding var title: String?
     @Binding var error: Error?
-    
-    private let WebKitErrorDomain = "WebKitErrorDomain"
-    private enum WebKitErrorCode: Int {
-        case pluginHandledLoad = 204
-    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(
@@ -44,6 +39,11 @@ struct WebView: UIViewRepresentable {
         var isLoading: Binding<Bool>
         var title: Binding<String?>
         var error: Binding<Error?>
+        
+        private let WebKitErrorDomain = "WebKitErrorDomain"
+        private enum WebKitErrorCode: Int {
+            case pluginHandledLoad = 204
+        }
 
         init(
             webView: WebView,
@@ -76,7 +76,6 @@ struct WebView: UIViewRepresentable {
             didFailProvisionalNavigation navigation: WKNavigation!,
             withError error: Error
         ) {
-            // Ignore "Plug-in handled load" error as it's actually success for audio files
             let nsError = error as NSError
             if nsError.domain == WebKitErrorDomain && nsError.code == WebKitErrorCode.pluginHandledLoad.rawValue {
                 return
@@ -91,7 +90,6 @@ struct WebView: UIViewRepresentable {
             didFail navigation: WKNavigation!,
             withError error: Error
         ) {
-            // Ignore "Plug-in handled load" error as it's actually success for audio files
             let nsError = error as NSError
             if nsError.domain == WebKitErrorDomain && nsError.code == WebKitErrorCode.pluginHandledLoad.rawValue {
                 return
