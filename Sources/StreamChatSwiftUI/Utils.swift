@@ -62,6 +62,7 @@ public class Utils {
         }
     }
 
+    @MainActor
     public lazy var audioSessionFeedbackGenerator: AudioSessionFeedbackGenerator = StreamAudioSessionFeedbackGenerator()
 
     public var originalTranslationsStore = MessageOriginalTranslationsStore()

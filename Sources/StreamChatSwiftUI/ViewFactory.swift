@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// Factory used to create views.
-public protocol ViewFactory: AnyObject {
+@MainActor public protocol ViewFactory: AnyObject {
     var chatClient: ChatClient { get }
 
     /// Returns the navigation bar display mode.

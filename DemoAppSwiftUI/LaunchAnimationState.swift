@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-class LaunchAnimationState: ObservableObject {
+@MainActor class LaunchAnimationState: ObservableObject {
     @Published var showAnimation = true
 
     init() {

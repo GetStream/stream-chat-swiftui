@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `PinnedMessagesView`.
-public class PinnedMessagesViewModel: ObservableObject {
+@MainActor public class PinnedMessagesViewModel: ObservableObject {
     let channel: ChatChannel
 
     @Published var pinnedMessages: [ChatMessage]

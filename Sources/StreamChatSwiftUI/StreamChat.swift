@@ -26,7 +26,7 @@ public class StreamChat {
 
 /// Returns the current value for the `StreamChat` instance.
 private struct StreamChatProviderKey: InjectionKey {
-    static var currentValue: StreamChat?
+    static nonisolated(unsafe) var currentValue: StreamChat?
 }
 
 extension InjectedValues {

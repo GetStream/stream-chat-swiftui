@@ -91,21 +91,23 @@ class DemoAppFactory: ViewFactory {
             iconName: "archivebox",
             action: { [weak self] in
                 guard let self else { return }
+                nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+                nonisolated(unsafe) let unsafeOnError = onError
                 let channelController = self.chatClient.channelController(for: channel.cid)
                 if channel.isArchived {
                     channelController.unarchive { error in
                         if let error = error {
-                            onError(error)
+                            unsafeOnError(error)
                         } else {
-                            onDismiss()
+                            unsafeOnDismiss()
                         }
                     }
                 } else {
                     channelController.archive { error in
                         if let error = error {
-                            onError(error)
+                            unsafeOnError(error)
                         } else {
-                            onDismiss()
+                            unsafeOnDismiss()
                         }
                     }
                 }
@@ -125,21 +127,23 @@ class DemoAppFactory: ViewFactory {
             iconName: "pin.fill",
             action: { [weak self] in
                 guard let self else { return }
+                nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+                nonisolated(unsafe) let unsafeOnError = onError
                 let channelController = self.chatClient.channelController(for: channel.cid)
                 if channel.isPinned {
                     channelController.unpin { error in
                         if let error = error {
-                            onError(error)
+                            unsafeOnError(error)
                         } else {
-                            onDismiss()
+                            unsafeOnDismiss()
                         }
                     }
                 } else {
                     channelController.pin { error in
                         if let error = error {
-                            onError(error)
+                            unsafeOnError(error)
                         } else {
-                            onDismiss()
+                            unsafeOnDismiss()
                         }
                     }
                 }
@@ -266,14 +270,15 @@ class CustomFactory: ViewFactory {
             onDismiss: onDismiss,
             onError: onError
         )
-
-        let freeze = {
+        nonisolated(unsafe) let unsafeOnDismiss = onDismiss
+        nonisolated(unsafe) let unsafeOnError = onError
+        let freeze: @MainActor @Sendable() -> Void = {
             let controller = self.chatClient.channelController(for: channel.cid)
             controller.freezeChannel { error in
                 if let error = error {
-                    onError(error)
+                    unsafeOnError(error)
                 } else {
-                    onDismiss()
+                    unsafeOnDismiss()
                 }
             }
         }

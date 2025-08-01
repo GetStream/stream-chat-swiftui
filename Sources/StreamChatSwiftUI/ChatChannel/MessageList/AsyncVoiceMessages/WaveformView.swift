@@ -14,7 +14,7 @@ open class WaveformView: UIView {
     open var onSliderChanged: ((TimeInterval) -> Void)?
     open var onSliderTapped: (() -> Void)?
     
-    public struct Content: Equatable {
+    public struct Content: Equatable, Sendable {
         /// When set to `true` the waveform will be updating with the data live (scrolling to the trailing side
         /// as new data arrive).
         public var isRecording: Bool

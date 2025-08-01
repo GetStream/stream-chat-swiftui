@@ -6,7 +6,7 @@ import Foundation
 @testable import StreamChat
 
 /// Mock implementation of `BackgroundTaskScheduler`.
-final class MockBackgroundTaskScheduler: BackgroundTaskScheduler {
+final class MockBackgroundTaskScheduler: BackgroundTaskScheduler, @unchecked Sendable {
     var isAppActive_called: Bool = false
     var isAppActive_returns: Bool = true
     var isAppActive: Bool {
@@ -15,9 +15,9 @@ final class MockBackgroundTaskScheduler: BackgroundTaskScheduler {
     }
 
     var beginBackgroundTask_called: Bool = false
-    var beginBackgroundTask_expirationHandler: (() -> Void)?
+    var beginBackgroundTask_expirationHandler: (@MainActor @Sendable() -> Void)?
     var beginBackgroundTask_returns: Bool = true
-    func beginTask(expirationHandler: (() -> Void)?) -> Bool {
+    func beginTask(expirationHandler: (@MainActor @Sendable() -> Void)?) -> Bool {
         beginBackgroundTask_called = true
         beginBackgroundTask_expirationHandler = expirationHandler
         return beginBackgroundTask_returns
