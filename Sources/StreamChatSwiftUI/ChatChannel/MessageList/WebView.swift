@@ -71,6 +71,12 @@ struct WebView: UIViewRepresentable {
             didFailProvisionalNavigation navigation: WKNavigation!,
             withError error: Error
         ) {
+            // Ignore "Plug-in handled load" error as it's actually success for audio files
+            let nsError = error as NSError
+            if nsError.domain == "WebKitErrorDomain" && nsError.code == 204 {
+                return
+            }
+
             isLoading.wrappedValue = false
             self.error.wrappedValue = error
         }
@@ -80,6 +86,12 @@ struct WebView: UIViewRepresentable {
             didFail navigation: WKNavigation!,
             withError error: Error
         ) {
+            // Ignore "Plug-in handled load" error as it's actually success for audio files
+            let nsError = error as NSError
+            if nsError.domain == "WebKitErrorDomain" && nsError.code == 204 {
+                return
+            }
+
             isLoading.wrappedValue = false
             self.error.wrappedValue = error
         }

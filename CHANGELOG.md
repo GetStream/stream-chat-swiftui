@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix WebView error handling to enable mp3 attachments loading [#904](https://github.com/GetStream/stream-chat-swiftui/pull/904)
 
 # [4.83.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.83.0)
 _July 29, 2025_
