@@ -8,7 +8,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the more channel actions.
-open class MoreChannelActionsViewModel: ObservableObject {
+@MainActor open class MoreChannelActionsViewModel: ObservableObject {
     /// Context provided values.
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
@@ -93,7 +93,7 @@ open class MoreChannelActionsViewModel: ObservableObject {
 }
 
 /// Model describing a channel action.
-public struct ChannelAction: Identifiable {
+public struct ChannelAction: Identifiable, @unchecked Sendable {
     public var id: String {
         "\(title)-\(iconName)"
     }
@@ -103,7 +103,7 @@ public struct ChannelAction: Identifiable {
     public let action: () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
-    public var navigationDestination: AnyView?
+    nonisolated(unsafe) public var navigationDestination: AnyView?
 
     public init(
         title: String,
@@ -121,7 +121,7 @@ public struct ChannelAction: Identifiable {
 }
 
 /// Model describing confirmation popup data.
-public struct ConfirmationPopup {
+public struct ConfirmationPopup: Sendable {
     public init(title: String, message: String?, buttonTitle: String) {
         self.title = title
         self.message = message

@@ -6,11 +6,7 @@ import Combine
 import SwiftUI
 
 struct AppConfigurationView: View {
-    var channelPinningEnabled: Binding<Bool> = Binding {
-        AppConfiguration.default.isChannelPinningFeatureEnabled
-    } set: { newValue in
-        AppConfiguration.default.isChannelPinningFeatureEnabled = newValue
-    }
+    @State private var channelPinningEnabled = AppConfiguration.default.isChannelPinningFeatureEnabled
 
     var body: some View {
         NavigationView {
@@ -19,12 +15,13 @@ struct AppConfigurationView: View {
                     NavigationLink("Translation") {
                         AppConfigurationTranslationView()
                     }
-                    Toggle("Channel Pinning", isOn: channelPinningEnabled)
+                    Toggle("Channel Pinning", isOn: $channelPinningEnabled)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
         }
+        .onChange(of: channelPinningEnabled, perform: { AppConfiguration.default.isChannelPinningFeatureEnabled = $0 })
     }
 }
 

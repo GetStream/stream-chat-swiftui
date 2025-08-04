@@ -8,23 +8,17 @@ import SwiftUI
 struct AppConfigurationTranslationView: View {
     @Environment(\.dismiss) var dismiss
     
-    var selection: Binding<TranslationLanguage?> = Binding {
-        AppConfiguration.default.translationLanguage
-    } set: { newValue in
-        AppConfiguration.default.translationLanguage = newValue
-    }
-    
     var body: some View {
         List {
             ForEach(TranslationLanguage.all, id: \.languageCode) { language in
                 Button(action: {
-                    selection.wrappedValue = language
+                    AppConfiguration.default.translationLanguage = language
                     dismiss()
                 }) {
                     HStack {
                         Text(language.languageCode)
                         Spacer()
-                        if selection.wrappedValue == language {
+                        if AppConfiguration.default.translationLanguage == language {
                             Image(systemName: "checkmark")
                         }
                     }

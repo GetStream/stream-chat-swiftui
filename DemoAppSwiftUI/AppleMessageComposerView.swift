@@ -125,8 +125,10 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         )
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value = value, value != composerHeight {
-                self.composerHeight = value
+            Task { @MainActor in
+                if let value = value, value != composerHeight {
+                    self.composerHeight = value
+                }
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
@@ -159,7 +161,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 )
                 .offset(y: -composerHeight)
-                .animation(nil) : nil,
+                .animation(.none, value: viewModel.showCommandsOverlay) : nil,
             alignment: .bottom
         )
         .modifier(factory.makeComposerViewModifier())
@@ -213,7 +215,7 @@ struct BlurredBackground: View {
 }
 
 struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
+    static var defaultValue: CGFloat? { nil }
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()

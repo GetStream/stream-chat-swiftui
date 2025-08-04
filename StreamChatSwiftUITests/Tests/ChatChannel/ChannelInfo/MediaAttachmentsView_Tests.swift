@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MediaAttachmentsView_Tests: StreamChatTestCase {
+@MainActor class MediaAttachmentsView_Tests: StreamChatTestCase {
     func test_mediaAttachmentsView_notEmptySnapshot() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(

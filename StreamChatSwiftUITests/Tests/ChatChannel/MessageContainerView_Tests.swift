@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageContainerView_Tests: StreamChatTestCase {
+@MainActor class MessageContainerView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
         let utils = Utils(dateFormatter: EmptyDateFormatter())

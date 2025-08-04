@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
@@ -11,7 +11,7 @@ import Foundation
 /// either *cost* or *count* limit is reached. The sweeps are performed periodically.
 ///
 /// DataCache always writes and removes data asynchronously. It also allows for
-/// reading and writing data in parallel. This is implemented using a "staging"
+/// reading and writing data in parallel. It is implemented using a staging
 /// area which stores changes until they are flushed to disk:
 ///
 /// ```swift
@@ -45,17 +45,16 @@ final class DataCache: DataCaching, @unchecked Sendable {
     /// The path for the directory managed by the cache.
     let path: URL
 
-    /// The number of seconds between each LRU sweep. 30 by default.
-    /// The first sweep is performed right after the cache is initialized.
-    ///
-    /// Sweeps are performed in a background and can be performed in parallel
-    /// with reading.
-    var sweepInterval: TimeInterval = 30
+    /// The time interval between cache sweeps. The default value is 1 hour.
+    var sweepInterval: TimeInterval = 3600
 
-    /// The delay after which the initial sweep is performed. 10 by default.
-    /// The initial sweep is performed after a delay to avoid competing with
-    /// other subsystems for the resources.
-    private var initialSweepDelay: TimeInterval = 10
+    // Deprecated in Nuke 12.2
+    @available(*, deprecated, message: "It's not recommended to use compression with the popular image formats that already compress the data")
+    var isCompressionEnabled: Bool {
+        get { _isCompressionEnabled }
+        set { _isCompressionEnabled = newValue }
+    }
+    var _isCompressionEnabled = false
 
     // Staging
 
@@ -65,6 +64,10 @@ final class DataCache: DataCaching, @unchecked Sendable {
     private var isFlushScheduled = false
 
     var flushInterval: DispatchTimeInterval = .seconds(1)
+
+    private struct Metadata: Codable {
+        var lastSweepDate: Date?
+    }
 
     /// A queue which is used for disk I/O.
     let queue = DispatchQueue(label: "com.github.kean.Nuke.DataCache.WriteQueue", qos: .utility)
@@ -84,6 +87,7 @@ final class DataCache: DataCaching, @unchecked Sendable {
     /// - parameter filenameGenerator: Generates a filename for the given URL.
     /// The default implementation generates a filename using SHA1 hash function.
     convenience init(name: String, filenameGenerator: @escaping (String) -> String? = DataCache.filename(for:)) throws {
+        // This should be replaced with URL.cachesDirectory on iOS 16, which never fails
         guard let root = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
             throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: nil)
         }
@@ -97,28 +101,30 @@ final class DataCache: DataCaching, @unchecked Sendable {
         self.path = path
         self.filenameGenerator = filenameGenerator
         try self.didInit()
-
-        #if TRACK_ALLOCATIONS
-        Allocations.increment("DataCache")
-        #endif
-    }
-
-    deinit {
-        #if TRACK_ALLOCATIONS
-        Allocations.decrement("ImageCache")
-        #endif
     }
 
     /// A `FilenameGenerator` implementation which uses SHA1 hash function to
     /// generate a filename from the given key.
     static func filename(for key: String) -> String? {
-        key.sha1
+        key.isEmpty ? nil : key.sha1
     }
 
     private func didInit() throws {
         try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
-        queue.asyncAfter(deadline: .now() + initialSweepDelay) { [weak self] in
-            self?.performAndScheduleSweep()
+        scheduleSweep()
+    }
+
+    private func scheduleSweep() {
+        if let lastSweepDate = getMetadata().lastSweepDate,
+           Date().timeIntervalSince(lastSweepDate) < sweepInterval {
+            return // Already completed recently
+        }
+        // Add a bit of a delay to free the resources during launch
+        queue.asyncAfter(deadline: .now() + 5.0, qos: .background) { [weak self] in
+            self?.performSweep()
+            self?.updateMetadata {
+                $0.lastSweepDate = Date()
+            }
         }
     }
 
@@ -137,7 +143,7 @@ final class DataCache: DataCaching, @unchecked Sendable {
         guard let url = url(for: key) else {
             return nil
         }
-        return try? Data(contentsOf: url)
+        return try? decompressed(Data(contentsOf: url))
     }
 
     /// Returns `true` if the cache contains the data for the given key.
@@ -177,7 +183,7 @@ final class DataCache: DataCaching, @unchecked Sendable {
     /// Removes all items. The method returns instantly, the data is removed
     /// asynchronously.
     func removeAll() {
-        stage { staging.removeAll() }
+        stage { staging.removeAllStagedChanges() }
     }
 
     private func stage(_ change: () -> Void) {
@@ -232,9 +238,7 @@ final class DataCache: DataCaching, @unchecked Sendable {
 
     /// Returns `url` for the given cache key.
     func url(for key: String) -> URL? {
-        guard let filename = self.filename(for: key) else {
-            return nil
-        }
+        guard let filename = self.filename(for: key) else { return nil }
         return self.path.appendingPathComponent(filename, isDirectory: false)
     }
 
@@ -250,9 +254,9 @@ final class DataCache: DataCaching, @unchecked Sendable {
     /// operations for the given key are finished.
     func flush(for key: String) {
         queue.sync {
-            guard let change = lock.sync({ staging.changes[key] }) else { return }
+            guard let change = lock.withLock({ staging.changes[key] }) else { return }
             perform(change)
-            lock.sync { staging.flushed(change) }
+            lock.withLock { staging.flushed(change) }
         }
     }
 
@@ -318,25 +322,34 @@ final class DataCache: DataCaching, @unchecked Sendable {
         switch change.type {
         case let .add(data):
             do {
-                try data.write(to: url)
+                try compressed(data).write(to: url)
             } catch let error as NSError {
                 guard error.code == CocoaError.fileNoSuchFile.rawValue && error.domain == CocoaError.errorDomain else { return }
                 try? FileManager.default.createDirectory(at: self.path, withIntermediateDirectories: true, attributes: nil)
-                try? data.write(to: url) // re-create a directory and try again
+                try? compressed(data).write(to: url) // re-create a directory and try again
             }
         case .remove:
             try? FileManager.default.removeItem(at: url)
         }
     }
 
-    // MARK: Sweep
+    // MARK: Compression
 
-    private func performAndScheduleSweep() {
-        performSweep()
-        queue.asyncAfter(deadline: .now() + sweepInterval) { [weak self] in
-            self?.performAndScheduleSweep()
+    private func compressed(_ data: Data) throws -> Data {
+        guard _isCompressionEnabled else {
+            return data
         }
+        return try (data as NSData).compressed(using: .lzfse) as Data
     }
+
+    private func decompressed(_ data: Data) throws -> Data {
+        guard _isCompressionEnabled else {
+            return data
+        }
+        return try (data as NSData).decompressed(using: .lzfse) as Data
+    }
+
+    // MARK: Sweep
 
     /// Synchronously performs a cache sweep and removes the least recently items
     /// which no longer fit in cache.
@@ -389,6 +402,26 @@ final class DataCache: DataCaching, @unchecked Sendable {
             }
             return Entry(url: $0, meta: meta)
         }
+    }
+
+    // MARK: Metadata
+
+    private func getMetadata() -> Metadata {
+        if let data = try? Data(contentsOf: metadataFileURL),
+           let metadata = try? JSONDecoder().decode(Metadata.self, from: data) {
+            return metadata
+        }
+        return Metadata()
+    }
+
+    private func updateMetadata(_ closure: (inout Metadata) -> Void) {
+        var metadata = getMetadata()
+        closure(&metadata)
+        try? JSONEncoder().encode(metadata).write(to: metadataFileURL)
+    }
+
+    private var metadataFileURL: URL {
+        path.appendingPathComponent(".data-cache-info", isDirectory: false)
     }
 
     // MARK: Inspection
@@ -478,7 +511,7 @@ private struct Staging {
         changes[key] = Change(key: key, id: nextChangeId, type: .remove)
     }
 
-    mutating func removeAll() {
+    mutating func removeAllStagedChanges() {
         nextChangeId += 1
         changeRemoveAll = ChangeRemoveAll(id: nextChangeId)
         changes.removeAll()

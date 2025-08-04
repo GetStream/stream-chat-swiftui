@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct AudioRecordingInfo: Equatable {
+public struct AudioRecordingInfo: Equatable, Sendable {
     /// The waveform of the recording.
     public var waveform: [Float]
     /// The duration of the recording.
@@ -61,7 +61,9 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                     }
                 case let .failure(error):
                     log.error(error)
-                    self.recordingState = .initial
+                    Task { @MainActor in
+                        self.recordingState = .initial
+                    }
                 }
             }
         )

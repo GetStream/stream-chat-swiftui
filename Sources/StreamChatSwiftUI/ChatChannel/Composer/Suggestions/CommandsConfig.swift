@@ -16,7 +16,7 @@ public protocol CommandsConfig {
     /// Creates the main commands handler.
     /// - Parameter channelController: the controller of the channel.
     /// - Returns: `CommandsHandler`.
-    func makeCommandsHandler(
+    @MainActor func makeCommandsHandler(
         with channelController: ChatChannelController
     ) -> CommandsHandler
 }

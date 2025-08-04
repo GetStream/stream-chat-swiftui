@@ -305,7 +305,7 @@ public struct UnreadIndicatorView: View {
     }
 }
 
-public struct InjectedChannelInfo {
+public struct InjectedChannelInfo: Sendable {
     public var subtitle: String?
     public var unreadCount: Int
     public var timestamp: String?
@@ -385,7 +385,7 @@ extension ChatChannel {
 }
 
 /// The style for the muted icon in the channel list item.
-public struct ChannelItemMutedLayoutStyle: Hashable {
+public struct ChannelItemMutedLayoutStyle: Hashable, Sendable {
     let identifier: String
 
     init(_ identifier: String) {
@@ -393,13 +393,13 @@ public struct ChannelItemMutedLayoutStyle: Hashable {
     }
 
     /// The default style shows the muted icon and the text "channel is muted" as the subtitle text.
-    public static var `default`: ChannelItemMutedLayoutStyle = .init("default")
+    public static let `default`: ChannelItemMutedLayoutStyle = .init("default")
 
     /// This style shows the muted icon at the top right corner of the channel item.
     /// The subtitle text shows the last message preview text.
-    public static var topRightCorner: ChannelItemMutedLayoutStyle = .init("topRightCorner")
+    public static let topRightCorner: ChannelItemMutedLayoutStyle = .init("topRightCorner")
 
     /// This style shows the muted icon after the channel name.
     /// The subtitle text shows the last message preview text.
-    public static var afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
+    public static let afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
 }

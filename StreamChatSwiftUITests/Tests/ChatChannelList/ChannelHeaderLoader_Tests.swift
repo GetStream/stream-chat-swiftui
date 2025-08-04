@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class ChannelHeaderLoader_Tests: StreamChatTestCase {
+@MainActor class ChannelHeaderLoader_Tests: StreamChatTestCase {
     @Injected(\.images) var images
 
     private let testURL = URL(string: "https://example.com")!

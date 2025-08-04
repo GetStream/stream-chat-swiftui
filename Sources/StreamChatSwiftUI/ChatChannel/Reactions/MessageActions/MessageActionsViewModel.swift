@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `MessageActionsView`.
-open class MessageActionsViewModel: ObservableObject {
+@MainActor open class MessageActionsViewModel: ObservableObject {
     @Published public var messageActions: [MessageAction]
     @Published public var alertShown = false
     @Published public var alertAction: MessageAction? {
@@ -53,7 +53,7 @@ public struct MessageAction: Identifiable, Equatable {
 }
 
 /// Provides information about a performed `MessageAction`.
-public struct MessageActionInfo {
+public struct MessageActionInfo: Sendable {
     public let message: ChatMessage
     public let identifier: String
 

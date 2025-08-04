@@ -171,8 +171,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         )
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value = value, value != composerHeight {
-                self.composerHeight = value
+            StreamConcurrency.onMain {
+                if let value = value, value != composerHeight {
+                    self.composerHeight = value
+                }
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
