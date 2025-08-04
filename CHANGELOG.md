@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Make `AddUsersView` used by `ChatChannelInfoView` public for creating custom info views through composition [#906](https://github.com/GetStream/stream-chat-swiftui/pull/906)
+
 ### 🐞 Fixed
 - Fix WebView error handling to enable mp3 attachments loading [#904](https://github.com/GetStream/stream-chat-swiftui/pull/904)
 
