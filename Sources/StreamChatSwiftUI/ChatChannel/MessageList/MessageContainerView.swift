@@ -231,8 +231,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             }
                         )
                         .onPreferenceChange(HeightPreferenceKey.self) { value in
-                            if value != 0 {
-                                self.offsetYAvatar = -(value ?? 0)
+                            StreamConcurrency.onMain {
+                                if value != 0 {
+                                    self.offsetYAvatar = -(value ?? 0)
+                                }
                             }
                         }
                     }

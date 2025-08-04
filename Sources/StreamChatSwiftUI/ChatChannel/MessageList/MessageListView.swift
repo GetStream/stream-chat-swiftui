@@ -216,8 +216,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .coordinateSpace(name: scrollAreaId)
                 .onPreferenceChange(WidthPreferenceKey.self) { value in
-                    if let value = value, value != width {
-                        self.width = value
+                    StreamConcurrency.onMain {
+                        if let value = value, value != width {
+                            self.width = value
+                        }
                     }
                 }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
