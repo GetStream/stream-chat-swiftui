@@ -181,9 +181,15 @@ public struct ChannelAvatarViewOptions {
     /// Whether the online indicator should be shown.
     public var showOnlineIndicator: Bool
     /// Size of the avatar.
-    public var size: CGSize = .defaultAvatarSize
+    public var size: CGSize
     /// Optional avatar image. If not provided, it will be loaded by the channel header loader.
     public var avatar: UIImage?
+
+    public init(showOnlineIndicator: Bool, size: CGSize = .defaultAvatarSize, avatar: UIImage? = nil) {
+        self.showOnlineIndicator = showOnlineIndicator
+        self.size = size
+        self.avatar = avatar
+    }
 }
 
 /// View for the avatar used in channels (includes online indicator overlay).
