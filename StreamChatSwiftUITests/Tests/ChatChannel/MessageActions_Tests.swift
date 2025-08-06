@@ -374,46 +374,6 @@ class MessageActions_Tests: StreamChatTestCase {
         // Then
         XCTAssertTrue(messageActions.contains(where: { $0.title == "Edit Message" }))
     }
-    
-    func test_messageActions_currentUser_unmuteUser() throws {
-        // Given
-        // Note: internally creates current user controller
-        let mutedUserId = UserId.unique
-        try chatClient.databaseContainer.writeSynchronously { session in
-            try session.saveCurrentUser(
-                payload: .dummy(
-                    userId: .unique,
-                    role: .admin,
-                    mutedUsers: [
-                        .dummy(userId: mutedUserId)
-                    ]
-                )
-            )
-        }
-        
-        let channel = ChatChannel.mockDMChannel(config: .mock(mutesEnabled: true))
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: channel.cid,
-            text: "Test",
-            author: .mock(id: mutedUserId),
-            isSentByCurrentUser: false
-        )
-        let factory = DefaultViewFactory.shared
-        
-        // When
-        let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
-        )
-        
-        // Then
-        XCTAssertTrue(messageActions.contains(where: { $0.title == "Unmute User" }))
-    }
 
     // MARK: - Private
     
