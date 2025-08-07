@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.84.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.84.0)
+_August 07, 2025_
+
 ### ✅ Added
 - Make `AddUsersView` used by `ChatChannelInfoView` public for creating custom info views through composition [#906](https://github.com/GetStream/stream-chat-swiftui/pull/906)
 - Expose `ChannelAvatarViewOptions.init` [#908](https://github.com/GetStream/stream-chat-swiftui/pull/908)
