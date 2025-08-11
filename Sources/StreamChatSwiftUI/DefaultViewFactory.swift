@@ -1130,6 +1130,13 @@ extension ViewFactory {
     public func makeThreadListDividerItem() -> some View {
         Divider()
     }
+    
+    public func makeAddUsersView(
+        options: AddUsersOptions,
+        onUserTap: @escaping (ChatUser) -> Void
+    ) -> some View {
+        AddUsersView(loadedUserIds: options.loadedUserIds, onUserTap: onUserTap)
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
