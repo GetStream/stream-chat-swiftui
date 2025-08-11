@@ -104,7 +104,6 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 }
 
 public struct AttachmentTextView: View {
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
@@ -152,7 +151,7 @@ struct ImageAttachmentView: View {
     let message: ChatMessage
     let sources: [MediaAttachment]
     let width: CGFloat
-    var imageTapped: ((Int) -> Void)? = nil
+    var imageTapped: ((Int) -> Void)?
 
     private let spacing: CGFloat = 2
     private let maxDisplayedImages = 4
@@ -298,7 +297,7 @@ struct ImageAttachmentView: View {
 struct SingleImageView: View {
     let source: MediaAttachment
     let width: CGFloat
-    var imageTapped: ((Int) -> Void)? = nil
+    var imageTapped: ((Int) -> Void)?
     var index: Int?
 
     private var height: CGFloat {
@@ -322,7 +321,7 @@ struct MultiImageView: View {
     let source: MediaAttachment
     let width: CGFloat
     let height: CGFloat
-    var imageTapped: ((Int) -> Void)? = nil
+    var imageTapped: ((Int) -> Void)?
     var index: Int?
 
     var body: some View {
@@ -349,7 +348,7 @@ struct LazyLoadingImage: View {
     let height: CGFloat
     var resize: Bool = true
     var shouldSetFrame: Bool = true
-    var imageTapped: ((Int) -> Void)? = nil
+    var imageTapped: ((Int) -> Void)?
     var index: Int?
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
 
@@ -426,7 +425,6 @@ struct LazyLoadingImage: View {
 }
 
 extension ChatMessage {
-
     var alignmentInBubble: HorizontalAlignment {
         .leading
     }
@@ -486,4 +484,8 @@ enum MediaAttachmentType {
 public struct MediaViewsOptions {
     /// The index of the selected media item.
     public let selectedIndex: Int
+
+    public init(selectedIndex: Int) {
+        self.selectedIndex = selectedIndex
+    }
 }

@@ -9,7 +9,6 @@ import SwiftUI
 import XCTest
 
 class ViewFactory_Tests: StreamChatTestCase {
-
     private let message = ChatMessage.mock(
         id: .unique,
         cid: .unique,
@@ -134,7 +133,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         let view = viewFactory.makeMessageAvatarView(for: userInfo)
 
         // Then
-        XCTAssert(view is MessageAvatarView)
+        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
     }
 
     func test_viewFactory_makeQuotedMessageAvatarView() {
@@ -154,7 +153,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         )
 
         // Then
-        XCTAssert(view is MessageAvatarView)
+        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
     }
 
     func test_viewFactory_makeChannelHeaderViewModifier() {
@@ -1047,7 +1046,6 @@ class ViewFactory_Tests: StreamChatTestCase {
 }
 
 extension ChannelAction: Equatable {
-
     public static func == (lhs: ChannelAction, rhs: ChannelAction) -> Bool {
         lhs.id == rhs.id
     }

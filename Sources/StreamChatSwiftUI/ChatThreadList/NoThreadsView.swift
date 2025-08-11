@@ -6,7 +6,6 @@ import SwiftUI
 
 /// Default SDK implementation for the view displayed when there are no threads available.
 public struct NoThreadsView: View {
-    
     @Injected(\.images) private var images
 
     public init() {}

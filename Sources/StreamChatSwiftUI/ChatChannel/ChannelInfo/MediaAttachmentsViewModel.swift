@@ -8,7 +8,6 @@ import SwiftUI
 
 /// View model for the `MediaAttachmentsView`.
 class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
-
     @Published var mediaItems = [MediaItem]()
     @Published var loading = false
     @Published var galleryShown = false

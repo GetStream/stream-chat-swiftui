@@ -11,7 +11,6 @@ import SwiftUI
 
 /// Test commands configuration.
 public class TestCommandsConfig: CommandsConfig {
-
     public init(chatClient: ChatClient) {
         self.chatClient = chatClient
     }
@@ -61,7 +60,6 @@ public class TestCommandsConfig: CommandsConfig {
 }
 
 class MockCommandHandler: CommandHandler {
-
     var id: String = "mock"
     var displayInfo: CommandDisplayInfo?
 

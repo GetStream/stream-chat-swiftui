@@ -81,7 +81,6 @@ struct ReactionsUsersView: View {
 }
 
 extension ChatMessageReaction: Identifiable {
-
     public var id: String {
         "\(author.id)-\(type.rawValue)"
     }

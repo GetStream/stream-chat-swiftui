@@ -31,7 +31,6 @@ public struct UserCredentials: Codable {
 }
 
 extension UserCredentials: Identifiable {
-
     static func builtInUsersByID(id: String) -> UserCredentials? {
         builtInUsers.filter { $0.id == id }.first
     }

@@ -8,7 +8,6 @@ import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
 public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
-
     @Injected(\.chatClient) private var chatClient
 
     @Published public var participants = [ParticipantInfo]()
@@ -99,6 +98,10 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         } else {
             return L10n.Alert.Actions.leaveGroupMessage
         }
+    }
+    
+    public var showMoreUsersButtonTitle: String {
+        L10n.ChatInfo.Users.loadMore(notDisplayedParticipantsCount)
     }
 
     public var notDisplayedParticipantsCount: Int {

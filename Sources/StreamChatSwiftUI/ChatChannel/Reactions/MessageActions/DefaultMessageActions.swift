@@ -552,7 +552,7 @@ public extension MessageAction {
         onError: @escaping (Error) -> Void
     ) -> MessageAction {
         let action = {
-            messageController.markThreadUnread() { error in
+            messageController.markThreadUnread { error in
                 if let error {
                     onError(error)
                 } else {

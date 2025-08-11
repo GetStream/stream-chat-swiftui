@@ -7,7 +7,6 @@
 import XCTest
 
 class ChannelHeaderLoader_Tests: StreamChatTestCase {
-
     @Injected(\.images) var images
 
     private let testURL = URL(string: "https://example.com")!

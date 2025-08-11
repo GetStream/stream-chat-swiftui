@@ -8,7 +8,6 @@ import SwiftUI
 /// Stateless component for the channel list.
 /// If used directly, you should provide the channel list.
 public struct ChannelList<Factory: ViewFactory>: View {
-
     @Injected(\.colors) private var colors
     
     private var factory: Factory
@@ -109,6 +108,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 /// LazyVStack displaying list of channels.
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
 
     private var factory: Factory
     var channels: LazyCachedMapCollection<ChatChannel>
@@ -183,7 +183,11 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     }
                 }
 
-                factory.makeChannelListDividerItem()
+                let isLastItem = channels.last?.cid == channel.cid
+                let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
+                if !isLastItem || (isLastItem && shouldRenderLastItemDivider) {
+                    factory.makeChannelListDividerItem()
+                }
             }
 
             factory.makeChannelListFooterView()

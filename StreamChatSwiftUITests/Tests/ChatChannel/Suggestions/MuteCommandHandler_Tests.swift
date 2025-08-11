@@ -7,7 +7,6 @@
 import XCTest
 
 class MuteCommandHandler_Tests: StreamChatTestCase {
-
     func test_muteCommandHandler_selectingUserToMute() {
         // Given
         let symbol = "/mute"

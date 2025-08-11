@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the giphy attachments.
 public struct GiphyAttachmentView<Factory: ViewFactory>: View {
-
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts

@@ -7,7 +7,6 @@
 import XCTest
 
 class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
-
     func test_chatChannelInfoVM_initialGroupParticipants() {
         // Given
         let channel = mockGroup(with: 10)

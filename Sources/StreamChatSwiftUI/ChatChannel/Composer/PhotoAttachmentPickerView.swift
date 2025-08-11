@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the photo attachment picker.
 public struct PhotoAttachmentPickerView: View {
-    
     @Injected(\.colors) private var colors
     
     @StateObject var assetLoader = PhotoAssetLoader()
@@ -186,7 +185,7 @@ public struct PhotoAttachmentCell: View {
                 }
             }
         }
-        .onDisappear() {
+        .onDisappear {
             if let requestId = requestId {
                 asset.cancelContentEditingInputRequest(requestId)
                 self.requestId = nil

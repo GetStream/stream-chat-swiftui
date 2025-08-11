@@ -7,7 +7,6 @@ import StreamChat
 
 /// Configuration for the commands in the composer.
 public protocol CommandsConfig {
-
     /// The symbol that invokes mentions command.
     var mentionsSymbol: String { get }
 
@@ -24,7 +23,6 @@ public protocol CommandsConfig {
 
 /// Default commands configuration.
 public class DefaultCommandsConfig: CommandsConfig {
-
     public init() {
         // Public init.
     }
@@ -44,26 +42,26 @@ public class DefaultCommandsConfig: CommandsConfig {
         var instantCommands = [CommandHandler]()
 
         let channelConfig = channelController.channel?.config
+        let availableCommands = channelConfig?.commands.map(\.name) ?? []
 
-        let giphyEnabled = channelConfig?.commands.first(where: { command in
-            command.name == "giphy"
-        }) != nil
-
-        if giphyEnabled {
+        if availableCommands.contains("giphy") {
             let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
             instantCommands.append(giphyCommand)
         }
 
-        if channelConfig?.mutesEnabled == true {
+        if availableCommands.contains("mute") {
             let muteCommand = MuteCommandHandler(
                 channelController: channelController,
                 commandSymbol: "/mute"
             )
+            instantCommands.append(muteCommand)
+        }
+
+        if availableCommands.contains("unmute") {
             let unmuteCommand = UnmuteCommandHandler(
                 channelController: channelController,
                 commandSymbol: "/unmute"
             )
-            instantCommands.append(muteCommand)
             instantCommands.append(unmuteCommand)
         }
 

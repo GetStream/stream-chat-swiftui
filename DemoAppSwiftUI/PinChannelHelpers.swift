@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct DemoAppChatChannelListItem: View {
-
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
@@ -151,21 +150,36 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
 
     public var body: some View {
         ZStack {
-            DemoAppChatChannelListItem(
-                channel: channel,
-                channelName: channelName,
-                injectedChannelInfo: injectedChannelInfo,
-                avatar: avatar,
-                onlineIndicatorShown: onlineIndicatorShown,
-                disabled: disabled,
-                onItemTap: onItemTap
-            )
+            if AppConfiguration.default.isChannelPinningFeatureEnabled {
+                DemoAppChatChannelListItem(
+                    channel: channel,
+                    channelName: channelName,
+                    injectedChannelInfo: injectedChannelInfo,
+                    avatar: avatar,
+                    onlineIndicatorShown: onlineIndicatorShown,
+                    disabled: disabled,
+                    onItemTap: onItemTap
+                )
+            } else {
+                ChatChannelListItem(
+                    channel: channel,
+                    channelName: channelName,
+                    injectedChannelInfo: injectedChannelInfo,
+                    avatar: avatar,
+                    onlineIndicatorShown: onlineIndicatorShown,
+                    disabled: disabled,
+                    onItemTap: onItemTap
+                )
+            }
 
             NavigationLink(
                 tag: channel.channelSelectionInfo,
                 selection: $selectedChannel
             ) {
-                LazyView(channelDestination(channel.channelSelectionInfo))
+                LazyView(
+                    channelDestination(channel.channelSelectionInfo)
+                        .modifier(TabBarVisibilityModifier())
+                )
             } label: {
                 EmptyView()
             }

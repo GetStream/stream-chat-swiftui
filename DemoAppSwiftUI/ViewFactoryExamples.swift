@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 class DemoAppFactory: ViewFactory {
-
     @Injected(\.chatClient) public var chatClient
 
     private init() {}
@@ -32,9 +31,13 @@ class DemoAppFactory: ViewFactory {
             onError: onError
         )
         let archiveChannel = archiveChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
-        let pinChannel = pinChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
         actions.insert(archiveChannel, at: actions.count - 2)
-        actions.insert(pinChannel, at: actions.count - 2)
+
+        if AppConfiguration.default.isChannelPinningFeatureEnabled {
+            let pinChannel = pinChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
+            actions.insert(pinChannel, at: actions.count - 2)
+        }
+
         return actions
     }
     
@@ -149,7 +152,6 @@ class DemoAppFactory: ViewFactory {
 }
 
 struct ShowProfileModifier: ViewModifier {
-    
     let messageModifierInfo: MessageModifierInfo
     
     @ObservedObject var mentionsHandler: MentionsHandler
@@ -169,12 +171,10 @@ struct ShowProfileModifier: ViewModifier {
 }
 
 class MentionsHandler: ObservableObject {
-    
     @Published var selectedUser: ChatUser?
 }
 
 struct ProfileURLModifier: ViewModifier {
-    
     @ObservedObject var mentionsHandler: MentionsHandler
     var messageModifierInfo: MessageModifierInfo
     
@@ -215,7 +215,6 @@ struct ProfileURLModifier: ViewModifier {
 }
 
 struct CustomChannelDestination: View {
-
     var channel: ChatChannel
 
     var body: some View {
@@ -226,7 +225,6 @@ struct CustomChannelDestination: View {
 }
 
 class CustomFactory: ViewFactory {
-
     @Injected(\.chatClient) public var chatClient
 
     private init() {}

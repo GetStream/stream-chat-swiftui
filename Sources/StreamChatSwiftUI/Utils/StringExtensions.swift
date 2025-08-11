@@ -91,20 +91,19 @@ extension String {
 }
 
 extension String {
-
     /// Checks whether the string is a URL.
     var isURL: Bool {
         let types: NSTextCheckingResult.CheckingType = [.link]
         let detector = try? NSDataDetector(types: types.rawValue)
 
-        guard (detector != nil && !isEmpty) else {
+        guard detector != nil && !isEmpty else {
             return false
         }
 
         if detector!.numberOfMatches(
             in: self,
             options: NSRegularExpression.MatchingOptions(rawValue: 0),
-            range: NSMakeRange(0, count)
+            range: NSRange(location: 0, length: count)
         ) > 0 {
             return true
         }

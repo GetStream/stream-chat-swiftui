@@ -186,7 +186,6 @@ extension ChatChannelListView where Factory == DefaultViewFactory {
 }
 
 public struct ChatChannelListContentView<Factory: ViewFactory>: View {
-    
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     private var viewFactory: Factory

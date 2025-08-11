@@ -8,7 +8,6 @@ import UIKit
 
 /// Sourced and modified from: https://github.com/bastienFalcou/SoundWave/blob/master/SoundWave/Classes/AudioVisualizationView.swift
 open class AudioVisualizationView: UIView {
-    
     @Injected(\.colors) var colors
     
     fileprivate var isInitialized: Bool = false

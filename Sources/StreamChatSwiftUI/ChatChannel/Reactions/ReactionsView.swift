@@ -105,7 +105,6 @@ struct ReactionsView: View {
 }
 
 public struct ReactionIcon: View {
-    
     var icon: UIImage
     var color: Color?
     

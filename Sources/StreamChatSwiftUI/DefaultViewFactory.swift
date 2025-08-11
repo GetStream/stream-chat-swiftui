@@ -73,6 +73,7 @@ extension ViewFactory {
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> some View {
+        let utils = InjectedValues[\.utils]
         let listItem = ChatChannelNavigatableListItem(
             factory: self,
             channel: channel,
@@ -80,6 +81,7 @@ extension ViewFactory {
             avatar: avatar,
             onlineIndicatorShown: onlineIndicatorShown,
             disabled: disabled,
+            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
             selectedChannel: selectedChannel,
             channelDestination: channelDestination,
             onItemTap: onItemTap
@@ -496,6 +498,16 @@ extension ViewFactory {
         shown: Binding<Bool>
     ) -> some View {
         GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
+    }
+    
+    public func makeVideoPlayerFooterView(
+        attachment: ChatMessageVideoAttachment,
+        shown: Binding<Bool>
+    ) -> some View {
+        VideoPlayerFooterView(
+            attachment: attachment,
+            shown: shown
+        )
     }
     
     public func makeDeletedMessageView(
@@ -1071,14 +1083,15 @@ extension ViewFactory {
         threadDestination: @escaping (ChatThread) -> ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>
     ) -> some View {
-        ChatThreadListNavigatableItem(
+        let utils = InjectedValues[\.utils]
+        return ChatThreadListNavigatableItem(
             thread: thread,
             threadListItem: ChatThreadListItem(
                 viewModel: .init(thread: thread)
             ),
             threadDestination: threadDestination,
             selectedThread: selectedThread,
-            handleTabBarVisibility: true
+            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
         )
     }
 

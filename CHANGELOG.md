@@ -6,8 +6,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Add support for customizing AddUsersView [#911)(https://github.com/GetStream/stream-chat-swiftui/pull/911)
 
+# [4.84.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.84.0)
+_August 07, 2025_
+
+### ✅ Added
+- Make `AddUsersView` used by `ChatChannelInfoView` public for creating custom info views through composition [#906](https://github.com/GetStream/stream-chat-swiftui/pull/906)
+- Expose `ChannelAvatarViewOptions.init` [#908](https://github.com/GetStream/stream-chat-swiftui/pull/908)
+### 🐞 Fixed
+- Fix WebView error handling to enable mp3 attachments loading [#904](https://github.com/GetStream/stream-chat-swiftui/pull/904)
+
+# [4.83.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.83.0)
+_July 29, 2025_
+
+### ✅ Added
+- Add support for showing current poll comment on alert [#891](https://github.com/GetStream/stream-chat-swiftui/pull/891)
+
+### 🐞 Fixed
+- Fix polls multiple answers minimum value being 1 instead of 2 [#898](https://github.com/GetStream/stream-chat-swiftui/pull/898)
+
+### 🔄 Changed
+- Make `ChatChannelInfoView` subviews public for creating custom info views through composition [#892](https://github.com/GetStream/stream-chat-swiftui/pull/892)
+  - `ChannelTitleView`
+  - `ChannelInfoDivider`
+  - `ChatInfoDirectChannelView`
+  - `ChatInfoParticipantsView`
+- Make `MediaViewsOptions` initializer public [#899](https://github.com/GetStream/stream-chat-swiftui/pull/899)
+
+# [4.82.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.82.0)
+_July 16, 2025_
+
+### ✅ Added
+- Add support for customising the `MessageAvatarView` placeholder [#878](https://github.com/GetStream/stream-chat-swiftui/pull/878)
+- Add `ViewFactory.makeVideoPlayerFooterView` to customize video player footer [#879](https://github.com/GetStream/stream-chat-swiftui/pull/879)
+- Add `utils.channelListConfig.channelItemMutedLayoutStyle` [#881](https://github.com/GetStream/stream-chat-swiftui/pull/881)
+- Add jumping to pinned message when tapping a message in the pinned messages view [#884](https://github.com/GetStream/stream-chat-swiftui/pull/884)
+
+### 🔄 Changed
+- From now on, jumping to a message will centre it in the middle instead of at the top [#884](https://github.com/GetStream/stream-chat-swiftui/pull/884)
+
+# [4.81.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.81.0)
+_July 03, 2025_
+
+### ✅ Added
+- Add `Utils.channelListConfig.showChannelListDividerOnLastItem` [#869](https://github.com/GetStream/stream-chat-swiftui/pull/869)
+>>>>>>> 5ad59109100ab94599899e5d7c17083ec599ec37
+
 ### 🐞 Fixed
 - Fix tapping on invisible areas on iOS 26 [#868](https://github.com/GetStream/stream-chat-swiftui/pull/868)
+- Fix channel view tab bar not hidden on iOS 16.0 [#870](https://github.com/GetStream/stream-chat-swiftui/pull/870)
+- Fix message Actions overlay view not dismissed when opening thread [#873](https://github.com/GetStream/stream-chat-swiftui/pull/873)
+- Fix mute and unmute commands shown in the composer when removed from Dashboard [#872](https://github.com/GetStream/stream-chat-swiftui/pull/872)
+
+### 🔄 Changed
+- Mute and unmute commands are not added by default in the composer [#872](https://github.com/GetStream/stream-chat-swiftui/pull/872)
 
 # [4.80.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.80.0)
 _June 17, 2025_

@@ -19,7 +19,7 @@ extension View {
 }
 
 struct ScrollViewOffsetPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    static var defaultValue: CGFloat?
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
@@ -27,7 +27,7 @@ struct ScrollViewOffsetPreferenceKey: PreferenceKey {
 }
 
 struct WidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    static var defaultValue: CGFloat?
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = nextValue() ?? value
@@ -35,7 +35,7 @@ struct WidthPreferenceKey: PreferenceKey {
 }
 
 struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    static var defaultValue: CGFloat?
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()

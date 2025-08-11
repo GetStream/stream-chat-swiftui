@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View displaying media attachments.
 public struct MediaAttachmentsView<Factory: ViewFactory>: View {
-    
     @Injected(\.images) private var images
 
     @StateObject private var viewModel: MediaAttachmentsViewModel
@@ -112,7 +111,6 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
 }
 
 struct ImageAttachmentContentView<Factory: ViewFactory>: View {
-
     @State private var galleryShown = false
 
     let factory: Factory

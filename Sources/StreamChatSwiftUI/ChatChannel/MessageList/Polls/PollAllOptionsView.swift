@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 struct PollAllOptionsView<Factory: ViewFactory>: View {
-    
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     

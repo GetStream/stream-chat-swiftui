@@ -399,7 +399,6 @@ struct ScrollPositionModifier: ViewModifier {
 }
 
 struct ScrollTargetLayoutModifier: ViewModifier {
-    
     var enabled: Bool
     
     func body(content: Content) -> some View {
@@ -426,7 +425,6 @@ public enum ScrollDirection {
 }
 
 public struct NewMessagesIndicator: View {
-            
     @Injected(\.colors) var colors
     
     @Binding var newMessagesStartId: String?
@@ -561,7 +559,6 @@ struct TypingIndicatorBottomView: View {
 }
 
 private class MessageRenderingUtil {
-
     private var previousTopMessage: ChatMessage?
 
     static let shared = MessageRenderingUtil()

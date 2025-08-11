@@ -9,7 +9,6 @@ import StreamSwiftTestHelpers
 import XCTest
 
 class MoreChannelActionsView_Tests: StreamChatTestCase {
-
     func test_moreChannelActionsView_snapshot() {
         // Given
         let channel: ChatChannel = .mockDMChannel(name: "test")

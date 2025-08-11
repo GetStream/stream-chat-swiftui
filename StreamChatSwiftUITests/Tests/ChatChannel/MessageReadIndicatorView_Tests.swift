@@ -9,7 +9,6 @@ import StreamSwiftTestHelpers
 import XCTest
 
 class MessageReadIndicatorView_Tests: StreamChatTestCase {
-
     func test_messageReadIndicatorView_snapshotMessageSent() {
         // Given
         let view = MessageReadIndicatorView(

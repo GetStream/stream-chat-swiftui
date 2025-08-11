@@ -6,7 +6,6 @@ import Combine
 import Foundation
 
 public struct StreamChatError: Error {
-
     /// The specific error code.
     public let errorCode: StreamChatErrorCode
 
@@ -42,14 +41,12 @@ public struct StreamChatError: Error {
 }
 
 extension StreamChatError: Equatable {
-
     public static func == (lhs: StreamChatError, rhs: StreamChatError) -> Bool {
         lhs.errorCode == rhs.errorCode
     }
 }
 
 extension StreamChatError {
-
     public func asFailedPromise<T>() -> Future<T, Error> {
         Future { promise in
             promise(.failure(self))

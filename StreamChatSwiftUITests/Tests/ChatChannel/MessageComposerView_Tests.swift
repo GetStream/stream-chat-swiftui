@@ -12,7 +12,6 @@ import SwiftUI
 import XCTest
 
 class MessageComposerView_Tests: StreamChatTestCase {
-
     override func setUp() {
         super.setUp()
         let utils = Utils(

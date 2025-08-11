@@ -119,16 +119,20 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 }
 
-struct ChannelTitleView: View {
-
+public struct ChannelTitleView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
 
-    var channel: ChatChannel
-    var shouldShowTypingIndicator: Bool
+    let channel: ChatChannel
+    let shouldShowTypingIndicator: Bool
 
+    public init(channel: ChatChannel, shouldShowTypingIndicator: Bool) {
+        self.channel = channel
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
+    }
+    
     private var currentUserId: String {
         chatClient.currentUserId ?? ""
     }
@@ -137,7 +141,7 @@ struct ChannelTitleView: View {
         utils.channelNamer
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)

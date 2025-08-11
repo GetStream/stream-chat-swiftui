@@ -35,7 +35,6 @@ struct ComposerPollView: View {
 }
 
 public struct CreatePollView: View {
-    
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     
@@ -120,7 +119,7 @@ public struct CreatePollView: View {
                         if viewModel.multipleAnswers {
                             HStack(alignment: .textFieldToggle) {
                                 VStack(alignment: .leading, spacing: 6) {
-                                    Text(L10n.Composer.Polls.typeNumberFrom1And10)
+                                    Text(L10n.Composer.Polls.typeNumberMinMaxRange)
                                         .foregroundColor(Color(colors.alert))
                                         .font(fonts.caption1)
                                         .offset(y: viewModel.showsMaxVotesError ? 0 : 6)
@@ -220,7 +219,6 @@ public struct CreatePollView: View {
 }
 
 struct CreatePollItemModifier: ViewModifier {
-    
     func body(content: Content) -> some View {
         content
             .modifier(ListRowModifier())
@@ -230,7 +228,6 @@ struct CreatePollItemModifier: ViewModifier {
 }
 
 struct ListRowModifier: ViewModifier {
-
     @Injected(\.colors) var colors
 
     func body(content: Content) -> some View {

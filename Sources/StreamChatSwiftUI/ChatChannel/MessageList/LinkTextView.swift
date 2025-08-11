@@ -8,7 +8,6 @@ import UIKit
 
 /// SwiftUI wrapper for displaying links in a text view.
 struct LinkTextView: UIViewRepresentable {
-
     @Injected(\.utils) private var utils
 
     var message: ChatMessage

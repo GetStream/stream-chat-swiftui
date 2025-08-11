@@ -49,13 +49,10 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
                 VideoPlayer(player: avPlayer)
             }
             Spacer()
-            HStack {
-                ShareButtonView(content: [attachment.payload.videoURL])
-                    .standardPadding()
-
-                Spacer()
-            }
-            .foregroundColor(Color(colors.text))
+            viewFactory.makeVideoPlayerFooterView(
+                attachment: attachment,
+                shown: $isShown
+            )
         }
         .onAppear {
             fileCDN.adjustedURL(for: attachment.payload.videoURL) { result in
@@ -76,7 +73,6 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
 }
 
 extension ChatUser {
-
     var onlineText: String {
         if isOnline {
             return L10n.Message.Title.online

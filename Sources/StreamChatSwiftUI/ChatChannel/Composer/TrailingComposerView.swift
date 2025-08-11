@@ -6,7 +6,6 @@ import StreamChat
 import SwiftUI
 
 public struct TrailingComposerView: View {
-    
     @Injected(\.utils) private var utils
         
     @EnvironmentObject var viewModel: MessageComposerViewModel
