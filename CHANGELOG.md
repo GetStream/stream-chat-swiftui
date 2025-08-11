@@ -49,7 +49,6 @@ _July 03, 2025_
 
 ### ✅ Added
 - Add `Utils.channelListConfig.showChannelListDividerOnLastItem` [#869](https://github.com/GetStream/stream-chat-swiftui/pull/869)
->>>>>>> 5ad59109100ab94599899e5d7c17083ec599ec37
 
 ### 🐞 Fixed
 - Fix tapping on invisible areas on iOS 26 [#868](https://github.com/GetStream/stream-chat-swiftui/pull/868)
