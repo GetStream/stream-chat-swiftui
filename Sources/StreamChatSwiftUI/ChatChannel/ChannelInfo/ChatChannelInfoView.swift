@@ -126,7 +126,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                         }
                     
                     factory.makeAddUsersView(
-                        options: .init(loadedUserIds: viewModel.participants.map(\.id)),
+                        options: .init(loadedUsers: viewModel.participants.map(\.chatUser)),
                         onUserTap: viewModel.addUserTapped(_:)
                     )
                 }

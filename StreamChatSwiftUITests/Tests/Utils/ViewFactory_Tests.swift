@@ -1036,7 +1036,7 @@ class ViewFactory_Tests: StreamChatTestCase {
         
         // When
         let view = viewFactory.makeAddUsersView(
-            options: .init(loadedUserIds: []),
+            options: .init(loadedUsers: []),
             onUserTap: { _ in }
         )
         

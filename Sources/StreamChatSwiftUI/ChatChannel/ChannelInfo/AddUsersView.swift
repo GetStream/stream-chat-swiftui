@@ -95,9 +95,9 @@ public struct AddUsersView<Factory: ViewFactory>: View {
 
 /// Options used in the add users view.
 public struct AddUsersOptions {
-    public let loadedUserIds: [String]
+    public let loadedUsers: [ChatUser]
     
-    public init(loadedUserIds: [String]) {
-        self.loadedUserIds = loadedUserIds
+    public init(loadedUsers: [ChatUser]) {
+        self.loadedUsers = loadedUsers
     }
 }

@@ -1148,7 +1148,7 @@ extension ViewFactory {
         options: AddUsersOptions,
         onUserTap: @escaping (ChatUser) -> Void
     ) -> some View {
-        AddUsersView(loadedUserIds: options.loadedUserIds, onUserTap: onUserTap)
+        AddUsersView(loadedUserIds: options.loadedUsers.map(\.id), onUserTap: onUserTap)
     }
 }
 
