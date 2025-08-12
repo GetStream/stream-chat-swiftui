@@ -92,3 +92,12 @@ public struct AddUsersView<Factory: ViewFactory>: View {
         .padding()
     }
 }
+
+/// Options used in the add users view.
+public struct AddUsersOptions {
+    public let loadedUsers: [ChatUser]
+    
+    public init(loadedUsers: [ChatUser]) {
+        self.loadedUsers = loadedUsers
+    }
+}
