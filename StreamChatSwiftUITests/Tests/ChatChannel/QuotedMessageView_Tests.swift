@@ -65,7 +65,7 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         let payload = VoiceRecordingAttachmentPayload(
             title: "Recording",
             voiceRecordingRemoteURL: .localYodaImage,
-            file: try! .init(url: .localYodaImage),
+            file: try! .init(url: .localYodaQuote),
             duration: 3,
             waveformData: [0, 0.3, 0.6, 1],
             extraData: nil
