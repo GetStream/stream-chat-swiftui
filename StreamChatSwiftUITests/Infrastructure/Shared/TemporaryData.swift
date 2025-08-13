@@ -24,6 +24,11 @@ extension URL {
         try! FileManager.default.createDirectory(at: newDirURL, withIntermediateDirectories: true, attributes: nil)
         return newDirURL
     }
+    
+    /// Returns the test URL that will be handled by our mock image loader
+    static var localYodaImage: URL {
+        Bundle.main.url(forResource: "test://yoda.jpg", withExtension: nil) ?? URL(fileURLWithPath: "")
+    }
 }
 
 extension String {

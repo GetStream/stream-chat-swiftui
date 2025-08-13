@@ -41,8 +41,8 @@ class ChatChannelTestHelpers {
         channelController.simulateInitial(channel: channel, messages: channelMessages, state: .initialized)
         return channelController
     }
-
-    static let testURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg")!
+    
+    static let testURL = URL.localYodaImage
 
     static var imageAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .png, size: 0, mimeType: "image/png")
@@ -225,8 +225,8 @@ class ChatChannelTestHelpers {
             let title = index == 0 ? "Recording" : "Recording-\(index)"
             let payload = VoiceRecordingAttachmentPayload(
                 title: title,
-                voiceRecordingRemoteURL: .localYodaImage,
-                file: try! .init(url: .localYodaImage),
+                voiceRecordingRemoteURL: testURL,
+                file: try! .init(url: testURL),
                 duration: Double(index) + 5.0,
                 waveformData: [0, 0.1, 0.5, 1],
                 extraData: nil

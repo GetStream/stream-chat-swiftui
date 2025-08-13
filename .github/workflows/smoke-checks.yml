@@ -28,6 +28,7 @@ jobs:
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
     runs-on: macos-15
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/ruby-cache
