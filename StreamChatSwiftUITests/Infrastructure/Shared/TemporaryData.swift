@@ -27,7 +27,7 @@ extension URL {
     
     /// Returns the test URL that will be handled by our mock image loader
     static var localYodaImage: URL {
-        Bundle.main.url(forResource: "test://yoda.jpg", withExtension: nil) ?? URL(fileURLWithPath: "")
+        URL(string: "test://yoda.jpg")!
     }
 }
 

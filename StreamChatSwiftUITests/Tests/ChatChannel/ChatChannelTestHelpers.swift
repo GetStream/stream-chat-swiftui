@@ -43,6 +43,7 @@ class ChatChannelTestHelpers {
     }
     
     static let testURL = URL.localYodaImage
+    static let testFileURL = URL(fileURLWithPath: testURL.absoluteString)
 
     static var imageAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .png, size: 0, mimeType: "image/png")
@@ -226,7 +227,7 @@ class ChatChannelTestHelpers {
             let payload = VoiceRecordingAttachmentPayload(
                 title: title,
                 voiceRecordingRemoteURL: testURL,
-                file: try! .init(url: testURL),
+                file: try! .init(url: testFileURL),
                 duration: Double(index) + 5.0,
                 waveformData: [0, 0.1, 0.5, 1],
                 extraData: nil
