@@ -24,6 +24,27 @@ extension URL {
         try! FileManager.default.createDirectory(at: newDirURL, withIntermediateDirectories: true, attributes: nil)
         return newDirURL
     }
+    
+    /// The following functions return the test URLs that will be handled by our mock image loader
+    static var localYodaImage: URL {
+        URL(string: "test://yoda.jpg")!
+    }
+    
+    static var localChewbaccaImage: URL {
+        URL(string: "test://chewbacca.jpg")!
+    }
+    
+    static var localR2Image: URL {
+        URL(string: "test://r2.jpg")!
+    }
+    
+    static var localVaderImage: URL {
+        URL(string: "test://vader.jpg")!
+    }
+    
+    static var localLukeImage: URL {
+        URL(string: "test://luke.jpg")!
+    }
 }
 
 extension String {
