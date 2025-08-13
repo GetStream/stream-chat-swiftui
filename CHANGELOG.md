@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.85.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.85.0)
+_August 13, 2025_
+
 ### ✅ Added
 - Add support for customizing AddUsersView [#911)(https://github.com/GetStream/stream-chat-swiftui/pull/911)
 
