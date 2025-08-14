@@ -11,6 +11,11 @@ import SwiftUI
 import XCTest
 
 class ChatChannelView_Tests: StreamChatTestCase {
+    override func setUp() {
+        super.setUp()
+        DelayedRenderingViewModifier.isEnabled = false
+    }
+
     override func tearDown() {
         super.tearDown()
         DelayedRenderingViewModifier.isEnabled = true
