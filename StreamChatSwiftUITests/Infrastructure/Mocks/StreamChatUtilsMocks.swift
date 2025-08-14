@@ -4,6 +4,7 @@
 
 import StreamChatSwiftUI
 import UIKit
+import XCTest
 
 /// Mock implementation of `VideoPreviewLoader`.
 class VideoPreviewLoader_Mock: VideoPreviewLoader {
@@ -11,11 +12,18 @@ class VideoPreviewLoader_Mock: VideoPreviewLoader {
 
     func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
+
+        if url.scheme == "test" {
+            completion(.success(XCTestCase.TestImages.yoda.image))
+        } else {
+            completion(.success(ImageLoader_Mock.defaultLoadedImage))
+        }
     }
 }
 
 /// Mock implementation of `ImageLoading`.
-class ImageLoaderUtils_Mock: ImageLoading {
+class ImageLoader_Mock: ImageLoading {
+    static let defaultLoadedImage = UIImage(systemName: "checkmark")!
     var loadImageCalled = false
 
     func loadImage(
@@ -26,5 +34,31 @@ class ImageLoaderUtils_Mock: ImageLoading {
         completion: @escaping ((Result<UIImage, Error>) -> Void)
     ) {
         loadImageCalled = true
+
+        if let url = url, url.scheme == "test" {
+            completion(.success(XCTestCase.TestImages.yoda.image))
+        } else {
+            completion(.success(Self.defaultLoadedImage))
+        }
+    }
+
+    func loadImages(
+        from urls: [URL],
+        placeholders: [UIImage],
+        loadThumbnails: Bool,
+        thumbnailSize: CGSize,
+        imageCDN: ImageCDN,
+        completion: @escaping (([UIImage]) -> Void)
+    ) {
+        loadImageCalled = true
+
+        let result = urls.map { url in
+            if url.scheme == "test" {
+                return XCTestCase.TestImages.yoda.image
+            } else {
+                return Self.defaultLoadedImage
+            }
+        }
+        completion(result)
     }
 }
