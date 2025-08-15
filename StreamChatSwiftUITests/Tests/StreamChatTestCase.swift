@@ -22,7 +22,10 @@ open class StreamChatTestCase: XCTestCase {
 
     override open func setUp() {
         super.setUp()
-        streamChat = StreamChat(chatClient: chatClient)
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(videoPreviewLoader: VideoPreviewLoader_Mock(), imageLoader: ImageLoader_Mock())
+        )
     }
     
     func adjustAppearance(_ block: (inout Appearance) -> Void) {

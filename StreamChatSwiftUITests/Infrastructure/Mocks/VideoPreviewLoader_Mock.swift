@@ -4,6 +4,7 @@
 
 import StreamChatSwiftUI
 import UIKit
+import XCTest
 
 /// Mock implementation of `VideoPreviewLoader`.
 class VideoPreviewLoader_Mock: VideoPreviewLoader {
@@ -11,20 +12,7 @@ class VideoPreviewLoader_Mock: VideoPreviewLoader {
 
     func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
-    }
-}
 
-/// Mock implementation of `ImageLoading`.
-class ImageLoaderUtils_Mock: ImageLoading {
-    var loadImageCalled = false
-
-    func loadImage(
-        url: URL?,
-        imageCDN: ImageCDN,
-        resize: Bool,
-        preferredSize: CGSize?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
-    ) {
-        loadImageCalled = true
+        completion(.success(ImageLoader_Mock.defaultLoadedImage))
     }
 }
