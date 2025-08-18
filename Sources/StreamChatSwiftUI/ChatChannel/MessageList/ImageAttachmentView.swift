@@ -430,12 +430,16 @@ extension ChatMessage {
     }
 }
 
-public struct MediaAttachment {
+public struct MediaAttachment: Identifiable {
     @Injected(\.utils) var utils
     
     let url: URL
     let type: MediaAttachmentType
     var uploadingState: AttachmentUploadingState?
+    
+    public var id: String {
+        url.absoluteString
+    }
     
     func generateThumbnail(
         resize: Bool,
