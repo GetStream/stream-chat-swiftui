@@ -54,24 +54,16 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                         ForEach(0..<viewModel.mediaItems.count, id: \.self) { mediaItemIndex in
                             let mediaItem = viewModel.mediaItems[mediaItemIndex]
                             ZStack {
-                                if !mediaItem.isVideo, let imageAttachment = mediaItem.imageAttachment {
-                                    let index = viewModel.allImageAttachments.firstIndex { $0.id == imageAttachment.id } ?? 0
-                                    ImageAttachmentContentView(
+                                if let mediaAttachment = mediaItem.mediaAttachment {
+                                    let index = viewModel.allMediaAttachments.firstIndex { $0.id == mediaAttachment.id
+                                    } ?? 0
+                                    MediaAttachmentContentView(
                                         factory: factory,
                                         mediaItem: mediaItem,
-                                        imageAttachment: imageAttachment,
-                                        allImageAttachments: viewModel.allImageAttachments,
+                                        mediaAttachment: mediaAttachment,
+                                        allMediaAttachments: viewModel.allMediaAttachments,
                                         itemWidth: Self.itemWidth,
                                         index: index
-                                    )
-                                } else if let videoAttachment = mediaItem.videoAttachment {
-                                    VideoAttachmentContentView(
-                                        factory: factory,
-                                        attachment: videoAttachment,
-                                        message: mediaItem.message,
-                                        width: Self.itemWidth,
-                                        ratio: 1,
-                                        cornerRadius: 0
                                     )
                                 }
                             }
@@ -110,13 +102,13 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
     }
 }
 
-struct ImageAttachmentContentView<Factory: ViewFactory>: View {
+struct MediaAttachmentContentView<Factory: ViewFactory>: View {
     @State private var galleryShown = false
 
     let factory: Factory
     let mediaItem: MediaItem
-    let imageAttachment: ChatMessageImageAttachment
-    let allImageAttachments: [ChatMessageImageAttachment]
+    let mediaAttachment: MediaAttachment
+    let allMediaAttachments: [MediaAttachment]
     let itemWidth: CGFloat
     let index: Int
 
@@ -125,7 +117,7 @@ struct ImageAttachmentContentView<Factory: ViewFactory>: View {
             galleryShown = true
         } label: {
             LazyLoadingImage(
-                source: MediaAttachment(url: imageAttachment.imageURL, type: .image),
+                source: mediaAttachment,
                 width: itemWidth,
                 height: itemWidth
             )
@@ -137,7 +129,7 @@ struct ImageAttachmentContentView<Factory: ViewFactory>: View {
         }
         .fullScreenCover(isPresented: $galleryShown) {
             factory.makeGalleryView(
-                mediaAttachments: allImageAttachments.map { MediaAttachment(from: $0) },
+                mediaAttachments: allMediaAttachments,
                 message: mediaItem.message,
                 isShown: $galleryShown,
                 options: .init(selectedIndex: index)
