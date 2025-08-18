@@ -134,11 +134,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 Text("📊 \(poll.name)")
             }
 
-            Text(textForMessage)
-                .foregroundColor(textColor(for: quotedMessage))
-                .lineLimit(3)
-                .font(fonts.footnote)
-                .accessibility(identifier: "quotedMessageText")
+            if !hasVoiceAttachments {
+                Text(textForMessage)
+                    .foregroundColor(textColor(for: quotedMessage))
+                    .lineLimit(3)
+                    .font(fonts.footnote)
+                    .accessibility(identifier: "quotedMessageText")
+            }
 
             if fillAvailableSpace {
                 Spacer()
