@@ -57,4 +57,19 @@ class GalleryView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_gridViewVideoAndImage_snapshotLoading() {
+        // Given
+        let view = GridMediaView(
+            attachments: [
+                MediaAttachment(url: ChatChannelTestHelpers.testURL, type: .image),
+                MediaAttachment(url: ChatChannelTestHelpers.testURL.appendingPathComponent("test"), type: .video)
+            ],
+            isShown: .constant(true)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }
