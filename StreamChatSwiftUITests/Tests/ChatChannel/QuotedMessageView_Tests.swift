@@ -77,4 +77,40 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_quotedMessageView_voiceAttachmentWithTextSnapshot() {
+        // Given
+        let payload = VoiceRecordingAttachmentPayload(
+            title: "Recording",
+            voiceRecordingRemoteURL: .localYodaImage,
+            file: try! .init(url: .localYodaQuote),
+            duration: 3,
+            waveformData: [0, 0.3, 0.6, 1],
+            extraData: nil
+        )
+        let viewSize = CGSize(width: 200, height: 50)
+        let message = ChatMessage.mock(
+            text: "Hello, how are you?",
+            deletedAt: .unique,
+            attachments: [
+                ChatMessageVoiceRecordingAttachment(
+                    id: .unique,
+                    type: .voiceRecording,
+                    payload: payload,
+                    downloadingState: nil,
+                    uploadingState: nil
+                ).asAnyAttachment
+            ]
+        )
+        let view = QuotedMessageView(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: message,
+            fillAvailableSpace: true,
+            forceLeftToRight: true
+        )
+        .applySize(viewSize)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }
