@@ -193,7 +193,7 @@
 		84335014274BAB15007A1B81 /* ViewFactoryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */; };
 		84335016274BABF3007A1B81 /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335015274BABF3007A1B81 /* NewChatView.swift */; };
 		84335018274BAD4B007A1B81 /* NewChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84335017274BAD4B007A1B81 /* NewChatViewModel.swift */; };
-		8434E58127707F19001E1B83 /* GridPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E58027707F19001E1B83 /* GridPhotosView.swift */; };
+		8434E58127707F19001E1B83 /* GridMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E58027707F19001E1B83 /* GridMediaView.swift */; };
 		8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */; };
 		84471C182BE98BC400D6721E /* PollAllOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84471C172BE98BC400D6721E /* PollAllOptionsView.swift */; };
 		844CC60E2811378D0006548D /* ComposerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844CC60D2811378D0006548D /* ComposerConfig.swift */; };
@@ -797,7 +797,7 @@
 		84335013274BAB15007A1B81 /* ViewFactoryExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewFactoryExamples.swift; sourceTree = "<group>"; };
 		84335015274BABF3007A1B81 /* NewChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
 		84335017274BAD4B007A1B81 /* NewChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatViewModel.swift; sourceTree = "<group>"; };
-		8434E58027707F19001E1B83 /* GridPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridPhotosView.swift; sourceTree = "<group>"; };
+		8434E58027707F19001E1B83 /* GridMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridMediaView.swift; sourceTree = "<group>"; };
 		8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleWithCloseButton.swift; sourceTree = "<group>"; };
 		84471C172BE98BC400D6721E /* PollAllOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAllOptionsView.swift; sourceTree = "<group>"; };
 		844CC60D2811378D0006548D /* ComposerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerConfig.swift; sourceTree = "<group>"; };
@@ -2261,7 +2261,7 @@
 			isa = PBXGroup;
 			children = (
 				84F29089276B90610045472D /* GalleryView.swift */,
-				8434E58027707F19001E1B83 /* GridPhotosView.swift */,
+				8434E58027707F19001E1B83 /* GridMediaView.swift */,
 				8465FD032746A95600AF091E /* VideoPlayerView.swift */,
 				C52A0B5E2E1557F300176379 /* VideoPlayerFooterView.swift */,
 				84F2908B276B91700045472D /* ZoomableScrollView.swift */,
@@ -2717,7 +2717,7 @@
 				842FA0E72C05DCDB00AD1F3C /* PollsConfig.swift in Sources */,
 				841B64D42775F5540016FF3B /* GiphyCommandHandler.swift in Sources */,
 				82D64BDD2AD7E5B700C5C79E /* AnimatedImageView.swift in Sources */,
-				8434E58127707F19001E1B83 /* GridPhotosView.swift in Sources */,
+				8434E58127707F19001E1B83 /* GridMediaView.swift in Sources */,
 				ADE0F5662CB962470053B8B9 /* ActionBannerView.swift in Sources */,
 				84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */,
 				82D64BE72AD7E5B700C5C79E /* ImageTask.swift in Sources */,

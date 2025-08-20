@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
+- Fix inconsistencies in gallery view displaying images and videos [927](https://github.com/GetStream/stream-chat-swiftui/pull/927)
 - Prevent audio messages increasing width in reply mode [#926](https://github.com/GetStream/stream-chat-swiftui/pull/926)
 
 # [4.85.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.85.0)

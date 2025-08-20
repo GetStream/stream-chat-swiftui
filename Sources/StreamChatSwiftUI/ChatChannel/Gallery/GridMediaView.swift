@@ -5,9 +5,9 @@
 import StreamChat
 import SwiftUI
 
-/// View used for displaying photos in a grid.
-struct GridPhotosView: View {
-    var imageURLs: [URL]
+/// View used for displaying media in a grid.
+struct GridMediaView: View {
+    var attachments: [MediaAttachment]
     @Binding var isShown: Bool
 
     private static let spacing: CGFloat = 2
@@ -30,9 +30,9 @@ struct GridPhotosView: View {
             )
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 2) {
-                    ForEach(imageURLs, id: \.self) { url in
+                    ForEach(attachments) { attachment in
                         LazyLoadingImage(
-                            source: MediaAttachment(url: url, type: .image),
+                            source: attachment,
                             width: Self.itemWidth,
                             height: Self.itemWidth
                         )
