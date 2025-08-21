@@ -49,7 +49,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_searchResultsView_snapshotResults_whenChannelSearch() {
@@ -95,7 +95,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_searchResultsView_snapshotNoResults() {
@@ -117,7 +117,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_searchResultsView_snapshotLoading() {
@@ -139,7 +139,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
     func test_searchResultsView_channelAvatarUpdated() {
@@ -172,6 +172,6 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

@@ -19,8 +19,8 @@ import SwiftUI
 
     private var loadingNextMessages = false
 
-    var allImageAttachments: [ChatMessageImageAttachment] {
-        mediaItems.compactMap(\.imageAttachment)
+    var allMediaAttachments: [MediaAttachment] {
+        mediaItems.compactMap(\.mediaAttachment)
     }
 
     init(channel: ChatChannel) {
@@ -113,4 +113,13 @@ struct MediaItem: Identifiable {
 
     var videoAttachment: ChatMessageVideoAttachment?
     var imageAttachment: ChatMessageImageAttachment?
+    
+    var mediaAttachment: MediaAttachment? {
+        if let videoAttachment {
+            return MediaAttachment(url: videoAttachment.videoURL, type: .video)
+        } else if let imageAttachment {
+            return MediaAttachment(url: imageAttachment.imageURL, type: .image)
+        }
+        return nil
+    }
 }

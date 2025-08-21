@@ -11,12 +11,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageContainerView_Tests: StreamChatTestCase {
-    override func setUp() {
-        super.setUp()
-        let utils = Utils(dateFormatter: EmptyDateFormatter())
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-    }
-
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -36,8 +30,6 @@ import XCTest
     
     func test_messageContainerEdited_snapshot() {
         // Given
-        let utils = Utils(dateFormatter: EmptyDateFormatter())
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,

@@ -1,0 +1,20 @@
+//
+// Copyright © 2025 Stream.io Inc. All rights reserved.
+//
+
+@testable import StreamChatSwiftUI
+import UIKit
+import XCTest
+
+/// Mock implementation of `VideoPreviewLoader`.
+class VideoPreviewLoader_Mock: VideoPreviewLoader {
+    var loadPreviewVideoCalled = false
+
+    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void) {
+        loadPreviewVideoCalled = true
+
+        StreamConcurrency.onMain {
+            completion(.success(ImageLoader_Mock.defaultLoadedImage))
+        }
+    }
+}

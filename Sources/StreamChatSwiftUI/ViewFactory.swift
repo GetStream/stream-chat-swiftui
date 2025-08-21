@@ -1171,4 +1171,15 @@ import SwiftUI
     associatedtype ThreadListDividerItem: View
     /// Creates the thread list divider item.
     func makeThreadListDividerItem() -> ThreadListDividerItem
+    
+    associatedtype AddUsersViewType: View
+    /// Creates a view for adding users to a chat or channel.
+    /// - Parameters:
+    ///   - options: Configuration options for the "add users" view, such as loaded user ids.
+    ///   - onUserTap: A closure that is called when a `ChatUser` is tapped in the list.
+    /// - Returns: The view shown in the add users slot.
+    func makeAddUsersView(
+        options: AddUsersOptions,
+        onUserTap: @escaping (ChatUser) -> Void
+    ) -> AddUsersViewType
 }

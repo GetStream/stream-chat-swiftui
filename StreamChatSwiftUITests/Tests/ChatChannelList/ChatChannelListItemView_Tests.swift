@@ -356,7 +356,11 @@ import XCTest
     func test_channelListItem_draftMessageWithAttachment() throws {
         // Given
         let message = DraftMessage.mock(text: "Draft message", attachments: [.dummy(payload: try JSONEncoder().encode(
-            ImageAttachmentPayload(title: "Test", imageRemoteURL: .localYodaImage, file: .init(url: .localYodaImage))
+            ImageAttachmentPayload(
+                title: "Test",
+                imageRemoteURL: .localYodaImage,
+                file: .init(url: .localYodaQuote)
+            )
         ))])
         let channel = ChatChannel.mock(cid: .unique, previewMessage: .mock(), draftMessage: message)
 

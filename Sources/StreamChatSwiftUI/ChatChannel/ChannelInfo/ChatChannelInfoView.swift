@@ -124,9 +124,9 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                         .accessibilityAction {
                             viewModel.addUsersShown = false
                         }
-                    AddUsersView(
-                        factory: factory,
-                        loadedUserIds: viewModel.participants.map(\.id),
+                    
+                    factory.makeAddUsersView(
+                        options: .init(loadedUsers: viewModel.participants.map(\.chatUser)),
                         onUserTap: viewModel.addUserTapped(_:)
                     )
                 }

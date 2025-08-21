@@ -1029,6 +1029,20 @@ import XCTest
         // Then
         XCTAssert(view is GalleryHeaderView)
     }
+    
+    func test_viewFactory_makeAddUsersView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeAddUsersView(
+            options: .init(loadedUsers: []),
+            onUserTap: { _ in }
+        )
+        
+        // Then
+        XCTAssert(view is AddUsersView<DefaultViewFactory>)
+    }
 }
 
 extension ChannelAction: Equatable {

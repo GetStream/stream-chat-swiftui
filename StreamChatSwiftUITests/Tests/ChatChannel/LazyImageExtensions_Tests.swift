@@ -29,7 +29,7 @@ final class LazyImageExtensions_Tests: StreamChatTestCase {
     func test_imageURL_nonEmpty() {
         // Given
         let lazyImageView = LazyImage(
-            imageURL: URL(string: "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg")
+            imageURL: .localYodaImage
         ) { state in
             if let image = state.image {
                 image

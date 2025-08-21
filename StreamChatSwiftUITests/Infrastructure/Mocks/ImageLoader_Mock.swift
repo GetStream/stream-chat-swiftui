@@ -6,9 +6,12 @@ import Foundation
 @testable import StreamChat
 import StreamChatSwiftUI
 import UIKit
+import XCTest
 
+/// Mock implementation of `ImageLoading`.
 class ImageLoader_Mock: ImageLoading {
-    static let defaultLoadedImage = UIImage(systemName: "checkmark")!
+    static let defaultLoadedImage = XCTestCase.TestImages.yoda.image
+    var loadImageCalled = false
 
     func loadImage(
         url: URL?,
@@ -17,6 +20,7 @@ class ImageLoader_Mock: ImageLoading {
         preferredSize: CGSize?,
         completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void
     ) {
+        loadImageCalled = true
         StreamConcurrency.onMain {
             completion(.success(Self.defaultLoadedImage))
         }
@@ -30,11 +34,10 @@ class ImageLoader_Mock: ImageLoading {
         imageCDN: ImageCDN,
         completion: @escaping @MainActor @Sendable([UIImage]) -> Void
     ) {
-        let result = urls.map { _ in
-            Self.defaultLoadedImage
-        }
+        loadImageCalled = true
+
         StreamConcurrency.onMain {
-            completion(result)
+            completion([Self.defaultLoadedImage])
         }
     }
 }
