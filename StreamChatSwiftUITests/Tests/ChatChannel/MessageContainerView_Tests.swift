@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageContainerView_Tests: StreamChatTestCase {
+@MainActor class MessageContainerView_Tests: StreamChatTestCase {
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(

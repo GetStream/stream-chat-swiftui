@@ -32,7 +32,7 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
 
     override public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @Sendable(Error?) -> Void
     ) {
         if let mutedUser = selectedUser {
             chatClient

@@ -216,8 +216,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .coordinateSpace(name: scrollAreaId)
                 .onPreferenceChange(WidthPreferenceKey.self) { value in
-                    if let value = value, value != width {
-                        self.width = value
+                    StreamConcurrency.onMain {
+                        if let value = value, value != width {
+                            self.width = value
+                        }
                     }
                 }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
@@ -561,7 +563,7 @@ struct TypingIndicatorBottomView: View {
 private class MessageRenderingUtil {
     private var previousTopMessage: ChatMessage?
 
-    static let shared = MessageRenderingUtil()
+    @MainActor static let shared = MessageRenderingUtil()
 
     var hasPreviousMessageSet: Bool {
         previousTopMessage != nil

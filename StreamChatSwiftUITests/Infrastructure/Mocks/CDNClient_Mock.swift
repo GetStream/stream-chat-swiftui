@@ -5,7 +5,7 @@
 import Foundation
 @testable import StreamChat
 
-final class CDNClient_Mock: CDNClient {
+final class CDNClient_Mock: CDNClient, @unchecked Sendable {
     static var maxAttachmentSize: Int64 = .max
 
     lazy var uploadAttachmentMockFunc = MockFunc.mock(for: uploadAttachment)

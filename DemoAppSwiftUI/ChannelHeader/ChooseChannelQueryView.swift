@@ -7,7 +7,9 @@ import StreamChatSwiftUI
 import SwiftUI
 
 struct ChooseChannelQueryView: View {
-    static let queryIdentifiers = ChannelListQueryIdentifier.allCases.sorted(using: KeyPathComparator(\.title))
+    static var queryIdentifiers: [ChannelListQueryIdentifier] {
+        ChannelListQueryIdentifier.allCases.sorted(by: { $0.title < $1.title })
+    }
     
     var body: some View {
         ForEach(Self.queryIdentifiers) { queryIdentifier in

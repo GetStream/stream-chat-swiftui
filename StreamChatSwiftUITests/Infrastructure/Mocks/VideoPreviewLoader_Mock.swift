@@ -2,7 +2,7 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatSwiftUI
+@testable import StreamChatSwiftUI
 import UIKit
 import XCTest
 
@@ -10,9 +10,11 @@ import XCTest
 class VideoPreviewLoader_Mock: VideoPreviewLoader {
     var loadPreviewVideoCalled = false
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor(Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
 
-        completion(.success(ImageLoader_Mock.defaultLoadedImage))
+        StreamConcurrency.onMain {
+            completion(.success(ImageLoader_Mock.defaultLoadedImage))
+        }
     }
 }

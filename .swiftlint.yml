@@ -43,7 +43,6 @@ only_rules:
   - trailing_comma
   - trailing_newline
   - trailing_semicolon
-  - trailing_whitespace
   - unneeded_break_in_switch
   - unneeded_override
   - unused_closure_parameter
@@ -51,6 +50,3 @@ only_rules:
   - unused_import
   - vertical_whitespace
   - void_return
-
-trailing_whitespace:
-  ignores_empty_lines: true

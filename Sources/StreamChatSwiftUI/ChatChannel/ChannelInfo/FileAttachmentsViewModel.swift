@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// View model for the `FileAttachmentsView`.
-class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
+@MainActor class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDelegate {
     @Published var loading = false
     @Published var attachmentsDataSource = [MonthlyFileAttachments]()
     @Published var selectedAttachment: ChatMessageFileAttachment?

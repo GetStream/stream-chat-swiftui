@@ -444,7 +444,7 @@ public struct MediaAttachment: Identifiable {
     func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
-        completion: @escaping (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
     ) {
         if type == .image {
             utils.imageLoader.loadImage(

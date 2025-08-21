@@ -4,7 +4,7 @@
 
 import UIKit
 
-public protocol ChannelAvatarsMerging {
+public protocol ChannelAvatarsMerging: Sendable {
     /// Creates a merged avatar from the provided user images.
     /// - Parameter avatars: the avatars to be merged.
     /// - Returns: optional image, if the creation succeeded.
@@ -12,13 +12,13 @@ public protocol ChannelAvatarsMerging {
 }
 
 /// Default implementation of `ChannelAvatarsMerging`.
-public class ChannelAvatarsMerger: ChannelAvatarsMerging {
+public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
     public init() {
         // Public init.
     }
 
-    @Injected(\.utils) private var utils
-    @Injected(\.images) private var images
+    private var images: Images { InjectedValues[\.images] }
+    private var utils: Utils { InjectedValues[\.utils] }
 
     /// Context provided utils.
     private var imageProcessor: ImageProcessor { utils.imageProcessor }
