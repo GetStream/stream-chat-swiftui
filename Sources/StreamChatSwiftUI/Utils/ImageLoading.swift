@@ -20,7 +20,7 @@ public protocol ImageLoading: AnyObject {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping @MainActor @Sendable([UIImage]) -> Void
+        completion: @escaping @MainActor([UIImage]) -> Void
     )
 
     /// Loads an image from the provided url.
@@ -35,7 +35,7 @@ public protocol ImageLoading: AnyObject {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping @MainActor @Sendable(Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
     )
 }
 
@@ -46,7 +46,7 @@ public extension ImageLoading {
         loadThumbnails: Bool = true,
         thumbnailSize: CGSize = .avatarThumbnailSize,
         imageCDN: ImageCDN,
-        completion: @escaping @MainActor @Sendable([UIImage]) -> Void
+        completion: @escaping @MainActor([UIImage]) -> Void
     ) {
         loadImages(
             from: urls,

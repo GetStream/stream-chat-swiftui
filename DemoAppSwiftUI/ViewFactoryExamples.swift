@@ -272,7 +272,7 @@ class CustomFactory: ViewFactory {
         )
         nonisolated(unsafe) let unsafeOnDismiss = onDismiss
         nonisolated(unsafe) let unsafeOnError = onError
-        let freeze: @MainActor @Sendable() -> Void = {
+        let freeze: @MainActor() -> Void = {
             let controller = self.chatClient.channelController(for: channel.cid)
             controller.freezeChannel { error in
                 if let error = error {

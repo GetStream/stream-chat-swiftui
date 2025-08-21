@@ -33,7 +33,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
         }
     }
 
-    func compressAsset(at url: URL, type: AssetType, completion: @escaping @MainActor @Sendable(URL?) -> Void) {
+    func compressAsset(at url: URL, type: AssetType, completion: @escaping @MainActor(URL?) -> Void) {
         if type == .video {
             let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + ".mp4")
             compressVideo(inputURL: url, outputURL: compressedURL) { exportSession in
