@@ -4,6 +4,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
+- Fix inconsistencies in gallery view displaying images and videos [927](https://github.com/GetStream/stream-chat-swiftui/pull/927)
+- Prevent audio messages increasing width in reply mode [#926](https://github.com/GetStream/stream-chat-swiftui/pull/926)
+
+# [4.85.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.85.0)
+_August 13, 2025_
+
+### ✅ Added
+- Add support for customizing AddUsersView [#911)(https://github.com/GetStream/stream-chat-swiftui/pull/911)
+
+# [4.84.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.84.0)
+_August 07, 2025_
+
+### ✅ Added
+- Make `AddUsersView` used by `ChatChannelInfoView` public for creating custom info views through composition [#906](https://github.com/GetStream/stream-chat-swiftui/pull/906)
+- Expose `ChannelAvatarViewOptions.init` [#908](https://github.com/GetStream/stream-chat-swiftui/pull/908)
+### 🐞 Fixed
 - Fix WebView error handling to enable mp3 attachments loading [#904](https://github.com/GetStream/stream-chat-swiftui/pull/904)
 
 # [4.83.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.83.0)

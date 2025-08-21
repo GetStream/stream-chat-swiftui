@@ -127,8 +127,8 @@ public struct GalleryView<Factory: ViewFactory>: View {
                 .foregroundColor(Color(colors.text))
             }
             .sheet(isPresented: $gridShown) {
-                GridPhotosView(
-                    imageURLs: mediaAttachments.filter { $0.type == .image }.map(\.url),
+                GridMediaView(
+                    attachments: mediaAttachments,
                     isShown: $gridShown
                 )
             }

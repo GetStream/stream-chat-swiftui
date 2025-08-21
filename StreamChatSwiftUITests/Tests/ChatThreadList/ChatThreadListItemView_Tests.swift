@@ -144,7 +144,11 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
 
     func test_threadListItem_whenDraftMessageHasAttachment() throws {
         let message = DraftMessage.mock(text: "Draft message", attachments: [.dummy(payload: try JSONEncoder().encode(
-            ImageAttachmentPayload(title: "Test", imageRemoteURL: .localYodaImage, file: .init(url: .localYodaImage))
+            ImageAttachmentPayload(
+                title: "Test",
+                imageRemoteURL: .localYodaImage,
+                file: .init(url: ChatChannelTestHelpers.testFileURL)
+            )
         ))])
         let thread = mockThread
             .with(parentMessage: .mock(
