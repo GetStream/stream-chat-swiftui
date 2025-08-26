@@ -39,6 +39,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     /// Index of the selected channel.
     private var selectedChannelIndex: Int?
+    
+    @Published public var scrollToId: String?
 
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
