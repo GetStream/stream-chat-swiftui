@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add option to scroll to and open a channel from the channel list [#932](https://github.com/GetStream/stream-chat-swiftui/pull/932)
+
 ### 🐞 Fixed
 - Show attachment title instead of URL in the `FileAttachmentPreview` view [#930](https://github.com/GetStream/stream-chat-swiftui/pull/930)
 - Fix overriding title color in `ChannelTitleView` [#931](https://github.com/GetStream/stream-chat-swiftui/pull/931)
