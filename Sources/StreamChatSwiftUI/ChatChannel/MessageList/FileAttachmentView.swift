@@ -109,7 +109,7 @@ public struct FileAttachmentView: View {
         .roundWithBorder()
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
-            FileAttachmentPreview(url: attachment.assetURL)
+            FileAttachmentPreview(title: attachment.title, url: attachment.assetURL)
         }
         .accessibilityIdentifier("FileAttachmentView")
     }
