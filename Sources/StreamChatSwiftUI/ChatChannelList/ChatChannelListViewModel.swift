@@ -202,7 +202,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 return
             }
 
-            controller.loadNextChannels() { [weak self] error in
+            controller.loadNextChannels { [weak self] error in
                 if error != nil {
                     self?.scrolledChannelId = nil
                     return
