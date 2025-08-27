@@ -198,14 +198,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
             // Stop if there are no more channels to load
             if controller.hasLoadedAllPreviousChannels {
-                log.debug("The channel was not found in the list of channels.")
-                self.scrolledChannelId = nil
+                scrolledChannelId = nil
                 return
             }
 
             controller.loadNextChannels() { [weak self] error in
                 if let error = error {
-                    log.error("Error loading more channels: \(error.localizedDescription)")
                     self?.scrolledChannelId = nil
                     return
                 }
@@ -583,10 +581,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     
     private func scrollToAndOpen(channel: ChatChannel) {
         scrolledChannelId = channel.id
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.selectedChannel = .init(channel: channel, message: nil)
             self?.scrolledChannelId = nil
-        })
+        }
     }
 
     private func observeChannelDismiss() {
