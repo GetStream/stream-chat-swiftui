@@ -14,7 +14,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
-    @Binding var scrollChannelId: String?
+    @Binding var scrolledChannelId: String?
     private var scrollable: Bool
     private var onlineIndicatorShown: (ChatChannel) -> Bool
     private var imageLoader: (ChatChannel) -> UIImage
@@ -31,7 +31,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        scrollChannelId: Binding<String?> = .constant(nil),
+        scrolledChannelId: Binding<String?> = .constant(nil),
         scrollable: Bool = true,
         onlineIndicatorShown: ((ChatChannel) -> Bool)? = nil,
         imageLoader: ((ChatChannel) -> UIImage)? = nil,
@@ -74,7 +74,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.scrollable = scrollable
         _selectedChannel = selectedChannel
         _swipedChannelId = swipedChannelId
-        _scrollChannelId = scrollChannelId
+        _scrolledChannelId = scrolledChannelId
     }
 
     public var body: some View {
@@ -84,7 +84,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
                     ScrollView {
                         channelsVStack
                     }
-                    .onChange(of: scrollChannelId) { newValue in
+                    .onChange(of: scrolledChannelId) { newValue in
                         if let newValue {
                             withAnimation {
                                 scrollView.scrollTo(newValue, anchor: .bottom)

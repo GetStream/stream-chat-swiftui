@@ -40,7 +40,8 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     /// Index of the selected channel.
     private var selectedChannelIndex: Int?
     
-    @Published public var scrollToId: String?
+    /// When set, scrolls to the specified channel id (if it exists).
+    @Published public var scrolledChannelId: String?
 
     /// Published variables.
     @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
@@ -190,16 +191,24 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         func loadUntilFound() {
             guard let controller else { return }
             if controller.channels.contains(where: { $0.id == channel.id }) {
+                log.debug("Showing channel with id \(channel.id)")
                 scrollToAndOpen(channel: channel)
                 return
             }
 
             // Stop if there are no more channels to load
             if controller.hasLoadedAllPreviousChannels {
+                log.debug("The channel was not found in the list of channels.")
+                self.scrolledChannelId = nil
                 return
             }
 
-            controller.loadNextChannels() { _ in
+            controller.loadNextChannels() { [weak self] error in
+                if let error = error {
+                    log.error("Error loading more channels: \(error.localizedDescription)")
+                    self?.scrolledChannelId = nil
+                    return
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     loadUntilFound()
                 }
@@ -573,9 +582,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
     
     private func scrollToAndOpen(channel: ChatChannel) {
-        scrollToId = channel.id
+        scrolledChannelId = channel.id
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { [weak self] in
             self?.selectedChannel = .init(channel: channel, message: nil)
+            self?.scrolledChannelId = nil
         })
     }
 
