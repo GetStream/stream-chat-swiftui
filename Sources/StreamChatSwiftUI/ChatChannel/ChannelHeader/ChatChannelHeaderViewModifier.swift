@@ -145,6 +145,7 @@ public struct ChannelTitleView: View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.text))
                 .accessibilityIdentifier("chatName")
 
             if shouldShowTypingIndicator {
