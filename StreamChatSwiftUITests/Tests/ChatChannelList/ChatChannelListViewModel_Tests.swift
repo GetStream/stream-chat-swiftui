@@ -384,7 +384,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         
         // When
-        viewModel.open(channel: channel)
+        viewModel.openChannel(with: channel.cid)
         
         // Then
         XCTAssertEqual(viewModel.scrolledChannelId, channel.id)
@@ -410,7 +410,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         
         // When
-        viewModel.open(channel: targetChannel)
+        viewModel.openChannel(with: targetChannel.cid)
         
         // Then
         XCTAssertEqual(channelListController.loadNextChannelsCallCount, 1)
@@ -422,7 +422,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         
         // When
-        viewModel.open(channel: targetChannel)
+        viewModel.openChannel(with: targetChannel.cid)
         
         // Verify the channel is eventually opened
         let expectation = XCTestExpectation(description: "Channel opened after loading")
@@ -445,7 +445,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         
         // When
-        viewModel.open(channel: targetChannel)
+        viewModel.openChannel(with: targetChannel.cid)
         
         // Then
         XCTAssertNil(viewModel.scrolledChannelId)
@@ -463,7 +463,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         )
         
         // When
-        viewModel.open(channel: targetChannel)
+        viewModel.openChannel(with: targetChannel.cid)
         
         // Then
         XCTAssertEqual(channelListController.loadNextChannelsCallCount, 1)
@@ -480,7 +480,7 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
             changes: [.insert(targetChannel, index: .init(row: 1, section: 0))]
         )
         
-        viewModel.open(channel: targetChannel)
+        viewModel.openChannel(with: targetChannel.cid)
         
         // Verify the channel is eventually opened
         let expectation = XCTestExpectation(description: "Channel opened after multiple loads")

@@ -184,14 +184,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
     }
     
-    /// Opens the chat channel destination with the provided channel.
+    /// Opens the chat channel destination with the provided channel id.
     ///
-    /// - Parameter channel: the channel that will be shown.
-    public func open(channel: ChatChannel) {
+    /// - Parameter channelId: the id of the channel that will be shown.
+    public func openChannel(with channelId: ChannelId) {
         func loadUntilFound() {
             guard let controller else { return }
-            if controller.channels.contains(where: { $0.id == channel.id }) {
-                log.debug("Showing channel with id \(channel.id)")
+            if let channel = controller.channels.first(where: { $0.id == channelId.rawValue }) {
+                log.debug("Showing channel with id \(channelId)")
                 scrollToAndOpen(channel: channel)
                 return
             }
@@ -203,7 +203,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             }
 
             controller.loadNextChannels() { [weak self] error in
-                if let error = error {
+                if error != nil {
                     self?.scrolledChannelId = nil
                     return
                 }
