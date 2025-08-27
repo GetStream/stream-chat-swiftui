@@ -182,6 +182,32 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             }
         }
     }
+    
+    /// Opens the chat channel destination with the provided channel.
+    ///
+    /// - Parameter channel: the channel that will be shown.
+    public func open(channel: ChatChannel) {
+        func loadUntilFound() {
+            guard let controller else { return }
+            if controller.channels.contains(where: { $0.id == channel.id }) {
+                scrollToAndOpen(channel: channel)
+                return
+            }
+
+            // Stop if there are no more channels to load
+            if controller.hasLoadedAllPreviousChannels {
+                return
+            }
+
+            controller.loadNextChannels() { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    loadUntilFound()
+                }
+            }
+        }
+
+        loadUntilFound()
+    }
 
     public func loadAdditionalSearchResults(index: Int) {
         switch searchType {
@@ -544,6 +570,13 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         }
         markDirty = true
         channels = LazyCachedMapCollection(source: temp, map: { $0 })
+    }
+    
+    private func scrollToAndOpen(channel: ChatChannel) {
+        scrollToId = channel.id
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { [weak self] in
+            self?.selectedChannel = .init(channel: channel, message: nil)
+        })
     }
 
     private func observeChannelDismiss() {
