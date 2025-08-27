@@ -60,7 +60,7 @@ public struct FileAttachmentsView: View {
                                     .padding(.vertical)
                                 }
                                 .sheet(item: $viewModel.selectedAttachment) { item in
-                                    FileAttachmentPreview(url: item.assetURL)
+                                    FileAttachmentPreview(title: item.title, url: item.assetURL)
                                 }
 
                                 Divider()

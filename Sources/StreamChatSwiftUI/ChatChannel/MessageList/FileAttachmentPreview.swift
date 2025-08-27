@@ -16,13 +16,20 @@ public struct FileAttachmentPreview: View {
         utils.fileCDN
     }
 
+    let title: String?
     var url: URL
 
     @State private var adjustedUrl: URL?
     @State private var isLoading = false
-    @State private var title: String?
+    @State private var webViewTitle: String?
     @State private var error: Error?
-
+    
+    var navigationTitle: String {
+        if let title, !title.isEmpty { return title }
+        if let webViewTitle, !webViewTitle.isEmpty { return webViewTitle }
+        return url.absoluteString
+    }
+    
     public var body: some View {
         NavigationView {
             ZStack {
@@ -35,7 +42,7 @@ public struct FileAttachmentPreview: View {
                         WebView(
                             url: adjustedUrl,
                             isLoading: $isLoading,
-                            title: $title,
+                            title: $webViewTitle,
                             error: $error
                         )
                     }
@@ -58,7 +65,7 @@ public struct FileAttachmentPreview: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(title ?? url.absoluteString)
+                    Text(navigationTitle)
                         .font(fonts.bodyBold)
                         .lineLimit(1)
                 }
