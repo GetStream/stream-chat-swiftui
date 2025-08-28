@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Show attachment title instead of URL in the `FileAttachmentPreview` view [#930](https://github.com/GetStream/stream-chat-swiftui/pull/930)
 - Fix overriding title color in `ChannelTitleView` [#931](https://github.com/GetStream/stream-chat-swiftui/pull/931)
 - Use channel capabilities for validating delete message action [#933](https://github.com/GetStream/stream-chat-swiftui/pull/933)
+- Fix the video attachments now fetch the URL once on appear and pause when swiping to another item in the gallery [#934](https://github.com/GetStream/stream-chat-swiftui/pull/934)
 
 # [4.86.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.86.0)
 _August 21, 2025_
