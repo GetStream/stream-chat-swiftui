@@ -168,6 +168,10 @@ struct StreamVideoPlayer: View {
             }
         }
         .onAppear {
+            guard avPlayer == nil else {
+                avPlayer?.play()
+                return
+            }
             fileCDN.adjustedURL(for: url) { result in
                 switch result {
                 case let .success(url):
@@ -178,6 +182,9 @@ struct StreamVideoPlayer: View {
                     self.error = error
                 }
             }
+        }
+        .onDisappear {
+            avPlayer?.pause()
         }
     }
 }
