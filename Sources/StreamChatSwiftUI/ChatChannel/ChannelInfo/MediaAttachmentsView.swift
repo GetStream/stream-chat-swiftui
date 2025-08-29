@@ -102,7 +102,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
     }
 }
 
-struct MediaAttachmentContentView<Factory: ViewFactory>: View {
+public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
     @State private var galleryShown = false
 
     let factory: Factory
@@ -112,7 +112,23 @@ struct MediaAttachmentContentView<Factory: ViewFactory>: View {
     let itemWidth: CGFloat
     let index: Int
 
-    var body: some View {
+    public init(
+        factory: Factory,
+        mediaItem: MediaItem,
+        mediaAttachment: MediaAttachment,
+        allMediaAttachments: [MediaAttachment],
+        itemWidth: CGFloat,
+        index: Int
+    ) {
+        self.factory = factory
+        self.mediaItem = mediaItem
+        self.mediaAttachment = mediaAttachment
+        self.allMediaAttachments = allMediaAttachments
+        self.itemWidth = itemWidth
+        self.index = index
+    }
+
+    public var body: some View {
         Button {
             galleryShown = true
         } label: {
