@@ -6,6 +6,7 @@ import StreamChat
 import SwiftUI
 
 struct PollOptionAllVotesView<Factory: ViewFactory>: View {
+    @Injected(\.colors) var colors
     @StateObject var viewModel: PollOptionAllVotesViewModel
     let factory: Factory
     
@@ -39,6 +40,7 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
             ToolbarItem(placement: .principal) {
                 Text(viewModel.option.text)
                     .bold()
+                    .foregroundColor(Color(colors.navigationTitle))
             }
         }
     }

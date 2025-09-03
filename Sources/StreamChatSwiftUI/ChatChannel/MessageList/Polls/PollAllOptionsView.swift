@@ -47,6 +47,7 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Message.Polls.Toolbar.optionsTitle)
                         .bold()
+                        .foregroundColor(Color(colors.navigationTitle))
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {

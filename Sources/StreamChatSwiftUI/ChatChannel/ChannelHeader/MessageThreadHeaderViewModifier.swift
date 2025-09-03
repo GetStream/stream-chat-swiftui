@@ -18,9 +18,10 @@ public struct DefaultMessageThreadHeader: ToolbarContent {
             VStack {
                 Text(L10n.Message.Actions.threadReply)
                     .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationTitle))
                 Text(L10n.Message.Threads.subtitle)
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.navigationSubtitle))
             }
         }
     }

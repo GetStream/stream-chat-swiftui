@@ -62,6 +62,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
             ToolbarItem(placement: .principal) {
                 Text(L10n.Message.Polls.Toolbar.resultsTitle)
                     .bold()
+                    .foregroundColor(Color(colors.navigationTitle))
             }
             
             ToolbarItem(placement: .navigationBarLeading) {

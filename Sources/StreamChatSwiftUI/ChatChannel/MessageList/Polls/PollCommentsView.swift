@@ -86,6 +86,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Message.Polls.Toolbar.commentsTitle)
                         .bold()
+                        .foregroundColor(Color(colors.navigationTitle))
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {

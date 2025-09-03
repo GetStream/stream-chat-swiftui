@@ -138,7 +138,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                     if viewModel.showSingleMemberDMView {
                         Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
                             .font(fonts.bodyBold)
-                            .foregroundColor(Color(colors.text))
+                            .foregroundColor(Color(colors.navigationTitle))
                     } else {
                         ChannelTitleView(
                             channel: viewModel.channel,

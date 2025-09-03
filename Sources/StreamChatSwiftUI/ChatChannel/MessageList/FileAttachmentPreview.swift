@@ -8,6 +8,7 @@ import SwiftUI
 public struct FileAttachmentPreview: View {
     @Environment(\.presentationMode) var presentationMode
 
+    @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
@@ -67,6 +68,7 @@ public struct FileAttachmentPreview: View {
                 ToolbarItem(placement: .principal) {
                     Text(navigationTitle)
                         .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationTitle))
                         .lineLimit(1)
                 }
 

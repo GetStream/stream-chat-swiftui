@@ -180,6 +180,7 @@ public struct CreatePollView: View {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Composer.Polls.createPoll)
                         .bold()
+                        .foregroundColor(Color(colors.navigationTitle))
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
