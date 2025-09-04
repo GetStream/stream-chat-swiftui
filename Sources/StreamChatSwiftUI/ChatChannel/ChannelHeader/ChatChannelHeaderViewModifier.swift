@@ -116,7 +116,9 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                     headerImage: channelHeaderLoader.image(for: channel),
                     isActive: $isActive
                 )
+                #if compiler(>=6.2)
                 .sharedBackgroundVisibility(.hidden)
+                #endif
             }
         } else {
             content.toolbar {

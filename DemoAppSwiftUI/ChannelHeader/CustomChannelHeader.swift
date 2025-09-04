@@ -74,7 +74,9 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                         isNewChatShown: $isNewChatShown,
                         actionsPopupShown: $actionsPopupShown
                     )
+                    #if compiler(>=6.2)
                     .sharedBackgroundVisibility(.hidden)
+                    #endif
                 }
             } else {
                 content.toolbar {
