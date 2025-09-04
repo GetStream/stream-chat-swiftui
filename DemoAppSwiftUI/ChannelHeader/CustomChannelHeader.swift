@@ -30,6 +30,7 @@ public struct CustomChannelHeader: ToolbarContent {
                 Image(uiImage: images.messageActionEdit)
                     .resizable()
                     .scaledToFit()
+                    .frame(width: 24, height: 24)
                     .foregroundColor(Color.white)
                     .padding(.all, 8)
                     .background(colors.tintColor)
@@ -41,9 +42,12 @@ public struct CustomChannelHeader: ToolbarContent {
             Button {
                 actionsPopupShown = true
             } label: {
-                StreamLazyImage(url: currentUserController.currentUser?.imageURL)
-                    .accessibilityLabel("Account Actions")
-                    .accessibilityAddTraits(.isButton)
+                StreamLazyImage(
+                    url: currentUserController.currentUser?.imageURL,
+                    size: CGSize(width: 36, height: 36)
+                )
+                .accessibilityLabel("Account Actions")
+                .accessibilityAddTraits(.isButton)
             }
         }
     }
@@ -62,13 +66,27 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
 
     func body(content: Content) -> some View {
         ZStack {
-            content.toolbar {
-                CustomChannelHeader(
-                    title: title,
-                    currentUserController: chatClient.currentUserController(),
-                    isNewChatShown: $isNewChatShown,
-                    actionsPopupShown: $actionsPopupShown
-                )
+            if #available(iOS 26, *) {
+                content.toolbar {
+                    CustomChannelHeader(
+                        title: title,
+                        currentUserController: chatClient.currentUserController(),
+                        isNewChatShown: $isNewChatShown,
+                        actionsPopupShown: $actionsPopupShown
+                    )
+                    #if compiler(>=6.2)
+                        .sharedBackgroundVisibility(.hidden)
+                    #endif
+                }
+            } else {
+                content.toolbar {
+                    CustomChannelHeader(
+                        title: title,
+                        currentUserController: chatClient.currentUserController(),
+                        isNewChatShown: $isNewChatShown,
+                        actionsPopupShown: $actionsPopupShown
+                    )
+                }
             }
             
             NavigationLink(isActive: $blockedUsersShown) {

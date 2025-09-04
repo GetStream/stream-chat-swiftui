@@ -108,13 +108,27 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 
     public func body(content: Content) -> some View {
-        content.toolbar {
-            DefaultChatChannelHeader(
-                factory: factory,
-                channel: channel,
-                headerImage: channelHeaderLoader.image(for: channel),
-                isActive: $isActive
-            )
+        if #available(iOS 26, *) {
+            content.toolbar {
+                DefaultChatChannelHeader(
+                    factory: factory,
+                    channel: channel,
+                    headerImage: channelHeaderLoader.image(for: channel),
+                    isActive: $isActive
+                )
+                #if compiler(>=6.2)
+                    .sharedBackgroundVisibility(.hidden)
+                #endif
+            }
+        } else {
+            content.toolbar {
+                DefaultChatChannelHeader(
+                    factory: factory,
+                    channel: channel,
+                    headerImage: channelHeaderLoader.image(for: channel),
+                    isActive: $isActive
+                )
+            }
         }
     }
 }
