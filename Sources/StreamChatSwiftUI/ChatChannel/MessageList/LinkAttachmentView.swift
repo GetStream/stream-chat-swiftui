@@ -46,16 +46,16 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 )
             }
 
-            let availableWidth = width - 4 * padding
-            let size = message.adjustedText.frameSize(maxWidth: availableWidth)
-            
             if #available(iOS 15, *) {
                 HStack {
                     StreamTextView(message: message)
                         .standardPadding()
                     Spacer()
                 }
+                .layoutPriority(1)
             } else {
+                let availableWidth = width - 4 * padding
+                let size = message.adjustedText.frameSize(maxWidth: availableWidth)
                 LinkTextView(
                     message: message,
                     width: availableWidth,
