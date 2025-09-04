@@ -209,7 +209,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var generatingSnapshot: Bool {
-        tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
+        if #available(iOS 26, *) {
+            return false
+        } else {
+            return tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
+        }
     }
 
     private var bottomPadding: CGFloat {
