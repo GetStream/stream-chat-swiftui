@@ -22,4 +22,10 @@ final class CDNClient_Mock: CDNClient {
             )
         )
     }
+    
+    func uploadStandaloneAttachment<Payload>(
+        _ attachment: StreamAttachment<Payload>,
+        progress: ((Double) -> Void)?,
+        completion: @escaping (Result<StreamChat.UploadedFile, any Error>) -> Void
+    ) {}
 }

@@ -10,12 +10,6 @@ import SwiftUI
 import XCTest
 
 class PinnedMessagesView_Tests: StreamChatTestCase {
-    override func setUp() {
-        super.setUp()
-        let utils = Utils(dateFormatter: EmptyDateFormatter())
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-    }
-
     func test_pinnedMessagesView_notEmptySnapshot() {
         // Given
         let channel = ChatChannel.mockDMChannel(

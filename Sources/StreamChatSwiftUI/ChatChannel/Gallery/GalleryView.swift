@@ -127,8 +127,8 @@ public struct GalleryView<Factory: ViewFactory>: View {
                 .foregroundColor(Color(colors.text))
             }
             .sheet(isPresented: $gridShown) {
-                GridPhotosView(
-                    imageURLs: mediaAttachments.filter { $0.type == .image }.map(\.url),
+                GridMediaView(
+                    attachments: mediaAttachments,
                     isShown: $gridShown
                 )
             }
@@ -168,6 +168,10 @@ struct StreamVideoPlayer: View {
             }
         }
         .onAppear {
+            guard avPlayer == nil else {
+                avPlayer?.play()
+                return
+            }
             fileCDN.adjustedURL(for: url) { result in
                 switch result {
                 case let .success(url):
@@ -178,6 +182,9 @@ struct StreamVideoPlayer: View {
                     self.error = error
                 }
             }
+        }
+        .onDisappear {
+            avPlayer?.pause()
         }
     }
 }

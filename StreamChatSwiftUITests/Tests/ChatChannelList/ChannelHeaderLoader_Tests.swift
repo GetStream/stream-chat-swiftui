@@ -11,13 +11,6 @@ class ChannelHeaderLoader_Tests: StreamChatTestCase {
 
     private let testURL = URL(string: "https://example.com")!
 
-    override func setUp() {
-        super.setUp()
-        let imageLoader = ImageLoader_Mock()
-        let utils = Utils(imageLoader: imageLoader)
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-    }
-
     func test_channelHeaderLoader_channelImageURL() {
         // Given
         let channel = ChatChannel.mockDMChannel(imageURL: testURL)

@@ -3,6 +3,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.87.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.87.0)
+_September 01, 2025_
+
+### ✅ Added
+- Add option to scroll to and open a channel from the channel list [#932](https://github.com/GetStream/stream-chat-swiftui/pull/932)
+- Make `MediaItem` and `MediaAttachmentContentView` public to allow customization [#935](https://github.com/GetStream/stream-chat-swiftui/pull/935)
+
+### 🐞 Fixed
+- Show attachment title instead of URL in the `FileAttachmentPreview` view [#930](https://github.com/GetStream/stream-chat-swiftui/pull/930)
+- Fix overriding title color in `ChannelTitleView` [#931](https://github.com/GetStream/stream-chat-swiftui/pull/931)
+- Use channel capabilities for validating delete message action [#933](https://github.com/GetStream/stream-chat-swiftui/pull/933)
+- Fix the video attachments now fetch the URL once on appear and pause when swiping to another item in the gallery [#934](https://github.com/GetStream/stream-chat-swiftui/pull/934)
+
+# [4.86.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.86.0)
+_August 21, 2025_
+
+### 🐞 Fixed
+- Fix inconsistencies in gallery view displaying images and videos [927](https://github.com/GetStream/stream-chat-swiftui/pull/927)
+- Prevent audio messages increasing width in reply mode [#926](https://github.com/GetStream/stream-chat-swiftui/pull/926)
+
+# [4.85.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.85.0)
+_August 13, 2025_
+
 ### ✅ Added
 - Add support for customizing AddUsersView [#911)(https://github.com/GetStream/stream-chat-swiftui/pull/911)
 

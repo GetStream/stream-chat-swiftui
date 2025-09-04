@@ -16,6 +16,6 @@ final class AlertBannerViewModifier_Tests: StreamChatTestCase {
             .frame(width: defaultScreenSize.width)
         
         // Then
-        assertSnapshot(matching: view, as: .image)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }
