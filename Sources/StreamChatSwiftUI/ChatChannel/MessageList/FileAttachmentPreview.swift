@@ -77,7 +77,9 @@ public struct FileAttachmentPreview: View {
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         Image(uiImage: images.close)
+                            .renderingMode(.template)
                     }
+                    .accentColor(colors.navigationTintColor)
                 }
             }
         }

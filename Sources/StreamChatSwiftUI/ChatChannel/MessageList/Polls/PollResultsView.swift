@@ -52,7 +52,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
             }
         }
         .background(Color(colors.background).ignoresSafeArea())
-        .tintedToolbar {
+        .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(L10n.Message.Polls.Toolbar.resultsTitle)
                     .bold()
@@ -65,6 +65,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
                 } label: {
                     Image(systemName: "xmark")
                 }
+                .accentColor(colors.navigationTintColor)
             }
         }
         .navigationBarTitleDisplayMode(.inline)

@@ -82,7 +82,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                 isPresented: $viewModel.errorShown,
                 action: viewModel.refresh
             )
-            .tintedToolbar {
+            .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Message.Polls.Toolbar.commentsTitle)
                         .bold()
@@ -95,6 +95,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                     } label: {
                         Image(systemName: "xmark")
                     }
+                    .accentColor(colors.navigationTintColor)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

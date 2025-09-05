@@ -39,7 +39,7 @@ public struct DefaultChannelListHeaderModifier: ChannelListHeaderViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        content.tintedToolbar {
+        content.toolbar {
             DefaultChatChannelListHeader(title: title)
         }
     }

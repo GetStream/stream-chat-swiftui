@@ -30,7 +30,7 @@ public struct DefaultMessageThreadHeader: ToolbarContent {
 /// The default message thread header modifier.
 public struct DefaultMessageThreadHeaderModifier: MessageThreadHeaderViewModifier {
     public func body(content: Content) -> some View {
-        content.tintedToolbar {
+        content.toolbar {
             DefaultMessageThreadHeader()
         }
     }

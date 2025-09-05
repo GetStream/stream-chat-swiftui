@@ -7,6 +7,7 @@ import SwiftUI
 
 /// Default wrapping view for the channel more actions full screen presented view.
 struct MoreChannelActionsFullScreenWrappingView: View {
+    @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 
     let presentedView: AnyView
@@ -16,7 +17,7 @@ struct MoreChannelActionsFullScreenWrappingView: View {
         NavigationContainerView(embedInNavigationView: true) {
             presentedView
                 .navigationBarTitleDisplayMode(.inline)
-                .tintedToolbar {
+                .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             onDismiss()
@@ -25,6 +26,7 @@ struct MoreChannelActionsFullScreenWrappingView: View {
                                 .customizable()
                                 .frame(height: 16)
                         }
+                        .accentColor(colors.navigationTintColor)
                     }
                 }
         }
