@@ -18,14 +18,8 @@ struct PollResultsView<Factory: ViewFactory>: View {
     private let numberOfItemsShown = 5
     
     var body: some View {
-        if #available(iOS 16, *) {
-            NavigationStack {
-                content
-            }
-        } else {
-            NavigationView {
-                content
-            }
+        NavigationContainerView(embedInNavigationView: true) {
+            content
         }
     }
     
@@ -58,7 +52,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
             }
         }
         .background(Color(colors.background).ignoresSafeArea())
-        .toolbar {
+        .tintedToolbar {
             ToolbarItem(placement: .principal) {
                 Text(L10n.Message.Polls.Toolbar.resultsTitle)
                     .bold()

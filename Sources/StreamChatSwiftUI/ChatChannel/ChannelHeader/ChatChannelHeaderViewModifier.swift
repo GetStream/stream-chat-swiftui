@@ -108,7 +108,7 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 
     public func body(content: Content) -> some View {
-        content.toolbar {
+        content.tintedToolbar {
             DefaultChatChannelHeader(
                 factory: factory,
                 channel: channel,

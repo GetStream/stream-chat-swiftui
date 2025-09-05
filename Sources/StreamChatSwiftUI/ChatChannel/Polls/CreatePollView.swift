@@ -56,7 +56,7 @@ public struct CreatePollView: View {
     }
                 
     public var body: some View {
-        NavigationView {
+        NavigationContainerView(embedInNavigationView: true) {
             List {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(L10n.Composer.Polls.question)
@@ -164,7 +164,7 @@ public struct CreatePollView: View {
             .background(Color(colors.background).ignoresSafeArea())
             .listStyle(.plain)
             .id(listId)
-            .toolbar {
+            .tintedToolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         if viewModel.canShowDiscardConfirmation {

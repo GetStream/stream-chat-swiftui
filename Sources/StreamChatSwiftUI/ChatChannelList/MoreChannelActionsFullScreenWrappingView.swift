@@ -13,10 +13,10 @@ struct MoreChannelActionsFullScreenWrappingView: View {
     let onDismiss: () -> Void
 
     public var body: some View {
-        NavigationView {
+        NavigationContainerView(embedInNavigationView: true) {
             presentedView
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
+                .tintedToolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             onDismiss()

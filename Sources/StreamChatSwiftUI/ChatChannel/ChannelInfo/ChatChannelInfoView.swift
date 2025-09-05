@@ -132,7 +132,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
         }
-        .toolbar {
+        .tintedToolbar {
             ToolbarItem(placement: .principal) {
                 Group {
                     if viewModel.showSingleMemberDMView {

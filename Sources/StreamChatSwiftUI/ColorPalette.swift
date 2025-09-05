@@ -10,8 +10,12 @@ public struct ColorPalette {
     public init() {
         navigationTitle = text
         navigationSubtitle = textLowEmphasis
+        navigationTintColor = tintColor
     }
 
+    /// Tint color used in UI components.
+    ///
+    /// - SeeAlso: ``navigationTintColor``
     public var tintColor: Color = .accentColor
 
     // MARK: - Text
@@ -99,6 +103,7 @@ public struct ColorPalette {
     }
 
     public var navigationSubtitle: UIColor
+    public var navigationTintColor: Color
     
     // MARK: - Threads
 
