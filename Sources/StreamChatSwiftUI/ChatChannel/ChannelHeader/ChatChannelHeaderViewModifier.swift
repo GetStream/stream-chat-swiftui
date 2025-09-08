@@ -77,7 +77,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                     )
                     .offset(x: 4)
                 }
-                .accentColor(colors.navigationTintColor)
+                .accentColor(colors.navigationBarTintColor)
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
                 NavigationLink(isActive: $isActive) {
@@ -109,14 +109,16 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 
     public func body(content: Content) -> some View {
-        content.toolbar {
-            DefaultChatChannelHeader(
-                factory: factory,
-                channel: channel,
-                headerImage: channelHeaderLoader.image(for: channel),
-                isActive: $isActive
-            )
-        }
+        content
+            .navigationBarBackground()
+            .toolbar {
+                DefaultChatChannelHeader(
+                    factory: factory,
+                    channel: channel,
+                    headerImage: channelHeaderLoader.image(for: channel),
+                    isActive: $isActive
+                )
+            }
     }
 }
 
@@ -146,7 +148,7 @@ public struct ChannelTitleView: View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.navigationTitle))
+                .foregroundColor(Color(colors.navigationBarTitle))
                 .accessibilityIdentifier("chatName")
 
             if shouldShowTypingIndicator {
@@ -157,7 +159,7 @@ public struct ChannelTitleView: View {
             } else {
                 Text(channel.onlineInfoText(currentUserId: currentUserId))
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.navigationSubtitle))
+                    .foregroundColor(Color(colors.navigationBarSubtitle))
                     .accessibilityIdentifier("chatOnlineInfo")
             }
         }

@@ -64,11 +64,12 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackground()
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(navigationTitle)
                         .font(fonts.bodyBold)
-                        .foregroundColor(Color(colors.navigationTitle))
+                        .foregroundColor(Color(colors.navigationBarTitle))
                         .lineLimit(1)
                 }
 
@@ -79,7 +80,7 @@ public struct FileAttachmentPreview: View {
                         Image(uiImage: images.close)
                             .renderingMode(.template)
                     }
-                    .accentColor(colors.navigationTintColor)
+                    .accentColor(colors.navigationBarTintColor)
                 }
             }
         }

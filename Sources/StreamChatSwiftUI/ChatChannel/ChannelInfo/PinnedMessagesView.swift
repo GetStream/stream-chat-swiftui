@@ -72,6 +72,7 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
             }
         }
         .navigationTitle(L10n.ChatInfo.PinnedMessages.title)
+        .navigationBarBackground()
     }
 
     private func makeMessageDestination(message: ChatMessage) -> ChatChannelView<Factory> {

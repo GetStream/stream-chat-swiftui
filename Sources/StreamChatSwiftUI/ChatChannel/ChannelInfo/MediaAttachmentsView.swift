@@ -99,6 +99,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
             }
         }
         .navigationTitle(L10n.ChatInfo.Media.title)
+        .navigationBarBackground()
     }
 }
 

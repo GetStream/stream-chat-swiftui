@@ -132,13 +132,14 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
         }
+        .navigationBarBackground()
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Group {
                     if viewModel.showSingleMemberDMView {
                         Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
                             .font(fonts.bodyBold)
-                            .foregroundColor(Color(colors.navigationTitle))
+                            .foregroundColor(Color(colors.navigationBarTitle))
                     } else {
                         ChannelTitleView(
                             channel: viewModel.channel,
@@ -161,7 +162,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                             .background(colors.tintColor)
                             .clipShape(Circle())
                     }
-                    .accentColor(colors.navigationTintColor)
+                    .accentColor(colors.navigationBarTintColor)
                 }
             }
         }

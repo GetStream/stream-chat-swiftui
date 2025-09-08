@@ -71,6 +71,7 @@ public struct FileAttachmentsView: View {
             }
         }
         .navigationTitle(L10n.ChatInfo.Files.title)
+        .navigationBarBackground()
     }
 }
 

@@ -25,7 +25,7 @@ public struct DefaultChatChannelListHeader: ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title)
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.navigationTitle))
+                .foregroundColor(Color(colors.navigationBarTitle))
         }
     }
 }
@@ -42,5 +42,6 @@ public struct DefaultChannelListHeaderModifier: ChannelListHeaderViewModifier {
         content.toolbar {
             DefaultChatChannelListHeader(title: title)
         }
+        .navigationBarBackground()
     }
 }

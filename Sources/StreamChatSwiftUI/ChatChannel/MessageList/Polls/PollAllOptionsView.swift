@@ -43,11 +43,12 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
                 }
                 .padding()
             }
+            .navigationBarBackground()
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Message.Polls.Toolbar.optionsTitle)
                         .bold()
-                        .foregroundColor(Color(colors.navigationTitle))
+                        .foregroundColor(Color(colors.navigationBarTitle))
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -56,7 +57,7 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
                     } label: {
                         Image(systemName: "xmark")
                     }
-                    .accentColor(colors.navigationTintColor)
+                    .accentColor(colors.navigationBarTintColor)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
