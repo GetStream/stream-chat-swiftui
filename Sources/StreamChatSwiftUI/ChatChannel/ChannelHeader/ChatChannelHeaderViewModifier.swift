@@ -109,18 +109,33 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 
     public func body(content: Content) -> some View {
-        content
-            .navigationBarBackground()
-            .toolbar {
-                DefaultChatChannelHeader(
-                    factory: factory,
-                    channel: channel,
-                    headerImage: channelHeaderLoader.image(for: channel),
-                    isActive: $isActive
-                )
-            }
+        if #available(iOS 26, *) {
+            content
+                .navigationBarBackground()
+                .toolbar {
+                    DefaultChatChannelHeader(
+                        factory: factory,
+                        channel: channel,
+                        headerImage: channelHeaderLoader.image(for: channel),
+                        isActive: $isActive
+                    )
+                    #if compiler(>=6.2)
+                    .sharedBackgroundVisibility(.hidden)
+                    #endif
+                }
+        } else {
+            content
+                .navigationBarBackground()
+                .toolbar {
+                    DefaultChatChannelHeader(
+                        factory: factory,
+                        channel: channel,
+                        headerImage: channelHeaderLoader.image(for: channel),
+                        isActive: $isActive
+                    )
+                }
+        }
     }
-}
 
 public struct ChannelTitleView: View {
     @Injected(\.fonts) private var fonts
