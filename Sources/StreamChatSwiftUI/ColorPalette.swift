@@ -8,9 +8,14 @@ import UIKit
 /// Provides the colors used throughout the SDK.
 public struct ColorPalette {
     public init() {
-        // Public init.
+        navigationBarTitle = text
+        navigationBarSubtitle = textLowEmphasis
+        navigationBarTintColor = tintColor
     }
 
+    /// Tint color used in UI components.
+    ///
+    /// - SeeAlso: ``navigationBarTintColor``
     public var tintColor: Color = .accentColor
 
     // MARK: - Text
@@ -87,6 +92,20 @@ public struct ColorPalette {
     public lazy var composerInputBackground: UIColor = background
     public lazy var composerInputHighlightedBorder: UIColor = innerBorder
 
+    // MARK: - Navigation Bar
+    
+    public var navigationBarTitle: UIColor {
+        didSet {
+            let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: navigationBarTitle]
+            UINavigationBar.appearance().titleTextAttributes = attributes
+            UINavigationBar.appearance().largeTitleTextAttributes = attributes
+        }
+    }
+
+    public var navigationBarSubtitle: UIColor
+    public var navigationBarTintColor: Color
+    public var navigationBarBackground: UIColor?
+    
     // MARK: - Threads
 
     public var bannerBackgroundColor: UIColor = .streamDarkGray

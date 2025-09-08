@@ -29,7 +29,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationContainerView(embedInNavigationView: true) {
             ScrollView {
                 LazyVStack(alignment: .leading) {
                     ForEach(viewModel.comments) { comment in
@@ -82,10 +82,12 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                 isPresented: $viewModel.errorShown,
                 action: viewModel.refresh
             )
+            .navigationBarBackground()
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(L10n.Message.Polls.Toolbar.commentsTitle)
                         .bold()
+                        .foregroundColor(Color(colors.navigationBarTitle))
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -94,6 +96,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                     } label: {
                         Image(systemName: "xmark")
                     }
+                    .accentColor(colors.navigationBarTintColor)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

@@ -12,6 +12,7 @@
 		4F03F18F2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */; };
 		4F077EF82C85E05700F06D83 /* DelayedRenderingViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
+		4F3536942E6EFB510046678E /* NavigationBarBackgroundViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3536932E6EFB4B0046678E /* NavigationBarBackgroundViewModifier.swift */; };
 		4F65F1862D06EEA7009F69A8 /* ChooseChannelQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */; };
 		4F65F18A2D071798009F69A8 /* ChannelListQueryIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */; };
 		4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */; };
@@ -616,6 +617,7 @@
 		4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarsMerger_Tests.swift; sourceTree = "<group>"; };
 		4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedRenderingViewModifier.swift; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
+		4F3536932E6EFB4B0046678E /* NavigationBarBackgroundViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarBackgroundViewModifier.swift; sourceTree = "<group>"; };
 		4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseChannelQueryView.swift; sourceTree = "<group>"; };
 		4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListQueryIdentifier.swift; sourceTree = "<group>"; };
 		4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel_Tests.swift; sourceTree = "<group>"; };
@@ -1756,19 +1758,20 @@
 		8465FCF92746A95600AF091E /* CommonViews */ = {
 			isa = PBXGroup;
 			children = (
+				ADE0F5652CB962470053B8B9 /* ActionBannerView.swift */,
 				8465FCFA2746A95600AF091E /* ActionItemView.swift */,
 				4F6D83502C1079A00098C298 /* AlertBannerViewModifier.swift */,
-				ADE0F5652CB962470053B8B9 /* ActionBannerView.swift */,
-				ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */,
 				4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */,
 				84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */,
+				4F3536932E6EFB4B0046678E /* NavigationBarBackgroundViewModifier.swift */,
+				ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */,
 				84F2908D276B92A40045472D /* GalleryHeaderView.swift */,
 				8465FD4B2746A95600AF091E /* LoadingView.swift */,
 				844EF8EC2809AACD00CC82F9 /* NoContentView.swift */,
 				8421BCED27A43E14000F977D /* SearchBar.swift */,
+				AD3AB65B2CB730090014D4D7 /* Shimmer.swift */,
 				8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */,
 				846608E2278C303800D3D7B3 /* TypingIndicatorView.swift */,
-				AD3AB65B2CB730090014D4D7 /* Shimmer.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -2936,6 +2939,7 @@
 				82D64C0A2AD7E5B700C5C79E /* LinkedList.swift in Sources */,
 				84E6EC27279B0C930017207B /* ReactionsUsersView.swift in Sources */,
 				82D64BEC2AD7E5B700C5C79E /* OperationTask.swift in Sources */,
+				4F3536942E6EFB510046678E /* NavigationBarBackgroundViewModifier.swift in Sources */,
 				82D64C132AD7E5B700C5C79E /* ImageDecoding.swift in Sources */,
 				8465FDA92746A95700AF091E /* AutoLayoutHelpers.swift in Sources */,
 				8465FDC32746A95700AF091E /* ChatChannelListHeader.swift in Sources */,

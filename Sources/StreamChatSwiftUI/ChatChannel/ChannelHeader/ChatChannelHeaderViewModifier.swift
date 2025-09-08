@@ -77,6 +77,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                     )
                     .offset(x: 4)
                 }
+                .accentColor(colors.navigationBarTintColor)
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
                 NavigationLink(isActive: $isActive) {
@@ -109,26 +110,30 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
 
     public func body(content: Content) -> some View {
         if #available(iOS 26, *) {
-            content.toolbar {
-                DefaultChatChannelHeader(
-                    factory: factory,
-                    channel: channel,
-                    headerImage: channelHeaderLoader.image(for: channel),
-                    isActive: $isActive
-                )
-                #if compiler(>=6.2)
-                    .sharedBackgroundVisibility(.hidden)
-                #endif
-            }
+            content
+                .navigationBarBackground()
+                .toolbar {
+                    DefaultChatChannelHeader(
+                        factory: factory,
+                        channel: channel,
+                        headerImage: channelHeaderLoader.image(for: channel),
+                        isActive: $isActive
+                    )
+                    #if compiler(>=6.2)
+                        .sharedBackgroundVisibility(.hidden)
+                    #endif
+                }
         } else {
-            content.toolbar {
-                DefaultChatChannelHeader(
-                    factory: factory,
-                    channel: channel,
-                    headerImage: channelHeaderLoader.image(for: channel),
-                    isActive: $isActive
-                )
-            }
+            content
+                .navigationBarBackground()
+                .toolbar {
+                    DefaultChatChannelHeader(
+                        factory: factory,
+                        channel: channel,
+                        headerImage: channelHeaderLoader.image(for: channel),
+                        isActive: $isActive
+                    )
+                }
         }
     }
 }
@@ -159,7 +164,7 @@ public struct ChannelTitleView: View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.text))
+                .foregroundColor(Color(colors.navigationBarTitle))
                 .accessibilityIdentifier("chatName")
 
             if shouldShowTypingIndicator {
@@ -170,7 +175,7 @@ public struct ChannelTitleView: View {
             } else {
                 Text(channel.onlineInfoText(currentUserId: currentUserId))
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.navigationBarSubtitle))
                     .accessibilityIdentifier("chatOnlineInfo")
             }
         }

@@ -10,6 +10,31 @@ import SwiftUI
 import XCTest
 
 class ChatChannelInfoView_Tests: StreamChatTestCase {
+    func test_chatChannelInfoView_navigationBarAppearance() {
+        // Given
+        customizedNavigationBarAppearance()
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 8,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1]
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel, .updateChannelMembers],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        
+        // When
+        let view = NavigationContainerView(embedInNavigationView: true) {
+            ChatChannelInfoView(channel: channel)
+        }.applyDefaultSize()
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
     func test_chatChannelInfoView_directChannelOfflineSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(

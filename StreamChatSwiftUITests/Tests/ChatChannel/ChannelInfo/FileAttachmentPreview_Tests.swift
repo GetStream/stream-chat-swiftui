@@ -17,4 +17,15 @@ class FileAttachmentPreview_Tests: StreamChatTestCase {
         
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_fileAttachmentPreview_navigationBarAppearance() {
+        customizedNavigationBarAppearance()
+        
+        let view = FileAttachmentPreview(
+            title: "Document title",
+            url: URL.localYodaQuote
+        ).applyDefaultSize()
+        
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }
