@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Long message with a link preview was truncated sometimes [#940](https://github.com/GetStream/stream-chat-swiftui/pull/940)
 - Fix quoted message shown in the composer when editing a quoting message [#943](https://github.com/GetStream/stream-chat-swiftui/pull/943)
+- Fix pinned messages view not using relative time formatter [#946](https://github.com/GetStream/stream-chat-swiftui/pull/946)
 
 # [4.87.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.87.0)
 _September 01, 2025_
