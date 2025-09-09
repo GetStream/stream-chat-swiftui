@@ -18,15 +18,12 @@ struct NavigationContainerView<Content: View>: View {
                         .accentColor(colors.tintColor)
                         .navigationBarBackground()
                 }
-                // Tint for back and other system buttons
-                .accentColor(colors.navigationBarTintColor)
             } else {
                 NavigationView {
                     content()
                         .accentColor(colors.tintColor)
                         .navigationBarBackground()
                 }
-                .accentColor(colors.navigationBarTintColor)
             }
         } else {
             content()
