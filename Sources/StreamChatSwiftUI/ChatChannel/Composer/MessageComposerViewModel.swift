@@ -281,7 +281,13 @@ open class MessageComposerViewModel: ObservableObject {
             return
         }
 
-        fillComposer(with: message)
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
     }
 
     /// Populates the draft message in the composer with the current controller's draft information.
@@ -290,7 +296,15 @@ open class MessageComposerViewModel: ObservableObject {
             return
         }
 
-        fillComposer(with: ChatMessage(draft))
+        let message = ChatMessage(draft)
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
     }
 
     /// Updates the draft message locally and on the server.
@@ -641,18 +655,6 @@ open class MessageComposerViewModel: ObservableObject {
     }
 
     // MARK: - private
-
-    private func fillComposer(with message: ChatMessage) {
-        text = message.text
-        mentionedUsers = message.mentionedUsers
-        quotedMessage?.wrappedValue = message.quotedMessage
-        showReplyInChannel = message.showReplyInChannel
-        selectedRangeLocation = message.text.count
-
-        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            self?.updateComposerAssets(assets)
-        }
-    }
 
     private func updateComposerAssets(_ assets: ComposerAssets) {
         addedAssets = assets.mediaAssets

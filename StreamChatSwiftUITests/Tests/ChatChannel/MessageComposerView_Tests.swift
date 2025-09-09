@@ -647,6 +647,22 @@ class MessageComposerView_Tests: StreamChatTestCase {
         AssertSnapshot(view, variants: [.defaultLight], size: size)
     }
 
+    func test_composerView_editingMessageWithQuotedMessage() {
+        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let mockEditedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a message being edited",
+            author: .mock(id: .unique),
+            quotedMessage: .mock(text: "Should not appear")
+        )
+
+        let view = makeComposerViewWithEditedMessage(mockEditedMessage)
+            .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
     func test_composerView_editingMessageWithImageAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
         let mockEditedMessage = ChatMessage.mock(
