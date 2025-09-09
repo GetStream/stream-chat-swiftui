@@ -11,6 +11,7 @@
 		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4F03F18F2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */; };
 		4F077EF82C85E05700F06D83 /* DelayedRenderingViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */; };
+		4F0B67C92E7025B6003DA844 /* GalleryHeaderView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
 		4F3536942E6EFB510046678E /* NavigationBarBackgroundViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3536932E6EFB4B0046678E /* NavigationBarBackgroundViewModifier.swift */; };
 		4F65F1862D06EEA7009F69A8 /* ChooseChannelQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */; };
@@ -616,6 +617,7 @@
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4F03F18E2E0140C6001C71A2 /* ChannelAvatarsMerger_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarsMerger_Tests.swift; sourceTree = "<group>"; };
 		4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedRenderingViewModifier.swift; sourceTree = "<group>"; };
+		4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryHeaderView_Tests.swift; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
 		4F3536932E6EFB4B0046678E /* NavigationBarBackgroundViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarBackgroundViewModifier.swift; sourceTree = "<group>"; };
 		4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseChannelQueryView.swift; sourceTree = "<group>"; };
@@ -1225,6 +1227,7 @@
 			isa = PBXGroup;
 			children = (
 				4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */,
+				4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -3073,6 +3076,7 @@
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84B2B5D82819778D00479CEE /* FileAttachmentsViewModel_Tests.swift in Sources */,
 				4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */,
+				4F0B67C92E7025B6003DA844 /* GalleryHeaderView_Tests.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84CC3732290B0A4000689B73 /* StreamChatModel.xcdatamodeld in Sources */,
 				84E04790284A444E00BAFA17 /* CDNClient_Mock.swift in Sources */,
