@@ -7,6 +7,8 @@ import SwiftUI
 
 /// View displaying pinned messages in the chat info screen.
 public struct PinnedMessagesView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
@@ -71,8 +73,15 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                 )
             }
         }
-        .navigationTitle(L10n.ChatInfo.PinnedMessages.title)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(L10n.ChatInfo.PinnedMessages.title)
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
+            }
+        }
         .navigationBarBackground()
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func makeMessageDestination(message: ChatMessage) -> ChatChannelView<Factory> {

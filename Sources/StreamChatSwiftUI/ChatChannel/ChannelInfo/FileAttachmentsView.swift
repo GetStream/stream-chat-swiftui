@@ -70,8 +70,15 @@ public struct FileAttachmentsView: View {
                 }
             }
         }
-        .navigationTitle(L10n.ChatInfo.Files.title)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(L10n.ChatInfo.Files.title)
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
+            }
+        }
         .navigationBarBackground()
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
