@@ -71,6 +71,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
 }
 
 public struct FileAttachmentView: View {
+    @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -104,7 +105,9 @@ public struct FileAttachmentView: View {
 
             Spacer()
 
-            DownloadShareAttachmentView(attachment: attachment)
+            if utils.messageListConfig.downloadFileAttachmentsEnabled {
+                DownloadShareAttachmentView(attachment: attachment)
+            }
         }
         .padding(.all, 8)
         .background(Color(colors.background))

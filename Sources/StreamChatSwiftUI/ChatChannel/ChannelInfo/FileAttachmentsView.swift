@@ -12,6 +12,7 @@ public struct FileAttachmentsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
 
     public init(channel: ChatChannel) {
         _viewModel = StateObject(
@@ -52,7 +53,9 @@ public struct FileAttachmentsView: View {
                                             sizeString: attachment.file.sizeString
                                         )
                                         Spacer()
-                                        DownloadShareAttachmentView(attachment: attachment)
+                                        if utils.messageListConfig.downloadFileAttachmentsEnabled {
+                                            DownloadShareAttachmentView(attachment: attachment)
+                                        }
                                     }
                                     .onAppear {
                                         viewModel.loadAdditionalAttachments(
