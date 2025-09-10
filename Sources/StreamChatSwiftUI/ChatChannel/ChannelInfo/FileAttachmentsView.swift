@@ -45,11 +45,15 @@ public struct FileAttachmentsView: View {
                                 Button {
                                     viewModel.selectedAttachment = attachment
                                 } label: {
-                                    FileAttachmentDisplayView(
-                                        url: url,
-                                        title: attachment.title ?? url.lastPathComponent,
-                                        sizeString: attachment.file.sizeString
-                                    )
+                                    HStack {
+                                        FileAttachmentDisplayView(
+                                            url: url,
+                                            title: attachment.title ?? url.lastPathComponent,
+                                            sizeString: attachment.file.sizeString
+                                        )
+                                        Spacer()
+                                        DownloadShareAttachmentView(attachment: attachment)
+                                    }
                                     .onAppear {
                                         viewModel.loadAdditionalAttachments(
                                             after: monthlyDataSource,
@@ -59,6 +63,7 @@ public struct FileAttachmentsView: View {
                                     .padding(.horizontal, 8)
                                     .padding(.vertical)
                                 }
+                                .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
                                 .sheet(item: $viewModel.selectedAttachment) { item in
                                     FileAttachmentPreview(title: item.title, url: item.assetURL)
                                 }
