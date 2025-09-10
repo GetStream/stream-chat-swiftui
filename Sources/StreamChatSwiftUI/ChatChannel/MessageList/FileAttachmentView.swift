@@ -74,8 +74,10 @@ public struct FileAttachmentView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.chatClient) private var chatClient
 
     @State private var fullScreenShown = false
+    @State private var shareSheetShown = false
 
     var attachment: ChatMessageFileAttachment
     var width: CGFloat
@@ -102,16 +104,73 @@ public struct FileAttachmentView: View {
             }
 
             Spacer()
+
+            if shouldShowDownloadButton {
+                downloadButton
+            } else if shouldShowShareButton {
+                shareButton
+            }
         }
         .padding(.all, 8)
         .background(Color(colors.background))
         .frame(width: width)
         .roundWithBorder()
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
+        .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
-            FileAttachmentPreview(title: attachment.title, url: attachment.assetURL)
+            FileAttachmentPreview(title: attachment.title, url: previewURL)
+        }
+        .sheet(isPresented: $shareSheetShown) {
+            if let shareURL = attachment.downloadingState?.localFileURL {
+                ShareSheet(activityItems: [shareURL])
+            }
         }
         .accessibilityIdentifier("FileAttachmentView")
+    }
+    
+    // MARK: - Private Properties
+
+    private var shouldShowShareButton: Bool {
+        attachment.downloadingState?.state == .downloaded
+    }
+
+    private var shouldShowDownloadButton: Bool {
+        (attachment.uploadingState == nil || attachment.uploadingState?.state == .uploaded) && attachment.downloadingState == nil
+    }
+
+    private var downloadButton: some View {
+        Button(action: { downloadAttachment() }) {
+            Image(uiImage: images.download)
+                .renderingMode(.template)
+                .foregroundColor(colors.tintColor)
+                .frame(width: 24, height: 24)
+        }
+        .accessibilityLabel("Download")
+    }
+
+    private var shareButton: some View {
+        Button(action: { shareSheetShown = true }) {
+            Image(uiImage: images.share)
+                .renderingMode(.template)
+                .foregroundColor(colors.tintColor)
+                .frame(width: 24, height: 24)
+        }
+        .accessibilityLabel("Share")
+    }
+
+    private var previewURL: URL {
+        if attachment.downloadingState?.state == .downloaded,
+           let localFileURL = attachment.downloadingState?.localFileURL {
+            return localFileURL
+        }
+        return attachment.assetURL
+    }
+
+    private func downloadAttachment() {
+        let messageId = attachment.id.messageId
+        let cid = attachment.id.cid
+        let messageController = chatClient.messageController(cid: cid, messageId: messageId)
+        messageController.downloadAttachment(attachment) { _ in }
     }
 }
 
@@ -156,4 +215,16 @@ public struct FileAttachmentDisplayView: View {
         let iconName = url.pathExtension
         return images.documentPreviews[iconName] ?? images.fileFallback
     }
+}
+
+// MARK: - ShareSheet
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
