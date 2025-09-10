@@ -533,6 +533,7 @@
 		AD6B7E052D356E8800ADEF39 /* ReactionsUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */; };
 		AD9138AC2E707F9100581EB0 /* AttachmentDownloadingStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */; };
 		AD9138AE2E71C81D00581EB0 /* PercentageProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AD2E71C81D00581EB0 /* PercentageProgressView.swift */; };
+		AD9138B02E7241D900581EB0 /* FileAttachmentView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AF2E7241D900581EB0 /* FileAttachmentView_Tests.swift */; };
 		ADA77F052E1EC2B700A3641F /* MessageAvatarView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA77F042E1EC2B700A3641F /* MessageAvatarView_Tests.swift */; };
 		ADE0F55E2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */; };
 		ADE0F5602CB846EC0053B8B9 /* FloatingBannerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */; };
@@ -1146,6 +1147,7 @@
 		AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersViewModel.swift; sourceTree = "<group>"; };
 		AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentDownloadingStateView.swift; sourceTree = "<group>"; };
 		AD9138AD2E71C81D00581EB0 /* PercentageProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentageProgressView.swift; sourceTree = "<group>"; };
+		AD9138AF2E7241D900581EB0 /* FileAttachmentView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAttachmentView_Tests.swift; sourceTree = "<group>"; };
 		ADA77F042E1EC2B700A3641F /* MessageAvatarView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAvatarView_Tests.swift; sourceTree = "<group>"; };
 		ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListErrorBannerView.swift; sourceTree = "<group>"; };
 		ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBannerViewModifier.swift; sourceTree = "<group>"; };
@@ -2163,6 +2165,7 @@
 		84C94D472758BDB2007FE2B9 /* ChatChannel */ = {
 			isa = PBXGroup;
 			children = (
+				AD9138AF2E7241D900581EB0 /* FileAttachmentView_Tests.swift */,
 				846B15F22817E7440017F7A1 /* ChannelInfo */,
 				8423C340277CB5C70092DCF1 /* Suggestions */,
 				84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */,
@@ -3096,6 +3099,7 @@
 				84C94D5E275A3AA9007FE2B9 /* ImageCDN_Tests.swift in Sources */,
 				84C94C8027567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift in Sources */,
 				4FEDF72B2E5DB03D00CE2676 /* FileAttachmentPreview_Tests.swift in Sources */,
+				AD9138B02E7241D900581EB0 /* FileAttachmentView_Tests.swift in Sources */,
 				84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */,
 				8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */,
 				84B2B5D2281965D000479CEE /* MediaAttachmentsViewModel_Tests.swift in Sources */,
