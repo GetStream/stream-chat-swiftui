@@ -936,7 +936,7 @@ struct FileAddedAsset {
 
 // The converter responsible to map attachments to assets and vice versa.
 class MessageAttachmentsConverter {
-    let queue = DispatchQueue(label: "MessageAttachmentsConverter")
+    @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
     func assetsToPayloads(_ assets: ComposerAssets) throws -> [AnyAttachmentPayload] {
@@ -973,33 +973,38 @@ class MessageAttachmentsConverter {
 
     /// Converts the attachments to assets.
     ///
-    /// This operation is asynchronous to make sure loading expensive assets are not done in the main thread.
+    /// This operation is synchronous and should only be used if all attachments are already loaded.
+    /// Like for example, for draft messages.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         completion: @escaping (ComposerAssets) -> Void
     ) {
-        queue.async {
-            let addedAssets = self.attachmentsToAssets(attachments)
-            DispatchQueue.main.async {
-                completion(addedAssets)
-            }
-        }
-    }
-
-    /// Converts the attachments to assets synchronously.
-    ///
-    /// This operation is synchronous and should only be used if all attachments are already loaded.
-    /// Like for example, for draft messages.
-    func attachmentsToAssets(
-        _ attachments: [AnyChatMessageAttachment]
-    ) -> ComposerAssets {
+        let group = DispatchGroup()
         var addedAssets = ComposerAssets()
 
         attachments.forEach { attachment in
+            group.enter()
+
             switch attachment.type {
             case .image, .video:
-                guard let addedAsset = attachment.toAddedAsset() else { break }
-                addedAssets.mediaAssets.append(addedAsset)
+                if let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) {
+                    utils.imageLoader.loadImage(
+                        url: imageAttachment.imageURL,
+                        imageCDN: utils.imageCDN,
+                        resize: false,
+                        preferredSize: nil
+                    ) { [weak self] result in
+                        if let image = try? result.get(),
+                           let imageAsset = self?.imageAttachmentToAddedAsset(imageAttachment, image: image) {
+                            addedAssets.mediaAssets.append(imageAsset)
+                        }
+                        group.leave()
+                    }
+                } else if let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self),
+                          let videoAsset = videoAttachmentToAddedAsset(videoAttachment) {
+                    addedAssets.mediaAssets.append(videoAsset)
+                    group.leave()
+                }
             case .file:
                 guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
                     break
@@ -1009,9 +1014,11 @@ class MessageAttachmentsConverter {
                     payload: filePayload.payload
                 )
                 addedAssets.fileAssets.append(fileAsset)
+                group.leave()
             case .voiceRecording:
                 guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
                 addedAssets.voiceAssets.append(addedVoiceRecording)
+                group.leave()
             case .linkPreview, .audio, .giphy, .unknown:
                 break
             default:
@@ -1021,9 +1028,40 @@ class MessageAttachmentsConverter {
                     content: anyAttachmentPayload
                 )
                 addedAssets.customAssets.append(customAttachment)
+                group.leave()
             }
         }
 
-        return addedAssets
+        group.notify(queue: .main) {
+            completion(addedAssets)
+        }
+    }
+
+    private func videoAttachmentToAddedAsset(
+        _ attachment: ChatMessageAttachment<VideoAttachmentPayload>
+    ) -> AddedAsset? {
+        guard let thumbnail = attachment.imageThumbnail() else { return nil }
+        return AddedAsset(
+            image: thumbnail,
+            id: attachment.id.rawValue,
+            url: attachment.videoURL,
+            type: .video,
+            extraData: attachment.extraData ?? [:],
+            payload: attachment.payload
+        )
+    }
+
+    private func imageAttachmentToAddedAsset(
+        _ attachment: ChatMessageAttachment<ImageAttachmentPayload>,
+        image: UIImage
+    ) -> AddedAsset {
+        AddedAsset(
+            image: image,
+            id: attachment.id.rawValue,
+            url: attachment.imageURL,
+            type: .image,
+            extraData: attachment.extraData ?? [:],
+            payload: attachment.payload
+        )
     }
 }
