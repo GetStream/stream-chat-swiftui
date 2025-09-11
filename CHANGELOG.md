@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.88.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.88.0)
+_September 10, 2025_
+
 ### ✅ Added
 - Add `ColorPalette.navigationBarTitle`, `ColorPalette.navigationBarSubtitle`, `ColorPalette.navigationBarTintColor`,  `ColorPalette.navigationBarBackground` [#939](https://github.com/GetStream/stream-chat-swiftui/pull/939)
 - Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)

@@ -7,6 +7,8 @@ import SwiftUI
 
 /// View displaying media attachments.
 public struct MediaAttachmentsView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
 
     @StateObject private var viewModel: MediaAttachmentsViewModel
@@ -98,8 +100,15 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .navigationTitle(L10n.ChatInfo.Media.title)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(L10n.ChatInfo.Media.title)
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
+            }
+        }
         .navigationBarBackground()
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

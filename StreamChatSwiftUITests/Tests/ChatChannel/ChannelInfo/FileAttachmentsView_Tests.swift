@@ -108,6 +108,6 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), record: true)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }
