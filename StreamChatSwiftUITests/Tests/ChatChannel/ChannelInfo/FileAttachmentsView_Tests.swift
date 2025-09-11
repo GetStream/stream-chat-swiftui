@@ -67,7 +67,27 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    func test_fileAttachmentsView_themedSnapshot() {
+        // Given
+        customizedNavigationBarAppearance()
+        let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)
+        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
+        messageSearchController.messages_mock = messages
+        let viewModel = FileAttachmentsViewModel(
+            channel: .mockDMChannel(),
+            messageSearchController: messageSearchController
+        )
+
+        // When
+        let view = NavigationContainerView(embedInNavigationView: true) {
+            FileAttachmentsView(viewModel: viewModel)
+        }.applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_fileAttachmentsView_withDownloadEnabled() {
         // Given
         let utils = Utils(
