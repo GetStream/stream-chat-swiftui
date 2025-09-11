@@ -220,7 +220,29 @@ class ChatChannelTestHelpers {
 
         return fileAttachments
     }
-    
+
+    static var pdfFileAttachments: [AnyChatMessageAttachment] {
+        let attachmentFile = AttachmentFile(type: .generic, size: 0, mimeType: "application/pdf")
+        let fileAttachments: [AnyChatMessageAttachment] = [
+            ChatMessageFileAttachment(
+                id: .unique,
+                type: .file,
+                payload:
+                FileAttachmentPayload(
+                    title: "test",
+                    assetRemoteURL: testURL,
+                    file: attachmentFile,
+                    extraData: nil
+                ),
+                downloadingState: nil,
+                uploadingState: nil
+            )
+            .asAnyAttachment
+        ]
+
+        return fileAttachments
+    }
+
     static func voiceRecordingAttachments(count: Int) -> [AnyChatMessageAttachment] {
         (0..<count).map { index in
             let title = index == 0 ? "Recording" : "Recording-\(index)"
