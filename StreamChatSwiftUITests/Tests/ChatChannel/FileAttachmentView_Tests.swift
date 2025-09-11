@@ -11,7 +11,6 @@ import SwiftUI
 import XCTest
 
 class FileAttachmentView_Tests: StreamChatTestCase {
-    
     func test_fileAttachmentView_downloadButton() {
         // Given
         let utils = Utils(
@@ -138,7 +137,7 @@ class FileAttachmentView_Tests: StreamChatTestCase {
         downloadingState: AttachmentDownloadingState?,
         uploadingState: AttachmentUploadingState?
     ) -> ChatMessageFileAttachment {
-        return ChatMessageFileAttachment(
+        ChatMessageFileAttachment(
             id: .unique,
             type: .file,
             payload: FileAttachmentPayload(
