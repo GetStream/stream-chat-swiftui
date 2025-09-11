@@ -22,7 +22,7 @@ final class GalleryHeaderView_Tests: StreamChatTestCase {
     
     func test_customized_snapshot() {
         // When
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         let view = GalleryHeaderView(title: "Title", subtitle: "Subtitle", isShown: .constant(false))
             .applySize(size)
         

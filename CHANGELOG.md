@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Add `toolbarThemed(content:)` for creating custom views with themed navigation bar [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
+### 🐞 Fixed
+- Fix updating back button tint with `ColorPalette.navigationBarTintColor` [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
 - Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
 
 # [4.88.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.88.0)

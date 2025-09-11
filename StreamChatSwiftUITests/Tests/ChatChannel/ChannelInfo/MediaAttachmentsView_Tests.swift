@@ -60,7 +60,7 @@ class MediaAttachmentsView_Tests: StreamChatTestCase {
     
     func test_mediaAttachmentsView_themedSnapshot() {
         // Given
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
             withImages: 10,
             withVideos: 5

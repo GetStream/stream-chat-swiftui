@@ -36,8 +36,7 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
             isPresented: $viewModel.errorShown,
             action: viewModel.refresh
         )
-        .navigationBarBackground()
-        .toolbar {
+        .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Text(viewModel.option.text)
                     .bold()

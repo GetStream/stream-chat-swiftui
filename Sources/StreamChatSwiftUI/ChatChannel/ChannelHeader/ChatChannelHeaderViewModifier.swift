@@ -77,7 +77,6 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                     )
                     .offset(x: 4)
                 }
-                .accentColor(colors.navigationBarTintColor)
                 .accessibilityLabel(Text(L10n.Channel.Header.Info.title))
 
                 NavigationLink(isActive: $isActive) {
@@ -111,8 +110,7 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     public func body(content: Content) -> some View {
         if #available(iOS 26, *) {
             content
-                .navigationBarBackground()
-                .toolbar {
+                .toolbarThemed {
                     DefaultChatChannelHeader(
                         factory: factory,
                         channel: channel,
@@ -125,8 +123,7 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                 }
         } else {
             content
-                .navigationBarBackground()
-                .toolbar {
+                .toolbarThemed {
                     DefaultChatChannelHeader(
                         factory: factory,
                         channel: channel,

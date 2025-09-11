@@ -79,7 +79,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             content()
         }
         .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
-        .accentColor(colors.tintColor)
         .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
             view.navigationViewStyle(.stack)
         })

@@ -96,7 +96,13 @@ struct NewChatView: View, KeyboardReadable {
                 Spacer()
             }
         }
-        .navigationTitle("New Chat")
+        .toolbarThemed {
+            ToolbarItem(placement: .principal) {
+                Text("New Chat")
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
+            }
+        }
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }
