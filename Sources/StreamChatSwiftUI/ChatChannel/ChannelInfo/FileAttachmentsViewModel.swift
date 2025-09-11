@@ -98,7 +98,7 @@ class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDel
 
     private func updateAttachments() {
         let messages = messageSearchController.messages
-        attachmentsDataSource = self.loadAttachments(from: messages)
+        attachmentsDataSource = loadAttachments(from: messages)
     }
 
     private func loadAttachments(from messages: LazyCachedMapCollection<ChatMessage>) -> [MonthlyFileAttachments] {
