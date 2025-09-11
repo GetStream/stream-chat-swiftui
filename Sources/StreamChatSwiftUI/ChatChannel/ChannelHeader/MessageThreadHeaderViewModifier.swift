@@ -31,8 +31,7 @@ public struct DefaultMessageThreadHeader: ToolbarContent {
 public struct DefaultMessageThreadHeaderModifier: MessageThreadHeaderViewModifier {
     public func body(content: Content) -> some View {
         content
-            .navigationBarBackground()
-            .toolbar {
+            .toolbarThemed {
                 DefaultMessageThreadHeader()
             }
     }

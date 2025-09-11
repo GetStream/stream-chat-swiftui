@@ -19,7 +19,7 @@ class FileAttachmentPreview_Tests: StreamChatTestCase {
     }
     
     func test_fileAttachmentPreview_navigationBarAppearance() {
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         
         let view = FileAttachmentPreview(
             title: "Document title",

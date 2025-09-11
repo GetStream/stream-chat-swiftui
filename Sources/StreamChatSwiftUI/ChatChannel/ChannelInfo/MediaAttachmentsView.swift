@@ -100,14 +100,13 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .toolbar {
+        .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Text(L10n.ChatInfo.Media.title)
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.navigationBarTitle))
             }
         }
-        .navigationBarBackground()
         .navigationBarTitleDisplayMode(.inline)
     }
 }

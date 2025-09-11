@@ -13,8 +13,7 @@ struct ChatThreadListHeaderViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackground()
-            .toolbar {
+            .toolbarThemed {
                 ToolbarItem(placement: .principal) {
                     Text(title)
                         .font(fonts.bodyBold)

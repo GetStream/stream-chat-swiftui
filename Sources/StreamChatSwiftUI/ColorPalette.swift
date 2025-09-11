@@ -103,7 +103,28 @@ public struct ColorPalette {
     }
 
     public var navigationBarSubtitle: UIColor
+    
+    /// Sets a different tint color for the navigation bar.
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// var colors = ColorPalette()
+    /// colors.navigationBarTintColor = .purple
+    /// colors.navigationBarTitle = .brown
+    /// colors.navigationBarSubtitle = .cyan
+    /// colors.navigationBarBackground = .yellow
+    /// colors.tintColor = .red
+    /// let appearance = Appearance(colors: colors)
+    /// streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
+    /// ```
+    ///
+    /// - Important: `tintColor` must also be customised when setting this color.
     public var navigationBarTintColor: Color
+    
+    /// Sets a custom background color for navigation bars.
+    ///
+    /// - Important: Customized views must use ``toolbarThemed(content:)``.
     public var navigationBarBackground: UIColor?
     
     // MARK: - Threads

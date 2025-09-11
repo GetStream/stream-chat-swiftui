@@ -132,8 +132,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
         }
-        .navigationBarBackground()
-        .toolbar {
+        .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Group {
                     if viewModel.showSingleMemberDMView {
@@ -162,7 +161,6 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                             .background(colors.tintColor)
                             .clipShape(Circle())
                     }
-                    .accentColor(colors.navigationBarTintColor)
                 }
             }
         }

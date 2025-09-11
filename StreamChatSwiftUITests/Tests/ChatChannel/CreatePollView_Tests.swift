@@ -83,9 +83,9 @@ final class CreatePollView_Tests: StreamChatTestCase {
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
     
-    func test_createPollView_customizedNavigationBarSnapshot() {
+    func test_createPollView_themedNavigationBarSnapshot() {
         // Given
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         let view = CreatePollView(
             chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
             messageController: nil

@@ -7,7 +7,7 @@ import SwiftUI
 /// Reusable container view to handle the navigation container logic.
 struct NavigationContainerView<Content: View>: View {
     @Injected(\.colors) var colors
-    var embedInNavigationView: Bool
+    var embedInNavigationView: Bool = true
     var content: () -> Content
 
     var body: some View {
@@ -15,15 +15,13 @@ struct NavigationContainerView<Content: View>: View {
             if #available(iOS 16, *), isIphone {
                 NavigationStack {
                     content()
-                        .accentColor(colors.tintColor)
-                        .navigationBarBackground()
                 }
+                .accentColor(colors.navigationBarTintColor)
             } else {
                 NavigationView {
                     content()
-                        .accentColor(colors.tintColor)
-                        .navigationBarBackground()
                 }
+                .accentColor(colors.navigationBarTintColor)
             }
         } else {
             content()

@@ -17,8 +17,7 @@ struct MoreChannelActionsFullScreenWrappingView: View {
         NavigationContainerView(embedInNavigationView: true) {
             presentedView
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarBackground()
-                .toolbar {
+                .toolbarThemed {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             onDismiss()
@@ -27,7 +26,6 @@ struct MoreChannelActionsFullScreenWrappingView: View {
                                 .customizable()
                                 .frame(height: 16)
                         }
-                        .accentColor(colors.navigationBarTintColor)
                     }
                 }
         }

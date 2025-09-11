@@ -69,7 +69,6 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                     viewModel.retryLoadThreads()
                 }
             }
-            .accentColor(colors.tintColor)
             .background(
                 viewFactory.makeThreadListBackground(colors: colors)
             )

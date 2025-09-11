@@ -33,7 +33,7 @@ public struct CustomChannelHeader: ToolbarContent {
                     .frame(width: 24, height: 24)
                     .foregroundColor(Color.white)
                     .padding(.all, 8)
-                    .background(colors.tintColor)
+                    .background(colors.navigationBarTintColor)
                     .clipShape(Circle())
             }
             .accessibilityLabel(Text("New Channel"))
@@ -67,7 +67,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
     func body(content: Content) -> some View {
         ZStack {
             if #available(iOS 26, *) {
-                content.toolbar {
+                content.toolbarThemed {
                     CustomChannelHeader(
                         title: title,
                         currentUserController: chatClient.currentUserController(),
@@ -79,7 +79,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     #endif
                 }
             } else {
-                content.toolbar {
+                content.toolbarThemed {
                     CustomChannelHeader(
                         title: title,
                         currentUserController: chatClient.currentUserController(),
