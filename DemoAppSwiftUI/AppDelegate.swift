@@ -74,7 +74,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 skipEditedMessageLabel: { message in
                     message.extraData["ai_generated"]?.boolValue == true
                 },
-                draftMessagesEnabled: true
+                draftMessagesEnabled: true,
+                downloadFileAttachmentsEnabled: true
             ),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )

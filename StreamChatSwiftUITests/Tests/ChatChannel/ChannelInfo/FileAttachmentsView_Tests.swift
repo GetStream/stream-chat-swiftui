@@ -67,7 +67,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_fileAttachmentsView_themedSnapshot() {
         // Given
         setThemedNavigationBarAppearance()
@@ -83,7 +83,30 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
         let view = NavigationContainerView(embedInNavigationView: true) {
             FileAttachmentsView(viewModel: viewModel)
         }.applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_fileAttachmentsView_withDownloadEnabled() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(downloadFileAttachmentsEnabled: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
         
+        let messages = ChannelInfoMockUtils.generateMessagesWithPdfAttachments(count: 5)
+        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
+        messageSearchController.messages_mock = messages
+        let viewModel = FileAttachmentsViewModel(
+            channel: .mockDMChannel(),
+            messageSearchController: messageSearchController
+        )
+
+        // When
+        let view = FileAttachmentsView(viewModel: viewModel)
+            .applyDefaultSize()
+
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }

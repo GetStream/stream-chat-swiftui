@@ -19,21 +19,7 @@ struct AttachmentUploadingStateView: View {
             switch uploadState.state {
             case let .uploading(progress: progress):
                 BottomRightView {
-                    HStack(spacing: 4) {
-                        ProgressView()
-                            .progressViewStyle(
-                                CircularProgressViewStyle(tint: .white)
-                            )
-                            .scaleEffect(0.7)
-
-                        Text(progressDisplay(for: progress))
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.staticColorText))
-                    }
-                    .padding(.all, 4)
-                    .background(Color.black.opacity(0.7))
-                    .cornerRadius(8)
-                    .padding(.all, 8)
+                    PercentageProgressView(progress: progress)
                 }
 
             case .uploadingFailed:
@@ -57,11 +43,6 @@ struct AttachmentUploadingStateView: View {
             }
         }
         .id("\(url.absoluteString)-\(uploadState.state))")
-    }
-
-    private func progressDisplay(for progress: CGFloat) -> String {
-        let value = Int(progress * 100)
-        return "\(value)%"
     }
 }
 
