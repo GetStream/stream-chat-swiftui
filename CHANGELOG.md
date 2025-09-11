@@ -3,14 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
 
 # [4.88.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.88.0)
 _September 10, 2025_
 
 ### ✅ Added
 - Add `ColorPalette.navigationBarTitle`, `ColorPalette.navigationBarSubtitle`, `ColorPalette.navigationBarTintColor`,  `ColorPalette.navigationBarBackground` [#939](https://github.com/GetStream/stream-chat-swiftui/pull/939)
-- Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
 ### 🐞 Fixed
 - Long message with a link preview was truncated sometimes [#940](https://github.com/GetStream/stream-chat-swiftui/pull/940)
 - Fix quoted message shown in the composer when editing a quoting message [#943](https://github.com/GetStream/stream-chat-swiftui/pull/943)
