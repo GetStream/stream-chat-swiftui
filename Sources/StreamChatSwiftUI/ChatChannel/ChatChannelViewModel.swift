@@ -823,25 +823,6 @@ extension ChatMessage: Identifiable {
         return repliesCountId
     }
     
-    var uploadingStatesId: String {
-        var states = imageAttachments.compactMap { $0.uploadingState?.state }
-        states += giphyAttachments.compactMap { $0.uploadingState?.state }
-        states += videoAttachments.compactMap { $0.uploadingState?.state }
-        states += fileAttachments.compactMap { $0.uploadingState?.state }
-        
-        if states.isEmpty {
-            if localState == .sendingFailed {
-                return "failed"
-            } else {
-                return localState?.rawValue ?? "empty"
-            }
-        }
-        
-        let strings = states.map { "\($0)" }
-        let combined = strings.joined(separator: "-")
-        return combined
-    }
-    
     var reactionScoresId: String {
         var output = ""
         if reactionScores.isEmpty {
