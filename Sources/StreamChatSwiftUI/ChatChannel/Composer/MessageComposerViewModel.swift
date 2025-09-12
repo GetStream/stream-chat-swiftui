@@ -980,14 +980,26 @@ class MessageAttachmentsConverter {
         completion: @escaping (ComposerAssets) -> Void
     ) {
         let group = DispatchGroup()
+        attachmentsToAssets(attachments, with: group, completion: completion)
+    }
+
+    func attachmentsToAssets(
+        _ attachments: [AnyChatMessageAttachment],
+        with group: DispatchGroup?,
+        completion: @escaping (ComposerAssets) -> Void
+    ) {
         var addedAssets = ComposerAssets()
 
         attachments.forEach { attachment in
-            group.enter()
+            group?.enter()
 
             switch attachment.type {
-            case .image, .video:
-                if let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) {
+            case .image:
+                guard let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) else {
+                    break
+                }
+
+                if let group {
                     utils.imageLoader.loadImage(
                         url: imageAttachment.imageURL,
                         imageCDN: utils.imageCDN,
@@ -1000,58 +1012,74 @@ class MessageAttachmentsConverter {
                         }
                         group.leave()
                     }
-                } else if let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self),
-                          let videoAsset = videoAttachmentToAddedAsset(videoAttachment) {
-                    addedAssets.mediaAssets.append(videoAsset)
-                    group.leave()
+                } else {
+                    guard let imageData = try? Data(contentsOf: imageAttachment.imageURL),
+                          let image = UIImage(data: imageData) else {
+                        break
+                    }
+                    let imageAsset = imageAttachmentToAddedAsset(imageAttachment, image: image)
+                    addedAssets.mediaAssets.append(imageAsset)
                 }
+            case .video:
+                guard let asset = videoAttachmentToAddedAsset(attachment) else { break }
+                addedAssets.mediaAssets.append(asset)
+                group?.leave()
             case .file:
-                guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
-                    break
-                }
-                let fileAsset = FileAddedAsset(
-                    url: filePayload.assetURL,
-                    payload: filePayload.payload
-                )
+                guard let fileAsset = fileAttachmentToAddedAsset(attachment) else { break }
                 addedAssets.fileAssets.append(fileAsset)
-                group.leave()
+                group?.leave()
             case .voiceRecording:
                 guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
                 addedAssets.voiceAssets.append(addedVoiceRecording)
-                group.leave()
+                group?.leave()
             case .linkPreview, .audio, .giphy, .unknown:
                 break
             default:
-                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
-                let customAttachment = CustomAttachment(
-                    id: attachment.id.rawValue,
-                    content: anyAttachmentPayload
-                )
+                guard let customAttachment = customAttachmentToAddedAsset(attachment) else { break }
                 addedAssets.customAssets.append(customAttachment)
-                group.leave()
+                group?.leave()
             }
         }
 
-        group.notify(queue: .main) {
+        if let group {
+            group.notify(queue: .main) {
+                completion(addedAssets)
+            }
+        } else {
             completion(addedAssets)
         }
     }
 
-    private func videoAttachmentToAddedAsset(
-        _ attachment: ChatMessageAttachment<VideoAttachmentPayload>
-    ) -> AddedAsset? {
-        guard let thumbnail = attachment.imageThumbnail() else { return nil }
-        return AddedAsset(
-            image: thumbnail,
-            id: attachment.id.rawValue,
-            url: attachment.videoURL,
-            type: .video,
-            extraData: attachment.extraData ?? [:],
-            payload: attachment.payload
+    func fileAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> FileAddedAsset? {
+        guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
+            return nil
+        }
+        return FileAddedAsset(
+            url: filePayload.assetURL,
+            payload: filePayload.payload
         )
     }
 
-    private func imageAttachmentToAddedAsset(
+    func videoAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> AddedAsset? {
+        guard let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self) else {
+            return nil
+        }
+        guard let thumbnail = attachment.imageThumbnail(for: videoAttachment.payload) else { return nil }
+        return AddedAsset(
+            image: thumbnail,
+            id: videoAttachment.id.rawValue,
+            url: videoAttachment.videoURL,
+            type: .video,
+            extraData: videoAttachment.extraData ?? [:],
+            payload: videoAttachment.payload
+        )
+    }
+
+    func imageAttachmentToAddedAsset(
         _ attachment: ChatMessageAttachment<ImageAttachmentPayload>,
         image: UIImage
     ) -> AddedAsset {
@@ -1062,6 +1090,18 @@ class MessageAttachmentsConverter {
             type: .image,
             extraData: attachment.extraData ?? [:],
             payload: attachment.payload
+        )
+    }
+
+    func customAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> CustomAttachment? {
+        guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else {
+            return nil
+        }
+        return CustomAttachment(
+            id: attachment.id.rawValue,
+            content: anyAttachmentPayload
         )
     }
 }

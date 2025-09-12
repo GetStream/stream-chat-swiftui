@@ -79,21 +79,6 @@ extension AnyChatMessageAttachment {
     }
 }
 
-extension ChatMessageAttachment where Payload == VideoAttachmentPayload {
-    func imageThumbnail() -> UIImage? {
-        let asset = AVURLAsset(url: payload.videoURL, options: nil)
-        let imageGenerator = AVAssetImageGenerator(asset: asset)
-        imageGenerator.appliesPreferredTrackTransform = true
-        guard let cgImage = try? imageGenerator.copyCGImage(
-            at: CMTimeMake(value: 0, timescale: 1),
-            actualTime: nil
-        ) else {
-            return nil
-        }
-        return UIImage(cgImage: cgImage)
-    }
-}
-
 /// Type of asset added to the composer.
 public enum AssetType {
     case image
