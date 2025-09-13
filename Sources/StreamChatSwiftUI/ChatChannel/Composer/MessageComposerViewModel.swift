@@ -1050,7 +1050,7 @@ class MessageAttachmentsConverter {
         }
     }
 
-    func fileAttachmentToAddedAsset(
+    private func fileAttachmentToAddedAsset(
         _ attachment: AnyChatMessageAttachment
     ) -> FileAddedAsset? {
         guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
@@ -1062,7 +1062,7 @@ class MessageAttachmentsConverter {
         )
     }
 
-    func videoAttachmentToAddedAsset(
+    private func videoAttachmentToAddedAsset(
         _ attachment: AnyChatMessageAttachment
     ) -> AddedAsset? {
         guard let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self) else {
@@ -1079,7 +1079,7 @@ class MessageAttachmentsConverter {
         )
     }
 
-    func imageAttachmentToAddedAsset(
+    private func imageAttachmentToAddedAsset(
         _ attachment: ChatMessageAttachment<ImageAttachmentPayload>,
         image: UIImage
     ) -> AddedAsset {
@@ -1093,7 +1093,7 @@ class MessageAttachmentsConverter {
         )
     }
 
-    func customAttachmentToAddedAsset(
+    private func customAttachmentToAddedAsset(
         _ attachment: AnyChatMessageAttachment
     ) -> CustomAttachment? {
         guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else {

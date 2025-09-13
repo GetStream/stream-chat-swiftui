@@ -14,9 +14,8 @@ import XCTest
 class MessageComposerView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
-        let imageLoader = TestImagesLoader_Mock()
+
         let utils = Utils(
-            imageLoader: imageLoader,
             messageListConfig: MessageListConfig(
                 becomesFirstResponderOnOpen: true,
                 draftMessagesEnabled: true
