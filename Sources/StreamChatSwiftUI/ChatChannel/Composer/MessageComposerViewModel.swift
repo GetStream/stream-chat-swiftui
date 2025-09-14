@@ -743,7 +743,6 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private func clearInputData() {
-        text = ""
         addedAssets = []
         addedFileURLs = []
         addedVoiceRecordings = []
