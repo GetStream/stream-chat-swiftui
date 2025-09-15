@@ -1072,44 +1072,26 @@ class MessageAttachmentsConverter {
             return completion(nil)
         }
 
-        // If there is a custom CDN, we need to load the image from the CDN
-        // especially if the images are signed.
-        if !(utils.imageCDN is StreamImageCDN) {
-            utils.imageLoader.loadImage(
-                url: imageAttachment.imageURL,
-                imageCDN: utils.imageCDN,
-                resize: false,
-                preferredSize: nil
-            ) { result in
-                if let image = try? result.get() {
-                    let imageAsset = AddedAsset(
-                        image: image,
-                        id: imageAttachment.id.rawValue,
-                        url: imageAttachment.imageURL,
-                        type: .image,
-                        extraData: imageAttachment.extraData ?? [:],
-                        payload: imageAttachment.payload
-                    )
-                    completion(imageAsset)
-                    return
-                }
-                completion(nil)
-            }
-        }
-
-        guard let imageData = try? Data(contentsOf: imageAttachment.imageURL),
-              let image = UIImage(data: imageData) else {
-            return completion(nil)
-        }
-        let imageAsset = AddedAsset(
-            image: image,
-            id: imageAttachment.id.rawValue,
+        utils.imageLoader.loadImage(
             url: imageAttachment.imageURL,
-            type: .image,
-            extraData: imageAttachment.extraData ?? [:],
-            payload: imageAttachment.payload
-        )
-        completion(imageAsset)
+            imageCDN: utils.imageCDN,
+            resize: false,
+            preferredSize: nil
+        ) { result in
+            if let image = try? result.get() {
+                let imageAsset = AddedAsset(
+                    image: image,
+                    id: imageAttachment.id.rawValue,
+                    url: imageAttachment.imageURL,
+                    type: .image,
+                    extraData: imageAttachment.extraData ?? [:],
+                    payload: imageAttachment.payload
+                )
+                completion(imageAsset)
+                return
+            }
+            completion(nil)
+        }
     }
 
     private func customAttachmentToAddedAsset(
