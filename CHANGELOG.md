@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
 ### 🐞 Fixed
 - Fix updating back button tint with `ColorPalette.navigationBarTintColor` [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
+- Fix swipe to reply enabled when quoting a message is disabled  [#977](https://github.com/GetStream/stream-chat-swiftui/pull/957)
 
 # [4.88.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.88.0)
 _September 10, 2025_
