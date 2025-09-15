@@ -164,8 +164,7 @@ public struct CreatePollView: View {
             .background(Color(colors.background).ignoresSafeArea())
             .listStyle(.plain)
             .id(listId)
-            .navigationBarBackground()
-            .toolbar {
+            .toolbarThemed {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         if viewModel.canShowDiscardConfirmation {
@@ -176,7 +175,6 @@ public struct CreatePollView: View {
                     } label: {
                         Text(L10n.Alert.Actions.cancel)
                     }
-                    .accentColor(colors.navigationBarTintColor)
                 }
                 
                 ToolbarItem(placement: .principal) {
@@ -192,9 +190,7 @@ public struct CreatePollView: View {
                         }
                     } label: {
                         Image(systemName: "paperplane.fill")
-                            .foregroundColor(colors.tintColor)
                     }
-                    .accentColor(colors.navigationBarTintColor)
                     .disabled(!viewModel.canCreatePoll)
                 }
             }

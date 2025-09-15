@@ -121,12 +121,12 @@ class ChatChannelListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_channelListView_customizedNavigationBar() {
+    func test_channelListView_themedNavigationBar() {
         // Given
+        setThemedNavigationBarAppearance()
         let controller = makeChannelListController()
 
         // When
-        customizedNavigationBarAppearance()
         let view = ChatChannelListView(
             channelListController: controller
         )

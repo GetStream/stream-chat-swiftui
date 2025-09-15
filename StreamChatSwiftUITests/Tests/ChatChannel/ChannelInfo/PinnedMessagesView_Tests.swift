@@ -116,7 +116,7 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
     
     func test_pinnedMessagesView_themedSnapshot() {
         // Given
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         let channel = ChatChannel.mockDMChannel(
             pinnedMessages: [ChannelInfoMockUtils.pinnedMessage]
         )

@@ -73,14 +73,13 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                 )
             }
         }
-        .toolbar {
+        .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Text(L10n.ChatInfo.PinnedMessages.title)
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.navigationBarTitle))
             }
         }
-        .navigationBarBackground()
         .navigationBarTitleDisplayMode(.inline)
     }
 

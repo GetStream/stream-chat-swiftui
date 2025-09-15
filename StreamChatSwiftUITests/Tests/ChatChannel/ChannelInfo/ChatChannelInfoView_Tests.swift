@@ -12,7 +12,7 @@ import XCTest
 class ChatChannelInfoView_Tests: StreamChatTestCase {
     func test_chatChannelInfoView_navigationBarAppearance() {
         // Given
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         let members = ChannelInfoMockUtils.setupMockMembers(
             count: 8,
             currentUserId: chatClient.currentUserId!,

@@ -70,7 +70,7 @@ class FileAttachmentsView_Tests: StreamChatTestCase {
 
     func test_fileAttachmentsView_themedSnapshot() {
         // Given
-        customizedNavigationBarAppearance()
+        setThemedNavigationBarAppearance()
         let messages = ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20)
         let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
         messageSearchController.messages_mock = messages

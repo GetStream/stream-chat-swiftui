@@ -32,7 +32,7 @@ public struct FileAttachmentPreview: View {
     }
     
     public var body: some View {
-        NavigationView {
+        NavigationContainerView(embedInNavigationView: true) {
             ZStack {
                 if error != nil {
                     Text(L10n.Message.FileAttachment.errorPreview)
@@ -64,8 +64,7 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackground()
-            .toolbar {
+            .toolbarThemed {
                 ToolbarItem(placement: .principal) {
                     Text(navigationTitle)
                         .font(fonts.bodyBold)
@@ -80,7 +79,6 @@ public struct FileAttachmentPreview: View {
                         Image(uiImage: images.close)
                             .renderingMode(.template)
                     }
-                    .accentColor(colors.navigationBarTintColor)
                 }
             }
         }
