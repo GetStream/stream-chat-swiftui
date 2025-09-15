@@ -220,7 +220,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             viewModel.fillDraftMessage()
         })
         .onDisappear(perform: {
-            viewModel.updateDraftMessage(quotedMessage: quotedMessage)
+            if editedMessage == nil {
+                viewModel.updateDraftMessage(quotedMessage: quotedMessage)
+            }
         })
         .accessibilityElement(children: .contain)
     }

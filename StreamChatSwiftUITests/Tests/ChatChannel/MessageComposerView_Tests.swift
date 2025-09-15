@@ -14,7 +14,10 @@ import XCTest
 class MessageComposerView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
+
+        let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
+            imageLoader: imageLoader,
             messageListConfig: MessageListConfig(
                 becomesFirstResponderOnOpen: true,
                 draftMessagesEnabled: true
@@ -581,7 +584,8 @@ class MessageComposerView_Tests: StreamChatTestCase {
             draftMessage: draftMessage
         )
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.attachmentsConverter = SyncAttachmentsConverter()
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
+        viewModel.fillDraftMessage()
 
         return MessageComposerView(
             viewFactory: factory,
@@ -787,7 +791,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.attachmentsConverter = SyncAttachmentsConverter()
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
         viewModel.fillEditedMessage(editedMessage)
 
         return MessageComposerView(
@@ -801,12 +805,11 @@ class MessageComposerView_Tests: StreamChatTestCase {
     }
 }
 
-class SyncAttachmentsConverter: MessageAttachmentsConverter {
+class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
     override func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         completion: @escaping (ComposerAssets) -> Void
     ) {
-        let addedAssets = attachmentsToAssets(attachments)
-        completion(addedAssets)
+        super.attachmentsToAssets(attachments, with: nil, completion: completion)
     }
 }
