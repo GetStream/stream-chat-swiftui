@@ -408,6 +408,60 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         messagesGroupingInfo = temp
     }
+    
+    func dataSource(
+        channelDataSource: ChannelDataSource,
+        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+        changes: [ListChange<ChatMessage>]
+    ) {
+        if !isActive {
+            return
+        }
+        
+        // Set unread state before updating messages for ensuring the state is up to date before `handleMessageAppear` is called
+        if lastReadMessageId != nil && firstUnreadMessageId == nil {
+            firstUnreadMessageId = channelDataSource.firstUnreadMessageId
+        }
+        
+        if shouldAnimate(changes: changes) {
+            withAnimation {
+                self.messages = messages
+            }
+        } else {
+            self.messages = messages
+        }
+        
+        refreshMessageListIfNeeded()
+
+        if changes.first?.isInsertion == true && currentUserSentNewMessage {
+            updateScrolledIdToNewestMessage()
+            currentUserSentNewMessage = false
+        }
+
+        print("Test")
+    }
+    
+    func dataSource(
+        channelDataSource: ChannelDataSource,
+        didUpdateChannel channel: EntityChange<ChatChannel>,
+        channelController: ChatChannelController
+    ) {
+        self.channel = channel.item
+        checkReadIndicators(for: channel)
+        checkTypingIndicator()
+        checkHeaderType()
+        checkOnlineIndicator()
+        checkUnreadCount()
+    }
+
+    public func showReactionOverlay(for view: AnyView) {
+        currentSnapshot = utils.snapshotCreator.makeSnapshot(for: view)
+    }
+
+    public func showBouncedActionsView(for message: ChatMessage) {
+        bouncedActionsViewShown = true
+        bouncedMessage = message
+    }
 
     public func deleteMessage(_ message: ChatMessage) {
         guard let cid = message.cid else { return }
