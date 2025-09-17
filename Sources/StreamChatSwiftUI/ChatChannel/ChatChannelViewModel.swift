@@ -446,7 +446,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
-        } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
+        }
+
+        if changes.first?.isInsertion == true && currentUserSentNewMessage {
             updateScrolledIdToNewestMessage()
             currentUserSentNewMessage = false
         }
