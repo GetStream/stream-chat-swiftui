@@ -251,13 +251,19 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .frame(maxWidth: .infinity)
                 .clipped()
                 .onChange(of: scrolledId) { scrolledId in
-                    if let scrolledId = scrolledId {
-                        let shouldJump = onJumpToMessage?(scrolledId) ?? false
-                        if !shouldJump {
-                            return
-                        }
-                        withAnimation {
-                            scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
+                    DispatchQueue.main.async {
+                        if let scrolledId = scrolledId {
+                            let shouldJump = onJumpToMessage?(scrolledId) ?? false
+                            if !shouldJump {
+                                return
+                            }
+                            withAnimation {
+                                if messages.first?.id == scrolledId {
+                                    scrollView.scrollTo(scrolledId, anchor: .top)
+                                } else {
+                                    scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
+                                }
+                            }
                         }
                     }
                 }

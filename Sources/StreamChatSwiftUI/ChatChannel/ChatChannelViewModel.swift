@@ -36,7 +36,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var readsString = ""
     private var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
-    
+    private var currentUserSentNewMessage = false
+
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
     private lazy var messagesDateFormatter = utils.dateFormatter
@@ -266,10 +267,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
 
     /// The user tapped on the message sent button.
     public func messageSentTapped() {
-        // only scroll if the message is not being edited
-        if editedMessage == nil {
-            scrollToLastMessage()
-        }
+        currentUserSentNewMessage = true
     }
 
     public func jumpToMessage(messageId: String) -> Bool {
@@ -448,6 +446,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
+        } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
+            updateScrolledIdToNewestMessage()
+            currentUserSentNewMessage = false
         }
     }
     
