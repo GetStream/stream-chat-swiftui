@@ -41,15 +41,6 @@ public struct MessageView<Factory: ViewFactory>: View {
                     availableWidth: contentWidth,
                     scrolledId: $scrolledId
                 )
-            } else if messageTypeResolver.hasLocationAttachment(message: message) {
-                let locationAttachments = message.attachments(payloadType: LocationAttachmentPayload.self)
-                if let locationAttachment = locationAttachments.first {
-                    factory.makeLocationAttachmentView(
-                        location: locationAttachment.payload,
-                        width: contentWidth,
-                        isFirst: isFirst
-                    )
-                }
             } else if let poll = message.poll {
                 factory.makePollView(message: message, poll: poll, isFirst: isFirst)
             } else if !message.attachmentCounts.isEmpty {

@@ -343,29 +343,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             }
 
             if !addedCustomAttachments.isEmpty {
-                // Check if any custom attachments are location attachments
-                let locationAttachments = addedCustomAttachments.filter { attachment in
-                    attachment.content.payload is LocationAttachmentPayload
-                }
-                
-                if !locationAttachments.isEmpty {
-                    LocationAttachmentsPreviewView(
-                        addedCustomAttachments: locationAttachments,
-                        onCustomAttachmentTap: onCustomAttachmentTap
-                    )
-                }
-                
-                // Handle other custom attachments
-                let otherAttachments = addedCustomAttachments.filter { attachment in
-                    !(attachment.content.payload is LocationAttachmentPayload)
-                }
-                
-                if !otherAttachments.isEmpty {
-                    factory.makeCustomAttachmentPreviewView(
-                        addedCustomAttachments: otherAttachments,
-                        onCustomAttachmentTap: onCustomAttachmentTap
-                    )
-                }
+                factory.makeCustomAttachmentPreviewView(
+                    addedCustomAttachments: addedCustomAttachments,
+                    onCustomAttachmentTap: onCustomAttachmentTap
+                )
             }
 
             HStack {

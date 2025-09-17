@@ -46,11 +46,6 @@ public protocol MessageTypeResolving {
     /// - Parameter message: the message being checked.
     /// - Returns: bool, whether the condition is satisfied.
     func hasCustomAttachment(message: ChatMessage) -> Bool
-    
-    /// Checks whether the message has location attachment.
-    /// - Parameter message: the message being checked.
-    /// - Returns: bool, whether the condition is satisfied.
-    func hasLocationAttachment(message: ChatMessage) -> Bool
 }
 
 /// Default methods implementation of the `MessageTypeResolving` protocol.
@@ -87,10 +82,6 @@ extension MessageTypeResolving {
 
     public func hasCustomAttachment(message: ChatMessage) -> Bool {
         false
-    }
-    
-    public func hasLocationAttachment(message: ChatMessage) -> Bool {
-        !message.attachments(payloadType: LocationAttachmentPayload.self).isEmpty
     }
 }
 

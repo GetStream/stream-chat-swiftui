@@ -1150,24 +1150,6 @@ extension ViewFactory {
     ) -> some View {
         AddUsersView(loadedUserIds: options.loadedUsers.map(\.id), onUserTap: onUserTap)
     }
-    
-    public func makeLocationPickerView(
-        onLocationSelected: @escaping (LocationAttachmentPayload) -> Void
-    ) -> some View {
-        LocationPickerView(onLocationSelected: onLocationSelected)
-    }
-    
-    public func makeLocationAttachmentView(
-        location: LocationAttachmentPayload,
-        width: CGFloat,
-        isFirst: Bool
-    ) -> some View {
-        LocationAttachmentView(
-            location: location,
-            width: width,
-            isFirst: isFirst
-        )
-    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

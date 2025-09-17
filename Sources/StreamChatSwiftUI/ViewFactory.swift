@@ -877,28 +877,6 @@ public protocol ViewFactory: AnyObject {
         addedCustomAttachments: [CustomAttachment],
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
     ) -> CustomAttachmentPreviewViewType
-    
-    associatedtype LocationPickerViewType: View
-    /// Creates the location picker view.
-    /// - Parameters:
-    ///  - onLocationSelected: called when a location is selected.
-    /// - Returns: view displayed in the location picker slot.
-    func makeLocationPickerView(
-        onLocationSelected: @escaping (LocationAttachmentPayload) -> Void
-    ) -> LocationPickerViewType
-    
-    associatedtype LocationAttachmentViewType: View
-    /// Creates the location attachment view for displaying in messages.
-    /// - Parameters:
-    ///  - location: the location attachment payload.
-    ///  - width: the available width for the view.
-    ///  - isFirst: whether it is first in the group.
-    /// - Returns: view displayed in the location attachment slot.
-    func makeLocationAttachmentView(
-        location: LocationAttachmentPayload,
-        width: CGFloat,
-        isFirst: Bool
-    ) -> LocationAttachmentViewType
 
     associatedtype AssetsAccessPermissionViewType: View
     /// Creates the assets access permission view.

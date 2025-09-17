@@ -6,10 +6,6 @@ import AVFoundation
 import StreamChat
 import SwiftUI
 
-extension AttachmentType {
-    static let location = Self(rawValue: "location")
-}
-
 /// Enum describing the attachment picker's state.
 public enum AttachmentPickerState {
     case files
@@ -17,7 +13,6 @@ public enum AttachmentPickerState {
     case camera
     case polls
     case custom
-    case location
 }
 
 /// Struct representing an asset added to the composer.
@@ -134,37 +129,5 @@ extension AnyChatMessageAttachment {
             duration: duration,
             waveform: waveform
         )
-    }
-}
-
-/// Location attachment payload for sharing location data.
-public struct LocationAttachmentPayload: AttachmentPayload {
-    public static let type: AttachmentType = .location
-    
-    /// The latitude of the location.
-    public let latitude: Double
-    /// The longitude of the location.
-    public let longitude: Double
-    /// Optional name or description of the location.
-    public let name: String?
-    /// Optional address of the location.
-    public let address: String?
-    
-    public init(
-        latitude: Double,
-        longitude: Double,
-        name: String? = nil,
-        address: String? = nil
-    ) {
-        self.latitude = latitude
-        self.longitude = longitude
-        self.name = name
-        self.address = address
-    }
-}
-
-extension LocationAttachmentPayload: Identifiable {
-    public var id: String {
-        "\(latitude)-\(longitude)"
     }
 }
