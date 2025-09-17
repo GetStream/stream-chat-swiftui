@@ -12,7 +12,7 @@ Agents should optimize for API stability, backwards compatibility, accessibility
   • Xcode: 15.x or newer (Apple Silicon supported)
   • Platforms / deployment targets: Use the values set in Package.swift/podspecs; do not lower targets without approval
   • CI: GitHub Actions (assume PR validation for build + tests + lint)
-  • Linters & docs: SwiftLint via Mint
+  • Linters & docs: SwiftLint and SwiftFormat
 
 ### Project layout (high level)
 
