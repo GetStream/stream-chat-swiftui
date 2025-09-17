@@ -432,26 +432,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
         
         refreshMessageListIfNeeded()
-        
-        // Jump to a message but we were already scrolled to the bottom
-        if !channelDataSource.hasLoadedAllNextMessages {
-            showScrollToLatestButton = true
-        }
-        
-        // Set scroll id after the message id has changed
-        if scrollsToUnreadAfterJumpToMessage, let firstUnreadMessageId {
-            scrollsToUnreadAfterJumpToMessage = false
-            scrolledId = firstUnreadMessageId
-        }
-        
-        if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
-            updateScrolledIdToNewestMessage()
-        }
 
         if changes.first?.isInsertion == true && currentUserSentNewMessage {
             updateScrolledIdToNewestMessage()
             currentUserSentNewMessage = false
         }
+
+        print("Test")
     }
     
     func dataSource(
