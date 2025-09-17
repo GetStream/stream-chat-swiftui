@@ -110,6 +110,16 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     addedCustomAttachments: addedCustomAttachments,
                     onCustomAttachmentTap: onCustomAttachmentTap
                 )
+            } else if selectedPickerState == .location {
+                viewFactory.makeLocationPickerView(
+                    onLocationSelected: { location in
+                        let customAttachment = CustomAttachment(
+                            id: UUID().uuidString,
+                            content: AnyAttachmentPayload(payload: location)
+                        )
+                        onCustomAttachmentTap(customAttachment)
+                    }
+                )
             }
         }
         .frame(height: height)
@@ -179,6 +189,15 @@ public struct AttachmentSourcePickerView: View {
                 .accessibilityLabel(L10n.Composer.Polls.createPoll)
                 .accessibilityIdentifier("attachmentPickerPolls")
             }
+            
+            AttachmentPickerButton(
+                icon: UIImage(systemName: "location")!,
+                pickerType: .location,
+                isSelected: selected == .location,
+                onTap: onTap
+            )
+            .accessibilityLabel("Location")
+            .accessibilityIdentifier("attachmentPickerLocation")
 
             Spacer()
         }

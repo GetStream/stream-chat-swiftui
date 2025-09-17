@@ -23,6 +23,8 @@ public enum AttachmentPickerType {
     case instantCommands
     /// Custom attachment picker type.
     case custom
+    /// Location picker type.
+    case location
 }
 
 /// View for picking the attachment type (media or giphy commands).
