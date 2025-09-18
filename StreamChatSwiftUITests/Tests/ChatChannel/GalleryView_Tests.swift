@@ -46,6 +46,56 @@ class GalleryView_Tests: StreamChatTestCase {
         assertSnapshot(matching: header, as: .image(perceptualPrecision: precision))
     }
 
+    func test_galleryHeader_withMessageCreatedToday_snapshot() {
+        // Given
+        let imageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            createdAt: .now,
+            attachments: ChatChannelTestHelpers.imageAttachments
+        )
+
+        // When
+        let view = GalleryView(
+            imageAttachments: imageMessage.imageAttachments,
+            author: imageMessage.author,
+            isShown: .constant(true),
+            selected: 0,
+            message: imageMessage
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_galleryHeader_withMessageExactDate_snapshot() {
+        // Given
+        let imageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            createdAt: Date(timeIntervalSince1970: 1_726_662_904),
+            attachments: ChatChannelTestHelpers.imageAttachments
+        )
+
+        // When
+        let view = GalleryView(
+            imageAttachments: imageMessage.imageAttachments,
+            author: imageMessage.author,
+            isShown: .constant(true),
+            selected: 0,
+            message: imageMessage
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_gridView_snapshotLoading() {
         // Given
         let view = GridMediaView(
