@@ -11,7 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix swipe to reply enabled when quoting a message is disabled  [#977](https://github.com/GetStream/stream-chat-swiftui/pull/957)
 - Fix composer not showing images in the composer when editing signed attachments [#956](https://github.com/GetStream/stream-chat-swiftui/pull/956)
 - Fix replacing an image while editing a message not showing the new image in the message list [#956](https://github.com/GetStream/stream-chat-swiftui/pull/956)
-- Improve precision when scrolling to the newest message with long text #958
+- Improve precision when scrolling to the newest message with long text [#958](https://github.com/GetStream/stream-chat-swiftui/pull/958)
+### 🔄 Changed
+- Change the gallery header view to show the message timestamp instead of online status [#962](https://github.com/GetStream/stream-chat-swiftui/pull/962)
 
 # [4.88.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.88.0)
 _September 10, 2025_
