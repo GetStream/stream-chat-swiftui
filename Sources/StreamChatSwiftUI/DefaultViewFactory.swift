@@ -466,7 +466,8 @@ extension ViewFactory {
             mediaAttachments: mediaAttachments,
             author: message.author,
             isShown: isShown,
-            selected: options.selectedIndex
+            selected: options.selectedIndex,
+            message: message
         )
     }
     
