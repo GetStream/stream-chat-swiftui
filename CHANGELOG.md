@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix replacing an image while editing a message not showing the new image in the message list [#956](https://github.com/GetStream/stream-chat-swiftui/pull/956)
 - Improve precision when scrolling to the newest message with long text [#958](https://github.com/GetStream/stream-chat-swiftui/pull/958)
 - Fix draft attachments being sent with local file urls to the server [#964](https://github.com/GetStream/stream-chat-swiftui/pull/964)
+- Fix race condition when clearing text in a regular TextField [#955](https://github.com/GetStream/stream-chat-swiftui/pull/955)
 ### 🔄 Changed
 - Change the gallery header view to show the message timestamp instead of online status [#962](https://github.com/GetStream/stream-chat-swiftui/pull/962)
 
