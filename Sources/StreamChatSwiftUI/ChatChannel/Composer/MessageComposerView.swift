@@ -181,6 +181,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     withAnimation(.easeInOut(duration: 0.02)) {
                         viewModel.pickerTypeState = .expanded(.none)
                     }
+                } else if editedMessageWillShow {
+                    // When editing a message, the keyboard will show.
+                    // If the attachment picker is open, we should dismiss it.
+                    viewModel.pickerTypeState = .expanded(.none)
                 }
             }
             keyboardShown = visible
