@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Improve precision when scrolling to the newest message with long text [#958](https://github.com/GetStream/stream-chat-swiftui/pull/958)
 - Fix draft attachments being sent with local file urls to the server [#964](https://github.com/GetStream/stream-chat-swiftui/pull/964)
 - Fix keyboard showing with attachment picker when editing a message [#965](https://github.com/GetStream/stream-chat-swiftui/pull/965)
+- Fix race condition when clearing text in a regular TextField [#955](https://github.com/GetStream/stream-chat-swiftui/pull/955)
 ### 🔄 Changed
 - Change the gallery header view to show the message timestamp instead of online status [#962](https://github.com/GetStream/stream-chat-swiftui/pull/962)
 
