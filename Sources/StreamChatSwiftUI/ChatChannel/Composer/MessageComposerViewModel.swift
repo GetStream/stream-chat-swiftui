@@ -1041,6 +1041,9 @@ class MessageAttachmentsConverter {
         guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
             return nil
         }
+        if let localUrl = attachment.uploadingState?.localFileURL {
+            return FileAddedAsset(url: localUrl)
+        }
         return FileAddedAsset(
             url: filePayload.assetURL,
             payload: filePayload.payload
@@ -1053,7 +1056,20 @@ class MessageAttachmentsConverter {
         guard let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self) else {
             return nil
         }
-        guard let thumbnail = attachment.imageThumbnail(for: videoAttachment.payload) else { return nil }
+        guard let thumbnail = attachment.imageThumbnail(for: videoAttachment.payload) else {
+            return nil
+        }
+
+        if let localUrl = attachment.uploadingState?.localFileURL {
+            return AddedAsset(
+                image: thumbnail,
+                id: videoAttachment.id.rawValue,
+                url: localUrl,
+                type: .video,
+                extraData: videoAttachment.extraData ?? [:]
+            )
+        }
+
         return AddedAsset(
             image: thumbnail,
             id: videoAttachment.id.rawValue,
@@ -1070,6 +1086,20 @@ class MessageAttachmentsConverter {
     ) {
         guard let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) else {
             return completion(nil)
+        }
+
+        if let localFileUrl = attachment.uploadingState?.localFileURL,
+           let imageData = try? Data(contentsOf: localFileUrl),
+           let image = UIImage(data: imageData) {
+            let imageAsset = AddedAsset(
+                image: image,
+                id: imageAttachment.id.rawValue,
+                url: localFileUrl,
+                type: .image,
+                extraData: imageAttachment.extraData ?? [:]
+            )
+            completion(imageAsset)
+            return
         }
 
         utils.imageLoader.loadImage(
