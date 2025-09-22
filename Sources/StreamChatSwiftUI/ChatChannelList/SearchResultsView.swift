@@ -89,8 +89,8 @@ struct SearchResultView<Factory: ViewFactory>: View {
     var onlineIndicatorShown: Bool
     var channelName: String
     var avatar: UIImage
-    var onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
-    var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
+    var onSearchResultTap: @MainActor(ChannelSelectionInfo) -> Void
+    var channelDestination: @MainActor(ChannelSelectionInfo) -> Factory.ChannelDestination
 
     var body: some View {
         ZStack {

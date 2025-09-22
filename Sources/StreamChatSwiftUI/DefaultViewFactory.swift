@@ -30,8 +30,8 @@ extension ViewFactory {
     
     public func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction] {
         ChannelAction.defaultActions(
             for: channel,
@@ -44,8 +44,8 @@ extension ViewFactory {
     public func makeMoreChannelActionsView(
         for channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> some View {
         MoreChannelActionsView(
             channel: channel,
@@ -67,11 +67,11 @@ extension ViewFactory {
         disabled: Bool,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination,
-        onItemTap: @escaping @MainActor (ChatChannel) -> Void,
-        trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
+        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination,
+        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
+        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> some View {
         let utils = InjectedValues[\.utils]
         let listItem = ChatChannelNavigatableListItem(
@@ -136,8 +136,8 @@ extension ViewFactory {
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        leftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        rightButtonTapped: @escaping @MainActor (ChatChannel) -> Void
+        leftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        rightButtonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> TrailingSwipeActionsView {
         TrailingSwipeActionsView(
             channel: channel,
@@ -153,7 +153,7 @@ extension ViewFactory {
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        buttonTapped: @MainActor (ChatChannel) -> Void
+        buttonTapped: @MainActor(ChatChannel) -> Void
     ) -> EmptyView {
         EmptyView()
     }
@@ -176,11 +176,11 @@ extension ViewFactory {
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
-        channelNaming: @escaping @MainActor (ChatChannel) -> String,
-        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping @MainActor (Int) -> Void
+        onlineIndicatorShown: @escaping @MainActor(ChatChannel) -> Bool,
+        channelNaming: @escaping @MainActor(ChatChannel) -> String,
+        imageLoader: @escaping @MainActor(ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping @MainActor(Int) -> Void
     ) -> some View {
         SearchResultsView(
             factory: self,
@@ -200,8 +200,8 @@ extension ViewFactory {
         onlineIndicatorShown: Bool,
         channelName: String,
         avatar: UIImage,
-        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
-        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination
+        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination
     ) -> some View {
         SearchResultItem(
             factory: self,
@@ -224,7 +224,7 @@ extension ViewFactory {
     
     // MARK: messages
     
-    public func makeChannelDestination() -> @MainActor (ChannelSelectionInfo) -> ChatChannelView<Self> {
+    public func makeChannelDestination() -> @MainActor(ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
             let controller = InjectedValues[\.utils]
                 .channelControllerFactory
@@ -237,7 +237,7 @@ extension ViewFactory {
         }
     }
     
-    public func makeMessageThreadDestination() -> @MainActor (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
+    public func makeMessageThreadDestination() -> @MainActor(ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
             let channelController = InjectedValues[\.utils]
                 .channelControllerFactory
@@ -330,7 +330,7 @@ extension ViewFactory {
         isInThread: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void,
+        onLongPress: @escaping @MainActor(MessageDisplayInfo) -> Void,
         isLast: Bool
     ) -> some View {
         MessageContainerView(
@@ -552,7 +552,7 @@ extension ViewFactory {
     
     public func makeScrollToBottomButton(
         unreadCount: Int,
-        onScrollToBottom: @escaping @MainActor () -> Void
+        onScrollToBottom: @escaping @MainActor() -> Void
     ) -> some View {
         ScrollToBottomButton(
             unreadCount: unreadCount,
@@ -617,7 +617,7 @@ extension ViewFactory {
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping @MainActor () -> Void
+        onMessageSent: @escaping @MainActor() -> Void
     ) -> MessageComposerView<Self> {
         MessageComposerView(
             viewFactory: self,
@@ -651,9 +651,9 @@ extension ViewFactory {
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping @MainActor (String) -> Void
+        removeAttachmentWithId: @escaping @MainActor(String) -> Void
     ) -> some View {
         if shouldScroll {
             ScrollView {
@@ -714,7 +714,7 @@ extension ViewFactory {
     public func makeTrailingComposerView(
         enabled: Bool,
         cooldownDuration: Int,
-        onTap: @escaping @MainActor () -> Void
+        onTap: @escaping @MainActor() -> Void
     ) -> some View {
         TrailingComposerView(onTap: onTap)
     }
@@ -747,14 +747,14 @@ extension ViewFactory {
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
         addedFileURLs: Binding<[URL]>,
-        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void,
+        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>?,
-        onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
-        isAssetSelected: @escaping @MainActor (String) -> Bool,
+        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
+        isAssetSelected: @escaping @MainActor(String) -> Bool,
         addedCustomAttachments: [CustomAttachment],
-        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
-        askForAssetsAccessPermissions: @escaping @MainActor () -> Void,
+        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void,
+        askForAssetsAccessPermissions: @escaping @MainActor() -> Void,
         isDisplayed: Bool,
         height: CGFloat,
         popupHeight: CGFloat
@@ -797,21 +797,21 @@ extension ViewFactory {
     
     public func makeCustomAttachmentView(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
     ) -> some View {
         EmptyView()
     }
     
     public func makeCustomAttachmentPreviewView(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
     ) -> some View {
         EmptyView()
     }
     
     public func makeAttachmentSourcePickerView(
         selected: AttachmentPickerState,
-        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void
+        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void
     ) -> some View {
         AttachmentSourcePickerView(
             selected: selected,
@@ -821,8 +821,8 @@ extension ViewFactory {
     
     public func makePhotoAttachmentPickerView(
         assets: PHFetchResultCollection,
-        onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
-        isAssetSelected: @escaping @MainActor (String) -> Bool
+        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
+        isAssetSelected: @escaping @MainActor(String) -> Bool
     ) -> some View {
         AttachmentTypeContainer {
             PhotoAttachmentPickerView(
@@ -846,7 +846,7 @@ extension ViewFactory {
     public func makeCameraPickerView(
         selected: Binding<AttachmentPickerState>,
         cameraPickerShown: Binding<Bool>,
-        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
+        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void
     ) -> some View {
         CameraPickerDisplayView(
             selectedPickerState: selected,
@@ -872,8 +872,8 @@ extension ViewFactory {
     public func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction] {
         MessageAction.defaultActions(
             factory: self,
@@ -888,8 +888,8 @@ extension ViewFactory {
     public func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> some View {
         let messageActions = supportedMessageActions(
             for: message,
@@ -914,8 +914,8 @@ extension ViewFactory {
     public func makeBottomReactionsView(
         message: ChatMessage,
         showsAllInfo: Bool,
-        onTap: @escaping @MainActor () -> Void,
-        onLongPress: @escaping @MainActor () -> Void
+        onTap: @escaping @MainActor() -> Void,
+        onLongPress: @escaping @MainActor() -> Void
     ) -> some View {
         BottomReactionsView(
             message: message,
@@ -928,8 +928,8 @@ extension ViewFactory {
     
     public func makeMessageReactionView(
         message: ChatMessage,
-        onTapGesture: @escaping @MainActor () -> Void,
-        onLongPressGesture: @escaping @MainActor () -> Void
+        onTapGesture: @escaping @MainActor() -> Void,
+        onLongPressGesture: @escaping @MainActor() -> Void
     ) -> some View {
         ReactionsContainer(
             message: message,
@@ -942,8 +942,8 @@ extension ViewFactory {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping @MainActor () -> Void,
-        onActionExecuted: @escaping @MainActor (MessageActionInfo) -> Void
+        onBackgroundTap: @escaping @MainActor() -> Void,
+        onActionExecuted: @escaping @MainActor(MessageActionInfo) -> Void
     ) -> some View {
         ReactionsOverlayView(
             factory: self,
@@ -958,7 +958,7 @@ extension ViewFactory {
     public func makeReactionsContentView(
         message: ChatMessage,
         contentRect: CGRect,
-        onReactionTap: @escaping @MainActor (MessageReactionType) -> Void
+        onReactionTap: @escaping @MainActor(MessageReactionType) -> Void
     ) -> some View {
         ReactionsOverlayContainer(
             message: message,
@@ -1009,7 +1009,7 @@ extension ViewFactory {
     
     public func makeCommandsContainerView(
         suggestions: [String: Any],
-        handleCommand: @escaping @MainActor ([String: Any]) -> Void
+        handleCommand: @escaping @MainActor([String: Any]) -> Void
     ) -> some View {
         CommandsContainerView(
             suggestions: suggestions,
@@ -1045,8 +1045,8 @@ extension ViewFactory {
     
     public func makeJumpToUnreadButton(
         channel: ChatChannel,
-        onJumpToMessage: @escaping @MainActor () -> Void,
-        onClose: @escaping @MainActor () -> Void
+        onJumpToMessage: @escaping @MainActor() -> Void,
+        onClose: @escaping @MainActor() -> Void
     ) -> some View {
         VStack {
             JumpToUnreadButton(
@@ -1073,7 +1073,7 @@ extension ViewFactory {
 
     // MARK: Threads
 
-    public func makeThreadDestination() -> @MainActor (ChatThread) -> ChatChannelView<Self> {
+    public func makeThreadDestination() -> @MainActor(ChatThread) -> ChatChannelView<Self> {
         { [unowned self] thread in
             makeMessageThreadDestination()(thread.channel, thread.parentMessage)
         }
@@ -1081,7 +1081,7 @@ extension ViewFactory {
 
     public func makeThreadListItem(
         thread: ChatThread,
-        threadDestination: @escaping @MainActor (ChatThread) -> ThreadDestination,
+        threadDestination: @escaping @MainActor(ChatThread) -> ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>
     ) -> some View {
         let utils = InjectedValues[\.utils]
@@ -1100,7 +1100,7 @@ extension ViewFactory {
         NoThreadsView()
     }
 
-    public func makeThreadsListErrorBannerView(onRefreshAction: @escaping @MainActor () -> Void) -> some View {
+    public func makeThreadsListErrorBannerView(onRefreshAction: @escaping @MainActor() -> Void) -> some View {
         ChatThreadListErrorBannerView(action: onRefreshAction)
     }
 
@@ -1147,7 +1147,7 @@ extension ViewFactory {
     
     public func makeAddUsersView(
         options: AddUsersOptions,
-        onUserTap: @escaping @MainActor (ChatUser) -> Void
+        onUserTap: @escaping @MainActor(ChatUser) -> Void
     ) -> some View {
         AddUsersView(loadedUserIds: options.loadedUsers.map(\.id), onUserTap: onUserTap)
     }

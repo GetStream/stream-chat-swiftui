@@ -52,7 +52,7 @@ class CustomAttachmentsFactory: ViewFactory {
 
     func makeAttachmentSourcePickerView(
         selected: AttachmentPickerState,
-        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void
+        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void
     ) -> some View {
         CustomAttachmentSourcePickerView(
             selected: selected,
@@ -62,7 +62,7 @@ class CustomAttachmentsFactory: ViewFactory {
 
     func makeCustomAttachmentView(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
     ) -> some View {
         CustomContactAttachmentView(
             contacts: mockContacts,
@@ -98,7 +98,7 @@ class CustomAttachmentsFactory: ViewFactory {
 
     func makeCustomAttachmentPreviewView(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
     ) -> some View {
         CustomContactAttachmentComposerPreview(
             addedCustomAttachments: addedCustomAttachments,

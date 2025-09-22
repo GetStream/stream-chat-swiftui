@@ -18,13 +18,13 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     @Binding var filePickerShown: Bool
     @Binding var cameraPickerShown: Bool
     @Binding var addedFileURLs: [URL]
-    var onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
+    var onPickerStateChange: @MainActor(AttachmentPickerState) -> Void
     var photoLibraryAssets: PHFetchResult<PHAsset>?
-    var onAssetTap: @MainActor (AddedAsset) -> Void
-    var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
-    var isAssetSelected: @MainActor (String) -> Bool
+    var onAssetTap: @MainActor(AddedAsset) -> Void
+    var onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
+    var isAssetSelected: @MainActor(String) -> Bool
     var addedCustomAttachments: [CustomAttachment]
-    var cameraImageAdded: @MainActor (AddedAsset) -> Void
+    var cameraImageAdded: @MainActor(AddedAsset) -> Void
     var askForAssetsAccessPermissions: () -> Void
 
     var isDisplayed: Bool
@@ -36,13 +36,13 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
         addedFileURLs: Binding<[URL]>,
-        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void,
+        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>? = nil,
-        onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
-        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
-        isAssetSelected: @escaping @MainActor (String) -> Bool,
+        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
+        isAssetSelected: @escaping @MainActor(String) -> Bool,
         addedCustomAttachments: [CustomAttachment],
-        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
+        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void,
         askForAssetsAccessPermissions: @escaping () -> Void,
         isDisplayed: Bool,
         height: CGFloat

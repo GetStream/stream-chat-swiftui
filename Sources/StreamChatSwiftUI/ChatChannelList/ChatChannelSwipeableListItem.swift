@@ -41,9 +41,9 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     private var factory: Factory
     private var channelListItem: ChannelListItem
     private var channel: ChatChannel
-    private var trailingRightButtonTapped: @MainActor (ChatChannel) -> Void
-    private var trailingLeftButtonTapped: @MainActor (ChatChannel) -> Void
-    private var leadingButtonTapped: @MainActor (ChatChannel) -> Void
+    private var trailingRightButtonTapped: @MainActor(ChatChannel) -> Void
+    private var trailingLeftButtonTapped: @MainActor(ChatChannel) -> Void
+    private var leadingButtonTapped: @MainActor(ChatChannel) -> Void
     
     @State private var verticalScrolling = false
 
@@ -54,9 +54,9 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         channel: ChatChannel,
         numberOfTrailingItems: Int = 2,
         widthOfTrailingItem: CGFloat = 60,
-        trailingRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        trailingLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
+        trailingRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        trailingLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) {
         self.factory = factory
         self.channelListItem = channelListItem
@@ -287,9 +287,9 @@ public struct TrailingSwipeActionsView: View {
                             leftButtonTapped(channel)
                         }
                     })
-                    .frame(width: buttonWidth)
-                    .foregroundColor(Color(colors.text))
-                    .background(Color(colors.background1))
+                        .frame(width: buttonWidth)
+                        .foregroundColor(Color(colors.text))
+                        .background(Color(colors.background1))
 
                     if channel.ownCapabilities.contains(.deleteChannel) {
                         ActionItemButton(imageName: "trash", action: {
@@ -297,9 +297,9 @@ public struct TrailingSwipeActionsView: View {
                                 rightButtonTapped(channel)
                             }
                         })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.textInverted))
-                        .background(Color(colors.alert))
+                            .frame(width: buttonWidth)
+                            .foregroundColor(Color(colors.textInverted))
+                            .background(Color(colors.alert))
                     }
                 }
             }
