@@ -100,15 +100,15 @@ public struct ChannelAction: Identifiable, @unchecked Sendable {
 
     public let title: String
     public let iconName: String
-    public let action: () -> Void
+    public let action: @MainActor() -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
-    nonisolated(unsafe) public var navigationDestination: AnyView?
+    public var navigationDestination: AnyView?
 
     public init(
         title: String,
         iconName: String,
-        action: @escaping () -> Void,
+        action: @escaping @MainActor() -> Void,
         confirmationPopup: ConfirmationPopup?,
         isDestructive: Bool
     ) {

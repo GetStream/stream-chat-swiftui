@@ -83,31 +83,29 @@ class DemoAppFactory: ViewFactory {
     
     private func archiveChannelAction(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
         ChannelAction(
             title: channel.isArchived ? "Unarchive Channel" : "Archive Channel",
             iconName: "archivebox",
             action: { [weak self] in
                 guard let self else { return }
-                nonisolated(unsafe) let unsafeOnDismiss = onDismiss
-                nonisolated(unsafe) let unsafeOnError = onError
                 let channelController = chatClient.channelController(for: channel.cid)
                 if channel.isArchived {
                     channelController.unarchive { error in
                         if let error {
-                            unsafeOnError(error)
+                            onError(error)
                         } else {
-                            unsafeOnDismiss()
+                            onDismiss()
                         }
                     }
                 } else {
                     channelController.archive { error in
                         if let error {
-                            unsafeOnError(error)
+                            onError(error)
                         } else {
-                            unsafeOnDismiss()
+                            onDismiss()
                         }
                     }
                 }
@@ -119,31 +117,29 @@ class DemoAppFactory: ViewFactory {
     
     private func pinChannelAction(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
         let pinChannel = ChannelAction(
             title: channel.isPinned ? "Unpin Channel" : "Pin Channel",
             iconName: "pin.fill",
             action: { [weak self] in
                 guard let self else { return }
-                nonisolated(unsafe) let unsafeOnDismiss = onDismiss
-                nonisolated(unsafe) let unsafeOnError = onError
                 let channelController = chatClient.channelController(for: channel.cid)
                 if channel.isPinned {
                     channelController.unpin { error in
                         if let error {
-                            unsafeOnError(error)
+                            onError(error)
                         } else {
-                            unsafeOnDismiss()
+                            onDismiss()
                         }
                     }
                 } else {
                     channelController.pin { error in
                         if let error {
-                            unsafeOnError(error)
+                            onError(error)
                         } else {
-                            unsafeOnDismiss()
+                            onDismiss()
                         }
                     }
                 }
