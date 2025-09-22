@@ -41,9 +41,9 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     private var factory: Factory
     private var channelListItem: ChannelListItem
     private var channel: ChatChannel
-    private var trailingRightButtonTapped: (ChatChannel) -> Void
-    private var trailingLeftButtonTapped: (ChatChannel) -> Void
-    private var leadingButtonTapped: (ChatChannel) -> Void
+    private var trailingRightButtonTapped: @MainActor (ChatChannel) -> Void
+    private var trailingLeftButtonTapped: @MainActor (ChatChannel) -> Void
+    private var leadingButtonTapped: @MainActor (ChatChannel) -> Void
     
     @State private var verticalScrolling = false
 
@@ -54,9 +54,9 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         channel: ChatChannel,
         numberOfTrailingItems: Int = 2,
         widthOfTrailingItem: CGFloat = 60,
-        trailingRightButtonTapped: @escaping (ChatChannel) -> Void,
-        trailingLeftButtonTapped: @escaping (ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
+        trailingRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        trailingLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.factory = factory
         self.channelListItem = channelListItem
@@ -71,14 +71,14 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 
     public var body: some View {
         ZStack {
-            if self.offsetX < 0, showTrailingSwipeActions {
+            if offsetX < 0, showTrailingSwipeActions {
                 trailingSwipeActions
-            } else if self.offsetX > 0, showLeadingSwipeActions {
+            } else if offsetX > 0, showLeadingSwipeActions {
                 leadingSwipeActions
             }
 
             channelListItem
-                .offset(x: self.offsetX)
+                .offset(x: offsetX)
                 .simultaneousGesture(
                     DragGesture(
                         minimumDistance: 20,
@@ -187,7 +187,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             return
         }
 
-        if let openSideLock = self.openSideLock {
+        if let openSideLock {
             offsetX = width(for: openSideLock) * openSideLock.sideFactor + horizontalTranslation
             return
         }
@@ -204,7 +204,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 
     private func setOffsetX(value: CGFloat) {
         withAnimation {
-            self.offsetX = value
+            offsetX = value
         }
         if offsetX == 0 {
             if openSideLock != nil {
@@ -261,9 +261,9 @@ public enum SwipeDirection {
     var sideFactor: CGFloat {
         switch self {
         case .leading:
-            return 1
+            1
         case .trailing:
-            return -1
+            -1
         }
     }
 }
@@ -287,9 +287,9 @@ public struct TrailingSwipeActionsView: View {
                             leftButtonTapped(channel)
                         }
                     })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.text))
-                        .background(Color(colors.background1))
+                    .frame(width: buttonWidth)
+                    .foregroundColor(Color(colors.text))
+                    .background(Color(colors.background1))
 
                     if channel.ownCapabilities.contains(.deleteChannel) {
                         ActionItemButton(imageName: "trash", action: {
@@ -297,13 +297,13 @@ public struct TrailingSwipeActionsView: View {
                                 rightButtonTapped(channel)
                             }
                         })
-                            .frame(width: buttonWidth)
-                            .foregroundColor(Color(colors.textInverted))
-                            .background(Color(colors.alert))
+                        .frame(width: buttonWidth)
+                        .foregroundColor(Color(colors.textInverted))
+                        .background(Color(colors.alert))
                     }
                 }
             }
-            .opacity(self.offsetX < -5 ? 1 : 0)
+            .opacity(offsetX < -5 ? 1 : 0)
         }
         .accessibilityIdentifier("TrailingSwipeActionsView")
     }

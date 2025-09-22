@@ -73,8 +73,8 @@ class TestViewFactory: ViewFactory {
     
     func makeMessageReactionView(
         message: ChatMessage,
-        onTapGesture: @escaping () -> Void,
-        onLongPressGesture: @escaping () -> Void
+        onTapGesture: @escaping @MainActor () -> Void,
+        onLongPressGesture: @escaping @MainActor () -> Void
     ) -> some View {
         CustomReactionsContainer(message: message, onTapGesture: onTapGesture, onLongPressGesture: onLongPressGesture)
     }
@@ -219,9 +219,9 @@ struct CustomMessageReactionView: View {
 
     private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
         if useLargeIcons {
-            return images.availableReactions[reaction]?.largeIcon
+            images.availableReactions[reaction]?.largeIcon
         } else {
-            return images.availableReactions[reaction]?.smallIcon
+            images.availableReactions[reaction]?.smallIcon
         }
     }
 
@@ -230,7 +230,7 @@ struct CustomMessageReactionView: View {
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
 
-        if let color = color {
+        if let color {
             return Color(color)
         } else {
             return nil

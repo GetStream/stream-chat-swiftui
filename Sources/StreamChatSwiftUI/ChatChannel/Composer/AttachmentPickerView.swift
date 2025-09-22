@@ -18,13 +18,13 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     @Binding var filePickerShown: Bool
     @Binding var cameraPickerShown: Bool
     @Binding var addedFileURLs: [URL]
-    var onPickerStateChange: (AttachmentPickerState) -> Void
+    var onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     var photoLibraryAssets: PHFetchResult<PHAsset>?
-    var onAssetTap: (AddedAsset) -> Void
-    var onCustomAttachmentTap: (CustomAttachment) -> Void
-    var isAssetSelected: (String) -> Bool
+    var onAssetTap: @MainActor (AddedAsset) -> Void
+    var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
+    var isAssetSelected: @MainActor (String) -> Bool
     var addedCustomAttachments: [CustomAttachment]
-    var cameraImageAdded: (AddedAsset) -> Void
+    var cameraImageAdded: @MainActor (AddedAsset) -> Void
     var askForAssetsAccessPermissions: () -> Void
 
     var isDisplayed: Bool
@@ -36,13 +36,13 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
         addedFileURLs: Binding<[URL]>,
-        onPickerStateChange: @escaping (AttachmentPickerState) -> Void,
+        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>? = nil,
-        onAssetTap: @escaping (AddedAsset) -> Void,
-        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
-        isAssetSelected: @escaping (String) -> Bool,
+        onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
+        isAssetSelected: @escaping @MainActor (String) -> Bool,
         addedCustomAttachments: [CustomAttachment],
-        cameraImageAdded: @escaping (AddedAsset) -> Void,
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
         askForAssetsAccessPermissions: @escaping () -> Void,
         isDisplayed: Bool,
         height: CGFloat

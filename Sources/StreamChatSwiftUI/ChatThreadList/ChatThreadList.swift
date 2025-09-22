@@ -64,7 +64,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
 
     private var factory: Factory
     var threads: LazyCachedMapCollection<ChatThread>
-    private var threadDestination: (ChatThread) -> Factory.ThreadDestination
+    private var threadDestination: @MainActor (ChatThread) -> Factory.ThreadDestination
     @Binding private var selectedThread: ThreadSelectionInfo?
     private var onItemTap: (ChatThread) -> Void
     private var onItemAppear: (Int) -> Void
@@ -72,7 +72,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         threads: LazyCachedMapCollection<ChatThread>,
-        threadDestination: @escaping (ChatThread) -> Factory.ThreadDestination,
+        threadDestination: @escaping @MainActor (ChatThread) -> Factory.ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>,
         onItemTap: @escaping (ChatThread) -> Void,
         onItemAppear: @escaping (Int) -> Void
