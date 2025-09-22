@@ -35,10 +35,8 @@ struct InstantCommandsView: View {
                                     }
                                 )
                                 .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                    StreamConcurrency.onMain {
-                                        if let value = value, value != itemHeight {
-                                            itemHeight = value
-                                        }
+                                    if let value = value, value != itemHeight {
+                                        itemHeight = value
                                     }
                                 }
                                 .highPriorityGesture(

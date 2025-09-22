@@ -26,7 +26,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var shouldShowTypingIndicator: Bool
     
     var onMessageAppear: (Int, ScrollDirection) -> Void
-    var onScrollToBottom: @MainActor () -> Void
+    var onScrollToBottom: @MainActor() -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
     var onJumpToMessage: ((String) -> Bool)?
     
@@ -77,9 +77,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         scrollPosition: Binding<String?> = .constant(nil),
         loadingNextMessages: Bool = false,
         firstUnreadMessageId: Binding<MessageId?> = .constant(nil),
-        onMessageAppear: @escaping @MainActor (Int, ScrollDirection) -> Void,
-        onScrollToBottom: @escaping @MainActor () -> Void,
-        onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void,
+        onMessageAppear: @escaping @MainActor(Int, ScrollDirection) -> Void,
+        onScrollToBottom: @escaping @MainActor() -> Void,
+        onLongPress: @escaping @MainActor(MessageDisplayInfo) -> Void,
         onJumpToMessage: ((String) -> Bool)? = nil
     ) {
         self.factory = factory
@@ -216,10 +216,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .coordinateSpace(name: scrollAreaId)
                 .onPreferenceChange(WidthPreferenceKey.self) { value in
-                    StreamConcurrency.onMain {
-                        if let value, value != width {
-                            width = value
-                        }
+                    if let value, value != width {
+                        width = value
                     }
                 }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in

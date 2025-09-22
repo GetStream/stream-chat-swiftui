@@ -565,7 +565,7 @@ import SwiftUI
             withTimeInterval: 0.5,
             repeats: false,
             block: { [weak self] _ in
-                Task { @MainActor in
+                StreamConcurrency.onMain {
                     self?.currentDate = nil
                 }
             }
@@ -788,6 +788,7 @@ import SwiftUI
     }
     
     deinit {
+        // Actor isolated deinit is in 6.2
         StreamConcurrency.onMain {
             messageCachingUtils.clearCache()
             if messageController == nil {

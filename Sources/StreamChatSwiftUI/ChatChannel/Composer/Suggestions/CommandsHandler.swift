@@ -63,7 +63,7 @@ import SwiftUI
     ///  - completion: called when the command is executed.
     func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping @Sendable(Error?) -> Void
+        completion: @escaping @MainActor(Error?) -> Void
     )
 }
 
@@ -75,7 +75,7 @@ extension CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping @Sendable(Error?) -> Void
+        completion: @escaping @MainActor(Error?) -> Void
     ) {
         // optional method.
     }
@@ -208,7 +208,7 @@ public class CommandsHandler: CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping @Sendable(Error?) -> Void
+        completion: @escaping @MainActor(Error?) -> Void
     ) {
         if let handler = commandHandler(for: composerCommand) {
             handler.executeOnMessageSent(

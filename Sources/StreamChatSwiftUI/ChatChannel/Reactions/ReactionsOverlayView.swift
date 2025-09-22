@@ -202,19 +202,15 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            StreamConcurrency.onMain {
-                if let value = value, value != screenHeight {
-                    self.screenHeight = value
-                }
+            if let value = value, value != screenHeight {
+                self.screenHeight = value
             }
         }
         .onPreferenceChange(WidthPreferenceKey.self) { value in
-            StreamConcurrency.onMain {
-                if initialWidth == nil {
-                    initialWidth = value
-                }
-                self.screenWidth = value
+            if initialWidth == nil {
+                initialWidth = value
             }
+            self.screenWidth = value
         }
         .edgesIgnoringSafeArea(.all)
         .background(orientationChanged ? nil : Color(colors.background))

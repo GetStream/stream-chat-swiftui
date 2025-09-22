@@ -131,7 +131,7 @@ open class TwoStepMentionCommand: CommandHandler {
 
     open func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping @Sendable(Error?) -> Void
+        completion: @escaping @MainActor(Error?) -> Void
     ) {
         // Implement in subclasses.
     }

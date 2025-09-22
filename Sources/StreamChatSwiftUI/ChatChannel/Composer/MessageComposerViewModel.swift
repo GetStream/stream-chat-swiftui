@@ -286,9 +286,7 @@ import SwiftUI
         showReplyInChannel = message.showReplyInChannel
         selectedRangeLocation = message.text.count
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            StreamConcurrency.onMain {
-                self?.updateComposerAssets(assets)
-            }
+            self?.updateComposerAssets(assets)
         }
     }
 
@@ -305,9 +303,7 @@ import SwiftUI
         showReplyInChannel = message.showReplyInChannel
         selectedRangeLocation = message.text.count
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            StreamConcurrency.onMain {
-                self?.updateComposerAssets(assets)
-            }
+            self?.updateComposerAssets(assets)
         }
     }
 
@@ -380,10 +376,8 @@ import SwiftUI
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
-                Task { @MainActor in
-                    self?.clearInputData()
-                    completion()
-                }
+                self?.clearInputData()
+                completion()
             }
             
             if composerCommand.replacesMessageSent {
@@ -983,7 +977,7 @@ class MessageAttachmentsConverter {
     /// Converts the attachments to assets asynchronously.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping @Sendable(ComposerAssets) -> Void
+        completion: @escaping @MainActor(ComposerAssets) -> Void
     ) {
         let group = DispatchGroup()
         attachmentsToAssets(attachments, with: group, completion: completion)
@@ -997,7 +991,7 @@ class MessageAttachmentsConverter {
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         with group: DispatchGroup?,
-        completion: @escaping (ComposerAssets) -> Void
+        completion: @escaping @MainActor(ComposerAssets) -> Void
     ) {
         nonisolated(unsafe) var addedAssets = ComposerAssets()
 
@@ -1037,10 +1031,14 @@ class MessageAttachmentsConverter {
 
         if let group {
             group.notify(queue: .main) {
-                completion(addedAssets)
+                StreamConcurrency.onMain {
+                    completion(addedAssets)
+                }
             }
         } else {
-            completion(addedAssets)
+            StreamConcurrency.onMain {
+                completion(addedAssets)
+            }
         }
     }
 
