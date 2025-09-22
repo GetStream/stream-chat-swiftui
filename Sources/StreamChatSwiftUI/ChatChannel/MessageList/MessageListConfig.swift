@@ -35,7 +35,8 @@ public struct MessageListConfig {
         userBlockingEnabled: Bool = false,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
-        draftMessagesEnabled: Bool = false
+        draftMessagesEnabled: Bool = false,
+        downloadFileAttachmentsEnabled: Bool = false
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -64,6 +65,7 @@ public struct MessageListConfig {
         self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
         self.draftMessagesEnabled = draftMessagesEnabled
+        self.downloadFileAttachmentsEnabled = downloadFileAttachmentsEnabled
     }
 
     public let messageListType: MessageListType
@@ -102,6 +104,9 @@ public struct MessageListConfig {
     ///
     /// If enabled, the SDK will save the message content as a draft when the user navigates away from the composer.
     public let draftMessagesEnabled: Bool
+
+    /// A boolean value that determines if download action is shown for file attachments.
+    public let downloadFileAttachmentsEnabled: Bool
 }
 
 /// Contains information about the message paddings.

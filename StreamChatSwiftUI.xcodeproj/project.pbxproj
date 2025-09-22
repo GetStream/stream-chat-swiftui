@@ -77,7 +77,9 @@
 		4F0AC8362DCA2CCE00ACB1AC /* ImageProcessors+GaussianBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0AC7DA2DCA2CCE00ACB1AC /* ImageProcessors+GaussianBlur.swift */; };
 		4F0AC8372DCA2CCE00ACB1AC /* ImageLoadingOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0AC7EB2DCA2CCE00ACB1AC /* ImageLoadingOptions.swift */; };
 		4F0AC8382DCA2CCE00ACB1AC /* DataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0AC7AA2DCA2CCE00ACB1AC /* DataCache.swift */; };
+		4F0B67C92E7025B6003DA844 /* GalleryHeaderView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */; };
 		4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */; };
+		4F3536942E6EFB510046678E /* NavigationBarThemeViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3536932E6EFB4B0046678E /* NavigationBarThemeViewModifier.swift */; };
 		4F65F1862D06EEA7009F69A8 /* ChooseChannelQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */; };
 		4F65F18A2D071798009F69A8 /* ChannelListQueryIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */; };
 		4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */; };
@@ -511,9 +513,14 @@
 		AD3AB65C2CB730090014D4D7 /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65B2CB730090014D4D7 /* Shimmer.swift */; };
 		AD3AB65E2CB731360014D4D7 /* ChatThreadListLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */; };
 		AD3AB6602CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */; };
+		AD3DB82F2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB82E2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift */; };
+		AD3DB8342E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */; };
 		AD51D9182DB9543A0068D0B0 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */; };
 		AD5C0A5F2D6FDD9700E1E500 /* BouncedMessageActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */; };
 		AD6B7E052D356E8800ADEF39 /* ReactionsUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */; };
+		AD9138AC2E707F9100581EB0 /* AttachmentDownloadingStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */; };
+		AD9138AE2E71C81D00581EB0 /* PercentageProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AD2E71C81D00581EB0 /* PercentageProgressView.swift */; };
+		AD9138B02E7241D900581EB0 /* FileAttachmentView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AF2E7241D900581EB0 /* FileAttachmentView_Tests.swift */; };
 		ADA77F052E1EC2B700A3641F /* MessageAvatarView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA77F042E1EC2B700A3641F /* MessageAvatarView_Tests.swift */; };
 		ADE0F55E2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */; };
 		ADE0F5602CB846EC0053B8B9 /* FloatingBannerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */; };
@@ -666,7 +673,9 @@
 		4F0AC7F42DCA2CCE00ACB1AC /* AVDataAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVDataAsset.swift; sourceTree = "<group>"; };
 		4F0AC7F52DCA2CCE00ACB1AC /* ImageDecoders+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDecoders+Video.swift"; sourceTree = "<group>"; };
 		4F0AC7F62DCA2CCE00ACB1AC /* NukeVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NukeVideoPlayerView.swift; sourceTree = "<group>"; };
+		4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryHeaderView_Tests.swift; sourceTree = "<group>"; };
 		4F198FDC2C0480EC00148F49 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
+		4F3536932E6EFB4B0046678E /* NavigationBarThemeViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarThemeViewModifier.swift; sourceTree = "<group>"; };
 		4F65F1852D06EEA5009F69A8 /* ChooseChannelQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseChannelQueryView.swift; sourceTree = "<group>"; };
 		4F65F1892D071798009F69A8 /* ChannelListQueryIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListQueryIdentifier.swift; sourceTree = "<group>"; };
 		4F6D83342C0F05040098C298 /* PollCommentsViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollCommentsViewModel_Tests.swift; sourceTree = "<group>"; };
@@ -1105,9 +1114,14 @@
 		AD3AB65B2CB730090014D4D7 /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
 		AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListLoadingView.swift; sourceTree = "<group>"; };
 		AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListHeaderViewModifier.swift; sourceTree = "<group>"; };
+		AD3DB82E2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryHeaderViewDateFormatter.swift; sourceTree = "<group>"; };
+		AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentsConverter_Tests.swift; sourceTree = "<group>"; };
 		AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
 		AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BouncedMessageActionsModifier.swift; sourceTree = "<group>"; };
 		AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersViewModel.swift; sourceTree = "<group>"; };
+		AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentDownloadingStateView.swift; sourceTree = "<group>"; };
+		AD9138AD2E71C81D00581EB0 /* PercentageProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentageProgressView.swift; sourceTree = "<group>"; };
+		AD9138AF2E7241D900581EB0 /* FileAttachmentView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAttachmentView_Tests.swift; sourceTree = "<group>"; };
 		ADA77F042E1EC2B700A3641F /* MessageAvatarView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAvatarView_Tests.swift; sourceTree = "<group>"; };
 		ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListErrorBannerView.swift; sourceTree = "<group>"; };
 		ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBannerViewModifier.swift; sourceTree = "<group>"; };
@@ -1358,6 +1372,7 @@
 			isa = PBXGroup;
 			children = (
 				4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */,
+				4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -1687,19 +1702,20 @@
 		8465FCF92746A95600AF091E /* CommonViews */ = {
 			isa = PBXGroup;
 			children = (
+				ADE0F5652CB962470053B8B9 /* ActionBannerView.swift */,
 				8465FCFA2746A95600AF091E /* ActionItemView.swift */,
 				4F6D83502C1079A00098C298 /* AlertBannerViewModifier.swift */,
-				ADE0F5652CB962470053B8B9 /* ActionBannerView.swift */,
-				ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */,
 				4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */,
 				84AB7B1C2771F4AA00631A10 /* DiscardButtonView.swift */,
+				4F3536932E6EFB4B0046678E /* NavigationBarThemeViewModifier.swift */,
+				ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */,
 				84F2908D276B92A40045472D /* GalleryHeaderView.swift */,
 				8465FD4B2746A95600AF091E /* LoadingView.swift */,
 				844EF8EC2809AACD00CC82F9 /* NoContentView.swift */,
 				8421BCED27A43E14000F977D /* SearchBar.swift */,
+				AD3AB65B2CB730090014D4D7 /* Shimmer.swift */,
 				8434E582277088D9001E1B83 /* TitleWithCloseButton.swift */,
 				846608E2278C303800D3D7B3 /* TypingIndicatorView.swift */,
-				AD3AB65B2CB730090014D4D7 /* Shimmer.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -1741,6 +1757,9 @@
 				84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */,
 				8465FD002746A95600AF091E /* FileAttachmentPreview.swift */,
 				8465FD012746A95600AF091E /* FileAttachmentView.swift */,
+				8465FD192746A95600AF091E /* AttachmentUploadingStateView.swift */,
+				AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */,
+				AD9138AD2E71C81D00581EB0 /* PercentageProgressView.swift */,
 				8465FD0B2746A95600AF091E /* LinkTextView.swift */,
 				8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */,
 				8465FD022746A95600AF091E /* DeletedMessageView.swift */,
@@ -1771,7 +1790,6 @@
 				8465FD172746A95600AF091E /* AddedImageAttachmentsView.swift */,
 				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
 				8465FD1C2746A95600AF091E /* AttachmentPickerView.swift */,
-				8465FD192746A95600AF091E /* AttachmentUploadingStateView.swift */,
 				844CC60D2811378D0006548D /* ComposerConfig.swift */,
 				8465FD1A2746A95600AF091E /* ComposerHelperViews.swift */,
 				841B64C327744DB60016FF3B /* ComposerModels.swift */,
@@ -1870,6 +1888,7 @@
 		8465FD382746A95600AF091E /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				AD3DB82E2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift */,
 				4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */,
 				8465FD392746A95600AF091E /* AutoLayoutHelpers.swift */,
 				8465FD452746A95600AF091E /* Cache.swift */,
@@ -2084,6 +2103,8 @@
 			children = (
 				846B15F22817E7440017F7A1 /* ChannelInfo */,
 				8423C340277CB5C70092DCF1 /* Suggestions */,
+				AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */,
+				AD9138AF2E7241D900581EB0 /* FileAttachmentView_Tests.swift */,
 				84779C742AEBBACD000A6A68 /* BottomReactionsView_Tests.swift */,
 				ADA77F042E1EC2B700A3641F /* MessageAvatarView_Tests.swift */,
 				844D1D672851DE58000CCCB9 /* ChannelControllerFactory_Tests.swift */,
@@ -2530,7 +2551,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Adds support for Apple Silicon brew directory\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which mint >/dev/null && mint which swiftgen; then\n  xcrun --sdk macosx mint run swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
+			shellScript = "# Adds support for Apple Silicon brew directory\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftgen; then\n  xcrun --sdk macosx swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2633,7 +2654,6 @@
 				8465FDAA2746A95700AF091E /* DateFormatter+Extensions.swift in Sources */,
 				842FA0E72C05DCDB00AD1F3C /* PollsConfig.swift in Sources */,
 				841B64D42775F5540016FF3B /* GiphyCommandHandler.swift in Sources */,
-				82D64BDD2AD7E5B700C5C79E /* AnimatedImageView.swift in Sources */,
 				8434E58127707F19001E1B83 /* GridMediaView.swift in Sources */,
 				ADE0F5662CB962470053B8B9 /* ActionBannerView.swift in Sources */,
 				84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */,
@@ -2644,6 +2664,7 @@
 				8465FDA22746A95700AF091E /* ChatChannelViewModel.swift in Sources */,
 				8465FD982746A95700AF091E /* ReactionsOverlayView.swift in Sources */,
 				8465FDCD2746A95700AF091E /* Fonts.swift in Sources */,
+				AD9138AE2E71C81D00581EB0 /* PercentageProgressView.swift in Sources */,
 				8465FD9A2746A95700AF091E /* ReactionsHelperViews.swift in Sources */,
 				8465FDC02746A95700AF091E /* ChatChannelList.swift in Sources */,
 				82D64B682AD7E5AC00C5C79E /* ObjcAssociatedWeakObject.swift in Sources */,
@@ -2663,6 +2684,7 @@
 				8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */,
 				8465FDB52746A95700AF091E /* Cache.swift in Sources */,
 				84A1CAD12816C6900046595A /* AddUsersViewModel.swift in Sources */,
+				AD3DB82F2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift in Sources */,
 				4F198FDD2C0480EC00148F49 /* Publisher+Extensions.swift in Sources */,
 				84289BEF2807246E00282ABE /* FileAttachmentsViewModel.swift in Sources */,
 				84AB7B2A2773D97E00631A10 /* MentionsCommandHandler.swift in Sources */,
@@ -2684,6 +2706,7 @@
 				8465FDD02746A95700AF091E /* DefaultViewFactory.swift in Sources */,
 				8465FD822746A95700AF091E /* LinkTextView.swift in Sources */,
 				84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */,
+				AD9138AC2E707F9100581EB0 /* AttachmentDownloadingStateView.swift in Sources */,
 				8421BCF027A44EAE000F977D /* SearchResultsView.swift in Sources */,
 				841B64CC2775C6300016FF3B /* CommandsConfig.swift in Sources */,
 				8465FD6D2746A95700AF091E /* ViewModelsFactory.swift in Sources */,
@@ -2861,6 +2884,7 @@
 				84289BE5280720E700282ABE /* PinnedMessagesView.swift in Sources */,
 				8465FD8B2746A95700AF091E /* FilePickerView.swift in Sources */,
 				84E6EC27279B0C930017207B /* ReactionsUsersView.swift in Sources */,
+				4F3536942E6EFB510046678E /* NavigationBarThemeViewModifier.swift in Sources */,
 				8465FDA92746A95700AF091E /* AutoLayoutHelpers.swift in Sources */,
 				8465FDC32746A95700AF091E /* ChatChannelListHeader.swift in Sources */,
 				84289BED2807244E00282ABE /* FileAttachmentsView.swift in Sources */,
@@ -2987,16 +3011,19 @@
 				8423C346277D9BFF0092DCF1 /* TestCommandsConfig.swift in Sources */,
 				84B2B5D82819778D00479CEE /* FileAttachmentsViewModel_Tests.swift in Sources */,
 				4F6D83352C0F05040098C298 /* PollCommentsViewModel_Tests.swift in Sources */,
+				4F0B67C92E7025B6003DA844 /* GalleryHeaderView_Tests.swift in Sources */,
 				841B2EF6278F108700ED619E /* MessageReadIndicatorView_Tests.swift in Sources */,
 				84CC3732290B0A4000689B73 /* StreamChatModel.xcdatamodeld in Sources */,
 				84E04790284A444E00BAFA17 /* CDNClient_Mock.swift in Sources */,
 				84E04796284A444E00BAFA17 /* EventBatcherMock.swift in Sources */,
 				ADE442F22CBDAAC40066CDF7 /* ChatThreadListItemView_Tests.swift in Sources */,
 				84E57C5B28103822002213C1 /* TestDataModel.xcdatamodeld in Sources */,
+				AD3DB8342E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift in Sources */,
 				84E04792284A444E00BAFA17 /* MockBackgroundTaskScheduler.swift in Sources */,
 				84C94D1327578BF2007FE2B9 /* XCTestCase+MockJSON.swift in Sources */,
 				84C94D5E275A3AA9007FE2B9 /* ImageCDN_Tests.swift in Sources */,
 				84C94C8027567D3F007FE2B9 /* ChatChannelListViewModel_Tests.swift in Sources */,
+				AD9138B02E7241D900581EB0 /* FileAttachmentView_Tests.swift in Sources */,
 				84B9B20E27998E9200BFAEAE /* ColorExtensions.swift in Sources */,
 				8423C344277CC5020092DCF1 /* CommandsHandler_Tests.swift in Sources */,
 				84B2B5D2281965D000479CEE /* MediaAttachmentsViewModel_Tests.swift in Sources */,
@@ -3828,7 +3855,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "swift-6-llc-uikit";
+				branch = v5;
 				kind = branch;
 			};
 		};

@@ -996,8 +996,12 @@ import XCTest
         viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
         
         // Then
-        // Sending a message will clear the input, deleting the draft message.
-        XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+        let expectation = XCTestExpectation(description: "Text cleared")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            XCTAssertEqual(channelController.deleteDraftMessage_callCount, 1)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 
     func test_messageComposerVM_whenMessagePublished_deleteDraftReply() {
@@ -1020,7 +1024,12 @@ import XCTest
         viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
         
         // Then
-        XCTAssertEqual(messageController.deleteDraftReply_callCount, 1)
+        let expectation = XCTestExpectation(description: "Text cleared")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            XCTAssertEqual(messageController.deleteDraftReply_callCount, 1)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 
     func test_messageComposerVM_draftMessageUpdatedEvent() throws {

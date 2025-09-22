@@ -454,7 +454,7 @@ import XCTest
             isSentByCurrentUser: true
         )
 
-        let viewModel = MessageViewModel(message: message, channel: .mockDMChannel(config: .mock(repliesEnabled: false)))
+        let viewModel = MessageViewModel(message: message, channel: .mockDMChannel(config: .mock(quotesEnabled: false)))
 
         XCTAssertFalse(viewModel.isSwipeToQuoteReplyPossible)
     }

@@ -34,4 +34,13 @@ open class StreamChatTestCase: XCTestCase {
         block(&appearance)
         streamChat.appearance = appearance
     }
+    
+    func setThemedNavigationBarAppearance() {
+        adjustAppearance { appearance in
+            appearance.colors.navigationBarTintColor = .purple
+            appearance.colors.navigationBarTitle = .blue
+            appearance.colors.navigationBarSubtitle = .cyan
+            appearance.colors.navigationBarBackground = .yellow
+        }
+    }
 }

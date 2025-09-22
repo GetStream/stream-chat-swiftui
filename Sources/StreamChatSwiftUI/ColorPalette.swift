@@ -8,9 +8,14 @@ import UIKit
 /// Provides the colors used throughout the SDK.
 public struct ColorPalette {
     public init() {
-        // Public init.
+        navigationBarTitle = text
+        navigationBarSubtitle = textLowEmphasis
+        navigationBarTintColor = tintColor
     }
 
+    /// Tint color used in UI components.
+    ///
+    /// - SeeAlso: ``navigationBarTintColor``
     public var tintColor: Color = .accentColor
 
     // MARK: - Text
@@ -87,6 +92,43 @@ public struct ColorPalette {
     public lazy var composerInputBackground: UIColor = background
     public lazy var composerInputHighlightedBorder: UIColor = innerBorder
 
+    // MARK: - Navigation Bar
+    
+    public var navigationBarTitle: UIColor {
+        didSet {
+            StreamConcurrency.onMain { [navigationBarTitle] in
+                let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: navigationBarTitle]
+                UINavigationBar.appearance().titleTextAttributes = attributes
+                UINavigationBar.appearance().largeTitleTextAttributes = attributes
+            }
+        }
+    }
+
+    public var navigationBarSubtitle: UIColor
+    
+    /// Sets a different tint color for the navigation bar.
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// var colors = ColorPalette()
+    /// colors.navigationBarTintColor = .purple
+    /// colors.navigationBarTitle = .brown
+    /// colors.navigationBarSubtitle = .cyan
+    /// colors.navigationBarBackground = .yellow
+    /// colors.tintColor = .red
+    /// let appearance = Appearance(colors: colors)
+    /// streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
+    /// ```
+    ///
+    /// - Important: `tintColor` must also be customised when setting this color.
+    public var navigationBarTintColor: Color
+    
+    /// Sets a custom background color for navigation bars.
+    ///
+    /// - Important: Customized views must use ``toolbarThemed(content:)``.
+    public var navigationBarBackground: UIColor?
+    
     // MARK: - Threads
 
     public var bannerBackgroundColor: UIColor = .streamDarkGray

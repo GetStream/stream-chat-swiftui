@@ -156,7 +156,7 @@ public extension MessageAction {
             }
         }
         
-        if message.isSentByCurrentUser {
+        if channel.canDeleteAnyMessage || channel.canDeleteOwnMessage && message.isSentByCurrentUser {
             let deleteAction = deleteMessageAction(
                 for: message,
                 channel: channel,
@@ -166,7 +166,9 @@ public extension MessageAction {
             )
 
             messageActions.append(deleteAction)
-        } else {
+        }
+
+        if !message.isSentByCurrentUser {
             if channel.canFlagMessage {
                 let flagAction = flagMessageAction(
                     for: message,

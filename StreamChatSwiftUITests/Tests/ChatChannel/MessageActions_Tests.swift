@@ -374,12 +374,45 @@ import XCTest
         // Then
         XCTAssertTrue(messageActions.contains(where: { $0.title == "Edit Message" }))
     }
+    
+    func test_messageActions_otherUser_deletingEnabledWhenDeleteAnyMessageCapability() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(ownCapabilities: [.deleteAnyMessage])
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+        
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+        
+        // Then
+        XCTAssertTrue(messageActions.contains(where: { $0.title == "Delete Message" }))
+    }
 
     // MARK: - Private
     
     private var mockDMChannel: ChatChannel {
         ChatChannel.mockDMChannel(
-            ownCapabilities: [.updateOwnMessage, .sendMessage, .uploadFile, .pinMessage, .readEvents]
+            ownCapabilities: [
+                .deleteOwnMessage,
+                .updateOwnMessage,
+                .sendMessage,
+                .uploadFile,
+                .pinMessage,
+                .readEvents
+            ]
         )
     }
 }

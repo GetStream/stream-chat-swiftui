@@ -62,33 +62,7 @@ extension AddedAsset {
 }
 
 extension AnyChatMessageAttachment {
-    func toAddedAsset() -> AddedAsset? {
-        if let imageAttachment = attachment(payloadType: ImageAttachmentPayload.self),
-           let imageData = try? Data(contentsOf: imageAttachment.imageURL),
-           let image = UIImage(data: imageData) {
-            return AddedAsset(
-                image: image,
-                id: imageAttachment.id.rawValue,
-                url: imageAttachment.imageURL,
-                type: .image,
-                extraData: imageAttachment.extraData ?? [:],
-                payload: imageAttachment.payload
-            )
-        } else if let videoAttachment = attachment(payloadType: VideoAttachmentPayload.self),
-                  let thumbnail = imageThumbnail(for: videoAttachment.payload) {
-            return AddedAsset(
-                image: thumbnail,
-                id: videoAttachment.id.rawValue,
-                url: videoAttachment.videoURL,
-                type: .video,
-                extraData: videoAttachment.extraData ?? [:],
-                payload: videoAttachment.payload
-            )
-        }
-        return nil
-    }
-
-    private func imageThumbnail(for videoAttachmentPayload: VideoAttachmentPayload) -> UIImage? {
+    func imageThumbnail(for videoAttachmentPayload: VideoAttachmentPayload) -> UIImage? {
         if let thumbnailURL = videoAttachmentPayload.thumbnailURL, let data = try? Data(contentsOf: thumbnailURL) {
             return UIImage(data: data)
         }

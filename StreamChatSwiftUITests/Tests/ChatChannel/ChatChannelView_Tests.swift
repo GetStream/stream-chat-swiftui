@@ -133,4 +133,38 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_chatChannelView_themedNavigationBar_snapshot() {
+        // Given
+        setThemedNavigationBarAppearance()
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        var messages = [ChatMessage]()
+        for i in 0..<15 {
+            messages.append(
+                ChatMessage.mock(
+                    id: .unique,
+                    cid: mockChannel.cid,
+                    text: "Test \(i)",
+                    author: .mock(id: .unique, name: "Martin")
+                )
+            )
+        }
+        controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
+
+        // When
+        let view = NavigationContainerView {
+            ChatChannelView(
+                viewFactory: DefaultViewFactory.shared,
+                channelController: controller
+            )
+        }.applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }

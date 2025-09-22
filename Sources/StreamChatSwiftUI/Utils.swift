@@ -16,6 +16,7 @@ public class Utils {
     ///
     /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
     public var messageRelativeDateFormatter: DateFormatter
+    public var galleryHeaderViewDateFormatter: DateFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
     public var imageCDN: ImageCDN
@@ -78,6 +79,7 @@ public class Utils {
     public init(
         dateFormatter: DateFormatter = .makeDefault(),
         messageRelativeDateFormatter: DateFormatter = MessageRelativeDateFormatter(),
+        galleryHeaderViewDateFormatter: DateFormatter = GalleryHeaderViewDateFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
         imageCDN: ImageCDN = StreamImageCDN(),
@@ -105,6 +107,7 @@ public class Utils {
     ) {
         self.dateFormatter = dateFormatter
         self.messageRelativeDateFormatter = messageRelativeDateFormatter
+        self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
         self.imageCDN = imageCDN

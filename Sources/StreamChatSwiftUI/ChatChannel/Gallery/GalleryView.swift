@@ -13,10 +13,12 @@ public struct GalleryView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
 
     private let viewFactory: Factory
     var mediaAttachments: [MediaAttachment]
     var author: ChatUser
+    var message: ChatMessage?
     @Binding var isShown: Bool
     @State private var selected: Int
     @State private var loadedImages = [Int: UIImage]()
@@ -27,7 +29,8 @@ public struct GalleryView<Factory: ViewFactory>: View {
         imageAttachments: [ChatMessageImageAttachment],
         author: ChatUser,
         isShown: Binding<Bool>,
-        selected: Int
+        selected: Int,
+        message: ChatMessage? = nil
     ) {
         let mediaAttachments = imageAttachments.map { MediaAttachment(from: $0) }
         self.init(
@@ -35,7 +38,8 @@ public struct GalleryView<Factory: ViewFactory>: View {
             mediaAttachments: mediaAttachments,
             author: author,
             isShown: isShown,
-            selected: selected
+            selected: selected,
+            message: message
         )
     }
     
@@ -44,13 +48,15 @@ public struct GalleryView<Factory: ViewFactory>: View {
         mediaAttachments: [MediaAttachment],
         author: ChatUser,
         isShown: Binding<Bool>,
-        selected: Int
+        selected: Int,
+        message: ChatMessage? = nil
     ) {
         self.viewFactory = viewFactory
         self.mediaAttachments = mediaAttachments
         self.author = author
         _isShown = isShown
         _selected = State(initialValue: selected)
+        self.message = message
     }
 
     public var body: some View {
@@ -58,7 +64,9 @@ public struct GalleryView<Factory: ViewFactory>: View {
             VStack {
                 viewFactory.makeGalleryHeaderView(
                     title: author.name ?? "",
-                    subtitle: author.onlineText,
+                    subtitle: message.map {
+                        utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
+                    } ?? author.onlineText,
                     shown: $isShown
                 )
 
@@ -168,6 +176,10 @@ struct StreamVideoPlayer: View {
             }
         }
         .onAppear {
+            guard avPlayer == nil else {
+                avPlayer?.play()
+                return
+            }
             fileCDN.adjustedURL(for: url) { result in
                 switch result {
                 case let .success(url):
@@ -178,6 +190,9 @@ struct StreamVideoPlayer: View {
                     self.error = error
                 }
             }
+        }
+        .onDisappear {
+            avPlayer?.pause()
         }
     }
 }

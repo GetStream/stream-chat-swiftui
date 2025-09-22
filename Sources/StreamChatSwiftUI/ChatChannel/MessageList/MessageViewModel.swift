@@ -86,7 +86,7 @@ import StreamChat
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {
-        message.isInteractionEnabled && channel?.config.repliesEnabled == true
+        message.isInteractionEnabled && channel?.config.quotesEnabled == true
     }
 
     open var textContent: String {

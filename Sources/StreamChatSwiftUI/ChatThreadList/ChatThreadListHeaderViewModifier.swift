@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct ChatThreadListHeaderViewModifier: ViewModifier {
+    @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
     let title: String
@@ -12,10 +13,11 @@ struct ChatThreadListHeaderViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+            .toolbarThemed {
                 ToolbarItem(placement: .principal) {
                     Text(title)
                         .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationBarTitle))
                 }
             }
     }

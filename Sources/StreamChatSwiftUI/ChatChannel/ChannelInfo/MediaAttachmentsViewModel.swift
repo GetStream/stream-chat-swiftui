@@ -106,15 +106,29 @@ import SwiftUI
     }
 }
 
-struct MediaItem: Identifiable {
-    let id: String
-    let isVideo: Bool
-    let message: ChatMessage
+public struct MediaItem: Identifiable {
+    public let id: String
+    public let isVideo: Bool
+    public let message: ChatMessage
 
-    var videoAttachment: ChatMessageVideoAttachment?
-    var imageAttachment: ChatMessageImageAttachment?
+    public var videoAttachment: ChatMessageVideoAttachment?
+    public var imageAttachment: ChatMessageImageAttachment?
     
-    var mediaAttachment: MediaAttachment? {
+    public init(
+        id: String,
+        isVideo: Bool,
+        message: ChatMessage,
+        videoAttachment: ChatMessageVideoAttachment?,
+        imageAttachment: ChatMessageImageAttachment?
+    ) {
+        self.id = id
+        self.isVideo = isVideo
+        self.message = message
+        self.videoAttachment = videoAttachment
+        self.imageAttachment = imageAttachment
+    }
+    
+    public var mediaAttachment: MediaAttachment? {
         if let videoAttachment {
             return MediaAttachment(url: videoAttachment.videoURL, type: .video)
         } else if let imageAttachment {

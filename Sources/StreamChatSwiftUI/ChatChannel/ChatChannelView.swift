@@ -138,7 +138,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                     .opacity(0) // Fixes showing accessibility button shape
                 }
-                .accentColor(colors.tintColor)
                 .overlay(
                     viewModel.reactionsShown ?
                         factory.makeReactionsOverlayView(
@@ -206,10 +205,15 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
         .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
+        .accentColor(colors.tintColor)
     }
 
     private var generatingSnapshot: Bool {
-        tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
+        if #available(iOS 26, *) {
+            return false
+        } else {
+            return tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
+        }
     }
 
     private var bottomPadding: CGFloat {

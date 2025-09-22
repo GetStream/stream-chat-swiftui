@@ -6,7 +6,8 @@ import SwiftUI
 
 /// Reusable container view to handle the navigation container logic.
 struct NavigationContainerView<Content: View>: View {
-    var embedInNavigationView: Bool
+    @Injected(\.colors) var colors
+    var embedInNavigationView: Bool = true
     var content: () -> Content
 
     var body: some View {
@@ -15,10 +16,12 @@ struct NavigationContainerView<Content: View>: View {
                 NavigationStack {
                     content()
                 }
+                .accentColor(colors.navigationBarTintColor)
             } else {
                 NavigationView {
                     content()
                 }
+                .accentColor(colors.navigationBarTintColor)
             }
         } else {
             content()

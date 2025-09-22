@@ -36,7 +36,8 @@ import SwiftUI
     private var readsString = ""
     private var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
-    
+    private var currentUserSentNewMessage = false
+
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
     private lazy var messagesDateFormatter = utils.dateFormatter
@@ -266,10 +267,7 @@ import SwiftUI
 
     /// The user tapped on the message sent button.
     public func messageSentTapped() {
-        // only scroll if the message is not being edited
-        if editedMessage == nil {
-            scrollToLastMessage()
-        }
+        currentUserSentNewMessage = true
     }
 
     public func jumpToMessage(messageId: String) -> Bool {
@@ -448,6 +446,9 @@ import SwiftUI
         
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
+        } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
+            updateScrolledIdToNewestMessage()
+            currentUserSentNewMessage = false
         }
     }
     
@@ -825,25 +826,6 @@ extension ChatMessage: Identifiable {
         }
 
         return repliesCountId
-    }
-    
-    var uploadingStatesId: String {
-        var states = imageAttachments.compactMap { $0.uploadingState?.state }
-        states += giphyAttachments.compactMap { $0.uploadingState?.state }
-        states += videoAttachments.compactMap { $0.uploadingState?.state }
-        states += fileAttachments.compactMap { $0.uploadingState?.state }
-        
-        if states.isEmpty {
-            if localState == .sendingFailed {
-                return "failed"
-            } else {
-                return localState?.rawValue ?? "empty"
-            }
-        }
-        
-        let strings = states.map { "\($0)" }
-        let combined = strings.joined(separator: "-")
-        return combined
     }
     
     var reactionScoresId: String {

@@ -49,7 +49,7 @@ struct CreateGroupView: View, KeyboardReadable {
             }
             .listStyle(.plain)
         }
-        .toolbar(content: {
+        .toolbarThemed(content: {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink {
                     GroupNameView(

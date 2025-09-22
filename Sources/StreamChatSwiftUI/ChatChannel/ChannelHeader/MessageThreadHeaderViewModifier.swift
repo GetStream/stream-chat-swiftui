@@ -18,9 +18,10 @@ public struct DefaultMessageThreadHeader: ToolbarContent {
             VStack {
                 Text(L10n.Message.Actions.threadReply)
                     .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
                 Text(L10n.Message.Threads.subtitle)
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.navigationBarSubtitle))
             }
         }
     }
@@ -29,8 +30,9 @@ public struct DefaultMessageThreadHeader: ToolbarContent {
 /// The default message thread header modifier.
 public struct DefaultMessageThreadHeaderModifier: MessageThreadHeaderViewModifier {
     public func body(content: Content) -> some View {
-        content.toolbar {
-            DefaultMessageThreadHeader()
-        }
+        content
+            .toolbarThemed {
+                DefaultMessageThreadHeader()
+            }
     }
 }

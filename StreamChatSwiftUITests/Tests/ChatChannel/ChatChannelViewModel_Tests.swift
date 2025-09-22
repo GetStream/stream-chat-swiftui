@@ -94,25 +94,6 @@ import XCTest
         XCTAssert(viewModel.scrolledId!.contains(messageId))
     }
 
-    func test_chatChannelVM_messageSentTapped() {
-        // Given
-        let messageId: String = .unique
-        let message = ChatMessage.mock(
-            id: messageId,
-            cid: .unique,
-            text: "Test message",
-            author: ChatUser.mock(id: chatClient.currentUserId!)
-        )
-        let channelController = makeChannelController(messages: [message])
-        let viewModel = ChatChannelViewModel(channelController: channelController)
-
-        // When
-        viewModel.messageSentTapped()
-
-        // Then
-        XCTAssert(viewModel.scrolledId!.contains(messageId))
-    }
-
     func test_chatChannelVM_messageSentTapped_whenEditingMessage_shouldNotScroll() {
         // Given
         let messageId: String = .unique
@@ -207,6 +188,37 @@ import XCTest
         // Then
         let newListId = viewModel.listId
         XCTAssert(initialListId == newListId)
+    }
+
+    func test_chatChannelVM_newMessageSentScrollsToNewestMessage() {
+        // Given
+        var messages = [ChatMessage]()
+        for i in 0..<5 {
+            let message = ChatMessage.mock(
+                id: .unique,
+                cid: .unique,
+                text: "Test Message \(i)",
+                author: ChatUser.mock(id: chatClient.currentUserId!)
+            )
+            messages.append(message)
+        }
+        let channelController = makeChannelController(messages: messages)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        viewModel.showScrollToLatestButton = true
+        viewModel.messageSentTapped()
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: LazyCachedMapCollection(elements: messages),
+            changes: [
+                .insert(messages[0], index: .init(item: 0, section: 0)),
+                .update(messages[1], index: .init(item: 1, section: 0))
+            ]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.scrolledId, messages[0].id)
     }
 
     func test_chatChannelVM_messageThread() {

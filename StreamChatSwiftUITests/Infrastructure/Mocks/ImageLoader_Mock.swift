@@ -41,3 +41,60 @@ class ImageLoader_Mock: ImageLoading {
         }
     }
 }
+
+/// Mock implementation of `ImageLoading` that returns different TestImages based on URL.
+class TestImagesLoader_Mock: ImageLoading {
+    var loadImageCalled = false
+    var loadImagesCalled = false
+
+    func loadImage(
+        url: URL?,
+        imageCDN: ImageCDN,
+        resize: Bool,
+        preferredSize: CGSize?,
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
+    ) {
+        loadImageCalled = true
+
+        let image = imageForURL(url)
+        StreamConcurrency.onMain {
+            completion(.success(image))
+        }
+    }
+
+    func loadImages(
+        from urls: [URL],
+        placeholders: [UIImage],
+        loadThumbnails: Bool,
+        thumbnailSize: CGSize,
+        imageCDN: ImageCDN,
+        completion: @escaping (([UIImage]) -> Void)
+    ) {
+        loadImagesCalled = true
+
+        let images = urls.map { imageForURL($0) }
+        completion(images)
+    }
+
+    private func imageForURL(_ url: URL?) -> UIImage {
+        guard let url = url else {
+            return XCTestCase.TestImages.yoda.image
+        }
+
+        let urlString = url.absoluteString
+
+        // Return different TestImages based on URL content
+        if urlString.contains("yoda") {
+            return XCTestCase.TestImages.yoda.image
+        } else if urlString.contains("chewbacca") {
+            return XCTestCase.TestImages.chewbacca.image
+        } else if urlString.contains("r2") || urlString.contains("r2-d2") {
+            return XCTestCase.TestImages.r2.image
+        } else if urlString.contains("vader") {
+            return XCTestCase.TestImages.vader.image
+        } else {
+            // Default fallback
+            return XCTestCase.TestImages.yoda.image
+        }
+    }
+}

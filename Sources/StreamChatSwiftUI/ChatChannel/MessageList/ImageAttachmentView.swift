@@ -71,15 +71,10 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         }
         .accessibilityIdentifier("ImageAttachmentContainer")
     }
-    
+
     private var sources: [MediaAttachment] {
         let videoSources = message.videoAttachments.map { attachment in
-            let url: URL
-            if let state = attachment.uploadingState {
-                url = state.localFileURL
-            } else {
-                url = attachment.videoURL
-            }
+            let url: URL = attachment.videoURL
             return MediaAttachment(
                 url: url,
                 type: .video,
@@ -87,12 +82,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         }
         let imageSources = message.imageAttachments.map { attachment in
-            let url: URL
-            if let state = attachment.uploadingState {
-                url = state.localFileURL
-            } else {
-                url = attachment.imageURL
-            }
+            let url: URL = attachment.imageURL
             return MediaAttachment(
                 url: url,
                 type: .image,
@@ -313,6 +303,7 @@ struct SingleImageView: View {
             index: index
         )
         .frame(width: width, height: height)
+        .id(source.id)
         .accessibilityIdentifier("SingleImageView")
     }
 }
@@ -333,6 +324,7 @@ struct MultiImageView: View {
             index: index
         )
         .frame(width: width, height: height)
+        .id(source.id)
         .accessibilityIdentifier("MultiImageView")
     }
 }
@@ -385,7 +377,7 @@ struct LazyLoadingImage: View {
                     ProgressView()
                 }
             }
-            
+
             if source.type == .video && width > 64 && source.uploadingState == nil {
                 VideoPlayIcon()
                     .accessibilityHidden(true)
@@ -430,17 +422,17 @@ extension ChatMessage {
     }
 }
 
-public struct MediaAttachment: Identifiable {
+public struct MediaAttachment: Identifiable, Equatable {
     @Injected(\.utils) var utils
-    
+
     let url: URL
     let type: MediaAttachmentType
     var uploadingState: AttachmentUploadingState?
-    
+
     public var id: String {
         url.absoluteString
     }
-    
+
     func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
@@ -460,6 +452,12 @@ public struct MediaAttachment: Identifiable {
                 completion: completion
             )
         }
+    }
+
+    public static func == (lhs: MediaAttachment, rhs: MediaAttachment) -> Bool {
+        lhs.url == rhs.url
+            && lhs.type == rhs.type
+            && lhs.uploadingState == rhs.uploadingState
     }
 }
 
