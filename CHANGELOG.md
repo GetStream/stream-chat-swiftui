@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.89.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.0)
+_September 22, 2025_
+
 ### ✅ Added
 - Add `toolbarThemed(content:)` for creating custom views with themed navigation bar [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
 - Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
