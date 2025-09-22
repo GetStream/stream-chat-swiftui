@@ -281,7 +281,13 @@ open class MessageComposerViewModel: ObservableObject {
             return
         }
 
-        fillComposer(with: message)
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
     }
 
     /// Populates the draft message in the composer with the current controller's draft information.
@@ -290,7 +296,15 @@ open class MessageComposerViewModel: ObservableObject {
             return
         }
 
-        fillComposer(with: ChatMessage(draft))
+        let message = ChatMessage(draft)
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        quotedMessage?.wrappedValue = message.quotedMessage
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
     }
 
     /// Updates the draft message locally and on the server.
@@ -642,18 +656,6 @@ open class MessageComposerViewModel: ObservableObject {
 
     // MARK: - private
 
-    private func fillComposer(with message: ChatMessage) {
-        text = message.text
-        mentionedUsers = message.mentionedUsers
-        quotedMessage?.wrappedValue = message.quotedMessage
-        showReplyInChannel = message.showReplyInChannel
-        selectedRangeLocation = message.text.count
-
-        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
-            self?.updateComposerAssets(assets)
-        }
-    }
-
     private func updateComposerAssets(_ assets: ComposerAssets) {
         addedAssets = assets.mediaAssets
         addedFileURLs = assets.fileAssets.map(\.url)
@@ -741,7 +743,6 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private func clearInputData() {
-        text = ""
         addedAssets = []
         addedFileURLs = []
         addedVoiceRecordings = []
@@ -934,7 +935,7 @@ struct FileAddedAsset {
 
 // The converter responsible to map attachments to assets and vice versa.
 class MessageAttachmentsConverter {
-    let queue = DispatchQueue(label: "MessageAttachmentsConverter")
+    @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
     func assetsToPayloads(_ assets: ComposerAssets) throws -> [AnyAttachmentPayload] {
@@ -969,59 +970,168 @@ class MessageAttachmentsConverter {
         return attachments
     }
 
-    /// Converts the attachments to assets.
-    ///
-    /// This operation is asynchronous to make sure loading expensive assets are not done in the main thread.
+    /// Converts the attachments to assets asynchronously.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         completion: @escaping (ComposerAssets) -> Void
     ) {
-        queue.async {
-            let addedAssets = self.attachmentsToAssets(attachments)
-            DispatchQueue.main.async {
-                completion(addedAssets)
-            }
-        }
+        let group = DispatchGroup()
+        attachmentsToAssets(attachments, with: group, completion: completion)
     }
 
-    /// Converts the attachments to assets synchronously.
+    /// Converts the attachments to assets asynchronously or synchronously,
+    /// depending if a DispatchGroup is provided or not.
     ///
-    /// This operation is synchronous and should only be used if all attachments are already loaded.
-    /// Like for example, for draft messages.
+    /// For the most part, a DispatchGroup should always be used.
+    /// The synchronously version is mostly used for testing at the moment.
     func attachmentsToAssets(
-        _ attachments: [AnyChatMessageAttachment]
-    ) -> ComposerAssets {
+        _ attachments: [AnyChatMessageAttachment],
+        with group: DispatchGroup?,
+        completion: @escaping (ComposerAssets) -> Void
+    ) {
         var addedAssets = ComposerAssets()
 
         attachments.forEach { attachment in
+            group?.enter()
+
             switch attachment.type {
-            case .image, .video:
-                guard let addedAsset = attachment.toAddedAsset() else { break }
-                addedAssets.mediaAssets.append(addedAsset)
-            case .file:
-                guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
-                    break
+            case .image:
+                imageAttachmentToAddedAsset(attachment) { asset in
+                    guard let addedAsset = asset else {
+                        group?.leave()
+                        return
+                    }
+                    addedAssets.mediaAssets.append(addedAsset)
+                    group?.leave()
                 }
-                let fileAsset = FileAddedAsset(
-                    url: filePayload.assetURL,
-                    payload: filePayload.payload
-                )
+            case .video:
+                guard let asset = videoAttachmentToAddedAsset(attachment) else { break }
+                addedAssets.mediaAssets.append(asset)
+                group?.leave()
+            case .file:
+                guard let fileAsset = fileAttachmentToAddedAsset(attachment) else { break }
                 addedAssets.fileAssets.append(fileAsset)
+                group?.leave()
             case .voiceRecording:
                 guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
                 addedAssets.voiceAssets.append(addedVoiceRecording)
+                group?.leave()
             case .linkPreview, .audio, .giphy, .unknown:
                 break
             default:
-                guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else { break }
-                let customAttachment = CustomAttachment(
-                    id: attachment.id.rawValue,
-                    content: anyAttachmentPayload
-                )
+                guard let customAttachment = customAttachmentToAddedAsset(attachment) else { break }
                 addedAssets.customAssets.append(customAttachment)
+                group?.leave()
             }
         }
 
-        return addedAssets
+        if let group {
+            group.notify(queue: .main) {
+                completion(addedAssets)
+            }
+        } else {
+            completion(addedAssets)
+        }
+    }
+
+    private func fileAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> FileAddedAsset? {
+        guard let filePayload = attachment.attachment(payloadType: FileAttachmentPayload.self) else {
+            return nil
+        }
+        if let localUrl = attachment.uploadingState?.localFileURL {
+            return FileAddedAsset(url: localUrl)
+        }
+        return FileAddedAsset(
+            url: filePayload.assetURL,
+            payload: filePayload.payload
+        )
+    }
+
+    private func videoAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> AddedAsset? {
+        guard let videoAttachment = attachment.attachment(payloadType: VideoAttachmentPayload.self) else {
+            return nil
+        }
+        guard let thumbnail = attachment.imageThumbnail(for: videoAttachment.payload) else {
+            return nil
+        }
+
+        if let localUrl = attachment.uploadingState?.localFileURL {
+            return AddedAsset(
+                image: thumbnail,
+                id: videoAttachment.id.rawValue,
+                url: localUrl,
+                type: .video,
+                extraData: videoAttachment.extraData ?? [:]
+            )
+        }
+
+        return AddedAsset(
+            image: thumbnail,
+            id: videoAttachment.id.rawValue,
+            url: videoAttachment.videoURL,
+            type: .video,
+            extraData: videoAttachment.extraData ?? [:],
+            payload: videoAttachment.payload
+        )
+    }
+
+    private func imageAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment,
+        completion: @escaping (AddedAsset?) -> Void
+    ) {
+        guard let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) else {
+            return completion(nil)
+        }
+
+        if let localFileUrl = attachment.uploadingState?.localFileURL,
+           let imageData = try? Data(contentsOf: localFileUrl),
+           let image = UIImage(data: imageData) {
+            let imageAsset = AddedAsset(
+                image: image,
+                id: imageAttachment.id.rawValue,
+                url: localFileUrl,
+                type: .image,
+                extraData: imageAttachment.extraData ?? [:]
+            )
+            completion(imageAsset)
+            return
+        }
+
+        utils.imageLoader.loadImage(
+            url: imageAttachment.imageURL,
+            imageCDN: utils.imageCDN,
+            resize: false,
+            preferredSize: nil
+        ) { result in
+            if let image = try? result.get() {
+                let imageAsset = AddedAsset(
+                    image: image,
+                    id: imageAttachment.id.rawValue,
+                    url: imageAttachment.imageURL,
+                    type: .image,
+                    extraData: imageAttachment.extraData ?? [:],
+                    payload: imageAttachment.payload
+                )
+                completion(imageAsset)
+                return
+            }
+            completion(nil)
+        }
+    }
+
+    private func customAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> CustomAttachment? {
+        guard let anyAttachmentPayload = [attachment].toAnyAttachmentPayload().first else {
+            return nil
+        }
+        return CustomAttachment(
+            id: attachment.id.rawValue,
+            content: anyAttachmentPayload
+        )
     }
 }

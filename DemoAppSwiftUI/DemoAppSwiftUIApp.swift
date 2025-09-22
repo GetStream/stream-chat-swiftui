@@ -147,19 +147,13 @@ extension AppState {
         guard let currentUserId = chatClient.currentUserId else { fatalError("Not logged in") }
         switch identifier {
         case .initial:
+            var sort: [Sorting<ChannelListSortingKey>] = [Sorting(key: .default)]
+            if AppConfiguration.default.isChannelPinningFeatureEnabled {
+                sort.insert(Sorting(key: .pinnedAt), at: 0)
+            }
             return ChannelListQuery(
                 filter: .containMembers(userIds: [currentUserId]),
-                sort: [
-                    Sorting(key: .default)
-                ]
-            )
-        case .initial where AppConfiguration.default.isChannelPinningFeatureEnabled:
-            return ChannelListQuery(
-                filter: .containMembers(userIds: [currentUserId]),
-                sort: [
-                    Sorting(key: .pinnedAt),
-                    Sorting(key: .default)
-                ]
+                sort: sort
             )
         case .archived:
             return ChannelListQuery(

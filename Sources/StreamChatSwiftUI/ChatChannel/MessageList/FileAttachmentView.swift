@@ -71,9 +71,11 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
 }
 
 public struct FileAttachmentView: View {
+    @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.chatClient) private var chatClient
 
     @State private var fullScreenShown = false
 
@@ -102,16 +104,29 @@ public struct FileAttachmentView: View {
             }
 
             Spacer()
+
+            if utils.messageListConfig.downloadFileAttachmentsEnabled {
+                DownloadShareAttachmentView(attachment: attachment)
+            }
         }
         .padding(.all, 8)
         .background(Color(colors.background))
         .frame(width: width)
         .roundWithBorder()
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
+        .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
-            FileAttachmentPreview(url: attachment.assetURL)
+            FileAttachmentPreview(title: attachment.title, url: previewURL)
         }
         .accessibilityIdentifier("FileAttachmentView")
+    }
+
+    private var previewURL: URL {
+        if attachment.downloadingState?.state == .downloaded,
+           let localFileURL = attachment.downloadingState?.localFileURL {
+            return localFileURL
+        }
+        return attachment.assetURL
     }
 }
 
@@ -156,4 +171,74 @@ public struct FileAttachmentDisplayView: View {
         let iconName = url.pathExtension
         return images.documentPreviews[iconName] ?? images.fileFallback
     }
+}
+
+struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View {
+    @Injected(\.colors) var colors
+    @Injected(\.images) var images
+    @Injected(\.chatClient) var chatClient
+
+    @State private var shareSheetShown = false
+
+    var attachment: ChatMessageAttachment<Payload>
+
+    var body: some View {
+        Group {
+            if shouldShowDownloadButton {
+                downloadButton
+            } else if shouldShowShareButton {
+                shareButton
+            }
+        }
+        .sheet(isPresented: $shareSheetShown) {
+            if let shareURL = attachment.downloadingState?.localFileURL {
+                ShareSheet(activityItems: [shareURL])
+            }
+        }
+    }
+
+    private var shouldShowShareButton: Bool {
+        attachment.downloadingState?.state == .downloaded
+    }
+
+    private var shouldShowDownloadButton: Bool {
+        (attachment.uploadingState == nil || attachment.uploadingState?.state == .uploaded) && attachment.downloadingState == nil
+    }
+
+    private var downloadButton: some View {
+        Button(action: { downloadAttachment() }) {
+            Image(uiImage: images.download)
+                .renderingMode(.template)
+                .foregroundColor(colors.tintColor)
+                .frame(width: 24, height: 24)
+        }
+        .accessibilityLabel("Download")
+    }
+
+    private var shareButton: some View {
+        Button(action: { shareSheetShown = true }) {
+            Image(uiImage: images.share)
+                .renderingMode(.template)
+                .foregroundColor(colors.tintColor)
+                .frame(width: 24, height: 24)
+        }
+        .accessibilityLabel("Share")
+    }
+
+    private func downloadAttachment() {
+        let messageId = attachment.id.messageId
+        let cid = attachment.id.cid
+        let messageController = chatClient.messageController(cid: cid, messageId: messageId)
+        messageController.downloadAttachment(attachment) { _ in }
+    }
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

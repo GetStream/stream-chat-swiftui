@@ -372,6 +372,126 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         XCTAssertNotNil(viewModel.messageSearchController)
     }
 
+    // MARK: - Open Channel
+
+    func test_openChannel_whenChannelExistsInList_shouldScrollToAndOpenChannel() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        
+        // When
+        viewModel.openChannel(with: channel.cid)
+        
+        // Then
+        XCTAssertEqual(viewModel.scrolledChannelId, channel.id)
+        
+        // Wait for the async delay and verify selectedChannel is set
+        let expectation = XCTestExpectation(description: "Channel opened")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            XCTAssertEqual(viewModel.selectedChannel?.channel.id, channel.id)
+            XCTAssertNil(viewModel.scrolledChannelId)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    func test_openChannel_whenChannelNotInList_shouldLoadNextChannelsUntilFound() {
+        // Given
+        let existingChannel = ChatChannel.mockDMChannel()
+        let targetChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        
+        // When
+        viewModel.openChannel(with: targetChannel.cid)
+        
+        // Then
+        XCTAssertEqual(channelListController.loadNextChannelsCallCount, 1)
+        
+        // Simulate the channel being found after loading
+        channelListController.simulate(
+            channels: [existingChannel, targetChannel],
+            changes: [.insert(targetChannel, index: .init(row: 1, section: 0))]
+        )
+        
+        // When
+        viewModel.openChannel(with: targetChannel.cid)
+        
+        // Verify the channel is eventually opened
+        let expectation = XCTestExpectation(description: "Channel opened after loading")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.selectedChannel?.channel.id, targetChannel.id)
+            XCTAssertNil(viewModel.scrolledChannelId)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    func test_openChannel_whenChannelNotFoundAndNoMoreChannels_shouldSetScrolledChannelIdToNil() {
+        // Given
+        let existingChannel = ChatChannel.mockDMChannel()
+        let targetChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        
+        // When
+        viewModel.openChannel(with: targetChannel.cid)
+        
+        // Then
+        XCTAssertNil(viewModel.scrolledChannelId)
+        XCTAssertNil(viewModel.selectedChannel)
+    }
+    
+    func test_openChannel_whenChannelFoundAfterMultipleLoads_shouldEventuallyOpenChannel() {
+        // Given
+        let existingChannel = ChatChannel.mockDMChannel()
+        let targetChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        
+        // When
+        viewModel.openChannel(with: targetChannel.cid)
+        
+        // Then
+        XCTAssertEqual(channelListController.loadNextChannelsCallCount, 1)
+        
+        // Simulate first load not finding the channel
+        channelListController.simulate(
+            channels: [existingChannel],
+            changes: []
+        )
+        
+        // Simulate second load finding the channel
+        channelListController.simulate(
+            channels: [existingChannel, targetChannel],
+            changes: [.insert(targetChannel, index: .init(row: 1, section: 0))]
+        )
+        
+        viewModel.openChannel(with: targetChannel.cid)
+        
+        // Verify the channel is eventually opened
+        let expectation = XCTestExpectation(description: "Channel opened after multiple loads")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.selectedChannel?.channel.id, targetChannel.id)
+            XCTAssertNil(viewModel.scrolledChannelId)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
     // MARK: - private
 
     private func makeChannelListController(

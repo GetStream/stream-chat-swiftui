@@ -113,6 +113,22 @@ class PinnedMessagesView_Tests: StreamChatTestCase {
         // Then
         AssertSnapshot(view, size: defaultScreenSize)
     }
+    
+    func test_pinnedMessagesView_themedSnapshot() {
+        // Given
+        setThemedNavigationBarAppearance()
+        let channel = ChatChannel.mockDMChannel(
+            pinnedMessages: [ChannelInfoMockUtils.pinnedMessage]
+        )
+
+        // When
+        let view = NavigationContainerView(embedInNavigationView: true) {
+            PinnedMessagesView(channel: channel)
+        }.applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }
 
 // Temp solution for failing tests.

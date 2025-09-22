@@ -108,13 +108,29 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 
     public func body(content: Content) -> some View {
-        content.toolbar {
-            DefaultChatChannelHeader(
-                factory: factory,
-                channel: channel,
-                headerImage: channelHeaderLoader.image(for: channel),
-                isActive: $isActive
-            )
+        if #available(iOS 26, *) {
+            content
+                .toolbarThemed {
+                    DefaultChatChannelHeader(
+                        factory: factory,
+                        channel: channel,
+                        headerImage: channelHeaderLoader.image(for: channel),
+                        isActive: $isActive
+                    )
+                    #if compiler(>=6.2)
+                        .sharedBackgroundVisibility(.hidden)
+                    #endif
+                }
+        } else {
+            content
+                .toolbarThemed {
+                    DefaultChatChannelHeader(
+                        factory: factory,
+                        channel: channel,
+                        headerImage: channelHeaderLoader.image(for: channel),
+                        isActive: $isActive
+                    )
+                }
         }
     }
 }
@@ -145,6 +161,7 @@ public struct ChannelTitleView: View {
         VStack(spacing: 2) {
             Text(channelNamer(channel, currentUserId) ?? "")
                 .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
                 .accessibilityIdentifier("chatName")
 
             if shouldShowTypingIndicator {
@@ -155,7 +172,7 @@ public struct ChannelTitleView: View {
             } else {
                 Text(channel.onlineInfoText(currentUserId: currentUserId))
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.navigationBarSubtitle))
                     .accessibilityIdentifier("chatOnlineInfo")
             }
         }

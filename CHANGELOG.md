@@ -3,8 +3,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `toolbarThemed(content:)` for creating custom views with themed navigation bar [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
+- Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
 ### 🐞 Fixed
-- Fix inconsistencies in gallery view displaying images and videos [927](https://github.com/GetStream/stream-chat-swiftui/pull/927)
+- Fix updating back button tint with `ColorPalette.navigationBarTintColor` [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
+- Fix swipe to reply enabled when quoting a message is disabled  [#977](https://github.com/GetStream/stream-chat-swiftui/pull/957)
+- Fix composer not showing images in the composer when editing signed attachments [#956](https://github.com/GetStream/stream-chat-swiftui/pull/956)
+- Fix replacing an image while editing a message not showing the new image in the message list [#956](https://github.com/GetStream/stream-chat-swiftui/pull/956)
+- Improve precision when scrolling to the newest message with long text [#958](https://github.com/GetStream/stream-chat-swiftui/pull/958)
+- Fix draft attachments being sent with local file urls to the server [#964](https://github.com/GetStream/stream-chat-swiftui/pull/964)
+- Fix keyboard showing with attachment picker when editing a message [#965](https://github.com/GetStream/stream-chat-swiftui/pull/965)
+- Fix race condition when clearing text in a regular TextField [#955](https://github.com/GetStream/stream-chat-swiftui/pull/955)
+### 🔄 Changed
+- Change the gallery header view to show the message timestamp instead of online status [#962](https://github.com/GetStream/stream-chat-swiftui/pull/962)
+
+# [4.88.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.88.0)
+_September 10, 2025_
+
+### ✅ Added
+- Add `ColorPalette.navigationBarTitle`, `ColorPalette.navigationBarSubtitle`, `ColorPalette.navigationBarTintColor`,  `ColorPalette.navigationBarBackground` [#939](https://github.com/GetStream/stream-chat-swiftui/pull/939)
+### 🐞 Fixed
+- Long message with a link preview was truncated sometimes [#940](https://github.com/GetStream/stream-chat-swiftui/pull/940)
+- Fix quoted message shown in the composer when editing a quoting message [#943](https://github.com/GetStream/stream-chat-swiftui/pull/943)
+- Fix pinned messages view not using relative time formatter [#946](https://github.com/GetStream/stream-chat-swiftui/pull/946)
+
+# [4.87.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.87.0)
+_September 01, 2025_
+
+### ✅ Added
+- Add option to scroll to and open a channel from the channel list [#932](https://github.com/GetStream/stream-chat-swiftui/pull/932)
+- Make `MediaItem` and `MediaAttachmentContentView` public to allow customization [#935](https://github.com/GetStream/stream-chat-swiftui/pull/935)
+
+### 🐞 Fixed
+- Show attachment title instead of URL in the `FileAttachmentPreview` view [#930](https://github.com/GetStream/stream-chat-swiftui/pull/930)
+- Fix overriding title color in `ChannelTitleView` [#931](https://github.com/GetStream/stream-chat-swiftui/pull/931)
+- Use channel capabilities for validating delete message action [#933](https://github.com/GetStream/stream-chat-swiftui/pull/933)
+- Fix the video attachments now fetch the URL once on appear and pause when swiping to another item in the gallery [#934](https://github.com/GetStream/stream-chat-swiftui/pull/934)
+
+# [4.86.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.86.0)
+_August 21, 2025_
+
+### 🐞 Fixed
+- Fix inconsistencies in gallery view displaying images and videos [#927](https://github.com/GetStream/stream-chat-swiftui/pull/927)
 - Prevent audio messages increasing width in reply mode [#926](https://github.com/GetStream/stream-chat-swiftui/pull/926)
 
 # [4.85.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.85.0)

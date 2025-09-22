@@ -76,4 +76,21 @@ class ChatChannelHeader_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    func test_channelTitleView_theme_snapshot() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(name: "Test channel")
+
+        // When
+        adjustAppearance { appearance in
+            appearance.colors.text = .red
+            appearance.colors.subtitleText = .blue
+        }
+        let size = CGSize(width: 300, height: 100)
+        let view = ChannelTitleView(channel: channel, shouldShowTypingIndicator: true)
+            .applySize(size)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
 }

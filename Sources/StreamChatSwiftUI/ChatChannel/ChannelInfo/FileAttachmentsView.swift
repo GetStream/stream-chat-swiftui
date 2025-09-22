@@ -12,6 +12,7 @@ public struct FileAttachmentsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
 
     public init(channel: ChatChannel) {
         _viewModel = StateObject(
@@ -45,11 +46,17 @@ public struct FileAttachmentsView: View {
                                 Button {
                                     viewModel.selectedAttachment = attachment
                                 } label: {
-                                    FileAttachmentDisplayView(
-                                        url: url,
-                                        title: attachment.title ?? url.lastPathComponent,
-                                        sizeString: attachment.file.sizeString
-                                    )
+                                    HStack {
+                                        FileAttachmentDisplayView(
+                                            url: url,
+                                            title: attachment.title ?? url.lastPathComponent,
+                                            sizeString: attachment.file.sizeString
+                                        )
+                                        Spacer()
+                                        if utils.messageListConfig.downloadFileAttachmentsEnabled {
+                                            DownloadShareAttachmentView(attachment: attachment)
+                                        }
+                                    }
                                     .onAppear {
                                         viewModel.loadAdditionalAttachments(
                                             after: monthlyDataSource,
@@ -59,8 +66,9 @@ public struct FileAttachmentsView: View {
                                     .padding(.horizontal, 8)
                                     .padding(.vertical)
                                 }
+                                .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
                                 .sheet(item: $viewModel.selectedAttachment) { item in
-                                    FileAttachmentPreview(url: item.assetURL)
+                                    FileAttachmentPreview(title: item.title, url: item.assetURL)
                                 }
 
                                 Divider()
@@ -70,7 +78,14 @@ public struct FileAttachmentsView: View {
                 }
             }
         }
-        .navigationTitle(L10n.ChatInfo.Files.title)
+        .toolbarThemed {
+            ToolbarItem(placement: .principal) {
+                Text(L10n.ChatInfo.Files.title)
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

@@ -8,6 +8,7 @@ import SwiftUI
 public struct FileAttachmentPreview: View {
     @Environment(\.presentationMode) var presentationMode
 
+    @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
@@ -16,15 +17,22 @@ public struct FileAttachmentPreview: View {
         utils.fileCDN
     }
 
+    let title: String?
     var url: URL
 
     @State private var adjustedUrl: URL?
     @State private var isLoading = false
-    @State private var title: String?
+    @State private var webViewTitle: String?
     @State private var error: Error?
-
+    
+    var navigationTitle: String {
+        if let title, !title.isEmpty { return title }
+        if let webViewTitle, !webViewTitle.isEmpty { return webViewTitle }
+        return url.absoluteString
+    }
+    
     public var body: some View {
-        NavigationView {
+        NavigationContainerView(embedInNavigationView: true) {
             ZStack {
                 if error != nil {
                     Text(L10n.Message.FileAttachment.errorPreview)
@@ -35,7 +43,7 @@ public struct FileAttachmentPreview: View {
                         WebView(
                             url: adjustedUrl,
                             isLoading: $isLoading,
-                            title: $title,
+                            title: $webViewTitle,
                             error: $error
                         )
                     }
@@ -56,10 +64,11 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+            .toolbarThemed {
                 ToolbarItem(placement: .principal) {
-                    Text(title ?? url.absoluteString)
+                    Text(navigationTitle)
                         .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationBarTitle))
                         .lineLimit(1)
                 }
 
@@ -68,6 +77,7 @@ public struct FileAttachmentPreview: View {
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         Image(uiImage: images.close)
+                            .renderingMode(.template)
                     }
                 }
             }

@@ -132,13 +132,13 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
         }
-        .toolbar {
+        .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Group {
                     if viewModel.showSingleMemberDMView {
                         Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
                             .font(fonts.bodyBold)
-                            .foregroundColor(Color(colors.text))
+                            .foregroundColor(Color(colors.navigationBarTitle))
                     } else {
                         ChannelTitleView(
                             channel: viewModel.channel,

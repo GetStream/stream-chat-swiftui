@@ -11,6 +11,7 @@ public protocol ChannelListHeaderViewModifier: ViewModifier {
 
 /// The default channel list header.
 public struct DefaultChatChannelListHeader: ToolbarContent {
+    @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
 
@@ -24,6 +25,7 @@ public struct DefaultChatChannelListHeader: ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title)
                 .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
         }
     }
 }
@@ -37,7 +39,7 @@ public struct DefaultChannelListHeaderModifier: ChannelListHeaderViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        content.toolbar {
+        content.toolbarThemed {
             DefaultChatChannelListHeader(title: title)
         }
     }
