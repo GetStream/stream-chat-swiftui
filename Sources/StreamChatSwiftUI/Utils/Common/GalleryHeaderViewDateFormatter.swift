@@ -2,6 +2,8 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
+import Foundation
+
 /// A formatter used to display the message timestamp in the gallery header view.
 public final class GalleryHeaderViewDateFormatter: DateFormatter, @unchecked Sendable {
     override public init() {
