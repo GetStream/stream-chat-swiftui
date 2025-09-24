@@ -491,6 +491,47 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
     }
+    
+    func test_openChannel_whenSearching_shouldClearSearchState() {
+        // Given
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil,
+            searchType: .messages
+        )
+        viewModel.searchText = "query"
+        XCTAssertTrue(viewModel.isSearching, "Precondition failed: isSearching should be true before opening a channel")
+        
+        // When
+        viewModel.openChannel(with: existingChannel.cid)
+        
+        // Then
+        XCTAssertFalse(viewModel.isSearching, "isSearching should be false after opening a channel")
+        XCTAssertEqual(viewModel.searchText, "", "searchText should be cleared after opening a channel")
+        XCTAssertNil(viewModel.messageSearchController, "Message search controller should be cleared when search ends")
+        XCTAssertNil(viewModel.channelListSearchController, "Channel search controller should be cleared when search ends")
+    }
+    
+    func test_openChannel_whenSelectedChannelIsSet_shouldClearSelectedChannel() {
+        // Given
+        let existingChannel = ChatChannel.mockDMChannel()
+        let targetChannel = ChatChannel.mockDMChannel() // not in the list
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = existingChannel.channelSelectionInfo
+        XCTAssertNotNil(viewModel.selectedChannel, "Precondition failed: selectedChannel should be set before opening a channel")
+        
+        // When
+        viewModel.openChannel(with: targetChannel.cid)
+        
+        // Then
+        XCTAssertNil(viewModel.selectedChannel, "selectedChannel should be cleared immediately when opening another channel")
+    }
 
     // MARK: - private
 
