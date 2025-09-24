@@ -48,8 +48,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    for: channel,
-                    with: .init(showOnlineIndicator: onlineIndicatorShown)
+                    options: ChannelAvatarViewFactoryOptions(
+                        channel: channel,
+                        options: .init(showOnlineIndicator: onlineIndicatorShown)
+                    )
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

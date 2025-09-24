@@ -76,14 +76,14 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     public var body: some View {
         HStack(alignment: .bottom) {
             if messageViewModel.systemMessageShown {
-                factory.makeSystemMessageView(message: message)
+                factory.makeSystemMessageView(options: SystemMessageViewOptions(message: message))
             } else {
                 if messageViewModel.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
                     if let userDisplayInfo = messageViewModel.userDisplayInfo {
                         factory.makeMessageAvatarView(
-                            for: userDisplayInfo
+                            options: MessageAvatarViewOptions(userDisplayInfo: userDisplayInfo)
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
@@ -110,15 +110,16 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         ZStack {
                             topReactionsShown ?
                                 factory.makeMessageReactionView(
-                                    message: message,
-                                    onTapGesture: {
-                                        handleGestureForMessage(showsMessageActions: false)
-                                    },
-                                    onLongPressGesture: {
-                                        handleGestureForMessage(showsMessageActions: false)
-                                    }
-                                )
-                                : nil
+                                    options: MessageReactionViewOptions(
+                                        message: message,
+                                        onTapGesture: {
+                                            handleGestureForMessage(showsMessageActions: false)
+                                        },
+                                        onLongPressGesture: {
+                                            handleGestureForMessage(showsMessageActions: false)
+                                        }
+                                    )
+                                ) : nil
                             messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
                         }
                     )
@@ -179,9 +180,11 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     if !isInThread {
                         if message.replyCount > 0 {
                             factory.makeMessageRepliesView(
-                                channel: channel,
-                                message: message,
-                                replyCount: message.replyCount
+                                options: MessageRepliesViewOptions(
+                                    channel: channel,
+                                    message: message,
+                                    replyCount: message.replyCount
+                                )
                             )
                             .accessibilityElement(children: .contain)
                             .accessibility(identifier: "MessageRepliesView")
@@ -190,10 +193,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                   let controller = utils.channelControllerFactory.currentChannelController,
                                   let parentMessage = controller.dataStore.message(id: parentId) {
                             factory.makeMessageRepliesShownInChannelView(
-                                channel: channel,
-                                message: message,
-                                parentMessage: parentMessage,
-                                replyCount: parentMessage.replyCount
+                                options: MessageRepliesShownInChannelViewOptions(
+                                    channel: channel,
+                                    message: message,
+                                    parentMessage: parentMessage,
+                                    replyCount: parentMessage.replyCount
+                                )
                             )
                             .accessibilityElement(children: .contain)
                             .accessibility(identifier: "MessageRepliesView")
@@ -215,14 +220,21 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     }
                     
                     if bottomReactionsShown {
-                        factory.makeBottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
-                            handleGestureForMessage(
-                                showsMessageActions: false,
-                                showsBottomContainer: false
+                        factory.makeBottomReactionsView(
+                            options: ReactionsBottomViewOptions(
+                                message: message,
+                                showsAllInfo: showsAllInfo,
+                                onTap: {
+                                    handleGestureForMessage(
+                                        showsMessageActions: false,
+                                        showsBottomContainer: false
+                                    )
+                                },
+                                onLongPress: {
+                                    handleGestureForMessage(showsMessageActions: false)
+                                }
                             )
-                        } onLongPress: {
-                            handleGestureForMessage(showsMessageActions: false)
-                        }
+                        )
                         .background(
                             GeometryReader { proxy in
                                 let frame = proxy.frame(in: .local)
@@ -239,7 +251,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 
                     if messageViewModel.translatedText != nil {
                         factory.makeMessageTranslationFooterView(
-                            messageViewModel: messageViewModel
+                            options: MessageTranslationFooterViewOptions(
+                                messageViewModel: messageViewModel
+                            )
                         )
                     }
 
@@ -247,18 +261,20 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
                                 factory.makeMessageReadIndicatorView(
-                                    channel: channel,
-                                    message: message
+                                    options: MessageReadIndicatorViewOptions(
+                                        channel: channel,
+                                        message: message
+                                    )
                                 )
 
                                 if messageViewModel.messageDateShown {
-                                    factory.makeMessageDateView(for: message)
+                                    factory.makeMessageDateView(options: MessageDateViewOptions(message: message))
                                 }
                             }
                         } else if messageViewModel.authorAndDateShown {
-                            factory.makeMessageAuthorAndDateView(for: message)
+                            factory.makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions(message: message))
                         } else if messageViewModel.messageDateShown {
-                            factory.makeMessageDateView(for: message)
+                            factory.makeMessageDateView(options: MessageDateViewOptions(message: message))
                         }
                     }
                 }

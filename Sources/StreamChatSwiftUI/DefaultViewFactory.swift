@@ -23,104 +23,88 @@ extension ViewFactory {
     }
     
     public func makeChannelListHeaderViewModifier(
-        title: String
+        options: ChannelListHeaderViewModifierOptions
     ) -> some ChannelListHeaderViewModifier {
-        DefaultChannelListHeaderModifier(title: title)
+        DefaultChannelListHeaderModifier(title: options.title)
     }
     
     public func supportedMoreChannelActions(
-        for channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: SupportedMoreChannelActionsOptions
     ) -> [ChannelAction] {
         ChannelAction.defaultActions(
-            for: channel,
+            for: options.channel,
             chatClient: chatClient,
-            onDismiss: onDismiss,
-            onError: onError
+            onDismiss: options.onDismiss,
+            onError: options.onError
         )
     }
     
     public func makeMoreChannelActionsView(
-        for channel: ChatChannel,
-        swipedChannelId: Binding<String?>,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: MoreChannelActionsViewOptions
     ) -> some View {
         MoreChannelActionsView(
-            channel: channel,
+            channel: options.channel,
             channelActions: supportedMoreChannelActions(
-                for: channel,
-                onDismiss: onDismiss,
-                onError: onError
+                options: SupportedMoreChannelActionsOptions(
+                    channel: options.channel,
+                    onDismiss: options.onDismiss,
+                    onError: options.onError
+                )
             ),
-            swipedChannelId: swipedChannelId,
-            onDismiss: onDismiss
+            swipedChannelId: options.swipedChannelId,
+            onDismiss: options.onDismiss
         )
     }
     
     public func makeChannelListItem(
-        channel: ChatChannel,
-        channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
-        disabled: Bool,
-        selectedChannel: Binding<ChannelSelectionInfo?>,
-        swipedChannelId: Binding<String?>,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination,
-        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        options: ChannelListItemOptions<ChannelDestination>
     ) -> some View {
         let utils = InjectedValues[\.utils]
         let listItem = ChatChannelNavigatableListItem(
             factory: self,
-            channel: channel,
-            channelName: channelName,
-            avatar: avatar,
-            onlineIndicatorShown: onlineIndicatorShown,
-            disabled: disabled,
+            channel: options.channel,
+            channelName: options.channelName,
+            avatar: options.avatar,
+            onlineIndicatorShown: options.onlineIndicatorShown,
+            disabled: options.disabled,
             handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
-            selectedChannel: selectedChannel,
-            channelDestination: channelDestination,
-            onItemTap: onItemTap
+            selectedChannel: options.selectedChannel,
+            channelDestination: options.channelDestination,
+            onItemTap: options.onItemTap
         )
         return ChatChannelSwipeableListItem(
             factory: self,
             channelListItem: listItem,
-            swipedChannelId: swipedChannelId,
-            channel: channel,
-            numberOfTrailingItems: channel.ownCapabilities.contains(.deleteChannel) ? 2 : 1,
-            trailingRightButtonTapped: trailingSwipeRightButtonTapped,
-            trailingLeftButtonTapped: trailingSwipeLeftButtonTapped,
-            leadingSwipeButtonTapped: leadingSwipeButtonTapped
+            swipedChannelId: options.swipedChannelId,
+            channel: options.channel,
+            numberOfTrailingItems: options.channel.ownCapabilities.contains(.deleteChannel) ? 2 : 1,
+            trailingRightButtonTapped: options.trailingSwipeRightButtonTapped,
+            trailingLeftButtonTapped: options.trailingSwipeLeftButtonTapped,
+            leadingSwipeButtonTapped: options.leadingSwipeButtonTapped
         )
     }
     
     public func makeChannelAvatarView(
-        for channel: ChatChannel,
-        with options: ChannelAvatarViewOptions
+        options: ChannelAvatarViewFactoryOptions
     ) -> some View {
         ChannelAvatarView(
-            channel: channel,
-            showOnlineIndicator: options.showOnlineIndicator,
-            avatar: options.avatar,
-            size: options.size
+            channel: options.channel,
+            showOnlineIndicator: options.options.showOnlineIndicator,
+            avatar: options.options.avatar,
+            size: options.options.size
         )
     }
     
-    public func makeChannelListBackground(colors: ColorPalette) -> some View {
-        Color(colors.background)
+    public func makeChannelListBackground(options: ChannelListBackgroundOptions) -> some View {
+        Color(options.colors.background)
             .edgesIgnoringSafeArea(.bottom)
     }
 
     public func makeChannelListItemBackground(
-        channel: ChatChannel,
-        isSelected: Bool
+        options: ChannelListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        if isSelected && isIPad {
+        if options.isSelected && isIPad {
             return Color(colors.background6)
         }
 
@@ -132,36 +116,27 @@ extension ViewFactory {
     }
     
     public func makeTrailingSwipeActionsView(
-        channel: ChatChannel,
-        offsetX: CGFloat,
-        buttonWidth: CGFloat,
-        swipedChannelId: Binding<String?>,
-        leftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        rightButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        options: TrailingSwipeActionsViewOptions
     ) -> TrailingSwipeActionsView {
         TrailingSwipeActionsView(
-            channel: channel,
-            offsetX: offsetX,
-            buttonWidth: buttonWidth,
-            leftButtonTapped: leftButtonTapped,
-            rightButtonTapped: rightButtonTapped
+            channel: options.channel,
+            offsetX: options.offsetX,
+            buttonWidth: options.buttonWidth,
+            leftButtonTapped: options.leftButtonTapped,
+            rightButtonTapped: options.rightButtonTapped
         )
     }
     
     public func makeLeadingSwipeActionsView(
-        channel: ChatChannel,
-        offsetX: CGFloat,
-        buttonWidth: CGFloat,
-        swipedChannelId: Binding<String?>,
-        buttonTapped: @MainActor(ChatChannel) -> Void
+        options: LeadingSwipeActionsViewOptions
     ) -> EmptyView {
         EmptyView()
     }
     
     public func makeChannelListTopView(
-        searchText: Binding<String>
+        options: ChannelListTopViewOptions
     ) -> some View {
-        SearchBar(text: searchText)
+        SearchBar(text: options.searchText)
     }
     
     public func makeChannelListFooterView() -> some View {
@@ -173,44 +148,32 @@ extension ViewFactory {
     }
     
     public func makeSearchResultsView(
-        selectedChannel: Binding<ChannelSelectionInfo?>,
-        searchResults: [ChannelSelectionInfo],
-        loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping @MainActor(ChatChannel) -> Bool,
-        channelNaming: @escaping @MainActor(ChatChannel) -> String,
-        imageLoader: @escaping @MainActor(ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping @MainActor(Int) -> Void
+        options: SearchResultsViewOptions
     ) -> some View {
         SearchResultsView(
             factory: self,
-            selectedChannel: selectedChannel,
-            searchResults: searchResults,
-            loadingSearchResults: loadingSearchResults,
-            onlineIndicatorShown: onlineIndicatorShown,
-            channelNaming: channelNaming,
-            imageLoader: imageLoader,
-            onSearchResultTap: onSearchResultTap,
-            onItemAppear: onItemAppear
+            selectedChannel: options.selectedChannel,
+            searchResults: options.searchResults,
+            loadingSearchResults: options.loadingSearchResults,
+            onlineIndicatorShown: options.onlineIndicatorShown,
+            channelNaming: options.channelNaming,
+            imageLoader: options.imageLoader,
+            onSearchResultTap: options.onSearchResultTap,
+            onItemAppear: options.onItemAppear
         )
     }
     
     public func makeChannelListSearchResultItem(
-        searchResult: ChannelSelectionInfo,
-        onlineIndicatorShown: Bool,
-        channelName: String,
-        avatar: UIImage,
-        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination
+        options: ChannelListSearchResultItemOptions<ChannelDestination>
     ) -> some View {
         SearchResultItem(
             factory: self,
-            searchResult: searchResult,
-            onlineIndicatorShown: onlineIndicatorShown,
-            channelName: channelName,
-            avatar: avatar,
-            onSearchResultTap: onSearchResultTap,
-            channelDestination: channelDestination
+            searchResult: options.searchResult,
+            onlineIndicatorShown: options.onlineIndicatorShown,
+            channelName: options.channelName,
+            avatar: options.avatar,
+            onSearchResultTap: options.onSearchResultTap,
+            channelDestination: options.channelDestination
         )
     }
     
@@ -278,460 +241,380 @@ extension ViewFactory {
     }
 
     public func makeEmptyMessagesView(
-        for channel: ChatChannel,
-        colors: ColorPalette
+        options: EmptyMessagesViewOptions
     ) -> some View {
-        Color(colors.background)
+        Color(options.colors.background)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityIdentifier("EmptyMessagesView")
     }
     
-    public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
-        MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: userDisplayInfo.size ?? .messageAvatarSize)
+    public func makeMessageAvatarView(options: MessageAvatarViewOptions) -> some View {
+        MessageAvatarView(avatarURL: options.userDisplayInfo.imageURL, size: options.userDisplayInfo.size ?? .messageAvatarSize)
     }
     
     public func makeQuotedMessageAvatarView(
-        for userDisplayInfo: UserDisplayInfo,
-        size: CGSize
+        options: QuotedMessageAvatarViewOptions
     ) -> some View {
-        MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: size)
+        MessageAvatarView(avatarURL: options.userDisplayInfo.imageURL, size: options.size)
     }
     
     public func makeChannelHeaderViewModifier(
-        for channel: ChatChannel
+        options: ChannelHeaderViewModifierOptions
     ) -> some ChatChannelHeaderViewModifier {
-        DefaultChannelHeaderModifier(factory: self, channel: channel)
+        DefaultChannelHeaderModifier(factory: self, channel: options.channel)
     }
     
-    public func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> some ViewModifier {
-        ChangeChannelBarsVisibilityModifier(shouldShow: shouldShow)
+    public func makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions) -> some ViewModifier {
+        ChangeChannelBarsVisibilityModifier(shouldShow: options.shouldShow)
     }
     
     public func makeChannelLoadingView() -> some View {
         LoadingView()
     }
     
-    public func makeMessageThreadHeaderViewModifier() -> some MessageThreadHeaderViewModifier {
+    public func makeMessageThreadHeaderViewModifier(options: MessageThreadHeaderViewModifierOptions) -> some MessageThreadHeaderViewModifier {
         DefaultMessageThreadHeaderModifier()
     }
     
     public func makeMessageListBackground(
-        colors: ColorPalette,
-        isInThread: Bool
+        options: MessageListBackgroundOptions
     ) -> some View {
-        Color(colors.background)
+        Color(options.colors.background)
     }
     
     public func makeMessageContainerView(
-        channel: ChatChannel,
-        message: ChatMessage,
-        width: CGFloat?,
-        showsAllInfo: Bool,
-        isInThread: Bool,
-        scrolledId: Binding<String?>,
-        quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping @MainActor(MessageDisplayInfo) -> Void,
-        isLast: Bool
+        options: MessageContainerViewOptions
     ) -> some View {
         MessageContainerView(
             factory: self,
-            channel: channel,
-            message: message,
-            width: width,
-            showsAllInfo: showsAllInfo,
-            isInThread: isInThread,
-            isLast: isLast,
-            scrolledId: scrolledId,
-            quotedMessage: quotedMessage,
-            onLongPress: onLongPress
+            channel: options.channel,
+            message: options.message,
+            width: options.width,
+            showsAllInfo: options.showsAllInfo,
+            isInThread: options.isInThread,
+            isLast: options.isLast,
+            scrolledId: options.scrolledId,
+            quotedMessage: options.quotedMessage,
+            onLongPress: options.onLongPress
         )
     }
     
     public func makeMessageTextView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: MessageTextViewOptions
     ) -> some View {
         MessageTextView(
             factory: self,
-            message: message,
-            isFirst: isFirst,
-            scrolledId: scrolledId
+            message: options.message,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
     
-    public func makeMessageDateView(for message: ChatMessage) -> some View {
-        MessageDateView(message: message)
+    public func makeMessageDateView(options: MessageDateViewOptions) -> some View {
+        MessageDateView(message: options.message)
     }
     
-    public func makeMessageAuthorAndDateView(for message: ChatMessage) -> some View {
-        MessageAuthorAndDateView(message: message)
+    public func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> some View {
+        MessageAuthorAndDateView(message: options.message)
     }
     
-    public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
+    public func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> some View {
         EmptyView()
     }
 
     public func makeMessageTranslationFooterView(
-        messageViewModel: MessageViewModel
+        options: MessageTranslationFooterViewOptions
     ) -> some View {
         MessageTranslationFooterView(
-            messageViewModel: messageViewModel
+            messageViewModel: options.messageViewModel
         )
     }
 
     public func makeImageAttachmentView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: ImageAttachmentViewOptions
     ) -> some View {
         ImageAttachmentContainer(
             factory: self,
-            message: message,
-            width: availableWidth,
-            isFirst: isFirst,
-            scrolledId: scrolledId
+            message: options.message,
+            width: options.availableWidth,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
     
     public func makeGiphyAttachmentView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: GiphyAttachmentViewOptions
     ) -> some View {
         GiphyAttachmentView(
             factory: self,
-            message: message,
-            width: availableWidth,
-            isFirst: isFirst,
-            scrolledId: scrolledId
+            message: options.message,
+            width: options.availableWidth,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
     
     public func makeLinkAttachmentView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: LinkAttachmentViewOptions
     ) -> some View {
         LinkAttachmentContainer(
             factory: self,
-            message: message,
-            width: availableWidth,
-            isFirst: isFirst,
-            scrolledId: scrolledId
+            message: options.message,
+            width: options.availableWidth,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
     
     public func makeFileAttachmentView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: FileAttachmentViewOptions
     ) -> some View {
         FileAttachmentsContainer(
             factory: self,
-            message: message,
-            width: availableWidth,
-            isFirst: isFirst,
-            scrolledId: scrolledId
+            message: options.message,
+            width: options.availableWidth,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
     
     public func makeVideoAttachmentView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: VideoAttachmentViewOptions
     ) -> some View {
         VideoAttachmentsContainer(
             factory: self,
-            message: message,
-            width: availableWidth,
-            scrolledId: scrolledId
+            message: options.message,
+            width: options.availableWidth,
+            scrolledId: options.scrolledId
         )
     }
     
     public func makeGalleryView(
-        mediaAttachments: [MediaAttachment],
-        message: ChatMessage,
-        isShown: Binding<Bool>,
-        options: MediaViewsOptions
+        options: GalleryViewOptions
     ) -> some View {
         GalleryView(
             viewFactory: self,
-            mediaAttachments: mediaAttachments,
-            author: message.author,
-            isShown: isShown,
-            selected: options.selectedIndex,
-            message: message
+            mediaAttachments: options.mediaAttachments,
+            author: options.message.author,
+            isShown: options.isShown,
+            selected: options.options.selectedIndex,
+            message: options.message
         )
     }
     
     public func makeGalleryHeaderView(
-        title: String,
-        subtitle: String,
-        shown: Binding<Bool>
+        options: GalleryHeaderViewOptions
     ) -> some View {
-        GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
+        GalleryHeaderView(title: options.title, subtitle: options.subtitle, isShown: options.shown)
     }
     
     public func makeVideoPlayerView(
-        attachment: ChatMessageVideoAttachment,
-        message: ChatMessage,
-        isShown: Binding<Bool>,
-        options: MediaViewsOptions
+        options: VideoPlayerViewOptions
     ) -> some View {
         VideoPlayerView(
             viewFactory: self,
-            attachment: attachment,
-            author: message.author,
-            isShown: isShown
+            attachment: options.attachment,
+            author: options.message.author,
+            isShown: options.isShown
         )
     }
     
     public func makeVideoPlayerHeaderView(
-        title: String,
-        subtitle: String,
-        shown: Binding<Bool>
+        options: VideoPlayerHeaderViewOptions
     ) -> some View {
-        GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
+        GalleryHeaderView(title: options.title, subtitle: options.subtitle, isShown: options.shown)
     }
     
     public func makeVideoPlayerFooterView(
-        attachment: ChatMessageVideoAttachment,
-        shown: Binding<Bool>
+        options: VideoPlayerFooterViewOptions
     ) -> some View {
         VideoPlayerFooterView(
-            attachment: attachment,
-            shown: shown
+            attachment: options.attachment,
+            shown: options.shown
         )
     }
     
     public func makeDeletedMessageView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat
+        options: DeletedMessageViewOptions
     ) -> some View {
         DeletedMessageView(
-            message: message,
-            isFirst: isFirst
+            message: options.message,
+            isFirst: options.isFirst
         )
     }
     
     public func makeSystemMessageView(
-        message: ChatMessage
+        options: SystemMessageViewOptions
     ) -> some View {
-        SystemMessageView(message: message.text)
+        SystemMessageView(message: options.message.text)
     }
     
     public func makeEmojiTextView(
-        message: ChatMessage,
-        scrolledId: Binding<String?>,
-        isFirst: Bool
+        options: EmojiTextViewOptions
     ) -> some View {
         EmojiTextView(
             factory: self,
-            message: message,
-            scrolledId: scrolledId,
-            isFirst: isFirst
+            message: options.message,
+            scrolledId: options.scrolledId,
+            isFirst: options.isFirst
         )
     }
     
     public func makeCustomAttachmentViewType(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: CustomAttachmentViewTypeOptions
     ) -> some View {
         EmptyView()
     }
     
     public func makeScrollToBottomButton(
-        unreadCount: Int,
-        onScrollToBottom: @escaping @MainActor() -> Void
+        options: ScrollToBottomButtonOptions
     ) -> some View {
         ScrollToBottomButton(
-            unreadCount: unreadCount,
-            onScrollToBottom: onScrollToBottom
+            unreadCount: options.unreadCount,
+            onScrollToBottom: options.onScrollToBottom
         )
     }
     
-    public func makeDateIndicatorView(dateString: String) -> some View {
-        DateIndicatorView(dateString: dateString)
+    public func makeDateIndicatorView(options: DateIndicatorViewOptions) -> some View {
+        DateIndicatorView(dateString: options.dateString)
     }
     
-    public func makeMessageListDateIndicator(date: Date) -> some View {
-        DateIndicatorView(date: date)
+    public func makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions) -> some View {
+        DateIndicatorView(date: options.date)
     }
     
     public func makeTypingIndicatorBottomView(
-        channel: ChatChannel,
-        currentUserId: UserId?
+        options: TypingIndicatorBottomViewOptions
     ) -> some View {
-        let typingIndicatorString = channel.typingIndicatorString(currentUserId: currentUserId)
+        let typingIndicatorString = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
         return TypingIndicatorBottomView(typingIndicatorString: typingIndicatorString)
     }
     
     public func makeGiphyBadgeViewType(
-        for message: ChatMessage,
-        availableWidth: CGFloat
+        options: GiphyBadgeViewTypeOptions
     ) -> some View {
         GiphyBadgeView()
     }
     
     public func makeMessageRepliesView(
-        channel: ChatChannel,
-        message: ChatMessage,
-        replyCount: Int
+        options: MessageRepliesViewOptions
     ) -> some View {
         MessageRepliesView(
             factory: self,
-            channel: channel,
-            message: message,
-            replyCount: replyCount
+            channel: options.channel,
+            message: options.message,
+            replyCount: options.replyCount
         )
     }
     
     public func makeMessageRepliesShownInChannelView(
-        channel: ChatChannel,
-        message: ChatMessage,
-        parentMessage: ChatMessage,
-        replyCount: Int
+        options: MessageRepliesShownInChannelViewOptions
     ) -> some View {
         MessageRepliesView(
             factory: self,
-            channel: channel,
-            message: parentMessage,
-            replyCount: replyCount,
+            channel: options.channel,
+            message: options.parentMessage,
+            replyCount: options.replyCount,
             showReplyCount: false,
-            isRightAligned: message.isRightAligned
+            isRightAligned: options.message.isRightAligned
         )
     }
     
     public func makeMessageComposerViewType(
-        with channelController: ChatChannelController,
-        messageController: ChatMessageController?,
-        quotedMessage: Binding<ChatMessage?>,
-        editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping @MainActor() -> Void
+        options: MessageComposerViewTypeOptions
     ) -> MessageComposerView<Self> {
         MessageComposerView(
             viewFactory: self,
-            channelController: channelController,
-            messageController: messageController,
-            quotedMessage: quotedMessage,
-            editedMessage: editedMessage,
-            onMessageSent: onMessageSent
+            channelController: options.channelController,
+            messageController: options.messageController,
+            quotedMessage: options.quotedMessage,
+            editedMessage: options.editedMessage,
+            onMessageSent: options.onMessageSent
         )
     }
     
     public func makeLeadingComposerView(
-        state: Binding<PickerTypeState>,
-        channelConfig: ChannelConfig?
+        options: LeadingComposerViewOptions
     ) -> some View {
         AttachmentPickerTypeView(
-            pickerTypeState: state,
-            channelConfig: channelConfig
+            pickerTypeState: options.state,
+            channelConfig: options.channelConfig
         )
         .padding(.bottom, 8)
     }
     
     @ViewBuilder
     public func makeComposerInputView(
-        text: Binding<String>,
-        selectedRangeLocation: Binding<Int>,
-        command: Binding<ComposerCommand?>,
-        addedAssets: [AddedAsset],
-        addedFileURLs: [URL],
-        addedCustomAttachments: [CustomAttachment],
-        quotedMessage: Binding<ChatMessage?>,
-        maxMessageLength: Int?,
-        cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
-        shouldScroll: Bool,
-        removeAttachmentWithId: @escaping @MainActor(String) -> Void
+        options: ComposerInputViewOptions
     ) -> some View {
-        if shouldScroll {
+        if options.shouldScroll {
             ScrollView {
                 ComposerInputView(
                     factory: self,
-                    text: text,
-                    selectedRangeLocation: selectedRangeLocation,
-                    command: command,
-                    addedAssets: addedAssets,
-                    addedFileURLs: addedFileURLs,
-                    addedCustomAttachments: addedCustomAttachments,
-                    quotedMessage: quotedMessage,
-                    maxMessageLength: maxMessageLength,
-                    cooldownDuration: cooldownDuration,
-                    onCustomAttachmentTap: onCustomAttachmentTap,
-                    removeAttachmentWithId: removeAttachmentWithId
+                    text: options.text,
+                    selectedRangeLocation: options.selectedRangeLocation,
+                    command: options.command,
+                    addedAssets: options.addedAssets,
+                    addedFileURLs: options.addedFileURLs,
+                    addedCustomAttachments: options.addedCustomAttachments,
+                    quotedMessage: options.quotedMessage,
+                    maxMessageLength: options.maxMessageLength,
+                    cooldownDuration: options.cooldownDuration,
+                    onCustomAttachmentTap: options.onCustomAttachmentTap,
+                    removeAttachmentWithId: options.removeAttachmentWithId
                 )
             }
             .frame(height: 240)
         } else {
             ComposerInputView(
                 factory: self,
-                text: text,
-                selectedRangeLocation: selectedRangeLocation,
-                command: command,
-                addedAssets: addedAssets,
-                addedFileURLs: addedFileURLs,
-                addedCustomAttachments: addedCustomAttachments,
-                quotedMessage: quotedMessage,
-                maxMessageLength: maxMessageLength,
-                cooldownDuration: cooldownDuration,
-                onCustomAttachmentTap: onCustomAttachmentTap,
-                removeAttachmentWithId: removeAttachmentWithId
+                text: options.text,
+                selectedRangeLocation: options.selectedRangeLocation,
+                command: options.command,
+                addedAssets: options.addedAssets,
+                addedFileURLs: options.addedFileURLs,
+                addedCustomAttachments: options.addedCustomAttachments,
+                quotedMessage: options.quotedMessage,
+                maxMessageLength: options.maxMessageLength,
+                cooldownDuration: options.cooldownDuration,
+                onCustomAttachmentTap: options.onCustomAttachmentTap,
+                removeAttachmentWithId: options.removeAttachmentWithId
             )
         }
     }
     
     public func makeComposerTextInputView(
-        text: Binding<String>,
-        height: Binding<CGFloat>,
-        selectedRangeLocation: Binding<Int>,
-        placeholder: String,
-        editable: Bool,
-        maxMessageLength: Int?,
-        currentHeight: CGFloat
+        options: ComposerTextInputViewOptions
     ) -> some View {
         ComposerTextInputView(
-            text: text,
-            height: height,
-            selectedRangeLocation: selectedRangeLocation,
-            placeholder: placeholder,
-            editable: editable,
-            maxMessageLength: maxMessageLength,
-            currentHeight: currentHeight
+            text: options.text,
+            height: options.height,
+            selectedRangeLocation: options.selectedRangeLocation,
+            placeholder: options.placeholder,
+            editable: options.editable,
+            maxMessageLength: options.maxMessageLength,
+            currentHeight: options.currentHeight
         )
     }
     
     public func makeTrailingComposerView(
-        enabled: Bool,
-        cooldownDuration: Int,
-        onTap: @escaping @MainActor() -> Void
+        options: TrailingComposerViewOptions
     ) -> some View {
-        TrailingComposerView(onTap: onTap)
+        TrailingComposerView(onTap: options.onTap)
     }
     
     public func makeComposerRecordingView(
-        viewModel: MessageComposerViewModel,
-        gestureLocation: CGPoint
+        options: ComposerRecordingViewOptions
     ) -> some View {
-        RecordingView(location: gestureLocation, audioRecordingInfo: viewModel.audioRecordingInfo) {
-            viewModel.stopRecording()
+        RecordingView(location: options.gestureLocation, audioRecordingInfo: options.viewModel.audioRecordingInfo) {
+            options.viewModel.stopRecording()
         }
     }
     
     public func makeComposerRecordingLockedView(
-        viewModel: MessageComposerViewModel
+        options: ComposerRecordingLockedViewOptions
     ) -> some View {
-        LockedView(viewModel: viewModel)
+        LockedView(viewModel: options.viewModel)
     }
     
     public func makeComposerRecordingTipView() -> some View {
@@ -743,115 +626,90 @@ extension ViewFactory {
     }
     
     public func makeAttachmentPickerView(
-        attachmentPickerState: Binding<AttachmentPickerState>,
-        filePickerShown: Binding<Bool>,
-        cameraPickerShown: Binding<Bool>,
-        addedFileURLs: Binding<[URL]>,
-        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void,
-        photoLibraryAssets: PHFetchResult<PHAsset>?,
-        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
-        isAssetSelected: @escaping @MainActor(String) -> Bool,
-        addedCustomAttachments: [CustomAttachment],
-        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void,
-        askForAssetsAccessPermissions: @escaping @MainActor() -> Void,
-        isDisplayed: Bool,
-        height: CGFloat,
-        popupHeight: CGFloat
+        options: AttachmentPickerViewOptions
     ) -> some View {
         AttachmentPickerView(
             viewFactory: self,
-            selectedPickerState: attachmentPickerState,
-            filePickerShown: filePickerShown,
-            cameraPickerShown: cameraPickerShown,
-            addedFileURLs: addedFileURLs,
-            onPickerStateChange: onPickerStateChange,
-            photoLibraryAssets: photoLibraryAssets,
-            onAssetTap: onAssetTap,
-            onCustomAttachmentTap: onCustomAttachmentTap,
-            isAssetSelected: isAssetSelected,
-            addedCustomAttachments: addedCustomAttachments,
-            cameraImageAdded: cameraImageAdded,
-            askForAssetsAccessPermissions: askForAssetsAccessPermissions,
-            isDisplayed: isDisplayed,
-            height: height
+            selectedPickerState: options.attachmentPickerState,
+            filePickerShown: options.filePickerShown,
+            cameraPickerShown: options.cameraPickerShown,
+            addedFileURLs: options.addedFileURLs,
+            onPickerStateChange: options.onPickerStateChange,
+            photoLibraryAssets: options.photoLibraryAssets,
+            onAssetTap: options.onAssetTap,
+            onCustomAttachmentTap: options.onCustomAttachmentTap,
+            isAssetSelected: options.isAssetSelected,
+            addedCustomAttachments: options.addedCustomAttachments,
+            cameraImageAdded: options.cameraImageAdded,
+            askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
+            isDisplayed: options.isDisplayed,
+            height: options.height
         )
-        .offset(y: isDisplayed ? 0 : popupHeight)
+        .offset(y: options.isDisplayed ? 0 : options.popupHeight)
         .animation(.spring())
     }
     
     public func makeVoiceRecordingView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        options: VoiceRecordingViewOptions
     ) -> some View {
         VoiceRecordingContainerView(
             factory: self,
-            message: message,
-            width: availableWidth,
-            isFirst: isFirst,
-            scrolledId: scrolledId
+            message: options.message,
+            width: options.availableWidth,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
     
     public func makeCustomAttachmentView(
-        addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
+        options: CustomComposerAttachmentViewOptions
     ) -> some View {
         EmptyView()
     }
     
     public func makeCustomAttachmentPreviewView(
-        addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
+        options: CustomAttachmentPreviewViewOptions
     ) -> some View {
         EmptyView()
     }
     
     public func makeAttachmentSourcePickerView(
-        selected: AttachmentPickerState,
-        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void
+        options: AttachmentSourcePickerViewOptions
     ) -> some View {
         AttachmentSourcePickerView(
-            selected: selected,
-            onTap: onPickerStateChange
+            selected: options.selected,
+            onTap: options.onPickerStateChange
         )
     }
     
     public func makePhotoAttachmentPickerView(
-        assets: PHFetchResultCollection,
-        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
-        isAssetSelected: @escaping @MainActor(String) -> Bool
+        options: PhotoAttachmentPickerViewOptions
     ) -> some View {
         AttachmentTypeContainer {
             PhotoAttachmentPickerView(
-                assets: assets,
-                onImageTap: onAssetTap,
-                imageSelected: isAssetSelected
+                assets: options.assets,
+                onImageTap: options.onAssetTap,
+                imageSelected: options.isAssetSelected
             )
         }
     }
     
     public func makeFilePickerView(
-        filePickerShown: Binding<Bool>,
-        addedFileURLs: Binding<[URL]>
+        options: FilePickerViewOptions
     ) -> some View {
         FilePickerDisplayView(
-            filePickerShown: filePickerShown,
-            addedFileURLs: addedFileURLs
+            filePickerShown: options.filePickerShown,
+            addedFileURLs: options.addedFileURLs
         )
     }
     
     public func makeCameraPickerView(
-        selected: Binding<AttachmentPickerState>,
-        cameraPickerShown: Binding<Bool>,
-        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void
+        options: CameraPickerViewOptions
     ) -> some View {
         CameraPickerDisplayView(
-            selectedPickerState: selected,
-            cameraPickerShown: cameraPickerShown,
-            cameraImageAdded: cameraImageAdded
+            selectedPickerState: options.selected,
+            cameraPickerShown: options.cameraPickerShown,
+            cameraImageAdded: options.cameraImageAdded
         )
     }
     
@@ -860,199 +718,173 @@ extension ViewFactory {
     }
     
     public func makeSendInChannelView(
-        showReplyInChannel: Binding<Bool>,
-        isDirectMessage: Bool
+        options: SendInChannelViewOptions
     ) -> some View {
         SendInChannelView(
-            sendInChannel: showReplyInChannel,
-            isDirectMessage: isDirectMessage
+            sendInChannel: options.showReplyInChannel,
+            isDirectMessage: options.isDirectMessage
         )
     }
     
     public func supportedMessageActions(
-        for message: ChatMessage,
-        channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: SupportedMessageActionsOptions
     ) -> [MessageAction] {
         MessageAction.defaultActions(
             factory: self,
-            for: message,
-            channel: channel,
+            for: options.message,
+            channel: options.channel,
             chatClient: chatClient,
-            onFinish: onFinish,
-            onError: onError
+            onFinish: options.onFinish,
+            onError: options.onError
         )
     }
     
     public func makeMessageActionsView(
-        for message: ChatMessage,
-        channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: MessageActionsViewOptions
     ) -> some View {
         let messageActions = supportedMessageActions(
-            for: message,
-            channel: channel,
-            onFinish: onFinish,
-            onError: onError
+            options: SupportedMessageActionsOptions(
+                message: options.message,
+                channel: options.channel,
+                onFinish: options.onFinish,
+                onError: options.onError
+            )
         )
         
         return MessageActionsView(messageActions: messageActions)
     }
     
     public func makeReactionsUsersView(
-        message: ChatMessage,
-        maxHeight: CGFloat
+        options: ReactionsUsersViewOptions
     ) -> some View {
         ReactionsUsersView(
-            message: message,
-            maxHeight: maxHeight
+            message: options.message,
+            maxHeight: options.maxHeight
         )
     }
     
     public func makeBottomReactionsView(
-        message: ChatMessage,
-        showsAllInfo: Bool,
-        onTap: @escaping @MainActor() -> Void,
-        onLongPress: @escaping @MainActor() -> Void
+        options: ReactionsBottomViewOptions
     ) -> some View {
         BottomReactionsView(
-            message: message,
-            showsAllInfo: showsAllInfo,
-            onTap: onTap,
-            onLongPress: onLongPress
+            message: options.message,
+            showsAllInfo: options.showsAllInfo,
+            onTap: options.onTap,
+            onLongPress: options.onLongPress
         )
-        .id(message.reactionScoresId)
+        .id(options.message.reactionScoresId)
     }
     
     public func makeMessageReactionView(
-        message: ChatMessage,
-        onTapGesture: @escaping @MainActor() -> Void,
-        onLongPressGesture: @escaping @MainActor() -> Void
+        options: MessageReactionViewOptions
     ) -> some View {
         ReactionsContainer(
-            message: message,
-            onTapGesture: onTapGesture,
-            onLongPressGesture: onLongPressGesture
+            message: options.message,
+            onTapGesture: options.onTapGesture,
+            onLongPressGesture: options.onLongPressGesture
         )
     }
     
     public func makeReactionsOverlayView(
-        channel: ChatChannel,
-        currentSnapshot: UIImage,
-        messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping @MainActor() -> Void,
-        onActionExecuted: @escaping @MainActor(MessageActionInfo) -> Void
+        options: ReactionsOverlayViewOptions
     ) -> some View {
         ReactionsOverlayView(
             factory: self,
-            channel: channel,
-            currentSnapshot: currentSnapshot,
-            messageDisplayInfo: messageDisplayInfo,
-            onBackgroundTap: onBackgroundTap,
-            onActionExecuted: onActionExecuted
+            channel: options.channel,
+            currentSnapshot: options.currentSnapshot,
+            messageDisplayInfo: options.messageDisplayInfo,
+            onBackgroundTap: options.onBackgroundTap,
+            onActionExecuted: options.onActionExecuted
         )
     }
     
     public func makeReactionsContentView(
-        message: ChatMessage,
-        contentRect: CGRect,
-        onReactionTap: @escaping @MainActor(MessageReactionType) -> Void
+        options: ReactionsContentViewOptions
     ) -> some View {
         ReactionsOverlayContainer(
-            message: message,
-            contentRect: contentRect,
-            onReactionTap: onReactionTap
+            message: options.message,
+            contentRect: options.contentRect,
+            onReactionTap: options.onReactionTap
         )
     }
     
     public func makeReactionsBackgroundView(
-        currentSnapshot: UIImage,
-        popInAnimationInProgress: Bool
+        options: ReactionsBackgroundOptions
     ) -> some View {
-        Image(uiImage: currentSnapshot)
-            .overlay(Color.black.opacity(popInAnimationInProgress ? 0 : 0.1))
-            .blur(radius: popInAnimationInProgress ? 0 : 4)
+        Image(uiImage: options.currentSnapshot)
+            .overlay(Color.black.opacity(options.popInAnimationInProgress ? 0 : 0.1))
+            .blur(radius: options.popInAnimationInProgress ? 0 : 4)
     }
     
     public func makeQuotedMessageHeaderView(
-        quotedMessage: Binding<ChatMessage?>
+        options: QuotedMessageHeaderViewOptions
     ) -> some View {
-        QuotedMessageHeaderView(quotedMessage: quotedMessage)
+        QuotedMessageHeaderView(quotedMessage: options.quotedMessage)
     }
     
     public func makeQuotedMessageView(
-        quotedMessage: ChatMessage,
-        fillAvailableSpace: Bool,
-        isInComposer: Bool,
-        scrolledId: Binding<String?>
+        options: QuotedMessageViewOptions
     ) -> some View {
         QuotedMessageViewContainer(
             factory: self,
-            quotedMessage: quotedMessage,
-            fillAvailableSpace: fillAvailableSpace,
-            forceLeftToRight: isInComposer,
-            scrolledId: scrolledId
+            quotedMessage: options.quotedMessage,
+            fillAvailableSpace: options.fillAvailableSpace,
+            forceLeftToRight: options.isInComposer,
+            scrolledId: options.scrolledId
         )
     }
     
-    public func makeCustomAttachmentQuotedView(for message: ChatMessage) -> some View {
+    public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
         EmptyView()
     }
     
     public func makeEditedMessageHeaderView(
-        editedMessage: Binding<ChatMessage?>
+        options: EditedMessageHeaderViewOptions
     ) -> some View {
-        EditMessageHeaderView(editedMessage: editedMessage)
+        EditMessageHeaderView(editedMessage: options.editedMessage)
     }
     
     public func makeCommandsContainerView(
-        suggestions: [String: Any],
-        handleCommand: @escaping @MainActor([String: Any]) -> Void
+        options: CommandsContainerViewOptions
     ) -> some View {
         CommandsContainerView(
-            suggestions: suggestions,
-            handleCommand: handleCommand
+            suggestions: options.suggestions,
+            handleCommand: options.handleCommand
         )
     }
     
     public func makeMessageReadIndicatorView(
-        channel: ChatChannel,
-        message: ChatMessage
+        options: MessageReadIndicatorViewOptions
     ) -> some View {
-        let readUsers = channel.readUsers(
+        let readUsers = options.channel.readUsers(
             currentUserId: chatClient.currentUserId,
-            message: message
+            message: options.message
         )
-        let showReadCount = channel.memberCount > 2 && !message.isLastActionFailed
+        let showReadCount = options.channel.memberCount > 2 && !options.message.isLastActionFailed
         return MessageReadIndicatorView(
             readUsers: readUsers,
             showReadCount: showReadCount,
-            localState: message.localState
+            localState: options.message.localState
         )
     }
     
     public func makeNewMessagesIndicatorView(
-        newMessagesStartId: Binding<String?>,
-        count: Int
+        options: NewMessagesIndicatorViewOptions
     ) -> some View {
         NewMessagesIndicator(
-            newMessagesStartId: newMessagesStartId,
-            count: count
+            newMessagesStartId: options.newMessagesStartId,
+            count: options.count
         )
     }
     
     public func makeJumpToUnreadButton(
-        channel: ChatChannel,
-        onJumpToMessage: @escaping @MainActor() -> Void,
-        onClose: @escaping @MainActor() -> Void
+        options: JumpToUnreadButtonOptions
     ) -> some View {
         VStack {
             JumpToUnreadButton(
-                unreadCount: channel.unreadCount.messages,
-                onTap: onJumpToMessage,
-                onClose: onClose
+                unreadCount: options.channel.unreadCount.messages,
+                onTap: options.onJumpToMessage,
+                onClose: options.onClose
             )
             .padding(.all, 8)
 
@@ -1061,14 +893,13 @@ extension ViewFactory {
     }
     
     public func makeComposerPollView(
-        channelController: ChatChannelController,
-        messageController: ChatMessageController?
+        options: ComposerPollViewOptions
     ) -> some View {
-        ComposerPollView(channelController: channelController, messageController: messageController)
+        ComposerPollView(channelController: options.channelController, messageController: options.messageController)
     }
     
-    public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
-        PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
+    public func makePollView(options: PollViewOptions) -> some View {
+        PollAttachmentView(factory: self, message: options.message, poll: options.poll, isFirst: options.isFirst)
     }
 
     // MARK: Threads
@@ -1080,18 +911,16 @@ extension ViewFactory {
     }
 
     public func makeThreadListItem(
-        thread: ChatThread,
-        threadDestination: @escaping @MainActor(ChatThread) -> ThreadDestination,
-        selectedThread: Binding<ThreadSelectionInfo?>
+        options: ThreadListItemOptions<ChannelDestination>
     ) -> some View {
         let utils = InjectedValues[\.utils]
         return ChatThreadListNavigatableItem(
-            thread: thread,
+            thread: options.thread,
             threadListItem: ChatThreadListItem(
-                viewModel: .init(thread: thread)
+                viewModel: .init(thread: options.thread)
             ),
-            threadDestination: threadDestination,
-            selectedThread: selectedThread,
+            threadDestination: options.threadDestination,
+            selectedThread: options.selectedThread,
             handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
         )
     }
@@ -1100,41 +929,40 @@ extension ViewFactory {
         NoThreadsView()
     }
 
-    public func makeThreadsListErrorBannerView(onRefreshAction: @escaping @MainActor() -> Void) -> some View {
-        ChatThreadListErrorBannerView(action: onRefreshAction)
+    public func makeThreadsListErrorBannerView(options: ThreadListErrorBannerViewOptions) -> some View {
+        ChatThreadListErrorBannerView(action: options.onRefreshAction)
     }
 
     public func makeThreadListLoadingView() -> some View {
         ChatThreadListLoadingView()
     }
 
-    public func makeThreadListContainerViewModifier(viewModel: ChatThreadListViewModel) -> some ViewModifier {
+    public func makeThreadListContainerViewModifier(options: ThreadListContainerModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
 
-    public func makeThreadListHeaderViewModifier(title: String) -> some ViewModifier {
-        ChatThreadListHeaderViewModifier(title: title)
+    public func makeThreadListHeaderViewModifier(options: ThreadListHeaderViewModifierOptions) -> some ViewModifier {
+        ChatThreadListHeaderViewModifier(title: options.title)
     }
 
-    public func makeThreadListHeaderView(viewModel: ChatThreadListViewModel) -> some View {
-        ChatThreadListHeaderView(viewModel: viewModel)
+    public func makeThreadListHeaderView(options: ThreadListHeaderViewOptions) -> some View {
+        ChatThreadListHeaderView(viewModel: options.viewModel)
     }
 
-    public func makeThreadListFooterView(viewModel: ChatThreadListViewModel) -> some View {
-        ChatThreadListFooterView(viewModel: viewModel)
+    public func makeThreadListFooterView(options: ThreadListFooterViewOptions) -> some View {
+        ChatThreadListFooterView(viewModel: options.viewModel)
     }
 
-    public func makeThreadListBackground(colors: ColorPalette) -> some View {
-        Color(colors.background)
+    public func makeThreadListBackground(options: ThreadListBackgroundOptions) -> some View {
+        Color(options.colors.background)
             .edgesIgnoringSafeArea(.bottom)
     }
 
     public func makeThreadListItemBackground(
-        thread: ChatThread,
-        isSelected: Bool
+        options: ThreadListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        if isSelected && isIPad {
+        if options.isSelected && isIPad {
             return Color(colors.background6)
         }
 
@@ -1146,17 +974,16 @@ extension ViewFactory {
     }
     
     public func makeAddUsersView(
-        options: AddUsersOptions,
-        onUserTap: @escaping @MainActor(ChatUser) -> Void
+        options: AddUsersViewOptions
     ) -> some View {
-        AddUsersView(loadedUserIds: options.loadedUsers.map(\.id), onUserTap: onUserTap)
+        AddUsersView(loadedUserIds: options.options.loadedUsers.map(\.id), onUserTap: options.onUserTap)
     }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
 public class DefaultViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
-    
+        
     private init() {
         // Private init.
     }

@@ -34,7 +34,7 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                         imageURL: participant.chatUser.imageURL,
                         extraData: participant.chatUser.extraData
                     )
-                    factory.makeMessageAvatarView(for: displayInfo)
+                    factory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: displayInfo))
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(participant.displayName)

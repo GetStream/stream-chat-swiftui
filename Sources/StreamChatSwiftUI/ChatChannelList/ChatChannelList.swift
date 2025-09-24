@@ -170,22 +170,26 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
                 factory.makeChannelListItem(
-                    channel: channel,
-                    channelName: channelNaming(channel),
-                    avatar: imageLoader(channel),
-                    onlineIndicatorShown: onlineIndicatorShown(channel),
-                    disabled: swipedChannelId == channel.id,
-                    selectedChannel: $selectedChannel,
-                    swipedChannelId: $swipedChannelId,
-                    channelDestination: channelDestination,
-                    onItemTap: onItemTap,
-                    trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
-                    trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-                    leadingSwipeButtonTapped: leadingSwipeButtonTapped
+                    options: ChannelListItemOptions(
+                        channel: channel,
+                        channelName: channelNaming(channel),
+                        avatar: imageLoader(channel),
+                        onlineIndicatorShown: onlineIndicatorShown(channel),
+                        disabled: swipedChannelId == channel.id,
+                        selectedChannel: $selectedChannel,
+                        swipedChannelId: $swipedChannelId,
+                        channelDestination: channelDestination,
+                        onItemTap: onItemTap,
+                        trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+                        trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+                        leadingSwipeButtonTapped: leadingSwipeButtonTapped
+                    )
                 )
                 .background(factory.makeChannelListItemBackground(
-                    channel: channel,
-                    isSelected: selectedChannel?.channel.id == channel.id
+                    options: ChannelListItemBackgroundOptions(
+                        channel: channel,
+                        isSelected: selectedChannel?.channel.id == channel.id
+                    )
                 ))
                 .onAppear {
                     if let index = channels.firstIndex(where: { chatChannel in

@@ -41,17 +41,21 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack {
             viewFactory.makeVideoPlayerHeaderView(
-                title: author.name ?? "",
-                subtitle: author.onlineText,
-                shown: $isShown
+                options: VideoPlayerHeaderViewOptions(
+                    title: author.name ?? "",
+                    subtitle: author.onlineText,
+                    shown: $isShown
+                )
             )
             if let avPlayer {
                 VideoPlayer(player: avPlayer)
             }
             Spacer()
             viewFactory.makeVideoPlayerFooterView(
-                attachment: attachment,
-                shown: $isShown
+                options: VideoPlayerFooterViewOptions(
+                    attachment: attachment,
+                    shown: $isShown
+                )
             )
         }
         .onAppear {

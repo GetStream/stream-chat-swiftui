@@ -170,9 +170,11 @@ import XCTest
 
         // When
         let view = factory.makeTrailingComposerView(
-            enabled: true,
-            cooldownDuration: 0,
-            onTap: {}
+            options: TrailingComposerViewOptions(
+                enabled: true,
+                cooldownDuration: 0,
+                onTap: {}
+            )
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: 100, height: 40)
@@ -189,9 +191,11 @@ import XCTest
         
         // When
         let view = factory.makeTrailingComposerView(
-            enabled: true,
-            cooldownDuration: 15,
-            onTap: {}
+            options: TrailingComposerViewOptions(
+                enabled: true,
+                cooldownDuration: 15,
+                onTap: {}
+            )
         )
         .environmentObject(viewModel)
         .frame(width: 36, height: 36)
@@ -209,7 +213,7 @@ import XCTest
 
         // When
         let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
-        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+        let view = factory.makeLeadingComposerView(options: LeadingComposerViewOptions(state: pickerTypeState, channelConfig: nil))
             .environmentObject(viewModel)
             .frame(width: 36, height: 36)
 
@@ -226,7 +230,7 @@ import XCTest
 
         // When
         let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
-        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+        let view = factory.makeLeadingComposerView(options: LeadingComposerViewOptions(state: pickerTypeState, channelConfig: nil))
             .environmentObject(viewModel)
             .frame(width: 36, height: 36)
 

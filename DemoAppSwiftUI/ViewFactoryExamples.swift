@@ -15,15 +15,17 @@ class DemoAppFactory: ViewFactory {
 
     public static let shared = DemoAppFactory()
 
-    func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
-        CustomChannelModifier(title: title)
+    func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
+        CustomChannelModifier(title: options.title)
     }
     
     func supportedMoreChannelActions(
-        for channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: SupportedMoreChannelActionsOptions
     ) -> [ChannelAction] {
+        let channel = options.channel
+        let onDismiss = options.onDismiss
+        let onError = options.onError
+        
         var actions = ChannelAction.defaultActions(
             for: channel,
             chatClient: chatClient,
@@ -42,19 +44,20 @@ class DemoAppFactory: ViewFactory {
     }
     
     func makeChannelListItem(
-        channel: ChatChannel,
-        channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
-        disabled: Bool,
-        selectedChannel: Binding<ChannelSelectionInfo?>,
-        swipedChannelId: Binding<String?>,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChatChannelView<DemoAppFactory>,
-        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        options: ChannelListItemOptions<ChannelDestination>
     ) -> some View {
+        let channel = options.channel
+        let channelName = options.channelName
+        let avatar = options.avatar
+        let onlineIndicatorShown = options.onlineIndicatorShown
+        let disabled = options.disabled
+        let selectedChannel = options.selectedChannel
+        let swipedChannelId = options.swipedChannelId
+        let channelDestination = options.channelDestination
+        let onItemTap = options.onItemTap
+        let trailingSwipeRightButtonTapped = options.trailingSwipeRightButtonTapped
+        let trailingSwipeLeftButtonTapped = options.trailingSwipeLeftButtonTapped
+        let leadingSwipeButtonTapped = options.leadingSwipeButtonTapped
         let listItem = DemoAppChatChannelNavigatableListItem(
             channel: channel,
             channelName: channelName,
@@ -231,7 +234,7 @@ class CustomFactory: ViewFactory {
 
     public static let shared = CustomFactory()
 
-    func makeGiphyBadgeViewType(for message: ChatMessage, availableWidth: CGFloat) -> some View {
+    func makeGiphyBadgeViewType(options: GiphyBadgeViewTypeOptions) -> some View {
         EmptyView()
     }
 
@@ -250,16 +253,18 @@ class CustomFactory: ViewFactory {
         }
     }
 
-    func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
-        CustomChannelModifier(title: title)
+    func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
+        CustomChannelModifier(title: options.title)
     }
 
     // Example for an injected action. Uncomment to see it in action.
     func supportedMoreChannelActions(
-        for channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: SupportedMoreChannelActionsOptions
     ) -> [ChannelAction] {
+        let channel = options.channel
+        let onDismiss = options.onDismiss
+        let onError = options.onError
+        
         var defaultActions = ChannelAction.defaultActions(
             for: channel,
             chatClient: chatClient,
@@ -296,16 +301,14 @@ class CustomFactory: ViewFactory {
     }
 
     func makeMoreChannelActionsView(
-        for channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        options: MoreChannelActionsViewOptions
     ) -> some View {
         VStack {
             Text("This is our custom view")
             Spacer()
             HStack {
                 Button {
-                    onDismiss()
+                    options.onDismiss()
                 } label: {
                     Text("Action")
                 }
@@ -315,22 +318,23 @@ class CustomFactory: ViewFactory {
     }
 
     func makeMessageTextView(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat
+        options: MessageTextViewOptions
     ) -> some View {
-        CustomMessageTextView(
+        let message = options.message
+        let isFirst = options.isFirst
+        return CustomMessageTextView(
             message: message,
             isFirst: isFirst
         )
     }
 
     func makeCustomAttachmentViewType(
-        for message: ChatMessage,
-        isFirst: Bool,
-        availableWidth: CGFloat
+        options: CustomAttachmentViewTypeOptions
     ) -> some View {
-        CustomAttachmentView(
+        let message = options.message
+        let isFirst = options.isFirst
+        let availableWidth = options.availableWidth
+        return CustomAttachmentView(
             message: message,
             width: availableWidth,
             isFirst: isFirst

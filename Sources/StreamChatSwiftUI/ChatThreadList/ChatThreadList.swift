@@ -86,33 +86,39 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        LazyVStack(spacing: 0) {
-            ForEach(threads) { thread in
-                factory.makeThreadListItem(
-                    thread: thread,
-                    threadDestination: threadDestination,
-                    selectedThread: $selectedThread
-                )
-                .background(
-                    factory.makeThreadListItemBackground(
-                        thread: thread,
-                        isSelected: selectedThread?.id == thread.id
-                    )
-                )
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    onItemTap(thread)
-                }
-                .onAppear {
-                    if let index = threads.firstIndex(where: { chatThread in
-                        chatThread.id == thread.id
-                    }) {
-                        onItemAppear(index)
-                    }
-                }
-                factory.makeThreadListDividerItem()
-            }
-        }
+        Text("Dummy")
+        //TODO: fix this
+//        LazyVStack(spacing: 0) {
+//            ForEach(threads) { thread in
+//                factory.makeThreadListItem(
+//                    options: ThreadListItemOptions(
+//                        thread: thread,
+//                        threadDestination: threadDestination,
+//                        selectedThread: $selectedThread
+//                    )
+//                )
+//                .background(
+//                    factory.makeThreadListItemBackground(
+//                        options: ThreadListItemBackgroundOptions(
+//                            thread: thread,
+//                            isSelected: selectedThread?.id == thread.id
+//                        )
+//                    )
+//                )
+//                .contentShape(Rectangle())
+//                .onTapGesture {
+//                    onItemTap(thread)
+//                }
+//                .onAppear {
+//                    if let index = threads.firstIndex(where: { chatThread in
+//                        chatThread.id == thread.id
+//                    }) {
+//                        onItemAppear(index)
+//                    }
+//                }
+//                factory.makeThreadListDividerItem()
+//            }
+//        }
     }
 }
 

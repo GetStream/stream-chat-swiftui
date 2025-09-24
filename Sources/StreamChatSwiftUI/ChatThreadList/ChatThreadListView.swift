@@ -65,15 +65,19 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                 }
             }
             .bottomBanner(isPresented: viewModel.failedToLoadThreads || viewModel.failedToLoadMoreThreads) {
-                viewFactory.makeThreadsListErrorBannerView {
-                    viewModel.retryLoadThreads()
-                }
+                viewFactory.makeThreadsListErrorBannerView(
+                    options: ThreadListErrorBannerViewOptions(
+                        onRefreshAction: {
+                            viewModel.retryLoadThreads()
+                        }
+                    )
+                )
             }
             .background(
-                viewFactory.makeThreadListBackground(colors: colors)
+                viewFactory.makeThreadListBackground(options: ThreadListBackgroundOptions(colors: colors))
             )
-            .modifier(viewFactory.makeThreadListHeaderViewModifier(title: title))
-            .modifier(viewFactory.makeThreadListContainerViewModifier(viewModel: viewModel))
+            .modifier(viewFactory.makeThreadListHeaderViewModifier(options: ThreadListHeaderViewModifierOptions(title: title)))
+            .modifier(viewFactory.makeThreadListContainerViewModifier(options: ThreadListContainerModifierOptions(viewModel: viewModel)))
             .onAppear {
                 viewModel.viewDidAppear()
             }
@@ -112,10 +116,10 @@ public struct ChatThreadListContentView<Factory: ViewFactory>: View {
                 viewModel.didAppearThread(at: index)
             },
             headerView: {
-                viewFactory.makeThreadListHeaderView(viewModel: viewModel)
+                viewFactory.makeThreadListHeaderView(options: ThreadListHeaderViewOptions(viewModel: viewModel))
             },
             footerView: {
-                viewFactory.makeThreadListFooterView(viewModel: viewModel)
+                viewFactory.makeThreadListFooterView(options: ThreadListFooterViewOptions(viewModel: viewModel))
             }
         )
     }

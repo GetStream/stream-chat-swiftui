@@ -17,10 +17,12 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
             if let quotedMessage = message.quotedMessage {
                 VStack {
                     factory.makeQuotedMessageView(
-                        quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
-                        scrolledId: $scrolledId
+                        options: .init(
+                            quotedMessage: quotedMessage,
+                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                            isInComposer: false,
+                            scrolledId: $scrolledId
+                        )
                     )
 
                     VideoAttachmentsList(
@@ -195,10 +197,12 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
         .cornerRadius(cornerRadius)
         .fullScreenCover(isPresented: $fullScreenShown) {
             factory.makeVideoPlayerView(
-                attachment: attachment,
-                message: message,
-                isShown: $fullScreenShown,
-                options: .init(selectedIndex: 0)
+                options: VideoPlayerViewOptions(
+                    attachment: attachment,
+                    message: message,
+                    isShown: $fullScreenShown,
+                    options: .init(selectedIndex: 0)
+                )
             )
         }
         .onAppear {

@@ -67,8 +67,10 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             viewFactory.makeAttachmentSourcePickerView(
-                selected: selectedPickerState,
-                onPickerStateChange: onPickerStateChange
+                options: AttachmentSourcePickerViewOptions(
+                    selected: selectedPickerState,
+                    onPickerStateChange: onPickerStateChange
+                )
             )
             .environmentObject(viewModel)
 
@@ -77,9 +79,11 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     let collection = PHFetchResultCollection(fetchResult: assets)
                     if !collection.isEmpty {
                         viewFactory.makePhotoAttachmentPickerView(
-                            assets: collection,
-                            onAssetTap: onAssetTap,
-                            isAssetSelected: isAssetSelected
+                            options: PhotoAttachmentPickerViewOptions(
+                                assets: collection,
+                                onAssetTap: onAssetTap,
+                                isAssetSelected: isAssetSelected
+                            )
                         )
                         .edgesIgnoringSafeArea(.bottom)
                     } else {
@@ -91,24 +95,32 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
             } else if selectedPickerState == .files {
                 viewFactory.makeFilePickerView(
-                    filePickerShown: $filePickerShown,
-                    addedFileURLs: $addedFileURLs
+                    options: FilePickerViewOptions(
+                        filePickerShown: $filePickerShown,
+                        addedFileURLs: $addedFileURLs
+                    )
                 )
             } else if selectedPickerState == .camera {
                 viewFactory.makeCameraPickerView(
-                    selected: $selectedPickerState,
-                    cameraPickerShown: $cameraPickerShown,
-                    cameraImageAdded: cameraImageAdded
+                    options: CameraPickerViewOptions(
+                        selected: $selectedPickerState,
+                        cameraPickerShown: $cameraPickerShown,
+                        cameraImageAdded: cameraImageAdded
+                    )
                 )
             } else if selectedPickerState == .polls {
                 viewFactory.makeComposerPollView(
-                    channelController: viewModel.channelController,
-                    messageController: viewModel.messageController
+                    options: ComposerPollViewOptions(
+                        channelController: viewModel.channelController,
+                        messageController: viewModel.messageController
+                    )
                 )
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
-                    addedCustomAttachments: addedCustomAttachments,
-                    onCustomAttachmentTap: onCustomAttachmentTap
+                    options: CustomComposerAttachmentViewOptions(
+                        addedCustomAttachments: addedCustomAttachments,
+                        onCustomAttachmentTap: onCustomAttachmentTap
+                    )
                 )
             }
         }

@@ -142,10 +142,12 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         VStack {
             if let parentMessage = parentMessageObserver.message {
                 factory.makeMessageRepliesShownInChannelView(
-                    channel: channel,
-                    message: message,
-                    parentMessage: parentMessage,
-                    replyCount: parentMessage.replyCount
+                    options: .init(
+                        channel: channel,
+                        message: message,
+                        parentMessage: parentMessage,
+                        replyCount: parentMessage.replyCount
+                    )
                 )
             } else {
                 EmptyView()

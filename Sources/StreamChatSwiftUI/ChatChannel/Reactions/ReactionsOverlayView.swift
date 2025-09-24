@@ -68,10 +68,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.onBackgroundTap = onBackgroundTap
         self.onActionExecuted = onActionExecuted
         messageActionsCount = factory.supportedMessageActions(
-            for: messageDisplayInfo.message,
-            channel: channel,
-            onFinish: { _ in /* No handling needed. */ },
-            onError: { _ in /* No handling needed. */ }
+            options:
+                .init(
+                    message: messageDisplayInfo.message,
+                    channel: channel,
+                    onFinish: { _ in /* No handling needed. */ },
+                    onError: { _ in /* No handling needed. */ }
+                )
         ).count
     }
 
@@ -80,8 +83,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             ZStack {
                 if !orientationChanged {
                     factory.makeReactionsBackgroundView(
-                        currentSnapshot: currentSnapshot,
-                        popInAnimationInProgress: !popIn
+                        options: .init(
+                            currentSnapshot: currentSnapshot,
+                            popInAnimationInProgress: !popIn
+                        )
                     )
                     .offset(y: overlayOffsetY)
                 } else {
@@ -100,7 +105,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             if !messageDisplayInfo.message.isRightAligned &&
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                 factory.makeMessageAvatarView(
-                    for: messageDisplayInfo.message.authorDisplayInfo
+                    options: .init(userDisplayInfo: messageDisplayInfo.message.authorDisplayInfo)
                 )
                 .offset(
                     x: paddingValue / 2,
@@ -135,13 +140,15 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .overlay(
                         (channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced) ?
                             factory.makeReactionsContentView(
-                                message: viewModel.message,
-                                contentRect: messageDisplayInfo.frame,
-                                onReactionTap: { reaction in
-                                    dismissReactionsOverlay {
-                                        viewModel.reactionTapped(reaction)
+                                options: ReactionsContentViewOptions(
+                                    message: viewModel.message,
+                                    contentRect: messageDisplayInfo.frame,
+                                    onReactionTap: { reaction in
+                                        dismissReactionsOverlay {
+                                            viewModel.reactionTapped(reaction)
+                                        }
                                     }
-                                }
+                                )
                             )
                             .scaleEffect(popIn ? 1 : 0)
                             .opacity(willPopOut ? 0 : 1)
@@ -161,14 +168,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
                     if messageDisplayInfo.showsMessageActions {
                         factory.makeMessageActionsView(
-                            for: messageDisplayInfo.message,
-                            channel: channel,
-                            onFinish: { actionInfo in
-                                onActionExecuted(actionInfo)
-                            },
-                            onError: { _ in
-                                viewModel.errorShown = true
-                            }
+                            options: MessageActionsViewOptions(
+                                message: messageDisplayInfo.message,
+                                channel: channel,
+                                onFinish: { actionInfo in
+                                    onActionExecuted(actionInfo)
+                                },
+                                onError: { _ in
+                                    viewModel.errorShown = true
+                                }
+                            )
                         )
                         .frame(width: messageActionsWidth)
                         .offset(
@@ -181,8 +190,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     } else if messageDisplayInfo.showsBottomContainer {
                         factory.makeReactionsUsersView(
-                            message: viewModel.message,
-                            maxHeight: userReactionsHeight
+                            options: ReactionsUsersViewOptions(
+                                message: viewModel.message,
+                                maxHeight: userReactionsHeight
+                            )
                         )
                         .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
                         .offset(

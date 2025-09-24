@@ -88,15 +88,17 @@ struct iMessagePocView: View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
             factory.makeMoreChannelActionsView(
-                for: channel,
-                swipedChannelId: $viewModel.swipedChannelId
-            ) {
+                options: .init(
+                    channel: channel,
+                    swipedChannelId: $viewModel.swipedChannelId
+                ) {
                 withAnimation {
                     viewModel.customChannelPopupType = nil
                 }
-            } onError: { error in
-                viewModel.showErrorPopup(error)
-            }
+                } onError: { error in
+                    viewModel.showErrorPopup(error)
+                }
+            )
             .edgesIgnoringSafeArea(.all)
         default:
             EmptyView()

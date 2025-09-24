@@ -95,12 +95,14 @@ struct SearchResultView<Factory: ViewFactory>: View {
     var body: some View {
         ZStack {
             factory.makeChannelListSearchResultItem(
-                searchResult: searchResult,
-                onlineIndicatorShown: onlineIndicatorShown,
-                channelName: channelName,
-                avatar: avatar,
-                onSearchResultTap: onSearchResultTap,
-                channelDestination: channelDestination
+                options: ChannelListSearchResultItemOptions(
+                    searchResult: searchResult,
+                    onlineIndicatorShown: onlineIndicatorShown,
+                    channelName: channelName,
+                    avatar: avatar,
+                    onSearchResultTap: onSearchResultTap,
+                    channelDestination: channelDestination
+                )
             )
 
             NavigationLink(
@@ -134,8 +136,10 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    for: searchResult.channel,
-                    with: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
+                    options: ChannelAvatarViewFactoryOptions(
+                        channel: searchResult.channel,
+                        options: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
+                    )
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

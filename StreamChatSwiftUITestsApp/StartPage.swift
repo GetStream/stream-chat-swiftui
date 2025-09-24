@@ -86,7 +86,7 @@ class DemoAppFactory: ViewFactory {
 
     public static let shared = DemoAppFactory()
 
-    func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
-        CustomChannelModifier(title: title)
+    func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
+        CustomChannelModifier(title: options.title)
     }
 }

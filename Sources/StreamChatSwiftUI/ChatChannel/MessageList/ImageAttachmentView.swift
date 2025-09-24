@@ -24,10 +24,12 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         ) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                    options: .init(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
                 )
             }
 
@@ -63,10 +65,12 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             self.selectedIndex = 0
         }) {
             factory.makeGalleryView(
-                mediaAttachments: sources,
-                message: message,
-                isShown: $galleryShown,
-                options: .init(selectedIndex: selectedIndex)
+                options: GalleryViewOptions(
+                    mediaAttachments: sources,
+                    message: message,
+                    isShown: $galleryShown,
+                    options: .init(selectedIndex: selectedIndex)
+                )
             )
         }
         .accessibilityIdentifier("ImageAttachmentContainer")

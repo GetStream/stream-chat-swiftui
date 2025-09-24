@@ -122,24 +122,28 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 
     private var trailingSwipeActions: some View {
         factory.makeTrailingSwipeActionsView(
-            channel: channel,
-            offsetX: offsetX,
-            buttonWidth: buttonWidth,
-            swipedChannelId: $swipedChannelId,
-            leftButtonTapped: trailingLeftButtonTapped,
-            rightButtonTapped: trailingRightButtonTapped
+            options: TrailingSwipeActionsViewOptions(
+                channel: channel,
+                offsetX: offsetX,
+                buttonWidth: buttonWidth,
+                swipedChannelId: $swipedChannelId,
+                leftButtonTapped: trailingLeftButtonTapped,
+                rightButtonTapped: trailingRightButtonTapped
+            )
         )
     }
 
     private var showTrailingSwipeActions: Bool {
         #if DEBUG
         let view = factory.makeTrailingSwipeActionsView(
-            channel: channel,
-            offsetX: offsetX,
-            buttonWidth: buttonWidth,
-            swipedChannelId: $swipedChannelId,
-            leftButtonTapped: trailingLeftButtonTapped,
-            rightButtonTapped: trailingRightButtonTapped
+            options: TrailingSwipeActionsViewOptions(
+                channel: channel,
+                offsetX: offsetX,
+                buttonWidth: buttonWidth,
+                swipedChannelId: $swipedChannelId,
+                leftButtonTapped: trailingLeftButtonTapped,
+                rightButtonTapped: trailingRightButtonTapped
+            )
         )
         return !(view is EmptyView)
         #else
@@ -149,22 +153,26 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 
     private var leadingSwipeActions: some View {
         factory.makeLeadingSwipeActionsView(
-            channel: channel,
-            offsetX: offsetX,
-            buttonWidth: buttonWidth,
-            swipedChannelId: $swipedChannelId,
-            buttonTapped: leadingButtonTapped
+            options: LeadingSwipeActionsViewOptions(
+                channel: channel,
+                offsetX: offsetX,
+                buttonWidth: buttonWidth,
+                swipedChannelId: $swipedChannelId,
+                buttonTapped: leadingButtonTapped
+            )
         )
     }
 
     private var showLeadingSwipeActions: Bool {
         #if DEBUG
         let view = factory.makeLeadingSwipeActionsView(
-            channel: channel,
-            offsetX: offsetX,
-            buttonWidth: buttonWidth,
-            swipedChannelId: $swipedChannelId,
-            buttonTapped: leadingButtonTapped
+            options: LeadingSwipeActionsViewOptions(
+                channel: channel,
+                offsetX: offsetX,
+                buttonWidth: buttonWidth,
+                swipedChannelId: $swipedChannelId,
+                buttonTapped: leadingButtonTapped
+            )
         )
         return !(view is EmptyView)
         #else

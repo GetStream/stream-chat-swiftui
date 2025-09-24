@@ -125,7 +125,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         })
         .background(
-            viewFactory.makeChannelListBackground(colors: colors)
+            viewFactory.makeChannelListBackground(options: ChannelListBackgroundOptions(colors: colors))
         )
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {
@@ -142,7 +142,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 return Alert.defaultErrorAlert
             }
         }
-        .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title))
+        .modifier(viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: title)))
         .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
         .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
@@ -161,16 +161,20 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
             viewFactory.makeMoreChannelActionsView(
-                for: channel,
-                swipedChannelId: $viewModel.swipedChannelId
-            ) {
-                withAnimation {
-                    viewModel.customChannelPopupType = nil
-                    viewModel.swipedChannelId = nil
-                }
-            } onError: { error in
-                viewModel.showErrorPopup(error)
-            }
+                options: MoreChannelActionsViewOptions(
+                    channel: channel,
+                    swipedChannelId: $viewModel.swipedChannelId,
+                    onDismiss: {
+                        withAnimation {
+                            viewModel.customChannelPopupType = nil
+                            viewModel.swipedChannelId = nil
+                        }
+                    },
+                    onError: { error in
+                        viewModel.showErrorPopup(error)
+                    }
+                )
+            )
             .edgesIgnoringSafeArea(.bottom)
         default:
             EmptyView()
@@ -211,21 +215,23 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             viewFactory.makeChannelListTopView(
-                searchText: $viewModel.searchText
+                options: ChannelListTopViewOptions(searchText: $viewModel.searchText)
             )
 
             if viewModel.isSearching {
                 viewFactory.makeSearchResultsView(
-                    selectedChannel: $viewModel.selectedChannel,
-                    searchResults: viewModel.searchResults,
-                    loadingSearchResults: viewModel.loadingSearchResults,
-                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                    channelNaming: viewModel.name(forChannel:),
-                    imageLoader: channelHeaderLoader.image(for:),
-                    onSearchResultTap: { searchResult in
-                        viewModel.selectedChannel = searchResult
-                    },
-                    onItemAppear: viewModel.loadAdditionalSearchResults(index:)
+                    options: SearchResultsViewOptions(
+                        selectedChannel: $viewModel.selectedChannel,
+                        searchResults: viewModel.searchResults,
+                        loadingSearchResults: viewModel.loadingSearchResults,
+                        onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                        channelNaming: viewModel.name(forChannel:),
+                        imageLoader: channelHeaderLoader.image(for:),
+                        onSearchResultTap: { searchResult in
+                            viewModel.selectedChannel = searchResult
+                        },
+                        onItemAppear: viewModel.loadAdditionalSearchResults(index:)
+                    )
                 )
             } else {
                 ChannelList(

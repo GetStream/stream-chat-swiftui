@@ -222,12 +222,14 @@ struct PollOptionView<Factory: ViewFactory>: View {
                                 option.latestVotes.prefix(2)
                             ) { vote in
                                 factory.makeMessageAvatarView(
-                                    for: UserDisplayInfo(
-                                        id: vote.user?.id ?? "",
-                                        name: vote.user?.name ?? "",
-                                        imageURL: vote.user?.imageURL,
-                                        size: .init(width: 20, height: 20),
-                                        extraData: vote.user?.extraData ?? [:]
+                                    options: MessageAvatarViewOptions(
+                                        userDisplayInfo: UserDisplayInfo(
+                                            id: vote.user?.id ?? "",
+                                            name: vote.user?.name ?? "",
+                                            imageURL: vote.user?.imageURL,
+                                            size: .init(width: 20, height: 20),
+                                            extraData: vote.user?.extraData ?? [:]
+                                        )
                                     )
                                 )
                             }

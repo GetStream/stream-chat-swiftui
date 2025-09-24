@@ -63,11 +63,13 @@ public struct GalleryView<Factory: ViewFactory>: View {
         GeometryReader { reader in
             VStack {
                 viewFactory.makeGalleryHeaderView(
-                    title: author.name ?? "",
-                    subtitle: message.map {
-                        utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
-                    } ?? author.onlineText,
-                    shown: $isShown
+                    options: GalleryHeaderViewOptions(
+                        title: author.name ?? "",
+                        subtitle: message.map {
+                            utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
+                        } ?? author.onlineText,
+                        shown: $isShown
+                    )
                 )
 
                 TabView(selection: $selected) {
