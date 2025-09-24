@@ -4,7 +4,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
-=======
 - Fix openChannel not working when searching or another chat shown [#975](https://github.com/GetStream/stream-chat-swiftui/pull/975)
 - Fix crash when using a font that does not support bold trait [#976](https://github.com/GetStream/stream-chat-swiftui/pull/976)
 
