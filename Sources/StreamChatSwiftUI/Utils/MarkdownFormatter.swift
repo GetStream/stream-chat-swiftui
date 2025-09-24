@@ -33,7 +33,7 @@ open class DefaultMarkdownFormatter: MarkdownFormatter {
     }
         
     @available(iOS 15, *)
-    public func format(
+    open func format(
         _ string: String,
         attributes: AttributeContainer,
         layoutDirection: LayoutDirection
