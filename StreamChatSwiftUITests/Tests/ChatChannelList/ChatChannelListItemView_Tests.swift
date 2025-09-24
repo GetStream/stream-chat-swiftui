@@ -9,7 +9,7 @@ import SnapshotTesting
 import StreamSwiftTestHelpers
 import XCTest
 
-final class ChatChannelListItemView_Tests: StreamChatTestCase {
+@MainActor final class ChatChannelListItemView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
         let circleImage = UIImage.circleImage

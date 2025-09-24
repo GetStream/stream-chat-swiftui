@@ -9,7 +9,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class ChatChannelInfoView_Tests: StreamChatTestCase {
+@MainActor class ChatChannelInfoView_Tests: StreamChatTestCase {
     func test_chatChannelInfoView_navigationBarAppearance() {
         // Given
         setThemedNavigationBarAppearance()

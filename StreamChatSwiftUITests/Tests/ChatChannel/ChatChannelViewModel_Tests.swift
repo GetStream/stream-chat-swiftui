@@ -8,7 +8,7 @@
 import SwiftUI
 import XCTest
 
-class ChatChannelViewModel_Tests: StreamChatTestCase {
+@MainActor class ChatChannelViewModel_Tests: StreamChatTestCase {
     func test_chatChannelVM_channelIsUpdated() {
         // Given
         let cid = ChannelId.unique

@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
+@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient: ChatClient
     @Injected(\.images) private var images: Images
@@ -469,10 +469,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
             return
         }
 
-        queue.async { [weak self] in
+        queue.async { [weak self, chatClient] in
             let results: [ChannelSelectionInfo] = messageSearchController.messages.compactMap { message in
                 guard let channelId = message.cid else { return nil }
-                guard let channel = self?.chatClient.channelController(for: channelId).channel else {
+                guard let channel = chatClient.channelController(for: channelId).channel else {
                     return nil
                 }
                 return ChannelSelectionInfo(
@@ -481,7 +481,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                     searchType: .messages
                 )
             }
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 self?.searchResults = results
             }
         }
@@ -515,10 +515,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
             guard let self = self else { return }
-            if self.chatClient.currentUserId != nil {
-                self.stopTimer()
-                self.makeDefaultChannelListController()
-                self.setupChannelListController()
+            StreamConcurrency.onMain {
+                if self.chatClient.currentUserId != nil {
+                    self.stopTimer()
+                    self.makeDefaultChannelListController()
+                    self.setupChannelListController()
+                }
             }
         })
     }
@@ -639,13 +641,13 @@ public enum ChannelPopupType {
 }
 
 /// The type of data the channel list should perform a search.
-public struct ChannelListSearchType: Equatable {
+public struct ChannelListSearchType: Equatable, Sendable {
     let type: String
 
     private init(type: String) {
         self.type = type
     }
 
-    public static var channels = Self(type: "channels")
-    public static var messages = Self(type: "messages")
+    public static let channels = Self(type: "channels")
+    public static let messages = Self(type: "messages")
 }

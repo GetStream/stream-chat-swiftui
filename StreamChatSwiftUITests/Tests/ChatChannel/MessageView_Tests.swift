@@ -9,7 +9,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class MessageView_Tests: StreamChatTestCase {
+@MainActor class MessageView_Tests: StreamChatTestCase {
     func test_messageViewText_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
@@ -478,7 +478,7 @@ class MessageView_Tests: StreamChatTestCase {
         )
 
         // When
-        adjustAppearance() { appearance in
+        adjustAppearance { appearance in
             appearance.colors.messageCurrentUserBackground = [.orange]
             appearance.colors.background8 = .yellow
             appearance.colors.voiceMessageControlBackground = .cyan

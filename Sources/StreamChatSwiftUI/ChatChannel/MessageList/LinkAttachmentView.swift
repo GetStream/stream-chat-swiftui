@@ -108,12 +108,18 @@ public struct LinkAttachmentView: View {
         VStack(alignment: .leading, spacing: padding) {
             if !imageHidden {
                 ZStack {
-                    LazyImage(imageURL: linkAttachment.previewURL ?? linkAttachment.originalURL)
-                        .onDisappear(.cancel)
-                        .processors([ImageProcessors.Resize(width: width)])
-                        .priority(.high)
-                        .frame(width: width - 2 * padding, height: (width - 2 * padding) / 2)
-                        .cornerRadius(14)
+                    LazyImage(imageURL: linkAttachment.previewURL ?? linkAttachment.originalURL) { state in
+                        if let image = state.image {
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        }
+                    }
+                    .onDisappear(.cancel)
+                    .processors([ImageProcessors.Resize(width: width)])
+                    .priority(.high)
+                    .frame(width: width - 2 * padding, height: (width - 2 * padding) / 2)
+                    .cornerRadius(14)
 
                     if !authorHidden {
                         BottomLeftView {

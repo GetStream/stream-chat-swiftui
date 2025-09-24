@@ -1,15 +1,15 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
-#if os(iOS) || os(tvOS) || os(watchOS)
+#if canImport(UIKit)
 import UIKit
 #endif
 
-#if os(macOS)
-import Cocoa
+#if canImport(AppKit)
+import AppKit
 #endif
 
 /// A namespace for all processors that implement ``ImageProcessing`` protocol.
@@ -20,12 +20,12 @@ extension ImageProcessing where Self == ImageProcessors.Resize {
     ///
     /// - parameters
     ///   - size: The target size.
-    ///   - unit: Unit of the target size.
+    ///   - unit: Unit of the target size. By default, `.points`.
     ///   - contentMode: Target content mode.
     ///   - crop: If `true` will crop the image to match the target size. Does
     ///   nothing with content mode .aspectFill. `false` by default.
     ///   - upscale: Upscaling is not allowed by default.
-    static func resize(size: CGSize, unit: ImageProcessingOptions.Unit = .points, contentMode: ImageProcessors.Resize.ContentMode = .aspectFill, crop: Bool = false, upscale: Bool = false) -> ImageProcessors.Resize {
+    static func resize(size: CGSize, unit: ImageProcessingOptions.Unit = .points, contentMode: ImageProcessingOptions.ContentMode = .aspectFill, crop: Bool = false, upscale: Bool = false) -> ImageProcessors.Resize {
         ImageProcessors.Resize(size: size, unit: unit, contentMode: contentMode, crop: crop, upscale: upscale)
     }
 
@@ -33,7 +33,7 @@ extension ImageProcessing where Self == ImageProcessors.Resize {
     ///
     /// - parameters:
     ///   - width: The target width.
-    ///   - unit: Unit of the target size.
+    ///   - unit: Unit of the target size. By default, `.points`.
     ///   - upscale: `false` by default.
     static func resize(width: CGFloat, unit: ImageProcessingOptions.Unit = .points, upscale: Bool = false) -> ImageProcessors.Resize {
         ImageProcessors.Resize(width: width, unit: unit, upscale: upscale)
@@ -43,7 +43,7 @@ extension ImageProcessing where Self == ImageProcessors.Resize {
     ///
     /// - parameters:
     ///   - height: The target height.
-    ///   - unit: Unit of the target size.
+    ///   - unit: Unit of the target size. By default, `.points`.
     ///   - upscale: `false` by default.
     static func resize(height: CGFloat, unit: ImageProcessingOptions.Unit = .points, upscale: Bool = false) -> ImageProcessors.Resize {
         ImageProcessors.Resize(height: height, unit: unit, upscale: upscale)
@@ -86,7 +86,7 @@ extension ImageProcessing where Self == ImageProcessors.Anonymous {
     }
 }
 
-#if os(iOS) || os(tvOS) || os(macOS)
+#if os(iOS) || os(tvOS) || os(macOS) || os(visionOS)
 
 extension ImageProcessing where Self == ImageProcessors.CoreImageFilter {
     /// Applies Core Image filter – `CIFilter` – to the image.
@@ -100,6 +100,10 @@ extension ImageProcessing where Self == ImageProcessors.CoreImageFilter {
     ///
     static func coreImageFilter(name: String) -> ImageProcessors.CoreImageFilter {
         ImageProcessors.CoreImageFilter(name: name)
+    }
+
+    static func coreImageFilter(_ filter: CIFilter, identifier: String) -> ImageProcessors.CoreImageFilter {
+        ImageProcessors.CoreImageFilter(filter, identifier: identifier)
     }
 }
 

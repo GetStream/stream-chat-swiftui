@@ -13,11 +13,11 @@ extension ChannelAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `ChannelAction`.
-    public static func defaultActions(
+    @MainActor public static func defaultActions(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction] {
         var actions = [ChannelAction]()
 
@@ -80,16 +80,16 @@ extension ChannelAction {
         return actions
     }
 
-    private static func muteAction(
+    @MainActor private static func muteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let muteAction = {
+        let muteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.muteChannel { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -111,16 +111,16 @@ extension ChannelAction {
         return muteUser
     }
 
-    private static func unmuteAction(
+    @MainActor private static func unmuteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let unMuteAction = {
+        let unMuteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.unmuteChannel { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -143,16 +143,16 @@ extension ChannelAction {
         return unmuteUser
     }
 
-    private static func deleteAction(
+    @MainActor private static func deleteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let deleteConversationAction = {
+        let deleteConversationAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.deleteChannel { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -175,17 +175,17 @@ extension ChannelAction {
         return deleteConversation
     }
 
-    private static func leaveGroup(
+    @MainActor private static func leaveGroup(
         for channel: ChatChannel,
         chatClient: ChatClient,
         userId: String,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let leaveAction = {
+        let leaveAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.removeMembers(userIds: [userId]) { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -208,7 +208,7 @@ extension ChannelAction {
         return leaveConversation
     }
 
-    private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
+    @MainActor private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
         var viewInfo = ChannelAction(
             title: L10n.Alert.Actions.viewInfoTitle,
             iconName: "person.fill",
@@ -222,7 +222,7 @@ extension ChannelAction {
         return viewInfo
     }
 
-    private static func naming(for channel: ChatChannel) -> String {
+    @MainActor private static func naming(for channel: ChatChannel) -> String {
         channel.isDirectMessageChannel ? L10n.Channel.Name.directMessage : L10n.Channel.Name.group
     }
 }

@@ -53,7 +53,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments: [AnyChatMessageAttachment] = []
         let expectation = XCTestExpectation(description: "Empty attachments conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -79,7 +79,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
             createImageAttachmentWithoutLocalURL()
         ]
         let expectation = XCTestExpectation(description: "Mixed attachments conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -109,7 +109,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         try? "corrupted data".data(using: .utf8)?.write(to: corruptedURL)
         let attachment = createImageAttachmentWithSpecificLocalURL(corruptedURL)
         let expectation = XCTestExpectation(description: "Corrupted image conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets([attachment]) { composerAssets in
@@ -132,7 +132,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createFileAttachmentWithLocalURL()]
         let expectation = XCTestExpectation(description: "File attachment conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -152,7 +152,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createFileAttachmentWithoutLocalURL()]
         let expectation = XCTestExpectation(description: "File attachment conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -172,7 +172,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createVideoAttachmentWithLocalURL()]
         let expectation = XCTestExpectation(description: "Video attachment conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -195,7 +195,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createVideoAttachmentWithoutLocalURL()]
         let expectation = XCTestExpectation(description: "Video attachment conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -218,7 +218,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createImageAttachmentWithLocalURL()]
         let expectation = XCTestExpectation(description: "Image attachment conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in
@@ -241,7 +241,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createImageAttachmentWithoutLocalURL()]
         let expectation = XCTestExpectation(description: "Image attachment conversion completion")
-        var result: ComposerAssets?
+        nonisolated(unsafe) var result: ComposerAssets?
         
         // When
         converter.attachmentsToAssets(attachments) { composerAssets in

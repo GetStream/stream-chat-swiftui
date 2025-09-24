@@ -8,7 +8,7 @@ import Foundation
 import SwiftUI
 import XCTest
 
-final class ReactionsIconProvider_Tests: StreamChatTestCase {
+@MainActor final class ReactionsIconProvider_Tests: StreamChatTestCase {
     @Injected(\.colors) var colors
     
     func test_reactionsIconProvider_largeIcon() {

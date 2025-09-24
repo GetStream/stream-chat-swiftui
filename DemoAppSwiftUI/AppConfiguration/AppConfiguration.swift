@@ -7,7 +7,7 @@ import StreamChat
 import StreamChatSwiftUI
 
 final class AppConfiguration {
-    static let `default` = AppConfiguration()
+    @MainActor static let `default` = AppConfiguration()
     
     /// The translation language to set on connect.
     var translationLanguage: TranslationLanguage?

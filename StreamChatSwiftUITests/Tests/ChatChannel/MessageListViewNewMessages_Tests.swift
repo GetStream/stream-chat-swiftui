@@ -9,7 +9,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-final class MessageListViewNewMessages_Tests: StreamChatTestCase {
+@MainActor final class MessageListViewNewMessages_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
         let messageListConfig = MessageListConfig(showNewMessagesSeparator: true)

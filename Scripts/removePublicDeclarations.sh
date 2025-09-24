@@ -33,11 +33,6 @@ do
 		replaceDeclaration 'signpost(log' 'signpost(nukeLog' $f
 		replaceDeclaration ' Cache(' ' NukeCache(' $f
 		replaceDeclaration ' Cache<' ' NukeCache<' $f
-		replaceDeclaration ' Image?' ' NukeImage?' $f
-		replaceDeclaration ' Image(' ' NukeImage(' $f
-		replaceDeclaration 'struct Image:' 'struct NukeImage:' $f
-		replaceDeclaration 'extension Image {' 'extension NukeImage {' $f
-		replaceDeclaration 'Content == Image' 'Content == NukeImage' $f
 		replaceDeclaration ' VideoPlayerView' ' NukeVideoPlayerView' $f
 		replaceDeclaration 'typealias Color' 'typealias NukeColor' $f
 		replaceDeclaration 'extension Color' 'extension NukeColor' $f

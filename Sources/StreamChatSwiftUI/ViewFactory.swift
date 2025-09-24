@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 /// Factory used to create views.
-public protocol ViewFactory: AnyObject {
+@MainActor public protocol ViewFactory: AnyObject {
     var chatClient: ChatClient { get }
 
     /// Returns the navigation bar display mode.
@@ -52,11 +52,11 @@ public protocol ViewFactory: AnyObject {
         disabled: Bool,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
-        onItemTap: @escaping (ChatChannel) -> Void,
-        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
+        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination,
+        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
+        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> ChannelListItemType
     
     associatedtype ChannelAvatarViewType: View
@@ -100,8 +100,8 @@ public protocol ViewFactory: AnyObject {
     func makeMoreChannelActionsView(
         for channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MoreActionsView
 
     /// Returns the supported  channel actions.
@@ -112,8 +112,8 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: list of `ChannelAction` items.
     func supportedMoreChannelActions(
         for channel: ChatChannel,
-        onDismiss: @escaping () -> Void,
-        onError: @escaping (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction]
 
     associatedtype TrailingSwipeActionsViewType: View
@@ -131,8 +131,8 @@ public protocol ViewFactory: AnyObject {
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        leftButtonTapped: @escaping (ChatChannel) -> Void,
-        rightButtonTapped: @escaping (ChatChannel) -> Void
+        leftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
+        rightButtonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> TrailingSwipeActionsViewType
 
     associatedtype LeadingSwipeActionsViewType: View
@@ -149,7 +149,7 @@ public protocol ViewFactory: AnyObject {
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        buttonTapped: @escaping (ChatChannel) -> Void
+        buttonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> LeadingSwipeActionsViewType
 
     associatedtype ChannelListTopViewType: View
@@ -186,11 +186,11 @@ public protocol ViewFactory: AnyObject {
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
-        channelNaming: @escaping (ChatChannel) -> String,
-        imageLoader: @escaping (ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping (Int) -> Void
+        onlineIndicatorShown: @escaping @MainActor(ChatChannel) -> Bool,
+        channelNaming: @escaping @MainActor(ChatChannel) -> String,
+        imageLoader: @escaping @MainActor(ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping @MainActor(Int) -> Void
     ) -> ChannelListSearchResultsViewType
 
     associatedtype ChannelListSearchResultItem: View
@@ -208,8 +208,8 @@ public protocol ViewFactory: AnyObject {
         onlineIndicatorShown: Bool,
         channelName: String,
         avatar: UIImage,
-        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
-        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination
+        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination
     ) -> ChannelListSearchResultItem
 
     associatedtype ChannelListContentModifier: ViewModifier
@@ -224,11 +224,11 @@ public protocol ViewFactory: AnyObject {
 
     associatedtype ChannelDestination: View
     /// Returns a function that creates the channel destination.
-    func makeChannelDestination() -> (ChannelSelectionInfo) -> ChannelDestination
+    func makeChannelDestination() -> @MainActor(ChannelSelectionInfo) -> ChannelDestination
 
     associatedtype MessageThreadDestination: View
     /// Returns a function that creats the message thread destination.
-    func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> MessageThreadDestination
+    func makeMessageThreadDestination() -> @MainActor(ChatChannel, ChatMessage) -> MessageThreadDestination
 
     associatedtype EmptyMessagesViewType: View
     /// Returns a view shown when there are no messages in a channel.
@@ -328,7 +328,7 @@ public protocol ViewFactory: AnyObject {
         isInThread: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void,
+        onLongPress: @escaping @MainActor(MessageDisplayInfo) -> Void,
         isLast: Bool
     ) -> MessageContainerViewType
 
@@ -585,7 +585,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed in the scroll to bottom slot.
     func makeScrollToBottomButton(
         unreadCount: Int,
-        onScrollToBottom: @escaping () -> Void
+        onScrollToBottom: @escaping @MainActor() -> Void
     ) -> ScrollToBottomButtonType
 
     associatedtype DateIndicatorViewType: View
@@ -665,7 +665,7 @@ public protocol ViewFactory: AnyObject {
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping () -> Void
+        onMessageSent: @escaping @MainActor() -> Void
     ) -> MessageComposerViewType
 
     associatedtype LeadingComposerViewType: View
@@ -704,9 +704,9 @@ public protocol ViewFactory: AnyObject {
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping (String) -> Void
+        removeAttachmentWithId: @escaping @MainActor(String) -> Void
     ) -> ComposerInputViewType
     
     associatedtype ComposerTextInputViewType: View
@@ -740,7 +740,7 @@ public protocol ViewFactory: AnyObject {
     func makeTrailingComposerView(
         enabled: Bool,
         cooldownDuration: Int,
-        onTap: @escaping () -> Void
+        onTap: @escaping @MainActor() -> Void
     ) -> TrailingComposerViewType
     
     associatedtype ComposerRecordingViewType: View
@@ -795,14 +795,14 @@ public protocol ViewFactory: AnyObject {
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
         addedFileURLs: Binding<[URL]>,
-        onPickerStateChange: @escaping (AttachmentPickerState) -> Void,
+        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>?,
-        onAssetTap: @escaping (AddedAsset) -> Void,
-        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
-        isAssetSelected: @escaping (String) -> Bool,
+        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
+        isAssetSelected: @escaping @MainActor(String) -> Bool,
         addedCustomAttachments: [CustomAttachment],
-        cameraImageAdded: @escaping (AddedAsset) -> Void,
-        askForAssetsAccessPermissions: @escaping () -> Void,
+        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void,
+        askForAssetsAccessPermissions: @escaping @MainActor() -> Void,
         isDisplayed: Bool,
         height: CGFloat,
         popupHeight: CGFloat
@@ -816,7 +816,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed in the attachment source picker slot.
     func makeAttachmentSourcePickerView(
         selected: AttachmentPickerState,
-        onPickerStateChange: @escaping (AttachmentPickerState) -> Void
+        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void
     ) -> AttachmentSourcePickerViewType
 
     associatedtype PhotoAttachmentPickerViewType: View
@@ -828,8 +828,8 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed in the photo attachment picker slot.
     func makePhotoAttachmentPickerView(
         assets: PHFetchResultCollection,
-        onAssetTap: @escaping (AddedAsset) -> Void,
-        isAssetSelected: @escaping (String) -> Bool
+        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
+        isAssetSelected: @escaping @MainActor(String) -> Bool
     ) -> PhotoAttachmentPickerViewType
 
     associatedtype FilePickerViewType: View
@@ -853,7 +853,7 @@ public protocol ViewFactory: AnyObject {
     func makeCameraPickerView(
         selected: Binding<AttachmentPickerState>,
         cameraPickerShown: Binding<Bool>,
-        cameraImageAdded: @escaping (AddedAsset) -> Void
+        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void
     ) -> CameraPickerViewType
 
     associatedtype CustomComposerAttachmentViewType: View
@@ -864,7 +864,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the custom slot in the message composer.
     func makeCustomAttachmentView(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
     ) -> CustomComposerAttachmentViewType
 
     associatedtype CustomAttachmentPreviewViewType: View
@@ -875,7 +875,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the preview slot for custom composer input.
     func makeCustomAttachmentPreviewView(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
     ) -> CustomAttachmentPreviewViewType
 
     associatedtype AssetsAccessPermissionViewType: View
@@ -892,8 +892,8 @@ public protocol ViewFactory: AnyObject {
     func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction]
 
     associatedtype SendInChannelViewType: View
@@ -917,8 +917,8 @@ public protocol ViewFactory: AnyObject {
     func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageActionsViewType
 
     associatedtype ReactionsUsersViewType: View
@@ -944,8 +944,8 @@ public protocol ViewFactory: AnyObject {
     func makeBottomReactionsView(
         message: ChatMessage,
         showsAllInfo: Bool,
-        onTap: @escaping () -> Void,
-        onLongPress: @escaping () -> Void
+        onTap: @escaping @MainActor() -> Void,
+        onLongPress: @escaping @MainActor() -> Void
     ) -> ReactionsBottomViewType
 
     associatedtype MessageReactionViewType: View
@@ -954,8 +954,8 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the message reactions slot.
     func makeMessageReactionView(
         message: ChatMessage,
-        onTapGesture: @escaping () -> Void,
-        onLongPressGesture: @escaping () -> Void
+        onTapGesture: @escaping @MainActor() -> Void,
+        onLongPressGesture: @escaping @MainActor() -> Void
     ) -> MessageReactionViewType
 
     associatedtype ReactionsOverlayViewType: View
@@ -971,8 +971,8 @@ public protocol ViewFactory: AnyObject {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping () -> Void,
-        onActionExecuted: @escaping (MessageActionInfo) -> Void
+        onBackgroundTap: @escaping @MainActor() -> Void,
+        onActionExecuted: @escaping @MainActor(MessageActionInfo) -> Void
     ) -> ReactionsOverlayViewType
 
     associatedtype ReactionsBackground: View
@@ -989,7 +989,7 @@ public protocol ViewFactory: AnyObject {
     func makeReactionsContentView(
         message: ChatMessage,
         contentRect: CGRect,
-        onReactionTap: @escaping (MessageReactionType) -> Void
+        onReactionTap: @escaping @MainActor(MessageReactionType) -> Void
     ) -> ReactionsContentView
 
     associatedtype QuotedMessageHeaderViewType: View
@@ -1038,7 +1038,7 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view displayed in the commands container slot.
     func makeCommandsContainerView(
         suggestions: [String: Any],
-        handleCommand: @escaping ([String: Any]) -> Void
+        handleCommand: @escaping @MainActor([String: Any]) -> Void
     ) -> CommandsContainerViewType
 
     associatedtype MessageReadIndicatorViewType: View
@@ -1072,8 +1072,8 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: view shown in the jump to unread slot.
     func makeJumpToUnreadButton(
         channel: ChatChannel,
-        onJumpToMessage: @escaping () -> Void,
-        onClose: @escaping () -> Void
+        onJumpToMessage: @escaping @MainActor() -> Void,
+        onClose: @escaping @MainActor() -> Void
     ) -> JumpToUnreadButtonType
 
     associatedtype ComposerPollViewType: View
@@ -1101,7 +1101,7 @@ public protocol ViewFactory: AnyObject {
 
     associatedtype ThreadDestination: View
     /// Returns a function that creates the thread destination.
-    func makeThreadDestination() -> (ChatThread) -> ThreadDestination
+    func makeThreadDestination() -> @MainActor(ChatThread) -> ThreadDestination
 
     associatedtype ThreadListItemType: View
     /// Creates the thread list item.
@@ -1111,7 +1111,7 @@ public protocol ViewFactory: AnyObject {
     ///  - selectedThread: The binding of the currently selected thread.
     func makeThreadListItem(
         thread: ChatThread,
-        threadDestination: @escaping (ChatThread) -> ThreadDestination,
+        threadDestination: @escaping @MainActor(ChatThread) -> ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>
     ) -> ThreadListItemType
 
@@ -1123,7 +1123,7 @@ public protocol ViewFactory: AnyObject {
     /// Creates the error view that is displayed at the bottom of the thread list.
     /// - Parameter onRefreshAction: The refresh action, to reload the threads.
     /// - Returns: Returns the error view shown as a banner at the bottom of the thread list.
-    func makeThreadsListErrorBannerView(onRefreshAction: @escaping () -> Void) -> ThreadListErrorBannerView
+    func makeThreadsListErrorBannerView(onRefreshAction: @escaping @MainActor() -> Void) -> ThreadListErrorBannerView
 
     associatedtype ThreadListLoadingView: View
     /// Creates a loading view for the thread list.
@@ -1180,6 +1180,6 @@ public protocol ViewFactory: AnyObject {
     /// - Returns: The view shown in the add users slot.
     func makeAddUsersView(
         options: AddUsersOptions,
-        onUserTap: @escaping (ChatUser) -> Void
+        onUserTap: @escaping @MainActor(ChatUser) -> Void
     ) -> AddUsersViewType
 }

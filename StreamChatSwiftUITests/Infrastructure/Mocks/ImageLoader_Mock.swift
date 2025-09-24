@@ -18,11 +18,12 @@ class ImageLoader_Mock: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
-
-        completion(.success(Self.defaultLoadedImage))
+        StreamConcurrency.onMain {
+            completion(.success(Self.defaultLoadedImage))
+        }
     }
 
     func loadImages(
@@ -31,11 +32,13 @@ class ImageLoader_Mock: ImageLoading {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping (([UIImage]) -> Void)
+        completion: @escaping @MainActor([UIImage]) -> Void
     ) {
         loadImageCalled = true
 
-        completion([Self.defaultLoadedImage])
+        StreamConcurrency.onMain {
+            completion([Self.defaultLoadedImage])
+        }
     }
 }
 
@@ -49,12 +52,14 @@ class TestImagesLoader_Mock: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
 
         let image = imageForURL(url)
-        completion(.success(image))
+        StreamConcurrency.onMain {
+            completion(.success(image))
+        }
     }
 
     func loadImages(

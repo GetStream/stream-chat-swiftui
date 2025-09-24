@@ -63,7 +63,9 @@ public struct MessageAvatarView<Placeholder>: View where Placeholder: View {
             LazyImage(imageURL: adjustedURL) { state in
                 switch state {
                 case let .loaded(image):
-                    NukeImage(image)
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 case .loading:
                     placeholder(.loading)
                 case .placeholder:
@@ -115,5 +117,5 @@ public struct MessageAvatarDefaultPlaceholderView: View {
 }
 
 extension CGSize {
-    public static var messageAvatarSize = CGSize(width: 36, height: 36)
+    @MainActor public static var messageAvatarSize = CGSize(width: 36, height: 36)
 }

@@ -171,8 +171,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         )
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value = value, value != composerHeight {
-                self.composerHeight = value
+            if let value, value != composerHeight {
+                composerHeight = value
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
@@ -192,7 +192,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .onReceive(keyboardHeight) { height in
             if height > 0 && height != popupSize {
-                self.popupSize = height - bottomSafeArea
+                popupSize = height - bottomSafeArea
             }
         }
         .overlay(
@@ -251,7 +251,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var quotedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
-    var onCustomAttachmentTap: (CustomAttachment) -> Void
+    var onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
 
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
@@ -268,7 +268,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping (CustomAttachment) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping (String) -> Void
     ) {
         self.factory = factory
@@ -354,7 +354,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             }
 
             HStack {
-                if let command = command,
+                if let command,
                    let displayInfo = command.displayInfo,
                    displayInfo.isInstant == true {
                     HStack(spacing: 0) {
@@ -389,7 +389,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         HStack {
                             Spacer()
                             Button {
-                                self.command = nil
+                                command = nil
                             } label: {
                                 DiscardButtonView(
                                     color: Color(colors.background7)

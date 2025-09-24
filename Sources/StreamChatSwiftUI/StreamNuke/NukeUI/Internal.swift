@@ -1,8 +1,9 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2021 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
+
 
 #if !os(watchOS)
 
@@ -28,12 +29,14 @@ typealias _PlatformColor = UIColor
 extension _PlatformBaseView {
     @discardableResult
     func pinToSuperview() -> [NSLayoutConstraint] {
+        guard let superview else { return [] }
+
         translatesAutoresizingMaskIntoConstraints = false
         let constraints = [
-            topAnchor.constraint(equalTo: superview!.topAnchor),
-            bottomAnchor.constraint(equalTo: superview!.bottomAnchor),
-            leftAnchor.constraint(equalTo: superview!.leftAnchor),
-            rightAnchor.constraint(equalTo: superview!.rightAnchor)
+            topAnchor.constraint(equalTo: superview.topAnchor),
+            bottomAnchor.constraint(equalTo: superview.bottomAnchor),
+            leftAnchor.constraint(equalTo: superview.leftAnchor),
+            rightAnchor.constraint(equalTo: superview.rightAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
         return constraints
@@ -41,10 +44,12 @@ extension _PlatformBaseView {
 
     @discardableResult
     func centerInSuperview() -> [NSLayoutConstraint] {
+        guard let superview else { return [] }
+
         translatesAutoresizingMaskIntoConstraints = false
         let constraints = [
-            centerXAnchor.constraint(equalTo: superview!.centerXAnchor),
-            centerYAnchor.constraint(equalTo: superview!.centerYAnchor)
+            centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+            centerYAnchor.constraint(equalTo: superview.centerYAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
         return constraints
@@ -83,28 +88,6 @@ extension NSView {
 extension NSColor {
     static var secondarySystemBackground: NSColor {
         .controlBackgroundColor // Close-enough, but we should define a custom color
-    }
-}
-#endif
-
-#if os(iOS) || os(tvOS)
-extension UIView.ContentMode {
-    // swiftlint:disable:next cyclomatic_complexity
-    init(resizingMode: ImageResizingMode) {
-        switch resizingMode {
-        case .fill: self = .scaleToFill
-        case .aspectFill: self = .scaleAspectFill
-        case .aspectFit: self = .scaleAspectFit
-        case .center: self = .center
-        case .top: self = .top
-        case .bottom: self = .bottom
-        case .left: self = .left
-        case .right: self = .right
-        case .topLeft: self = .topLeft
-        case .topRight: self = .topRight
-        case .bottomLeft: self = .bottomLeft
-        case .bottomRight: self = .bottomRight
-        }
     }
 }
 #endif

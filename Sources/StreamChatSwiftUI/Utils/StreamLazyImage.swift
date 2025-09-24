@@ -14,12 +14,17 @@ public struct StreamLazyImage: View {
     }
     
     public var body: some View {
-        LazyImage(url: url)
-            .onDisappear(.cancel)
-            .clipShape(Circle())
-            .frame(
-                width: size.width,
-                height: size.height
-            )
+        LazyImage(url: url) { state in
+            if let image = state.image {
+                image.resizable().aspectRatio(contentMode: .fill)
+            }
+        }
+        .processors([ImageProcessors.Resize(size: size, contentMode: .aspectFill, crop: true)])
+        .onDisappear(.cancel)
+        .clipShape(Circle())
+        .frame(
+            width: size.width,
+            height: size.height
+        )
     }
 }

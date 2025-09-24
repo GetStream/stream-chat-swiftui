@@ -71,7 +71,7 @@ struct DemoAppSwiftUIApp: App {
     }
 }
 
-class AppState: ObservableObject, CurrentChatUserControllerDelegate {
+@MainActor class AppState: ObservableObject, CurrentChatUserControllerDelegate {
     @Injected(\.chatClient) var chatClient: ChatClient
 
     // Recreate the content view when channel query changes.

@@ -8,7 +8,7 @@ import Combine
 @testable import StreamChatTestTools
 import XCTest
 
-class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
+@MainActor class MediaAttachmentsViewModel_Tests: StreamChatTestCase {
     private var cancellables = Set<AnyCancellable>()
 
     func test_mediaAttachmentsViewModel_attachments() {

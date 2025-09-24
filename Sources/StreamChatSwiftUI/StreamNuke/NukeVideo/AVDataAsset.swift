@@ -1,9 +1,17 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2022 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2024 Alexander Grebenyuk (github.com/kean).
 
 import AVKit
 import Foundation
+
+
+extension NukeAssetType {
+    /// Returns `true` if the asset represents a video file
+    var isVideo: Bool {
+        self == .mp4 || self == .m4v || self == .mov
+    }
+}
 
 #if !os(watchOS)
 
@@ -19,7 +27,7 @@ private extension NukeAssetType {
 }
 
 // This class keeps strong pointer to DataAssetResourceLoader
-final class AVDataAsset: AVURLAsset {
+final class AVDataAsset: AVURLAsset, @unchecked Sendable {
     private let resourceLoaderDelegate: DataAssetResourceLoader
 
     init(data: Data, type: NukeAssetType?) {

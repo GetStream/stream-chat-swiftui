@@ -112,7 +112,7 @@ class MockCommandHandler: CommandHandler {
 
     public func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping (Error?) -> Void
+        completion: @escaping @MainActor(Error?) -> Void
     ) {
         executeOnMessageSentCalled = true
     }

@@ -15,13 +15,13 @@ public extension MessageAction {
     ///     - chatClient: the chat client.
     ///     - onDimiss: called when the action is executed.
     ///  - Returns: array of `MessageAction`.
-    static func defaultActions<Factory: ViewFactory>(
-        factory: Factory,
+    @MainActor static func defaultActions(
+        factory: some ViewFactory,
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
@@ -241,7 +241,7 @@ public extension MessageAction {
     /// The action to copy the message text.
     static func copyMessageAction(
         for message: ChatMessage,
-        onFinish: @escaping (MessageActionInfo) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
     ) -> MessageAction {
         let copyAction = MessageAction(
             id: MessageActionId.copy,
@@ -267,7 +267,7 @@ public extension MessageAction {
     static func editMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
     ) -> MessageAction {
         let editAction = MessageAction(
             id: MessageActionId.edit,
@@ -289,21 +289,21 @@ public extension MessageAction {
     }
 
     /// The action to pin the message.
-    static func pinMessageAction(
+    @MainActor static func pinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let pinMessage = {
+        let pinMessage: @MainActor() -> Void = {
             messageController.pin(MessagePinning.noExpiration) { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -329,21 +329,21 @@ public extension MessageAction {
     }
 
     /// The action to unpin the message.
-    static func unpinMessageAction(
+    @MainActor static func unpinMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let pinMessage = {
+        let pinMessage: @MainActor() -> Void = {
             messageController.unpin { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -372,7 +372,7 @@ public extension MessageAction {
     static func replyAction(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping (MessageActionInfo) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
     ) -> MessageAction {
         let replyAction = MessageAction(
             id: MessageActionId.reply,
@@ -394,8 +394,8 @@ public extension MessageAction {
     }
 
     /// The action to reply to the message in a thread
-    static func threadReplyAction<Factory: ViewFactory>(
-        factory: Factory,
+    static func threadReplyAction(
+        factory: some ViewFactory,
         for message: ChatMessage,
         channel: ChatChannel
     ) -> MessageAction {
@@ -418,21 +418,21 @@ public extension MessageAction {
     }
 
     /// The action to delete the message.
-    static func deleteMessageAction(
+    @MainActor static func deleteMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let deleteAction = {
+        let deleteAction: @MainActor() -> Void = {
             messageController.deleteMessage { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -464,21 +464,21 @@ public extension MessageAction {
     }
 
     /// The action to flag the message.
-    static func flagMessageAction(
+    @MainActor static func flagMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let flagAction = {
+        let flagAction: @MainActor() -> Void = {
             messageController.flag { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -510,17 +510,17 @@ public extension MessageAction {
     }
 
     /// The action to mark the message as unread.
-    static func markAsUnreadAction(
+    @MainActor static func markAsUnreadAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let channelController = InjectedValues[\.utils]
             .channelControllerFactory
             .makeChannelController(for: channel.cid)
-        let action = {
+        let action: @MainActor() -> Void = {
             channelController.markUnread(from: message.id) { result in
                 if case let .failure(error) = result {
                     onError(error)
@@ -547,13 +547,13 @@ public extension MessageAction {
     }
 
     /// The action to mark the thread as unread.
-    static func markThreadAsUnreadAction(
+    @MainActor static func markThreadAsUnreadAction(
         messageController: ChatMessageController,
         message: ChatMessage,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
-        let action = {
+        let action: @MainActor() -> Void = {
             messageController.markThreadUnread { error in
                 if let error {
                     onError(error)
@@ -580,18 +580,18 @@ public extension MessageAction {
     }
 
     /// The action to mute the user.
-    static func muteAction(
+    @MainActor static func muteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
         userToMute: ChatUser,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let muteController = chatClient.userController(userId: userToMute.id)
-        let muteAction = {
+        let muteAction: @MainActor() -> Void = {
             muteController.mute { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -617,18 +617,18 @@ public extension MessageAction {
     }
 
     /// The action to block the user
-    static func blockUserAction(
+    @MainActor static func blockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
         userToBlock: ChatUser,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToBlock.id)
-        let blockAction = {
+        let blockAction: @MainActor() -> Void = {
             blockController.block { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -658,18 +658,18 @@ public extension MessageAction {
     }
 
     /// The action to unmute the user.
-    static func unmuteAction(
+    @MainActor static func unmuteAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
         userToUnmute: ChatUser,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let unmuteController = chatClient.userController(userId: userToUnmute.id)
-        let unmuteAction = {
+        let unmuteAction: @MainActor() -> Void = {
             unmuteController.unmute { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -695,18 +695,18 @@ public extension MessageAction {
     }
 
     /// The action to unblock the user.
-    static func unblockUserAction(
+    @MainActor static func unblockUserAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
         userToUnblock: ChatUser,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToUnblock.id)
-        let unblockAction = {
+        let unblockAction: @MainActor() -> Void = {
             blockController.unblock { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -736,21 +736,21 @@ public extension MessageAction {
     }
 
     /// The action to resend the message.
-    static func resendMessageAction(
+    @MainActor static func resendMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let resendAction = {
+        let resendAction: @MainActor() -> Void = {
             messageController.resendMessage { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onFinish(
@@ -776,12 +776,12 @@ public extension MessageAction {
     }
 
     /// The actions for a message that was not sent.
-    static func messageNotSentActions(
+    @MainActor static func messageNotSentActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
@@ -808,12 +808,12 @@ public extension MessageAction {
 
     // MARK: - Helpers
 
-    private static func editAndDeleteActions(
+    @MainActor private static func editAndDeleteActions(
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping (MessageActionInfo) -> Void,
-        onError: @escaping (Error) -> Void
+        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 

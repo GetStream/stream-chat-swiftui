@@ -6,7 +6,7 @@
 @testable import StreamChatSwiftUI
 import XCTest
 
-class MessageActionsViewModel_Tests: StreamChatTestCase {
+@MainActor class MessageActionsViewModel_Tests: StreamChatTestCase {
     func test_messageActionsViewModel_confirmationAlertShown() {
         // Given
         let utils = Utils(messageListConfig: .init(userBlockingEnabled: true))

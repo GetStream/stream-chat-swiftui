@@ -5,7 +5,7 @@
 import SwiftUI
 
 extension View {
-    nonisolated public func toolbarThemed<Content>(@ToolbarContentBuilder content toolbarContent: @escaping () -> Content) -> some View where Content: ToolbarContent {
+    public func toolbarThemed<Content>(@ToolbarContentBuilder content toolbarContent: @escaping () -> Content) -> some View where Content: ToolbarContent {
         modifier(NavigationBarThemeViewModifier(toolbarContent: toolbarContent))
     }
 }

@@ -96,9 +96,11 @@ public struct ColorPalette {
     
     public var navigationBarTitle: UIColor {
         didSet {
-            let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: navigationBarTitle]
-            UINavigationBar.appearance().titleTextAttributes = attributes
-            UINavigationBar.appearance().largeTitleTextAttributes = attributes
+            StreamConcurrency.onMain { [navigationBarTitle] in
+                let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: navigationBarTitle]
+                UINavigationBar.appearance().titleTextAttributes = attributes
+                UINavigationBar.appearance().largeTitleTextAttributes = attributes
+            }
         }
     }
 

@@ -120,7 +120,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                         LazyImage(
                             imageURL: quotedMessage.linkAttachments[0].previewURL ?? quotedMessage.linkAttachments[0]
                                 .originalURL
-                        )
+                        ) { state in
+                            if let image = state.image {
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            }
+                        }
                         .onDisappear(.cancel)
                         .processors([ImageProcessors.Resize(width: attachmentWidth)])
                         .priority(.high)

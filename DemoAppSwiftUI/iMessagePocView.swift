@@ -61,7 +61,7 @@ struct iMessagePocView: View {
                 .alert(isPresented: $viewModel.alertShown) {
                     switch viewModel.channelAlertType {
                     case let .deleteChannel(channel):
-                        return Alert(
+                        Alert(
                             title: Text("Delete"),
                             message: Text("Are you sure you want to delete this channel?"),
                             primaryButton: .destructive(Text("Delete")) {
@@ -70,7 +70,7 @@ struct iMessagePocView: View {
                             secondaryButton: .cancel()
                         )
                     default:
-                        return Alert.defaultErrorAlert
+                        Alert.defaultErrorAlert
                     }
                 }
 
@@ -126,7 +126,7 @@ class iMessageViewFactory: ViewFactory {
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
-        buttonTapped: @escaping (ChatChannel) -> Void
+        buttonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> some View {
         HStack {
             ActionItemButton(imageName: "pin.fill") {

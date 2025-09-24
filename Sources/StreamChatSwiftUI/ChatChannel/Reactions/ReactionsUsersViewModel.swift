@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-class ReactionsUsersViewModel: ObservableObject, ChatMessageControllerDelegate {
+@MainActor class ReactionsUsersViewModel: ObservableObject, ChatMessageControllerDelegate {
     @Published var reactions: [ChatMessageReaction] = []
 
     var totalReactionsCount: Int {
