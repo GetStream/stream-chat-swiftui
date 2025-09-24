@@ -53,7 +53,7 @@ struct iMessagePocView: View {
                     },
                     onItemAppear: viewModel.checkForChannels(index:),
                     channelNaming: viewModel.name(forChannel:),
-                    channelDestination: factory.makeChannelDestination(),
+                    channelDestination: factory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: viewModel.pinChannelTapped(_:)

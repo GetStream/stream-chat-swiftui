@@ -132,7 +132,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         isActive: $viewModel.threadMessageShown
                     ) {
                         if let message = viewModel.threadMessage {
-                            let threadDestination = factory.makeMessageThreadDestination()
+                            let threadDestination = factory.makeMessageThreadDestination(options: MessageThreadDestinationOptions())
                             threadDestination(channel, message)
                         } else {
                             EmptyView()
@@ -166,7 +166,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         : nil
                 )
             } else {
-                factory.makeChannelLoadingView()
+                factory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
             }
         }
         .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())

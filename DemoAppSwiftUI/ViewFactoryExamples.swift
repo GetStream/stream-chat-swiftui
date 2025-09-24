@@ -238,14 +238,14 @@ class CustomFactory: ViewFactory {
         EmptyView()
     }
 
-    func makeLoadingView() -> some View {
+    func makeLoadingView(options: LoadingViewOptions) -> some View {
         VStack {
             Text("This is custom loading view")
             ProgressView()
         }
     }
 
-    func makeNoChannelsView() -> some View {
+    func makeNoChannelsView(options: NoChannelsViewOptions) -> some View {
         VStack {
             Spacer()
             Text("This is our own custom no channels view.")

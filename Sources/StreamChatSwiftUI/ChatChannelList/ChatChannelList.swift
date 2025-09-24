@@ -202,13 +202,13 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                 let isLastItem = channels.last?.cid == channel.cid
                 let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
                 if !isLastItem || (isLastItem && shouldRenderLastItemDivider) {
-                    factory.makeChannelListDividerItem()
+                    factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
                 }
             }
 
-            factory.makeChannelListFooterView()
+            factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
         }
-        .modifier(factory.makeChannelListModifier())
+        .modifier(factory.makeChannelListModifier(options: ChannelListModifierOptions()))
     }
 }
 

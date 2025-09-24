@@ -54,9 +54,9 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
         NavigationContainerView(embedInNavigationView: embedInNavigationView) {
             Group {
                 if viewModel.isLoading {
-                    viewFactory.makeThreadListLoadingView()
+                    viewFactory.makeThreadListLoadingView(options: ThreadListLoadingViewOptions())
                 } else if viewModel.isEmpty {
-                    viewFactory.makeNoThreadsView()
+                    viewFactory.makeNoThreadsView(options: NoThreadsViewOptions())
                 } else {
                     ChatThreadListContentView(
                         viewFactory: viewFactory,
@@ -107,7 +107,7 @@ public struct ChatThreadListContentView<Factory: ViewFactory>: View {
         ThreadList(
             factory: viewFactory,
             threads: viewModel.threads,
-            threadDestination: viewFactory.makeThreadDestination(),
+            threadDestination: viewFactory.makeThreadDestination(options: ThreadDestinationOptions()),
             selectedThread: $viewModel.selectedThread,
             onItemTap: { thread in
                 viewModel.selectedThread = .init(thread: thread)

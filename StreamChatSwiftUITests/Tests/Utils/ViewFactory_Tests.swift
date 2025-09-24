@@ -21,7 +21,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeNoChannelsView()
+        let view = viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
 
         // Then
         XCTAssert(view is NoChannelsView)
@@ -32,7 +32,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeLoadingView()
+        let view = viewFactory.makeLoadingView(options: LoadingViewOptions())
 
         // Then
         XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
@@ -399,7 +399,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeAssetsAccessPermissionView()
+        let view = viewFactory.makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions())
 
         // Then
         XCTAssert(view is AssetsAccessPermissionView)
@@ -667,7 +667,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeChannelListFooterView()
+        let view = viewFactory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
 
         // Then
         XCTAssert(view is EmptyView)
@@ -678,7 +678,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeChannelListStickyFooterView()
+        let view = viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
 
         // Then
         XCTAssert(view is EmptyView)
@@ -689,7 +689,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeChannelListModifier()
+        let modifier = viewFactory.makeChannelListModifier(options: ChannelListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -700,7 +700,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageListModifier()
+        let modifier = viewFactory.makeMessageListModifier(options: MessageListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -727,7 +727,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeComposerViewModifier()
+        let modifier = viewFactory.makeComposerViewModifier(options: ComposerViewModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -760,7 +760,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let viewModifier = viewFactory.makeChannelListContentModifier()
+        let viewModifier = viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions())
 
         // Then
         XCTAssert(viewModifier is EmptyViewModifier)
@@ -913,10 +913,10 @@ import XCTest
     func test_viewFactory_makeMessageListContainerModifier() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let modifier = viewFactory.makeMessageListContainerModifier()
-        
+        let modifier = viewFactory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions())
+
         // Then
         XCTAssert(modifier is EmptyViewModifier)
     }
@@ -974,10 +974,10 @@ import XCTest
     func test_viewFactory_makeComposerRecordingTipView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let view = viewFactory.makeComposerRecordingTipView()
-        
+        let view = viewFactory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
+
         // Then
         XCTAssert(view is RecordingTipView)
     }
@@ -1002,10 +1002,10 @@ import XCTest
     func test_viewFactory_makeChannelLoadingView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let view = viewFactory.makeChannelLoadingView()
-        
+        let view = viewFactory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
+
         // Then
         XCTAssert(view is LoadingView)
     }

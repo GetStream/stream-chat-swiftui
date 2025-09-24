@@ -114,7 +114,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
                         onItemAppear(index)
                     }
                 }
-                factory.makeThreadListDividerItem()
+                factory.makeThreadListDividerItem(options: ThreadListDividerItemOptions())
             }
         }
     }

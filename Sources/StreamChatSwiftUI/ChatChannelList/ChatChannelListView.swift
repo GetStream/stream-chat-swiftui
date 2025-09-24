@@ -105,9 +105,9 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private func content() -> some View {
         Group {
             if viewModel.loading {
-                viewFactory.makeLoadingView()
+                viewFactory.makeLoadingView(options: LoadingViewOptions())
             } else if viewModel.channels.isEmpty {
-                viewFactory.makeNoChannelsView()
+                viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
             } else {
                 ChatChannelListContentView(
                     viewFactory: viewFactory,
@@ -248,7 +248,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkForChannels(index: index)
                     },
                     channelNaming: viewModel.name(forChannel:),
-                    channelDestination: viewFactory.makeChannelDestination(),
+                    channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
@@ -258,8 +258,8 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                 }
             }
 
-            viewFactory.makeChannelListStickyFooterView()
+            viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
-        .modifier(viewFactory.makeChannelListContentModifier())
+        .modifier(viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }

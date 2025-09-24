@@ -61,7 +61,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
                             channelName: channelNaming(searchResult.channel),
                             avatar: imageLoader(searchResult.channel),
                             onSearchResultTap: onSearchResultTap,
-                            channelDestination: factory.makeChannelDestination()
+                            channelDestination: factory.makeChannelDestination(options: ChannelDestinationOptions())
                         )
                         .onAppear {
                             if let index = searchResults.firstIndex(where: { result in

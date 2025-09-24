@@ -23,11 +23,11 @@ import SwiftUI
 
     associatedtype NoChannels: View
     /// Creates the view that is displayed when there are no channels available.
-    func makeNoChannelsView() -> NoChannels
+    func makeNoChannelsView(options: NoChannelsViewOptions) -> NoChannels
 
     associatedtype LoadingContent: View
     /// Creates the loading view.
-    func makeLoadingView() -> LoadingContent
+    func makeLoadingView(options: LoadingViewOptions) -> LoadingContent
 
     associatedtype ChannelListItemType: View
     /// Creates the channel list item.
@@ -54,7 +54,7 @@ import SwiftUI
 
     associatedtype ChannelListDividerItem: View
     /// Creates the channel list divider item.
-    func makeChannelListDividerItem() -> ChannelListDividerItem
+    func makeChannelListDividerItem(options: ChannelListDividerItemOptions) -> ChannelListDividerItem
 
     associatedtype MoreActionsView: View
     /// Creates the more channel actions view.
@@ -87,12 +87,12 @@ import SwiftUI
     associatedtype ChannelListFooterViewType: View
     /// Creates the view shown at the bottom of the channel list.
     /// - Returns: view shown at the bottom of the channel list.
-    func makeChannelListFooterView() -> ChannelListFooterViewType
+    func makeChannelListFooterView(options: ChannelListFooterViewOptions) -> ChannelListFooterViewType
 
     associatedtype ChannelListStickyFooterViewType: View
     /// Creates the view always visible at the bottom of the channel list.
     /// - Returns: view shown at the bottom of the channel list.
-    func makeChannelListStickyFooterView() -> ChannelListStickyFooterViewType
+    func makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions) -> ChannelListStickyFooterViewType
     
     associatedtype ChannelListSearchResultsViewType: View
     /// Creates the view shown when the user is searching the channel list.
@@ -108,21 +108,21 @@ import SwiftUI
 
     associatedtype ChannelListContentModifier: ViewModifier
     /// Returns a view modifier applied to the channel list content (including both header and footer views).
-    func makeChannelListContentModifier() -> ChannelListContentModifier
+    func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> ChannelListContentModifier
 
     associatedtype ChannelListModifier: ViewModifier
     /// Returns a view modifier applied to the channel list.
-    func makeChannelListModifier() -> ChannelListModifier
+    func makeChannelListModifier(options: ChannelListModifierOptions) -> ChannelListModifier
 
     // MARK: - messages
 
     associatedtype ChannelDestination: View
     /// Returns a function that creates the channel destination.
-    func makeChannelDestination() -> @MainActor(ChannelSelectionInfo) -> ChannelDestination
+    func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor(ChannelSelectionInfo) -> ChannelDestination
 
     associatedtype MessageThreadDestination: View
     /// Returns a function that creats the message thread destination.
-    func makeMessageThreadDestination() -> @MainActor(ChatChannel, ChatMessage) -> MessageThreadDestination
+    func makeMessageThreadDestination(options: MessageThreadDestinationOptions) -> @MainActor(ChatChannel, ChatMessage) -> MessageThreadDestination
 
     associatedtype EmptyMessagesViewType: View
     /// Returns a view shown when there are no messages in a channel.
@@ -132,11 +132,11 @@ import SwiftUI
 
     associatedtype MessageListModifier: ViewModifier
     /// Returns a view modifier applied to the message list.
-    func makeMessageListModifier() -> MessageListModifier
+    func makeMessageListModifier(options: MessageListModifierOptions) -> MessageListModifier
     
     associatedtype MessageListContainerModifier: ViewModifier
     /// Returns a view modifier applied to the message list container.
-    func makeMessageListContainerModifier() -> MessageListContainerModifier
+    func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> MessageListContainerModifier
 
     associatedtype MessageViewModifier: ViewModifier
     /// Returns a view modifier applied to the message view.
@@ -174,7 +174,7 @@ import SwiftUI
     
     associatedtype ChannelLoadingViewType: View
     /// Creates a loading view for the channel.
-    func makeChannelLoadingView() -> ChannelLoadingViewType
+    func makeChannelLoadingView(options: ChannelLoadingViewOptions) -> ChannelLoadingViewType
 
     associatedtype ThreadHeaderViewModifier: MessageThreadHeaderViewModifier
     /// Creates the message thread header view modifier.
@@ -401,11 +401,11 @@ import SwiftUI
     associatedtype ComposerRecordingTipViewType: View
     /// Creates a view shown when a recording tip is displayed.
     /// - Returns: view shown in the recording tip slot.
-    func makeComposerRecordingTipView() -> ComposerRecordingTipViewType
+    func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> ComposerRecordingTipViewType
 
     associatedtype ComposerViewModifier: ViewModifier
     /// Creates the composer view modifier, that's applied to the whole composer view.
-    func makeComposerViewModifier() -> ComposerViewModifier
+    func makeComposerViewModifier(options: ComposerViewModifierOptions) -> ComposerViewModifier
 
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.
@@ -451,7 +451,7 @@ import SwiftUI
 
     associatedtype AssetsAccessPermissionViewType: View
     /// Creates the assets access permission view.
-    func makeAssetsAccessPermissionView() -> AssetsAccessPermissionViewType
+    func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> AssetsAccessPermissionViewType
 
     /// Returns the supported  message actions.
     /// - Parameter options: the options for getting supported message actions.
@@ -565,7 +565,7 @@ import SwiftUI
 
     associatedtype ThreadDestination: View
     /// Returns a function that creates the thread destination.
-    func makeThreadDestination() -> @MainActor(ChatThread) -> ThreadDestination
+    func makeThreadDestination(options: ThreadDestinationOptions) -> @MainActor(ChatThread) -> ThreadDestination
 
     associatedtype ThreadListItemType: View
     /// Creates the thread list item.
@@ -574,7 +574,7 @@ import SwiftUI
 
     associatedtype NoThreads: View
     /// Creates the view that is displayed when there are no threads available.
-    func makeNoThreadsView() -> NoThreads
+    func makeNoThreadsView(options: NoThreadsViewOptions) -> NoThreads
 
     associatedtype ThreadListErrorBannerView: View
     /// Creates the error view that is displayed at the bottom of the thread list.
@@ -584,7 +584,7 @@ import SwiftUI
 
     associatedtype ThreadListLoadingView: View
     /// Creates a loading view for the thread list.
-    func makeThreadListLoadingView() -> ThreadListLoadingView
+    func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> ThreadListLoadingView
 
     associatedtype ThreadListContainerModifier: ViewModifier
     /// Creates a modifier that wraps the thread list. It can be used to handle additional state changes.
@@ -625,7 +625,7 @@ import SwiftUI
 
     associatedtype ThreadListDividerItem: View
     /// Creates the thread list divider item.
-    func makeThreadListDividerItem() -> ThreadListDividerItem
+    func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> ThreadListDividerItem
     
     associatedtype AddUsersViewType: View
     /// Creates a view for adding users to a chat or channel.

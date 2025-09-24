@@ -1311,3 +1311,81 @@ public struct AddUsersViewOptions {
         self.onUserTap = onUserTap
     }
 }
+
+// MARK: - Empty Options (for methods with no parameters)
+
+public struct NoChannelsViewOptions {
+    public init() {}
+}
+
+public struct LoadingViewOptions {
+    public init() {}
+}
+
+public struct ChannelListDividerItemOptions {
+    public init() {}
+}
+
+public struct ChannelListFooterViewOptions {
+    public init() {}
+}
+
+public struct ChannelListStickyFooterViewOptions {
+    public init() {}
+}
+
+public struct ChannelListContentModifierOptions {
+    public init() {}
+}
+
+public struct ChannelListModifierOptions {
+    public init() {}
+}
+
+public struct ChannelDestinationOptions {
+    public init() {}
+}
+
+public struct MessageThreadDestinationOptions {
+    public init() {}
+}
+
+public struct MessageListModifierOptions {
+    public init() {}
+}
+
+public struct MessageListContainerModifierOptions {
+    public init() {}
+}
+
+public struct ChannelLoadingViewOptions {
+    public init() {}
+}
+
+public struct ComposerRecordingTipViewOptions {
+    public init() {}
+}
+
+public struct ComposerViewModifierOptions {
+    public init() {}
+}
+
+public struct AssetsAccessPermissionViewOptions {
+    public init() {}
+}
+
+public struct ThreadDestinationOptions {
+    public init() {}
+}
+
+public struct NoThreadsViewOptions {
+    public init() {}
+}
+
+public struct ThreadListLoadingViewOptions {
+    public init() {}
+}
+
+public struct ThreadListDividerItemOptions {
+    public init() {}
+}

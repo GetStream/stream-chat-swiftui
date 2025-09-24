@@ -10,11 +10,11 @@ import SwiftUI
 extension ViewFactory {
     // MARK: channels
     
-    public func makeNoChannelsView() -> some View {
+    public func makeNoChannelsView(options: NoChannelsViewOptions) -> some View {
         NoChannelsView()
     }
     
-    public func makeLoadingView() -> some View {
+    public func makeLoadingView(options: LoadingViewOptions) -> some View {
         RedactedLoadingView(factory: self)
     }
     
@@ -111,7 +111,7 @@ extension ViewFactory {
         return Color(colors.background)
     }
 
-    public func makeChannelListDividerItem() -> some View {
+    public func makeChannelListDividerItem(options: ChannelListDividerItemOptions) -> some View {
         Divider()
     }
     
@@ -139,11 +139,11 @@ extension ViewFactory {
         SearchBar(text: options.searchText)
     }
     
-    public func makeChannelListFooterView() -> some View {
+    public func makeChannelListFooterView(options: ChannelListFooterViewOptions) -> some View {
         EmptyView()
     }
     
-    public func makeChannelListStickyFooterView() -> some View {
+    public func makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions) -> some View {
         EmptyView()
     }
     
@@ -177,17 +177,17 @@ extension ViewFactory {
         )
     }
     
-    public func makeChannelListContentModifier() -> some ViewModifier {
+    public func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
     
-    public func makeChannelListModifier() -> some ViewModifier {
+    public func makeChannelListModifier(options: ChannelListModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
     
     // MARK: messages
     
-    public func makeChannelDestination() -> @MainActor(ChannelSelectionInfo) -> ChatChannelView<Self> {
+    public func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor(ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
             let controller = InjectedValues[\.utils]
                 .channelControllerFactory
@@ -200,7 +200,7 @@ extension ViewFactory {
         }
     }
     
-    public func makeMessageThreadDestination() -> @MainActor(ChatChannel, ChatMessage) -> ChatChannelView<Self> {
+    public func makeMessageThreadDestination(options: MessageThreadDestinationOptions) -> @MainActor(ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
             let channelController = InjectedValues[\.utils]
                 .channelControllerFactory
@@ -218,11 +218,11 @@ extension ViewFactory {
         }
     }
 
-    public func makeMessageListModifier() -> some ViewModifier {
+    public func makeMessageListModifier(options: MessageListModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
     
-    public func makeMessageListContainerModifier() -> some ViewModifier {
+    public func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
     
@@ -268,7 +268,7 @@ extension ViewFactory {
         ChangeChannelBarsVisibilityModifier(shouldShow: options.shouldShow)
     }
     
-    public func makeChannelLoadingView() -> some View {
+    public func makeChannelLoadingView(options: ChannelLoadingViewOptions) -> some View {
         LoadingView()
     }
     
@@ -617,11 +617,11 @@ extension ViewFactory {
         LockedView(viewModel: options.viewModel)
     }
     
-    public func makeComposerRecordingTipView() -> some View {
+    public func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> some View {
         RecordingTipView()
     }
     
-    public func makeComposerViewModifier() -> some ViewModifier {
+    public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
     
@@ -713,7 +713,7 @@ extension ViewFactory {
         )
     }
     
-    public func makeAssetsAccessPermissionView() -> some View {
+    public func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> some View {
         AssetsAccessPermissionView()
     }
     
@@ -904,9 +904,9 @@ extension ViewFactory {
 
     // MARK: Threads
 
-    public func makeThreadDestination() -> @MainActor(ChatThread) -> ChatChannelView<Self> {
+    public func makeThreadDestination(options: ThreadDestinationOptions) -> @MainActor(ChatThread) -> ChatChannelView<Self> {
         { [unowned self] thread in
-            makeMessageThreadDestination()(thread.channel, thread.parentMessage)
+            makeMessageThreadDestination(options: MessageThreadDestinationOptions())(thread.channel, thread.parentMessage)
         }
     }
 
@@ -925,7 +925,7 @@ extension ViewFactory {
         )
     }
 
-    public func makeNoThreadsView() -> some View {
+    public func makeNoThreadsView(options: NoThreadsViewOptions) -> some View {
         NoThreadsView()
     }
 
@@ -933,7 +933,7 @@ extension ViewFactory {
         ChatThreadListErrorBannerView(action: options.onRefreshAction)
     }
 
-    public func makeThreadListLoadingView() -> some View {
+    public func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> some View {
         ChatThreadListLoadingView()
     }
 
@@ -969,7 +969,7 @@ extension ViewFactory {
         return Color(colors.background)
     }
 
-    public func makeThreadListDividerItem() -> some View {
+    public func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> some View {
         Divider()
     }
     

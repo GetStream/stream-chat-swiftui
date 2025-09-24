@@ -143,7 +143,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         )
                             .frame(height: recordingViewHeight)
                     } else if viewModel.recordingState == .showingTip {
-                        factory.makeComposerRecordingTipView()
+                        factory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
                             .offset(y: -composerHeight + 12)
                     } else {
                         EmptyView()
@@ -233,7 +233,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .animation(nil) : nil,
             alignment: .bottom
         )
-        .modifier(factory.makeComposerViewModifier())
+        .modifier(factory.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
             viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
