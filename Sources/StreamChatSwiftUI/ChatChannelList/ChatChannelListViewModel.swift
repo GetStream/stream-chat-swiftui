@@ -212,6 +212,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
                 }
             }
         }
+        
+        if isSearching {
+            searchText = ""
+        }
+        
+        if selectedChannel != nil {
+            selectedChannel = nil
+        }
 
         loadUntilFound()
     }
