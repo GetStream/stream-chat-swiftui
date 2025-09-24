@@ -491,9 +491,25 @@ lane :lint_pr do
   danger(dangerfile: 'Dangerfile') if is_ci
 end
 
+def check_foundation_import
+  files_missing_imports = []
+  Dir.glob("Sources/**/*.swift").each do |file|
+    next if file =~ /(StreamNuke|StreamSwiftyGif)/
+
+    files_missing_imports << file unless File.read(file).match?(/import (Foundation|UIKit|SwiftUI|Combine|StreamChat)/)
+  end
+
+  unless files_missing_imports.empty?
+    UI.error("Files missing 'Foundation' import:")
+    files_missing_imports.each { |file| UI.error("- #{file}") }
+    UI.user_error!("Lint check failed.")
+  end
+end
+
 desc 'Run source code formatting/linting'
 lane :run_swift_format do |options|
   Dir.chdir('..') do
+    check_foundation_import
     strict = options[:strict] ? '--lint' : nil
     sources_matrix[:swiftformat].each do |path|
       sh("swiftformat #{strict} --config .swiftformat #{path}")
