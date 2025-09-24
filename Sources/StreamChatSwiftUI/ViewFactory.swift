@@ -570,7 +570,7 @@ import SwiftUI
     associatedtype ThreadListItemType: View
     /// Creates the thread list item.
     /// - Parameter options: the options for creating the thread list item.
-    func makeThreadListItem(options: ThreadListItemOptions<ChannelDestination>) -> ThreadListItemType
+    func makeThreadListItem(options: ThreadListItemOptions<ThreadDestination>) -> ThreadListItemType
 
     associatedtype NoThreads: View
     /// Creates the view that is displayed when there are no threads available.

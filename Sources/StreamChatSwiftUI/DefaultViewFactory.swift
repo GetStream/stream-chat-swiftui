@@ -911,7 +911,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListItem(
-        options: ThreadListItemOptions<ChannelDestination>
+        options: ThreadListItemOptions<ThreadDestination>
     ) -> some View {
         let utils = InjectedValues[\.utils]
         return ChatThreadListNavigatableItem(
