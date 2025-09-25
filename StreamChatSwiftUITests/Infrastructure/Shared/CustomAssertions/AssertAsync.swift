@@ -556,8 +556,8 @@ extension AssertAsync {
     ///   - object: The object to check for retain cycles.
     ///   - timeout: The maximum time the function waits for the object to be released.
     ///   - message: The message to print when the assertion fails.
-    static func canBeReleased(
-        _ object: inout some AnyObject!,
+    static func canBeReleased<T: AnyObject>(
+        _ object: inout T!,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure @escaping () -> String? = nil,
         file: StaticString = #file,
