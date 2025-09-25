@@ -92,9 +92,9 @@ struct iMessagePocView: View {
                     channel: channel,
                     swipedChannelId: $viewModel.swipedChannelId
                 ) {
-                withAnimation {
-                    viewModel.customChannelPopupType = nil
-                }
+                    withAnimation {
+                        viewModel.customChannelPopupType = nil
+                    }
                 } onError: { error in
                     viewModel.showErrorPopup(error)
                 }
@@ -128,7 +128,7 @@ class iMessageViewFactory: ViewFactory {
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
-        buttonTapped: @escaping @MainActor(ChatChannel) -> Void
+        buttonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) -> some View {
         HStack {
             ActionItemButton(imageName: "pin.fill") {

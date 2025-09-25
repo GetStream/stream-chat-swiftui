@@ -355,7 +355,7 @@ import XCTest
 
     func test_channelListItem_draftMessageWithAttachment() throws {
         // Given
-        let message = DraftMessage.mock(text: "Draft message", attachments: [.dummy(payload: try JSONEncoder().encode(
+        let message = try DraftMessage.mock(text: "Draft message", attachments: [.dummy(payload: JSONEncoder().encode(
             ImageAttachmentPayload(
                 title: "Test",
                 imageRemoteURL: .localYodaImage,
@@ -381,7 +381,7 @@ import XCTest
     // MARK: - private
     
     private func mockAudioMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
-        .mock(
+        try .mock(
             id: .unique,
             cid: .unique,
             text: text,
@@ -391,7 +391,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .audio,
-                    payload: try JSONEncoder().encode(AudioAttachmentPayload(
+                    payload: JSONEncoder().encode(AudioAttachmentPayload(
                         title: "Some Audio",
                         audioRemoteURL: URL(string: "url")!,
                         file: .init(type: .mp3, size: 123, mimeType: nil),
@@ -405,7 +405,7 @@ import XCTest
     }
     
     private func mockImageMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
-        .mock(
+        try .mock(
             id: .unique,
             cid: .unique,
             text: text,
@@ -415,7 +415,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .image,
-                    payload: try JSONEncoder().encode(ImageAttachmentPayload(
+                    payload: JSONEncoder().encode(ImageAttachmentPayload(
                         title: "Test",
                         imageRemoteURL: URL(string: "Url")!
                     ))
@@ -427,7 +427,7 @@ import XCTest
     }
 
     private func mockVideoMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
-        .mock(
+        try .mock(
             id: .unique,
             cid: .unique,
             text: text,
@@ -437,7 +437,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .video,
-                    payload: try JSONEncoder().encode(VideoAttachmentPayload(
+                    payload: JSONEncoder().encode(VideoAttachmentPayload(
                         title: "Test",
                         videoRemoteURL: URL(string: "Url")!,
                         file: .init(type: .mp4, size: 123, mimeType: nil),
@@ -451,7 +451,7 @@ import XCTest
     }
     
     private func mockFileMessage(title: String?, text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
-        .mock(
+        try .mock(
             id: .unique,
             cid: .unique,
             text: text,
@@ -461,7 +461,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .file,
-                    payload: try JSONEncoder().encode(FileAttachmentPayload(
+                    payload: JSONEncoder().encode(FileAttachmentPayload(
                         title: title,
                         assetRemoteURL: URL(string: "Url")!,
                         file: .init(type: .pdf, size: 123, mimeType: nil),
@@ -475,7 +475,7 @@ import XCTest
     }
     
     private func mockGiphyMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
-        .mock(
+        try .mock(
             id: .unique,
             cid: .unique,
             text: text,
@@ -485,7 +485,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .giphy,
-                    payload: try JSONEncoder().encode(GiphyAttachmentPayload(
+                    payload: JSONEncoder().encode(GiphyAttachmentPayload(
                         title: "Test",
                         previewURL: URL(string: "Url")!
                     ))

@@ -15,10 +15,10 @@ class TestRequestEncoder: RequestEncoder, @unchecked Sendable {
     var encodeRequest_endpoint: AnyEndpoint?
     var encodeRequest_completion: ((Result<URLRequest, Error>) -> Void)?
 
-    func encodeRequest<ResponsePayload>(
-        for endpoint: Endpoint<ResponsePayload>,
+    func encodeRequest(
+        for endpoint: Endpoint<some Decodable>,
         completion: @escaping (Result<URLRequest, Error>) -> Void
-    ) where ResponsePayload: Decodable {
+    ) {
         encodeRequest_endpoint = AnyEndpoint(endpoint)
         encodeRequest_completion = completion
 

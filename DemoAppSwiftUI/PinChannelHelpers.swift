@@ -75,7 +75,7 @@ struct DemoAppChatChannelListItem: View {
 
     private var subtitleView: some View {
         HStack(spacing: 4) {
-            if let image = image {
+            if let image {
                 Image(uiImage: image)
                     .customizable()
                     .frame(maxHeight: 12)

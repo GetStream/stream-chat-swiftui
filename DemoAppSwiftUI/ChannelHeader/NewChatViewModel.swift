@@ -71,12 +71,12 @@ import SwiftUI
 
     func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
-            return "Online"
+            "Online"
         } else if let lastActiveAt = user.lastActiveAt,
                   let timeAgo = lastSeenDateFormatter(lastActiveAt) {
-            return timeAgo
+            timeAgo
         } else {
-            return "Offline"
+            "Offline"
         }
     }
 
@@ -98,9 +98,9 @@ import SwiftUI
         if !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers(limit: 50) { [weak self] _ in
-                guard let self = self else { return }
-                self.chatUsers = self.searchController.userArray
-                self.loadingNextUsers = false
+                guard let self else { return }
+                chatUsers = searchController.userArray
+                loadingNextUsers = false
             }
         }
     }

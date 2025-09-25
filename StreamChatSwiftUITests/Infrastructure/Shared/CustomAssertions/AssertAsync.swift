@@ -78,8 +78,8 @@ extension Assert {
     ///
     /// - Warning: ⚠️ The expression is evaluated repeatedly during the function execution. It should not have
     ///   any side effects which can affect its result.
-    static func willBeNil<T>(
-        _ expression1: @autoclosure @escaping () -> T?,
+    static func willBeNil(
+        _ expression1: @autoclosure @escaping () -> (some Any)?,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure () -> String = "Failed to become `nil`",
         file: StaticString = #file,
@@ -104,8 +104,8 @@ extension Assert {
     ///
     /// - Warning: ⚠️ The expression is evaluated repeatedly during the function execution. It should not have
     ///   any side effects which can affect its result.
-    static func willNotBeNil<T>(
-        _ expression1: @autoclosure @escaping () -> T?,
+    static func willNotBeNil(
+        _ expression1: @autoclosure @escaping () -> (some Any)?,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure () -> String = "Failed to not be `nil`",
         file: StaticString = #file,
@@ -367,7 +367,6 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-
                 AssertAsync {
                     Assert.willBeEqual(
                         expression(),
@@ -401,7 +400,6 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-
                 AssertAsync {
                     Assert.willBeEqual(
                         expression(),
@@ -438,7 +436,6 @@ extension AssertAsync {
         _ = withoutActuallyEscaping(expression1) { expression1 in
             withoutActuallyEscaping(expression2) { expression2 in
                 withoutActuallyEscaping(message) { message in
-
                     AssertAsync {
                         Assert.willBeEqual(
                             expression1(),
@@ -464,8 +461,8 @@ extension AssertAsync {
     ///
     /// - Warning: ⚠️ The expression is evaluated repeatedly during the function execution. It should not have
     ///   any side effects which can affect its result.
-    static func willBeNil<T>(
-        _ expression: @autoclosure () -> T?,
+    static func willBeNil(
+        _ expression: @autoclosure () -> (some Any)?,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure () -> String = "Failed to become `nil`",
         file: StaticString = #file,
@@ -473,7 +470,6 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-
                 AssertAsync {
                     Assert.willBeTrue(
                         expression() == nil,
@@ -535,7 +531,6 @@ extension AssertAsync {
         _ = withoutActuallyEscaping(expression1) { expression1 in
             withoutActuallyEscaping(expression2) { expression2 in
                 withoutActuallyEscaping(message) { message in
-
                     AssertAsync {
                         Assert.staysEqual(
                             expression1(),
@@ -561,8 +556,8 @@ extension AssertAsync {
     ///   - object: The object to check for retain cycles.
     ///   - timeout: The maximum time the function waits for the object to be released.
     ///   - message: The message to print when the assertion fails.
-    static func canBeReleased<T: AnyObject>(
-        _ object: inout T!,
+    static func canBeReleased(
+        _ object: inout some AnyObject!,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure @escaping () -> String? = nil,
         file: StaticString = #file,

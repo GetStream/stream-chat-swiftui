@@ -128,8 +128,8 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         )
         .onPreferenceChange(HeightPreferenceKey.self) { value in
             Task { @MainActor in
-                if let value = value, value != composerHeight {
-                    self.composerHeight = value
+                if let value, value != composerHeight {
+                    composerHeight = value
                 }
             }
         }
@@ -146,7 +146,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         .onReceive(keyboardHeight) { height in
             if height > 0 && height != popupSize {
-                self.popupSize = height - bottomSafeArea
+                popupSize = height - bottomSafeArea
             }
         }
         .overlay(

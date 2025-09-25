@@ -286,7 +286,7 @@ import XCTest
     func test_messageActions_giphyMessage_shouldNotContainEditActtion() throws {
         // Given
         let channel = mockDMChannel
-        let message = ChatMessage.mock(
+        let message = try ChatMessage.mock(
             id: .unique,
             cid: channel.cid,
             text: "Test",
@@ -294,7 +294,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .giphy,
-                    payload: try JSONEncoder().encode(GiphyAttachmentPayload(
+                    payload: JSONEncoder().encode(GiphyAttachmentPayload(
                         title: "Test",
                         previewURL: URL(string: "Url")!
                     ))
