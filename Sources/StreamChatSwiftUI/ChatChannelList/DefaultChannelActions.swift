@@ -16,8 +16,8 @@ extension ChannelAction {
     @MainActor public static func defaultActions(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> [ChannelAction] {
         var actions = [ChannelAction]()
 
@@ -83,10 +83,10 @@ extension ChannelAction {
     @MainActor private static func muteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let muteAction: @MainActor () -> Void = {
+        let muteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.muteChannel { error in
                 if let error {
@@ -114,10 +114,10 @@ extension ChannelAction {
     @MainActor private static func unmuteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let unMuteAction: @MainActor () -> Void = {
+        let unMuteAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.unmuteChannel { error in
                 if let error {
@@ -146,10 +146,10 @@ extension ChannelAction {
     @MainActor private static func deleteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let deleteConversationAction: @MainActor () -> Void = {
+        let deleteConversationAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.deleteChannel { error in
                 if let error {
@@ -179,10 +179,10 @@ extension ChannelAction {
         for channel: ChatChannel,
         chatClient: ChatClient,
         userId: String,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
+        onDismiss: @escaping @MainActor() -> Void,
+        onError: @escaping @MainActor(Error) -> Void
     ) -> ChannelAction {
-        let leaveAction: @MainActor () -> Void = {
+        let leaveAction: @MainActor() -> Void = {
             let controller = chatClient.channelController(for: channel.cid)
             controller.removeMembers(userIds: [userId]) { error in
                 if let error {

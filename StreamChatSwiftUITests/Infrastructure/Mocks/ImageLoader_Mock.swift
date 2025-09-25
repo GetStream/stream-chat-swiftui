@@ -18,7 +18,7 @@ class ImageLoader_Mock: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
         StreamConcurrency.onMain {
@@ -32,7 +32,7 @@ class ImageLoader_Mock: ImageLoading {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping @MainActor ([UIImage]) -> Void
+        completion: @escaping @MainActor([UIImage]) -> Void
     ) {
         loadImageCalled = true
 
@@ -52,7 +52,7 @@ class TestImagesLoader_Mock: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
 

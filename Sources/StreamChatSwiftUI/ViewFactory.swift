@@ -118,11 +118,11 @@ import SwiftUI
 
     associatedtype ChannelDestination: View
     /// Returns a function that creates the channel destination.
-    func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor (ChannelSelectionInfo) -> ChannelDestination
+    func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor(ChannelSelectionInfo) -> ChannelDestination
 
     associatedtype MessageThreadDestination: View
     /// Returns a function that creats the message thread destination.
-    func makeMessageThreadDestination(options: MessageThreadDestinationOptions) -> @MainActor (ChatChannel, ChatMessage) -> MessageThreadDestination
+    func makeMessageThreadDestination(options: MessageThreadDestinationOptions) -> @MainActor(ChatChannel, ChatMessage) -> MessageThreadDestination
 
     associatedtype EmptyMessagesViewType: View
     /// Returns a view shown when there are no messages in a channel.
@@ -565,7 +565,7 @@ import SwiftUI
 
     associatedtype ThreadDestination: View
     /// Returns a function that creates the thread destination.
-    func makeThreadDestination(options: ThreadDestinationOptions) -> @MainActor (ChatThread) -> ThreadDestination
+    func makeThreadDestination(options: ThreadDestinationOptions) -> @MainActor(ChatThread) -> ThreadDestination
 
     associatedtype ThreadListItemType: View
     /// Creates the thread list item.

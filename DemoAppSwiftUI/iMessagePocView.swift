@@ -128,7 +128,7 @@ class iMessageViewFactory: ViewFactory {
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
-        buttonTapped: @escaping @MainActor (ChatChannel) -> Void
+        buttonTapped: @escaping @MainActor(ChatChannel) -> Void
     ) -> some View {
         HStack {
             ActionItemButton(imageName: "pin.fill") {

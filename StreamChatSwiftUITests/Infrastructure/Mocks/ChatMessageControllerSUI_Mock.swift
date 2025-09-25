@@ -56,7 +56,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
     }
 
     var synchronize_callCount = 0
-    override public func synchronize(_ completion: (@MainActor (Error?) -> Void)? = nil) {
+    override public func synchronize(_ completion: (@MainActor(Error?) -> Void)? = nil) {
         synchronize_callCount += 1
     }
 
@@ -72,7 +72,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
         showReplyInChannel: Bool = false,
         command: Command? = nil,
         extraData: [String: RawJSON] = [:],
-        completion: (@MainActor (Result<DraftMessage, any Error>) -> Void)? = nil
+        completion: (@MainActor(Result<DraftMessage, any Error>) -> Void)? = nil
     ) {
         updateDraftReply_callCount += 1
         updateDraftReply_text = text
@@ -80,7 +80,7 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
 
     var deleteDraftReply_callCount = 0
 
-    override public func deleteDraftReply(completion: (@MainActor ((any Error)?) -> Void)? = nil) {
+    override public func deleteDraftReply(completion: (@MainActor((any Error)?) -> Void)? = nil) {
         deleteDraftReply_callCount += 1
     }
 }
