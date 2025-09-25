@@ -219,7 +219,7 @@ extension ChatMessage {
     ///  - injectedBackgroundColor: If you need a custom background color injected.
     /// - Returns: The background colors (can be many for gradients) for the message cell.
     public func bubbleBackground(colors: ColorPalette, injectedBackgroundColor: UIColor? = nil) -> [Color] {
-        if let injectedBackgroundColor = injectedBackgroundColor {
+        if let injectedBackgroundColor {
             return [Color(injectedBackgroundColor)]
         }
         var colors = colors

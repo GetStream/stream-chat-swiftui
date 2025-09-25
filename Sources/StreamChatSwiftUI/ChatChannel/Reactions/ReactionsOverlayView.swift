@@ -69,12 +69,12 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.onActionExecuted = onActionExecuted
         messageActionsCount = factory.supportedMessageActions(
             options:
-                .init(
-                    message: messageDisplayInfo.message,
-                    channel: channel,
-                    onFinish: { _ in /* No handling needed. */ },
-                    onError: { _ in /* No handling needed. */ }
-                )
+            .init(
+                message: messageDisplayInfo.message,
+                channel: channel,
+                onFinish: { _ in /* No handling needed. */ },
+                onError: { _ in /* No handling needed. */ }
+            )
         ).count
     }
 
@@ -208,20 +208,20 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 }
                 .offset(y: !popIn ? (messageDisplayInfo.frame.origin.y - spacing) : originY)
                 .onAppear {
-                    self.initialOrigin = messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
+                    initialOrigin = messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
                 }
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value = value, value != screenHeight {
-                self.screenHeight = value
+            if let value, value != screenHeight {
+                screenHeight = value
             }
         }
         .onPreferenceChange(WidthPreferenceKey.self) { value in
             if initialWidth == nil {
                 initialWidth = value
             }
-            self.screenWidth = value
+            screenWidth = value
         }
         .edgesIgnoringSafeArea(.all)
         .background(orientationChanged ? nil : Color(colors.background))
@@ -232,7 +232,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .accessibilityIdentifier("ReactionsOverlayView")
         .onRotate { _ in
             if isIPad {
-                self.orientationChanged = true
+                orientationChanged = true
             }
         }
     }
@@ -344,9 +344,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     private func diffWidth(proxy: GeometryProxy) -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
-            return proxy.frame(in: .global).minX
+            proxy.frame(in: .global).minX
         } else {
-            return 0
+            0
         }
     }
 
@@ -356,17 +356,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     private func messageActionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isRightAligned {
-            return availableWidth - messageActionsWidth - paddingValue / 2
+            availableWidth - messageActionsWidth - paddingValue / 2
         } else {
-            return CGSize.messageAvatarSize.width + paddingValue
+            CGSize.messageAvatarSize.width + paddingValue
         }
     }
 
     private func userReactionsOriginX(availableWidth: CGFloat) -> CGFloat {
         if messageDisplayInfo.message.isRightAligned {
-            return availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
+            availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
         } else {
-            return paddingValue
+            paddingValue
         }
     }
 

@@ -35,9 +35,9 @@ public struct MentionUsersView: View {
 
     private var viewHeight: CGFloat {
         if users.count > 3 {
-            return 3 * itemHeight
+            3 * itemHeight
         } else {
-            return CGFloat(users.count) * itemHeight
+            CGFloat(users.count) * itemHeight
         }
     }
 }

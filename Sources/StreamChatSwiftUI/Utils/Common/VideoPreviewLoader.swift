@@ -12,7 +12,7 @@ public protocol VideoPreviewLoader: AnyObject {
     /// - Parameters:
     ///   - url: A video URL.
     ///   - completion: A completion that is called when a preview is loaded. Must be invoked on main queue.
-    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor(Result<UIImage, Error>) -> Void)
+    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void)
 }
 
 /// The `VideoPreviewLoader` implemenation used by default.
@@ -36,7 +36,7 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
         NotificationCenter.default.removeObserver(self)
     }
 
-    public func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor(Result<UIImage, Error>) -> Void) {
+    public func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
         if let cached = cache[url] {
             Task { @MainActor in
                 completion(.success(cached))
@@ -45,7 +45,6 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
         }
 
         utils.fileCDN.adjustedURL(for: url) { [cache] result in
-
             let adjustedUrl: URL
             switch result {
             case let .success(url):
@@ -66,7 +65,7 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
                 let result: Result<UIImage, Error>
                 if let thumbnail = image {
                     result = .success(.init(cgImage: thumbnail))
-                } else if let error = error {
+                } else if let error {
                     result = .failure(error)
                 } else {
                     log.error("Both error and image are `nil`.")

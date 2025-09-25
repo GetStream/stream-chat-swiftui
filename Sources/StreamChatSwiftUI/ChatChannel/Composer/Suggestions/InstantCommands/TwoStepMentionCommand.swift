@@ -41,7 +41,7 @@ open class TwoStepMentionCommand: CommandHandler {
 
     open func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text.hasPrefix(id) {
-            return ComposerCommand(
+            ComposerCommand(
                 id: id,
                 typingSuggestion: TypingSuggestion(
                     text: text,
@@ -54,7 +54,7 @@ open class TwoStepMentionCommand: CommandHandler {
                 replacesMessageSent: true
             )
         } else {
-            return nil
+            nil
         }
     }
 
@@ -88,7 +88,7 @@ open class TwoStepMentionCommand: CommandHandler {
     }
 
     open func commandHandler(for command: ComposerCommand) -> CommandHandler? {
-        if let selectedUser = selectedUser,
+        if let selectedUser,
            command.typingSuggestion.text != "\(mentionSymbol)\(selectedUser.mentionText)" {
             self.selectedUser = nil
         }
@@ -131,7 +131,7 @@ open class TwoStepMentionCommand: CommandHandler {
 
     open func executeOnMessageSent(
         composerCommand: ComposerCommand,
-        completion: @escaping @MainActor(Error?) -> Void
+        completion: @escaping @MainActor (Error?) -> Void
     ) {
         // Implement in subclasses.
     }

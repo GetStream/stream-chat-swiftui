@@ -31,9 +31,9 @@ struct SearchBar: View, KeyboardReadable {
 
                         Spacer()
 
-                        if !self.text.isEmpty {
+                        if !text.isEmpty {
                             Button(action: {
-                                self.text = ""
+                                text = ""
                             }) {
                                 Image(uiImage: images.searchCloseIcon)
                                     .customizable()
@@ -50,8 +50,8 @@ struct SearchBar: View, KeyboardReadable {
 
             if isEditing {
                 Button(action: {
-                    self.isEditing = false
-                    self.text = ""
+                    isEditing = false
+                    text = ""
                     // Dismiss the keyboard
                     resignFirstResponder()
                 }) {
@@ -67,10 +67,10 @@ struct SearchBar: View, KeyboardReadable {
         .padding(.vertical, 8)
         .onReceive(keyboardWillChangePublisher) { shown in
             if shown {
-                self.isEditing = true
+                isEditing = true
             }
             if !shown && isEditing {
-                self.isEditing = false
+                isEditing = false
             }
         }
         .accessibilityIdentifier("SearchBar")

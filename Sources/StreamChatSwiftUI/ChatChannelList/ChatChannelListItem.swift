@@ -145,11 +145,11 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var channelSubtitleText: String {
         if channel.shouldShowTypingIndicator {
-            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+            channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         } else if let previewMessageText = channel.previewMessageText {
-            return previewMessageText
+            previewMessageText
         } else {
-            return L10n.Channel.Item.emptyMessages
+            L10n.Channel.Item.emptyMessages
         }
     }
 
@@ -343,7 +343,7 @@ extension ChatChannel {
     }
 
     public var draftMessageText: String? {
-        guard let draftMessage = draftMessage else { return nil }
+        guard let draftMessage else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: self)
     }
@@ -369,18 +369,18 @@ extension ChatChannel {
 
     public var subtitleText: String {
         if isMuted {
-            return L10n.Channel.Item.muted
+            L10n.Channel.Item.muted
         } else if shouldShowTypingIndicator {
-            return typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
+            typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
         } else if let previewMessageText {
-            return previewMessageText
+            previewMessageText
         } else {
-            return L10n.Channel.Item.emptyMessages
+            L10n.Channel.Item.emptyMessages
         }
     }
 
     public var timestampText: String {
-        if let lastMessageAt = lastMessageAt {
+        if let lastMessageAt {
             let utils = InjectedValues[\.utils]
             let formatter = utils.channelListConfig.messageRelativeDateFormatEnabled ?
                 utils.messageRelativeDateFormatter :

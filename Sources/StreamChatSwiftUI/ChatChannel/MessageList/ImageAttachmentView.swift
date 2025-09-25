@@ -62,7 +62,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         )
         .fullScreenCover(isPresented: $galleryShown, onDismiss: {
-            self.selectedIndex = 0
+            selectedIndex = 0
         }) {
             factory.makeGalleryView(
                 options: GalleryViewOptions(
@@ -350,9 +350,9 @@ struct LazyLoadingImage: View {
 
     var body: some View {
         ZStack {
-            if let image = image {
+            if let image {
                 imageView(for: image)
-                if let imageTapped = imageTapped {
+                if let imageTapped {
                     // NOTE: needed because of bug with SwiftUI.
                     // The click area expands outside the image view (although not visible).
                     Rectangle()
@@ -440,7 +440,7 @@ public struct MediaAttachment: Identifiable, Equatable {
     func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
-        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         if type == .image {
             utils.imageLoader.loadImage(
@@ -467,11 +467,10 @@ public struct MediaAttachment: Identifiable, Equatable {
 
 extension MediaAttachment {
     init(from attachment: ChatMessageImageAttachment) {
-        let url: URL
-        if let state = attachment.uploadingState {
-            url = state.localFileURL
+        let url: URL = if let state = attachment.uploadingState {
+            state.localFileURL
         } else {
-            url = attachment.imageURL
+            attachment.imageURL
         }
         self.init(
             url: url,

@@ -25,11 +25,11 @@ public struct ChannelListItemOptions<ChannelDestination: View> {
     public let disabled: Bool
     public let selectedChannel: Binding<ChannelSelectionInfo?>
     public let swipedChannelId: Binding<String?>
-    public let channelDestination: @MainActor(ChannelSelectionInfo) -> ChannelDestination
-    public let onItemTap: @MainActor(ChatChannel) -> Void
-    public let trailingSwipeRightButtonTapped: @MainActor(ChatChannel) -> Void
-    public let trailingSwipeLeftButtonTapped: @MainActor(ChatChannel) -> Void
-    public let leadingSwipeButtonTapped: @MainActor(ChatChannel) -> Void
+    public let channelDestination: @MainActor (ChannelSelectionInfo) -> ChannelDestination
+    public let onItemTap: @MainActor (ChatChannel) -> Void
+    public let trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
+    public let trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
+    public let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
     
     public init(
         channel: ChatChannel,
@@ -39,11 +39,11 @@ public struct ChannelListItemOptions<ChannelDestination: View> {
         disabled: Bool,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination,
-        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination,
+        onItemTap: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.channel = channel
         self.channelName = channelName
@@ -91,14 +91,14 @@ public struct ChannelListItemBackgroundOptions {
 public struct MoreChannelActionsViewOptions {
     public let channel: ChatChannel
     public let swipedChannelId: Binding<String?>
-    public let onDismiss: @MainActor() -> Void
-    public let onError: @MainActor(Error) -> Void
+    public let onDismiss: @MainActor () -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.channel = channel
         self.swipedChannelId = swipedChannelId
@@ -109,13 +109,13 @@ public struct MoreChannelActionsViewOptions {
 
 public struct SupportedMoreChannelActionsOptions {
     public let channel: ChatChannel
-    public let onDismiss: @MainActor() -> Void
-    public let onError: @MainActor(Error) -> Void
+    public let onDismiss: @MainActor () -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.channel = channel
         self.onDismiss = onDismiss
@@ -128,16 +128,16 @@ public struct TrailingSwipeActionsViewOptions {
     public let offsetX: CGFloat
     public let buttonWidth: CGFloat
     public let swipedChannelId: Binding<String?>
-    public let leftButtonTapped: @MainActor(ChatChannel) -> Void
-    public let rightButtonTapped: @MainActor(ChatChannel) -> Void
+    public let leftButtonTapped: @MainActor (ChatChannel) -> Void
+    public let rightButtonTapped: @MainActor (ChatChannel) -> Void
     
     public init(
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        leftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        rightButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        leftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        rightButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.channel = channel
         self.offsetX = offsetX
@@ -153,14 +153,14 @@ public struct LeadingSwipeActionsViewOptions {
     public let offsetX: CGFloat
     public let buttonWidth: CGFloat
     public let swipedChannelId: Binding<String?>
-    public let buttonTapped: @MainActor(ChatChannel) -> Void
+    public let buttonTapped: @MainActor (ChatChannel) -> Void
     
     public init(
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        buttonTapped: @escaping @MainActor(ChatChannel) -> Void
+        buttonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.channel = channel
         self.offsetX = offsetX
@@ -182,21 +182,21 @@ public struct SearchResultsViewOptions {
     public let selectedChannel: Binding<ChannelSelectionInfo?>
     public let searchResults: [ChannelSelectionInfo]
     public let loadingSearchResults: Bool
-    public let onlineIndicatorShown: @MainActor(ChatChannel) -> Bool
-    public let channelNaming: @MainActor(ChatChannel) -> String
-    public let imageLoader: @MainActor(ChatChannel) -> UIImage
-    public let onSearchResultTap: @MainActor(ChannelSelectionInfo) -> Void
-    public let onItemAppear: @MainActor(Int) -> Void
+    public let onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
+    public let channelNaming: @MainActor (ChatChannel) -> String
+    public let imageLoader: @MainActor (ChatChannel) -> UIImage
+    public let onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
+    public let onItemAppear: @MainActor (Int) -> Void
     
     public init(
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping @MainActor(ChatChannel) -> Bool,
-        channelNaming: @escaping @MainActor(ChatChannel) -> String,
-        imageLoader: @escaping @MainActor(ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping @MainActor(Int) -> Void
+        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
+        channelNaming: @escaping @MainActor (ChatChannel) -> String,
+        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping @MainActor (Int) -> Void
     ) {
         self.selectedChannel = selectedChannel
         self.searchResults = searchResults
@@ -214,16 +214,16 @@ public struct ChannelListSearchResultItemOptions<ChannelDestination: View> {
     public let onlineIndicatorShown: Bool
     public let channelName: String
     public let avatar: UIImage
-    public let onSearchResultTap: @MainActor(ChannelSelectionInfo) -> Void
-    public let channelDestination: @MainActor(ChannelSelectionInfo) -> ChannelDestination
+    public let onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
+    public let channelDestination: @MainActor (ChannelSelectionInfo) -> ChannelDestination
     
     public init(
         searchResult: ChannelSelectionInfo,
         onlineIndicatorShown: Bool,
         channelName: String,
         avatar: UIImage,
-        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination
+        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination
     ) {
         self.searchResult = searchResult
         self.onlineIndicatorShown = onlineIndicatorShown
@@ -302,7 +302,7 @@ public struct MessageContainerViewOptions {
     public let isInThread: Bool
     public let scrolledId: Binding<String?>
     public let quotedMessage: Binding<ChatMessage?>
-    public let onLongPress: @MainActor(MessageDisplayInfo) -> Void
+    public let onLongPress: @MainActor (MessageDisplayInfo) -> Void
     public let isLast: Bool
     
     public init(
@@ -313,7 +313,7 @@ public struct MessageContainerViewOptions {
         isInThread: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping @MainActor(MessageDisplayInfo) -> Void,
+        onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void,
         isLast: Bool
     ) {
         self.channel = channel
@@ -618,9 +618,9 @@ public struct CustomAttachmentViewTypeOptions {
 
 public struct ScrollToBottomButtonOptions {
     public let unreadCount: Int
-    public let onScrollToBottom: @MainActor() -> Void
+    public let onScrollToBottom: @MainActor () -> Void
     
-    public init(unreadCount: Int, onScrollToBottom: @escaping @MainActor() -> Void) {
+    public init(unreadCount: Int, onScrollToBottom: @escaping @MainActor () -> Void) {
         self.unreadCount = unreadCount
         self.onScrollToBottom = onScrollToBottom
     }
@@ -700,14 +700,14 @@ public struct MessageComposerViewTypeOptions {
     public let messageController: ChatMessageController?
     public let quotedMessage: Binding<ChatMessage?>
     public let editedMessage: Binding<ChatMessage?>
-    public let onMessageSent: @MainActor() -> Void
+    public let onMessageSent: @MainActor () -> Void
     
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping @MainActor() -> Void
+        onMessageSent: @escaping @MainActor () -> Void
     ) {
         self.channelController = channelController
         self.messageController = messageController
@@ -737,9 +737,9 @@ public struct ComposerInputViewOptions {
     public let quotedMessage: Binding<ChatMessage?>
     public let maxMessageLength: Int?
     public let cooldownDuration: Int
-    public let onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
+    public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     public let shouldScroll: Bool
-    public let removeAttachmentWithId: @MainActor(String) -> Void
+    public let removeAttachmentWithId: @MainActor (String) -> Void
     
     public init(
         text: Binding<String>,
@@ -751,9 +751,9 @@ public struct ComposerInputViewOptions {
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping @MainActor(String) -> Void
+        removeAttachmentWithId: @escaping @MainActor (String) -> Void
     ) {
         self.text = text
         self.selectedRangeLocation = selectedRangeLocation
@@ -801,9 +801,9 @@ public struct ComposerTextInputViewOptions {
 public struct TrailingComposerViewOptions {
     public let enabled: Bool
     public let cooldownDuration: Int
-    public let onTap: @MainActor() -> Void
+    public let onTap: @MainActor () -> Void
     
-    public init(enabled: Bool, cooldownDuration: Int, onTap: @escaping @MainActor() -> Void) {
+    public init(enabled: Bool, cooldownDuration: Int, onTap: @escaping @MainActor () -> Void) {
         self.enabled = enabled
         self.cooldownDuration = cooldownDuration
         self.onTap = onTap
@@ -835,14 +835,14 @@ public struct AttachmentPickerViewOptions {
     public let filePickerShown: Binding<Bool>
     public let cameraPickerShown: Binding<Bool>
     public let addedFileURLs: Binding<[URL]>
-    public let onPickerStateChange: @MainActor(AttachmentPickerState) -> Void
+    public let onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     public let photoLibraryAssets: PHFetchResult<PHAsset>?
-    public let onAssetTap: @MainActor(AddedAsset) -> Void
-    public let onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
-    public let isAssetSelected: @MainActor(String) -> Bool
+    public let onAssetTap: @MainActor (AddedAsset) -> Void
+    public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
+    public let isAssetSelected: @MainActor (String) -> Bool
     public let addedCustomAttachments: [CustomAttachment]
-    public let cameraImageAdded: @MainActor(AddedAsset) -> Void
-    public let askForAssetsAccessPermissions: @MainActor() -> Void
+    public let cameraImageAdded: @MainActor (AddedAsset) -> Void
+    public let askForAssetsAccessPermissions: @MainActor () -> Void
     public let isDisplayed: Bool
     public let height: CGFloat
     public let popupHeight: CGFloat
@@ -852,14 +852,14 @@ public struct AttachmentPickerViewOptions {
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
         addedFileURLs: Binding<[URL]>,
-        onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void,
+        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>?,
-        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
-        isAssetSelected: @escaping @MainActor(String) -> Bool,
+        onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
+        isAssetSelected: @escaping @MainActor (String) -> Bool,
         addedCustomAttachments: [CustomAttachment],
-        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void,
-        askForAssetsAccessPermissions: @escaping @MainActor() -> Void,
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
+        askForAssetsAccessPermissions: @escaping @MainActor () -> Void,
         isDisplayed: Bool,
         height: CGFloat,
         popupHeight: CGFloat
@@ -884,9 +884,9 @@ public struct AttachmentPickerViewOptions {
 
 public struct AttachmentSourcePickerViewOptions {
     public let selected: AttachmentPickerState
-    public let onPickerStateChange: @MainActor(AttachmentPickerState) -> Void
+    public let onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     
-    public init(selected: AttachmentPickerState, onPickerStateChange: @escaping @MainActor(AttachmentPickerState) -> Void) {
+    public init(selected: AttachmentPickerState, onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void) {
         self.selected = selected
         self.onPickerStateChange = onPickerStateChange
     }
@@ -894,13 +894,13 @@ public struct AttachmentSourcePickerViewOptions {
 
 public struct PhotoAttachmentPickerViewOptions {
     public let assets: PHFetchResultCollection
-    public let onAssetTap: @MainActor(AddedAsset) -> Void
-    public let isAssetSelected: @MainActor(String) -> Bool
+    public let onAssetTap: @MainActor (AddedAsset) -> Void
+    public let isAssetSelected: @MainActor (String) -> Bool
     
     public init(
         assets: PHFetchResultCollection,
-        onAssetTap: @escaping @MainActor(AddedAsset) -> Void,
-        isAssetSelected: @escaping @MainActor(String) -> Bool
+        onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
+        isAssetSelected: @escaping @MainActor (String) -> Bool
     ) {
         self.assets = assets
         self.onAssetTap = onAssetTap
@@ -921,12 +921,12 @@ public struct FilePickerViewOptions {
 public struct CameraPickerViewOptions {
     public let selected: Binding<AttachmentPickerState>
     public let cameraPickerShown: Binding<Bool>
-    public let cameraImageAdded: @MainActor(AddedAsset) -> Void
+    public let cameraImageAdded: @MainActor (AddedAsset) -> Void
     
     public init(
         selected: Binding<AttachmentPickerState>,
         cameraPickerShown: Binding<Bool>,
-        cameraImageAdded: @escaping @MainActor(AddedAsset) -> Void
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
     ) {
         self.selected = selected
         self.cameraPickerShown = cameraPickerShown
@@ -936,11 +936,11 @@ public struct CameraPickerViewOptions {
 
 public struct CustomComposerAttachmentViewOptions {
     public let addedCustomAttachments: [CustomAttachment]
-    public let onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
+    public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     
     public init(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void
     ) {
         self.addedCustomAttachments = addedCustomAttachments
         self.onCustomAttachmentTap = onCustomAttachmentTap
@@ -949,11 +949,11 @@ public struct CustomComposerAttachmentViewOptions {
 
 public struct CustomAttachmentPreviewViewOptions {
     public let addedCustomAttachments: [CustomAttachment]
-    public let onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
+    public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     
     public init(
         addedCustomAttachments: [CustomAttachment],
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void
     ) {
         self.addedCustomAttachments = addedCustomAttachments
         self.onCustomAttachmentTap = onCustomAttachmentTap
@@ -965,14 +965,14 @@ public struct CustomAttachmentPreviewViewOptions {
 public struct SupportedMessageActionsOptions {
     public let message: ChatMessage
     public let channel: ChatChannel
-    public let onFinish: @MainActor(MessageActionInfo) -> Void
-    public let onError: @MainActor(Error) -> Void
+    public let onFinish: @MainActor (MessageActionInfo) -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.message = message
         self.channel = channel
@@ -994,14 +994,14 @@ public struct SendInChannelViewOptions {
 public struct MessageActionsViewOptions {
     public let message: ChatMessage
     public let channel: ChatChannel
-    public let onFinish: @MainActor(MessageActionInfo) -> Void
-    public let onError: @MainActor(Error) -> Void
+    public let onFinish: @MainActor (MessageActionInfo) -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.message = message
         self.channel = channel
@@ -1025,14 +1025,14 @@ public struct ReactionsUsersViewOptions {
 public struct ReactionsBottomViewOptions {
     public let message: ChatMessage
     public let showsAllInfo: Bool
-    public let onTap: @MainActor() -> Void
-    public let onLongPress: @MainActor() -> Void
+    public let onTap: @MainActor () -> Void
+    public let onLongPress: @MainActor () -> Void
     
     public init(
         message: ChatMessage,
         showsAllInfo: Bool,
-        onTap: @escaping @MainActor() -> Void,
-        onLongPress: @escaping @MainActor() -> Void
+        onTap: @escaping @MainActor () -> Void,
+        onLongPress: @escaping @MainActor () -> Void
     ) {
         self.message = message
         self.showsAllInfo = showsAllInfo
@@ -1043,13 +1043,13 @@ public struct ReactionsBottomViewOptions {
 
 public struct MessageReactionViewOptions {
     public let message: ChatMessage
-    public let onTapGesture: @MainActor() -> Void
-    public let onLongPressGesture: @MainActor() -> Void
+    public let onTapGesture: @MainActor () -> Void
+    public let onLongPressGesture: @MainActor () -> Void
     
     public init(
         message: ChatMessage,
-        onTapGesture: @escaping @MainActor() -> Void,
-        onLongPressGesture: @escaping @MainActor() -> Void
+        onTapGesture: @escaping @MainActor () -> Void,
+        onLongPressGesture: @escaping @MainActor () -> Void
     ) {
         self.message = message
         self.onTapGesture = onTapGesture
@@ -1061,15 +1061,15 @@ public struct ReactionsOverlayViewOptions {
     public let channel: ChatChannel
     public let currentSnapshot: UIImage
     public let messageDisplayInfo: MessageDisplayInfo
-    public let onBackgroundTap: @MainActor() -> Void
-    public let onActionExecuted: @MainActor(MessageActionInfo) -> Void
+    public let onBackgroundTap: @MainActor () -> Void
+    public let onActionExecuted: @MainActor (MessageActionInfo) -> Void
     
     public init(
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping @MainActor() -> Void,
-        onActionExecuted: @escaping @MainActor(MessageActionInfo) -> Void
+        onBackgroundTap: @escaping @MainActor () -> Void,
+        onActionExecuted: @escaping @MainActor (MessageActionInfo) -> Void
     ) {
         self.channel = channel
         self.currentSnapshot = currentSnapshot
@@ -1092,12 +1092,12 @@ public struct ReactionsBackgroundOptions {
 public struct ReactionsContentViewOptions {
     public let message: ChatMessage
     public let contentRect: CGRect
-    public let onReactionTap: @MainActor(MessageReactionType) -> Void
+    public let onReactionTap: @MainActor (MessageReactionType) -> Void
     
     public init(
         message: ChatMessage,
         contentRect: CGRect,
-        onReactionTap: @escaping @MainActor(MessageReactionType) -> Void
+        onReactionTap: @escaping @MainActor (MessageReactionType) -> Void
     ) {
         self.message = message
         self.contentRect = contentRect
@@ -1154,9 +1154,9 @@ public struct EditedMessageHeaderViewOptions {
 
 public struct CommandsContainerViewOptions {
     public let suggestions: [String: Any]
-    public let handleCommand: @MainActor([String: Any]) -> Void
+    public let handleCommand: @MainActor ([String: Any]) -> Void
     
-    public init(suggestions: [String: Any], handleCommand: @escaping @MainActor([String: Any]) -> Void) {
+    public init(suggestions: [String: Any], handleCommand: @escaping @MainActor ([String: Any]) -> Void) {
         self.suggestions = suggestions
         self.handleCommand = handleCommand
     }
@@ -1186,13 +1186,13 @@ public struct NewMessagesIndicatorViewOptions {
 
 public struct JumpToUnreadButtonOptions {
     public let channel: ChatChannel
-    public let onJumpToMessage: @MainActor() -> Void
-    public let onClose: @MainActor() -> Void
+    public let onJumpToMessage: @MainActor () -> Void
+    public let onClose: @MainActor () -> Void
     
     public init(
         channel: ChatChannel,
-        onJumpToMessage: @escaping @MainActor() -> Void,
-        onClose: @escaping @MainActor() -> Void
+        onJumpToMessage: @escaping @MainActor () -> Void,
+        onClose: @escaping @MainActor () -> Void
     ) {
         self.channel = channel
         self.onJumpToMessage = onJumpToMessage
@@ -1228,12 +1228,12 @@ public struct PollViewOptions {
 
 public struct ThreadListItemOptions<ThreadDestination: View> {
     public let thread: ChatThread
-    public let threadDestination: @MainActor(ChatThread) -> ThreadDestination
+    public let threadDestination: @MainActor (ChatThread) -> ThreadDestination
     public let selectedThread: Binding<ThreadSelectionInfo?>
     
     public init(
         thread: ChatThread,
-        threadDestination: @escaping @MainActor(ChatThread) -> ThreadDestination,
+        threadDestination: @escaping @MainActor (ChatThread) -> ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>
     ) {
         self.thread = thread
@@ -1243,9 +1243,9 @@ public struct ThreadListItemOptions<ThreadDestination: View> {
 }
 
 public struct ThreadListErrorBannerViewOptions {
-    public let onRefreshAction: @MainActor() -> Void
+    public let onRefreshAction: @MainActor () -> Void
     
-    public init(onRefreshAction: @escaping @MainActor() -> Void) {
+    public init(onRefreshAction: @escaping @MainActor () -> Void) {
         self.onRefreshAction = onRefreshAction
     }
 }
@@ -1304,9 +1304,9 @@ public struct ThreadListItemBackgroundOptions {
 
 public struct AddUsersViewOptions {
     public let options: AddUsersOptions
-    public let onUserTap: @MainActor(ChatUser) -> Void
+    public let onUserTap: @MainActor (ChatUser) -> Void
     
-    public init(options: AddUsersOptions, onUserTap: @escaping @MainActor(ChatUser) -> Void) {
+    public init(options: AddUsersOptions, onUserTap: @escaping @MainActor (ChatUser) -> Void) {
         self.options = options
         self.onUserTap = onUserTap
     }

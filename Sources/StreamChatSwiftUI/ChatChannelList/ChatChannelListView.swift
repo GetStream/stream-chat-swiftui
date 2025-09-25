@@ -94,8 +94,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         )
         .onReceive(viewModel.$hideTabBar) { newValue in
             if isIphone && handleTabBarVisibility {
-                self.setupTabBarAppeareance()
-                self.tabBar?.isHidden = newValue
+                setupTabBarAppeareance()
+                tabBar?.isHidden = newValue
             }
         }
         .accessibilityIdentifier("ChatChannelListView")
@@ -130,7 +130,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {
             case let .deleteChannel(channel):
-                return Alert(
+                Alert(
                     title: Text(L10n.Alert.Actions.deleteChannelTitle),
                     message: Text(L10n.Alert.Actions.deleteChannelMessage),
                     primaryButton: .destructive(Text(L10n.Alert.Actions.delete)) {
@@ -139,7 +139,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     secondaryButton: .cancel()
                 )
             default:
-                return Alert.defaultErrorAlert
+                Alert.defaultErrorAlert
             }
         }
         .modifier(viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: title)))
@@ -203,7 +203,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     ) {
         self.viewFactory = viewFactory
         self.viewModel = viewModel
-        if let onItemTap = onItemTap {
+        if let onItemTap {
             self.onItemTap = onItemTap
         } else {
             self.onItemTap = { channel in

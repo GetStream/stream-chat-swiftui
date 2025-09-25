@@ -11,9 +11,9 @@ class ReactionsIconProvider {
     
     @MainActor static func icon(for reaction: MessageReactionType, useLargeIcons: Bool) -> UIImage? {
         if useLargeIcons {
-            return images.availableReactions[reaction]?.largeIcon
+            images.availableReactions[reaction]?.largeIcon
         } else {
-            return images.availableReactions[reaction]?.smallIcon
+            images.availableReactions[reaction]?.smallIcon
         }
     }
 
@@ -21,7 +21,7 @@ class ReactionsIconProvider {
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
 
-        if let color = color {
+        if let color {
             return Color(color)
         } else {
             return nil

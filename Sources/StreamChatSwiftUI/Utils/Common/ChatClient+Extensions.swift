@@ -14,12 +14,11 @@ extension ChatClient {
     /// - Returns: The maximum allowed size for the attachment in bytes.
     func maxAttachmentSize(for fileURL: URL) -> Int64 {
         let attachmentType = AttachmentType(fileExtension: fileURL.pathExtension)
-        let maxAttachmentSize: Int64?
-        switch attachmentType {
+        let maxAttachmentSize: Int64? = switch attachmentType {
         case .image:
-            maxAttachmentSize = appSettings?.imageUploadConfig.sizeLimitInBytes
+            appSettings?.imageUploadConfig.sizeLimitInBytes
         default:
-            maxAttachmentSize = appSettings?.fileUploadConfig.sizeLimitInBytes
+            appSettings?.fileUploadConfig.sizeLimitInBytes
         }
         if let maxAttachmentSize, maxAttachmentSize > 0 {
             return maxAttachmentSize

@@ -114,9 +114,9 @@ struct PickerTypeButton: View {
 
     private var icon: UIImage {
         if pickerType == .media {
-            return images.openAttachments
+            images.openAttachments
         } else {
-            return images.commands
+            images.commands
         }
     }
 
@@ -136,9 +136,9 @@ struct PickerTypeButton: View {
         selected: AttachmentPickerType
     ) -> Color {
         if pickerType == selected {
-            return Color(colors.highlightedAccentBackground)
+            Color(colors.highlightedAccentBackground)
         } else {
-            return Color(colors.textLowEmphasis)
+            Color(colors.textLowEmphasis)
         }
     }
 }

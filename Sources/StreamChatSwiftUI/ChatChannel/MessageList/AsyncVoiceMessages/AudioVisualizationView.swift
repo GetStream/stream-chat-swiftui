@@ -52,19 +52,19 @@ open class AudioVisualizationView: UIView {
     /// while in `.read` it scales(up or down) all dataPoints to it's current size.
     open var audioVisualizationMode: AudioVisualizationMode = .read
 
-    internal var meteringLevelBarWidth: CGFloat = 1.5 {
+    var meteringLevelBarWidth: CGFloat = 1.5 {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    internal var meteringLevelBarInterItem: CGFloat = 2.0 {
+    var meteringLevelBarInterItem: CGFloat = 2.0 {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    internal var meteringLevelBarCornerRadius: CGFloat = 0.75 {
+    var meteringLevelBarCornerRadius: CGFloat = 0.75 {
         didSet {
             setNeedsDisplay()
         }
@@ -72,7 +72,7 @@ open class AudioVisualizationView: UIView {
 
     /// Specify a `gradientPercentage` to have the width of gradient be that percentage of the view
     /// width (starting from left). The rest of the screen will be filled by the background colour to display nicely.
-    internal var currentGradientPercentage: Float?
+    var currentGradientPercentage: Float?
 
     private var meteringLevelsArray: [Float] = [] // Mutating recording array (values are percentage: 0.0 to 1.0)
     private var meteringLevelsClusteredArray: [Float] = [] // Generated read mode array (values are percentage: 0.0 to 1.0)
@@ -103,7 +103,7 @@ open class AudioVisualizationView: UIView {
 
     // MARK: - Record Mode Handling
 
-    internal func reset() {
+    func reset() {
         content = nil
         currentGradientPercentage = nil
         meteringLevelsClusteredArray.removeAll()
@@ -111,7 +111,7 @@ open class AudioVisualizationView: UIView {
         setNeedsDisplay()
     }
 
-    internal func add(meteringLevel: Float) {
+    func add(meteringLevel: Float) {
         guard audioVisualizationMode == .write else {
             fatalError("trying to populate audio visualization view in read mode")
         }
@@ -230,8 +230,8 @@ open class AudioVisualizationView: UIView {
     private func drawBar(_ barIndex: Int, meteringLevelIndex: Int, context: CGContext, array: [Float]) {
         context.saveGState()
 
-        let xPointForMeteringLevel = self.xPointForMeteringLevel(barIndex)
-        let heightForMeteringLevel = self.heightForMeteringLevel(array[meteringLevelIndex])
+        let xPointForMeteringLevel = xPointForMeteringLevel(barIndex)
+        let heightForMeteringLevel = heightForMeteringLevel(array[meteringLevelIndex])
 
         let barRect = CGRect(
             x: xPointForMeteringLevel,

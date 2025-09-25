@@ -20,11 +20,10 @@ struct ComposerTextInputView: UIViewRepresentable {
     var currentHeight: CGFloat
 
     func makeUIView(context: Context) -> InputTextView {
-        let inputTextView: InputTextView
-        if #available(iOS 16.0, *) {
-            inputTextView = InputTextView(usingTextLayoutManager: false)
+        let inputTextView: InputTextView = if #available(iOS 16.0, *) {
+            InputTextView(usingTextLayoutManager: false)
         } else {
-            inputTextView = InputTextView()
+            InputTextView()
         }
         context.coordinator.textView = inputTextView
         inputTextView.delegate = context.coordinator
@@ -124,7 +123,7 @@ struct ComposerTextInputView: UIViewRepresentable {
             shouldChangeTextIn range: NSRange,
             replacementText text: String
         ) -> Bool {
-            guard let maxMessageLength = maxMessageLength else { return true }
+            guard let maxMessageLength else { return true }
             let newMessageLength = textView.text.count + (text.count - range.length)
             return newMessageLength <= maxMessageLength
         }

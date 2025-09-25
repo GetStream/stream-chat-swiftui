@@ -30,6 +30,7 @@ struct AttachmentUploadingStateView: View {
                         .clipShape(Circle())
                         .offset(x: -4, y: -4)
                 }
+
             case .uploaded:
                 TopRightView {
                     Image(uiImage: images.confirmCheckmark)

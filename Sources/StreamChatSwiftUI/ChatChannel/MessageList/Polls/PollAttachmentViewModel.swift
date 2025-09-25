@@ -120,7 +120,7 @@ import SwiftUI
         pollController.delegate = self
         pollController.synchronize { [weak self] _ in
             guard let self else { return }
-            self.currentUserVotes = Array(self.pollController.ownVotes)
+            currentUserVotes = Array(self.pollController.ownVotes)
         }
     }
     

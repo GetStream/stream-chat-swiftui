@@ -199,7 +199,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .background(
             Color(colors.background).background(
                 TabBarAccessor { _ in
-                    self.tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
+                    tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
                 }
             )
             .ignoresSafeArea(.keyboard)
@@ -216,9 +216,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var generatingSnapshot: Bool {
         if #available(iOS 26, *) {
-            return false
+            false
         } else {
-            return tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
+            tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
         }
     }
 

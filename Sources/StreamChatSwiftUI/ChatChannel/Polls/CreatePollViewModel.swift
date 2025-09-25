@@ -101,7 +101,7 @@ import SwiftUI
             .store(in: &cancellables)
     }
         
-    func createPoll(completion: @escaping @MainActor() -> Void) {
+    func createPoll(completion: @escaping @MainActor () -> Void) {
         let pollOptions = options
             .map(\.trimmed)
             .filter { !$0.isEmpty }

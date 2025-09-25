@@ -85,7 +85,7 @@ public struct BottomLeftView<Content: View>: View {
     // TODO: Refactor ReactionsOverlayView to use a background blur, instead of a snapshot.
     /// Since the current approach is too error-prone and dependent of the app's hierarchy,
 
-    let keyWindow = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+    let keyWindow = UIApplication.shared.windows.filter(\.isKeyWindow).first
 
     if var topController = keyWindow?.rootViewController {
         while let presentedViewController = topController.presentedViewController {

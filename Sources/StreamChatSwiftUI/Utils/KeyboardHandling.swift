@@ -81,7 +81,7 @@ public struct HideKeyboardOnTapGesture: ViewModifier {
         content
             .gesture(shouldAdd ? TapGesture().onEnded { _ in
                 resignFirstResponder()
-                if let onTapped = onTapped {
+                if let onTapped {
                     onTapped()
                 }
             } : nil)

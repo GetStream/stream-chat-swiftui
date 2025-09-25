@@ -41,7 +41,7 @@ public struct ReactionsBubbleModifier: ViewModifier {
     }
 
     private var backgroundColor: UIColor {
-        if let injectedBackground = injectedBackground {
+        if let injectedBackground {
             return injectedBackground
         }
 

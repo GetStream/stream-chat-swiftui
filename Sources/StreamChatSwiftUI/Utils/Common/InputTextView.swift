@@ -4,7 +4,7 @@
 
 import UIKit
 
-struct TextSizeConstants {
+enum TextSizeConstants {
     static var composerConfig: ComposerConfig { InjectedValues[\.utils].composerConfig }
     static let defaultInputViewHeight: CGFloat = 38.0
     static var minimumHeight: CGFloat {
@@ -158,9 +158,9 @@ class InputTextView: UITextView, AccessibilityView {
     
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         if action == #selector(paste(_:)) && onImagePasted != nil && UIPasteboard.general.image != nil {
-            return true
+            true
         } else {
-            return super.canPerformAction(action, withSender: sender)
+            super.canPerformAction(action, withSender: sender)
         }
     }
 }

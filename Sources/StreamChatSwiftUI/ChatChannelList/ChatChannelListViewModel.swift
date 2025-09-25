@@ -16,7 +16,7 @@ import UIKit
     @Injected(\.utils) private var utils: Utils
 
     /// Context provided utils.
-    internal lazy var channelNamer = utils.channelNamer
+    lazy var channelNamer = utils.channelNamer
 
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
@@ -147,7 +147,7 @@ import UIKit
     ) {
         self.searchType = searchType
         self.selectedChannelId = selectedChannelId
-        if let channelListController = channelListController {
+        if let channelListController {
             controller = channelListController
         } else {
             makeDefaultChannelListController()
@@ -178,8 +178,8 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             controller?.loadNextChannels(limit: 30) { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
+                guard let self else { return }
+                loadingNextChannels = false
             }
         }
     }
@@ -362,15 +362,15 @@ import UIKit
         loading = channels.isEmpty
 
         controller?.synchronize { [weak self] error in
-            guard let self = self else { return }
-            self.loading = false
+            guard let self else { return }
+            loading = false
             if error != nil {
                 // handle error
-                self.setChannelAlertType(.error)
+                setChannelAlertType(.error)
             } else {
                 // access channels
-                self.updateChannels()
-                self.checkForDeeplinks()
+                updateChannels()
+                checkForDeeplinks()
             }
         }
     }
@@ -398,7 +398,7 @@ import UIKit
     }
 
     private func loadAdditionalMessageSearchResults(index: Int) {
-        guard let messageSearchController = messageSearchController else {
+        guard let messageSearchController else {
             return
         }
 
@@ -409,14 +409,14 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
+                guard let self else { return }
+                loadingNextChannels = false
             }
         }
     }
 
     private func loadAdditionalChannelSearchResults(index: Int) {
-        guard let channelListSearchController = self.channelListSearchController else {
+        guard let channelListSearchController else {
             return
         }
 
@@ -427,9 +427,9 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             channelListSearchController.loadNextChannels { [weak self] _ in
-                guard let self = self else { return }
-                self.loadingNextChannels = false
-                self.updateChannelSearchResults()
+                guard let self else { return }
+                loadingNextChannels = false
+                updateChannelSearchResults()
             }
         }
     }
@@ -514,7 +514,7 @@ import UIKit
     private func observeClientIdChange() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             StreamConcurrency.onMain {
                 if self.chatClient.currentUserId != nil {
                     self.stopTimer()
@@ -574,7 +574,7 @@ import UIKit
                 break
             }
         }
-        if let index = index, let selected = selected {
+        if let index, let selected {
             temp[index] = selected
         }
         markDirty = true
@@ -616,7 +616,7 @@ import UIKit
     }
 }
 
-internal let dismissChannel = "io.getstream.dismissChannel"
+let dismissChannel = "io.getstream.dismissChannel"
 
 private let hideTabBarNotification = "io.getstream.hideTabBar"
 

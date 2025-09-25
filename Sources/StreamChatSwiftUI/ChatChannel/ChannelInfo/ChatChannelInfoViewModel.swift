@@ -37,9 +37,9 @@ import SwiftUI
 
     public var shouldShowLeaveConversationButton: Bool {
         if channel.isDirectMessageChannel {
-            return channel.ownCapabilities.contains(.deleteChannel)
+            channel.ownCapabilities.contains(.deleteChannel)
         } else {
-            return channel.ownCapabilities.contains(.leaveChannel)
+            channel.ownCapabilities.contains(.leaveChannel)
         }
     }
 
@@ -49,9 +49,9 @@ import SwiftUI
 
     public var shouldShowAddUserButton: Bool {
         if channel.isDirectMessageChannel {
-            return false
+            false
         } else {
-            return channel.ownCapabilities.contains(.updateChannelMembers)
+            channel.ownCapabilities.contains(.updateChannelMembers)
         }
     }
 
@@ -71,7 +71,7 @@ import SwiftUI
             return [otherParticipant]
         }
         
-        let participants = self.participants.filter { $0.isDeactivated == false }
+        let participants = participants.filter { $0.isDeactivated == false }
 
         if participants.count <= 6 {
             return participants
@@ -86,17 +86,17 @@ import SwiftUI
 
     public var leaveButtonTitle: String {
         if channel.isDirectMessageChannel {
-            return L10n.Alert.Actions.deleteChannelTitle
+            L10n.Alert.Actions.deleteChannelTitle
         } else {
-            return L10n.Alert.Actions.leaveGroupTitle
+            L10n.Alert.Actions.leaveGroupTitle
         }
     }
 
     public var leaveConversationDescription: String {
         if channel.isDirectMessageChannel {
-            return L10n.Alert.Actions.deleteChannelMessage
+            L10n.Alert.Actions.deleteChannelMessage
         } else {
-            return L10n.Alert.Actions.leaveGroupMessage
+            L10n.Alert.Actions.leaveGroupMessage
         }
     }
     
@@ -107,7 +107,7 @@ import SwiftUI
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
-        let deactivated = participants.filter { $0.isDeactivated }.count
+        let deactivated = participants.count(where: { $0.isDeactivated })
         return total - displayed - deactivated
     }
 
@@ -142,12 +142,12 @@ import SwiftUI
 
     public func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
-            return L10n.Message.Title.online
+            L10n.Message.Title.online
         } else if let lastActiveAt = user.lastActiveAt,
                   let timeAgo = lastSeenDateFormatter(lastActiveAt) {
-            return timeAgo
+            timeAgo
         } else {
-            return L10n.Message.Title.offline
+            L10n.Message.Title.offline
         }
     }
 
@@ -156,7 +156,7 @@ import SwiftUI
             return
         }
 
-        let displayedParticipants = self.displayedParticipants
+        let displayedParticipants = displayedParticipants
         if displayedParticipants.isEmpty {
             loadAdditionalUsers()
             return
@@ -175,7 +175,7 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping @MainActor() -> Void) {
+    public func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
         } else {
@@ -224,7 +224,7 @@ import SwiftUI
 
     // MARK: - private
 
-    private func removeUserFromConversation(completion: @escaping @MainActor() -> Void) {
+    private func removeUserFromConversation(completion: @escaping @MainActor () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
             if error != nil {
@@ -235,7 +235,7 @@ import SwiftUI
         }
     }
 
-    private func deleteChannel(completion: @escaping @MainActor() -> Void) {
+    private func deleteChannel(completion: @escaping @MainActor () -> Void) {
         channelController.deleteChannel { [weak self] error in
             if error != nil {
                 self?.errorShown = true
@@ -252,10 +252,10 @@ import SwiftUI
 
         loadingUsers = true
         memberListController.loadNextMembers { [weak self] error in
-            guard let self = self else { return }
-            self.loadingUsers = false
+            guard let self else { return }
+            loadingUsers = false
             if error == nil {
-                let newMembers = self.memberListController.members.map { member in
+                let newMembers = memberListController.members.map { member in
                     ParticipantInfo(
                         chatUser: member,
                         displayName: member.name ?? member.id,
@@ -263,8 +263,8 @@ import SwiftUI
                         isDeactivated: member.isDeactivated
                     )
                 }
-                if newMembers.count > self.participants.count {
-                    self.participants = newMembers
+                if newMembers.count > participants.count {
+                    participants = newMembers
                 }
             }
         }

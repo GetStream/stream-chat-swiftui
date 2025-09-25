@@ -10,7 +10,7 @@ import SwiftUI
 /// View model for the `MessageComposerView`.
 @MainActor open class MessageComposerViewModel: ObservableObject {
     @Injected(\.chatClient) private var chatClient
-    @Injected(\.utils) internal var utils
+    @Injected(\.utils) var utils
 
     var attachmentsConverter = MessageAttachmentsConverter()
     var composerAssets: ComposerAssets {
@@ -202,13 +202,13 @@ import SwiftUI
             && messageController == nil
     }
 
-    internal lazy var audioRecorder: AudioRecording = {
+    lazy var audioRecorder: AudioRecording = {
         let audioRecorder = utils.audioRecorder
         audioRecorder.subscribe(self)
         return audioRecorder
     }()
     
-    internal lazy var audioAnalysisFactory: AudioAnalysisEngine? = try? .init(
+    lazy var audioAnalysisFactory: AudioAnalysisEngine? = try? .init(
         assetPropertiesLoader: StreamAssetPropertyLoader()
     )
     
@@ -228,12 +228,12 @@ import SwiftUI
     public var mentionedUsers = Set<ChatUser>()
     
     private var messageText: String {
-        if let composerCommand = composerCommand,
+        if let composerCommand,
            let displayInfo = composerCommand.displayInfo,
            displayInfo.isInstant == true {
-            return "\(composerCommand.id) \(text)"
+            "\(composerCommand.id) \(text)"
         } else {
-            return adjustedText
+            adjustedText
         }
     }
     
@@ -321,7 +321,7 @@ import SwiftUI
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
 
-        if let messageController = messageController {
+        if let messageController {
             messageController.updateDraftReply(
                 text: messageText,
                 isSilent: isSilent,
@@ -352,7 +352,7 @@ import SwiftUI
             return
         }
 
-        if let messageController = messageController {
+        if let messageController {
             messageController.deleteDraftReply()
         } else {
             channelController.deleteDraftMessage()
@@ -366,13 +366,13 @@ import SwiftUI
         skipPush: Bool = false,
         skipEnrichUrl: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: @escaping @MainActor() -> Void
+        completion: @escaping @MainActor () -> Void
     ) {
         defer {
             checkChannelCooldown()
         }
 
-        if let composerCommand = composerCommand, composerCommand.id != "instantCommands" {
+        if let composerCommand, composerCommand.id != "instantCommands" {
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] _ in
@@ -388,7 +388,7 @@ import SwiftUI
         clearRemovedMentions()
         let mentionedUserIds = mentionedUsers.map(\.id)
         
-        if let editedMessage = editedMessage {
+        if let editedMessage {
             edit(
                 message: editedMessage,
                 attachments: try? convertAddedAssetsToPayloads(),
@@ -399,7 +399,7 @@ import SwiftUI
         
         do {
             let attachments = try convertAddedAssetsToPayloads()
-            if let messageController = messageController {
+            if let messageController {
                 messageController.createNewReply(
                     text: messageText,
                     attachments: attachments,
@@ -445,7 +445,7 @@ import SwiftUI
     }
     
     public var sendButtonEnabled: Bool {
-        if let composerCommand = composerCommand,
+        if let composerCommand,
            let handler = commandsHandler.commandHandler(for: composerCommand) {
             return handler
                 .canBeExecuted(composerCommand: composerCommand)
@@ -714,7 +714,7 @@ import SwiftUI
     private func edit(
         message: ChatMessage,
         attachments: [AnyAttachmentPayload]?,
-        completion: @escaping @MainActor() -> Void
+        completion: @escaping @MainActor () -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
             return
@@ -782,7 +782,7 @@ import SwiftUI
     }
     
     private func showTypingSuggestions() {
-        if let composerCommand = composerCommand {
+        if let composerCommand {
             commandsHandler.showSuggestions(for: composerCommand)
                 .sink { _ in
                     log.debug("Finished showing suggestions")
@@ -874,7 +874,7 @@ import SwiftUI
     }
     
     private func checkAttachmentSize(with url: URL?) -> Bool {
-        guard let url = url else { return true }
+        guard let url else { return true }
         
         _ = url.startAccessingSecurityScopedResource()
         
@@ -977,7 +977,7 @@ class MessageAttachmentsConverter {
     /// Converts the attachments to assets asynchronously.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping @MainActor(ComposerAssets) -> Void
+        completion: @escaping @MainActor (ComposerAssets) -> Void
     ) {
         let group = DispatchGroup()
         attachmentsToAssets(attachments, with: group, completion: completion)
@@ -991,11 +991,11 @@ class MessageAttachmentsConverter {
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         with group: DispatchGroup?,
-        completion: @escaping @MainActor(ComposerAssets) -> Void
+        completion: @escaping @MainActor (ComposerAssets) -> Void
     ) {
         nonisolated(unsafe) var addedAssets = ComposerAssets()
 
-        attachments.forEach { attachment in
+        for attachment in attachments {
             group?.enter()
 
             switch attachment.type {
@@ -1089,7 +1089,7 @@ class MessageAttachmentsConverter {
 
     private func imageAttachmentToAddedAsset(
         _ attachment: AnyChatMessageAttachment,
-        completion: @escaping @Sendable(AddedAsset?) -> Void
+        completion: @escaping @Sendable (AddedAsset?) -> Void
     ) {
         guard let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) else {
             return completion(nil)

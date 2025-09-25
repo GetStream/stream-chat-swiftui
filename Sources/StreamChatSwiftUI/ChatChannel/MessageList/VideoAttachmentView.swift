@@ -162,7 +162,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ZStack {
-            if let previewImage = previewImage {
+            if let previewImage {
                 Image(uiImage: previewImage)
                     .resizable()
                     .scaledToFill()
@@ -209,7 +209,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
             videoPreviewLoader.loadPreviewForVideo(at: attachment.videoURL) { result in
                 switch result {
                 case let .success(image):
-                    self.previewImage = image
+                    previewImage = image
                 case let .failure(error):
                     self.error = error
                 }

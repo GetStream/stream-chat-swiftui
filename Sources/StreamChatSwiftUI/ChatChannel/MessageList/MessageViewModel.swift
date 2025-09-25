@@ -61,7 +61,7 @@ import StreamChat
     }
 
     open var authorAndDateShown: Bool {
-        guard let channel = channel else { return false }
+        guard let channel else { return false }
         return !message.isRightAligned
             && channel.memberCount > 2
             && messageListConfig.messageDisplayOptions.showAuthorName
@@ -80,7 +80,7 @@ import StreamChat
     }
 
     public var userDisplayInfo: UserDisplayInfo? {
-        guard let channel = channel else { return nil }
+        guard let channel else { return nil }
         guard messageListConfig.messageDisplayOptions.showAvatars(for: channel) else { return nil }
         return message.authorDisplayInfo
     }
@@ -90,7 +90,7 @@ import StreamChat
     }
 
     open var textContent: String {
-        if !originalTextShown, let translatedText = translatedText {
+        if !originalTextShown, let translatedText {
             return translatedText
         }
 
@@ -129,7 +129,7 @@ import StreamChat
 ///
 /// **Note:** This is not thread-safe, it should only be used on the main thread.
 public class MessageOriginalTranslationsStore: ObservableObject {
-    internal init() {}
+    init() {}
 
     @Published var originalTextMessageIds: Set<MessageId> = []
 

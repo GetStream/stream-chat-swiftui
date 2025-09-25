@@ -15,16 +15,16 @@ struct ShareButtonView: View {
 
     var body: some View {
         Button(action: {
-            self.isSharePresented = true
+            isSharePresented = true
         }, label: {
             Image(uiImage: images.share)
                 .customizable()
                 .frame(width: 18, height: 22)
         })
-            .foregroundColor(Color(colors.text))
-            .sheet(isPresented: $isSharePresented) {
-                ShareActivityView(activityItems: content)
-            }
+        .foregroundColor(Color(colors.text))
+        .sheet(isPresented: $isSharePresented) {
+            ShareActivityView(activityItems: content)
+        }
     }
 }
 

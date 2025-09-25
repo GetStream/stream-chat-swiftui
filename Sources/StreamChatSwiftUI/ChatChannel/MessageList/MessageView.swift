@@ -318,15 +318,14 @@ public struct LinkDetectionTextView: View {
         let attributes = AttributeContainer()
             .foregroundColor(textColor(for: message))
             .font(fonts.body)
-        var attributedString: AttributedString
-        if utils.messageListConfig.markdownSupportEnabled {
-            attributedString = utils.markdownFormatter.format(
+        var attributedString: AttributedString = if utils.messageListConfig.markdownSupportEnabled {
+            utils.markdownFormatter.format(
                 text,
                 attributes: attributes,
                 layoutDirection: layoutDirection
             )
         } else {
-            attributedString = AttributedString(message.adjustedText, attributes: attributes)
+            AttributedString(message.adjustedText, attributes: attributes)
         }
         // Links and mentions
         if utils.messageListConfig.localLinkDetectionEnabled {

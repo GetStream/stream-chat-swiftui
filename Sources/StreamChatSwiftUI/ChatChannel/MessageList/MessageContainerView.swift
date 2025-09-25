@@ -139,7 +139,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     .onLongPressGesture(perform: {
                         handleGestureForMessage(showsMessageActions: true)
                     })
-                    .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
+                    .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
                     .simultaneousGesture(
                         DragGesture(
                             minimumDistance: minimumSwipeDistance,
@@ -244,7 +244,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         )
                         .onPreferenceChange(HeightPreferenceKey.self) { value in
                             if value != 0 {
-                                self.offsetYAvatar = -(value ?? 0)
+                                offsetYAvatar = -(value ?? 0)
                             }
                         }
                     }
@@ -385,7 +385,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 
     private func setOffsetX(value: CGFloat) {
         withAnimation(.interpolatingSpring(stiffness: 170, damping: 20)) {
-            self.offsetX = value
+            offsetX = value
         }
     }
 

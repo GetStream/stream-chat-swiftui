@@ -53,10 +53,10 @@ import SwiftUI
         loadingComments = true
         commentsController.synchronize { [weak self] error in
             guard let self else { return }
-            self.loadingComments = false
-            self.comments = Array(self.commentsController.votes)
+            loadingComments = false
+            comments = Array(commentsController.votes)
             if error != nil {
-                self.errorShown = true
+                errorShown = true
             }
         }
     }

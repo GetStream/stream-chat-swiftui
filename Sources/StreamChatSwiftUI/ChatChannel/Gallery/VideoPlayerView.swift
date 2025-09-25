@@ -62,9 +62,9 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
             fileCDN.adjustedURL(for: attachment.payload.videoURL) { result in
                 switch result {
                 case let .success(url):
-                    self.avPlayer = AVPlayer(url: url)
+                    avPlayer = AVPlayer(url: url)
                     try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    self.avPlayer?.play()
+                    avPlayer?.play()
                 case let .failure(error):
                     self.error = error
                 }
@@ -79,9 +79,9 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
 extension ChatUser {
     var onlineText: String {
         if isOnline {
-            return L10n.Message.Title.online
+            L10n.Message.Title.online
         } else {
-            return L10n.Message.Title.offline
+            L10n.Message.Title.offline
         }
     }
 }

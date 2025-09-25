@@ -16,14 +16,12 @@ import SwiftUI
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private static let newerMessagesLimit: Int = {
-        if #available(iOS 17, *) {
-            // On iOS 17 we can maintain the scroll position.
-            return 25
-        } else {
-            return 5
-        }
-    }()
+    private static let newerMessagesLimit: Int = if #available(iOS 17, *) {
+        // On iOS 17 we can maintain the scroll position.
+        25
+    } else {
+        5
+    }
     
     private var timer: Timer?
     private var currentDate: Date? {
@@ -145,7 +143,7 @@ import SwiftUI
             && messageController == nil {
             channelController.synchronize()
         }
-        if let messageController = messageController {
+        if let messageController {
             self.messageController = messageController
             messageController.synchronize()
             channelDataSource = MessageThreadDataSource(
@@ -526,7 +524,7 @@ import SwiftUI
             before: nil,
             limit: utils.messageListConfig.pageSize,
             completion: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.loadingPreviousMessages = false
                 }
@@ -546,7 +544,7 @@ import SwiftUI
         }
 
         channelDataSource.loadNextMessages(limit: Self.newerMessagesLimit) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.loadingNextMessages = false
             }
@@ -642,7 +640,7 @@ import SwiftUI
     }
     
     private func checkHeaderType() {
-        guard let channel = channel else {
+        guard let channel else {
             return
         }
         
@@ -709,7 +707,7 @@ import SwiftUI
     }
 
     private func handleDateChange() {
-        guard showScrollToLatestButton == true, let currentDate = currentDate else {
+        guard showScrollToLatestButton == true, let currentDate else {
             currentDateString = nil
             return
         }
@@ -763,7 +761,7 @@ import SwiftUI
     }
     
     private func checkTypingIndicator() {
-        guard let channel = channel else { return }
+        guard let channel else { return }
         let shouldShow = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
             && utils.messageListConfig.typingIndicatorPlacement == .bottomOverlay
             && channel.config.typingEventsEnabled

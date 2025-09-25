@@ -132,9 +132,9 @@ struct VoiceRecordingView: View {
     private var rateTitle: String {
         switch rate {
         case .half:
-            return "x0.5"
+            "x0.5"
         default:
-            return "x\(Int(rate.rawValue))"
+            "x\(Int(rate.rawValue))"
         }
     }
     
@@ -155,8 +155,8 @@ struct VoiceRecordingView: View {
                         )
                     )
             })
-                .opacity(loading ? 0 : 1)
-                .overlay(loading ? ProgressView() : nil)
+            .opacity(loading ? 0 : 1)
+            .overlay(loading ? ProgressView() : nil)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(

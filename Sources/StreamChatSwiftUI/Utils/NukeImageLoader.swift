@@ -15,10 +15,10 @@ open class NukeImageLoader: ImageLoading {
     open func loadImage(
         using urlRequest: URLRequest,
         cachingKey: String?,
-        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         var userInfo: [ImageRequest.UserInfoKey: Any]?
-        if let cachingKey = cachingKey {
+        if let cachingKey {
             userInfo = [.imageIdKey: cachingKey]
         }
 
@@ -45,7 +45,7 @@ open class NukeImageLoader: ImageLoading {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping @MainActor([UIImage]) -> Void
+        completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         let group = DispatchGroup()
         final class BatchLoadingResult: @unchecked Sendable {
@@ -93,9 +93,9 @@ open class NukeImageLoader: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool = true,
         preferredSize: CGSize? = nil,
-        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
-        guard var url = url else {
+        guard var url else {
             Task { @MainActor in
                 completion(.failure(ClientError.Unknown()))
             }
@@ -105,7 +105,7 @@ open class NukeImageLoader: ImageLoading {
         let urlRequest = imageCDN.urlRequest(forImage: url)
 
         var processors = [ImageProcessing]()
-        if let preferredSize = preferredSize, resize == true {
+        if let preferredSize, resize == true {
             processors = [ImageProcessors.LateResize(sizeProvider: {
                 preferredSize
             })]

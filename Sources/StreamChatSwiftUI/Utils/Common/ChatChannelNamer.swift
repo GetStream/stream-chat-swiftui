@@ -89,9 +89,9 @@ public func DefaultChatChannelNamer(
 ///   - id: id of the entity
 /// - Returns: `name` if it exists and not empty, otherwise `id`
 private func nameOrId(_ name: String?, _ id: String) -> String {
-    if let name = name, !name.isEmpty {
-        return name
+    if let name, !name.isEmpty {
+        name
     } else {
-        return id
+        id
     }
 }

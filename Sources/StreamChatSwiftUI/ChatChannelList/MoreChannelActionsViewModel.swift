@@ -73,10 +73,10 @@ import UIKit
             resize: true,
             preferredSize: .avatarThumbnailSize
         ) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(image):
-                self.memberAvatars[member.id] = image
+                memberAvatars[member.id] = image
             case let .failure(error):
                 log.error("error loading image: \(error.localizedDescription)")
             }
@@ -100,7 +100,7 @@ public struct ChannelAction: Identifiable, @unchecked Sendable {
 
     public let title: String
     public let iconName: String
-    public let action: @MainActor() -> Void
+    public let action: @MainActor () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
     public var navigationDestination: AnyView?
@@ -108,7 +108,7 @@ public struct ChannelAction: Identifiable, @unchecked Sendable {
     public init(
         title: String,
         iconName: String,
-        action: @escaping @MainActor() -> Void,
+        action: @escaping @MainActor () -> Void,
         confirmationPopup: ConfirmationPopup?,
         isDestructive: Bool
     ) {
