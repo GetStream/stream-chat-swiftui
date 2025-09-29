@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     @Injected(\.chatClient) private var chatClient
 
     @Published public var participants = [ParticipantInfo]()
@@ -34,7 +34,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     @Published public var channelId = UUID().uuidString
     @Published public var keyboardShown = false
     @Published public var addUsersShown = false
-
+    @Published public var selectedParticipant: ParticipantInfo?
+    
     public var shouldShowLeaveConversationButton: Bool {
         if channel.isDirectMessageChannel {
             return channel.ownCapabilities.contains(.deleteChannel)
@@ -272,5 +273,156 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     private var lastSeenDateFormatter: (Date) -> String? {
         DateUtils.timeAgo
+    }
+    
+    open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
+        var actions = [ParticipantAction]()
+
+        if channel.config.mutesEnabled {
+            if channel.isMuted {
+                let unmuteUser = unmuteAction(
+                    participant: participant,
+                    onDismiss: handleParticipantActionDismiss,
+                    onError: handleParticipantActionError
+                )
+                actions.append(unmuteUser)
+            } else {
+                let muteUser = muteAction(
+                    participant: participant,
+                    onDismiss: handleParticipantActionDismiss,
+                    onError: handleParticipantActionError
+                )
+                actions.append(muteUser)
+            }
+        }
+        
+        if channel.canUpdateChannelMembers {
+            let removeUserAction = removeUserAction(
+                participant: participant,
+                onDismiss: handleParticipantActionDismiss,
+                onError: handleParticipantActionError
+            )
+            actions.append(removeUserAction)
+        }
+
+        let cancel = ParticipantAction(
+            title: L10n.Alert.Actions.cancel,
+            iconName: "xmark.circle",
+            action: { [weak self] in
+                self?.selectedParticipant = nil
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+
+        actions.append(cancel)
+
+        return actions
+    }
+    
+    public func muteAction(
+        participant: ParticipantInfo,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ParticipantAction {
+        let muteAction = { [weak self] in
+            let controller = self?.chatClient.userController(userId: participant.id)
+            controller?.mute { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onDismiss()
+                }
+            }
+        }
+        let confirmationPopup = ConfirmationPopup(
+            title: "\(L10n.Channel.Item.mute) \(participant.displayName)",
+            message: "\(L10n.Alert.Actions.muteChannelTitle) \(participant.displayName)?",
+            buttonTitle: L10n.Channel.Item.mute
+        )
+        let muteUser = ParticipantAction(
+            title: "\(L10n.Channel.Item.mute) \(participant.displayName)",
+            iconName: "speaker.slash",
+            action: muteAction,
+            confirmationPopup: confirmationPopup,
+            isDestructive: false
+        )
+        return muteUser
+    }
+
+    public func unmuteAction(
+        participant: ParticipantInfo,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ParticipantAction {
+        let unMuteAction = { [weak self] in
+            let controller = self?.chatClient.userController(userId: participant.id)
+            controller?.unmute { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onDismiss()
+                }
+            }
+        }
+        let confirmationPopup = ConfirmationPopup(
+            title: "\(L10n.Channel.Item.unmute) \(participant.displayName)",
+            message: "\(L10n.Alert.Actions.unmuteChannelTitle) \(participant.displayName)?",
+            buttonTitle: L10n.Channel.Item.unmute
+        )
+        let unmuteUser = ParticipantAction(
+            title: "\(L10n.Channel.Item.unmute) \(participant.displayName)",
+            iconName: "speaker.wave.1",
+            action: unMuteAction,
+            confirmationPopup: confirmationPopup,
+            isDestructive: false
+        )
+
+        return unmuteUser
+    }
+    
+    public func removeUserAction(
+        participant: ParticipantInfo,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ParticipantAction {
+        let action = { [weak self] in
+            guard let self else {
+                onError(ClientError.Unexpected("Self is nil"))
+                return
+            }
+            let controller = chatClient.channelController(for: channel.cid)
+            controller.removeMembers(userIds: [participant.id]) { error in
+                if let error = error {
+                    onError(error)
+                } else {
+                    onDismiss()
+                }
+            }
+        }
+        
+        let confirmationPopup = ConfirmationPopup(
+            title: "Remove User",
+            message: "Are you sure you want to remove \(participant.displayName) from \(channel.name ?? channel.id)?",
+            buttonTitle: L10n.Channel.Item.mute
+        )
+        
+        let removeUserAction = ParticipantAction(
+            title: "Remove User",
+            iconName: "person.slash",
+            action: action,
+            confirmationPopup: confirmationPopup,
+            isDestructive: true
+        )
+
+        return removeUserAction
+    }
+    
+    private func handleParticipantActionDismiss() {
+        selectedParticipant = nil
+    }
+    
+    private func handleParticipantActionError(_ error: Error?) {
+        // TODO:
     }
 }

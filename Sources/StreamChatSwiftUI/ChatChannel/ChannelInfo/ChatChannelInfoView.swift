@@ -20,11 +20,12 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     
     public init(
         factory: Factory = DefaultViewFactory.shared,
+        viewModel: ChatChannelInfoViewModel? = nil,
         channel: ChatChannel,
         shownFromMessageList: Bool = false
     ) {
         _viewModel = StateObject(
-            wrappedValue: ChatChannelInfoViewModel(channel: channel)
+            wrappedValue: viewModel ?? ChatChannelInfoViewModel(channel: channel)
         )
         self.factory = factory
         self.shownFromMessageList = shownFromMessageList
@@ -52,7 +53,8 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                         ChatInfoParticipantsView(
                             factory: factory,
                             participants: viewModel.displayedParticipants,
-                            onItemAppear: viewModel.onParticipantAppear(_:)
+                            onItemAppear: viewModel.onParticipantAppear(_:),
+                            selectedParticipant: $viewModel.selectedParticipant
                         )
                     }
 
@@ -106,11 +108,11 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .overlay(
-                viewModel.addUsersShown ?
+                popupShown ?
                     Color.black.opacity(0.3).edgesIgnoringSafeArea(.all) : nil
             )
-            .blur(radius: viewModel.addUsersShown ? 6 : 0)
-            .allowsHitTesting(!viewModel.addUsersShown)
+            .blur(radius: popupShown ? 6 : 0)
+            .allowsHitTesting(!popupShown)
 
             if viewModel.addUsersShown {
                 VStack {
@@ -129,6 +131,17 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                         options: .init(loadedUsers: viewModel.participants.map(\.chatUser)),
                         onUserTap: viewModel.addUserTapped(_:)
                     )
+                }
+            }
+            
+            if let selectedParticipant = viewModel.selectedParticipant {
+                ParticipantInfoView(
+                    participant: selectedParticipant,
+                    actions: viewModel.participantActions(for: selectedParticipant)
+                ) {
+                    withAnimation {
+                        viewModel.selectedParticipant = nil
+                    }
                 }
             }
         }
@@ -169,5 +182,9 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .dismissKeyboardOnTap(enabled: viewModel.keyboardShown)
         .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
+    }
+    
+    private var popupShown: Bool {
+        viewModel.addUsersShown || viewModel.selectedParticipant != nil
     }
 }
