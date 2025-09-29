@@ -97,7 +97,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
         if !loadingNextUsers {
             loadingNextUsers = true
-            searchController.loadNextUsers(limit: 50) { [weak self] _ in
+            searchController.loadNextUsers { [weak self] _ in
                 guard let self = self else { return }
                 self.chatUsers = self.searchController.userArray
                 self.loadingNextUsers = false
