@@ -8,7 +8,7 @@ import StreamChat
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
 public class Utils {
-    var markdownFormatter = MarkdownFormatter()
+    public var markdownFormatter: MarkdownFormatter
 
     public var dateFormatter: DateFormatter
     
@@ -76,6 +76,7 @@ public class Utils {
     internal var pollsDateFormatter = PollsDateFormatter()
 
     public init(
+        markdownFormatter: MarkdownFormatter = DefaultMarkdownFormatter(),
         dateFormatter: DateFormatter = .makeDefault(),
         messageRelativeDateFormatter: DateFormatter = MessageRelativeDateFormatter(),
         galleryHeaderViewDateFormatter: DateFormatter = GalleryHeaderViewDateFormatter(),
@@ -104,6 +105,7 @@ public class Utils {
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
+        self.markdownFormatter = markdownFormatter
         self.dateFormatter = dateFormatter
         self.messageRelativeDateFormatter = messageRelativeDateFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
