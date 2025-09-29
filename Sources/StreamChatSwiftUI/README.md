@@ -11,16 +11,16 @@ The SwiftUI SDK offers three types of components:
 
 - Screens - Easiest to integrate, but offer small customizations, like branding and text changes.
 - Stateful components - Offer more customization options and possibility to inject custom views. Also fairly simple to integrate, if the extension points are suitable for your chat use-case. These components come with view models.
-- Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience. 
+- Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience.
 
-### Dependencies 
+### Dependencies
 
 This SDK tries to keep the list of external dependencies to a minimum, these are the dependencies currently used:
 
 #### StreamChatSwiftUI
 
 - [Nuke](https://github.com/kean/Nuke) for loading images
-- [NukeUI](https://github.com/kean/NukeUI) for SwiftUI async image loading  
+- [NukeUI](https://github.com/kean/NukeUI) for SwiftUI async image loading
 - [SwiftyGif](https://github.com/kirualex/SwiftyGif) for high performance GIF rendering
 - StreamChat the low-level client to Stream Chat API
 
@@ -50,41 +50,7 @@ The repository contains 3 targets: StreamChat, StreamChatUI and StreamChatSwiftU
 After you press finish, it's done!
 
 :::caution
-Because StreamChat SDKs have to be distributed with its resources, the minimal Swift version requirement for this installation method is 5.3. If you need to support older Swift version, please install it using CocoaPods.
+Because StreamChat SDKs have to be distributed with its resources, the minimal Swift version requirement for this installation method is 5.3.
 :::
-
-### Install with CocoaPods
-
-In your project's Podfile, add: `pod 'StreamChatSwiftUI', '~> 0.0.1'`. It should look similar to the snippet below.
-
-```ruby
-target 'MyProject' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for MyProject
-  pod 'StreamChatSwiftUI', '~> 0.0.1'
-end
-```
-
-The StreamChatUI pod will automatically include the StreamChat dependency. If you want just the StreamChat dependency, without the UI components, add `pod 'StreamChat', '~> 4.0'` to your Podfile instead. It should look similar to the snippet below.
-
-```ruby
-target 'MyProject' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for MyProject
-  pod 'StreamChat', '~> 4.0.0'
-end
-```
-
-Now that we’ve modified our Podfile, let’s go ahead and install the project dependencies via the terminal with one simple command:
-
-```bash
-pod install --repo-update
-```
-
-The above command will generate the **MyProject.xcworkspace** file automatically.
 
 To stay up-to-date with our updates and get a detailed breakdown of what's new, subscribe to the releases of [getstream/stream-chat-swift](https://github.com/GetStream/stream-chat-swift/releases) by clicking the "watch" button. You can further tweak your watch preferences and subscribe only to the release events.
