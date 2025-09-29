@@ -8,9 +8,9 @@ Agents should optimize for API stability, backwards compatibility, accessibility
 
 ### Tech & toolchain
   • Language: Swift (SwiftUI)
-  • Primary distribution: Swift Package Manager (SPM), secondary CocoaPods and XCFrameworks
+  • Primary distribution: Swift Package Manager (SPM) and XCFrameworks
   • Xcode: 15.x or newer (Apple Silicon supported)
-  • Platforms / deployment targets: Use the values set in Package.swift/podspecs; do not lower targets without approval
+  • Platforms / deployment targets: Use the values set in Package.swift; do not lower targets without approval
   • CI: GitHub Actions (assume PR validation for build + tests + lint)
   • Linters & docs: SwiftLint and SwiftFormat
 

@@ -30,20 +30,12 @@ extension LazyImage {
 
     init(imageURL: URL?, @ViewBuilder content: @escaping (LazyImageState) -> Content) {
         let imageCDN = InjectedValues[\.utils].imageCDN
-        guard let imageURL = imageURL else {
-            #if COCOAPODS
-            self.init(source: imageURL, content: content)
-            #else
+        guard let imageURL else {
             self.init(url: imageURL, content: content)
-            #endif
             return
         }
         let urlRequest = imageCDN.urlRequest(forImage: imageURL)
         let imageRequest = ImageRequest(urlRequest: urlRequest)
-        #if COCOAPODS
-        self.init(source: imageRequest, content: content)
-        #else
         self.init(request: imageRequest, content: content)
-        #endif
     }
 }

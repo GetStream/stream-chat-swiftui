@@ -16,7 +16,6 @@ derived_data_path = 'derived_data'
 source_packages_path = 'spm_cache'
 buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
-project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
 @force_check = false
 
@@ -24,7 +23,7 @@ before_all do |lane|
   if is_ci
     setup_ci
     setup_git_config
-    select_xcode(version: xcode_version) unless [:sonar_upload, :allure_launch, :allure_upload, :copyright, :pod_lint, :merge_main].include?(lane)
+    select_xcode(version: xcode_version) unless [:sonar_upload, :allure_launch, :allure_upload, :copyright, :merge_main].include?(lane)
   end
 end
 
@@ -95,12 +94,10 @@ lane :release do |options|
     Dir.chdir('fastlane') { update_img_shields_sdk_sizes }
   end
 
-  pod_lint
   release_ios_sdk(
     version: options[:version],
     bump_type: options[:type],
     sdk_names: sdk_names,
-    podspec_names: ['StreamChatSwiftUI', 'StreamChatSwiftUI-XCFramework'],
     github_repo: github_repo,
     extra_changes: extra_changes,
     create_pull_request: true
@@ -121,7 +118,7 @@ lane :merge_main do
   sh('git push')
 end
 
-desc "Publish a new release to GitHub and CocoaPods"
+desc "Publish a new release to GitHub"
 lane :publish_release do |options|
   release_version = get_sdk_version_from_environment
   UI.user_error!("Release #{release_version} has already been published.") if git_tag_exists(tag: release_version, remote: true)
@@ -137,7 +134,6 @@ lane :publish_release do |options|
     skip_git_status_check: false,
     version: release_version,
     sdk_names: sdk_names,
-    podspec_names: ['StreamChatSwiftUI', 'StreamChatSwiftUI-XCFramework'],
     github_repo: github_repo,
     upload_assets: ['Products/StreamChatSwiftUI.zip']
   )
@@ -167,12 +163,6 @@ lane :update_stream_chat do |options|
     current_stream_chat_version = File.read(file)[/stream-chat-swift\.git", from: "([\d.]+)"\)/, 1]
     File.write(file, File.read(file).gsub(/(stream-chat-swift\.git", from: ")[\d.]+"/, "\\1#{options[:version]}\""))
 
-    file = 'StreamChatSwiftUI-XCFramework.podspec'
-    File.write(file, File.read(file).gsub(/(StreamChat-XCFramework', '~> )[\d.]+'/, "\\1#{options[:version]}'"))
-
-    file = 'StreamChatSwiftUI.podspec'
-    File.write(file, File.read(file).gsub(/(StreamChat', '~> )[\d.]+'/, "\\1#{options[:version]}'"))
-
     file = 'StreamChatSwiftUI.xcodeproj/project.pbxproj'
     content = File.read(file)
     if content.include?("minimumVersion = #{current_stream_chat_version}")
@@ -190,21 +180,6 @@ lane :update_stream_chat do |options|
     head_branch: "ci/update-stream-chat-dependency-#{Time.now.to_i}",
     github_repo: github_repo
   )
-end
-
-lane :pod_lint do
-  lint_required = true
-  Dir.chdir('..') do
-    sh("xcodebuild -resolvePackageDependencies -clonedSourcePackagesDirPath #{source_packages_path}")
-    dependencies = JSON.parse(File.read(project_package_resolved))
-    lint_required = dependencies['pins'].none? { |dependency| dependency['identity'] == 'stream-chat-swift' && dependency['state']['branch'] }
-  end
-
-  if lint_required
-    pod_lib_lint(podspec: 'StreamChatSwiftUI.podspec', allow_warnings: true)
-  else
-    UI.important('Pod linting skipped: stream-chat-swift targets a development branch')
-  end
 end
 
 desc "If `readonly: true` (by default), installs all Certs and Profiles necessary for development and ad-hoc.\nIf `readonly: false`, recreates all Profiles necessary for development and ad-hoc, updates them locally and remotely."
