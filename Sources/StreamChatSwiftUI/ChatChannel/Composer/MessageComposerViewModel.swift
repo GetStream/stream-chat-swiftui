@@ -219,7 +219,7 @@ open class MessageComposerViewModel: ObservableObject {
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private lazy var commandsHandler = utils
+    public lazy var commandsHandler = utils
         .commandsConfig
         .makeCommandsHandler(
             with: channelController
@@ -690,7 +690,7 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
 
-    private func checkForMentionedUsers(
+    public func checkForMentionedUsers(
         commandId: String?,
         extraData: [String: Any]
     ) {
@@ -701,7 +701,7 @@ open class MessageComposerViewModel: ObservableObject {
         mentionedUsers.insert(user)
     }
     
-    private func clearRemovedMentions() {
+    public func clearRemovedMentions() {
         for user in mentionedUsers {
             if !text.contains("@\(user.mentionText)") {
                 mentionedUsers.remove(user)
@@ -742,7 +742,7 @@ open class MessageComposerViewModel: ObservableObject {
         clearInputData()
     }
     
-    private func clearInputData() {
+    public func clearInputData() {
         addedAssets = []
         addedFileURLs = []
         addedVoiceRecordings = []
@@ -806,7 +806,7 @@ open class MessageComposerViewModel: ObservableObject {
         .store(in: &cancellables)
     }
 
-    private func checkChannelCooldown() {
+    public func checkChannelCooldown() {
         let duration = channelController.channel?.cooldownDuration ?? 0
         if duration > 0 && timer == nil && !isSlowModeDisabled {
             cooldownDuration = duration
