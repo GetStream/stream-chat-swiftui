@@ -58,6 +58,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
     var channelController: ChatChannelController!
     private var memberListController: ChatChannelMemberListController!
+    private var currentUserController: CurrentChatUserController?
     private var loadingUsers = false
     
     public var showSingleMemberDMView: Bool {
@@ -130,6 +131,8 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         memberListController = chatClient.memberListController(
             query: .init(cid: channel.cid, filter: .none)
         )
+        currentUserController = chatClient.currentUserController()
+        currentUserController?.synchronize()
 
         participants = channel.lastActiveMembers.map { member in
             ParticipantInfo(
@@ -205,15 +208,13 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     ) {
         if let channel = channelController.channel {
             self.channel = channel
-            if self.channel.lastActiveMembers.count > participants.count {
-                participants = channel.lastActiveMembers.map { member in
-                    ParticipantInfo(
-                        chatUser: member,
-                        displayName: member.name ?? member.id,
-                        onlineInfoText: onlineInfo(for: member),
-                        isDeactivated: member.isDeactivated
-                    )
-                }
+            participants = channel.lastActiveMembers.map { member in
+                ParticipantInfo(
+                    chatUser: member,
+                    displayName: member.name ?? member.id,
+                    onlineInfoText: onlineInfo(for: member),
+                    isDeactivated: member.isDeactivated
+                )
             }
         }
     }
@@ -279,7 +280,8 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         var actions = [ParticipantAction]()
 
         if channel.config.mutesEnabled {
-            if channel.isMuted {
+            let mutedUsers = currentUserController?.currentUser?.mutedUsers ?? []
+            if mutedUsers.contains(participant.chatUser) == true {
                 let unmuteUser = unmuteAction(
                     participant: participant,
                     onDismiss: handleParticipantActionDismiss,
@@ -402,13 +404,13 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         }
         
         let confirmationPopup = ConfirmationPopup(
-            title: "Remove User",
-            message: "Are you sure you want to remove \(participant.displayName) from \(channel.name ?? channel.id)?",
-            buttonTitle: L10n.Channel.Item.mute
+            title: L10n.Channel.Item.removeUserConfirmationTitle,
+            message: L10n.Channel.Item.removeUserConfirmationMessage(participant.displayName, channel.name ?? channel.id),
+            buttonTitle: L10n.Channel.Item.removeUser
         )
         
         let removeUserAction = ParticipantAction(
-            title: "Remove User",
+            title: L10n.Channel.Item.removeUser,
             iconName: "person.slash",
             action: action,
             confirmationPopup: confirmationPopup,
@@ -423,6 +425,6 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     }
     
     private func handleParticipantActionError(_ error: Error?) {
-        // TODO:
+        errorShown = true
     }
 }

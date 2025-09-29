@@ -223,6 +223,9 @@
 "channel.item.video" = "Video";
 "channel.item.poll" = "Poll";
 "channel.item.voice-message" = "Voice Message";
+"channel.item.remove-user" = "Remove User";
+"channel.item.remove-user-confirmation-title" = "Remove User";
+"channel.item.remove-user-confirmation-message" = "Are you sure you want to remove %@ from %@?";
 
 // - MARK: Threads
 
