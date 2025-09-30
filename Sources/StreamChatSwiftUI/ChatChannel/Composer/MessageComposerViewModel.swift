@@ -219,7 +219,7 @@ import SwiftUI
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private lazy var commandsHandler = utils
+    public lazy var commandsHandler = utils
         .commandsConfig
         .makeCommandsHandler(
             with: channelController
@@ -692,7 +692,7 @@ import SwiftUI
         }
     }
 
-    private func checkForMentionedUsers(
+    public func checkForMentionedUsers(
         commandId: String?,
         extraData: [String: Any]
     ) {
@@ -703,7 +703,7 @@ import SwiftUI
         mentionedUsers.insert(user)
     }
     
-    private func clearRemovedMentions() {
+    public func clearRemovedMentions() {
         for user in mentionedUsers {
             if !text.contains("@\(user.mentionText)") {
                 mentionedUsers.remove(user)
@@ -744,7 +744,7 @@ import SwiftUI
         clearInputData()
     }
     
-    private func clearInputData() {
+    public func clearInputData() {
         addedAssets = []
         addedFileURLs = []
         addedVoiceRecordings = []
@@ -808,7 +808,7 @@ import SwiftUI
         .store(in: &cancellables)
     }
 
-    private func checkChannelCooldown() {
+    public func checkChannelCooldown() {
         let duration = channelController.channel?.cooldownDuration ?? 0
         if duration > 0 && timer == nil && !isSlowModeDisabled {
             cooldownDuration = duration

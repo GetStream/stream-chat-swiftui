@@ -212,6 +212,14 @@ import UIKit
                 }
             }
         }
+        
+        if isSearching {
+            searchText = ""
+        }
+        
+        if selectedChannel != nil {
+            selectedChannel = nil
+        }
 
         loadUntilFound()
     }
