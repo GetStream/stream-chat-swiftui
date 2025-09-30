@@ -86,14 +86,10 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                             viewModel.leaveGroupAlertShown = true
                         }
                         .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-                            let title = viewModel.leaveButtonTitle
-                            let message = viewModel.leaveConversationDescription
-                            let buttonTitle = viewModel.leaveButtonTitle
-
-                            return Alert(
-                                title: Text(title),
-                                message: Text(message),
-                                primaryButton: .destructive(Text(buttonTitle)) {
+                            Alert(
+                                title: Text(viewModel.leaveButtonTitle),
+                                message: Text(viewModel.leaveConversationDescription),
+                                primaryButton: .destructive(Text(viewModel.leaveButtonTitle)) {
                                     viewModel.leaveConversationTapped {
                                         presentationMode.wrappedValue.dismiss()
                                         if shownFromMessageList {

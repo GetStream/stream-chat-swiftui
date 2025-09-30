@@ -68,14 +68,10 @@ struct ParticipantInfoView: View {
             .opacity(alertShown ? 0 : 1)
         }
         .alert(isPresented: $alertShown) {
-            let title = alertAction?.confirmationPopup?.title ?? ""
-            let message = alertAction?.confirmationPopup?.message ?? ""
-            let buttonTitle = alertAction?.confirmationPopup?.buttonTitle ?? ""
-
-            return Alert(
-                title: Text(title),
-                message: Text(message),
-                primaryButton: .destructive(Text(buttonTitle)) {
+            Alert(
+                title: Text(alertAction?.confirmationPopup?.title ?? ""),
+                message: Text(alertAction?.confirmationPopup?.message ?? ""),
+                primaryButton: .destructive(Text(alertAction?.confirmationPopup?.buttonTitle ?? "")) {
                     alertAction?.action()
                 },
                 secondaryButton: .cancel()
