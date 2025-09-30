@@ -59,6 +59,7 @@ class ChatChannelTestHelpers {
                 payload: ImageAttachmentPayload(
                     title: "test",
                     imageRemoteURL: testURL,
+                    file: attachmentFile,
                     extraData: [:]
                 ),
                 downloadingState: nil,
@@ -83,6 +84,7 @@ class ChatChannelTestHelpers {
             payload: ImageAttachmentPayload(
                 title: "test",
                 imageRemoteURL: testURL,
+                file: attachmentFile,
                 extraData: [:]
             ),
             downloadingState: nil,

@@ -45,26 +45,26 @@ import SwiftUI
         if !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers { [weak self] _ in
-                guard let self = self else { return }
-                self.users = self.searchController.userArray
-                self.loadingNextUsers = false
+                guard let self else { return }
+                users = searchController.userArray
+                loadingNextUsers = false
             }
         }
     }
 
     private func searchUsers() {
-        let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
-        let query = UserListQuery(filter: filter)
-        searchController.search(query: query) { [weak self] error in
-            guard let self = self, error == nil else { return }
-            self.users = self.searchController.userArray
+        searchController.search(query: UserListQuery()) { [weak self] error in
+            guard let self, error == nil else { return }
+            users = searchController.userArray.filter { user in
+                !self.loadedUserIds.contains(user.id)
+            }
         }
     }
 
     private func searchUsers(term: String) {
         searchController.search(term: searchText) { [weak self] error in
-            guard let self = self, error == nil else { return }
-            self.users = self.searchController.userArray.filter { user in
+            guard let self, error == nil else { return }
+            users = searchController.userArray.filter { user in
                 !self.loadedUserIds.contains(user.id)
             }
         }
