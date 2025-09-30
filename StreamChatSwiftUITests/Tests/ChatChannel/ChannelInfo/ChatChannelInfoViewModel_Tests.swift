@@ -313,7 +313,7 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 3) // mute, remove, cancel
+        XCTAssert(actions.count == 4) // mute, remove, cancel
         XCTAssert(actions.contains { $0.title.contains("Mute") })
         XCTAssert(actions.contains { $0.title.contains("Remove") })
         XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
@@ -334,7 +334,8 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 2) // remove, cancel
+        XCTAssert(actions.count == 3) // direct message, remove, cancel
+        XCTAssertNotNil(actions.first?.navigationDestination)
         XCTAssertFalse(actions.contains { $0.title.contains("Mute") })
         XCTAssert(actions.contains { $0.title.contains("Remove") })
         XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
@@ -355,7 +356,7 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 2) // mute, cancel (no remove)
+        XCTAssert(actions.count == 3) // direct message, mute, cancel (no remove)
         XCTAssert(actions.contains { $0.title.contains("Mute") })
         XCTAssertFalse(actions.contains { $0.title.contains("Remove") })
         XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
