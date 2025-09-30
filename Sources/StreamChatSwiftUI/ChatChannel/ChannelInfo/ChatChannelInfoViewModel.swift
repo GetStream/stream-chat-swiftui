@@ -280,6 +280,25 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
         var actions = [ParticipantAction]()
 
+        var directMessageAction = ParticipantAction(
+            title: L10n.Channel.Item.sendDirectMessage,
+            iconName: "message.circle.fill",
+            action: {},
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        if let currentUserId = chatClient.currentUserId,
+           let channelController = try? chatClient.channelController(
+               createDirectMessageChannelWith: [currentUserId, participant.id],
+               extraData: [:]
+           ) {
+            directMessageAction.navigationDestination = AnyView(
+                ChatChannelView(channelController: channelController)
+            )
+
+            actions.append(directMessageAction)
+        }
+
         if channel.config.mutesEnabled {
             let mutedUsers = currentUserController?.currentUser?.mutedUsers ?? []
             if mutedUsers.contains(participant.chatUser) == true {

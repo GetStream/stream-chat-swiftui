@@ -7,6 +7,7 @@ import SwiftUI
 
 /// View for the chat info participants.
 public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -57,7 +58,9 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                 .contentShape(.rect)
                 .onTapGesture {
                     withAnimation {
-                        selectedParticipant = participant
+                        if participant.id != chatClient.currentUserId {
+                            selectedParticipant = participant
+                        }
                     }
                 }
             }

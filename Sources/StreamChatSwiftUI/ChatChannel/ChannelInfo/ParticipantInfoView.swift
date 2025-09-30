@@ -43,18 +43,30 @@ struct ParticipantInfoView: View {
                         Divider()
                             .padding(.horizontal, -16)
 
-                        Button {
-                            if action.confirmationPopup != nil {
-                                alertAction = action
-                            } else {
-                                action.action()
+                        if let destination = action.navigationDestination {
+                            NavigationLink {
+                                destination
+                            } label: {
+                                ActionItemView(
+                                    title: action.title,
+                                    iconName: action.iconName,
+                                    isDestructive: action.isDestructive
+                                )
                             }
-                        } label: {
-                            ActionItemView(
-                                title: action.title,
-                                iconName: action.iconName,
-                                isDestructive: action.isDestructive
-                            )
+                        } else {
+                            Button {
+                                if action.confirmationPopup != nil {
+                                    alertAction = action
+                                } else {
+                                    action.action()
+                                }
+                            } label: {
+                                ActionItemView(
+                                    title: action.title,
+                                    iconName: action.iconName,
+                                    isDestructive: action.isDestructive
+                                )
+                            }
                         }
                     }
                 }
@@ -96,6 +108,7 @@ public struct ParticipantAction: Identifiable {
     public let action: () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
+    public var navigationDestination: AnyView?
 
     public init(
         title: String,

@@ -226,6 +226,7 @@
 "channel.item.remove-user" = "Remove User";
 "channel.item.remove-user-confirmation-title" = "Remove User";
 "channel.item.remove-user-confirmation-message" = "Are you sure you want to remove %@ from %@?";
+"channel.item.send-direct-message" = "Send direct message";
 
 // - MARK: Threads
 
