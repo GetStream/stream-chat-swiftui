@@ -57,8 +57,9 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     }
 
     var channelController: ChatChannelController!
+    var currentUserController: CurrentChatUserController?
+    
     private var memberListController: ChatChannelMemberListController!
-    private var currentUserController: CurrentChatUserController?
     private var loadingUsers = false
     
     public var showSingleMemberDMView: Bool {

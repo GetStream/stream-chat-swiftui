@@ -382,6 +382,32 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
+    func test_chatChannelInfoVM_participantActions_withUnmutedUser() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let mutedUser = ChatUser.mock(id: .unique)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let currentUserController = CurrentChatUserController_Mock(client: chatClient)
+        let currentUser = CurrentChatUser.mock(id: .unique, mutedUsers: [mutedUser])
+        currentUserController.currentUser_mock = currentUser
+        viewModel.currentUserController = currentUserController
+
+        let participant = ParticipantInfo(
+            chatUser: mutedUser,
+            displayName: "Unmute User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssert(actions.count >= 2) // At least remove and cancel
+        XCTAssert(actions.contains { $0.title.contains("Remove") })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+    }
+
     func test_chatChannelInfoVM_muteAction_properties() {
         // Given
         let channel = mockGroup(with: 5)
