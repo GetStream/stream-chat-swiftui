@@ -97,10 +97,10 @@ import SwiftUI
 
         if !loadingNextUsers {
             loadingNextUsers = true
-            searchController.loadNextUsers(limit: 50) { [weak self] _ in
-                guard let self else { return }
-                chatUsers = searchController.userArray
-                loadingNextUsers = false
+            searchController.loadNextUsers { [weak self] _ in
+                guard let self = self else { return }
+                self.chatUsers = self.searchController.userArray
+                self.loadingNextUsers = false
             }
         }
     }

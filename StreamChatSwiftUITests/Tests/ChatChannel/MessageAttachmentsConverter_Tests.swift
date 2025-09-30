@@ -373,7 +373,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
             payload: ImageAttachmentPayload(
                 title: "Test Image",
                 imageRemoteURL: URL(string: "https://example.com/image.png")!,
-                file: try! .init(url: URL(string: "https://example.com/image.png")!),
+                file: attachmentFile,
                 extraData: ["test": "value"]
             ),
             downloadingState: nil,
@@ -395,7 +395,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
             payload: ImageAttachmentPayload(
                 title: "Test Image",
                 imageRemoteURL: URL(string: "https://example.com/image.png")!,
-                file: try! .init(url: URL(string: "https://example.com/image.png")!),
+                file: attachmentFile,
                 extraData: ["test": "value"]
             ),
             downloadingState: nil,
@@ -412,7 +412,7 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
             payload: ImageAttachmentPayload(
                 title: "Test Image",
                 imageRemoteURL: URL(string: "https://example.com/image.png")!,
-                file: try! .init(url: URL(string: "https://example.com/image.png")!),
+                file: attachmentFile,
                 extraData: ["test": "value"]
             ),
             downloadingState: nil,

@@ -53,10 +53,11 @@ import SwiftUI
     }
 
     private func searchUsers() {
-        let query = UserListQuery()
-        searchController.search(query: query) { [weak self] error in
+        searchController.search(query: UserListQuery()) { [weak self] error in
             guard let self, error == nil else { return }
-            users = searchController.userArray
+            users = searchController.userArray.filter { user in
+                !self.loadedUserIds.contains(user.id)
+            }
         }
     }
 

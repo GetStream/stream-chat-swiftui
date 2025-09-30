@@ -6,15 +6,34 @@ import Foundation
 import StreamChat
 import SwiftUI
 
+public protocol MarkdownFormatter {
+    /// Formats a Markdown string into an `AttributedString`, merging Markdown styles with the provided base attributes and honoring the given layout direction.
+    /// - Parameters:
+    ///   - string: The Markdown-formatted source string to render.
+    ///   - attributes: Base attributes applied to the entire string; Markdown-specific styling is merged on top of these defaults.
+    ///   - layoutDirection: The text layout direction (left-to-right or right-to-left) used when interpreting and rendering Markdown blocks (for example, lists, block quotes, and headings).
+    /// - Returns: An `AttributedString` containing the rendered Markdown with the resolved attributes.
+    @available(iOS 15, *)
+    func format(
+        _ string: String,
+        attributes: AttributeContainer,
+        layoutDirection: LayoutDirection
+    ) -> AttributedString
+}
+
 /// Converts markdown string to AttributedString with styling attributes.
-final class MarkdownFormatter {
+open class DefaultMarkdownFormatter: MarkdownFormatter {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    private let markdownParser = MarkdownParser()
+    private let markdownParser: MarkdownParser
+    
+    public init() {
+        markdownParser = MarkdownParser()
+    }
         
     @available(iOS 15, *)
-    func format(
+    open func format(
         _ string: String,
         attributes: AttributeContainer,
         layoutDirection: LayoutDirection

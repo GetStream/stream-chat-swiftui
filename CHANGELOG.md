@@ -4,6 +4,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Opens the `commandsHandler` and makes the mention methods public [#979](https://github.com/GetStream/stream-chat-swiftui/pull/979)
+- Opens `MarkdownFormatter` so that it can be customised [#978](https://github.com/GetStream/stream-chat-swiftui/pull/978)
+
+### 🐞 Fixed
+- Fix openChannel not working when searching or another chat shown [#975](https://github.com/GetStream/stream-chat-swiftui/pull/975)
+- Fix crash when using a font that does not support bold or italic trait [#976](https://github.com/GetStream/stream-chat-swiftui/pull/976)
+
+# [4.89.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.1)
+_September 23, 2025_
+
+### 🐞 Fixed
+- Fix not importing Foundation in GalleryHeaderViewDateFormatter [#970](https://github.com/GetStream/stream-chat-swiftui/pull/970)
+
+# [4.89.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.0)
+_September 22, 2025_
+
+### ✅ Added
 - Add `toolbarThemed(content:)` for creating custom views with themed navigation bar [#953](https://github.com/GetStream/stream-chat-swiftui/pull/953)
 - Add support for downloading file attachments [#952](https://github.com/GetStream/stream-chat-swiftui/pull/952)
 ### 🐞 Fixed
