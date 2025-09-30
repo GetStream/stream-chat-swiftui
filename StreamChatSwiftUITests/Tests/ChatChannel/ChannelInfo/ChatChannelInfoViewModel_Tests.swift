@@ -4,7 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
-import StreamChatTestTools
+@testable import StreamChatTestTools
 import XCTest
 
 class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
@@ -560,6 +560,22 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
 
         // Then
         XCTAssertNil(viewModel.selectedParticipant)
+    }
+
+    func test_chatChannelInfoVM_channelUpdated_updatesParticipants() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let controller = ChatChannelController_Mock.mock()
+        viewModel.channelController = controller
+        controller.delegate = viewModel
+
+        // When
+        let updated = mockGroup(with: 6)
+        controller.simulate(channel: updated, change: .update(updated), typingUsers: [])
+
+        // Then
+        XCTAssertEqual(viewModel.participants.count, 6)
     }
 
     // MARK: - private
