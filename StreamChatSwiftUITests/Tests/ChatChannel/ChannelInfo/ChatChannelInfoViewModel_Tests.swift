@@ -578,6 +578,30 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.participants.count, 6)
     }
 
+    func test_chatChannelInfoVM_handleParticipantActionDismiss() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        viewModel.handleParticipantActionDismiss()
+
+        // Then
+        XCTAssertNil(viewModel.selectedParticipant)
+    }
+
+    func test_chatChannelInfoVM_handleParticipantActionError() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        viewModel.handleParticipantActionError(ClientError.Unknown())
+
+        // Then
+        XCTAssertEqual(viewModel.errorShown, true)
+    }
+
     // MARK: - private
 
     private func mockGroup(

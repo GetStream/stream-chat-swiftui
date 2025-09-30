@@ -38,9 +38,9 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     
     public var shouldShowLeaveConversationButton: Bool {
         if channel.isDirectMessageChannel {
-            return channel.ownCapabilities.contains(.deleteChannel)
+            channel.ownCapabilities.contains(.deleteChannel)
         } else {
-            return channel.ownCapabilities.contains(.leaveChannel)
+            channel.ownCapabilities.contains(.leaveChannel)
         }
     }
 
@@ -50,9 +50,9 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
     public var shouldShowAddUserButton: Bool {
         if channel.isDirectMessageChannel {
-            return false
+            false
         } else {
-            return channel.ownCapabilities.contains(.updateChannelMembers)
+            channel.ownCapabilities.contains(.updateChannelMembers)
         }
     }
 
@@ -73,7 +73,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
             return [otherParticipant]
         }
         
-        let participants = self.participants.filter { $0.isDeactivated == false }
+        let participants = participants.filter { $0.isDeactivated == false }
 
         if participants.count <= 6 {
             return participants
@@ -88,17 +88,17 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
     public var leaveButtonTitle: String {
         if channel.isDirectMessageChannel {
-            return L10n.Alert.Actions.deleteChannelTitle
+            L10n.Alert.Actions.deleteChannelTitle
         } else {
-            return L10n.Alert.Actions.leaveGroupTitle
+            L10n.Alert.Actions.leaveGroupTitle
         }
     }
 
     public var leaveConversationDescription: String {
         if channel.isDirectMessageChannel {
-            return L10n.Alert.Actions.deleteChannelMessage
+            L10n.Alert.Actions.deleteChannelMessage
         } else {
-            return L10n.Alert.Actions.leaveGroupMessage
+            L10n.Alert.Actions.leaveGroupMessage
         }
     }
     
@@ -109,7 +109,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
-        let deactivated = participants.filter { $0.isDeactivated }.count
+        let deactivated = participants.filter(\.isDeactivated).count
         return total - displayed - deactivated
     }
 
@@ -146,12 +146,12 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
     public func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
-            return L10n.Message.Title.online
+            L10n.Message.Title.online
         } else if let lastActiveAt = user.lastActiveAt,
                   let timeAgo = lastSeenDateFormatter(lastActiveAt) {
-            return timeAgo
+            timeAgo
         } else {
-            return L10n.Message.Title.offline
+            L10n.Message.Title.offline
         }
     }
 
@@ -160,7 +160,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
             return
         }
 
-        let displayedParticipants = self.displayedParticipants
+        let displayedParticipants = displayedParticipants
         if displayedParticipants.isEmpty {
             loadAdditionalUsers()
             return
@@ -254,10 +254,10 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
         loadingUsers = true
         memberListController.loadNextMembers { [weak self] error in
-            guard let self = self else { return }
-            self.loadingUsers = false
+            guard let self else { return }
+            loadingUsers = false
             if error == nil {
-                let newMembers = self.memberListController.members.map { member in
+                let newMembers = memberListController.members.map { member in
                     ParticipantInfo(
                         chatUser: member,
                         displayName: member.name ?? member.id,
@@ -265,8 +265,8 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
                         isDeactivated: member.isDeactivated
                     )
                 }
-                if newMembers.count > self.participants.count {
-                    self.participants = newMembers
+                if newMembers.count > participants.count {
+                    participants = newMembers
                 }
             }
         }
@@ -330,7 +330,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         let muteAction = { [weak self] in
             let controller = self?.chatClient.userController(userId: participant.id)
             controller?.mute { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -360,7 +360,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         let unMuteAction = { [weak self] in
             let controller = self?.chatClient.userController(userId: participant.id)
             controller?.unmute { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -395,7 +395,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
             }
             let controller = chatClient.channelController(for: channel.cid)
             controller.removeMembers(userIds: [participant.id]) { error in
-                if let error = error {
+                if let error {
                     onError(error)
                 } else {
                     onDismiss()
@@ -420,11 +420,11 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         return removeUserAction
     }
     
-    private func handleParticipantActionDismiss() {
+    func handleParticipantActionDismiss() {
         selectedParticipant = nil
     }
     
-    private func handleParticipantActionError(_ error: Error?) {
+    func handleParticipantActionError(_ error: Error?) {
         errorShown = true
     }
 }
