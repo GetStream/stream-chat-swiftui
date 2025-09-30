@@ -8,96 +8,96 @@ import SwiftUI
 // MARK: - Empty Options
 
 /// Options for creating the no channels view.
-public class NoChannelsViewOptions {
+public final class NoChannelsViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the loading view.
-public class LoadingViewOptions {
+public final class LoadingViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel list divider item.
-public class ChannelListDividerItemOptions {
+public final class ChannelListDividerItemOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel list footer view.
-public class ChannelListFooterViewOptions {
+public final class ChannelListFooterViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel list sticky footer view.
-public class ChannelListStickyFooterViewOptions {
+public final class ChannelListStickyFooterViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel list content modifier.
-public class ChannelListContentModifierOptions {
+public final class ChannelListContentModifierOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel list modifier.
-public class ChannelListModifierOptions {
+public final class ChannelListModifierOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel destination.
-public class ChannelDestinationOptions {
+public final class ChannelDestinationOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the message thread destination.
-public class MessageThreadDestinationOptions {
+public final class MessageThreadDestinationOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the message list modifier.
-public class MessageListModifierOptions {
+public final class MessageListModifierOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the message list container modifier.
-public class MessageListContainerModifierOptions {
+public final class MessageListContainerModifierOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the channel loading view.
-public class ChannelLoadingViewOptions {
+public final class ChannelLoadingViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the composer recording tip view.
-public class ComposerRecordingTipViewOptions {
+public final class ComposerRecordingTipViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the composer view modifier.
-public class ComposerViewModifierOptions {
+public final class ComposerViewModifierOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the assets access permission view.
-public class AssetsAccessPermissionViewOptions {
+public final class AssetsAccessPermissionViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the thread destination.
-public class ThreadDestinationOptions {
+public final class ThreadDestinationOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the no threads view.
-public class NoThreadsViewOptions {
+public final class NoThreadsViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the thread list loading view.
-public class ThreadListLoadingViewOptions {
+public final class ThreadListLoadingViewOptions: Sendable {
     public init() {}
 }
 
 /// Options for creating the thread list divider item.
-public class ThreadListDividerItemOptions {
+public final class ThreadListDividerItemOptions: Sendable {
     public init() {}
 }

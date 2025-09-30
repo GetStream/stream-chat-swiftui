@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Thread List Options
 
 /// Options for creating the thread list item.
-public class ThreadListItemOptions<ThreadDestination: View> {
+public final class ThreadListItemOptions<ThreadDestination: View> {
     /// The thread to display.
     public let thread: ChatThread
     /// The destination view for thread navigation.
@@ -29,7 +29,7 @@ public class ThreadListItemOptions<ThreadDestination: View> {
 }
 
 /// Options for creating the thread list error banner view.
-public class ThreadListErrorBannerViewOptions {
+public final class ThreadListErrorBannerViewOptions: Sendable {
     /// Callback when the refresh action is triggered.
     public let onRefreshAction: @MainActor() -> Void
     
@@ -39,7 +39,7 @@ public class ThreadListErrorBannerViewOptions {
 }
 
 /// Options for creating the thread list container view modifier.
-public class ThreadListContainerModifierOptions {
+public final class ThreadListContainerModifierOptions: Sendable {
     /// The view model for the thread list.
     public let viewModel: ChatThreadListViewModel
     
@@ -49,7 +49,7 @@ public class ThreadListContainerModifierOptions {
 }
 
 /// Options for creating the thread list header view modifier.
-public class ThreadListHeaderViewModifierOptions {
+public final class ThreadListHeaderViewModifierOptions: Sendable {
     /// The title to display in the header.
     public let title: String
     
@@ -59,7 +59,7 @@ public class ThreadListHeaderViewModifierOptions {
 }
 
 /// Options for creating the thread list header view.
-public class ThreadListHeaderViewOptions {
+public final class ThreadListHeaderViewOptions: Sendable {
     /// The view model for the thread list.
     public let viewModel: ChatThreadListViewModel
     
@@ -69,7 +69,7 @@ public class ThreadListHeaderViewOptions {
 }
 
 /// Options for creating the thread list footer view.
-public class ThreadListFooterViewOptions {
+public final class ThreadListFooterViewOptions: Sendable {
     /// The view model for the thread list.
     public let viewModel: ChatThreadListViewModel
     
@@ -79,7 +79,7 @@ public class ThreadListFooterViewOptions {
 }
 
 /// Options for creating the thread list background.
-public class ThreadListBackgroundOptions {
+public final class ThreadListBackgroundOptions: Sendable {
     /// The color palette to use.
     public let colors: ColorPalette
     
@@ -89,7 +89,7 @@ public class ThreadListBackgroundOptions {
 }
 
 /// Options for creating the thread list item background.
-public class ThreadListItemBackgroundOptions {
+public final class ThreadListItemBackgroundOptions: Sendable {
     /// The thread for the item.
     public let thread: ChatThread
     /// Whether the item is selected.

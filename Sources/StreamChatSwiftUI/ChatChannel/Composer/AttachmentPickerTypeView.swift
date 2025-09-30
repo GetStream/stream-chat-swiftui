@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Enum for the picker type state.
-public enum PickerTypeState: Equatable {
+public enum PickerTypeState: Equatable, Sendable {
     /// Picker is expanded, with a selected `AttachmentPickerType`.
     case expanded(AttachmentPickerType)
     /// Picker is collapsed.
@@ -14,7 +14,7 @@ public enum PickerTypeState: Equatable {
 }
 
 /// Attachment picker type.
-public enum AttachmentPickerType {
+public enum AttachmentPickerType: Sendable {
     /// None is selected.
     case none
     /// Media (images, files, videos) is selected.

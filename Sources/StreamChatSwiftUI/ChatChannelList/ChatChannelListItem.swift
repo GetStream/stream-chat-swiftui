@@ -179,7 +179,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 }
 
 /// Options for setting up the channel avatar view.
-public struct ChannelAvatarViewOptions {
+public struct ChannelAvatarViewOptions: Sendable {
     /// Whether the online indicator should be shown.
     public var showOnlineIndicator: Bool
     /// Size of the avatar.

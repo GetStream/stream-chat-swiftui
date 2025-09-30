@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Message List Options
 
 /// Options for creating the empty messages view.
-public class EmptyMessagesViewOptions {
+public final class EmptyMessagesViewOptions: Sendable {
     /// The channel to display empty state for.
     public let channel: ChatChannel
     /// The color palette to use.
@@ -22,7 +22,7 @@ public class EmptyMessagesViewOptions {
 }
 
 /// Options for creating the message list background.
-public class MessageListBackgroundOptions {
+public final class MessageListBackgroundOptions: Sendable {
     /// The color palette to use.
     public let colors: ColorPalette
     /// Whether the view is in a thread.
@@ -37,7 +37,7 @@ public class MessageListBackgroundOptions {
 // MARK: - Message Avatar Options
 
 /// Options for creating the message avatar view.
-public class MessageAvatarViewOptions {
+public final class MessageAvatarViewOptions: Sendable {
     /// Information about the user to display.
     public let userDisplayInfo: UserDisplayInfo
     
@@ -47,7 +47,7 @@ public class MessageAvatarViewOptions {
 }
 
 /// Options for creating the quoted message avatar view.
-public class QuotedMessageAvatarViewOptions {
+public final class QuotedMessageAvatarViewOptions: Sendable {
     /// Information about the user to display.
     public let userDisplayInfo: UserDisplayInfo
     /// The size of the avatar.
@@ -62,14 +62,14 @@ public class QuotedMessageAvatarViewOptions {
 // MARK: - Message Thread Options
 
 /// Options for creating the message thread header view modifier.
-public class MessageThreadHeaderViewModifierOptions {
+public final class MessageThreadHeaderViewModifierOptions: Sendable {
     public init() {}
 }
 
 // MARK: - Message Container Options
 
 /// Options for creating the message container view.
-public class MessageContainerViewOptions {
+public final class MessageContainerViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to display.
@@ -115,7 +115,7 @@ public class MessageContainerViewOptions {
 // MARK: - Message Text Options
 
 /// Options for creating the message text view.
-public class MessageTextViewOptions {
+public final class MessageTextViewOptions: Sendable {
     /// The message to display.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -141,7 +141,7 @@ public class MessageTextViewOptions {
 // MARK: - Message Date Options
 
 /// Options for creating the message date view.
-public class MessageDateViewOptions {
+public final class MessageDateViewOptions: Sendable {
     /// The message to display the date for.
     public let message: ChatMessage
     
@@ -151,7 +151,7 @@ public class MessageDateViewOptions {
 }
 
 /// Options for creating the message author and date view.
-public class MessageAuthorAndDateViewOptions {
+public final class MessageAuthorAndDateViewOptions: Sendable {
     /// The message to display the author and date for.
     public let message: ChatMessage
     
@@ -161,7 +161,7 @@ public class MessageAuthorAndDateViewOptions {
 }
 
 /// Options for creating the message translation footer view.
-public class MessageTranslationFooterViewOptions {
+public final class MessageTranslationFooterViewOptions: Sendable {
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
     
@@ -171,7 +171,7 @@ public class MessageTranslationFooterViewOptions {
 }
 
 /// Options for creating the last in group header view.
-public class LastInGroupHeaderViewOptions {
+public final class LastInGroupHeaderViewOptions: Sendable {
     /// The message to display the header for.
     public let message: ChatMessage
     
@@ -183,7 +183,7 @@ public class LastInGroupHeaderViewOptions {
 // MARK: - Message Type Options
 
 /// Options for creating the deleted message view.
-public class DeletedMessageViewOptions {
+public final class DeletedMessageViewOptions: Sendable {
     /// The deleted message to display.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -199,7 +199,7 @@ public class DeletedMessageViewOptions {
 }
 
 /// Options for creating the system message view.
-public class SystemMessageViewOptions {
+public final class SystemMessageViewOptions: Sendable {
     /// The system message to display.
     public let message: ChatMessage
     
@@ -209,7 +209,7 @@ public class SystemMessageViewOptions {
 }
 
 /// Options for creating the emoji text view.
-public class EmojiTextViewOptions {
+public final class EmojiTextViewOptions: Sendable {
     /// The message containing emojis.
     public let message: ChatMessage
     /// Binding to the currently scrolled message ID.
@@ -227,7 +227,7 @@ public class EmojiTextViewOptions {
 // MARK: - Message Indicator Options
 
 /// Options for creating the scroll to bottom button.
-public class ScrollToBottomButtonOptions {
+public final class ScrollToBottomButtonOptions: Sendable {
     /// The number of unread messages.
     public let unreadCount: Int
     /// Callback when the scroll to bottom button is tapped.
@@ -240,7 +240,7 @@ public class ScrollToBottomButtonOptions {
 }
 
 /// Options for creating the date indicator view.
-public class DateIndicatorViewOptions {
+public final class DateIndicatorViewOptions: Sendable {
     /// The date string to display.
     public let dateString: String
     
@@ -250,7 +250,7 @@ public class DateIndicatorViewOptions {
 }
 
 /// Options for creating the message list date indicator.
-public class MessageListDateIndicatorViewOptions {
+public final class MessageListDateIndicatorViewOptions: Sendable {
     /// The date to display.
     public let date: Date
     
@@ -260,7 +260,7 @@ public class MessageListDateIndicatorViewOptions {
 }
 
 /// Options for creating the typing indicator bottom view.
-public class TypingIndicatorBottomViewOptions {
+public final class TypingIndicatorBottomViewOptions: Sendable {
     /// The channel to show typing indicators for.
     public let channel: ChatChannel
     /// The current user ID.
@@ -275,7 +275,7 @@ public class TypingIndicatorBottomViewOptions {
 // MARK: - Message Replies Options
 
 /// Options for creating the message replies view.
-public class MessageRepliesViewOptions {
+public final class MessageRepliesViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to show replies for.
@@ -291,7 +291,7 @@ public class MessageRepliesViewOptions {
 }
 
 /// Options for creating the message replies shown in channel view.
-public class MessageRepliesShownInChannelViewOptions {
+public final class MessageRepliesShownInChannelViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to show replies for.
@@ -317,7 +317,7 @@ public class MessageRepliesShownInChannelViewOptions {
 // MARK: - Message Actions Options
 
 /// Options for getting supported message actions.
-public class SupportedMessageActionsOptions {
+public final class SupportedMessageActionsOptions: Sendable {
     /// The message to get actions for.
     public let message: ChatMessage
     /// The channel containing the message.
@@ -341,7 +341,7 @@ public class SupportedMessageActionsOptions {
 }
 
 /// Options for creating the message actions view.
-public class MessageActionsViewOptions {
+public final class MessageActionsViewOptions: Sendable {
     /// The message to show actions for.
     public let message: ChatMessage
     /// The channel containing the message.
@@ -367,7 +367,7 @@ public class MessageActionsViewOptions {
 // MARK: - Message Read Indicator Options
 
 /// Options for creating the message read indicator view.
-public class MessageReadIndicatorViewOptions {
+public final class MessageReadIndicatorViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to show read indicators for.
@@ -380,7 +380,7 @@ public class MessageReadIndicatorViewOptions {
 }
 
 /// Options for creating the new messages indicator view.
-public class NewMessagesIndicatorViewOptions {
+public final class NewMessagesIndicatorViewOptions: Sendable {
     /// Binding to the new messages start ID.
     public let newMessagesStartId: Binding<String?>
     /// The number of new messages.
@@ -393,7 +393,7 @@ public class NewMessagesIndicatorViewOptions {
 }
 
 /// Options for creating the jump to unread button.
-public class JumpToUnreadButtonOptions {
+public final class JumpToUnreadButtonOptions: Sendable {
     /// The channel to jump to unread messages in.
     public let channel: ChatChannel
     /// Callback when the jump to message button is tapped.
@@ -415,7 +415,7 @@ public class JumpToUnreadButtonOptions {
 // MARK: - Send in Channel Options
 
 /// Options for creating the send in channel view.
-public class SendInChannelViewOptions {
+public final class SendInChannelViewOptions: Sendable {
     /// Binding to whether to show reply in channel.
     public let showReplyInChannel: Binding<Bool>
     /// Whether this is a direct message.

@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Image Attachment Options
 
 /// Options for creating the image attachment view.
-public class ImageAttachmentViewOptions {
+public final class ImageAttachmentViewOptions: Sendable {
     /// The message containing the image attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -36,7 +36,7 @@ public class ImageAttachmentViewOptions {
 // MARK: - Giphy Attachment Options
 
 /// Options for creating the giphy attachment view.
-public class GiphyAttachmentViewOptions {
+public final class GiphyAttachmentViewOptions: Sendable {
     /// The message containing the giphy attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -60,7 +60,7 @@ public class GiphyAttachmentViewOptions {
 }
 
 /// Options for creating the giphy badge view.
-public class GiphyBadgeViewTypeOptions {
+public final class GiphyBadgeViewTypeOptions: Sendable {
     /// The message containing the giphy attachment.
     public let message: ChatMessage
     /// The available width for the badge.
@@ -75,7 +75,7 @@ public class GiphyBadgeViewTypeOptions {
 // MARK: - Link Attachment Options
 
 /// Options for creating the link attachment view.
-public class LinkAttachmentViewOptions {
+public final class LinkAttachmentViewOptions: Sendable {
     /// The message containing the link attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -101,7 +101,7 @@ public class LinkAttachmentViewOptions {
 // MARK: - File Attachment Options
 
 /// Options for creating the file attachment view.
-public class FileAttachmentViewOptions {
+public final class FileAttachmentViewOptions: Sendable {
     /// The message containing the file attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -127,7 +127,7 @@ public class FileAttachmentViewOptions {
 // MARK: - Video Attachment Options
 
 /// Options for creating the video attachment view.
-public class VideoAttachmentViewOptions {
+public final class VideoAttachmentViewOptions: Sendable {
     /// The message containing the video attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -153,7 +153,7 @@ public class VideoAttachmentViewOptions {
 // MARK: - Voice Recording Options
 
 /// Options for creating the voice recording view.
-public class VoiceRecordingViewOptions {
+public final class VoiceRecordingViewOptions: Sendable {
     /// The message containing the voice recording.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -179,7 +179,7 @@ public class VoiceRecordingViewOptions {
 // MARK: - Custom Attachment Options
 
 /// Options for creating the custom attachment view.
-public class CustomAttachmentViewTypeOptions {
+public final class CustomAttachmentViewTypeOptions: Sendable {
     /// The message containing the custom attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -203,7 +203,7 @@ public class CustomAttachmentViewTypeOptions {
 }
 
 /// Options for creating the custom composer attachment view.
-public class CustomComposerAttachmentViewOptions {
+public final class CustomComposerAttachmentViewOptions: Sendable {
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// Callback when a custom attachment is tapped.
@@ -219,7 +219,7 @@ public class CustomComposerAttachmentViewOptions {
 }
 
 /// Options for creating the custom attachment preview view.
-public class CustomAttachmentPreviewViewOptions {
+public final class CustomAttachmentPreviewViewOptions: Sendable {
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// Callback when a custom attachment is tapped.
@@ -237,7 +237,7 @@ public class CustomAttachmentPreviewViewOptions {
 // MARK: - Gallery Options
 
 /// Options for creating the gallery view.
-public class GalleryViewOptions {
+public final class GalleryViewOptions: Sendable {
     /// The media attachments to display.
     public let mediaAttachments: [MediaAttachment]
     /// The message containing the attachments.
@@ -261,7 +261,7 @@ public class GalleryViewOptions {
 }
 
 /// Options for creating the gallery header view.
-public class GalleryHeaderViewOptions {
+public final class GalleryHeaderViewOptions: Sendable {
     /// The title to display in the header.
     public let title: String
     /// The subtitle to display in the header.
@@ -279,7 +279,7 @@ public class GalleryHeaderViewOptions {
 // MARK: - Video Player Options
 
 /// Options for creating the video player view.
-public class VideoPlayerViewOptions {
+public final class VideoPlayerViewOptions: Sendable {
     /// The video attachment to play.
     public let attachment: ChatMessageVideoAttachment
     /// The message containing the video.
@@ -303,7 +303,7 @@ public class VideoPlayerViewOptions {
 }
 
 /// Options for creating the video player header view.
-public class VideoPlayerHeaderViewOptions {
+public final class VideoPlayerHeaderViewOptions: Sendable {
     /// The title to display in the header.
     public let title: String
     /// The subtitle to display in the header.
@@ -319,7 +319,7 @@ public class VideoPlayerHeaderViewOptions {
 }
 
 /// Options for creating the video player footer view.
-public class VideoPlayerFooterViewOptions {
+public final class VideoPlayerFooterViewOptions: Sendable {
     /// The video attachment being played.
     public let attachment: ChatMessageVideoAttachment
     /// Binding to whether the footer is shown.
@@ -334,7 +334,7 @@ public class VideoPlayerFooterViewOptions {
 // MARK: - Attachment Picker Options
 
 /// Options for creating the attachment picker view.
-public class AttachmentPickerViewOptions {
+public final class AttachmentPickerViewOptions: Sendable {
     /// Binding to the attachment picker state.
     public let attachmentPickerState: Binding<AttachmentPickerState>
     /// Binding to whether the file picker is shown.
@@ -402,7 +402,7 @@ public class AttachmentPickerViewOptions {
 }
 
 /// Options for creating the attachment source picker view.
-public class AttachmentSourcePickerViewOptions {
+public final class AttachmentSourcePickerViewOptions: Sendable {
     /// The currently selected picker state.
     public let selected: AttachmentPickerState
     /// Callback when the picker state changes.
@@ -415,7 +415,7 @@ public class AttachmentSourcePickerViewOptions {
 }
 
 /// Options for creating the photo attachment picker view.
-public class PhotoAttachmentPickerViewOptions {
+public final class PhotoAttachmentPickerViewOptions: Sendable {
     /// The assets to display in the picker.
     public let assets: PHFetchResultCollection
     /// Callback when an asset is tapped.
@@ -435,7 +435,7 @@ public class PhotoAttachmentPickerViewOptions {
 }
 
 /// Options for creating the file picker view.
-public class FilePickerViewOptions {
+public final class FilePickerViewOptions: Sendable {
     /// Binding to whether the file picker is shown.
     public let filePickerShown: Binding<Bool>
     /// Binding to the added file URLs.
@@ -448,7 +448,7 @@ public class FilePickerViewOptions {
 }
 
 /// Options for creating the camera picker view.
-public class CameraPickerViewOptions {
+public final class CameraPickerViewOptions: Sendable {
     /// Binding to the selected picker state.
     public let selected: Binding<AttachmentPickerState>
     /// Binding to whether the camera picker is shown.

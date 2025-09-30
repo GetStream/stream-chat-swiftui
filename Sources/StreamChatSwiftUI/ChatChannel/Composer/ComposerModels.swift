@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// Enum describing the attachment picker's state.
-public enum AttachmentPickerState {
+public enum AttachmentPickerState: Sendable {
     case files
     case photos
     case camera

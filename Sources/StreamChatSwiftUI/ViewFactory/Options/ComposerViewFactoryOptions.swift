@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Composer View Options
 
 /// Options for creating the message composer view.
-public class MessageComposerViewTypeOptions {
+public final class MessageComposerViewTypeOptions: Sendable {
     /// The channel controller for the composer.
     public let channelController: ChatChannelController
     /// The message controller for editing messages.
@@ -39,7 +39,7 @@ public class MessageComposerViewTypeOptions {
 // MARK: - Composer Input Options
 
 /// Options for creating the leading composer view.
-public class LeadingComposerViewOptions {
+public final class LeadingComposerViewOptions: Sendable {
     /// Binding to the picker type state.
     public let state: Binding<PickerTypeState>
     /// The channel configuration.
@@ -52,7 +52,7 @@ public class LeadingComposerViewOptions {
 }
 
 /// Options for creating the composer input view.
-public class ComposerInputViewOptions {
+public final class ComposerInputViewOptions: Sendable {
     /// Binding to the text input.
     public let text: Binding<String>
     /// Binding to the selected range location.
@@ -108,7 +108,7 @@ public class ComposerInputViewOptions {
 }
 
 /// Options for creating the composer text input view.
-public class ComposerTextInputViewOptions {
+public final class ComposerTextInputViewOptions: Sendable {
     /// Binding to the text input.
     public let text: Binding<String>
     /// Binding to the height of the input.
@@ -144,7 +144,7 @@ public class ComposerTextInputViewOptions {
 }
 
 /// Options for creating the trailing composer view.
-public class TrailingComposerViewOptions {
+public final class TrailingComposerViewOptions: Sendable {
     /// Whether the composer is enabled.
     public let enabled: Bool
     /// The cooldown duration in seconds.
@@ -162,7 +162,7 @@ public class TrailingComposerViewOptions {
 // MARK: - Composer Recording Options
 
 /// Options for creating the composer recording view.
-public class ComposerRecordingViewOptions {
+public final class ComposerRecordingViewOptions: Sendable {
     /// The view model for the composer.
     public let viewModel: MessageComposerViewModel
     /// The location of the gesture.
@@ -175,7 +175,7 @@ public class ComposerRecordingViewOptions {
 }
 
 /// Options for creating the composer recording locked view.
-public class ComposerRecordingLockedViewOptions {
+public final class ComposerRecordingLockedViewOptions: Sendable {
     /// The view model for the composer.
     public let viewModel: MessageComposerViewModel
     
@@ -187,7 +187,7 @@ public class ComposerRecordingLockedViewOptions {
 // MARK: - Commands Options
 
 /// Options for creating the commands container view.
-public class CommandsContainerViewOptions {
+public final class CommandsContainerViewOptions: @unchecked Sendable {
     /// The command suggestions.
     public let suggestions: [String: Any]
     /// Callback to handle a command.
@@ -202,7 +202,7 @@ public class CommandsContainerViewOptions {
 // MARK: - Quoted Message Options
 
 /// Options for creating the quoted message header view.
-public class QuotedMessageHeaderViewOptions {
+public final class QuotedMessageHeaderViewOptions: Sendable {
     /// Binding to the quoted message.
     public let quotedMessage: Binding<ChatMessage?>
     
@@ -212,7 +212,7 @@ public class QuotedMessageHeaderViewOptions {
 }
 
 /// Options for creating the quoted message view.
-public class QuotedMessageViewOptions {
+public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
     /// Whether to fill the available space.
@@ -236,7 +236,7 @@ public class QuotedMessageViewOptions {
 }
 
 /// Options for creating the custom attachment quoted view.
-public class CustomAttachmentQuotedViewOptions {
+public final class CustomAttachmentQuotedViewOptions: Sendable {
     /// The message containing the custom attachment.
     public let message: ChatMessage
     
@@ -246,7 +246,7 @@ public class CustomAttachmentQuotedViewOptions {
 }
 
 /// Options for creating the edited message header view.
-public class EditedMessageHeaderViewOptions {
+public final class EditedMessageHeaderViewOptions: Sendable {
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
     
@@ -258,7 +258,7 @@ public class EditedMessageHeaderViewOptions {
 // MARK: - Poll Options
 
 /// Options for creating the composer poll view.
-public class ComposerPollViewOptions {
+public final class ComposerPollViewOptions: Sendable {
     /// The channel controller for the poll.
     public let channelController: ChatChannelController
     /// The message controller for editing messages.
@@ -271,7 +271,7 @@ public class ComposerPollViewOptions {
 }
 
 /// Options for creating the poll view.
-public class PollViewOptions {
+public final class PollViewOptions: Sendable {
     /// The message containing the poll.
     public let message: ChatMessage
     /// The poll data.

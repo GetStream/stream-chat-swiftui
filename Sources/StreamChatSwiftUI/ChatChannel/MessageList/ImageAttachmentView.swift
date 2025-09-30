@@ -426,7 +426,7 @@ extension ChatMessage {
     }
 }
 
-public struct MediaAttachment: Identifiable, Equatable {
+public struct MediaAttachment: Identifiable, Equatable, @unchecked Sendable {
     @Injected(\.utils) var utils
 
     let url: URL
@@ -486,7 +486,7 @@ enum MediaAttachmentType {
 }
 
 /// Options for the gallery view.
-public struct MediaViewsOptions {
+public struct MediaViewsOptions: Sendable {
     /// The index of the selected media item.
     public let selectedIndex: Int
 

@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Reactions Options
 
 /// Options for creating the reactions users view.
-public class ReactionsUsersViewOptions {
+public final class ReactionsUsersViewOptions: Sendable {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// The maximum height for the view.
@@ -22,7 +22,7 @@ public class ReactionsUsersViewOptions {
 }
 
 /// Options for creating the bottom reactions view.
-public class ReactionsBottomViewOptions {
+public final class ReactionsBottomViewOptions: Sendable {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// Whether to show all information.
@@ -46,7 +46,7 @@ public class ReactionsBottomViewOptions {
 }
 
 /// Options for creating the message reaction view.
-public class MessageReactionViewOptions {
+public final class MessageReactionViewOptions: Sendable {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// Callback when the reaction is tapped.
@@ -66,7 +66,7 @@ public class MessageReactionViewOptions {
 }
 
 /// Options for creating the reactions overlay view.
-public class ReactionsOverlayViewOptions {
+public final class ReactionsOverlayViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The current snapshot image.
@@ -94,7 +94,7 @@ public class ReactionsOverlayViewOptions {
 }
 
 /// Options for creating the reactions background view.
-public class ReactionsBackgroundOptions {
+public final class ReactionsBackgroundOptions: Sendable {
     /// The current snapshot image.
     public let currentSnapshot: UIImage
     /// Whether the pop-in animation is in progress.
@@ -107,7 +107,7 @@ public class ReactionsBackgroundOptions {
 }
 
 /// Options for creating the reactions content view.
-public class ReactionsContentViewOptions {
+public final class ReactionsContentViewOptions: Sendable {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// The content rectangle.
