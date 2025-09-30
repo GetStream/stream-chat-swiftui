@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import StreamChatTestTools
 import XCTest
 
 class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
@@ -297,9 +298,277 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
         XCTAssert(leaveButton == false)
     }
 
+    func test_chatChannelInfoVM_participantActions_withMutesEnabled() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssert(actions.count == 3) // mute, remove, cancel
+        XCTAssert(actions.contains { $0.title.contains("Mute") })
+        XCTAssert(actions.contains { $0.title.contains("Remove") })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+    }
+
+    func test_chatChannelInfoVM_participantActions_withMutesDisabled() {
+        // Given
+        let channel = mockGroup(with: 5, updateCapabilities: true, mutesEnabled: false)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssert(actions.count == 2) // remove, cancel
+        XCTAssertFalse(actions.contains { $0.title.contains("Mute") })
+        XCTAssert(actions.contains { $0.title.contains("Remove") })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+    }
+
+    func test_chatChannelInfoVM_participantActions_withoutUpdateMembersCapability() {
+        // Given
+        let channel = mockGroup(with: 5, updateCapabilities: false)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssert(actions.count == 2) // mute, cancel (no remove)
+        XCTAssert(actions.contains { $0.title.contains("Mute") })
+        XCTAssertFalse(actions.contains { $0.title.contains("Remove") })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+    }
+
+    func test_chatChannelInfoVM_participantActions_withMutedUser() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let mutedUser = ChatUser.mock(id: .unique)
+        let participant = ParticipantInfo(
+            chatUser: mutedUser,
+            displayName: "Muted User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssert(actions.count >= 2) // At least remove and cancel
+        XCTAssert(actions.contains { $0.title.contains("Remove") })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+    }
+
+    func test_chatChannelInfoVM_muteAction_properties() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let muteAction = viewModel.muteAction(
+            participant: participant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssert(muteAction.title.contains("Mute"))
+        XCTAssert(muteAction.title.contains("Test User"))
+        XCTAssert(muteAction.iconName == "speaker.slash")
+        XCTAssert(muteAction.isDestructive == false)
+        XCTAssertNotNil(muteAction.confirmationPopup)
+        XCTAssert(muteAction.confirmationPopup?.title.contains("Mute") == true)
+        XCTAssert(muteAction.confirmationPopup?.title.contains("Test User") == true)
+        XCTAssert(muteAction.confirmationPopup?.buttonTitle.contains("Mute") == true)
+    }
+
+    func test_chatChannelInfoVM_unmuteAction_properties() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let unmuteAction = viewModel.unmuteAction(
+            participant: participant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssert(unmuteAction.title.contains("Unmute"))
+        XCTAssert(unmuteAction.title.contains("Test User"))
+        XCTAssert(unmuteAction.iconName == "speaker.wave.1")
+        XCTAssert(unmuteAction.isDestructive == false)
+        XCTAssertNotNil(unmuteAction.confirmationPopup)
+        XCTAssert(unmuteAction.confirmationPopup?.title.contains("Unmute") == true)
+        XCTAssert(unmuteAction.confirmationPopup?.title.contains("Test User") == true)
+        XCTAssert(unmuteAction.confirmationPopup?.buttonTitle.contains("Unmute") == true)
+    }
+
+    func test_chatChannelInfoVM_removeUserAction_properties() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let removeAction = viewModel.removeUserAction(
+            participant: participant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssert(removeAction.title == L10n.Channel.Item.removeUser)
+        XCTAssert(removeAction.iconName == "person.slash")
+        XCTAssert(removeAction.isDestructive == true)
+        XCTAssertNotNil(removeAction.confirmationPopup)
+        XCTAssert(removeAction.confirmationPopup?.title == L10n.Channel.Item.removeUserConfirmationTitle)
+        XCTAssert(removeAction.confirmationPopup?.buttonTitle == L10n.Channel.Item.removeUser)
+    }
+
+    func test_chatChannelInfoVM_muteAction_execution() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+        
+        // When
+        let muteAction = viewModel.muteAction(
+            participant: participant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+        
+        muteAction.action()
+
+        // Then
+        XCTAssertNotNil(muteAction.action)
+    }
+
+    func test_chatChannelInfoVM_unmuteAction_execution() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let unmuteAction = viewModel.unmuteAction(
+            participant: participant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+        
+        unmuteAction.action()
+
+        // Then
+        XCTAssertNotNil(unmuteAction.action)
+    }
+
+    func test_chatChannelInfoVM_removeUserAction_execution() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+        
+        // When
+        let removeAction = viewModel.removeUserAction(
+            participant: participant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+        
+        removeAction.action()
+
+        // Then
+        XCTAssertNotNil(removeAction.action)
+    }
+
+    func test_chatChannelInfoVM_participantActions_cancelAction() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+        
+        viewModel.selectedParticipant = participant
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+        let cancelAction = actions.first { $0.title == L10n.Alert.Actions.cancel }
+        
+        cancelAction?.action()
+
+        // Then
+        XCTAssertNil(viewModel.selectedParticipant)
+    }
+
     // MARK: - private
 
-    private func mockGroup(with memberCount: Int, updateCapabilities: Bool = true) -> ChatChannel {
+    private func mockGroup(
+        with memberCount: Int,
+        updateCapabilities: Bool = true,
+        mutesEnabled: Bool = true
+    ) -> ChatChannel {
         let cid: ChannelId = .unique
         let activeMembers = ChannelInfoMockUtils.setupMockMembers(
             count: memberCount,
@@ -312,8 +581,12 @@ class ChatChannelInfoViewModel_Tests: StreamChatTestCase {
             capabilities.insert(.leaveChannel)
             capabilities.insert(.updateChannelMembers)
         }
+        
+        let channelConfig = ChannelConfig(mutesEnabled: mutesEnabled)
+        
         let channel = ChatChannel.mock(
             cid: cid,
+            config: channelConfig,
             ownCapabilities: capabilities,
             lastActiveMembers: activeMembers,
             memberCount: activeMembers.count
