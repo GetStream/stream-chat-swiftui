@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Image Attachment Options
 
 /// Options for creating the image attachment view.
-public struct ImageAttachmentViewOptions {
+public class ImageAttachmentViewOptions {
     /// The message containing the image attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -36,7 +36,7 @@ public struct ImageAttachmentViewOptions {
 // MARK: - Giphy Attachment Options
 
 /// Options for creating the giphy attachment view.
-public struct GiphyAttachmentViewOptions {
+public class GiphyAttachmentViewOptions {
     /// The message containing the giphy attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -60,7 +60,7 @@ public struct GiphyAttachmentViewOptions {
 }
 
 /// Options for creating the giphy badge view.
-public struct GiphyBadgeViewTypeOptions {
+public class GiphyBadgeViewTypeOptions {
     /// The message containing the giphy attachment.
     public let message: ChatMessage
     /// The available width for the badge.
@@ -75,7 +75,7 @@ public struct GiphyBadgeViewTypeOptions {
 // MARK: - Link Attachment Options
 
 /// Options for creating the link attachment view.
-public struct LinkAttachmentViewOptions {
+public class LinkAttachmentViewOptions {
     /// The message containing the link attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -101,7 +101,7 @@ public struct LinkAttachmentViewOptions {
 // MARK: - File Attachment Options
 
 /// Options for creating the file attachment view.
-public struct FileAttachmentViewOptions {
+public class FileAttachmentViewOptions {
     /// The message containing the file attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -127,7 +127,7 @@ public struct FileAttachmentViewOptions {
 // MARK: - Video Attachment Options
 
 /// Options for creating the video attachment view.
-public struct VideoAttachmentViewOptions {
+public class VideoAttachmentViewOptions {
     /// The message containing the video attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -153,7 +153,7 @@ public struct VideoAttachmentViewOptions {
 // MARK: - Voice Recording Options
 
 /// Options for creating the voice recording view.
-public struct VoiceRecordingViewOptions {
+public class VoiceRecordingViewOptions {
     /// The message containing the voice recording.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -179,7 +179,7 @@ public struct VoiceRecordingViewOptions {
 // MARK: - Custom Attachment Options
 
 /// Options for creating the custom attachment view.
-public struct CustomAttachmentViewTypeOptions {
+public class CustomAttachmentViewTypeOptions {
     /// The message containing the custom attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -203,7 +203,7 @@ public struct CustomAttachmentViewTypeOptions {
 }
 
 /// Options for creating the custom composer attachment view.
-public struct CustomComposerAttachmentViewOptions {
+public class CustomComposerAttachmentViewOptions {
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// Callback when a custom attachment is tapped.
@@ -219,7 +219,7 @@ public struct CustomComposerAttachmentViewOptions {
 }
 
 /// Options for creating the custom attachment preview view.
-public struct CustomAttachmentPreviewViewOptions {
+public class CustomAttachmentPreviewViewOptions {
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// Callback when a custom attachment is tapped.
@@ -237,7 +237,7 @@ public struct CustomAttachmentPreviewViewOptions {
 // MARK: - Gallery Options
 
 /// Options for creating the gallery view.
-public struct GalleryViewOptions {
+public class GalleryViewOptions {
     /// The media attachments to display.
     public let mediaAttachments: [MediaAttachment]
     /// The message containing the attachments.
@@ -261,7 +261,7 @@ public struct GalleryViewOptions {
 }
 
 /// Options for creating the gallery header view.
-public struct GalleryHeaderViewOptions {
+public class GalleryHeaderViewOptions {
     /// The title to display in the header.
     public let title: String
     /// The subtitle to display in the header.
@@ -279,7 +279,7 @@ public struct GalleryHeaderViewOptions {
 // MARK: - Video Player Options
 
 /// Options for creating the video player view.
-public struct VideoPlayerViewOptions {
+public class VideoPlayerViewOptions {
     /// The video attachment to play.
     public let attachment: ChatMessageVideoAttachment
     /// The message containing the video.
@@ -303,7 +303,7 @@ public struct VideoPlayerViewOptions {
 }
 
 /// Options for creating the video player header view.
-public struct VideoPlayerHeaderViewOptions {
+public class VideoPlayerHeaderViewOptions {
     /// The title to display in the header.
     public let title: String
     /// The subtitle to display in the header.
@@ -319,7 +319,7 @@ public struct VideoPlayerHeaderViewOptions {
 }
 
 /// Options for creating the video player footer view.
-public struct VideoPlayerFooterViewOptions {
+public class VideoPlayerFooterViewOptions {
     /// The video attachment being played.
     public let attachment: ChatMessageVideoAttachment
     /// Binding to whether the footer is shown.
@@ -334,7 +334,7 @@ public struct VideoPlayerFooterViewOptions {
 // MARK: - Attachment Picker Options
 
 /// Options for creating the attachment picker view.
-public struct AttachmentPickerViewOptions {
+public class AttachmentPickerViewOptions {
     /// Binding to the attachment picker state.
     public let attachmentPickerState: Binding<AttachmentPickerState>
     /// Binding to whether the file picker is shown.
@@ -402,7 +402,7 @@ public struct AttachmentPickerViewOptions {
 }
 
 /// Options for creating the attachment source picker view.
-public struct AttachmentSourcePickerViewOptions {
+public class AttachmentSourcePickerViewOptions {
     /// The currently selected picker state.
     public let selected: AttachmentPickerState
     /// Callback when the picker state changes.
@@ -415,7 +415,7 @@ public struct AttachmentSourcePickerViewOptions {
 }
 
 /// Options for creating the photo attachment picker view.
-public struct PhotoAttachmentPickerViewOptions {
+public class PhotoAttachmentPickerViewOptions {
     /// The assets to display in the picker.
     public let assets: PHFetchResultCollection
     /// Callback when an asset is tapped.
@@ -435,7 +435,7 @@ public struct PhotoAttachmentPickerViewOptions {
 }
 
 /// Options for creating the file picker view.
-public struct FilePickerViewOptions {
+public class FilePickerViewOptions {
     /// Binding to whether the file picker is shown.
     public let filePickerShown: Binding<Bool>
     /// Binding to the added file URLs.
@@ -448,7 +448,7 @@ public struct FilePickerViewOptions {
 }
 
 /// Options for creating the camera picker view.
-public struct CameraPickerViewOptions {
+public class CameraPickerViewOptions {
     /// Binding to the selected picker state.
     public let selected: Binding<AttachmentPickerState>
     /// Binding to whether the camera picker is shown.

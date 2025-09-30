@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Thread List Options
 
 /// Options for creating the thread list item.
-public struct ThreadListItemOptions<ThreadDestination: View> {
+public class ThreadListItemOptions<ThreadDestination: View> {
     /// The thread to display.
     public let thread: ChatThread
     /// The destination view for thread navigation.
@@ -29,7 +29,7 @@ public struct ThreadListItemOptions<ThreadDestination: View> {
 }
 
 /// Options for creating the thread list error banner view.
-public struct ThreadListErrorBannerViewOptions {
+public class ThreadListErrorBannerViewOptions {
     /// Callback when the refresh action is triggered.
     public let onRefreshAction: @MainActor() -> Void
     
@@ -39,7 +39,7 @@ public struct ThreadListErrorBannerViewOptions {
 }
 
 /// Options for creating the thread list container view modifier.
-public struct ThreadListContainerModifierOptions {
+public class ThreadListContainerModifierOptions {
     /// The view model for the thread list.
     public let viewModel: ChatThreadListViewModel
     
@@ -49,7 +49,7 @@ public struct ThreadListContainerModifierOptions {
 }
 
 /// Options for creating the thread list header view modifier.
-public struct ThreadListHeaderViewModifierOptions {
+public class ThreadListHeaderViewModifierOptions {
     /// The title to display in the header.
     public let title: String
     
@@ -59,7 +59,7 @@ public struct ThreadListHeaderViewModifierOptions {
 }
 
 /// Options for creating the thread list header view.
-public struct ThreadListHeaderViewOptions {
+public class ThreadListHeaderViewOptions {
     /// The view model for the thread list.
     public let viewModel: ChatThreadListViewModel
     
@@ -69,7 +69,7 @@ public struct ThreadListHeaderViewOptions {
 }
 
 /// Options for creating the thread list footer view.
-public struct ThreadListFooterViewOptions {
+public class ThreadListFooterViewOptions {
     /// The view model for the thread list.
     public let viewModel: ChatThreadListViewModel
     
@@ -79,7 +79,7 @@ public struct ThreadListFooterViewOptions {
 }
 
 /// Options for creating the thread list background.
-public struct ThreadListBackgroundOptions {
+public class ThreadListBackgroundOptions {
     /// The color palette to use.
     public let colors: ColorPalette
     
@@ -89,7 +89,7 @@ public struct ThreadListBackgroundOptions {
 }
 
 /// Options for creating the thread list item background.
-public struct ThreadListItemBackgroundOptions {
+public class ThreadListItemBackgroundOptions {
     /// The thread for the item.
     public let thread: ChatThread
     /// Whether the item is selected.

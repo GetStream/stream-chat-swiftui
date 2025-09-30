@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Message List Options
 
 /// Options for creating the empty messages view.
-public struct EmptyMessagesViewOptions {
+public class EmptyMessagesViewOptions {
     /// The channel to display empty state for.
     public let channel: ChatChannel
     /// The color palette to use.
@@ -22,7 +22,7 @@ public struct EmptyMessagesViewOptions {
 }
 
 /// Options for creating the message list background.
-public struct MessageListBackgroundOptions {
+public class MessageListBackgroundOptions {
     /// The color palette to use.
     public let colors: ColorPalette
     /// Whether the view is in a thread.
@@ -37,7 +37,7 @@ public struct MessageListBackgroundOptions {
 // MARK: - Message Avatar Options
 
 /// Options for creating the message avatar view.
-public struct MessageAvatarViewOptions {
+public class MessageAvatarViewOptions {
     /// Information about the user to display.
     public let userDisplayInfo: UserDisplayInfo
     
@@ -47,7 +47,7 @@ public struct MessageAvatarViewOptions {
 }
 
 /// Options for creating the quoted message avatar view.
-public struct QuotedMessageAvatarViewOptions {
+public class QuotedMessageAvatarViewOptions {
     /// Information about the user to display.
     public let userDisplayInfo: UserDisplayInfo
     /// The size of the avatar.
@@ -62,14 +62,14 @@ public struct QuotedMessageAvatarViewOptions {
 // MARK: - Message Thread Options
 
 /// Options for creating the message thread header view modifier.
-public struct MessageThreadHeaderViewModifierOptions {
+public class MessageThreadHeaderViewModifierOptions {
     public init() {}
 }
 
 // MARK: - Message Container Options
 
 /// Options for creating the message container view.
-public struct MessageContainerViewOptions {
+public class MessageContainerViewOptions {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to display.
@@ -115,7 +115,7 @@ public struct MessageContainerViewOptions {
 // MARK: - Message Text Options
 
 /// Options for creating the message text view.
-public struct MessageTextViewOptions {
+public class MessageTextViewOptions {
     /// The message to display.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -141,7 +141,7 @@ public struct MessageTextViewOptions {
 // MARK: - Message Date Options
 
 /// Options for creating the message date view.
-public struct MessageDateViewOptions {
+public class MessageDateViewOptions {
     /// The message to display the date for.
     public let message: ChatMessage
     
@@ -151,7 +151,7 @@ public struct MessageDateViewOptions {
 }
 
 /// Options for creating the message author and date view.
-public struct MessageAuthorAndDateViewOptions {
+public class MessageAuthorAndDateViewOptions {
     /// The message to display the author and date for.
     public let message: ChatMessage
     
@@ -161,7 +161,7 @@ public struct MessageAuthorAndDateViewOptions {
 }
 
 /// Options for creating the message translation footer view.
-public struct MessageTranslationFooterViewOptions {
+public class MessageTranslationFooterViewOptions {
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
     
@@ -171,7 +171,7 @@ public struct MessageTranslationFooterViewOptions {
 }
 
 /// Options for creating the last in group header view.
-public struct LastInGroupHeaderViewOptions {
+public class LastInGroupHeaderViewOptions {
     /// The message to display the header for.
     public let message: ChatMessage
     
@@ -183,7 +183,7 @@ public struct LastInGroupHeaderViewOptions {
 // MARK: - Message Type Options
 
 /// Options for creating the deleted message view.
-public struct DeletedMessageViewOptions {
+public class DeletedMessageViewOptions {
     /// The deleted message to display.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
@@ -199,7 +199,7 @@ public struct DeletedMessageViewOptions {
 }
 
 /// Options for creating the system message view.
-public struct SystemMessageViewOptions {
+public class SystemMessageViewOptions {
     /// The system message to display.
     public let message: ChatMessage
     
@@ -209,7 +209,7 @@ public struct SystemMessageViewOptions {
 }
 
 /// Options for creating the emoji text view.
-public struct EmojiTextViewOptions {
+public class EmojiTextViewOptions {
     /// The message containing emojis.
     public let message: ChatMessage
     /// Binding to the currently scrolled message ID.
@@ -227,7 +227,7 @@ public struct EmojiTextViewOptions {
 // MARK: - Message Indicator Options
 
 /// Options for creating the scroll to bottom button.
-public struct ScrollToBottomButtonOptions {
+public class ScrollToBottomButtonOptions {
     /// The number of unread messages.
     public let unreadCount: Int
     /// Callback when the scroll to bottom button is tapped.
@@ -240,7 +240,7 @@ public struct ScrollToBottomButtonOptions {
 }
 
 /// Options for creating the date indicator view.
-public struct DateIndicatorViewOptions {
+public class DateIndicatorViewOptions {
     /// The date string to display.
     public let dateString: String
     
@@ -250,7 +250,7 @@ public struct DateIndicatorViewOptions {
 }
 
 /// Options for creating the message list date indicator.
-public struct MessageListDateIndicatorViewOptions {
+public class MessageListDateIndicatorViewOptions {
     /// The date to display.
     public let date: Date
     
@@ -260,7 +260,7 @@ public struct MessageListDateIndicatorViewOptions {
 }
 
 /// Options for creating the typing indicator bottom view.
-public struct TypingIndicatorBottomViewOptions {
+public class TypingIndicatorBottomViewOptions {
     /// The channel to show typing indicators for.
     public let channel: ChatChannel
     /// The current user ID.
@@ -275,7 +275,7 @@ public struct TypingIndicatorBottomViewOptions {
 // MARK: - Message Replies Options
 
 /// Options for creating the message replies view.
-public struct MessageRepliesViewOptions {
+public class MessageRepliesViewOptions {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to show replies for.
@@ -291,7 +291,7 @@ public struct MessageRepliesViewOptions {
 }
 
 /// Options for creating the message replies shown in channel view.
-public struct MessageRepliesShownInChannelViewOptions {
+public class MessageRepliesShownInChannelViewOptions {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to show replies for.
@@ -317,7 +317,7 @@ public struct MessageRepliesShownInChannelViewOptions {
 // MARK: - Message Actions Options
 
 /// Options for getting supported message actions.
-public struct SupportedMessageActionsOptions {
+public class SupportedMessageActionsOptions {
     /// The message to get actions for.
     public let message: ChatMessage
     /// The channel containing the message.
@@ -341,7 +341,7 @@ public struct SupportedMessageActionsOptions {
 }
 
 /// Options for creating the message actions view.
-public struct MessageActionsViewOptions {
+public class MessageActionsViewOptions {
     /// The message to show actions for.
     public let message: ChatMessage
     /// The channel containing the message.
@@ -367,7 +367,7 @@ public struct MessageActionsViewOptions {
 // MARK: - Message Read Indicator Options
 
 /// Options for creating the message read indicator view.
-public struct MessageReadIndicatorViewOptions {
+public class MessageReadIndicatorViewOptions {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to show read indicators for.
@@ -380,7 +380,7 @@ public struct MessageReadIndicatorViewOptions {
 }
 
 /// Options for creating the new messages indicator view.
-public struct NewMessagesIndicatorViewOptions {
+public class NewMessagesIndicatorViewOptions {
     /// Binding to the new messages start ID.
     public let newMessagesStartId: Binding<String?>
     /// The number of new messages.
@@ -393,7 +393,7 @@ public struct NewMessagesIndicatorViewOptions {
 }
 
 /// Options for creating the jump to unread button.
-public struct JumpToUnreadButtonOptions {
+public class JumpToUnreadButtonOptions {
     /// The channel to jump to unread messages in.
     public let channel: ChatChannel
     /// Callback when the jump to message button is tapped.
@@ -415,7 +415,7 @@ public struct JumpToUnreadButtonOptions {
 // MARK: - Send in Channel Options
 
 /// Options for creating the send in channel view.
-public struct SendInChannelViewOptions {
+public class SendInChannelViewOptions {
     /// Binding to whether to show reply in channel.
     public let showReplyInChannel: Binding<Bool>
     /// Whether this is a direct message.

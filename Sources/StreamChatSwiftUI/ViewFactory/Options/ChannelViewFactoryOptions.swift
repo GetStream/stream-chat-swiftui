@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Channel List Options
 
 /// Options for creating the channel list header view modifier.
-public struct ChannelListHeaderViewModifierOptions {
+public class ChannelListHeaderViewModifierOptions {
     /// The title to display in the header.
     public let title: String
     
@@ -19,7 +19,7 @@ public struct ChannelListHeaderViewModifierOptions {
 }
 
 /// Options for creating the channel list item.
-public struct ChannelListItemOptions<ChannelDestination: View> {
+public class ChannelListItemOptions<ChannelDestination: View> {
     /// The channel to display.
     public let channel: ChatChannel
     /// The name of the channel.
@@ -75,7 +75,7 @@ public struct ChannelListItemOptions<ChannelDestination: View> {
 }
 
 /// Options for creating the channel avatar view.
-public struct ChannelAvatarViewFactoryOptions {
+public class ChannelAvatarViewFactoryOptions {
     /// The channel to display the avatar for.
     public let channel: ChatChannel
     /// Additional options for the avatar view.
@@ -88,7 +88,7 @@ public struct ChannelAvatarViewFactoryOptions {
 }
 
 /// Options for creating the channel list background.
-public struct ChannelListBackgroundOptions {
+public class ChannelListBackgroundOptions {
     /// The color palette to use.
     public let colors: ColorPalette
     
@@ -98,7 +98,7 @@ public struct ChannelListBackgroundOptions {
 }
 
 /// Options for creating the channel list item background.
-public struct ChannelListItemBackgroundOptions {
+public class ChannelListItemBackgroundOptions {
     /// The channel for the item.
     public let channel: ChatChannel
     /// Whether the item is selected.
@@ -111,7 +111,7 @@ public struct ChannelListItemBackgroundOptions {
 }
 
 /// Options for creating the more channel actions view.
-public struct MoreChannelActionsViewOptions {
+public class MoreChannelActionsViewOptions {
     /// The channel to show actions for.
     public let channel: ChatChannel
     /// Binding to the currently swiped channel ID.
@@ -135,7 +135,7 @@ public struct MoreChannelActionsViewOptions {
 }
 
 /// Options for getting supported more channel actions.
-public struct SupportedMoreChannelActionsOptions {
+public class SupportedMoreChannelActionsOptions {
     /// The channel to get actions for.
     public let channel: ChatChannel
     /// Callback when the actions view is dismissed.
@@ -155,7 +155,7 @@ public struct SupportedMoreChannelActionsOptions {
 }
 
 /// Options for creating the trailing swipe actions view.
-public struct TrailingSwipeActionsViewOptions {
+public class TrailingSwipeActionsViewOptions {
     /// The channel for the swipe actions.
     public let channel: ChatChannel
     /// The current offset in the X direction.
@@ -187,7 +187,7 @@ public struct TrailingSwipeActionsViewOptions {
 }
 
 /// Options for creating the leading swipe actions view.
-public struct LeadingSwipeActionsViewOptions {
+public class LeadingSwipeActionsViewOptions {
     /// The channel for the swipe actions.
     public let channel: ChatChannel
     /// The current offset in the X direction.
@@ -215,7 +215,7 @@ public struct LeadingSwipeActionsViewOptions {
 }
 
 /// Options for creating the channel list top view.
-public struct ChannelListTopViewOptions {
+public class ChannelListTopViewOptions {
     /// Binding to the search text.
     public let searchText: Binding<String>
     
@@ -225,7 +225,7 @@ public struct ChannelListTopViewOptions {
 }
 
 /// Options for creating the search results view.
-public struct SearchResultsViewOptions {
+public class SearchResultsViewOptions {
     /// Binding to the currently selected channel.
     public let selectedChannel: Binding<ChannelSelectionInfo?>
     /// The search results to display.
@@ -265,7 +265,7 @@ public struct SearchResultsViewOptions {
 }
 
 /// Options for creating the channel list search result item.
-public struct ChannelListSearchResultItemOptions<ChannelDestination: View> {
+public class ChannelListSearchResultItemOptions<ChannelDestination: View> {
     /// The search result to display.
     public let searchResult: ChannelSelectionInfo
     /// Whether to show the online indicator.
@@ -299,7 +299,7 @@ public struct ChannelListSearchResultItemOptions<ChannelDestination: View> {
 // MARK: - Channel Header Options
 
 /// Options for creating the channel header view modifier.
-public struct ChannelHeaderViewModifierOptions {
+public class ChannelHeaderViewModifierOptions {
     /// The channel to display in the header.
     public let channel: ChatChannel
     
@@ -309,7 +309,7 @@ public struct ChannelHeaderViewModifierOptions {
 }
 
 /// Options for creating the channel bars visibility view modifier.
-public struct ChannelBarsVisibilityViewModifierOptions {
+public class ChannelBarsVisibilityViewModifierOptions {
     /// Whether the bars should be shown.
     public let shouldShow: Bool
     
@@ -321,7 +321,7 @@ public struct ChannelBarsVisibilityViewModifierOptions {
 // MARK: - Add Users Options
 
 /// Options for creating the add users view.
-public struct AddUsersViewOptions {
+public class AddUsersViewOptions {
     /// Additional options for the add users view.
     public let options: AddUsersOptions
     /// Callback when a user is tapped.

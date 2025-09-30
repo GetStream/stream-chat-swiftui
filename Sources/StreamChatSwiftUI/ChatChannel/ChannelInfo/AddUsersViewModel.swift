@@ -53,8 +53,7 @@ import SwiftUI
     }
 
     private func searchUsers() {
-        let filter: Filter<UserListFilterScope> = .notIn(.id, values: loadedUserIds)
-        let query = UserListQuery(filter: filter)
+        let query = UserListQuery()
         searchController.search(query: query) { [weak self] error in
             guard let self, error == nil else { return }
             users = searchController.userArray

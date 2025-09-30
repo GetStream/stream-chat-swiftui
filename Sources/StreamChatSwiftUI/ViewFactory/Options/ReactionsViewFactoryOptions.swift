@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Reactions Options
 
 /// Options for creating the reactions users view.
-public struct ReactionsUsersViewOptions {
+public class ReactionsUsersViewOptions {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// The maximum height for the view.
@@ -22,7 +22,7 @@ public struct ReactionsUsersViewOptions {
 }
 
 /// Options for creating the bottom reactions view.
-public struct ReactionsBottomViewOptions {
+public class ReactionsBottomViewOptions {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// Whether to show all information.
@@ -46,7 +46,7 @@ public struct ReactionsBottomViewOptions {
 }
 
 /// Options for creating the message reaction view.
-public struct MessageReactionViewOptions {
+public class MessageReactionViewOptions {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// Callback when the reaction is tapped.
@@ -66,7 +66,7 @@ public struct MessageReactionViewOptions {
 }
 
 /// Options for creating the reactions overlay view.
-public struct ReactionsOverlayViewOptions {
+public class ReactionsOverlayViewOptions {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The current snapshot image.
@@ -94,7 +94,7 @@ public struct ReactionsOverlayViewOptions {
 }
 
 /// Options for creating the reactions background view.
-public struct ReactionsBackgroundOptions {
+public class ReactionsBackgroundOptions {
     /// The current snapshot image.
     public let currentSnapshot: UIImage
     /// Whether the pop-in animation is in progress.
@@ -107,7 +107,7 @@ public struct ReactionsBackgroundOptions {
 }
 
 /// Options for creating the reactions content view.
-public struct ReactionsContentViewOptions {
+public class ReactionsContentViewOptions {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// The content rectangle.

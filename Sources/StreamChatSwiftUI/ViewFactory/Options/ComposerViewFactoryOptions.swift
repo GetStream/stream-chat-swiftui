@@ -9,7 +9,7 @@ import SwiftUI
 // MARK: - Composer View Options
 
 /// Options for creating the message composer view.
-public struct MessageComposerViewTypeOptions {
+public class MessageComposerViewTypeOptions {
     /// The channel controller for the composer.
     public let channelController: ChatChannelController
     /// The message controller for editing messages.
@@ -39,7 +39,7 @@ public struct MessageComposerViewTypeOptions {
 // MARK: - Composer Input Options
 
 /// Options for creating the leading composer view.
-public struct LeadingComposerViewOptions {
+public class LeadingComposerViewOptions {
     /// Binding to the picker type state.
     public let state: Binding<PickerTypeState>
     /// The channel configuration.
@@ -52,7 +52,7 @@ public struct LeadingComposerViewOptions {
 }
 
 /// Options for creating the composer input view.
-public struct ComposerInputViewOptions {
+public class ComposerInputViewOptions {
     /// Binding to the text input.
     public let text: Binding<String>
     /// Binding to the selected range location.
@@ -108,7 +108,7 @@ public struct ComposerInputViewOptions {
 }
 
 /// Options for creating the composer text input view.
-public struct ComposerTextInputViewOptions {
+public class ComposerTextInputViewOptions {
     /// Binding to the text input.
     public let text: Binding<String>
     /// Binding to the height of the input.
@@ -144,7 +144,7 @@ public struct ComposerTextInputViewOptions {
 }
 
 /// Options for creating the trailing composer view.
-public struct TrailingComposerViewOptions {
+public class TrailingComposerViewOptions {
     /// Whether the composer is enabled.
     public let enabled: Bool
     /// The cooldown duration in seconds.
@@ -162,7 +162,7 @@ public struct TrailingComposerViewOptions {
 // MARK: - Composer Recording Options
 
 /// Options for creating the composer recording view.
-public struct ComposerRecordingViewOptions {
+public class ComposerRecordingViewOptions {
     /// The view model for the composer.
     public let viewModel: MessageComposerViewModel
     /// The location of the gesture.
@@ -175,7 +175,7 @@ public struct ComposerRecordingViewOptions {
 }
 
 /// Options for creating the composer recording locked view.
-public struct ComposerRecordingLockedViewOptions {
+public class ComposerRecordingLockedViewOptions {
     /// The view model for the composer.
     public let viewModel: MessageComposerViewModel
     
@@ -187,7 +187,7 @@ public struct ComposerRecordingLockedViewOptions {
 // MARK: - Commands Options
 
 /// Options for creating the commands container view.
-public struct CommandsContainerViewOptions {
+public class CommandsContainerViewOptions {
     /// The command suggestions.
     public let suggestions: [String: Any]
     /// Callback to handle a command.
@@ -202,7 +202,7 @@ public struct CommandsContainerViewOptions {
 // MARK: - Quoted Message Options
 
 /// Options for creating the quoted message header view.
-public struct QuotedMessageHeaderViewOptions {
+public class QuotedMessageHeaderViewOptions {
     /// Binding to the quoted message.
     public let quotedMessage: Binding<ChatMessage?>
     
@@ -212,7 +212,7 @@ public struct QuotedMessageHeaderViewOptions {
 }
 
 /// Options for creating the quoted message view.
-public struct QuotedMessageViewOptions {
+public class QuotedMessageViewOptions {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
     /// Whether to fill the available space.
@@ -236,7 +236,7 @@ public struct QuotedMessageViewOptions {
 }
 
 /// Options for creating the custom attachment quoted view.
-public struct CustomAttachmentQuotedViewOptions {
+public class CustomAttachmentQuotedViewOptions {
     /// The message containing the custom attachment.
     public let message: ChatMessage
     
@@ -246,7 +246,7 @@ public struct CustomAttachmentQuotedViewOptions {
 }
 
 /// Options for creating the edited message header view.
-public struct EditedMessageHeaderViewOptions {
+public class EditedMessageHeaderViewOptions {
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
     
@@ -258,7 +258,7 @@ public struct EditedMessageHeaderViewOptions {
 // MARK: - Poll Options
 
 /// Options for creating the composer poll view.
-public struct ComposerPollViewOptions {
+public class ComposerPollViewOptions {
     /// The channel controller for the poll.
     public let channelController: ChatChannelController
     /// The message controller for editing messages.
@@ -271,7 +271,7 @@ public struct ComposerPollViewOptions {
 }
 
 /// Options for creating the poll view.
-public struct PollViewOptions {
+public class PollViewOptions {
     /// The message containing the poll.
     public let message: ChatMessage
     /// The poll data.
