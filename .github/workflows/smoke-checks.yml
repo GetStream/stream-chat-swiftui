@@ -75,8 +75,8 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
-      timeout-minutes: 25
     - name: Build SwiftUI
       run: bundle exec fastlane test_ui device:"iPhone 16" build_for_testing:true
       timeout-minutes: 25
