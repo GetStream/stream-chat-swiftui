@@ -679,7 +679,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         canMarkRead = true
         
         if channel.unreadCount.messages > 0 {
-            if channelController.firstUnreadMessageId != nil {
+            if channelDataSource.firstUnreadMessageId != nil {
                 firstUnreadMessageId = channelController.firstUnreadMessageId
                 canMarkRead = false
             } else if channelController.lastReadMessageId != nil {

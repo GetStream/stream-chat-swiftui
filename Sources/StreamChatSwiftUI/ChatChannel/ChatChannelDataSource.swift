@@ -91,7 +91,16 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     }
     
     var firstUnreadMessageId: String? {
-        controller.firstUnreadMessageId
+        if controller.firstUnreadMessageId == nil && controller.lastReadMessageId == nil {
+            let currentUserReadHasRead = controller.channel?.reads.first(where: {
+                $0.user.id == controller.client.currentUserId
+            }) != nil
+
+            if currentUserReadHasRead {
+                return controller.messages.last?.id
+            }
+        }
+        return controller.firstUnreadMessageId
     }
 
     init(controller: ChatChannelController) {
