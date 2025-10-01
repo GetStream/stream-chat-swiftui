@@ -5,7 +5,7 @@
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 
-struct ChannelInfoMockUtils {
+enum ChannelInfoMockUtils {
     static func setupMockMembers(
         count: Int,
         currentUserId: String,

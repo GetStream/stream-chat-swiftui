@@ -42,7 +42,6 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
         }
 
         utils.fileCDN.adjustedURL(for: url) { result in
-
             let adjustedUrl: URL
             switch result {
             case let .success(url):
