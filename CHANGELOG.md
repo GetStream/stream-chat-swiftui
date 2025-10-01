@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Opens the `commandsHandler` and makes the mention methods public [#979](https://github.com/GetStream/stream-chat-swiftui/pull/979)
 - Opens `MarkdownFormatter` so that it can be customised [#978](https://github.com/GetStream/stream-chat-swiftui/pull/978)
+- Add participant actions in channel info view [#982](https://github.com/GetStream/stream-chat-swiftui/pull/982)
 - Add support for overriding `onImageTap` in `LinkAttachmentView` [#986](https://github.com/GetStream/stream-chat-swiftui/pull/986)
 
 ### 🐞 Fixed
