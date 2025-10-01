@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix channel not marking read when passing by the unread message [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
 - Fix random scroll after marking a message unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
 - Fix marking channel read when the user scrolls to the bottom after marking a message as unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix replying to unread messages marking them instantly as read [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
 
 # [4.89.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.1)
 _September 23, 2025_
