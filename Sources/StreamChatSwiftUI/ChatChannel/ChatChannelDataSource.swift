@@ -95,7 +95,8 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
             let currentUserReadHasRead = controller.channel?.reads.first(where: {
                 $0.user.id == controller.client.currentUserId
             }) != nil
-
+            // If the current user has unread state but no unread message is available
+            // it means the whole channel is unread, so the first message is the unread message.
             if currentUserReadHasRead {
                 return controller.messages.last?.id
             }
