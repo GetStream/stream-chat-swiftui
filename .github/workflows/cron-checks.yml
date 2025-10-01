@@ -21,27 +21,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - ios: 18.5
-            xcode: 16.4
-            os: macos-15
+          - ios: "26.0"
+            device: "iPhone 17 Pro"
+            setup_runtime: false
+          - ios: "18.5"
             device: "iPhone 16 Pro"
             setup_runtime: false
-          - ios: 17.5
-            xcode: 15.4
-            os: macos-14
+          - ios: "17.5"
             device: "iPhone 15 Pro"
-            setup_runtime: false
-          - ios: 16.4
-            xcode: 15.3 # fails on 15.4
-            os: macos-14
+            setup_runtime: true
+          - ios: "16.4"
             device: "iPhone 14 Pro"
             setup_runtime: true
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-15
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-      XCODE_VERSION: ${{ matrix.xcode }}
+      XCODE_VERSION: "26.0"
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
@@ -91,9 +88,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - xcode: 16.4
+          - xcode: 26.0 # swift 6.2
             os: macos-15
-          - xcode: 16.1
+          - xcode: 16.4 # swift 6.1
+            os: macos-15
+          - xcode: 16.1 # swift 6.0
             os: macos-14
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -107,10 +106,10 @@ jobs:
         XCODE_VERSION: ${{ matrix.xcode }}
 
   build-old-xcode:
-    name: Build SDKs (Xcode 15)
-    runs-on: macos-14
+    name: Build SDKs (Old Xcode)
+    runs-on: macos-15
     env:
-      XCODE_VERSION: "15.4"
+      XCODE_VERSION: "16.0"
     steps:
     - name: Connect Bot
       uses: webfactory/ssh-agent@v0.7.0
@@ -131,9 +130,9 @@ jobs:
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-14
+    runs-on: macos-15
     env:
-      XCODE_VERSION: "15.4"
+      XCODE_VERSION: "16.0"
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
