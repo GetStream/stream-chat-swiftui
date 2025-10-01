@@ -18,7 +18,7 @@ buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
 project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
-@force_check = false
+@force_check = true
 
 before_all do |lane|
   if is_ci
