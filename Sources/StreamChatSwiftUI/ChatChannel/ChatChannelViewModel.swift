@@ -128,7 +128,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
-    
+
+    // A boolean value indicating if the user marked a message as unread
+    // in the current session of the channel. If it is true,
+    // it should not call markRead() in any scenario.
+    public var currentUserMarkedMessageUnread: Bool = false
+
     @Published public private(set) var channel: ChatChannel?
 
     public var isMessageThread: Bool {
@@ -571,7 +576,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     private func sendReadEventIfNeeded(for message: ChatMessage) {
-        guard let channel, channel.unreadCount.messages > 0 else { return }
+        guard let channel, channel.unreadCount.messages > 0 else {
+            return
+        }
+        if currentUserMarkedMessageUnread {
+            return
+        }
         throttler.execute { [weak self] in
             self?.channelController.markRead()
             // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
