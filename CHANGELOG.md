@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Fix openChannel not working when searching or another chat shown [#975](https://github.com/GetStream/stream-chat-swiftui/pull/975)
 - Fix crash when using a font that does not support bold or italic trait [#976](https://github.com/GetStream/stream-chat-swiftui/pull/976)
+- Fix unread messages banner not shown for one-page channels [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix unread messages banner not shown if the whole channel is unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix channel not marking read when passing by the unread message [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix random scroll after marking a message unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix marking channel read when the user scrolls to the bottom after marking a message as unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
 
 # [4.89.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.1)
 _September 23, 2025_
