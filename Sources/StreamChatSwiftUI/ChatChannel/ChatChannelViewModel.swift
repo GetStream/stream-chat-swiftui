@@ -352,7 +352,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
             save(lastDate: message.createdAt)
         }
-        if index == 0, channelDataSource.hasLoadedAllNextMessages {
+        if channelDataSource.hasLoadedAllNextMessages {
             let isActive = UIApplication.shared.applicationState == .active
             if isActive && canMarkRead {
                 sendReadEventIfNeeded(for: message)
