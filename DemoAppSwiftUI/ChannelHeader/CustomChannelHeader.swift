@@ -75,7 +75,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                         actionsPopupShown: $actionsPopupShown
                     )
                     #if compiler(>=6.2)
-                        .sharedBackgroundVisibility(.hidden)
+                    .sharedBackgroundVisibility(.hidden)
                     #endif
                 }
             } else {
