@@ -90,19 +90,19 @@ jobs:
   test-ui-debug:
     name: Test SwiftUI (Debug)
     runs-on: macos-15
+    env:
+      GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
+      IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.5)" # TODO: IOS-1181
+      XCODE_VERSION: "16.4" # TODO: IOS-1181
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
       env:
         INSTALL_YEETD: true
         INSTALL_SONAR: true
-        IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.5)" # TODO: IOS-1181
-        XCODE_VERSION: "16.4" # TODO: IOS-1181
     - name: Run UI Tests (Debug)
       run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:"${{ github.event.inputs.record_snapshots }}"
       timeout-minutes: 120
-      env:
-        GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     - name: Run Sonar analysis
       if: ${{ github.event.inputs.record_snapshots != 'true' }}
       run: bundle exec fastlane sonar_upload
@@ -159,6 +159,8 @@ jobs:
       - build-test-app-and-frameworks
     env:
       LAUNCH_ID: ${{ needs.allure_testops_launch.outputs.launch_id }}
+      IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.5)" # TODO: IOS-1181
+      XCODE_VERSION: "16.4" # TODO: IOS-1181
     strategy:
       matrix:
         batch: [0, 1]
@@ -174,8 +176,6 @@ jobs:
         INSTALL_ALLURE: true
         INSTALL_YEETD: true
         SKIP_SWIFT_BOOTSTRAP: true
-        IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.5)" # TODO: IOS-1181
-        XCODE_VERSION: "16.4" # TODO: IOS-1181
     - name: Run UI Tests (Debug)
       run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true
       timeout-minutes: 100
