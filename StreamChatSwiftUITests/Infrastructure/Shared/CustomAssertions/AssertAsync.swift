@@ -367,7 +367,6 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-
                 AssertAsync {
                     Assert.willBeEqual(
                         expression(),
@@ -401,7 +400,6 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-
                 AssertAsync {
                     Assert.willBeEqual(
                         expression(),
@@ -438,7 +436,6 @@ extension AssertAsync {
         _ = withoutActuallyEscaping(expression1) { expression1 in
             withoutActuallyEscaping(expression2) { expression2 in
                 withoutActuallyEscaping(message) { message in
-
                     AssertAsync {
                         Assert.willBeEqual(
                             expression1(),
@@ -473,7 +470,6 @@ extension AssertAsync {
     ) {
         _ = withoutActuallyEscaping(expression) { expression in
             withoutActuallyEscaping(message) { message in
-
                 AssertAsync {
                     Assert.willBeTrue(
                         expression() == nil,
@@ -535,7 +531,6 @@ extension AssertAsync {
         _ = withoutActuallyEscaping(expression1) { expression1 in
             withoutActuallyEscaping(expression2) { expression2 in
                 withoutActuallyEscaping(message) { message in
-
                     AssertAsync {
                         Assert.staysEqual(
                             expression1(),
