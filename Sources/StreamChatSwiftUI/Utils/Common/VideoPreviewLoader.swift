@@ -7,7 +7,7 @@ import StreamChat
 import UIKit
 
 /// A protocol the video preview uploader implementation must conform to.
-public protocol VideoPreviewLoader: AnyObject {
+@MainActor public protocol VideoPreviewLoader: AnyObject {
     /// Loads a preview for the video at given URL.
     /// - Parameters:
     ///   - url: A video URL.

@@ -804,11 +804,11 @@ import SwiftUI
 }
 
 extension ChatMessage: Identifiable {
-    public var scrollMessageId: String {
+    @MainActor public var scrollMessageId: String {
         messageId
     }
     
-    var messageId: String {
+    @MainActor var messageId: String {
         InjectedValues[\.utils].messageIdBuilder.makeMessageId(for: self)
     }
     

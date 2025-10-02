@@ -6,9 +6,42 @@ import UIKit
 
 public protocol ChannelAvatarsMerging: Sendable {
     /// Creates a merged avatar from the provided user images.
-    /// - Parameter avatars: the avatars to be merged.
+    /// - Parameters:
+    ///   - avatars: The individual avatars
+    ///   - options: Additional data for configuring the generated avatar
     /// - Returns: optional image, if the creation succeeded.
-    func createMergedAvatar(from avatars: [UIImage]) -> UIImage?
+    func createMergedAvatar(from avatars: [UIImage], options: ChannelAvatarsMergerOptions) -> UIImage?
+}
+
+public final class ChannelAvatarsMergerOptions: Sendable {
+    public let imageProcessor: ImageProcessor
+    public let imageMerger: ImageMerging
+    public let placeholder1: UIImage
+    public let placeholder2: UIImage
+    public let placeholder3: UIImage
+    public let placeholder4: UIImage
+    
+    @MainActor public convenience init() {
+        let utils = InjectedValues[\.utils]
+        let images = InjectedValues[\.images]
+        self.init(
+            imageProcessor: utils.imageProcessor,
+            imageMerger: utils.imageMerger,
+            placeholder1: images.userAvatarPlaceholder1,
+            placeholder2: images.userAvatarPlaceholder2,
+            placeholder3: images.userAvatarPlaceholder3,
+            placeholder4: images.userAvatarPlaceholder4
+        )
+    }
+    
+    public init(imageProcessor: ImageProcessor, imageMerger: ImageMerging, placeholder1: UIImage, placeholder2: UIImage, placeholder3: UIImage, placeholder4: UIImage) {
+        self.imageProcessor = imageProcessor
+        self.imageMerger = imageMerger
+        self.placeholder1 = placeholder1
+        self.placeholder2 = placeholder2
+        self.placeholder3 = placeholder3
+        self.placeholder4 = placeholder4
+    }
 }
 
 /// Default implementation of `ChannelAvatarsMerging`.
@@ -16,32 +49,23 @@ public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
     public init() {
         // Public init.
     }
-
-    private var images: Images { InjectedValues[\.images] }
-    private var utils: Utils { InjectedValues[\.utils] }
-
-    /// Context provided utils.
-    private var imageProcessor: ImageProcessor { utils.imageProcessor }
-    private var imageMerger: ImageMerging { utils.imageMerger }
-
-    /// Placeholder images.
-    private var placeholder1: UIImage { images.userAvatarPlaceholder1 }
-    private var placeholder2: UIImage { images.userAvatarPlaceholder2 }
-    private var placeholder3: UIImage { images.userAvatarPlaceholder3 }
-    private var placeholder4: UIImage { images.userAvatarPlaceholder4 }
-
+    
     /// Creates a merged avatar from the given images
-    /// - Parameter avatars: The individual avatars
+    /// - Parameters:
+    ///   - avatars: The individual avatars
+    ///   - options: Additional data for configuring the generated avatar
     /// - Returns: The merged avatar
-    public func createMergedAvatar(from avatars: [UIImage]) -> UIImage? {
+    public func createMergedAvatar(from avatars: [UIImage], options: ChannelAvatarsMergerOptions) -> UIImage? {
         guard !avatars.isEmpty else {
             return nil
         }
-
+    
+        let imageProcessor = options.imageProcessor
+        let imageMerger = options.imageMerger
         var combinedImage: UIImage?
 
-        let avatarImages = avatars.compactMap { [weak self] in
-            self?.imageProcessor.scale(image: $0, to: .avatarThumbnailSize)
+        let avatarImages = avatars.compactMap {
+            imageProcessor.scale(image: $0, to: .avatarThumbnailSize)
         }
 
         // The half of the width of the avatar
@@ -51,9 +75,9 @@ public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
             combinedImage = avatarImages[0]
         } else if avatarImages.count == 2 {
             let leftImage = imageProcessor.crop(image: avatarImages[0], to: halfContainerSize)
-                ?? placeholder1
+                ?? options.placeholder1
             let rightImage = imageProcessor.crop(image: avatarImages[1], to: halfContainerSize)
-                ?? placeholder1
+                ?? options.placeholder1
             combinedImage = imageMerger.merge(
                 images: [
                     leftImage,
@@ -74,15 +98,15 @@ public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
 
             let rightImage = imageProcessor.crop(
                 image: imageProcessor
-                    .scale(image: rightCollage ?? placeholder3, to: .avatarThumbnailSize),
+                    .scale(image: rightCollage ?? options.placeholder3, to: .avatarThumbnailSize),
                 to: halfContainerSize
             )
 
             combinedImage = imageMerger.merge(
                 images:
                 [
-                    leftImage ?? placeholder1,
-                    rightImage ?? placeholder2
+                    leftImage ?? options.placeholder1,
+                    rightImage ?? options.placeholder2
                 ],
                 orientation: .horizontal
             )
@@ -97,7 +121,7 @@ public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
 
             let leftImage = imageProcessor.crop(
                 image: imageProcessor
-                    .scale(image: leftCollage ?? placeholder1, to: .avatarThumbnailSize),
+                    .scale(image: leftCollage ?? options.placeholder1, to: .avatarThumbnailSize),
                 to: halfContainerSize
             )
 
@@ -111,14 +135,14 @@ public final class ChannelAvatarsMerger: ChannelAvatarsMerging {
 
             let rightImage = imageProcessor.crop(
                 image: imageProcessor
-                    .scale(image: rightCollage ?? placeholder2, to: .avatarThumbnailSize),
+                    .scale(image: rightCollage ?? options.placeholder2, to: .avatarThumbnailSize),
                 to: halfContainerSize
             )
 
             combinedImage = imageMerger.merge(
                 images: [
-                    leftImage ?? placeholder1,
-                    rightImage ?? placeholder2
+                    leftImage ?? options.placeholder1,
+                    rightImage ?? options.placeholder2
                 ],
                 orientation: .horizontal
             )

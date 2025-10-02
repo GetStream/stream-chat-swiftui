@@ -7,7 +7,7 @@ import SwiftUI
 
 /// A formatter that converts a message to a text preview representation.
 /// By default it is used to show message previews in the Channel List and Thread List.
-open class MessagePreviewFormatter {
+@MainActor open class MessagePreviewFormatter {
     @Injected(\.chatClient) var chatClient
 
     public init() {}

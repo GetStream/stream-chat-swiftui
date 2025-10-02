@@ -4,7 +4,7 @@
 
 import UIKit
 
-public protocol ImageProcessor {
+public protocol ImageProcessor: Sendable {
     /// Crop the image to a given size. The image is center-cropped
     /// - Parameters:
     ///   - image: The image to crop
@@ -21,7 +21,7 @@ public protocol ImageProcessor {
 }
 
 /// This class provides resizing operations for `UIImage`. It internally uses `Nuke` porcessors to implement operations on images.
-open class NukeImageProcessor: ImageProcessor {
+open class NukeImageProcessor: ImageProcessor, @unchecked Sendable {
     public init() {
         // Public init.
     }

@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// An object containing visual configuration for the whole application.
-public class Appearance {
+@MainActor public class Appearance {
     public var colors: ColorPalette
     public var images: Images
     public var fonts: Fonts
@@ -30,12 +30,12 @@ public class Appearance {
 // MARK: - Appearance + Default
 
 public extension Appearance {
-    nonisolated(unsafe) static var `default`: Appearance = .init()
+    static let `default`: Appearance = .init()
 }
 
 /// Provides the default value of the `Appearance` class.
 public struct AppearanceKey: EnvironmentKey {
-    public static var defaultValue: Appearance { Appearance() }
+    public static var defaultValue: Appearance { StreamConcurrency.onMain { Appearance() } }
 }
 
 extension EnvironmentValues {

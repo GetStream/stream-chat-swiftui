@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// Helper class that loads assets from the photo library.
-public class PhotoAssetLoader: NSObject, ObservableObject {
+@MainActor public class PhotoAssetLoader: NSObject, ObservableObject {
     @Injected(\.chatClient) private var chatClient
 
     @Published var loadedImages = [String: UIImage]()

@@ -19,16 +19,20 @@ final class ChannelAvatarsMergerTests: StreamChatTestCase {
         merger = nil
     }
     
-    func testConcurrentCalls() {
+    @MainActor func testConcurrentCalls() {
         let sourceImages: [UIImage] = [
             XCTestCase.TestImages.chewbacca.image,
             XCTestCase.TestImages.r2.image,
             XCTestCase.TestImages.vader.image,
             XCTestCase.TestImages.yoda.image
         ]
-        DispatchQueue.concurrentPerform(iterations: 100) { _ in
+        let options = ChannelAvatarsMergerOptions()
+        DispatchQueue.concurrentPerform(iterations: 100) { [merger] _ in
             let images = Array(sourceImages.prefix((1...4).randomElement()!))
-            let mergedImage = merger.createMergedAvatar(from: images)
+            let mergedImage = merger?.createMergedAvatar(
+                from: images,
+                options: options
+            )
             XCTAssertNotNil(mergedImage)
         }
     }

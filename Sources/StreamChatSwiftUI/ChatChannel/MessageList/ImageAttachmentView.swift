@@ -423,8 +423,6 @@ extension ChatMessage {
 }
 
 public struct MediaAttachment: Identifiable, Equatable {
-    @Injected(\.utils) var utils
-
     let url: URL
     let type: MediaAttachmentType
     var uploadingState: AttachmentUploadingState?
@@ -433,11 +431,12 @@ public struct MediaAttachment: Identifiable, Equatable {
         url.absoluteString
     }
 
-    func generateThumbnail(
+    @MainActor func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
-        completion: @escaping @MainActor(Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
+        let utils = InjectedValues[\.utils]
         if type == .image {
             utils.imageLoader.loadImage(
                 url: url,

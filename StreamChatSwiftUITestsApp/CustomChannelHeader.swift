@@ -60,7 +60,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     message: Text("Are you sure you want to sign out?"),
                     primaryButton: .destructive(Text("Sign out")) {
                         withAnimation {
-                            chatClient.disconnect()
+                            Task { await chatClient.disconnect() }
                             AppState.shared.userState = .notLoggedIn
                         }
                     },

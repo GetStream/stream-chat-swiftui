@@ -938,7 +938,7 @@ struct FileAddedAsset: Sendable {
 }
 
 // The converter responsible to map attachments to assets and vice versa.
-class MessageAttachmentsConverter {
+@MainActor class MessageAttachmentsConverter {
     @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
