@@ -73,8 +73,8 @@ class TestViewFactory: ViewFactory {
     
     func makeMessageReactionView(
         message: ChatMessage,
-        onTapGesture: @escaping @MainActor() -> Void,
-        onLongPressGesture: @escaping @MainActor() -> Void
+        onTapGesture: @escaping @MainActor () -> Void,
+        onLongPressGesture: @escaping @MainActor () -> Void
     ) -> some View {
         CustomReactionsContainer(message: message, onTapGesture: onTapGesture, onLongPressGesture: onLongPressGesture)
     }

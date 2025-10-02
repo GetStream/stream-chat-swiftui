@@ -10,7 +10,7 @@ import XCTest
 class VideoPreviewLoader_Mock: VideoPreviewLoader {
     var loadPreviewVideoCalled = false
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor(Result<UIImage, Error>) -> Void) {
+    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
         loadPreviewVideoCalled = true
 
         StreamConcurrency.onMain {
