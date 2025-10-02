@@ -170,6 +170,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                             .background(colors.tintColor)
                             .clipShape(Circle())
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
