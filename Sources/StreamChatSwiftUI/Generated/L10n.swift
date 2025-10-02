@@ -107,6 +107,16 @@ internal enum L10n {
       internal static var pollYouCreated: String { L10n.tr("Localizable", "channel.item.poll-you-created") }
       /// You voted:
       internal static var pollYouVoted: String { L10n.tr("Localizable", "channel.item.poll-you-voted") }
+      /// Remove User
+      internal static var removeUser: String { L10n.tr("Localizable", "channel.item.remove-user") }
+      /// Are you sure you want to remove %@ from %@?
+      internal static func removeUserConfirmationMessage(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "channel.item.remove-user-confirmation-message", String(describing: p1), String(describing: p2))
+      }
+      /// Remove User
+      internal static var removeUserConfirmationTitle: String { L10n.tr("Localizable", "channel.item.remove-user-confirmation-title") }
+      /// Send Direct Message
+      internal static var sendDirectMessage: String { L10n.tr("Localizable", "channel.item.send-direct-message") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
       /// is typing ...

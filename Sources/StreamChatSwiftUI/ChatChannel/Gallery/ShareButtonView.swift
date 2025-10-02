@@ -21,10 +21,10 @@ struct ShareButtonView: View {
                 .customizable()
                 .frame(width: 18, height: 22)
         })
-            .foregroundColor(Color(colors.text))
-            .sheet(isPresented: $isSharePresented) {
-                ShareActivityView(activityItems: content)
-            }
+        .foregroundColor(Color(colors.text))
+        .sheet(isPresented: $isSharePresented) {
+            ShareActivityView(activityItems: content)
+        }
     }
 }
 

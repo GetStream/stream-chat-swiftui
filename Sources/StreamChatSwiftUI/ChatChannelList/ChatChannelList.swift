@@ -126,30 +126,30 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     var channels: LazyCachedMapCollection<ChatChannel>
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
-    private var onlineIndicatorShown: @MainActor(ChatChannel) -> Bool
-    private var imageLoader: @MainActor(ChatChannel) -> UIImage
-    private var onItemTap: @MainActor(ChatChannel) -> Void
-    private var onItemAppear: @MainActor(Int) -> Void
-    private var channelNaming: @MainActor(ChatChannel) -> String
-    private var channelDestination: @MainActor(ChannelSelectionInfo) -> Factory.ChannelDestination
-    private var trailingSwipeRightButtonTapped: @MainActor(ChatChannel) -> Void
-    private var trailingSwipeLeftButtonTapped: @MainActor(ChatChannel) -> Void
-    private var leadingSwipeButtonTapped: @MainActor(ChatChannel) -> Void
+    private var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
+    private var imageLoader: @MainActor (ChatChannel) -> UIImage
+    private var onItemTap: @MainActor (ChatChannel) -> Void
+    private var onItemAppear: @MainActor (Int) -> Void
+    private var channelNaming: @MainActor (ChatChannel) -> String
+    private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
+    private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
+    private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
+    private var leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
 
     public init(
         factory: Factory,
         channels: LazyCachedMapCollection<ChatChannel>,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        onlineIndicatorShown: @escaping @MainActor(ChatChannel) -> Bool,
-        imageLoader: @escaping @MainActor(ChatChannel) -> UIImage,
-        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
-        onItemAppear: @escaping @MainActor(Int) -> Void,
-        channelNaming: @escaping @MainActor(ChatChannel) -> String,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> Factory.ChannelDestination,
-        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
+        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
+        onItemTap: @escaping @MainActor (ChatChannel) -> Void,
+        onItemAppear: @escaping @MainActor (Int) -> Void,
+        channelNaming: @escaping @MainActor (ChatChannel) -> String,
+        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
+        trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.factory = factory
         self.channels = channels

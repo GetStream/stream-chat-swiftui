@@ -51,7 +51,7 @@ public struct ComposerConfig {
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
     }
     
-    nonisolated(unsafe) public static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { _ in
+    public nonisolated(unsafe) static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { _ in
         /// This now returns empty array by default since attachmentPayloadConverter has been deprecated.
         []
     }

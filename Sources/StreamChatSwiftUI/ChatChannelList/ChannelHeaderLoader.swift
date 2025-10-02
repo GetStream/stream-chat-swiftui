@@ -36,7 +36,7 @@ import UIKit
     private var loadedImages = [ChannelId: UIImage]()
     private let didLoadImage = PassthroughSubject<ChannelId, Never>()
 
-    nonisolated public init() {
+    public nonisolated init() {
         // Public init.
     }
 

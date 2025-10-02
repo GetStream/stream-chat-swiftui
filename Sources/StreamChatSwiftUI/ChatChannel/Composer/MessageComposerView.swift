@@ -251,7 +251,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var quotedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
-    var onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
+    var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
 
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
@@ -268,7 +268,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping (String) -> Void
     ) {
         self.factory = factory

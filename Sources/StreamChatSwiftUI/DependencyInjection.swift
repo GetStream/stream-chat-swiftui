@@ -16,7 +16,7 @@ public protocol InjectionKey {
 /// Provides access to injected dependencies.
 public struct InjectedValues {
     /// This is only used as an accessor to the computed properties within extensions of `InjectedValues`.
-    nonisolated(unsafe) private static var current = InjectedValues()
+    private nonisolated(unsafe) static var current = InjectedValues()
 
     /// A static subscript for updating the `currentValue` of `InjectionKey` instances.
     public static subscript<K>(key: K.Type) -> K.Value where K: InjectionKey {

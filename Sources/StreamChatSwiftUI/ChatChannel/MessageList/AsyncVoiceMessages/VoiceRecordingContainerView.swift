@@ -153,8 +153,8 @@ struct VoiceRecordingView: View {
                         )
                     )
             })
-                .opacity(loading ? 0 : 1)
-                .overlay(loading ? ProgressView() : nil)
+            .opacity(loading ? 0 : 1)
+            .overlay(loading ? ProgressView() : nil)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(
