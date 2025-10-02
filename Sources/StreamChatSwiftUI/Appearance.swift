@@ -21,8 +21,7 @@ import SwiftUI
     }
 
     /// Provider for custom localization which is dependent on App Bundle.
-    public nonisolated(unsafe)
-    static var localizationProvider: @Sendable (_ key: String, _ table: String) -> String = { key, table in
+    public static var localizationProvider: @Sendable (_ key: String, _ table: String) -> String = { key, table in
         Bundle.streamChatUI.localizedString(forKey: key, value: nil, table: table)
     }
 }
