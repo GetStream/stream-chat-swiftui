@@ -96,6 +96,8 @@ jobs:
       env:
         INSTALL_YEETD: true
         INSTALL_SONAR: true
+        IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.5)" # TODO: IOS-1181
+        XCODE_VERSION: "16.4" # TODO: IOS-1181
     - name: Run UI Tests (Debug)
       run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:"${{ github.event.inputs.record_snapshots }}"
       timeout-minutes: 120
@@ -172,6 +174,8 @@ jobs:
         INSTALL_ALLURE: true
         INSTALL_YEETD: true
         SKIP_SWIFT_BOOTSTRAP: true
+        IOS_SIMULATOR_DEVICE: "iPhone 16 Pro (18.5)" # TODO: IOS-1181
+        XCODE_VERSION: "16.4" # TODO: IOS-1181
     - name: Run UI Tests (Debug)
       run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true
       timeout-minutes: 100
