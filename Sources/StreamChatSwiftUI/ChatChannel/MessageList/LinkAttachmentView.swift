@@ -129,7 +129,7 @@ public struct LinkAttachmentView: View {
                     if !authorHidden {
                         BottomLeftView {
                             Text(linkAttachment.author ?? "")
-                                .foregroundColor(colors.tintColor)
+                                .foregroundColor(colors.messageLinkAttachmentAuthorColor)
                                 .font(fonts.bodyBold)
                                 .standardPadding()
                                 .bubble(
@@ -146,12 +146,14 @@ public struct LinkAttachmentView: View {
                 if let title = linkAttachment.title {
                     Text(title)
                         .font(fonts.footnoteBold)
+                        .foregroundColor(colors.messageLinkAttachmentTitleColor)
                         .lineLimit(1)
                 }
 
                 if let description = linkAttachment.text {
                     Text(description)
                         .font(fonts.footnote)
+                        .foregroundColor(colors.messageLinkAttachmentTextColor)
                         .lineLimit(3)
                 }
             }
