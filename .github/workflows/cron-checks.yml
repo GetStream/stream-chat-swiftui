@@ -21,23 +21,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - ios: 18.5
-            xcode: 16.4
-            os: macos-15
+          # - ios: "26.0" TODO: IOS-1181
+          #   device: "iPhone 17 Pro"
+          #   xcode: "26.0"
+          #   setup_runtime: false
+          - ios: "18.5"
             device: "iPhone 16 Pro"
+            xcode: "26.0"
             setup_runtime: false
-          - ios: 17.5
-            xcode: 15.4
-            os: macos-14
+          - ios: "17.5"
             device: "iPhone 15 Pro"
-            setup_runtime: false
-          - ios: 16.4
-            xcode: 15.3 # fails on 15.4
-            os: macos-14
+            xcode: "26.0"
+            setup_runtime: true
+          - ios: "16.4"
             device: "iPhone 14 Pro"
+            xcode: "16.4"
             setup_runtime: true
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-15
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
@@ -91,9 +92,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - xcode: 16.4
+          - xcode: 26.0 # swift 6.2
             os: macos-15
-          - xcode: 16.1
+          - xcode: 16.4 # swift 6.1
+            os: macos-15
+          - xcode: 16.1 # swift 6.0
             os: macos-14
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -107,20 +110,20 @@ jobs:
         XCODE_VERSION: ${{ matrix.xcode }}
 
   build-old-xcode:
-    name: Build SDKs (Xcode 15)
+    name: Build SDKs (Old Xcode)
     runs-on: macos-14
     env:
-      XCODE_VERSION: "15.4"
+      XCODE_VERSION: "16.1"
     steps:
     - name: Connect Bot
       uses: webfactory/ssh-agent@v0.7.0
       with:
         ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v3.1.0
+    - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
-      timeout-minutes: 25
     - name: Build SwiftUI
-      run: bundle exec fastlane test_ui device:"iPhone 15" build_for_testing:true
+      run: bundle exec fastlane test_ui device:"iPhone 16" build_for_testing:true
       timeout-minutes: 25
     - name: Build XCFrameworks
       run: bundle exec fastlane build_xcframeworks
@@ -133,7 +136,7 @@ jobs:
     name: Automated Code Review
     runs-on: macos-14
     env:
-      XCODE_VERSION: "15.4"
+      XCODE_VERSION: "16.1"
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
