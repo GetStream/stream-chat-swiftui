@@ -202,7 +202,7 @@ private class MockChatThreadListViewModel: ChatThreadListViewModel {
         hasNewThreads: Bool
     ) {
         self.init(threadListController: nil, eventsController: nil)
-        self.threads = LazyCachedMapCollection(elements: threads)
+        self.threads = threads
         self.isLoading = isLoading
         self.isReloading = isReloading
         self.isEmpty = isEmpty

@@ -62,7 +62,7 @@ import SwiftUI
     @Published var showAlertBanner = false
 
     @Published public var currentDateString: String?
-    @Published public var messages = LazyCachedMapCollection<ChatMessage>() {
+    @Published public var messages = [ChatMessage]() {
         didSet {
             if utils.messageListConfig.groupMessages {
                 groupMessages()
@@ -411,7 +411,7 @@ import SwiftUI
     
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+        didUpdateMessages messages: [ChatMessage],
         changes: [ListChange<ChatMessage>]
     ) {
         if !isActive {

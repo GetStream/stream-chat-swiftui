@@ -2660,7 +2660,6 @@
 				8434E58127707F19001E1B83 /* GridMediaView.swift in Sources */,
 				ADE0F5662CB962470053B8B9 /* ActionBannerView.swift in Sources */,
 				84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */,
-				82D64BE72AD7E5B700C5C79E /* ImageTask.swift in Sources */,
 				84EB881A2E8ABA610076DC17 /* ParticipantInfoView.swift in Sources */,
 				8465FD742746A95700AF091E /* ViewFactory.swift in Sources */,
 				8465FDC12746A95700AF091E /* NoChannelsView.swift in Sources */,
@@ -3860,7 +3859,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = v5;
+				branch = "v5-remove-stream-collection-lazy-cached-map-collection";
 				kind = branch;
 			};
 		};

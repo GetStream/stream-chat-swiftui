@@ -7,7 +7,6 @@ import StreamChatSwiftUI
 import SwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
-
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
     @Injected(\.colors) var colors
@@ -36,7 +35,6 @@ public struct CustomChannelHeader: ToolbarContent {
 }
 
 struct CustomChannelModifier: ChannelListHeaderViewModifier {
-
     @Injected(\.chatClient) var chatClient
 
     var title: String
@@ -60,7 +58,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                     message: Text("Are you sure you want to sign out?"),
                     primaryButton: .destructive(Text("Sign out")) {
                         withAnimation {
-                            chatClient.disconnect()
+                            chatClient.disconnect {}
                             AppState.shared.userState = .notLoggedIn
                         }
                     },

@@ -210,7 +210,7 @@ import XCTest
         viewModel.messageSentTapped()
         viewModel.dataSource(
             channelDataSource: ChatChannelDataSource(controller: channelController),
-            didUpdateMessages: LazyCachedMapCollection(elements: messages),
+            didUpdateMessages: messages,
             changes: [
                 .insert(messages[0], index: .init(item: 0, section: 0)),
                 .update(messages[1], index: .init(item: 1, section: 0))
@@ -549,7 +549,7 @@ import XCTest
         let message3 = ChatMessage.mock()
         let channelController = makeChannelController(messages: [message1, message2])
         let viewModel = ChatChannelViewModel(channelController: channelController)
-        let newMessages = LazyCachedMapCollection(elements: [message1, message2, message3])
+        let newMessages = [message1, message2, message3]
         
         // When
         viewModel.dataSource(

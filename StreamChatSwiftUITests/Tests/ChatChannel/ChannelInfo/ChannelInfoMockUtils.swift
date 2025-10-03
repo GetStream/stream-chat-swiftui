@@ -48,7 +48,7 @@ enum ChannelInfoMockUtils {
     static func generateMessagesWithAttachments(
         withImages: Int = 0,
         withVideos: Int = 0
-    ) -> LazyCachedMapCollection<ChatMessage> {
+    ) -> [ChatMessage] {
         var result = [ChatMessage]()
         for i in 0..<withImages {
             let message = ChatMessage.mock(
@@ -72,12 +72,12 @@ enum ChannelInfoMockUtils {
             result.append(message)
         }
 
-        return LazyCachedMapCollection(source: result) { $0 }
+        return result
     }
 
     static func generateMessagesWithFileAttachments(
         count: Int
-    ) -> LazyCachedMapCollection<ChatMessage> {
+    ) -> [ChatMessage] {
         var result = [ChatMessage]()
         for i in 0..<count {
             let message = ChatMessage.mock(
@@ -90,12 +90,12 @@ enum ChannelInfoMockUtils {
             result.append(message)
         }
 
-        return LazyCachedMapCollection(source: result) { $0 }
+        return result
     }
 
     static func generateMessagesWithPdfAttachments(
         count: Int
-    ) -> LazyCachedMapCollection<ChatMessage> {
+    ) -> [ChatMessage] {
         var result = [ChatMessage]()
         for i in 0..<count {
             let message = ChatMessage.mock(
@@ -108,7 +108,7 @@ enum ChannelInfoMockUtils {
             result.append(message)
         }
 
-        return LazyCachedMapCollection(source: result) { $0 }
+        return result
     }
 
     static func generateMockUsers(count: Int) -> [ChatUser] {

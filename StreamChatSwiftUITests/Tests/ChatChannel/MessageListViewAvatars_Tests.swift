@@ -84,7 +84,7 @@ import XCTest
             text: "Test",
             author: .mock(id: .unique)
         )]
-        let messages = LazyCachedMapCollection(source: temp, map: { $0 })
+        let messages = temp
         let messageListView = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,

@@ -101,7 +101,7 @@ import SwiftUI
         attachmentsDataSource = loadAttachments(from: messages)
     }
 
-    private func loadAttachments(from messages: LazyCachedMapCollection<ChatMessage>) -> [MonthlyFileAttachments] {
+    private func loadAttachments(from messages: [ChatMessage]) -> [MonthlyFileAttachments] {
         var attachmentMappings = [String: [ChatMessageFileAttachment]]()
         var monthAndYearArray = [String]()
 

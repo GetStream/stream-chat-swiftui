@@ -174,7 +174,7 @@ import XCTest
 
         func dataSource(
             channelDataSource: ChannelDataSource,
-            didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+            didUpdateMessages messages: [ChatMessage],
             changes: [ListChange<ChatMessage>]
         ) {
             updateMessagesCalled = true

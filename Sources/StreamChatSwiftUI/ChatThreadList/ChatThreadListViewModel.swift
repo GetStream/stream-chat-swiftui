@@ -24,7 +24,7 @@ import StreamChat
     @Published public var selectedThread: ThreadSelectionInfo?
 
     /// The list of threads.
-    @Published public var threads = LazyCachedMapCollection<ChatThread>()
+    @Published public var threads = [ChatThread]()
 
     /// A boolean indicating if it is loading data from the server and no local cache is available.
     @Published public var isLoading = false

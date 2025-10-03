@@ -19,7 +19,7 @@ class MessageListDateUtils {
     ///  - Returns: optional index.
     func indexForMessageDate(
         message: ChatMessage,
-        in messages: LazyCachedMapCollection<ChatMessage>
+        in messages: [ChatMessage]
     ) -> Int? {
         if messageListConfig.dateIndicatorPlacement != .messageList {
             // Index computation will be done onAppear.
@@ -36,7 +36,7 @@ class MessageListDateUtils {
     ///  - Returns: optional index.
     func index(
         for message: ChatMessage,
-        in messages: LazyCachedMapCollection<ChatMessage>
+        in messages: [ChatMessage]
     ) -> Int? {
         let index = messages.firstIndex { msg in
             msg.id == message.id
@@ -52,7 +52,7 @@ class MessageListDateUtils {
     ///  - Returns: optional date, shown above a message.
     func showMessageDate(
         for index: Int?,
-        in messages: LazyCachedMapCollection<ChatMessage>
+        in messages: [ChatMessage]
     ) -> Date? {
         guard let index = index else {
             return nil

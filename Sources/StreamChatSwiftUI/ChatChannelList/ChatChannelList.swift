@@ -11,7 +11,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     
     private var factory: Factory
-    var channels: LazyCachedMapCollection<ChatChannel>
+    var channels: [ChatChannel]
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
     @Binding var scrolledChannelId: String?
@@ -28,7 +28,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        channels: LazyCachedMapCollection<ChatChannel>,
+        channels: [ChatChannel],
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         scrolledChannelId: Binding<String?> = .constant(nil),
@@ -123,7 +123,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
     private var factory: Factory
-    var channels: LazyCachedMapCollection<ChatChannel>
+    var channels: [ChatChannel]
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
     private var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
@@ -138,7 +138,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        channels: LazyCachedMapCollection<ChatChannel>,
+        channels: [ChatChannel],
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
         onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,

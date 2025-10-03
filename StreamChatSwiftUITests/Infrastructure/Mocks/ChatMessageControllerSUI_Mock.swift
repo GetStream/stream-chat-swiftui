@@ -35,8 +35,8 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
     }
 
     public var replies_mock: [ChatMessage]?
-    override public var replies: LazyCachedMapCollection<ChatMessage> {
-        replies_mock.map { $0.lazyCachedMap { $0 } } ?? super.replies
+    override public var replies: [ChatMessage] {
+        replies_mock ?? super.replies
     }
 
     public var state_mock: State?

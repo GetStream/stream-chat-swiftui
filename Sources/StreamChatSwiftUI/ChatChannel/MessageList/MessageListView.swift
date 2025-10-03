@@ -12,7 +12,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
     var factory: Factory
     var channel: ChatChannel
-    var messages: LazyCachedMapCollection<ChatMessage>
+    var messages: [ChatMessage]
     var messagesGroupingInfo: [String: [String]]
     @Binding var scrolledId: String?
     @Binding var showScrollToLatestButton: Bool
@@ -65,7 +65,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     public init(
         factory: Factory,
         channel: ChatChannel,
-        messages: LazyCachedMapCollection<ChatMessage>,
+        messages: [ChatMessage],
         messagesGroupingInfo: [String: [String]],
         scrolledId: Binding<String?>,
         showScrollToLatestButton: Binding<Bool>,
@@ -108,10 +108,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         skipRenderingMessageIds = messageRenderingUtil.messagesToSkipRendering(newMessages: messages)
         if !skipRenderingMessageIds.isEmpty {
-            self.messages = LazyCachedMapCollection(
-                source: messages.filter { !skipRenderingMessageIds.contains($0.id) },
-                map: { $0 }
-            )
+            self.messages = messages.filter { !skipRenderingMessageIds.contains($0.id) }
         }
     }
 
@@ -577,7 +574,7 @@ private class MessageRenderingUtil {
         self.previousTopMessage = previousTopMessage
     }
 
-    func messagesToSkipRendering(newMessages: LazyCachedMapCollection<ChatMessage>) -> [String] {
+    func messagesToSkipRendering(newMessages: [ChatMessage]) -> [String] {
         let newTopMessage = newMessages.first
         if newTopMessage?.id == previousTopMessage?.id {
             return []
