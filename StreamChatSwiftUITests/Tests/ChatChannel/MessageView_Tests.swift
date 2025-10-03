@@ -575,6 +575,38 @@ class MessageView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_linkAttachmentView_customColors_snapshot() {
+        // Given
+        var colorPalette = ColorPalette()
+        colorPalette.messageLinkAttachmentAuthorColor = .orange
+        colorPalette.messageLinkAttachmentTitleColor = .blue
+        colorPalette.messageLinkAttachmentTextColor = .red
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            appearance: .init(colors: colorPalette)
+        )
+
+        // When
+        let view = LinkAttachmentView(
+            linkAttachment: .mock(
+                id: .unique,
+                originalURL: URL(string: "https://getstream.io")!,
+                title: "Stream",
+                text: "Some link text description",
+                author: "Nuno Vieira",
+                titleLink: nil,
+                assetURL: nil,
+                previewURL: .localYodaImage
+            ),
+            width: 200,
+            isFirst: true
+        )
+        .frame(width: 200, height: 140)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_linkAttachmentView_shouldNotRenderLinkPreviewWithOtherAttachments() {
         // Given
         let messageWithLinkAndImages = ChatMessage.mock(

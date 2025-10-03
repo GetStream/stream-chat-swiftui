@@ -115,7 +115,7 @@ internal enum L10n {
       }
       /// Remove User
       internal static var removeUserConfirmationTitle: String { L10n.tr("Localizable", "channel.item.remove-user-confirmation-title") }
-      /// Send direct message
+      /// Send Direct Message
       internal static var sendDirectMessage: String { L10n.tr("Localizable", "channel.item.send-direct-message") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
