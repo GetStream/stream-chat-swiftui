@@ -13,13 +13,13 @@ public final class ThreadListItemOptions<ThreadDestination: View> {
     /// The thread to display.
     public let thread: ChatThread
     /// The destination view for thread navigation.
-    public let threadDestination: @MainActor(ChatThread) -> ThreadDestination
+    public let threadDestination: @MainActor (ChatThread) -> ThreadDestination
     /// Binding to the currently selected thread.
     public let selectedThread: Binding<ThreadSelectionInfo?>
     
     public init(
         thread: ChatThread,
-        threadDestination: @escaping @MainActor(ChatThread) -> ThreadDestination,
+        threadDestination: @escaping @MainActor (ChatThread) -> ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>
     ) {
         self.thread = thread
@@ -31,9 +31,9 @@ public final class ThreadListItemOptions<ThreadDestination: View> {
 /// Options for creating the thread list error banner view.
 public final class ThreadListErrorBannerViewOptions: Sendable {
     /// Callback when the refresh action is triggered.
-    public let onRefreshAction: @MainActor() -> Void
+    public let onRefreshAction: @MainActor () -> Void
     
-    public init(onRefreshAction: @escaping @MainActor() -> Void) {
+    public init(onRefreshAction: @escaping @MainActor () -> Void) {
         self.onRefreshAction = onRefreshAction
     }
 }

@@ -35,15 +35,15 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
     /// Binding to the currently swiped channel ID.
     public let swipedChannelId: Binding<String?>
     /// The destination view for channel navigation.
-    public let channelDestination: @MainActor(ChannelSelectionInfo) -> ChannelDestination
+    public let channelDestination: @MainActor (ChannelSelectionInfo) -> ChannelDestination
     /// Callback when the item is tapped.
-    public let onItemTap: @MainActor(ChatChannel) -> Void
+    public let onItemTap: @MainActor (ChatChannel) -> Void
     /// Callback when the trailing right swipe button is tapped.
-    public let trailingSwipeRightButtonTapped: @MainActor(ChatChannel) -> Void
+    public let trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
     /// Callback when the trailing left swipe button is tapped.
-    public let trailingSwipeLeftButtonTapped: @MainActor(ChatChannel) -> Void
+    public let trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
     /// Callback when the leading swipe button is tapped.
-    public let leadingSwipeButtonTapped: @MainActor(ChatChannel) -> Void
+    public let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
     
     public init(
         channel: ChatChannel,
@@ -53,11 +53,11 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
         disabled: Bool,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination,
-        onItemTap: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeRightButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination,
+        onItemTap: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.channel = channel
         self.channelName = channelName
@@ -117,15 +117,15 @@ public final class MoreChannelActionsViewOptions: Sendable {
     /// Binding to the currently swiped channel ID.
     public let swipedChannelId: Binding<String?>
     /// Callback when the actions view is dismissed.
-    public let onDismiss: @MainActor() -> Void
+    public let onDismiss: @MainActor () -> Void
     /// Callback when an error occurs.
-    public let onError: @MainActor(Error) -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         channel: ChatChannel,
         swipedChannelId: Binding<String?>,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.channel = channel
         self.swipedChannelId = swipedChannelId
@@ -139,14 +139,14 @@ public final class SupportedMoreChannelActionsOptions: Sendable {
     /// The channel to get actions for.
     public let channel: ChatChannel
     /// Callback when the actions view is dismissed.
-    public let onDismiss: @MainActor() -> Void
+    public let onDismiss: @MainActor () -> Void
     /// Callback when an error occurs.
-    public let onError: @MainActor(Error) -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         channel: ChatChannel,
-        onDismiss: @escaping @MainActor() -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.channel = channel
         self.onDismiss = onDismiss
@@ -165,17 +165,17 @@ public final class TrailingSwipeActionsViewOptions: Sendable {
     /// Binding to the currently swiped channel ID.
     public let swipedChannelId: Binding<String?>
     /// Callback when the left button is tapped.
-    public let leftButtonTapped: @MainActor(ChatChannel) -> Void
+    public let leftButtonTapped: @MainActor (ChatChannel) -> Void
     /// Callback when the right button is tapped.
-    public let rightButtonTapped: @MainActor(ChatChannel) -> Void
+    public let rightButtonTapped: @MainActor (ChatChannel) -> Void
     
     public init(
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        leftButtonTapped: @escaping @MainActor(ChatChannel) -> Void,
-        rightButtonTapped: @escaping @MainActor(ChatChannel) -> Void
+        leftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        rightButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.channel = channel
         self.offsetX = offsetX
@@ -197,14 +197,14 @@ public final class LeadingSwipeActionsViewOptions: Sendable {
     /// Binding to the currently swiped channel ID.
     public let swipedChannelId: Binding<String?>
     /// Callback when the button is tapped.
-    public let buttonTapped: @MainActor(ChatChannel) -> Void
+    public let buttonTapped: @MainActor (ChatChannel) -> Void
     
     public init(
         channel: ChatChannel,
         offsetX: CGFloat,
         buttonWidth: CGFloat,
         swipedChannelId: Binding<String?>,
-        buttonTapped: @escaping @MainActor(ChatChannel) -> Void
+        buttonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.channel = channel
         self.offsetX = offsetX
@@ -233,25 +233,25 @@ public final class SearchResultsViewOptions: Sendable {
     /// Whether search results are currently loading.
     public let loadingSearchResults: Bool
     /// Function to determine if online indicator should be shown.
-    public let onlineIndicatorShown: @MainActor(ChatChannel) -> Bool
+    public let onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
     /// Function to get the channel name.
-    public let channelNaming: @MainActor(ChatChannel) -> String
+    public let channelNaming: @MainActor (ChatChannel) -> String
     /// Function to load the channel image.
-    public let imageLoader: @MainActor(ChatChannel) -> UIImage
+    public let imageLoader: @MainActor (ChatChannel) -> UIImage
     /// Callback when a search result is tapped.
-    public let onSearchResultTap: @MainActor(ChannelSelectionInfo) -> Void
+    public let onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     /// Callback when an item appears in the list.
-    public let onItemAppear: @MainActor(Int) -> Void
+    public let onItemAppear: @MainActor (Int) -> Void
     
     public init(
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping @MainActor(ChatChannel) -> Bool,
-        channelNaming: @escaping @MainActor(ChatChannel) -> String,
-        imageLoader: @escaping @MainActor(ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping @MainActor(Int) -> Void
+        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
+        channelNaming: @escaping @MainActor (ChatChannel) -> String,
+        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping @MainActor (Int) -> Void
     ) {
         self.selectedChannel = selectedChannel
         self.searchResults = searchResults
@@ -275,17 +275,17 @@ public final class ChannelListSearchResultItemOptions<ChannelDestination: View> 
     /// The avatar image for the channel.
     public let avatar: UIImage
     /// Callback when the search result is tapped.
-    public let onSearchResultTap: @MainActor(ChannelSelectionInfo) -> Void
+    public let onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     /// The destination view for channel navigation.
-    public let channelDestination: @MainActor(ChannelSelectionInfo) -> ChannelDestination
+    public let channelDestination: @MainActor (ChannelSelectionInfo) -> ChannelDestination
     
     public init(
         searchResult: ChannelSelectionInfo,
         onlineIndicatorShown: Bool,
         channelName: String,
         avatar: UIImage,
-        onSearchResultTap: @escaping @MainActor(ChannelSelectionInfo) -> Void,
-        channelDestination: @escaping @MainActor(ChannelSelectionInfo) -> ChannelDestination
+        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
+        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination
     ) {
         self.searchResult = searchResult
         self.onlineIndicatorShown = onlineIndicatorShown
@@ -325,9 +325,9 @@ public final class AddUsersViewOptions: Sendable {
     /// Additional options for the add users view.
     public let options: AddUsersOptions
     /// Callback when a user is tapped.
-    public let onUserTap: @MainActor(ChatUser) -> Void
+    public let onUserTap: @MainActor (ChatUser) -> Void
     
-    public init(options: AddUsersOptions, onUserTap: @escaping @MainActor(ChatUser) -> Void) {
+    public init(options: AddUsersOptions, onUserTap: @escaping @MainActor (ChatUser) -> Void) {
         self.options = options
         self.onUserTap = onUserTap
     }

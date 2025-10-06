@@ -28,15 +28,15 @@ public final class ReactionsBottomViewOptions: Sendable {
     /// Whether to show all information.
     public let showsAllInfo: Bool
     /// Callback when the reactions are tapped.
-    public let onTap: @MainActor() -> Void
+    public let onTap: @MainActor () -> Void
     /// Callback when the reactions are long pressed.
-    public let onLongPress: @MainActor() -> Void
+    public let onLongPress: @MainActor () -> Void
     
     public init(
         message: ChatMessage,
         showsAllInfo: Bool,
-        onTap: @escaping @MainActor() -> Void,
-        onLongPress: @escaping @MainActor() -> Void
+        onTap: @escaping @MainActor () -> Void,
+        onLongPress: @escaping @MainActor () -> Void
     ) {
         self.message = message
         self.showsAllInfo = showsAllInfo
@@ -50,14 +50,14 @@ public final class MessageReactionViewOptions: Sendable {
     /// The message to show reactions for.
     public let message: ChatMessage
     /// Callback when the reaction is tapped.
-    public let onTapGesture: @MainActor() -> Void
+    public let onTapGesture: @MainActor () -> Void
     /// Callback when the reaction is long pressed.
-    public let onLongPressGesture: @MainActor() -> Void
+    public let onLongPressGesture: @MainActor () -> Void
     
     public init(
         message: ChatMessage,
-        onTapGesture: @escaping @MainActor() -> Void,
-        onLongPressGesture: @escaping @MainActor() -> Void
+        onTapGesture: @escaping @MainActor () -> Void,
+        onLongPressGesture: @escaping @MainActor () -> Void
     ) {
         self.message = message
         self.onTapGesture = onTapGesture
@@ -74,16 +74,16 @@ public final class ReactionsOverlayViewOptions: Sendable {
     /// Information about the message display.
     public let messageDisplayInfo: MessageDisplayInfo
     /// Callback when the background is tapped.
-    public let onBackgroundTap: @MainActor() -> Void
+    public let onBackgroundTap: @MainActor () -> Void
     /// Callback when an action is executed.
-    public let onActionExecuted: @MainActor(MessageActionInfo) -> Void
+    public let onActionExecuted: @MainActor (MessageActionInfo) -> Void
     
     public init(
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        onBackgroundTap: @escaping @MainActor() -> Void,
-        onActionExecuted: @escaping @MainActor(MessageActionInfo) -> Void
+        onBackgroundTap: @escaping @MainActor () -> Void,
+        onActionExecuted: @escaping @MainActor (MessageActionInfo) -> Void
     ) {
         self.channel = channel
         self.currentSnapshot = currentSnapshot
@@ -113,12 +113,12 @@ public final class ReactionsContentViewOptions: Sendable {
     /// The content rectangle.
     public let contentRect: CGRect
     /// Callback when a reaction is tapped.
-    public let onReactionTap: @MainActor(MessageReactionType) -> Void
+    public let onReactionTap: @MainActor (MessageReactionType) -> Void
     
     public init(
         message: ChatMessage,
         contentRect: CGRect,
-        onReactionTap: @escaping @MainActor(MessageReactionType) -> Void
+        onReactionTap: @escaping @MainActor (MessageReactionType) -> Void
     ) {
         self.message = message
         self.contentRect = contentRect

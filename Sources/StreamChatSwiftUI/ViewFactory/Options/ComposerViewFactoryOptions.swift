@@ -19,14 +19,14 @@ public final class MessageComposerViewTypeOptions: Sendable {
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
     /// Callback when a message is sent.
-    public let onMessageSent: @MainActor() -> Void
+    public let onMessageSent: @MainActor () -> Void
     
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping @MainActor() -> Void
+        onMessageSent: @escaping @MainActor () -> Void
     ) {
         self.channelController = channelController
         self.messageController = messageController
@@ -72,11 +72,11 @@ public final class ComposerInputViewOptions: Sendable {
     /// The cooldown duration in seconds.
     public let cooldownDuration: Int
     /// Callback when a custom attachment is tapped.
-    public let onCustomAttachmentTap: @MainActor(CustomAttachment) -> Void
+    public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     /// Whether the input should scroll.
     public let shouldScroll: Bool
     /// Callback to remove an attachment by ID.
-    public let removeAttachmentWithId: @MainActor(String) -> Void
+    public let removeAttachmentWithId: @MainActor (String) -> Void
     
     public init(
         text: Binding<String>,
@@ -88,9 +88,9 @@ public final class ComposerInputViewOptions: Sendable {
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
-        onCustomAttachmentTap: @escaping @MainActor(CustomAttachment) -> Void,
+        onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping @MainActor(String) -> Void
+        removeAttachmentWithId: @escaping @MainActor (String) -> Void
     ) {
         self.text = text
         self.selectedRangeLocation = selectedRangeLocation
@@ -150,9 +150,9 @@ public final class TrailingComposerViewOptions: Sendable {
     /// The cooldown duration in seconds.
     public let cooldownDuration: Int
     /// Callback when the trailing view is tapped.
-    public let onTap: @MainActor() -> Void
+    public let onTap: @MainActor () -> Void
     
-    public init(enabled: Bool, cooldownDuration: Int, onTap: @escaping @MainActor() -> Void) {
+    public init(enabled: Bool, cooldownDuration: Int, onTap: @escaping @MainActor () -> Void) {
         self.enabled = enabled
         self.cooldownDuration = cooldownDuration
         self.onTap = onTap
@@ -191,9 +191,9 @@ public final class CommandsContainerViewOptions: @unchecked Sendable {
     /// The command suggestions.
     public let suggestions: [String: Any]
     /// Callback to handle a command.
-    public let handleCommand: @MainActor([String: Any]) -> Void
+    public let handleCommand: @MainActor ([String: Any]) -> Void
     
-    public init(suggestions: [String: Any], handleCommand: @escaping @MainActor([String: Any]) -> Void) {
+    public init(suggestions: [String: Any], handleCommand: @escaping @MainActor ([String: Any]) -> Void) {
         self.suggestions = suggestions
         self.handleCommand = handleCommand
     }
