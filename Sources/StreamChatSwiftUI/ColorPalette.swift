@@ -11,6 +11,10 @@ public struct ColorPalette {
         navigationBarTitle = text
         navigationBarSubtitle = textLowEmphasis
         navigationBarTintColor = tintColor
+
+        messageLinkAttachmentAuthorColor = tintColor
+        messageLinkAttachmentTitleColor = Color(text)
+        messageLinkAttachmentTextColor = Color(text)
     }
 
     /// Tint color used in UI components.
@@ -85,6 +89,12 @@ public struct ColorPalette {
     public lazy var reactionOtherUserColor: UIColor? = textLowEmphasis
     public lazy var selectedReactionBackgroundColor: UIColor? = nil
     public var voiceMessageControlBackground: UIColor = .streamWhiteStatic
+
+    // MARK: - Link Attachment View
+
+    public var messageLinkAttachmentAuthorColor: Color
+    public var messageLinkAttachmentTitleColor: Color
+    public var messageLinkAttachmentTextColor: Color
 
     // MARK: - Composer
 
