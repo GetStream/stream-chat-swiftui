@@ -15,9 +15,9 @@ final class MockBackgroundTaskScheduler: BackgroundTaskScheduler, @unchecked Sen
     }
 
     var beginBackgroundTask_called: Bool = false
-    var beginBackgroundTask_expirationHandler: (@MainActor() -> Void)?
+    var beginBackgroundTask_expirationHandler: (@MainActor () -> Void)?
     var beginBackgroundTask_returns: Bool = true
-    func beginTask(expirationHandler: (@MainActor() -> Void)?) -> Bool {
+    func beginTask(expirationHandler: (@MainActor () -> Void)?) -> Bool {
         beginBackgroundTask_called = true
         beginBackgroundTask_expirationHandler = expirationHandler
         return beginBackgroundTask_returns

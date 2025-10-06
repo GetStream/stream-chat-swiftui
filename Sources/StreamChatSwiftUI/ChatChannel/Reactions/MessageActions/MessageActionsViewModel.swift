@@ -26,7 +26,7 @@ public struct MessageAction: Identifiable, Equatable {
 
     public let title: String
     public let iconName: String
-    public let action: @MainActor() -> Void
+    public let action: @MainActor () -> Void
     public let confirmationPopup: ConfirmationPopup?
     public let isDestructive: Bool
     public var navigationDestination: AnyView?
@@ -35,7 +35,7 @@ public struct MessageAction: Identifiable, Equatable {
         id: String = UUID().uuidString,
         title: String,
         iconName: String,
-        action: @escaping @MainActor() -> Void,
+        action: @escaping @MainActor () -> Void,
         confirmationPopup: ConfirmationPopup?,
         isDestructive: Bool
     ) {

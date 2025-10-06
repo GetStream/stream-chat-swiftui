@@ -366,7 +366,7 @@ import SwiftUI
         skipPush: Bool = false,
         skipEnrichUrl: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: @escaping @MainActor() -> Void
+        completion: @escaping @MainActor () -> Void
     ) {
         defer {
             checkChannelCooldown()
@@ -714,7 +714,7 @@ import SwiftUI
     private func edit(
         message: ChatMessage,
         attachments: [AnyAttachmentPayload]?,
-        completion: @escaping @MainActor() -> Void
+        completion: @escaping @MainActor () -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
             return
@@ -977,7 +977,7 @@ class MessageAttachmentsConverter {
     /// Converts the attachments to assets asynchronously.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping @MainActor(ComposerAssets) -> Void
+        completion: @escaping @MainActor (ComposerAssets) -> Void
     ) {
         let group = DispatchGroup()
         attachmentsToAssets(attachments, with: group, completion: completion)
@@ -991,7 +991,7 @@ class MessageAttachmentsConverter {
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         with group: DispatchGroup?,
-        completion: @escaping @MainActor(ComposerAssets) -> Void
+        completion: @escaping @MainActor (ComposerAssets) -> Void
     ) {
         nonisolated(unsafe) var addedAssets = ComposerAssets()
 
@@ -1089,7 +1089,7 @@ class MessageAttachmentsConverter {
 
     private func imageAttachmentToAddedAsset(
         _ attachment: AnyChatMessageAttachment,
-        completion: @escaping @Sendable(AddedAsset?) -> Void
+        completion: @escaping @Sendable (AddedAsset?) -> Void
     ) {
         guard let imageAttachment = attachment.attachment(payloadType: ImageAttachmentPayload.self) else {
             return completion(nil)

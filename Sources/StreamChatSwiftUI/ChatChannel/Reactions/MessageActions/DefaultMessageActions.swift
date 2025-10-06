@@ -20,8 +20,8 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
@@ -241,7 +241,7 @@ public extension MessageAction {
     /// The action to copy the message text.
     static func copyMessageAction(
         for message: ChatMessage,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void
     ) -> MessageAction {
         let copyAction = MessageAction(
             id: MessageActionId.copy,
@@ -267,7 +267,7 @@ public extension MessageAction {
     static func editMessageAction(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void
     ) -> MessageAction {
         let editAction = MessageAction(
             id: MessageActionId.edit,
@@ -293,15 +293,15 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let pinMessage: @MainActor() -> Void = {
+        let pinMessage: @MainActor () -> Void = {
             messageController.pin(MessagePinning.noExpiration) { error in
                 if let error {
                     onError(error)
@@ -333,15 +333,15 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let pinMessage: @MainActor() -> Void = {
+        let pinMessage: @MainActor () -> Void = {
             messageController.unpin { error in
                 if let error {
                     onError(error)
@@ -372,7 +372,7 @@ public extension MessageAction {
     static func replyAction(
         for message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void
     ) -> MessageAction {
         let replyAction = MessageAction(
             id: MessageActionId.reply,
@@ -422,15 +422,15 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let deleteAction: @MainActor() -> Void = {
+        let deleteAction: @MainActor () -> Void = {
             messageController.deleteMessage { error in
                 if let error {
                     onError(error)
@@ -468,15 +468,15 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let flagAction: @MainActor() -> Void = {
+        let flagAction: @MainActor () -> Void = {
             messageController.flag { error in
                 if let error {
                     onError(error)
@@ -514,13 +514,13 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let channelController = InjectedValues[\.utils]
             .channelControllerFactory
             .makeChannelController(for: channel.cid)
-        let action: @MainActor() -> Void = {
+        let action: @MainActor () -> Void = {
             channelController.markUnread(from: message.id) { result in
                 if case let .failure(error) = result {
                     onError(error)
@@ -550,10 +550,10 @@ public extension MessageAction {
     @MainActor static func markThreadAsUnreadAction(
         messageController: ChatMessageController,
         message: ChatMessage,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
-        let action: @MainActor() -> Void = {
+        let action: @MainActor () -> Void = {
             messageController.markThreadUnread { error in
                 if let error {
                     onError(error)
@@ -585,11 +585,11 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToMute: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let muteController = chatClient.userController(userId: userToMute.id)
-        let muteAction: @MainActor() -> Void = {
+        let muteAction: @MainActor () -> Void = {
             muteController.mute { error in
                 if let error {
                     onError(error)
@@ -622,11 +622,11 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToBlock: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToBlock.id)
-        let blockAction: @MainActor() -> Void = {
+        let blockAction: @MainActor () -> Void = {
             blockController.block { error in
                 if let error {
                     onError(error)
@@ -663,11 +663,11 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToUnmute: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let unmuteController = chatClient.userController(userId: userToUnmute.id)
-        let unmuteAction: @MainActor() -> Void = {
+        let unmuteAction: @MainActor () -> Void = {
             unmuteController.unmute { error in
                 if let error {
                     onError(error)
@@ -700,11 +700,11 @@ public extension MessageAction {
         channel: ChatChannel,
         chatClient: ChatClient,
         userToUnblock: ChatUser,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let blockController = chatClient.userController(userId: userToUnblock.id)
-        let unblockAction: @MainActor() -> Void = {
+        let unblockAction: @MainActor () -> Void = {
             blockController.unblock { error in
                 if let error {
                     onError(error)
@@ -740,15 +740,15 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> MessageAction {
         let messageController = chatClient.messageController(
             cid: channel.cid,
             messageId: message.id
         )
 
-        let resendAction: @MainActor() -> Void = {
+        let resendAction: @MainActor () -> Void = {
             messageController.resendMessage { error in
                 if let error {
                     onError(error)
@@ -780,8 +780,8 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 
@@ -812,8 +812,8 @@ public extension MessageAction {
         for message: ChatMessage,
         channel: ChatChannel,
         chatClient: ChatClient,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) -> [MessageAction] {
         var messageActions = [MessageAction]()
 

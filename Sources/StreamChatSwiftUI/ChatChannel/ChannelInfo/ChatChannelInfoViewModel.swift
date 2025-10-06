@@ -180,7 +180,7 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping @MainActor() -> Void) {
+    public func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
         } else {
@@ -227,7 +227,7 @@ import SwiftUI
 
     // MARK: - private
 
-    private func removeUserFromConversation(completion: @escaping @MainActor() -> Void) {
+    private func removeUserFromConversation(completion: @escaping @MainActor () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
             if error != nil {
@@ -238,7 +238,7 @@ import SwiftUI
         }
     }
 
-    private func deleteChannel(completion: @escaping @MainActor() -> Void) {
+    private func deleteChannel(completion: @escaping @MainActor () -> Void) {
         channelController.deleteChannel { [weak self] error in
             if error != nil {
                 self?.errorShown = true
