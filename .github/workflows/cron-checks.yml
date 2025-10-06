@@ -23,15 +23,15 @@ jobs:
         include:
           # - ios: "26.0" TODO: IOS-1181
           #   device: "iPhone 17 Pro"
-          #   xcode: "26.0"
+          #   xcode: "26.0.1"
           #   setup_runtime: false
           - ios: "18.5"
             device: "iPhone 16 Pro"
-            xcode: "26.0"
+            xcode: "26.0.1"
             setup_runtime: false
           - ios: "17.5"
             device: "iPhone 15 Pro"
-            xcode: "26.0"
+            xcode: "26.0.1"
             setup_runtime: true
           - ios: "16.4"
             device: "iPhone 14 Pro"
