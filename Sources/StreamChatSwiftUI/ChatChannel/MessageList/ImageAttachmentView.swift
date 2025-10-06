@@ -425,9 +425,15 @@ extension ChatMessage {
 public struct MediaAttachment: Identifiable, Equatable {
     @Injected(\.utils) var utils
 
-    let url: URL
-    let type: MediaAttachmentType
-    var uploadingState: AttachmentUploadingState?
+    public let url: URL
+    public let type: MediaAttachmentType
+    public var uploadingState: AttachmentUploadingState?
+
+    public init(url: URL, type: MediaAttachmentType, uploadingState: AttachmentUploadingState? = nil) {
+        self.url = url
+        self.type = type
+        self.uploadingState = uploadingState
+    }
 
     public var id: String {
         url.absoluteString
@@ -477,9 +483,14 @@ extension MediaAttachment {
     }
 }
 
-enum MediaAttachmentType {
-    case image
-    case video
+public struct MediaAttachmentType: RawRepresentable {
+    public let rawValue: String
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    public static let image = Self(rawValue: "image")
+    public static let video = Self(rawValue: "video")
 }
 
 /// Options for the gallery view.
