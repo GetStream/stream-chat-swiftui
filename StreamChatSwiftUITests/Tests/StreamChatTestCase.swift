@@ -41,6 +41,7 @@ open class StreamChatTestCase: XCTestCase {
             appearance.colors.navigationBarTitle = .blue
             appearance.colors.navigationBarSubtitle = .cyan
             appearance.colors.navigationBarBackground = .yellow
+            appearance.colors.navigationBarGlyph = .green
         }
     }
 }
