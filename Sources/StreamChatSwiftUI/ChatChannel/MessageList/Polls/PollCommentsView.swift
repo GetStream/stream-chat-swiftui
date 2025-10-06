@@ -64,15 +64,15 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                                 .bold()
                                 .foregroundColor(colors.tintColor)
                         })
-                            .frame(maxWidth: .infinity)
-                            .withPollsBackground()
-                            .uiAlert(
-                                title: commentButtonTitle,
-                                isPresented: $viewModel.addCommentShown,
-                                text: $viewModel.newCommentText,
-                                accept: L10n.Alert.Actions.send,
-                                action: { viewModel.add(comment: viewModel.newCommentText) }
-                            )
+                        .frame(maxWidth: .infinity)
+                        .withPollsBackground()
+                        .uiAlert(
+                            title: commentButtonTitle,
+                            isPresented: $viewModel.addCommentShown,
+                            text: $viewModel.newCommentText,
+                            accept: L10n.Alert.Actions.send,
+                            action: { viewModel.add(comment: viewModel.newCommentText) }
+                        )
                     }
                 }
                 .padding()

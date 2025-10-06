@@ -69,11 +69,11 @@ extension ImageProcessors {
             return size
         }
 
-        private let sizeProvider: @Sendable() -> CGSize
+        private let sizeProvider: @Sendable () -> CGSize
 
         /// Initializes the processor with size providing closure.
         /// - Parameter sizeProvider: Closure to obtain size after the image is loaded.
-        public init(sizeProvider: @escaping @Sendable() -> CGSize) {
+        public init(sizeProvider: @escaping @Sendable () -> CGSize) {
             self.sizeProvider = sizeProvider
         }
 

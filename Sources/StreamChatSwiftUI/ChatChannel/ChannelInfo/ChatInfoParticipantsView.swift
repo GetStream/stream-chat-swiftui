@@ -7,8 +7,11 @@ import SwiftUI
 
 /// View for the chat info participants.
 public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    
+    @Binding var selectedParticipant: ParticipantInfo?
 
     let factory: Factory
     var participants: [ParticipantInfo]
@@ -17,11 +20,13 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
     public init(
         factory: Factory = DefaultViewFactory.shared,
         participants: [ParticipantInfo],
-        onItemAppear: @escaping (ParticipantInfo) -> Void
+        onItemAppear: @escaping (ParticipantInfo) -> Void,
+        selectedParticipant: Binding<ParticipantInfo?> = .constant(nil)
     ) {
         self.factory = factory
         self.participants = participants
         self.onItemAppear = onItemAppear
+        _selectedParticipant = selectedParticipant
     }
 
     public var body: some View {
@@ -49,6 +54,14 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                 .padding(.all, 8)
                 .onAppear {
                     onItemAppear(participant)
+                }
+                .contentShape(.rect)
+                .onTapGesture {
+                    withAnimation {
+                        if participant.id != chatClient.currentUserId {
+                            selectedParticipant = participant
+                        }
+                    }
                 }
             }
         }

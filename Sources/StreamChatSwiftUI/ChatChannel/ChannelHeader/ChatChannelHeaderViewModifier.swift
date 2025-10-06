@@ -120,7 +120,7 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                         isActive: $isActive
                     )
                     #if compiler(>=6.2)
-                        .sharedBackgroundVisibility(.hidden)
+                    .sharedBackgroundVisibility(.hidden)
                     #endif
                 }
         } else {

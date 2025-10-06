@@ -126,7 +126,12 @@ import SwiftUI
             }
         }
     }
-    
+
+    // A boolean value indicating if the user marked a message as unread
+    // in the current session of the channel. If it is true,
+    // it should not call markRead() in any scenario.
+    public var currentUserMarkedMessageUnread: Bool = false
+
     @Published public private(set) var channel: ChatChannel?
 
     public var isMessageThread: Bool {
@@ -345,7 +350,7 @@ import SwiftUI
         if utils.messageListConfig.dateIndicatorPlacement == .overlay {
             save(lastDate: message.createdAt)
         }
-        if index == 0, channelDataSource.hasLoadedAllNextMessages {
+        if channelDataSource.hasLoadedAllNextMessages {
             let isActive = UIApplication.shared.applicationState == .active
             if isActive && canMarkRead {
                 sendReadEventIfNeeded(for: message)
@@ -571,7 +576,12 @@ import SwiftUI
     }
     
     private func sendReadEventIfNeeded(for message: ChatMessage) {
-        guard let channel, channel.unreadCount.messages > 0 else { return }
+        guard let channel, channel.unreadCount.messages > 0 else {
+            return
+        }
+        if currentUserMarkedMessageUnread {
+            return
+        }
         throttler.execute { [weak self] in
             self?.channelController.markRead()
             // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
@@ -679,7 +689,7 @@ import SwiftUI
         canMarkRead = true
         
         if channel.unreadCount.messages > 0 {
-            if channelController.firstUnreadMessageId != nil {
+            if channelDataSource.firstUnreadMessageId != nil {
                 firstUnreadMessageId = channelController.firstUnreadMessageId
                 canMarkRead = false
             } else if channelController.lastReadMessageId != nil {
