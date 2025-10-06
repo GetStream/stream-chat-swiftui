@@ -187,7 +187,7 @@ extension ViewFactory {
     
     // MARK: messages
     
-    public func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor(ChannelSelectionInfo) -> ChatChannelView<Self> {
+    public func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor (ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
             let controller = InjectedValues[\.utils]
                 .channelControllerFactory
@@ -200,7 +200,7 @@ extension ViewFactory {
         }
     }
     
-    public func makeMessageThreadDestination(options: MessageThreadDestinationOptions) -> @MainActor(ChatChannel, ChatMessage) -> ChatChannelView<Self> {
+    public func makeMessageThreadDestination(options: MessageThreadDestinationOptions) -> @MainActor (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
             let channelController = InjectedValues[\.utils]
                 .channelControllerFactory
@@ -904,7 +904,7 @@ extension ViewFactory {
 
     // MARK: Threads
 
-    public func makeThreadDestination(options: ThreadDestinationOptions) -> @MainActor(ChatThread) -> ChatChannelView<Self> {
+    public func makeThreadDestination(options: ThreadDestinationOptions) -> @MainActor (ChatThread) -> ChatChannelView<Self> {
         { [unowned self] thread in
             makeMessageThreadDestination(options: MessageThreadDestinationOptions())(thread.channel, thread.parentMessage)
         }

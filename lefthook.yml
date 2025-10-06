@@ -8,6 +8,8 @@ pre-commit:
         - Sources/StreamChatSwiftUI/Generated/**
         - Sources/StreamChatSwiftUI/StreamNuke/**
         - Sources/StreamChatSwiftUI/StreamSwiftyGif/**
+        - StreamChatSwiftUITestsAppTests/**
+        - StreamChatSwiftUITestsApp/**
       skip:
         - merge
         - rebase
@@ -19,6 +21,8 @@ pre-commit:
         - Sources/StreamChatSwiftUI/Generated/**
         - Sources/StreamChatSwiftUI/StreamNuke/**
         - Sources/StreamChatSwiftUI/StreamSwiftyGif/**
+        - StreamChatSwiftUITestsAppTests/**
+        - StreamChatSwiftUITestsApp/**
       skip:
         - merge
         - rebase
@@ -31,5 +35,7 @@ pre-push:
         - Sources/StreamChatSwiftUI/Generated/**
         - Sources/StreamChatSwiftUI/StreamNuke/**
         - Sources/StreamChatSwiftUI/StreamSwiftyGif/**
+        - StreamChatSwiftUITestsAppTests/**
+        - StreamChatSwiftUITestsApp/**
       skip:
         - merge-commit

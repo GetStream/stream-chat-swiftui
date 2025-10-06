@@ -85,7 +85,7 @@ public final class MessageContainerViewOptions: Sendable {
     /// Binding to the quoted message.
     public let quotedMessage: Binding<ChatMessage?>
     /// Callback when the message is long pressed.
-    public let onLongPress: @MainActor(MessageDisplayInfo) -> Void
+    public let onLongPress: @MainActor (MessageDisplayInfo) -> Void
     /// Whether this is the last message.
     public let isLast: Bool
     
@@ -97,7 +97,7 @@ public final class MessageContainerViewOptions: Sendable {
         isInThread: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
-        onLongPress: @escaping @MainActor(MessageDisplayInfo) -> Void,
+        onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void,
         isLast: Bool
     ) {
         self.channel = channel
@@ -231,9 +231,9 @@ public final class ScrollToBottomButtonOptions: Sendable {
     /// The number of unread messages.
     public let unreadCount: Int
     /// Callback when the scroll to bottom button is tapped.
-    public let onScrollToBottom: @MainActor() -> Void
+    public let onScrollToBottom: @MainActor () -> Void
     
-    public init(unreadCount: Int, onScrollToBottom: @escaping @MainActor() -> Void) {
+    public init(unreadCount: Int, onScrollToBottom: @escaping @MainActor () -> Void) {
         self.unreadCount = unreadCount
         self.onScrollToBottom = onScrollToBottom
     }
@@ -323,15 +323,15 @@ public final class SupportedMessageActionsOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// Callback when an action is finished.
-    public let onFinish: @MainActor(MessageActionInfo) -> Void
+    public let onFinish: @MainActor (MessageActionInfo) -> Void
     /// Callback when an error occurs.
-    public let onError: @MainActor(Error) -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.message = message
         self.channel = channel
@@ -347,15 +347,15 @@ public final class MessageActionsViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// Callback when an action is finished.
-    public let onFinish: @MainActor(MessageActionInfo) -> Void
+    public let onFinish: @MainActor (MessageActionInfo) -> Void
     /// Callback when an error occurs.
-    public let onError: @MainActor(Error) -> Void
+    public let onError: @MainActor (Error) -> Void
     
     public init(
         message: ChatMessage,
         channel: ChatChannel,
-        onFinish: @escaping @MainActor(MessageActionInfo) -> Void,
-        onError: @escaping @MainActor(Error) -> Void
+        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
+        onError: @escaping @MainActor (Error) -> Void
     ) {
         self.message = message
         self.channel = channel
@@ -397,14 +397,14 @@ public final class JumpToUnreadButtonOptions: Sendable {
     /// The channel to jump to unread messages in.
     public let channel: ChatChannel
     /// Callback when the jump to message button is tapped.
-    public let onJumpToMessage: @MainActor() -> Void
+    public let onJumpToMessage: @MainActor () -> Void
     /// Callback when the close button is tapped.
-    public let onClose: @MainActor() -> Void
+    public let onClose: @MainActor () -> Void
     
     public init(
         channel: ChatChannel,
-        onJumpToMessage: @escaping @MainActor() -> Void,
-        onClose: @escaping @MainActor() -> Void
+        onJumpToMessage: @escaping @MainActor () -> Void,
+        onClose: @escaping @MainActor () -> Void
     ) {
         self.channel = channel
         self.onJumpToMessage = onJumpToMessage
