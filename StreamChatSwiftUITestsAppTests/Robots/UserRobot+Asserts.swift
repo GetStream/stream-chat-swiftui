@@ -354,7 +354,8 @@ extension UserRobot {
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
-        if !MessageListPage.cells.isEmpty {
+        // swiftformat:disable:next isEmpty
+        if MessageListPage.cells.count > 0 {
             let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
             let actualText = attributes.text(in: messageCell).waitForTextDisappearance(deletedText).text
             XCTAssertNotEqual(attributes.deletedMessagePlaceholder, actualText, file: file, line: line)
@@ -376,7 +377,7 @@ extension UserRobot {
         XCTAssertEqual(author, actualAuthor, file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertScrollToBottomButton(
         isVisible: Bool,
@@ -394,7 +395,7 @@ extension UserRobot {
         )
         return self
     }
-    
+
     @discardableResult
     func assertScrollToBottomButtonUnreadCount(
         _ expectedCount: Int,
@@ -470,7 +471,7 @@ extension UserRobot {
         XCTAssertTrue(errorButton.exists, "There is no error icon", file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func waitForMessageDeliveryStatus(
         _ deliveryStatus: MessageDeliveryStatus?,
@@ -593,7 +594,7 @@ extension UserRobot {
         XCTAssertEqual(attributes.text(in: oldestMessage).text, "1", file: file, line: line)
         return self
     }
-    
+
     @discardableResult
     func assertThreadListPagination(
         messagesCount expectedCount: Int,
@@ -610,7 +611,7 @@ extension UserRobot {
 
         let parentMessage = MessageListPage.cells.lastMatch! // parent message
         XCTAssertEqual(attributes.text(in: parentMessage).text, "1", file: file, line: line)
-        
+
         let firstThreadReply = MessageListPage.cells.allElementsBoundByIndex[MessageListPage.cells.count - 2]
         XCTAssertEqual(attributes.text(in: firstThreadReply).text, "1", file: file, line: line)
         return self
@@ -705,7 +706,7 @@ extension UserRobot {
         XCTAssertTrue(link.isHittable, "Link itself is not clickable")
         return self
     }
-    
+
     @discardableResult
     func waitForMessageVisibility(at messageCellIndex: Int) -> Self {
         _ = messageCell(withIndex: messageCellIndex).waitForHitPoint()
@@ -729,7 +730,7 @@ extension UserRobot {
         let actualText = message.waitForText(quotedText).text
         XCTAssertEqual(quotedText, actualText)
         XCTAssertTrue(message.exists, "Quoted message was not showed")
-        
+
         if !replyText.isEmpty {
             let message = attributes.text(in: messageCell).wait()
             let actualText = message.waitForText(replyText).text
@@ -737,7 +738,7 @@ extension UserRobot {
         }
         return self
     }
-    
+
     @discardableResult
     func assertQuotedMessageWithAttachment(
         quotedText: String,
