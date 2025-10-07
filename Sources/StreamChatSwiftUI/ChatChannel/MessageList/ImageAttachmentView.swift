@@ -466,10 +466,11 @@ public struct MediaAttachment: Identifiable, Equatable, Sendable {
 
 extension MediaAttachment {
     init(from attachment: ChatMessageImageAttachment) {
-        let url: URL = if let state = attachment.uploadingState {
-            state.localFileURL
+        let url: URL
+        if let state = attachment.uploadingState {
+            url = state.localFileURL
         } else {
-            attachment.imageURL
+            url = attachment.imageURL
         }
         self.init(
             url: url,

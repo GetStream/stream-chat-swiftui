@@ -20,10 +20,11 @@ struct ComposerTextInputView: UIViewRepresentable {
     var currentHeight: CGFloat
 
     func makeUIView(context: Context) -> InputTextView {
-        let inputTextView: InputTextView = if #available(iOS 16.0, *) {
-            InputTextView(usingTextLayoutManager: false)
+        let inputTextView: InputTextView
+        if #available(iOS 16.0, *) {
+            inputTextView = InputTextView(usingTextLayoutManager: false)
         } else {
-            InputTextView()
+            inputTextView = InputTextView()
         }
         context.coordinator.textView = inputTextView
         inputTextView.delegate = context.coordinator

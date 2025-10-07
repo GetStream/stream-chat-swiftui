@@ -16,12 +16,14 @@ import SwiftUI
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
-    private static let newerMessagesLimit: Int = if #available(iOS 17, *) {
-        // On iOS 17 we can maintain the scroll position.
-        25
-    } else {
-        5
-    }
+    private static let newerMessagesLimit: Int = {
+        if #available(iOS 17, *) {
+            // On iOS 17 we can maintain the scroll position.
+            return 25
+        } else {
+            return 5
+        }
+    }()
     
     private var timer: Timer?
     private var currentDate: Date? {
