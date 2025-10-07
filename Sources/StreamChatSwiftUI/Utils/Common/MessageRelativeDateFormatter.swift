@@ -33,7 +33,9 @@ public final class MessageRelativeDateFormatter: DateFormatter, @unchecked Senda
     }
 
     var todayFormatter: DateFormatter {
-        InjectedValues[\.utils].dateFormatter
+        StreamConcurrency.onMain {
+            InjectedValues[\.utils].dateFormatter
+        }
     }
     
     let yesterdayFormatter: DateFormatter = {

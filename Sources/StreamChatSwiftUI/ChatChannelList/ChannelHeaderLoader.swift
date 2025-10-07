@@ -36,7 +36,7 @@ import UIKit
     private var loadedImages = [ChannelId: UIImage]()
     private let didLoadImage = PassthroughSubject<ChannelId, Never>()
 
-    public nonisolated init() {
+    public init() {
         // Public init.
     }
 
@@ -119,8 +119,12 @@ import UIKit
             imageCDN: imageCDN
         ) { [weak self] images in
             guard let self else { return }
+            let options = ChannelAvatarsMergerOptions()
             DispatchQueue.global(qos: .userInteractive).async { [channelAvatarsMerger] in
-                let image = channelAvatarsMerger.createMergedAvatar(from: images)
+                let image = channelAvatarsMerger.createMergedAvatar(
+                    from: images,
+                    options: options
+                )
                 DispatchQueue.main.async {
                     if let image {
                         self.didFinishedLoading(for: cid, image: image)

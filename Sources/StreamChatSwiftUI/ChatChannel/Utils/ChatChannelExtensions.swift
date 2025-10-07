@@ -45,7 +45,7 @@ extension ChatChannel {
     /// - Parameters:
     ///  - currentUserId: the id of the current user.
     /// - Returns: the typing indicator string.
-    public func typingIndicatorString(currentUserId: UserId?) -> String {
+    @MainActor public func typingIndicatorString(currentUserId: UserId?) -> String {
         let chatUserNamer = InjectedValues[\.utils].chatUserNamer
         let typingUsers = currentlyTypingUsersFiltered(currentUserId: currentUserId)
         if let user = typingUsers.first(where: { user in user.name != nil }), let name = chatUserNamer.name(forUser: user) {

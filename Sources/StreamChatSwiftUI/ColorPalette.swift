@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 
 /// Provides the colors used throughout the SDK.
-public struct ColorPalette: Sendable {
+@MainActor public struct ColorPalette {
     public init() {
         navigationBarTitle = text
         navigationBarSubtitle = textLowEmphasis

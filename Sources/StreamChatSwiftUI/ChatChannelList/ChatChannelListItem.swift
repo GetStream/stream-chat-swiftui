@@ -336,38 +336,38 @@ public struct InjectedChannelInfo: Sendable {
 }
 
 extension ChatChannel {
-    public var previewMessageText: String? {
+    @MainActor public var previewMessageText: String? {
         guard let previewMessage else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.format(previewMessage, in: self)
     }
 
-    public var draftMessageText: String? {
+    @MainActor public var draftMessageText: String? {
         guard let draftMessage else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: self)
     }
 
-    public var lastMessageText: String? {
+    @MainActor public var lastMessageText: String? {
         guard let latestMessage = latestMessages.first else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.format(latestMessage, in: self)
     }
 
-    public var shouldShowTypingIndicator: Bool {
+    @MainActor public var shouldShowTypingIndicator: Bool {
         !currentlyTypingUsersFiltered(
             currentUserId: InjectedValues[\.chatClient].currentUserId
         ).isEmpty && config.typingEventsEnabled
     }
     
-    public var shouldShowOnlineIndicator: Bool {
+    @MainActor public var shouldShowOnlineIndicator: Bool {
         !lastActiveMembers.filter { member in
             member.isOnline && member.id != InjectedValues[\.chatClient].currentUserId
         }
         .isEmpty
     }
 
-    public var subtitleText: String {
+    @MainActor public var subtitleText: String {
         if isMuted {
             L10n.Channel.Item.muted
         } else if shouldShowTypingIndicator {
@@ -379,7 +379,7 @@ extension ChatChannel {
         }
     }
 
-    public var timestampText: String {
+    @MainActor public var timestampText: String {
         if let lastMessageAt {
             let utils = InjectedValues[\.utils]
             let formatter = utils.channelListConfig.messageRelativeDateFormatEnabled ?

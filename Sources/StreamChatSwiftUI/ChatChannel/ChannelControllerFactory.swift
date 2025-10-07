@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Factory for creating channel controllers.
-class ChannelControllerFactory {
+@MainActor class ChannelControllerFactory {
     @Injected(\.chatClient) var chatClient
 
     var currentChannelController: ChatChannelController?

@@ -6,7 +6,7 @@ import Foundation
 import StreamChat
 import SwiftUI
 
-public protocol MarkdownFormatter {
+@MainActor public protocol MarkdownFormatter {
     /// Formats a Markdown string into an `AttributedString`, merging Markdown styles with the provided base attributes and honoring the given layout direction.
     /// - Parameters:
     ///   - string: The Markdown-formatted source string to render.
