@@ -745,9 +745,9 @@ import XCTest
             size: size,
             mentions: Set(mentions),
             """
-            This is [markdown link](https://getstream.io)
-            This is plain link: https://getstream.io
-            This is mention 1: @user_id_1
+            This is [markdown link](https://getstream.io)  
+            This is plain link: https://getstream.io  
+            This is mention 1: @user_id_1  
             This is mention 2: @Name_2
             """
         )
@@ -866,12 +866,12 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            This is **bold** text
-            This text is _italicized_
-            This was ~~mistaken~~ text
+            This is **bold** text  
+            This text is _italicized_  
+            This was ~~mistaken~~ text  
             This has backslashes for a newline\\
-            This has html line break<br/>Will span two lines
-            ***All this text is important***
+            This has html line break<br/>Will span two lines  
+            ***All this text is important***  
             """
         )
         AssertSnapshot(view, size: size)

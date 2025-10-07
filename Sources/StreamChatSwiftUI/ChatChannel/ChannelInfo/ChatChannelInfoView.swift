@@ -143,38 +143,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
         }
-        .toolbarThemed {
-            ToolbarItem(placement: .principal) {
-                Group {
-                    if viewModel.showSingleMemberDMView {
-                        Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
-                            .font(fonts.bodyBold)
-                            .foregroundColor(Color(colors.navigationBarTitle))
-                    } else {
-                        ChannelTitleView(
-                            channel: viewModel.channel,
-                            shouldShowTypingIndicator: false
-                        )
-                        .id(viewModel.channelId)
-                    }
-                }
-            }
-
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if viewModel.shouldShowAddUserButton {
-                    Button {
-                        viewModel.addUsersShown = true
-                    } label: {
-                        Image(systemName: "person.badge.plus")
-                            .customizable()
-                            .foregroundColor(Color.white)
-                            .padding(.all, 8)
-                            .background(colors.tintColor)
-                            .clipShape(Circle())
-                    }
-                }
-            }
-        }
+        .modifier(ChatChannelInfoViewHeaderViewModifier(viewModel: viewModel))
         .onReceive(keyboardWillChangePublisher) { visible in
             viewModel.keyboardShown = visible
         }
@@ -184,5 +153,63 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     
     private var popupShown: Bool {
         viewModel.addUsersShown || viewModel.selectedParticipant != nil
+    }
+}
+
+struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    
+    let viewModel: ChatChannelInfoViewModel
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .toolbarThemed {
+                    toolbar(glyphSize: 24)
+                    #if compiler(>=6.2)
+                        .sharedBackgroundVisibility(.hidden)
+                    #endif
+                }
+        } else {
+            content
+                .toolbarThemed {
+                    toolbar()
+                }
+        }
+    }
+    
+    @ToolbarContentBuilder func toolbar(glyphSize: CGFloat? = nil) -> some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            Group {
+                if viewModel.showSingleMemberDMView {
+                    Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationBarTitle))
+                } else {
+                    ChannelTitleView(
+                        channel: viewModel.channel,
+                        shouldShowTypingIndicator: false
+                    )
+                    .id(viewModel.channelId)
+                }
+            }
+        }
+
+        ToolbarItem(placement: .navigationBarTrailing) {
+            if viewModel.shouldShowAddUserButton {
+                Button {
+                    viewModel.addUsersShown = true
+                } label: {
+                    Image(systemName: "person.badge.plus")
+                        .customizable()
+                        .frame(width: glyphSize, height: glyphSize)
+                        .foregroundColor(Color(colors.navigationBarGlyph))
+                        .padding(.all, 8)
+                        .background(colors.navigationBarTintColor)
+                        .clipShape(Circle())
+                }
+            }
+        }
     }
 }
