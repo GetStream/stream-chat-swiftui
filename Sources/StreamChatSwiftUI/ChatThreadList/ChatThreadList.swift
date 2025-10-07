@@ -10,7 +10,7 @@ import SwiftUI
 public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: View>: View {
     var threads: LazyCachedMapCollection<ChatThread>
     private var factory: Factory
-    private var threadDestination: (ChatThread) -> Factory.ThreadDestination
+    private var threadDestination: @MainActor (ChatThread) -> Factory.ThreadDestination
     @Binding private var selectedThread: ThreadSelectionInfo?
     
     private var onItemTap: (ChatThread) -> Void
@@ -25,7 +25,7 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
     public init(
         factory: Factory,
         threads: LazyCachedMapCollection<ChatThread>,
-        threadDestination: @escaping (ChatThread) -> Factory.ThreadDestination,
+        threadDestination: @escaping @MainActor (ChatThread) -> Factory.ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>,
         onItemTap: @escaping (ChatThread) -> Void,
         onItemAppear: @escaping (Int) -> Void,
