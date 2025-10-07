@@ -5,6 +5,7 @@ excluded:
   - Sources/StreamChatSwiftUI/Generated
   - Sources/StreamChatSwiftUI/StreamSwiftyGif
   - Sources/StreamChatSwiftUI/StreamNuke
+  - vendor/bundle
 
 only_rules:
   - attribute_name_spacing
