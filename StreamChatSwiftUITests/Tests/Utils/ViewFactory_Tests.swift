@@ -21,7 +21,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeNoChannelsView()
+        let view = viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
 
         // Then
         XCTAssert(view is NoChannelsView)
@@ -32,7 +32,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeLoadingView()
+        let view = viewFactory.makeLoadingView(options: LoadingViewOptions())
 
         // Then
         XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
@@ -54,7 +54,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let viewModifier = viewFactory.makeChannelListHeaderViewModifier(title: "Test")
+        let viewModifier = viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: "Test"))
 
         // Then
         XCTAssert(viewModifier is DefaultChannelListHeaderModifier)
@@ -73,9 +73,11 @@ import XCTest
 
         // When
         let actions = viewFactory.supportedMoreChannelActions(
-            for: channel,
-            onDismiss: {},
-            onError: { _ in }
+            options: SupportedMoreChannelActionsOptions(
+                channel: channel,
+                onDismiss: {},
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -89,10 +91,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeMoreChannelActionsView(
-            for: channel,
-            swipedChannelId: .constant(nil),
-            onDismiss: {},
-            onError: { _ in }
+            options: MoreChannelActionsViewOptions(
+                channel: channel,
+                swipedChannelId: .constant(nil),
+                onDismiss: {},
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -105,14 +109,16 @@ import XCTest
         
         // When
         let view = viewFactory.makeSearchResultsView(
-            selectedChannel: .constant(nil),
-            searchResults: [],
-            loadingSearchResults: false,
-            onlineIndicatorShown: { _ in true },
-            channelNaming: { _ in "Test" },
-            imageLoader: { _ in UIImage(systemName: "person")! },
-            onSearchResultTap: { _ in },
-            onItemAppear: { _ in }
+            options: SearchResultsViewOptions(
+                selectedChannel: .constant(nil),
+                searchResults: [],
+                loadingSearchResults: false,
+                onlineIndicatorShown: { _ in true },
+                channelNaming: { _ in "Test" },
+                imageLoader: { _ in UIImage(systemName: "person")! },
+                onSearchResultTap: { _ in },
+                onItemAppear: { _ in }
+            )
         )
         
         // Then
@@ -130,7 +136,7 @@ import XCTest
         )
 
         // When
-        let view = viewFactory.makeMessageAvatarView(for: userInfo)
+        let view = viewFactory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: userInfo))
 
         // Then
         XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
@@ -148,8 +154,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeQuotedMessageAvatarView(
-            for: userInfo,
-            size: CGSize(width: 16, height: 16)
+            options: QuotedMessageAvatarViewOptions(
+                userDisplayInfo: userInfo,
+                size: CGSize(width: 16, height: 16)
+            )
         )
 
         // Then
@@ -161,7 +169,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeChannelHeaderViewModifier(for: .mockDMChannel())
+        let view = viewFactory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: .mockDMChannel()))
 
         // Then
         XCTAssert(view is DefaultChannelHeaderModifier<DefaultViewFactory>)
@@ -173,10 +181,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeMessageTextView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: MessageTextViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -189,10 +199,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeImageAttachmentView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: ImageAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -205,10 +217,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeGiphyAttachmentView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: GiphyAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -221,10 +235,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeLinkAttachmentView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: LinkAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -237,10 +253,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeFileAttachmentView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: FileAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -253,10 +271,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeVideoAttachmentView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: VideoAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -269,9 +289,11 @@ import XCTest
 
         // When
         let view = viewFactory.makeDeletedMessageView(
-            for: message,
-            isFirst: true,
-            availableWidth: 300
+            options: DeletedMessageViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300
+            )
         )
 
         // Then
@@ -284,10 +306,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeCustomAttachmentViewType(
-            for: message,
-            isFirst: true,
-            availableWidth: 300,
-            scrolledId: .constant(nil)
+            options: CustomAttachmentViewTypeOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -299,7 +323,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeGiphyBadgeViewType(for: message, availableWidth: 300)
+        let view = viewFactory.makeGiphyBadgeViewType(options: GiphyBadgeViewTypeOptions(message: message, availableWidth: 300))
 
         // Then
         XCTAssert(view is GiphyBadgeView)
@@ -311,8 +335,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeCustomAttachmentView(
-            addedCustomAttachments: [],
-            onCustomAttachmentTap: { _ in }
+            options: CustomComposerAttachmentViewOptions(
+                addedCustomAttachments: [],
+                onCustomAttachmentTap: { _ in }
+            )
         )
 
         // Then
@@ -325,8 +351,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeCustomAttachmentPreviewView(
-            addedCustomAttachments: [],
-            onCustomAttachmentTap: { _ in }
+            options: CustomAttachmentPreviewViewOptions(
+                addedCustomAttachments: [],
+                onCustomAttachmentTap: { _ in }
+            )
         )
 
         // Then
@@ -339,8 +367,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeFilePickerView(
-            filePickerShown: .constant(true),
-            addedFileURLs: .constant([])
+            options: FilePickerViewOptions(
+                filePickerShown: .constant(true),
+                addedFileURLs: .constant([])
+            )
         )
 
         // Then
@@ -353,9 +383,11 @@ import XCTest
 
         // When
         let view = viewFactory.makeCameraPickerView(
-            selected: .constant(.photos),
-            cameraPickerShown: .constant(false),
-            cameraImageAdded: { _ in }
+            options: CameraPickerViewOptions(
+                selected: .constant(.photos),
+                cameraPickerShown: .constant(false),
+                cameraImageAdded: { _ in }
+            )
         )
 
         // Then
@@ -367,7 +399,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeAssetsAccessPermissionView()
+        let view = viewFactory.makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions())
 
         // Then
         XCTAssert(view is AssetsAccessPermissionView)
@@ -387,10 +419,12 @@ import XCTest
 
         // When
         let actions = viewFactory.supportedMessageActions(
-            for: message,
-            channel: .mockDMChannel(),
-            onFinish: { _ in },
-            onError: { _ in }
+            options: SupportedMessageActionsOptions(
+                message: message,
+                channel: .mockDMChannel(),
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -403,10 +437,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeMessageActionsView(
-            for: message,
-            channel: .mockDMChannel(),
-            onFinish: { _ in },
-            onError: { _ in }
+            options: MessageActionsViewOptions(
+                message: message,
+                channel: .mockDMChannel(),
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -419,9 +455,11 @@ import XCTest
 
         // When
         let view = viewFactory.makeMessageReactionView(
-            message: message,
-            onTapGesture: {},
-            onLongPressGesture: {}
+            options: MessageReactionViewOptions(
+                message: message,
+                onTapGesture: {},
+                onLongPressGesture: {}
+            )
         )
 
         // Then
@@ -434,16 +472,18 @@ import XCTest
 
         // When
         let view = viewFactory.makeReactionsOverlayView(
-            channel: .mockDMChannel(),
-            currentSnapshot: UIImage(systemName: "checkmark")!,
-            messageDisplayInfo: .init(
-                message: message,
-                frame: .zero,
-                contentWidth: 300,
-                isFirst: true
-            ),
-            onBackgroundTap: {},
-            onActionExecuted: { _ in }
+            options: ReactionsOverlayViewOptions(
+                channel: .mockDMChannel(),
+                currentSnapshot: UIImage(systemName: "checkmark")!,
+                messageDisplayInfo: .init(
+                    message: message,
+                    frame: .zero,
+                    contentWidth: 300,
+                    isFirst: true
+                ),
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
         )
 
         // Then
@@ -455,7 +495,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let viewModifier = viewFactory.makeMessageThreadHeaderViewModifier()
+        let viewModifier = viewFactory.makeMessageThreadHeaderViewModifier(options: MessageThreadHeaderViewModifierOptions())
 
         // Then
         XCTAssert(viewModifier is DefaultMessageThreadHeaderModifier)
@@ -467,8 +507,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeSendInChannelView(
-            showReplyInChannel: .constant(true),
-            isDirectMessage: true
+            options: SendInChannelViewOptions(
+                showReplyInChannel: .constant(true),
+                isDirectMessage: true
+            )
         )
 
         // Then
@@ -481,7 +523,9 @@ import XCTest
 
         // When
         let view = viewFactory.makeQuotedMessageHeaderView(
-            quotedMessage: .constant(message)
+            options: QuotedMessageHeaderViewOptions(
+                quotedMessage: .constant(message)
+            )
         )
 
         // Then
@@ -494,10 +538,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeQuotedMessageView(
-            quotedMessage: message,
-            fillAvailableSpace: true,
-            isInComposer: false,
-            scrolledId: .constant(nil)
+            options: QuotedMessageViewOptions(
+                quotedMessage: message,
+                fillAvailableSpace: true,
+                isInComposer: false,
+                scrolledId: .constant(nil)
+            )
         )
 
         // Then
@@ -510,7 +556,9 @@ import XCTest
 
         // When
         let view = viewFactory.makeEditedMessageHeaderView(
-            editedMessage: .constant(message)
+            options: EditedMessageHeaderViewOptions(
+                editedMessage: .constant(message)
+            )
         )
 
         // Then
@@ -522,7 +570,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeCommandsContainerView(suggestions: [:]) { _ in }
+        let view = viewFactory.makeCommandsContainerView(options: CommandsContainerViewOptions(suggestions: [:]) { _ in })
 
         // Then
         XCTAssert(view is CommandsContainerView)
@@ -534,11 +582,13 @@ import XCTest
 
         // When
         let view = viewFactory.makeLeadingSwipeActionsView(
-            channel: .mockDMChannel(),
-            offsetX: 80,
-            buttonWidth: 40,
-            swipedChannelId: .constant(nil),
-            buttonTapped: { _ in }
+            options: LeadingSwipeActionsViewOptions(
+                channel: .mockDMChannel(),
+                offsetX: 80,
+                buttonWidth: 40,
+                swipedChannelId: .constant(nil),
+                buttonTapped: { _ in }
+            )
         )
 
         // Then
@@ -551,12 +601,14 @@ import XCTest
 
         // When
         let view = viewFactory.makeTrailingSwipeActionsView(
-            channel: .mockDMChannel(),
-            offsetX: 80,
-            buttonWidth: 40,
-            swipedChannelId: .constant(nil),
-            leftButtonTapped: { _ in },
-            rightButtonTapped: { _ in }
+            options: TrailingSwipeActionsViewOptions(
+                channel: .mockDMChannel(),
+                offsetX: 80,
+                buttonWidth: 40,
+                swipedChannelId: .constant(nil),
+                leftButtonTapped: { _ in },
+                rightButtonTapped: { _ in }
+            )
         )
 
         // Then
@@ -569,8 +621,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeMessageReadIndicatorView(
-            channel: .mockDMChannel(),
-            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique))
+            options: MessageReadIndicatorViewOptions(
+                channel: .mockDMChannel(),
+                message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique))
+            )
         )
 
         // Then
@@ -583,7 +637,9 @@ import XCTest
 
         // When
         let view = viewFactory.makeSystemMessageView(
-            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique))
+            options: SystemMessageViewOptions(
+                message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique))
+            )
         )
 
         // Then
@@ -596,8 +652,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeReactionsUsersView(
-            message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique)),
-            maxHeight: 280
+            options: ReactionsUsersViewOptions(
+                message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique)),
+                maxHeight: 280
+            )
         )
 
         // Then
@@ -609,7 +667,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeChannelListFooterView()
+        let view = viewFactory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
 
         // Then
         XCTAssert(view is EmptyView)
@@ -620,7 +678,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeChannelListStickyFooterView()
+        let view = viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
 
         // Then
         XCTAssert(view is EmptyView)
@@ -631,7 +689,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeChannelListModifier()
+        let modifier = viewFactory.makeChannelListModifier(options: ChannelListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -642,7 +700,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageListModifier()
+        let modifier = viewFactory.makeMessageListModifier(options: MessageListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -669,7 +727,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeComposerViewModifier()
+        let modifier = viewFactory.makeComposerViewModifier(options: ComposerViewModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -680,7 +738,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeMessageDateView(for: message)
+        let view = viewFactory.makeMessageDateView(options: MessageDateViewOptions(message: message))
 
         // Then
         XCTAssert(view is MessageDateView)
@@ -691,7 +749,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeMessageAuthorAndDateView(for: message)
+        let view = viewFactory.makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions(message: message))
 
         // Then
         XCTAssert(view is MessageAuthorAndDateView)
@@ -702,7 +760,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let viewModifier = viewFactory.makeChannelListContentModifier()
+        let viewModifier = viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions())
 
         // Then
         XCTAssert(viewModifier is EmptyViewModifier)
@@ -713,7 +771,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeMessageListDateIndicator(date: Date())
+        let view = viewFactory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: Date()))
 
         // Then
         XCTAssert(view is DateIndicatorView)
@@ -724,7 +782,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeLastInGroupHeaderView(for: message)
+        let view = viewFactory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
 
         // Then
         XCTAssert(view is EmptyView)
@@ -736,9 +794,11 @@ import XCTest
 
         // When
         let view = viewFactory.makeEmojiTextView(
-            message: message,
-            scrolledId: .constant(nil),
-            isFirst: true
+            options: EmojiTextViewOptions(
+                message: message,
+                scrolledId: .constant(nil),
+                isFirst: true
+            )
         )
 
         // Then
@@ -751,9 +811,11 @@ import XCTest
 
         // When
         let view = viewFactory.makeMessageRepliesView(
-            channel: ChatChannel.mockDMChannel(),
-            message: message,
-            replyCount: 2
+            options: MessageRepliesViewOptions(
+                channel: ChatChannel.mockDMChannel(),
+                message: message,
+                replyCount: 2
+            )
         )
 
         // Then
@@ -766,10 +828,12 @@ import XCTest
 
         // When
         let view = viewFactory.makeMessageRepliesShownInChannelView(
-            channel: ChatChannel.mockDMChannel(),
-            message: message,
-            parentMessage: message,
-            replyCount: 2
+            options: MessageRepliesShownInChannelViewOptions(
+                channel: ChatChannel.mockDMChannel(),
+                message: message,
+                parentMessage: message,
+                replyCount: 2
+            )
         )
 
         // Then
@@ -782,8 +846,10 @@ import XCTest
 
         // When
         let view = viewFactory.makeTypingIndicatorBottomView(
-            channel: .mockDMChannel(),
-            currentUserId: nil
+            options: TypingIndicatorBottomViewOptions(
+                channel: .mockDMChannel(),
+                currentUserId: nil
+            )
         )
 
         // Then
@@ -796,9 +862,11 @@ import XCTest
 
         // When
         let view = viewFactory.makeReactionsContentView(
-            message: .mock(),
-            contentRect: .zero,
-            onReactionTap: { _ in }
+            options: ReactionsContentViewOptions(
+                message: .mock(),
+                contentRect: .zero,
+                onReactionTap: { _ in }
+            )
         )
 
         // Then
@@ -811,8 +879,10 @@ import XCTest
         
         // When
         let view = viewFactory.makeNewMessagesIndicatorView(
-            newMessagesStartId: .constant(nil),
-            count: 2
+            options: NewMessagesIndicatorViewOptions(
+                newMessagesStartId: .constant(nil),
+                count: 2
+            )
         )
         
         // Then
@@ -825,13 +895,15 @@ import XCTest
         
         // When
         let view = viewFactory.makeComposerTextInputView(
-            text: .constant("test"),
-            height: .constant(40),
-            selectedRangeLocation: .constant(0),
-            placeholder: "Send a message",
-            editable: true,
-            maxMessageLength: nil,
-            currentHeight: 40
+            options: ComposerTextInputViewOptions(
+                text: .constant("test"),
+                height: .constant(40),
+                selectedRangeLocation: .constant(0),
+                placeholder: "Send a message",
+                editable: true,
+                maxMessageLength: nil,
+                currentHeight: 40
+            )
         )
         
         // Then
@@ -841,10 +913,10 @@ import XCTest
     func test_viewFactory_makeMessageListContainerModifier() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let modifier = viewFactory.makeMessageListContainerModifier()
-        
+        let modifier = viewFactory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions())
+
         // Then
         XCTAssert(modifier is EmptyViewModifier)
     }
@@ -855,10 +927,12 @@ import XCTest
         
         // When
         let view = viewFactory.makeBottomReactionsView(
-            message: .mock(),
-            showsAllInfo: true,
-            onTap: {},
-            onLongPress: {}
+            options: ReactionsBottomViewOptions(
+                message: .mock(),
+                showsAllInfo: true,
+                onTap: {},
+                onLongPress: {}
+            )
         )
         let name = String(describing: type(of: view))
 
@@ -871,7 +945,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeCustomAttachmentQuotedView(for: .mock())
+        let view = viewFactory.makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions(message: .mock()))
         
         // Then
         XCTAssert(view is EmptyView)
@@ -886,7 +960,12 @@ import XCTest
         let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
         
         // When
-        let view = viewFactory.makeComposerRecordingView(viewModel: viewModel, gestureLocation: .zero)
+        let view = viewFactory.makeComposerRecordingView(
+            options: ComposerRecordingViewOptions(
+                viewModel: viewModel,
+                gestureLocation: .zero
+            )
+        )
         
         // Then
         XCTAssert(view is RecordingView)
@@ -895,10 +974,10 @@ import XCTest
     func test_viewFactory_makeComposerRecordingTipView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let view = viewFactory.makeComposerRecordingTipView()
-        
+        let view = viewFactory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
+
         // Then
         XCTAssert(view is RecordingTipView)
     }
@@ -912,7 +991,9 @@ import XCTest
         let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
         
         // When
-        let view = viewFactory.makeComposerRecordingLockedView(viewModel: viewModel)
+        let view = viewFactory.makeComposerRecordingLockedView(
+            options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
+        )
         
         // Then
         XCTAssert(view is LockedView)
@@ -921,10 +1002,10 @@ import XCTest
     func test_viewFactory_makeChannelLoadingView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let view = viewFactory.makeChannelLoadingView()
-        
+        let view = viewFactory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
+
         // Then
         XCTAssert(view is LoadingView)
     }
@@ -935,8 +1016,10 @@ import XCTest
         
         // When
         let view = viewFactory.makeComposerPollView(
-            channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-            messageController: nil
+            options: ComposerPollViewOptions(
+                channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+                messageController: nil
+            )
         )
         
         // Then
@@ -948,7 +1031,13 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makePollView(message: .mock(), poll: Poll.mock(), isFirst: true)
+        let view = viewFactory.makePollView(
+            options: PollViewOptions(
+                message: .mock(),
+                poll: Poll.mock(),
+                isFirst: true
+            )
+        )
         
         // Then
         XCTAssert(view is PollAttachmentView<DefaultViewFactory>)
@@ -960,8 +1049,10 @@ import XCTest
         
         // When
         let view = viewFactory.makeChannelAvatarView(
-            for: .mockNonDMChannel(),
-            with: .init(showOnlineIndicator: false)
+            options: ChannelAvatarViewFactoryOptions(
+                channel: .mockNonDMChannel(),
+                options: .init(showOnlineIndicator: false)
+            )
         )
         
         // Then
@@ -974,10 +1065,12 @@ import XCTest
         
         // When
         let view = viewFactory.makeGalleryView(
-            mediaAttachments: [],
-            message: .mock(),
-            isShown: .constant(true),
-            options: .init(selectedIndex: 0)
+            options: GalleryViewOptions(
+                mediaAttachments: [],
+                message: .mock(),
+                isShown: .constant(true),
+                options: .init(selectedIndex: 0)
+            )
         )
             
         // Then
@@ -990,9 +1083,11 @@ import XCTest
         
         // When
         let view = viewFactory.makeGalleryHeaderView(
-            title: .unique,
-            subtitle: .unique,
-            shown: .constant(true)
+            options: GalleryHeaderViewOptions(
+                title: .unique,
+                subtitle: .unique,
+                shown: .constant(true)
+            )
         )
             
         // Then
@@ -1005,10 +1100,12 @@ import XCTest
         
         // When
         let view = viewFactory.makeVideoPlayerView(
-            attachment: .mock(id: .unique),
-            message: .mock(),
-            isShown: .constant(true),
-            options: .init(selectedIndex: 0)
+            options: VideoPlayerViewOptions(
+                attachment: .mock(id: .unique),
+                message: .mock(),
+                isShown: .constant(true),
+                options: .init(selectedIndex: 0)
+            )
         )
             
         // Then
@@ -1021,9 +1118,11 @@ import XCTest
         
         // When
         let view = viewFactory.makeVideoPlayerHeaderView(
-            title: .unique,
-            subtitle: .unique,
-            shown: .constant(true)
+            options: VideoPlayerHeaderViewOptions(
+                title: .unique,
+                subtitle: .unique,
+                shown: .constant(true)
+            )
         )
             
         // Then
@@ -1036,8 +1135,10 @@ import XCTest
         
         // When
         let view = viewFactory.makeAddUsersView(
-            options: .init(loadedUsers: []),
-            onUserTap: { _ in }
+            options: AddUsersViewOptions(
+                options: .init(loadedUsers: []),
+                onUserTap: { _ in }
+            )
         )
         
         // Then

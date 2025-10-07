@@ -16,7 +16,7 @@ class ChatUserNamer_Tests: XCTestCase {
         let userNameString = defaultChatUserNamer.name(forUser: chatUser)
 
         // Then
-        guard let userNameString = userNameString else {
+        guard let userNameString else {
             XCTFail()
             return
         }

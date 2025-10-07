@@ -101,17 +101,17 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     
     var title: String {
         if showReplyCount {
-            return "\(replyCount) \(repliesText)"
+            "\(replyCount) \(repliesText)"
         } else {
-            return L10n.Message.Threads.reply
+            L10n.Message.Threads.reply
         }
     }
 
     var repliesText: String {
         if message.replyCount == 1 {
-            return L10n.Message.Threads.reply
+            L10n.Message.Threads.reply
         } else {
-            return L10n.Message.Threads.replies
+            L10n.Message.Threads.replies
         }
     }
 }
@@ -142,10 +142,12 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         VStack {
             if let parentMessage = parentMessageObserver.message {
                 factory.makeMessageRepliesShownInChannelView(
-                    channel: channel,
-                    message: message,
-                    parentMessage: parentMessage,
-                    replyCount: parentMessage.replyCount
+                    options: .init(
+                        channel: channel,
+                        message: message,
+                        parentMessage: parentMessage,
+                        replyCount: parentMessage.replyCount
+                    )
                 )
             } else {
                 EmptyView()

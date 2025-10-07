@@ -6,11 +6,11 @@ import Foundation
 
 @available(iOS 15, *)
 extension AttributedStringProtocol {
-    func ranges<T>(
-        of stringToFind: T,
+    func ranges(
+        of stringToFind: some StringProtocol,
         options: String.CompareOptions = [],
         locale: Locale? = nil
-    ) -> [Range<AttributedString.Index>] where T: StringProtocol {
+    ) -> [Range<AttributedString.Index>] {
         guard !characters.isEmpty else { return [] }
         var ranges = [Range<AttributedString.Index>]()
         var source: AttributedSubstring = self[startIndex...]

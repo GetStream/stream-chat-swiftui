@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -212,14 +212,12 @@
 		8465FCE7274695B400AF091E /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8465FD6A2746A95700AF091E /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCED2746A95600AF091E /* L10n.swift */; };
 		8465FD6B2746A95700AF091E /* L10n_template.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCEE2746A95600AF091E /* L10n_template.stencil */; };
-		8465FD6D2746A95700AF091E /* ViewModelsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCF02746A95600AF091E /* ViewModelsFactory.swift */; };
 		8465FD6E2746A95700AF091E /* DependencyInjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCF12746A95600AF091E /* DependencyInjection.swift */; };
 		8465FD6F2746A95700AF091E /* StreamChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCF22746A95600AF091E /* StreamChat.swift */; };
 		8465FD702746A95700AF091E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCF42746A95600AF091E /* Localizable.strings */; };
 		8465FD712746A95700AF091E /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCF62746A95600AF091E /* Localizable.stringsdict */; };
 		8465FD722746A95700AF091E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCF82746A95600AF091E /* Assets.xcassets */; };
 		8465FD732746A95700AF091E /* ActionItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCFA2746A95600AF091E /* ActionItemView.swift */; };
-		8465FD742746A95700AF091E /* ViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCFB2746A95600AF091E /* ViewFactory.swift */; };
 		8465FD752746A95700AF091E /* ImageAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */; };
 		8465FD762746A95700AF091E /* MessageListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FCFF2746A95600AF091E /* MessageListView.swift */; };
 		8465FD772746A95700AF091E /* FileAttachmentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD002746A95600AF091E /* FileAttachmentPreview.swift */; };
@@ -309,7 +307,6 @@
 		8465FDCC2746A95700AF091E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8465FD5D2746A95700AF091E /* README.md */; };
 		8465FDCD2746A95700AF091E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD5E2746A95700AF091E /* Fonts.swift */; };
 		8465FDCE2746A95700AF091E /* InjectedValuesExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */; };
-		8465FDD02746A95700AF091E /* DefaultViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD612746A95700AF091E /* DefaultViewFactory.swift */; };
 		8465FDD12746A95700AF091E /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD622746A95700AF091E /* Images.swift */; };
 		8465FDD22746A95800AF091E /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD632746A95700AF091E /* Utils.swift */; };
 		8465FDD32746A95800AF091E /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD642746A95700AF091E /* ColorPalette.swift */; };
@@ -810,14 +807,12 @@
 		8465FCD7274694D200AF091E /* CustomChannelHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomChannelHeader.swift; sourceTree = "<group>"; };
 		8465FCED2746A95600AF091E /* L10n.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
 		8465FCEE2746A95600AF091E /* L10n_template.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = L10n_template.stencil; sourceTree = "<group>"; };
-		8465FCF02746A95600AF091E /* ViewModelsFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModelsFactory.swift; sourceTree = "<group>"; };
 		8465FCF12746A95600AF091E /* DependencyInjection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyInjection.swift; sourceTree = "<group>"; };
 		8465FCF22746A95600AF091E /* StreamChat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamChat.swift; sourceTree = "<group>"; };
 		8465FCF52746A95600AF091E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8465FCF72746A95600AF091E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		8465FCF82746A95600AF091E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8465FCFA2746A95600AF091E /* ActionItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionItemView.swift; sourceTree = "<group>"; };
-		8465FCFB2746A95600AF091E /* ViewFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewFactory.swift; sourceTree = "<group>"; };
 		8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentView.swift; sourceTree = "<group>"; };
 		8465FCFF2746A95600AF091E /* MessageListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageListView.swift; sourceTree = "<group>"; };
 		8465FD002746A95600AF091E /* FileAttachmentPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileAttachmentPreview.swift; sourceTree = "<group>"; };
@@ -908,7 +903,6 @@
 		8465FD5E2746A95700AF091E /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectedValuesExtensions.swift; sourceTree = "<group>"; };
 		8465FD602746A95700AF091E /* StreamChatSwiftUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamChatSwiftUI.h; sourceTree = "<group>"; };
-		8465FD612746A95700AF091E /* DefaultViewFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultViewFactory.swift; sourceTree = "<group>"; };
 		8465FD622746A95700AF091E /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		8465FD632746A95700AF091E /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		8465FD642746A95700AF091E /* ColorPalette.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
@@ -1137,6 +1131,10 @@
 		C14A465A284665B100EF498E /* SDKIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKIdentifier.swift; sourceTree = "<group>"; };
 		C52A0B5E2E1557F300176379 /* VideoPlayerFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerFooterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		84EB88092E8A747D0076DC17 /* ViewFactory */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewFactory; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8400A34E282E6BE30067D3A0 /* Frameworks */ = {
@@ -1662,9 +1660,7 @@
 				8465FD632746A95700AF091E /* Utils.swift */,
 				8465FCF12746A95600AF091E /* DependencyInjection.swift */,
 				8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */,
-				8465FCFB2746A95600AF091E /* ViewFactory.swift */,
-				8465FCF02746A95600AF091E /* ViewModelsFactory.swift */,
-				8465FD612746A95700AF091E /* DefaultViewFactory.swift */,
+				84EB88092E8A747D0076DC17 /* ViewFactory */,
 				8465FD4C2746A95600AF091E /* ChatChannelList */,
 				8465FCFC2746A95600AF091E /* ChatChannel */,
 				AD2DDA5B2CB0332C0040B8D4 /* ChatThreadList */,
@@ -2375,6 +2371,9 @@
 			dependencies = (
 				8465FCE42746954F00AF091E /* PBXTargetDependency */,
 			);
+			fileSystemSynchronizedGroups = (
+				84EB88092E8A747D0076DC17 /* ViewFactory */,
+			);
 			name = StreamChatSwiftUI;
 			packageProductDependencies = (
 				84E95A76284A486600699FD3 /* StreamChat */,
@@ -2708,13 +2707,11 @@
 				8465FD842746A95700AF091E /* MessageAvatarView.swift in Sources */,
 				82D64B672AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift in Sources */,
 				8465FDC72746A95700AF091E /* ChatChannelListViewModel.swift in Sources */,
-				8465FDD02746A95700AF091E /* DefaultViewFactory.swift in Sources */,
 				8465FD822746A95700AF091E /* LinkTextView.swift in Sources */,
 				84B55F6A2798154C00B99B01 /* MessageListConfig.swift in Sources */,
 				AD9138AC2E707F9100581EB0 /* AttachmentDownloadingStateView.swift in Sources */,
 				8421BCF027A44EAE000F977D /* SearchResultsView.swift in Sources */,
 				841B64CC2775C6300016FF3B /* CommandsConfig.swift in Sources */,
-				8465FD6D2746A95700AF091E /* ViewModelsFactory.swift in Sources */,
 				8465FDBA2746A95700AF091E /* BundleExtensions.swift in Sources */,
 				84AD8425274E2C380098C3C4 /* ChatChannelScreen.swift in Sources */,
 				8465FD812746A95700AF091E /* SystemMessageView.swift in Sources */,

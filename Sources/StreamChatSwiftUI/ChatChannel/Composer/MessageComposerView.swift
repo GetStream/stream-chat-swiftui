@@ -54,36 +54,44 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         VStack(spacing: 0) {
             if quotedMessage != nil {
                 factory.makeQuotedMessageHeaderView(
-                    quotedMessage: $quotedMessage
+                    options: QuotedMessageHeaderViewOptions(
+                        quotedMessage: $quotedMessage
+                    )
                 )
                 .transition(.identity)
             } else if editedMessage != nil {
                 factory.makeEditedMessageHeaderView(
-                    editedMessage: $editedMessage
+                    options: EditedMessageHeaderViewOptions(
+                        editedMessage: $editedMessage
+                    )
                 )
                 .transition(.identity)
             }
 
             HStack(alignment: .bottom) {
                 factory.makeLeadingComposerView(
-                    state: $viewModel.pickerTypeState,
-                    channelConfig: channelConfig
+                    options: LeadingComposerViewOptions(
+                        state: $viewModel.pickerTypeState,
+                        channelConfig: channelConfig
+                    )
                 )
                 .environmentObject(viewModel)
 
                 factory.makeComposerInputView(
-                    text: $viewModel.text,
-                    selectedRangeLocation: $viewModel.selectedRangeLocation,
-                    command: $viewModel.composerCommand,
-                    addedAssets: viewModel.addedAssets,
-                    addedFileURLs: viewModel.addedFileURLs,
-                    addedCustomAttachments: viewModel.addedCustomAttachments,
-                    quotedMessage: $quotedMessage,
-                    maxMessageLength: channelConfig?.maxMessageLength,
-                    cooldownDuration: viewModel.cooldownDuration,
-                    onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                    shouldScroll: viewModel.inputComposerShouldScroll,
-                    removeAttachmentWithId: viewModel.removeAttachment(with:)
+                    options: ComposerInputViewOptions(
+                        text: $viewModel.text,
+                        selectedRangeLocation: $viewModel.selectedRangeLocation,
+                        command: $viewModel.composerCommand,
+                        addedAssets: viewModel.addedAssets,
+                        addedFileURLs: viewModel.addedFileURLs,
+                        addedCustomAttachments: viewModel.addedCustomAttachments,
+                        quotedMessage: $quotedMessage,
+                        maxMessageLength: channelConfig?.maxMessageLength,
+                        cooldownDuration: viewModel.cooldownDuration,
+                        onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
+                        shouldScroll: viewModel.inputComposerShouldScroll,
+                        removeAttachmentWithId: viewModel.removeAttachment(with:)
+                    )
                 )
                 .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
@@ -95,20 +103,23 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
 
                 factory.makeTrailingComposerView(
-                    enabled: viewModel.sendButtonEnabled,
-                    cooldownDuration: viewModel.cooldownDuration
-                ) {
-                    viewModel.sendMessage(
-                        quotedMessage: quotedMessage,
-                        editedMessage: editedMessage
-                    ) {
-                        // Calling onMessageSent() before erasing the edited and quoted message
-                        // so that onMessageSent can use them for state handling.
-                        onMessageSent()
-                        quotedMessage = nil
-                        editedMessage = nil
-                    }
-                }
+                    options: TrailingComposerViewOptions(
+                        enabled: viewModel.sendButtonEnabled,
+                        cooldownDuration: viewModel.cooldownDuration,
+                        onTap: {
+                            viewModel.sendMessage(
+                                quotedMessage: quotedMessage,
+                                editedMessage: editedMessage
+                            ) {
+                                // Calling onMessageSent() before erasing the edited and quoted message
+                                // so that onMessageSent can use them for state handling.
+                                onMessageSent()
+                                quotedMessage = nil
+                                editedMessage = nil
+                            }
+                        }
+                    )
+                )
                 .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.errorShown) {
                     Alert.defaultErrorAlert
@@ -120,15 +131,19 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 ZStack {
                     if case let .recording(location) = viewModel.recordingState {
                         factory.makeComposerRecordingView(
-                            viewModel: viewModel,
-                            gestureLocation: location
+                            options: ComposerRecordingViewOptions(
+                                viewModel: viewModel,
+                                gestureLocation: location
+                            )
                         )
                         .frame(height: 60)
                     } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
-                        factory.makeComposerRecordingLockedView(viewModel: viewModel)
-                            .frame(height: recordingViewHeight)
+                        factory.makeComposerRecordingLockedView(
+                            options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
+                        )
+                        .frame(height: recordingViewHeight)
                     } else if viewModel.recordingState == .showingTip {
-                        factory.makeComposerRecordingTipView()
+                        factory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
                             .offset(y: -composerHeight + 12)
                     } else {
                         EmptyView()
@@ -139,27 +154,31 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
             if viewModel.sendInChannelShown {
                 factory.makeSendInChannelView(
-                    showReplyInChannel: $viewModel.showReplyInChannel,
-                    isDirectMessage: viewModel.isDirectChannel
+                    options: SendInChannelViewOptions(
+                        showReplyInChannel: $viewModel.showReplyInChannel,
+                        isDirectMessage: viewModel.isDirectChannel
+                    )
                 )
             }
 
             factory.makeAttachmentPickerView(
-                attachmentPickerState: $viewModel.pickerState,
-                filePickerShown: $viewModel.filePickerShown,
-                cameraPickerShown: $viewModel.cameraPickerShown,
-                addedFileURLs: $viewModel.addedFileURLs,
-                onPickerStateChange: viewModel.change(pickerState:),
-                photoLibraryAssets: viewModel.imageAssets,
-                onAssetTap: viewModel.imageTapped(_:),
-                onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                isAssetSelected: viewModel.isImageSelected(with:),
-                addedCustomAttachments: viewModel.addedCustomAttachments,
-                cameraImageAdded: viewModel.cameraImageAdded(_:),
-                askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
-                isDisplayed: viewModel.overlayShown,
-                height: viewModel.overlayShown ? popupSize : 0,
-                popupHeight: popupSize
+                options: AttachmentPickerViewOptions(
+                    attachmentPickerState: $viewModel.pickerState,
+                    filePickerShown: $viewModel.filePickerShown,
+                    cameraPickerShown: $viewModel.cameraPickerShown,
+                    addedFileURLs: $viewModel.addedFileURLs,
+                    onPickerStateChange: viewModel.change(pickerState:),
+                    photoLibraryAssets: viewModel.imageAssets,
+                    onAssetTap: viewModel.imageTapped(_:),
+                    onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
+                    isAssetSelected: viewModel.isImageSelected(with:),
+                    addedCustomAttachments: viewModel.addedCustomAttachments,
+                    cameraImageAdded: viewModel.cameraImageAdded(_:),
+                    askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
+                    isDisplayed: viewModel.overlayShown,
+                    height: viewModel.overlayShown ? popupSize : 0,
+                    popupHeight: popupSize
+                )
             )
             .environmentObject(viewModel)
         }
@@ -198,21 +217,23 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .overlay(
             viewModel.showCommandsOverlay ?
                 factory.makeCommandsContainerView(
-                    suggestions: viewModel.suggestions,
-                    handleCommand: { commandInfo in
-                        viewModel.handleCommand(
-                            for: $viewModel.text,
-                            selectedRangeLocation: $viewModel.selectedRangeLocation,
-                            command: $viewModel.composerCommand,
-                            extraData: commandInfo
-                        )
-                    }
+                    options: CommandsContainerViewOptions(
+                        suggestions: viewModel.suggestions,
+                        handleCommand: { commandInfo in
+                            viewModel.handleCommand(
+                                for: $viewModel.text,
+                                selectedRangeLocation: $viewModel.selectedRangeLocation,
+                                command: $viewModel.composerCommand,
+                                extraData: commandInfo
+                            )
+                        }
+                    )
                 )
                 .offset(y: -composerHeight)
                 .animation(nil) : nil,
             alignment: .bottom
         )
-        .modifier(factory.makeComposerViewModifier())
+        .modifier(factory.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
             viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
@@ -308,10 +329,12 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         VStack {
             if let quotedMessage = quotedMessage.wrappedValue {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: true,
-                    isInComposer: true,
-                    scrolledId: .constant(nil)
+                    options: QuotedMessageViewOptions(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: true,
+                        isInComposer: true,
+                        scrolledId: .constant(nil)
+                    )
                 )
                 .environment(\.channelTranslationLanguage, viewModel.channelController.channel?.membership?.language)
             }
@@ -348,8 +371,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
             if !addedCustomAttachments.isEmpty {
                 factory.makeCustomAttachmentPreviewView(
-                    addedCustomAttachments: addedCustomAttachments,
-                    onCustomAttachmentTap: onCustomAttachmentTap
+                    options: CustomAttachmentPreviewViewOptions(
+                        addedCustomAttachments: addedCustomAttachments,
+                        onCustomAttachmentTap: onCustomAttachmentTap
+                    )
                 )
             }
 
@@ -372,13 +397,15 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
 
                 factory.makeComposerTextInputView(
-                    text: $text,
-                    height: $textHeight,
-                    selectedRangeLocation: $selectedRangeLocation,
-                    placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : L10n.Composer.Placeholder.message,
-                    editable: !isInCooldown,
-                    maxMessageLength: maxMessageLength,
-                    currentHeight: textFieldHeight
+                    options: ComposerTextInputViewOptions(
+                        text: $text,
+                        height: $textHeight,
+                        selectedRangeLocation: $selectedRangeLocation,
+                        placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : L10n.Composer.Placeholder.message,
+                        editable: !isInCooldown,
+                        maxMessageLength: maxMessageLength,
+                        currentHeight: textFieldHeight
+                    )
                 )
                 .environmentObject(viewModel)
                 .accessibilityIdentifier("ComposerTextInputView")

@@ -78,7 +78,7 @@ extension ImageProcessors {
         }
 
         public func process(_ image: PlatformImage) -> PlatformImage? {
-            let size = self.size
+            let size = size
             guard size != .zero else { return image }
 
             return ImageProcessors.Resize(

@@ -137,15 +137,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 !isMessageThread
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
                             factory.makeMessageContainerView(
-                                channel: channel,
-                                message: message,
-                                width: width,
-                                showsAllInfo: showsAllData(for: message),
-                                isInThread: isMessageThread,
-                                scrolledId: $scrolledId,
-                                quotedMessage: $quotedMessage,
-                                onLongPress: handleLongPress(messageDisplayInfo:),
-                                isLast: !showsLastInGroupInfo && message == messages.last
+                                options: MessageContainerViewOptions(
+                                    channel: channel,
+                                    message: message,
+                                    width: width,
+                                    showsAllInfo: showsAllData(for: message),
+                                    isInThread: isMessageThread,
+                                    scrolledId: $scrolledId,
+                                    quotedMessage: $quotedMessage,
+                                    onLongPress: handleLongPress(messageDisplayInfo:),
+                                    isLast: !showsLastInGroupInfo && message == messages.last
+                                )
                             )
                             .environment(\.channelTranslationLanguage, channel.membership?.language)
                             .onAppear {
@@ -172,14 +174,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator) ?
                                     VStack(spacing: 0) {
                                         messageDate != nil ?
-                                            factory.makeMessageListDateIndicator(date: messageDate!)
+                                            factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
                                             : nil
                                         
                                         showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
-                                                newMessagesStartId: $firstUnreadMessageId,
-                                                count: newMessagesCount(for: index, message: message)
+                                                options: NewMessagesIndicatorViewOptions(
+                                                    newMessagesStartId: $firstUnreadMessageId,
+                                                    count: newMessagesCount(for: index, message: message)
+                                                )
                                             )
                                             .onAppear {
                                                 unreadMessagesBannerShown = true
@@ -190,7 +194,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             : nil
 
                                         showsLastInGroupInfo ?
-                                            factory.makeLastInGroupHeaderView(for: message)
+                                            factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
                                             .frame(maxHeight: lastInGroupHeaderSize)
                                             : nil
 
@@ -204,14 +208,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         .id(listId)
                     }
                     .delayedRendering()
-                    .modifier(factory.makeMessageListModifier())
+                    .modifier(factory.makeMessageListModifier(options: MessageListModifierOptions()))
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
                 }
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
                     factory.makeMessageListBackground(
-                        colors: colors,
-                        isInThread: isMessageThread
+                        options: MessageListBackgroundOptions(
+                            colors: colors,
+                            isInThread: isMessageThread
+                        )
                     )
                 )
                 .coordinateSpace(name: scrollAreaId)
@@ -272,15 +278,19 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
             if showScrollToLatestButton {
                 factory.makeScrollToBottomButton(
-                    unreadCount: channel.unreadCount.messages,
-                    onScrollToBottom: onScrollToBottom
+                    options: ScrollToBottomButtonOptions(
+                        unreadCount: channel.unreadCount.messages,
+                        onScrollToBottom: onScrollToBottom
+                    )
                 )
             }
 
             if shouldShowTypingIndicator {
                 factory.makeTypingIndicatorBottomView(
-                    channel: channel,
-                    currentUserId: chatClient.currentUserId
+                    options: TypingIndicatorBottomViewOptions(
+                        channel: channel,
+                        currentUserId: chatClient.currentUserId
+                    )
                 )
             }
         }
@@ -302,17 +312,19 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .overlay(
             (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread && !unreadButtonDismissed) ?
                 factory.makeJumpToUnreadButton(
-                    channel: channel,
-                    onJumpToMessage: {
-                        _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
-                    },
-                    onClose: {
-                        chatClient.channelController(for: channel.cid).markRead()
-                        unreadButtonDismissed = true
-                    }
+                    options: JumpToUnreadButtonOptions(
+                        channel: channel,
+                        onJumpToMessage: {
+                            _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
+                        },
+                        onClose: {
+                            chatClient.channelController(for: channel.cid).markRead()
+                            unreadButtonDismissed = true
+                        }
+                    )
                 ) : nil
         )
-        .modifier(factory.makeMessageListContainerModifier())
+        .modifier(factory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
         .dismissKeyboardOnTap(enabled: keyboardShown)
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)

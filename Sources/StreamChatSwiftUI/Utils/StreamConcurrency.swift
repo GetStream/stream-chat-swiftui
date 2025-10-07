@@ -15,12 +15,12 @@ enum StreamConcurrency {
     /// - Important: Prefer Task { @MainActor if possible.
     static func onMain<T>(_ action: @MainActor () throws -> T) rethrows -> T where T: Sendable {
         if Thread.current.isMainThread {
-            return try MainActor.assumeIsolated {
+            try MainActor.assumeIsolated {
                 try action()
             }
         } else {
             // We use sync here, because this function supports returning a value.
-            return try DispatchQueue.main.sync {
+            try DispatchQueue.main.sync {
                 try action()
             }
         }

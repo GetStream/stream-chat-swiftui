@@ -65,7 +65,7 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
                 let result: Result<UIImage, Error>
                 if let thumbnail = image {
                     result = .success(.init(cgImage: thumbnail))
-                } else if let error = error {
+                } else if let error {
                     result = .failure(error)
                 } else {
                     log.error("Both error and image are `nil`.")

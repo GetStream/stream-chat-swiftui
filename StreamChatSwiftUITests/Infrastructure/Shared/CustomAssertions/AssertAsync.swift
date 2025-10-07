@@ -78,8 +78,8 @@ extension Assert {
     ///
     /// - Warning: ⚠️ The expression is evaluated repeatedly during the function execution. It should not have
     ///   any side effects which can affect its result.
-    static func willBeNil<T>(
-        _ expression1: @autoclosure @escaping () -> T?,
+    static func willBeNil(
+        _ expression1: @autoclosure @escaping () -> (some Any)?,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure () -> String = "Failed to become `nil`",
         file: StaticString = #file,
@@ -104,8 +104,8 @@ extension Assert {
     ///
     /// - Warning: ⚠️ The expression is evaluated repeatedly during the function execution. It should not have
     ///   any side effects which can affect its result.
-    static func willNotBeNil<T>(
-        _ expression1: @autoclosure @escaping () -> T?,
+    static func willNotBeNil(
+        _ expression1: @autoclosure @escaping () -> (some Any)?,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure () -> String = "Failed to not be `nil`",
         file: StaticString = #file,
@@ -461,8 +461,8 @@ extension AssertAsync {
     ///
     /// - Warning: ⚠️ The expression is evaluated repeatedly during the function execution. It should not have
     ///   any side effects which can affect its result.
-    static func willBeNil<T>(
-        _ expression: @autoclosure () -> T?,
+    static func willBeNil(
+        _ expression: @autoclosure () -> (some Any)?,
         timeout: TimeInterval = defaultTimeout,
         message: @autoclosure () -> String = "Failed to become `nil`",
         file: StaticString = #file,

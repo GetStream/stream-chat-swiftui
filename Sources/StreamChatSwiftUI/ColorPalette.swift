@@ -37,9 +37,9 @@ import UIKit
 
     // MARK: - Text interactions
 
-    public var highlightedColorForColor: (UIColor) -> UIColor = { $0.withAlphaComponent(0.5) }
-    public var disabledColorForColor: (UIColor) -> UIColor = { _ in .streamDisabled }
-    public var unselectedColorForColor: (UIColor) -> UIColor = { _ in .lightGray }
+    public var highlightedColorForColor: @Sendable (UIColor) -> UIColor = { $0.withAlphaComponent(0.5) }
+    public var disabledColorForColor: @Sendable (UIColor) -> UIColor = { _ in .streamDisabled }
+    public var unselectedColorForColor: @Sendable (UIColor) -> UIColor = { _ in .lightGray }
 
     // MARK: - Background
 

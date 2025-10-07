@@ -55,9 +55,9 @@ class OnlyLinkTappableTextView: UITextView, AccessibilityView {
            let position = closestPosition(to: point, within: range),
            let styles = textStyling(at: position, in: .forward),
            styles[.link] != nil {
-            return super.hitTest(point, with: event)
+            super.hitTest(point, with: event)
         } else {
-            return nil
+            nil
         }
     }
 }

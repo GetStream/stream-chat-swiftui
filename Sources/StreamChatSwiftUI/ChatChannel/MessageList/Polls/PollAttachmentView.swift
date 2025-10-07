@@ -169,13 +169,13 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     
     private var subtitleText: String {
         if poll.isClosed == true {
-            return L10n.Message.Polls.Subtitle.voteEnded
+            L10n.Message.Polls.Subtitle.voteEnded
         } else if poll.enforceUniqueVote == true {
-            return L10n.Message.Polls.Subtitle.selectOne
+            L10n.Message.Polls.Subtitle.selectOne
         } else if let maxVotes = poll.maxVotesAllowed, maxVotes > 0 {
-            return L10n.Message.Polls.Subtitle.selectUpTo(min(maxVotes, poll.options.count))
+            L10n.Message.Polls.Subtitle.selectUpTo(min(maxVotes, poll.options.count))
         } else {
-            return L10n.Message.Polls.Subtitle.selectOneOrMore
+            L10n.Message.Polls.Subtitle.selectOneOrMore
         }
     }
 }
@@ -222,12 +222,14 @@ struct PollOptionView<Factory: ViewFactory>: View {
                                 option.latestVotes.prefix(2)
                             ) { vote in
                                 factory.makeMessageAvatarView(
-                                    for: UserDisplayInfo(
-                                        id: vote.user?.id ?? "",
-                                        name: vote.user?.name ?? "",
-                                        imageURL: vote.user?.imageURL,
-                                        size: .init(width: 20, height: 20),
-                                        extraData: vote.user?.extraData ?? [:]
+                                    options: MessageAvatarViewOptions(
+                                        userDisplayInfo: UserDisplayInfo(
+                                            id: vote.user?.id ?? "",
+                                            name: vote.user?.name ?? "",
+                                            imageURL: vote.user?.imageURL,
+                                            size: .init(width: 20, height: 20),
+                                            extraData: vote.user?.extraData ?? [:]
+                                        )
                                     )
                                 )
                             }

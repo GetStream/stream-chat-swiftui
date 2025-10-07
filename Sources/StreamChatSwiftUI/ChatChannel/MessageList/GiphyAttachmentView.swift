@@ -24,10 +24,12 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
         ) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                    options: QuotedMessageViewOptions(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
                 )
             }
 
@@ -37,8 +39,10 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             )
             .overlay(
                 factory.makeGiphyBadgeViewType(
-                    for: message,
-                    availableWidth: width
+                    options: GiphyBadgeViewTypeOptions(
+                        message: message,
+                        availableWidth: width
+                    )
                 )
             )
 

@@ -28,7 +28,7 @@ public struct MentionsCommandHandler: CommandHandler {
         self.channelController = channelController
         self.mentionAllAppUsers = mentionAllAppUsers
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        if let userSearchController = userSearchController {
+        if let userSearchController {
             self.userSearchController = userSearchController
         } else {
             self.userSearchController = channelController.client.userSearchController()
@@ -40,13 +40,13 @@ public struct MentionsCommandHandler: CommandHandler {
             in: text,
             caretLocation: caretLocation
         ) {
-            return ComposerCommand(
+            ComposerCommand(
                 id: id,
                 typingSuggestion: suggestion,
                 displayInfo: nil
             )
         } else {
-            return nil
+            nil
         }
     }
 
@@ -102,7 +102,7 @@ public struct MentionsCommandHandler: CommandHandler {
             return searchAllUsers(for: typingMention)
         } else {
             let users = searchUsers(
-                channel.lastActiveWatchers.map { $0 } + channel.lastActiveMembers.map { $0 },
+                channel.lastActiveWatchers.map(\.self) + channel.lastActiveMembers.map(\.self),
                 by: typingMention,
                 excludingId: currentUserId
             )
@@ -154,7 +154,7 @@ public struct MentionsCommandHandler: CommandHandler {
             nonisolated(unsafe) let unsafePromise = promise
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
             userSearchController.search(query: query) { error in
-                if let error = error {
+                if let error {
                     unsafePromise(.failure(error))
                     return
                 }

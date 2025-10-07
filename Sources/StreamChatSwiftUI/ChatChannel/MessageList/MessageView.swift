@@ -30,88 +30,108 @@ public struct MessageView<Factory: ViewFactory>: View {
         VStack {
             if messageTypeResolver.isDeleted(message: message) {
                 factory.makeDeletedMessageView(
-                    for: message,
-                    isFirst: isFirst,
-                    availableWidth: contentWidth
+                    options: DeletedMessageViewOptions(
+                        message: message,
+                        isFirst: isFirst,
+                        availableWidth: contentWidth
+                    )
                 )
             } else if messageTypeResolver.hasCustomAttachment(message: message) {
                 factory.makeCustomAttachmentViewType(
-                    for: message,
-                    isFirst: isFirst,
-                    availableWidth: contentWidth,
-                    scrolledId: $scrolledId
+                    options: CustomAttachmentViewTypeOptions(
+                        message: message,
+                        isFirst: isFirst,
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
+                    )
                 )
             } else if let poll = message.poll {
-                factory.makePollView(message: message, poll: poll, isFirst: isFirst)
+                factory.makePollView(options: PollViewOptions(message: message, poll: poll, isFirst: isFirst))
             } else if !message.attachmentCounts.isEmpty {
                 let hasOnlyLinks = { message.attachmentCounts.keys.allSatisfy { $0 == .linkPreview } }
                 if messageTypeResolver.hasLinkAttachment(message: message) && hasOnlyLinks() {
                     factory.makeLinkAttachmentView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: LinkAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
 
                 if messageTypeResolver.hasFileAttachment(message: message) {
                     factory.makeFileAttachmentView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: FileAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
 
                 if messageTypeResolver.hasImageAttachment(message: message) {
                     factory.makeImageAttachmentView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: ImageAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
 
                 if messageTypeResolver.hasGiphyAttachment(message: message) {
                     factory.makeGiphyAttachmentView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: GiphyAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
 
                 if messageTypeResolver.hasVideoAttachment(message: message)
                     && !messageTypeResolver.hasImageAttachment(message: message) {
                     factory.makeVideoAttachmentView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: VideoAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
                 
                 if messageTypeResolver.hasVoiceRecording(message: message) {
                     factory.makeVoiceRecordingView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: VoiceRecordingViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
             } else {
                 if message.shouldRenderAsJumbomoji {
                     factory.makeEmojiTextView(
-                        message: message,
-                        scrolledId: $scrolledId,
-                        isFirst: isFirst
+                        options: EmojiTextViewOptions(
+                            message: message,
+                            scrolledId: $scrolledId,
+                            isFirst: isFirst
+                        )
                     )
                 } else if !message.text.isEmpty {
                     factory.makeMessageTextView(
-                        for: message,
-                        isFirst: isFirst,
-                        availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        options: MessageTextViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: contentWidth,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
             }
@@ -160,10 +180,12 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         ) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                    options: QuotedMessageViewOptions(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
                 )
             }
 
@@ -199,10 +221,12 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
                     factory.makeQuotedMessageView(
-                        quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
-                        scrolledId: $scrolledId
+                        options: QuotedMessageViewOptions(
+                            quotedMessage: quotedMessage,
+                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                            isInComposer: false,
+                            scrolledId: $scrolledId
+                        )
                     )
 
                     Text(message.adjustedText)

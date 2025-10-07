@@ -75,17 +75,19 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         )
                         .overlay(
                             viewModel.currentDateString != nil ?
-                                factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
+                                factory.makeDateIndicatorView(options: DateIndicatorViewOptions(dateString: viewModel.currentDateString!))
                                 : nil
                         )
                     } else {
                         ZStack {
-                            factory.makeEmptyMessagesView(for: channel, colors: colors)
+                            factory.makeEmptyMessagesView(options: EmptyMessagesViewOptions(channel: channel, colors: colors))
                                 .dismissKeyboardOnTap(enabled: keyboardShown)
                             if viewModel.shouldShowTypingIndicator {
                                 factory.makeTypingIndicatorBottomView(
-                                    channel: channel,
-                                    currentUserId: chatClient.currentUserId
+                                    options: TypingIndicatorBottomViewOptions(
+                                        channel: channel,
+                                        currentUserId: chatClient.currentUserId
+                                    )
                                 )
                             }
                         }
@@ -94,30 +96,32 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     Divider()
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
-                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: false))
+                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions(shouldShow: false)))
                         })
                         .if(!viewModel.reactionsShown, transform: { view in
-                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: true))
+                            view.modifier(factory.makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions(shouldShow: true)))
                         })
                         .if(viewModel.channelHeaderType == .regular) { view in
-                            view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
+                            view.modifier(factory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: channel)))
                         }
                         .if(viewModel.channelHeaderType == .typingIndicator) { view in
-                            view.modifier(factory.makeChannelHeaderViewModifier(for: channel))
+                            view.modifier(factory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: channel)))
                         }
                         .if(viewModel.channelHeaderType == .messageThread) { view in
-                            view.modifier(factory.makeMessageThreadHeaderViewModifier())
+                            view.modifier(factory.makeMessageThreadHeaderViewModifier(options: MessageThreadHeaderViewModifierOptions()))
                         }
                         .animation(nil)
 
                     factory.makeMessageComposerViewType(
-                        with: viewModel.channelController,
-                        messageController: viewModel.messageController,
-                        quotedMessage: $viewModel.quotedMessage,
-                        editedMessage: $viewModel.editedMessage,
-                        onMessageSent: {
-                            viewModel.messageSentTapped()
-                        }
+                        options: MessageComposerViewTypeOptions(
+                            channelController: viewModel.channelController,
+                            messageController: viewModel.messageController,
+                            quotedMessage: $viewModel.quotedMessage,
+                            editedMessage: $viewModel.editedMessage,
+                            onMessageSent: {
+                                viewModel.messageSentTapped()
+                            }
+                        )
                     )
                     .opacity((
                         utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
@@ -128,7 +132,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         isActive: $viewModel.threadMessageShown
                     ) {
                         if let message = viewModel.threadMessage {
-                            let threadDestination = factory.makeMessageThreadDestination()
+                            let threadDestination = factory.makeMessageThreadDestination(options: MessageThreadDestinationOptions())
                             threadDestination(channel, message)
                         } else {
                             EmptyView()
@@ -141,26 +145,28 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 .overlay(
                     viewModel.reactionsShown ?
                         factory.makeReactionsOverlayView(
-                            channel: channel,
-                            currentSnapshot: viewModel.currentSnapshot!,
-                            messageDisplayInfo: messageDisplayInfo!,
-                            onBackgroundTap: {
-                                viewModel.reactionsShown = false
-                                if messageDisplayInfo?.keyboardWasShown == true {
-                                    becomeFirstResponder()
+                            options: ReactionsOverlayViewOptions(
+                                channel: channel,
+                                currentSnapshot: viewModel.currentSnapshot!,
+                                messageDisplayInfo: messageDisplayInfo!,
+                                onBackgroundTap: {
+                                    viewModel.reactionsShown = false
+                                    if messageDisplayInfo?.keyboardWasShown == true {
+                                        becomeFirstResponder()
+                                    }
+                                    messageDisplayInfo = nil
+                                }, onActionExecuted: { actionInfo in
+                                    viewModel.messageActionExecuted(actionInfo)
+                                    messageDisplayInfo = nil
                                 }
-                                messageDisplayInfo = nil
-                            }, onActionExecuted: { actionInfo in
-                                viewModel.messageActionExecuted(actionInfo)
-                                messageDisplayInfo = nil
-                            }
+                            )
                         )
                         .transition(.identity)
                         .edgesIgnoringSafeArea(.all)
                         : nil
                 )
             } else {
-                factory.makeChannelLoadingView()
+                factory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
             }
         }
         .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())
@@ -193,7 +199,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .background(
             Color(colors.background).background(
                 TabBarAccessor { _ in
-                    self.tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
+                    tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
                 }
             )
             .ignoresSafeArea(.keyboard)
@@ -210,9 +216,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var generatingSnapshot: Bool {
         if #available(iOS 26, *) {
-            return false
+            false
         } else {
-            return tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
+            tabBarAvailable && messageDisplayInfo != nil && !viewModel.reactionsShown
         }
     }
 

@@ -170,9 +170,11 @@ import XCTest
 
         // When
         let view = factory.makeTrailingComposerView(
-            enabled: true,
-            cooldownDuration: 0,
-            onTap: {}
+            options: TrailingComposerViewOptions(
+                enabled: true,
+                cooldownDuration: 0,
+                onTap: {}
+            )
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: 100, height: 40)
@@ -189,9 +191,11 @@ import XCTest
         
         // When
         let view = factory.makeTrailingComposerView(
-            enabled: true,
-            cooldownDuration: 15,
-            onTap: {}
+            options: TrailingComposerViewOptions(
+                enabled: true,
+                cooldownDuration: 15,
+                onTap: {}
+            )
         )
         .environmentObject(viewModel)
         .frame(width: 36, height: 36)
@@ -209,7 +213,7 @@ import XCTest
 
         // When
         let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
-        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+        let view = factory.makeLeadingComposerView(options: LeadingComposerViewOptions(state: pickerTypeState, channelConfig: nil))
             .environmentObject(viewModel)
             .frame(width: 36, height: 36)
 
@@ -226,7 +230,7 @@ import XCTest
 
         // When
         let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
-        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+        let view = factory.makeLeadingComposerView(options: LeadingComposerViewOptions(state: pickerTypeState, channelConfig: nil))
             .environmentObject(viewModel)
             .frame(width: 36, height: 36)
 
@@ -453,11 +457,11 @@ import XCTest
 
     func test_composerView_draftWithImageAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockDraftMessage = DraftMessage.mock(
+        let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
                     type: .image,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         ImageAttachmentPayload(
                             title: nil,
                             imageRemoteURL: TestImages.yoda.url,
@@ -467,7 +471,7 @@ import XCTest
                 ),
                 .dummy(
                     type: .image,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         ImageAttachmentPayload(
                             title: nil,
                             imageRemoteURL: TestImages.chewbacca.url,
@@ -486,11 +490,11 @@ import XCTest
 
     func test_composerView_draftWithVideoAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockDraftMessage = DraftMessage.mock(
+        let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
                     type: .video,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         VideoAttachmentPayload(
                             title: nil,
                             videoRemoteURL: TestImages.yoda.url,
@@ -511,11 +515,11 @@ import XCTest
 
     func test_composerView_draftWithFileAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockDraftMessage = DraftMessage.mock(
+        let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
                     type: .file,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         FileAttachmentPayload(
                             title: "Test",
                             assetRemoteURL: .localYodaQuote,
@@ -540,11 +544,11 @@ import XCTest
         defer { try? FileManager.default.removeItem(at: url) }
 
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockDraftMessage = DraftMessage.mock(
+        let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
                     type: .voiceRecording,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         VoiceRecordingAttachmentPayload(
                             title: "Audio",
                             voiceRecordingRemoteURL: url,
@@ -669,7 +673,7 @@ import XCTest
 
     func test_composerView_editingMessageWithImageAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockEditedMessage = ChatMessage.mock(
+        let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Message with image",
@@ -677,7 +681,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .image,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         ImageAttachmentPayload(
                             title: nil,
                             imageRemoteURL: TestImages.yoda.url,
@@ -696,7 +700,7 @@ import XCTest
 
     func test_composerView_editingMessageWithVideoAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockEditedMessage = ChatMessage.mock(
+        let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Message with video",
@@ -704,7 +708,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .video,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         VideoAttachmentPayload(
                             title: nil,
                             videoRemoteURL: TestImages.yoda.url,
@@ -725,7 +729,7 @@ import XCTest
 
     func test_composerView_editingMessageWithFileAttachment() throws {
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockEditedMessage = ChatMessage.mock(
+        let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Message with file",
@@ -733,7 +737,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .file,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         FileAttachmentPayload(
                             title: "Test",
                             assetRemoteURL: .localYodaQuote,
@@ -759,7 +763,7 @@ import XCTest
         defer { try? FileManager.default.removeItem(at: url) }
 
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        let mockEditedMessage = ChatMessage.mock(
+        let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Message with voice recording",
@@ -767,7 +771,7 @@ import XCTest
             attachments: [
                 .dummy(
                     type: .voiceRecording,
-                    payload: try JSONEncoder().encode(
+                    payload: JSONEncoder().encode(
                         VoiceRecordingAttachmentPayload(
                             title: "Audio",
                             voiceRecordingRemoteURL: url,
@@ -808,7 +812,7 @@ import XCTest
 class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
     override func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping @MainActor (ComposerAssets) -> Void
+        completion: @escaping @Sendable @MainActor (ComposerAssets) -> Void
     ) {
         super.attachmentsToAssets(attachments, with: nil, completion: completion)
     }

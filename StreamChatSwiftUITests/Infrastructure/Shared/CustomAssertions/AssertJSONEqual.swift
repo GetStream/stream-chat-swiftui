@@ -25,7 +25,7 @@ func CompareJSONEqual(
 
     preprocessBoolValues(&json)
 
-    try CompareJSONEqual(json, try expression2())
+    try CompareJSONEqual(json, expression2())
 }
 
 /// Asserts the given 2 JSON Serializations are equal, by creating JSON objects from Data and comparing dictionaries.
@@ -164,7 +164,7 @@ func AssertJSONEqual(
 /// JSON is represented in Objective-C and Swift. Objective-C represents true as `1` while Swift doest it like `true`.
 private func preprocessBoolValues(_ json: inout [String: Any]) {
     var newKeys: [String: Any] = [:]
-    json.forEach { (key, value) in
+    for (key, value) in json {
         if let value = value as? Bool {
             newKeys[key] = value ? "true" : "false"
         }

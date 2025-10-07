@@ -66,7 +66,7 @@ private struct Differ {
             if let expectedDict = expected as? [AnyHashable: Any],
                let receivedDict = received as? [AnyHashable: Any] {
                 var resultLines: [Line] = []
-                expectedDict.keys.forEach { key in
+                for key in expectedDict.keys {
                     let results = diffLines(expectedDict[key], receivedDict[key], level: level + 1)
                     if !results.isEmpty {
                         resultLines
@@ -99,7 +99,7 @@ private struct Differ {
 
         var resultLines = [Line]()
         let zipped = zip(expectedMirror.children, receivedMirror.children)
-        zipped.enumerated().forEach { (index, zippedValues) in
+        for (index, zippedValues) in zipped.enumerated() {
             let lhs = zippedValues.0
             let rhs = zippedValues.1
             let leftDump = String(dumping: lhs.value)
@@ -108,7 +108,7 @@ private struct Differ {
                 guard expectedMirror.displayStyle != .optional else {
                     let results = diffLines(lhs.value, rhs.value, level: level)
                     resultLines.append(contentsOf: results)
-                    return
+                    continue
                 }
                 if Mirror(reflecting: lhs.value).displayStyle != nil {
                     let results = diffLines(lhs.value, rhs.value, level: level + 1)
@@ -202,7 +202,7 @@ private struct Differ {
         let linesContents = lines.map { line in line.generateContents(indentationType: indentationType) }
         // In the case of this being a top level failure (e.g. both mirrors have no children, like comparing two
         // primitives `diff(2,3)`, we only want to produce one failure to have proper spacing.
-        let isOnlyTopLevelFailure = lines.map(\.hasChildren).filter { $0 }.isEmpty
+        let isOnlyTopLevelFailure = lines.map(\.hasChildren).filter(\.self).isEmpty
         if isOnlyTopLevelFailure {
             return [linesContents.joined()]
         } else {
@@ -275,7 +275,7 @@ private struct Line {
 }
 
 private extension String {
-    init<T>(dumping object: T) {
+    init(dumping object: some Any) {
         self.init()
         dump(object, to: &self)
         self = withoutDumpArtifacts
@@ -292,17 +292,17 @@ private extension String {
 // pull the case name from the mirror
 private func enumLabelFromFirstChild(_ mirror: Mirror) -> String? {
     switch mirror.displayStyle {
-    case .enum: return mirror.children.first?.label
-    default: return nil
+    case .enum: mirror.children.first?.label
+    default: nil
     }
 }
 
 private extension Mirror {
     func displayStyleDescriptor(index: Int) -> String {
         switch displayStyle {
-        case .enum: return "Enum "
-        case .collection: return "Collection[\(index)]"
-        default: return ""
+        case .enum: "Enum "
+        case .collection: "Collection[\(index)]"
+        default: ""
         }
     }
 
@@ -313,9 +313,9 @@ private extension Mirror {
         case .collection,
              .dictionary,
              .set:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

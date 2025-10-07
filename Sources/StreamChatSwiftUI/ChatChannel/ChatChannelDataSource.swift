@@ -190,10 +190,10 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
         self.messageController = messageController
         self.messageController.delegate = self
         self.messageController.loadPreviousReplies { [weak self] _ in
-            guard let self = self else { return }
-            self.delegate?.dataSource(
+            guard let self else { return }
+            delegate?.dataSource(
                 channelDataSource: self,
-                didUpdateMessages: self.messages,
+                didUpdateMessages: messages,
                 changes: []
             )
         }

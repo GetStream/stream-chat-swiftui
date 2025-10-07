@@ -100,21 +100,23 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
             .padding(.all, 8)
 
             factory.makeAttachmentPickerView(
-                attachmentPickerState: $viewModel.pickerState,
-                filePickerShown: $viewModel.filePickerShown,
-                cameraPickerShown: $viewModel.cameraPickerShown,
-                addedFileURLs: $viewModel.addedFileURLs,
-                onPickerStateChange: viewModel.change(pickerState:),
-                photoLibraryAssets: viewModel.imageAssets,
-                onAssetTap: viewModel.imageTapped(_:),
-                onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                isAssetSelected: viewModel.isImageSelected(with:),
-                addedCustomAttachments: viewModel.addedCustomAttachments,
-                cameraImageAdded: viewModel.cameraImageAdded(_:),
-                askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
-                isDisplayed: viewModel.overlayShown,
-                height: viewModel.overlayShown ? popupSize : 0,
-                popupHeight: popupSize
+                options: AttachmentPickerViewOptions(
+                    attachmentPickerState: $viewModel.pickerState,
+                    filePickerShown: $viewModel.filePickerShown,
+                    cameraPickerShown: $viewModel.cameraPickerShown,
+                    addedFileURLs: $viewModel.addedFileURLs,
+                    onPickerStateChange: viewModel.change(pickerState:),
+                    photoLibraryAssets: viewModel.imageAssets,
+                    onAssetTap: viewModel.imageTapped(_:),
+                    onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
+                    isAssetSelected: viewModel.isImageSelected(with:),
+                    addedCustomAttachments: viewModel.addedCustomAttachments,
+                    cameraImageAdded: viewModel.cameraImageAdded(_:),
+                    askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
+                    isDisplayed: viewModel.overlayShown,
+                    height: viewModel.overlayShown ? popupSize : 0,
+                    popupHeight: popupSize
+                )
             )
         }
         .background(
@@ -126,8 +128,8 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         )
         .onPreferenceChange(HeightPreferenceKey.self) { value in
             Task { @MainActor in
-                if let value = value, value != composerHeight {
-                    self.composerHeight = value
+                if let value, value != composerHeight {
+                    composerHeight = value
                 }
             }
         }
@@ -144,27 +146,29 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         .onReceive(keyboardHeight) { height in
             if height > 0 && height != popupSize {
-                self.popupSize = height - bottomSafeArea
+                popupSize = height - bottomSafeArea
             }
         }
         .overlay(
             viewModel.showCommandsOverlay ?
                 factory.makeCommandsContainerView(
-                    suggestions: viewModel.suggestions,
-                    handleCommand: { commandInfo in
-                        viewModel.handleCommand(
-                            for: $viewModel.text,
-                            selectedRangeLocation: $viewModel.selectedRangeLocation,
-                            command: $viewModel.composerCommand,
-                            extraData: commandInfo
-                        )
-                    }
+                    options: CommandsContainerViewOptions(
+                        suggestions: viewModel.suggestions,
+                        handleCommand: { commandInfo in
+                            viewModel.handleCommand(
+                                for: $viewModel.text,
+                                selectedRangeLocation: $viewModel.selectedRangeLocation,
+                                command: $viewModel.composerCommand,
+                                extraData: commandInfo
+                            )
+                        }
+                    )
                 )
                 .offset(y: -composerHeight)
                 .animation(.none, value: viewModel.showCommandsOverlay) : nil,
             alignment: .bottom
         )
-        .modifier(factory.makeComposerViewModifier())
+        .modifier(factory.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
             if editedMessage != nil {

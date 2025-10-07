@@ -100,7 +100,7 @@ import XCTest
     ) {
         // Given
         let channelHeaderLoader = ChannelHeaderLoader()
-        let expectation = self.expectation(description: "loadingImage")
+        let expectation = expectation(description: "loadingImage")
 
         // When
         let firstImage = channelHeaderLoader.image(for: channel)

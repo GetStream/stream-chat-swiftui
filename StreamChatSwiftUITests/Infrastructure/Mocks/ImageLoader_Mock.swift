@@ -77,7 +77,7 @@ class TestImagesLoader_Mock: ImageLoading {
     }
 
     private func imageForURL(_ url: URL?) -> UIImage {
-        guard let url = url else {
+        guard let url else {
             return XCTestCase.TestImages.yoda.image
         }
 

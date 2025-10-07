@@ -236,8 +236,8 @@ import XCTest
         )
         let messageDisplayInfo = MessageDisplayInfo(
             message: testMessage,
-            frame: self.messageDisplayInfo.frame,
-            contentWidth: self.messageDisplayInfo.contentWidth,
+            frame: messageDisplayInfo.frame,
+            contentWidth: messageDisplayInfo.contentWidth,
             isFirst: true
         )
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: "test", language: .portuguese))

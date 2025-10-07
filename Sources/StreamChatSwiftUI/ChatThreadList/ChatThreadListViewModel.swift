@@ -70,13 +70,13 @@ import StreamChat
         threadListController: ChatThreadListController? = nil,
         eventsController: EventsController? = nil
     ) {
-        if let threadListController = threadListController {
+        if let threadListController {
             self.threadListController = threadListController
         } else {
             makeDefaultThreadListController()
         }
 
-        if let eventsController = eventsController {
+        if let eventsController {
             self.eventsController = eventsController
         } else {
             makeDefaultEventsController()

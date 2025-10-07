@@ -123,7 +123,7 @@ import XCTest
         let mockedThreads: [ChatThread] = [
             .mock(), .mock(), .mock(), .mock(), .mock(), .mock(), .mock()
         ]
-        mockedThreads.forEach { thread in
+        for thread in mockedThreads {
             viewModel.threads.append(thread)
         }
 
@@ -145,7 +145,7 @@ import XCTest
         let mockedThreads: [ChatThread] = [
             .mock(), .mock(), .mock(), .mock(), .mock(), .mock(), .mock()
         ]
-        mockedThreads.forEach { thread in
+        for thread in mockedThreads {
             viewModel.threads.append(thread)
         }
 

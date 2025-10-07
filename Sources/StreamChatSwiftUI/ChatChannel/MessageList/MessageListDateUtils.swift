@@ -54,7 +54,7 @@ class MessageListDateUtils {
         for index: Int?,
         in messages: LazyCachedMapCollection<ChatMessage>
     ) -> Date? {
-        guard let index = index else {
+        guard let index else {
             return nil
         }
 

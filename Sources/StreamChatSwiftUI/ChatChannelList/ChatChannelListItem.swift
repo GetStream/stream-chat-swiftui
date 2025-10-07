@@ -48,8 +48,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    for: channel,
-                    with: .init(showOnlineIndicator: onlineIndicatorShown)
+                    options: ChannelAvatarViewFactoryOptions(
+                        channel: channel,
+                        options: .init(showOnlineIndicator: onlineIndicatorShown)
+                    )
                 )
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -143,11 +145,11 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var channelSubtitleText: String {
         if channel.shouldShowTypingIndicator {
-            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+            channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         } else if let previewMessageText = channel.previewMessageText {
-            return previewMessageText
+            previewMessageText
         } else {
-            return L10n.Channel.Item.emptyMessages
+            L10n.Channel.Item.emptyMessages
         }
     }
 
@@ -177,7 +179,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 }
 
 /// Options for setting up the channel avatar view.
-public struct ChannelAvatarViewOptions {
+public struct ChannelAvatarViewOptions: Sendable {
     /// Whether the online indicator should be shown.
     public var showOnlineIndicator: Bool
     /// Size of the avatar.

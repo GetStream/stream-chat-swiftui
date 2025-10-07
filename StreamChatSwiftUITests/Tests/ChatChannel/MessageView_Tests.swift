@@ -18,7 +18,7 @@ import XCTest
             text: "test message",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -28,7 +28,7 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -42,7 +42,7 @@ import XCTest
             author: .mock(id: .unique),
             mentionedUsers: [.mock(id: "martin", name: "Martin")]
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -52,7 +52,7 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: 100)
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -66,7 +66,7 @@ import XCTest
             author: .mock(id: .unique),
             mentionedUsers: [.mock(id: "martin", name: "Martin"), .mock(id: "alexey", name: "Alexey")]
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -76,11 +76,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .frame(width: defaultScreenSize.width, height: 100)
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewImage_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -90,7 +90,7 @@ import XCTest
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -100,11 +100,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewImage_snapshot2Images() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -117,7 +117,7 @@ import XCTest
                 ChatChannelTestHelpers.imageAttachments[0]
             ]
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -127,11 +127,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewImage_snapshot3Images() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -145,7 +145,7 @@ import XCTest
                 ChatChannelTestHelpers.imageAttachments[0]
             ]
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -155,7 +155,7 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -174,7 +174,7 @@ import XCTest
                 ChatChannelTestHelpers.videoAttachments[0]
             ]
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -184,11 +184,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewImage_snapshotQuoted() {
         // Given
         let quoted = ChatMessage.mock(
@@ -205,7 +205,7 @@ import XCTest
             quotedMessage: quoted,
             attachments: ChatChannelTestHelpers.imageAttachments
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -215,11 +215,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewGiphy_snapshot() {
         // Given
         let giphyMessage = ChatMessage.mock(
@@ -229,7 +229,7 @@ import XCTest
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.giphyAttachments
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -239,11 +239,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(
@@ -253,7 +253,7 @@ import XCTest
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.videoAttachments
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -263,11 +263,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewFile_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
@@ -277,7 +277,7 @@ import XCTest
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.fileAttachments
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -287,7 +287,7 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -302,7 +302,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
             isSentByCurrentUser: false
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -313,7 +313,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -331,7 +331,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
             isSentByCurrentUser: true
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -342,7 +342,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -360,7 +360,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
             isSentByCurrentUser: false
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -371,7 +371,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -389,7 +389,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
             isSentByCurrentUser: true
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -400,7 +400,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -418,7 +418,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments(count: 2),
             isSentByCurrentUser: false
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -429,7 +429,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 250)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -447,7 +447,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments(count: 2),
             isSentByCurrentUser: true
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -458,7 +458,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 250)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -476,7 +476,7 @@ import XCTest
             attachments: ChatChannelTestHelpers.voiceRecordingAttachments(count: 2),
             isSentByCurrentUser: true
         )
-
+        
         // When
         adjustAppearance { appearance in
             appearance.colors.messageCurrentUserBackground = [.orange]
@@ -496,7 +496,7 @@ import XCTest
         )
         .frame(width: defaultScreenSize.width, height: 250)
         .padding()
-
+        
         // Then
         AssertSnapshot(
             view,
@@ -504,7 +504,7 @@ import XCTest
             size: CGSize(width: defaultScreenSize.width, height: 250)
         )
     }
-
+    
     func test_messageViewFileText_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
@@ -514,7 +514,7 @@ import XCTest
             author: .mock(id: .unique),
             attachments: ChatChannelTestHelpers.fileAttachments
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -524,11 +524,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageViewJumboEmoji_snapshot() {
         // Given
         let emojiMessage = ChatMessage.mock(
@@ -537,7 +537,7 @@ import XCTest
             text: "😀",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -547,11 +547,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_linkAttachmentView_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -560,7 +560,7 @@ import XCTest
             text: "https://getstream.io",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = LinkAttachmentContainer(
             factory: DefaultViewFactory.shared,
@@ -570,11 +570,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
         var colorPalette = ColorPalette()
@@ -585,7 +585,7 @@ import XCTest
             chatClient: chatClient,
             appearance: .init(colors: colorPalette)
         )
-
+        
         // When
         let view = LinkAttachmentView(
             linkAttachment: .mock(
@@ -602,11 +602,11 @@ import XCTest
             isFirst: true
         )
         .frame(width: 200, height: 140)
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_linkAttachmentView_shouldNotRenderLinkPreviewWithOtherAttachments() {
         // Given
         let messageWithLinkAndImages = ChatMessage.mock(
@@ -619,7 +619,7 @@ import XCTest
                 ChatChannelTestHelpers.videoAttachments[0]
             ]
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -629,11 +629,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_deletedMessageView_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -642,15 +642,15 @@ import XCTest
             text: "Deleted message",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = DeletedMessageView(message: message, isFirst: true)
             .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_deletedMessageViewContainer_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -659,7 +659,7 @@ import XCTest
             text: "Deleted message",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -669,11 +669,11 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_messageRepliesView_snapshot() {
         // Given
         let channel = ChatChannel.mockDMChannel()
@@ -683,7 +683,7 @@ import XCTest
             text: "Message with replies",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageRepliesView(
             factory: DefaultViewFactory.shared,
@@ -692,7 +692,7 @@ import XCTest
             replyCount: 3
         )
         .frame(width: 300, height: 60)
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -706,7 +706,7 @@ import XCTest
             text: "Message with replies",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageRepliesView(
             factory: DefaultViewFactory.shared,
@@ -716,21 +716,21 @@ import XCTest
             showReplyCount: false
         )
         .frame(width: 300, height: 60)
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-
+    
     func test_topLeftView_snapshot() {
         // Given
         let textView = Text("Test")
-
+        
         // Then
         let view = TopLeftView {
             textView
         }
         .applyDefaultSize()
-
+        
         // When
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -778,7 +778,7 @@ import XCTest
             text: "This is a **bold** text",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -791,7 +791,7 @@ import XCTest
             width: defaultScreenSize.width,
             height: 100
         )
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -811,7 +811,7 @@ import XCTest
             text: "Visit Apple, click [here](https://apple.com)",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -824,7 +824,7 @@ import XCTest
             width: defaultScreenSize.width,
             height: 100
         )
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -843,7 +843,7 @@ import XCTest
             text: "~~A strikethrough example~~",
             author: .mock(id: .unique)
         )
-
+        
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
@@ -856,7 +856,7 @@ import XCTest
             width: defaultScreenSize.width,
             height: 100
         )
-
+        
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
@@ -922,7 +922,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Unordered (nested)  
+            Unordered (nested)
             - First list item
                 - First nested
                     - Second nested
@@ -937,7 +937,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Unordered (wrapped text)  
+            Unordered (wrapped text)
             - First list item which has a very long text and when wrapped, should be aligned to the same item
                 - First nested which has a very long text and when wrapped, should be aligned to the same item
                     - Second nested
@@ -952,11 +952,11 @@ import XCTest
             size: size,
             """
             Ordered (no nesting)
-
+            
             Fruits:
             1. **Oranges** (bold)
             1. Apples
-
+            
             Animals:
             1. Cat
             2. _Dog_ (italic)
@@ -971,7 +971,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Unordered (nested)  
+            Unordered (nested)
             1. First list item
                 1. First nested
                     1. Second nested
@@ -986,7 +986,7 @@ import XCTest
         let view = messageView(
             size: size,
             """
-            Mixed (nested)  
+            Mixed (nested)
             1. First list item
                 - First nested
                     1. Second nested

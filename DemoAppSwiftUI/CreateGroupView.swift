@@ -140,7 +140,7 @@ struct SearchBar: View {
 
                         if isEditing {
                             Button(action: {
-                                self.text = ""
+                                text = ""
 
                             }) {
                                 Image(systemName: "multiply.circle.fill")
@@ -152,13 +152,13 @@ struct SearchBar: View {
                 )
                 .padding(.horizontal, 10)
                 .onTapGesture {
-                    self.isEditing = true
+                    isEditing = true
                 }
 
             if isEditing {
                 Button(action: {
-                    self.isEditing = false
-                    self.text = ""
+                    isEditing = false
+                    text = ""
 
                     // Dismiss the keyboard
                     UIApplication.shared.sendAction(

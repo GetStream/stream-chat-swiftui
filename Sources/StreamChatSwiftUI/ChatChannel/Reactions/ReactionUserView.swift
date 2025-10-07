@@ -19,9 +19,9 @@ struct ReactionUserView: View {
 
     private var authorName: String {
         if isCurrentUser {
-            return L10n.Message.Reactions.currentUser
+            L10n.Message.Reactions.currentUser
         } else {
-            return reaction.author.name ?? reaction.author.id
+            reaction.author.name ?? reaction.author.id
         }
     }
 

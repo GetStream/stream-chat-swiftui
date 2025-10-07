@@ -17,10 +17,12 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
             if let quotedMessage = message.quotedMessage {
                 VStack {
                     factory.makeQuotedMessageView(
-                        quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
-                        scrolledId: $scrolledId
+                        options: .init(
+                            quotedMessage: quotedMessage,
+                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                            isInComposer: false,
+                            scrolledId: $scrolledId
+                        )
                     )
 
                     VideoAttachmentsList(
@@ -160,7 +162,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ZStack {
-            if let previewImage = previewImage {
+            if let previewImage {
                 Image(uiImage: previewImage)
                     .resizable()
                     .scaledToFill()
@@ -195,17 +197,19 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
         .cornerRadius(cornerRadius)
         .fullScreenCover(isPresented: $fullScreenShown) {
             factory.makeVideoPlayerView(
-                attachment: attachment,
-                message: message,
-                isShown: $fullScreenShown,
-                options: .init(selectedIndex: 0)
+                options: VideoPlayerViewOptions(
+                    attachment: attachment,
+                    message: message,
+                    isShown: $fullScreenShown,
+                    options: .init(selectedIndex: 0)
+                )
             )
         }
         .onAppear {
             videoPreviewLoader.loadPreviewForVideo(at: attachment.videoURL) { result in
                 switch result {
                 case let .success(image):
-                    self.previewImage = image
+                    previewImage = image
                 case let .failure(error):
                     self.error = error
                 }

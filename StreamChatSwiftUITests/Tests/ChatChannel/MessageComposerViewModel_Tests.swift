@@ -29,7 +29,7 @@ import XCTest
     
     override func tearDown() {
         super.tearDown()
-        if let mockURL = mockURL {
+        if let mockURL {
             try? FileManager.default.removeItem(at: mockURL)
         }
     }

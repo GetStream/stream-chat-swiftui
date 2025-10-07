@@ -123,14 +123,14 @@ open class WaveformView: UIView {
         )
     }
     
-    @objc internal func didSlide(
+    @objc func didSlide(
         _ sender: UISlider
     ) {
         let value = TimeInterval(sender.value)
         onSliderChanged?(value)
     }
 
-    @objc internal func didTouchUpSlider(
+    @objc func didTouchUpSlider(
         _ sender: UISlider
     ) {
         onSliderTapped?()

@@ -53,7 +53,7 @@ struct iMessagePocView: View {
                     },
                     onItemAppear: viewModel.checkForChannels(index:),
                     channelNaming: viewModel.name(forChannel:),
-                    channelDestination: factory.makeChannelDestination(),
+                    channelDestination: factory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: viewModel.pinChannelTapped(_:)
@@ -88,15 +88,17 @@ struct iMessagePocView: View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
             factory.makeMoreChannelActionsView(
-                for: channel,
-                swipedChannelId: $viewModel.swipedChannelId
-            ) {
-                withAnimation {
-                    viewModel.customChannelPopupType = nil
+                options: .init(
+                    channel: channel,
+                    swipedChannelId: $viewModel.swipedChannelId
+                ) {
+                    withAnimation {
+                        viewModel.customChannelPopupType = nil
+                    }
+                } onError: { error in
+                    viewModel.showErrorPopup(error)
                 }
-            } onError: { error in
-                viewModel.showErrorPopup(error)
-            }
+            )
             .edgesIgnoringSafeArea(.all)
         default:
             EmptyView()

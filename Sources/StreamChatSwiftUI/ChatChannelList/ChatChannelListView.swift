@@ -94,8 +94,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         )
         .onReceive(viewModel.$hideTabBar) { newValue in
             if isIphone && handleTabBarVisibility {
-                self.setupTabBarAppeareance()
-                self.tabBar?.isHidden = newValue
+                setupTabBarAppeareance()
+                tabBar?.isHidden = newValue
             }
         }
         .accessibilityIdentifier("ChatChannelListView")
@@ -105,9 +105,9 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private func content() -> some View {
         Group {
             if viewModel.loading {
-                viewFactory.makeLoadingView()
+                viewFactory.makeLoadingView(options: LoadingViewOptions())
             } else if viewModel.channels.isEmpty {
-                viewFactory.makeNoChannelsView()
+                viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
             } else {
                 ChatChannelListContentView(
                     viewFactory: viewFactory,
@@ -125,12 +125,12 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         })
         .background(
-            viewFactory.makeChannelListBackground(colors: colors)
+            viewFactory.makeChannelListBackground(options: ChannelListBackgroundOptions(colors: colors))
         )
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {
             case let .deleteChannel(channel):
-                return Alert(
+                Alert(
                     title: Text(L10n.Alert.Actions.deleteChannelTitle),
                     message: Text(L10n.Alert.Actions.deleteChannelMessage),
                     primaryButton: .destructive(Text(L10n.Alert.Actions.delete)) {
@@ -139,10 +139,10 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     secondaryButton: .cancel()
                 )
             default:
-                return Alert.defaultErrorAlert
+                Alert.defaultErrorAlert
             }
         }
-        .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title))
+        .modifier(viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: title)))
         .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
         .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
@@ -161,16 +161,20 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         switch viewModel.customChannelPopupType {
         case let .moreActions(channel):
             viewFactory.makeMoreChannelActionsView(
-                for: channel,
-                swipedChannelId: $viewModel.swipedChannelId
-            ) {
-                withAnimation {
-                    viewModel.customChannelPopupType = nil
-                    viewModel.swipedChannelId = nil
-                }
-            } onError: { error in
-                viewModel.showErrorPopup(error)
-            }
+                options: MoreChannelActionsViewOptions(
+                    channel: channel,
+                    swipedChannelId: $viewModel.swipedChannelId,
+                    onDismiss: {
+                        withAnimation {
+                            viewModel.customChannelPopupType = nil
+                            viewModel.swipedChannelId = nil
+                        }
+                    },
+                    onError: { error in
+                        viewModel.showErrorPopup(error)
+                    }
+                )
+            )
             .edgesIgnoringSafeArea(.bottom)
         default:
             EmptyView()
@@ -211,21 +215,23 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             viewFactory.makeChannelListTopView(
-                searchText: $viewModel.searchText
+                options: ChannelListTopViewOptions(searchText: $viewModel.searchText)
             )
 
             if viewModel.isSearching {
                 viewFactory.makeSearchResultsView(
-                    selectedChannel: $viewModel.selectedChannel,
-                    searchResults: viewModel.searchResults,
-                    loadingSearchResults: viewModel.loadingSearchResults,
-                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                    channelNaming: viewModel.name(forChannel:),
-                    imageLoader: channelHeaderLoader.image(for:),
-                    onSearchResultTap: { searchResult in
-                        viewModel.selectedChannel = searchResult
-                    },
-                    onItemAppear: viewModel.loadAdditionalSearchResults(index:)
+                    options: SearchResultsViewOptions(
+                        selectedChannel: $viewModel.selectedChannel,
+                        searchResults: viewModel.searchResults,
+                        loadingSearchResults: viewModel.loadingSearchResults,
+                        onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                        channelNaming: viewModel.name(forChannel:),
+                        imageLoader: channelHeaderLoader.image(for:),
+                        onSearchResultTap: { searchResult in
+                            viewModel.selectedChannel = searchResult
+                        },
+                        onItemAppear: viewModel.loadAdditionalSearchResults(index:)
+                    )
                 )
             } else {
                 ChannelList(
@@ -242,7 +248,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkForChannels(index: index)
                     },
                     channelNaming: viewModel.name(forChannel:),
-                    channelDestination: viewFactory.makeChannelDestination(),
+                    channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
@@ -252,8 +258,8 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                 }
             }
 
-            viewFactory.makeChannelListStickyFooterView()
+            viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
-        .modifier(viewFactory.makeChannelListContentModifier())
+        .modifier(viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }

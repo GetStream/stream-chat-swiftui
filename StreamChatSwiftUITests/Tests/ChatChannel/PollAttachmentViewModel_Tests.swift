@@ -169,10 +169,10 @@ import XCTest
         // Given
         let poll = Poll.mock(optionCount: 3, voteCountForOption: { optionIndex in
             switch optionIndex {
-            case 0: return 2
-            case 1: return 3
-            case 2: return 1
-            default: return 0
+            case 0: 2
+            case 1: 3
+            case 2: 1
+            default: 0
             }
         })
         
@@ -193,10 +193,10 @@ import XCTest
         // Given
         let poll = Poll.mock(optionCount: 3, voteCountForOption: { optionIndex in
             switch optionIndex {
-            case 0: return 2
-            case 1: return 3
-            case 2: return 3
-            default: return 0
+            case 0: 2
+            case 1: 3
+            case 2: 3
+            default: 0
             }
         })
         
