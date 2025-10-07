@@ -808,7 +808,7 @@ import XCTest
 class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
     override func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping (ComposerAssets) -> Void
+        completion: @escaping @MainActor (ComposerAssets) -> Void
     ) {
         super.attachmentsToAssets(attachments, with: nil, completion: completion)
     }
