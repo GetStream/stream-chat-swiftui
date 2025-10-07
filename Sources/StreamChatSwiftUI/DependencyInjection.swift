@@ -5,7 +5,7 @@
 import Foundation
 import StreamChat
 
-public protocol InjectionKey {
+@MainActor public protocol InjectionKey {
     /// The associated type representing the type of the dependency injection key's value.
     associatedtype Value
 
@@ -14,9 +14,9 @@ public protocol InjectionKey {
 }
 
 /// Provides access to injected dependencies.
-public struct InjectedValues {
+@MainActor public struct InjectedValues {
     /// This is only used as an accessor to the computed properties within extensions of `InjectedValues`.
-    private nonisolated(unsafe) static var current = InjectedValues()
+    private static var current = InjectedValues()
 
     /// A static subscript for updating the `currentValue` of `InjectionKey` instances.
     public static subscript<K>(key: K.Type) -> K.Value where K: InjectionKey {
@@ -31,7 +31,7 @@ public struct InjectedValues {
     }
 }
 
-@propertyWrapper
+@MainActor @propertyWrapper
 public struct Injected<T> {
     private let keyPath: WritableKeyPath<InjectedValues, T>
     public var wrappedValue: T {

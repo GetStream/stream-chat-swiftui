@@ -128,7 +128,7 @@ public struct MediaItem: Identifiable {
         self.imageAttachment = imageAttachment
     }
     
-    public var mediaAttachment: MediaAttachment? {
+    @MainActor public var mediaAttachment: MediaAttachment? {
         if let videoAttachment {
             return MediaAttachment(url: videoAttachment.videoURL, type: .video)
         } else if let imageAttachment {

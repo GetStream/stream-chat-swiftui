@@ -5,11 +5,11 @@
 import SwiftUI
 
 /// Helper for creating snapshot from SwiftUI Views.
-public protocol SnapshotCreator {
+@MainActor public protocol SnapshotCreator {
     /// Creates a snapshot of the provided SwiftUI view.
     ///  - Parameter view: the view whose snapshot would be created.
     ///  - Returns: `UIImage` representing the snapshot of the view.
-    @MainActor func makeSnapshot(for view: AnyView) -> UIImage
+    func makeSnapshot(for view: AnyView) -> UIImage
 }
 
 /// Default implementation of the `SnapshotCreator`.

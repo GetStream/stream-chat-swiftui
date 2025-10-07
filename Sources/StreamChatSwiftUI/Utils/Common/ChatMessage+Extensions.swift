@@ -45,7 +45,7 @@ public extension ChatMessage {
     }
 
     /// The text which should be shown in a text view inside the message bubble.
-    var textContent: String? {
+    @MainActor var textContent: String? {
         guard type != .ephemeral else {
             return nil
         }
@@ -89,16 +89,16 @@ public extension ChatMessage {
     /// By default, any string which comprises of ONLY emojis of length 3 or less is displayed as large emoji
     ///
     /// Note that for messages sent with attachments, large emojis aren's rendered
-    var shouldRenderAsJumbomoji: Bool {
-        guard let textContent = textContent, !textContent.isEmpty else { return false }
+    @MainActor var shouldRenderAsJumbomoji: Bool {
+        guard let textContent, !textContent.isEmpty else { return false }
         return textContent.count <= 3 && textContent.containsOnlyEmoji
     }
 
-    var adjustedText: String {
+    @MainActor var adjustedText: String {
         InjectedValues[\.utils].composerConfig.adjustMessageOnRead(text)
     }
     
-    var isRightAligned: Bool {
+    @MainActor var isRightAligned: Bool {
         let config = InjectedValues[\.utils].messageListConfig
         let messageListAlignment = config.messageListAlignment
         if messageListAlignment == .leftAligned {
