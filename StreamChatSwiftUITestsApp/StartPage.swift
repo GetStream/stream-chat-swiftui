@@ -2,12 +2,11 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 struct StartPage: View {
-
     @State var streamChat: StreamChat?
     @State var chatShown = false
     @ObservedObject var appState = AppState.shared
@@ -67,8 +66,8 @@ struct StartPage: View {
         streamChat = StreamChat(chatClient: chatClient)
 
         chatClient.connectUser(
-                userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
-                token: token
+            userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
+            token: token
         ) { error in
             if let error = error {
                 log.error("connecting the user failed \(error)")
@@ -79,7 +78,6 @@ struct StartPage: View {
 }
 
 class DemoAppFactory: ViewFactory {
-
     @Injected(\.chatClient) public var chatClient
 
     private init() {}

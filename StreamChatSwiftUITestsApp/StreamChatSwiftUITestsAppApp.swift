@@ -7,7 +7,6 @@ import SwiftUI
 
 @main
 struct StreamChatSwiftUITestsAppApp: App {
-
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -18,7 +17,6 @@ struct StreamChatSwiftUITestsAppApp: App {
 }
 
 class AppState: ObservableObject, Equatable {
-
     static func == (lhs: AppState, rhs: AppState) -> Bool {
         lhs.userState == rhs.userState
     }

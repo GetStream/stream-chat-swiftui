@@ -5,7 +5,6 @@
 import XCTest
 
 final class MessageDeliveryStatus_Tests: StreamTestCase {
-
     let message = "message"
     var pendingMessage: String { "pending \(message)" }
     var failedMessage: String { "failed \(message)" }
@@ -21,6 +20,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     }
 
     // MARK: Message List
+
     func test_singleCheckmarkShown_whenMessageIsSent() throws {
         linkToScenario(withId: 397)
 
@@ -71,7 +71,6 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
                 .login()
                 .setConnectivity(to: .off)
                 .openChannel()
-
         }
         WHEN("user sends a new message") {
             userRobot.sendMessage(failedMessage, waitForAppearance: false)
@@ -227,8 +226,8 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
 // MARK: Thread Reply
 
 extension MessageDeliveryStatus_Tests {
-
     // MARK: Thread Previews
+
     func test_singleCheckmarkShown_whenMessageIsSent_andPreviewedInThread() throws {
         linkToScenario(withId: 405)
 
@@ -534,7 +533,6 @@ extension MessageDeliveryStatus_Tests {
 // MARK: Disabled Read Events feature
 
 extension MessageDeliveryStatus_Tests {
-
     // MARK: Messages
 
     func test_deliveryStatusHidden_whenMessageIsSentAndReadEventsIsDisabled() throws {

@@ -3,14 +3,13 @@
 //
 
 import Foundation
-import XCTest
 import StreamChat
 @testable import StreamChatSwiftUI
+import XCTest
 
 // swiftlint:disable convenience_type
 
 class MessageListPage {
-
     static var cells: XCUIElementQuery {
         app.otherElements.matching(identifier: "MessageContainerView")
     }
@@ -44,7 +43,6 @@ class MessageListPage {
     }
 
     enum NavigationBar {
-
         static var chatAvatar: XCUIElement {
             app.images["ChannelAvatarView"]
         }
@@ -57,13 +55,13 @@ class MessageListPage {
             app.staticTexts.matching(identifier: "ChannelTitleView").lastMatch!
         }
 
-        // FIXME
+        // FIXME:
         static var debugMenu: XCUIElement {
             app.buttons[""].firstMatch
         }
     }
 
-    // FIXME
+    // FIXME:
     enum Alert {
         enum Debug {
             // Add member
@@ -168,7 +166,7 @@ class MessageListPage {
             messageCell.staticTexts["readIndicatorCount"]
         }
 
-        // FIXME
+        // FIXME:
         static func statusCheckmark(for status: MessageDeliveryStatus? = nil, in messageCell: XCUIElement) -> XCUIElement {
             messageCell.images["readIndicatorCheckmark"]
         }
@@ -314,7 +312,7 @@ class MessageListPage {
             }
         }
 
-        struct Element {
+        enum Element {
             static var actionsView: XCUIElement { app.otherElements["MessageActionsView"] }
             static var reply: XCUIElement { app.otherElements["messageAction-reply_message_action"].images.firstMatch }
             static var threadReply: XCUIElement { app.otherElements["messageAction-thread_message_action"].images.firstMatch }
@@ -324,7 +322,7 @@ class MessageListPage {
             static var unmute: XCUIElement { app.otherElements["messageAction-unmute_message_action"].images.firstMatch }
             static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"].images.firstMatch }
             static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch }
-            static var hardDelete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch } // FIXME
+            static var hardDelete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch } // FIXME:
             static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"].images.firstMatch }
             static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"].images.firstMatch }
             static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"].images.firstMatch }
@@ -348,6 +346,7 @@ class MessageListPage {
         static var cancelButton: XCUIElement {
             app.scrollViews.buttons.matching(NSPredicate(format: "label LIKE 'Cancel'")).firstMatch
         }
+
         static var images: XCUIElementQuery { app.scrollViews["AttachmentTypeContainer"].images }
     }
 
@@ -374,5 +373,4 @@ class MessageListPage {
             app.scrollViews["CommandsContainerView"].otherElements.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView'"))
         }
     }
-
 }
