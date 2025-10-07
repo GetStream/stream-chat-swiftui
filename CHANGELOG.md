@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add participant actions in channel info view [#982](https://github.com/GetStream/stream-chat-swiftui/pull/982)
 - Add support for overriding `onImageTap` in `LinkAttachmentView` [#986](https://github.com/GetStream/stream-chat-swiftui/pull/986)
 - Add support for customizing text colors in `LinkAttachmentView` [#992](https://github.com/GetStream/stream-chat-swiftui/pull/992)
+- Expose `MediaAttachment` properties and initializer [#1000](https://github.com/GetStream/stream-chat-swiftui/pull/1000)
 - Add `ColorPalette.navigationBarGlyph` for configuring the glyph color for buttons in navigation bars [#999](https://github.com/GetStream/stream-chat-swiftui/pull/999)
 
 ### 🐞 Fixed
