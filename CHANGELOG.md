@@ -8,10 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Opens `MarkdownFormatter` so that it can be customised [#978](https://github.com/GetStream/stream-chat-swiftui/pull/978)
 - Add participant actions in channel info view [#982](https://github.com/GetStream/stream-chat-swiftui/pull/982)
 - Add support for overriding `onImageTap` in `LinkAttachmentView` [#986](https://github.com/GetStream/stream-chat-swiftui/pull/986)
+- Add support for customizing text colors in `LinkAttachmentView` [#992](https://github.com/GetStream/stream-chat-swiftui/pull/992)
+- Expose `MediaAttachment` properties and initializer [#1000](https://github.com/GetStream/stream-chat-swiftui/pull/1000)
+- Add `ColorPalette.navigationBarGlyph` for configuring the glyph color for buttons in navigation bars [#999](https://github.com/GetStream/stream-chat-swiftui/pull/999)
+- Allow overriding `ChatChannelInfoViewModel` properties: `shouldShowLeaveConversationButton`, `canRenameChannel`, and `shouldShowAddUserButton` [#995](https://github.com/GetStream/stream-chat-swiftui/pull/995)
 
 ### 🐞 Fixed
 - Fix openChannel not working when searching or another chat shown [#975](https://github.com/GetStream/stream-chat-swiftui/pull/975)
 - Fix crash when using a font that does not support bold or italic trait [#976](https://github.com/GetStream/stream-chat-swiftui/pull/976)
+- Fix unread messages banner not shown for one-page channels [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix unread messages banner not shown if the whole channel is unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix channel not marking read when passing by the unread message [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix random scroll after marking a message unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix marking channel read when the user scrolls to the bottom after marking a message as unread [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix replying to unread messages marking them instantly as read [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
+- Fix rendering of the add users button on iOS 26 [#999](https://github.com/GetStream/stream-chat-swiftui/pull/999)
+- Use `ColorPalette.navigationBarTint` for the background of the add users button [#999](https://github.com/GetStream/stream-chat-swiftui/pull/999)
+- Fix showing all the channel members in the more channel actions view [#1001](https://github.com/GetStream/stream-chat-swiftui/pull/1001)
 
 # [4.89.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.1)
 _September 23, 2025_

@@ -17,7 +17,7 @@ public enum ImageMergeOrientation {
     case vertical
 }
 
-public protocol ImageMerging {
+public protocol ImageMerging: Sendable {
     /// Merges the images provided in the array
     /// - Parameters:
     ///   - images: The images to combine
@@ -29,7 +29,7 @@ public protocol ImageMerging {
     ) -> UIImage?
 }
 
-open class DefaultImageMerger: ImageMerging {
+open class DefaultImageMerger: ImageMerging, @unchecked Sendable {
     // Initializer required for subclasses
     public init() {
         // Public init.

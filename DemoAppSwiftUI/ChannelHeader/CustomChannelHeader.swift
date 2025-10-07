@@ -31,7 +31,7 @@ public struct CustomChannelHeader: ToolbarContent {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 24, height: 24)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(Color(colors.navigationBarGlyph))
                     .padding(.all, 8)
                     .background(colors.navigationBarTintColor)
                     .clipShape(Circle())

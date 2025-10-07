@@ -39,6 +39,8 @@ public class MessageActionsResolver: MessageActionsResolving {
             }
         } else if info.identifier == MessageActionId.markUnread {
             viewModel.firstUnreadMessageId = info.message.messageId
+            viewModel.currentUserMarkedMessageUnread = true
+            viewModel.scrolledId = info.message.messageId
         }
 
         viewModel.reactionsShown = false

@@ -489,7 +489,7 @@ import UIKit
                     searchType: .messages
                 )
             }
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor in
                 self?.searchResults = results
             }
         }

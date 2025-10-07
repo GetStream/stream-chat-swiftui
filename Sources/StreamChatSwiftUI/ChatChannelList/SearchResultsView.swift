@@ -16,7 +16,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
     var onlineIndicatorShown: (ChatChannel) -> Bool
     var channelNaming: (ChatChannel) -> String
     var imageLoader: (ChatChannel) -> UIImage
-    var onSearchResultTap: (ChannelSelectionInfo) -> Void
+    var onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     var onItemAppear: (Int) -> Void
     
     public init(
@@ -24,11 +24,11 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
-        channelNaming: @escaping (ChatChannel) -> String,
-        imageLoader: @escaping (ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping (Int) -> Void
+        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
+        channelNaming: @escaping @MainActor (ChatChannel) -> String,
+        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping @MainActor (Int) -> Void
     ) {
         self.factory = factory
         _selectedChannel = selectedChannel

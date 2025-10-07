@@ -153,7 +153,7 @@ public struct MessageDisplayOptions {
     public let shouldAnimateReactions: Bool
     public let reactionsPlacement: ReactionsPlacement
     public let showOriginalTranslatedButton: Bool
-    public let messageLinkDisplayResolver: (ChatMessage) -> [NSAttributedString.Key: Any]
+    public let messageLinkDisplayResolver: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
     public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
@@ -173,7 +173,7 @@ public struct MessageDisplayOptions {
         shouldAnimateReactions: Bool = true,
         reactionsPlacement: ReactionsPlacement = .top,
         showOriginalTranslatedButton: Bool = false,
-        messageLinkDisplayResolver: @escaping (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
+        messageLinkDisplayResolver: @escaping @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
         spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
         reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
@@ -216,7 +216,7 @@ public struct MessageDisplayOptions {
         }
     }
 
-    public static var defaultLinkDisplay: (ChatMessage) -> [NSAttributedString.Key: Any] {
+    public static var defaultLinkDisplay: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] {
         { _ in
             [
                 NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)

@@ -53,9 +53,7 @@ import UIKit
     ) {
         self.channelActions = channelActions
         self.channel = channel
-        members = channel.lastActiveMembers.filter { [unowned self] member in
-            member.id != chatClient.currentUserId
-        }
+        members = channel.lastActiveMembers
     }
 
     /// Returns an image for a member.

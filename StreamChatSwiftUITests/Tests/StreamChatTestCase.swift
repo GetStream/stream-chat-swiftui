@@ -9,7 +9,7 @@
 import XCTest
 
 /// Base class that sets up the `StreamChat` object.
-open class StreamChatTestCase: XCTestCase {
+@MainActor open class StreamChatTestCase: XCTestCase {
     public static var currentUserId: String = .unique
 
     public var chatClient: ChatClient_Mock = {
@@ -20,7 +20,7 @@ open class StreamChatTestCase: XCTestCase {
 
     public var streamChat: StreamChat?
 
-    @MainActor override open func setUp() {
+    override open func setUp() {
         super.setUp()
         streamChat = StreamChat(
             chatClient: chatClient,
@@ -41,6 +41,7 @@ open class StreamChatTestCase: XCTestCase {
             appearance.colors.navigationBarTitle = .blue
             appearance.colors.navigationBarSubtitle = .cyan
             appearance.colors.navigationBarBackground = .yellow
+            appearance.colors.navigationBarGlyph = .green
         }
     }
 }
