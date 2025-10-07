@@ -482,7 +482,7 @@ extension MediaAttachment {
     }
 }
 
-public struct MediaAttachmentType: RawRepresentable {
+public struct MediaAttachmentType: RawRepresentable, Sendable {
     public let rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
