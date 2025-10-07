@@ -16,7 +16,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
 
     private let viewFactory: Factory
     private let title: String
-    private let customOnItemTap: ((ChatChannel) -> Void)?
+    private let customOnItemTap: (@MainActor (ChatChannel) -> Void)?
     private var embedInNavigationView: Bool
     private var handleTabBarVisibility: Bool
 
@@ -45,7 +45,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         viewModel: ChatChannelListViewModel? = nil,
         channelListController: ChatChannelListController? = nil,
         title: String = "Stream Chat",
-        onItemTap: ((ChatChannel) -> Void)? = nil,
+        onItemTap: (@MainActor (ChatChannel) -> Void)? = nil,
         selectedChannelId: String? = nil,
         handleTabBarVisibility: Bool = true,
         embedInNavigationView: Bool = true,
@@ -65,7 +65,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         customOnItemTap = onItemTap
     }
     
-    var onItemTap: (ChatChannel) -> Void {
+    var onItemTap: @MainActor (ChatChannel) -> Void {
         if let customOnItemTap {
             return customOnItemTap
         }
@@ -194,12 +194,12 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
     private var channelHeaderLoader: ChannelHeaderLoader { InjectedValues[\.utils].channelHeaderLoader }
-    private var onItemTap: (ChatChannel) -> Void
+    private var onItemTap: @MainActor (ChatChannel) -> Void
 
     public init(
         viewFactory: Factory,
         viewModel: ChatChannelListViewModel,
-        onItemTap: ((ChatChannel) -> Void)? = nil
+        onItemTap: (@MainActor (ChatChannel) -> Void)? = nil
     ) {
         self.viewFactory = viewFactory
         self.viewModel = viewModel

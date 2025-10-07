@@ -13,22 +13,22 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResults: [ChannelSelectionInfo]
     var loadingSearchResults: Bool
-    var onlineIndicatorShown: (ChatChannel) -> Bool
-    var channelNaming: (ChatChannel) -> String
-    var imageLoader: (ChatChannel) -> UIImage
-    var onSearchResultTap: (ChannelSelectionInfo) -> Void
-    var onItemAppear: (Int) -> Void
+    var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
+    var channelNaming: @MainActor (ChatChannel) -> String
+    var imageLoader: @MainActor (ChatChannel) -> UIImage
+    var onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
+    var onItemAppear: @MainActor (Int) -> Void
     
     public init(
         factory: Factory,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping (ChatChannel) -> Bool,
-        channelNaming: @escaping (ChatChannel) -> String,
-        imageLoader: @escaping (ChatChannel) -> UIImage,
-        onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
-        onItemAppear: @escaping (Int) -> Void
+        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
+        channelNaming: @escaping @MainActor (ChatChannel) -> String,
+        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
+        onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
+        onItemAppear: @escaping @MainActor (Int) -> Void
     ) {
         self.factory = factory
         _selectedChannel = selectedChannel
