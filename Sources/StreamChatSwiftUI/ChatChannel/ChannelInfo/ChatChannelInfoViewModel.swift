@@ -36,7 +36,7 @@ import SwiftUI
     @Published public var addUsersShown = false
     @Published public var selectedParticipant: ParticipantInfo?
     
-    public var shouldShowLeaveConversationButton: Bool {
+    open var shouldShowLeaveConversationButton: Bool {
         if channel.isDirectMessageChannel {
             channel.ownCapabilities.contains(.deleteChannel)
         } else {
@@ -44,11 +44,11 @@ import SwiftUI
         }
     }
 
-    public var canRenameChannel: Bool {
+    open var canRenameChannel: Bool {
         channel.ownCapabilities.contains(.updateChannel)
     }
 
-    public var shouldShowAddUserButton: Bool {
+    open var shouldShowAddUserButton: Bool {
         if channel.isDirectMessageChannel {
             false
         } else {

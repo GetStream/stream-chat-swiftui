@@ -8,6 +8,7 @@ import UIKit
 /// Provides the colors used throughout the SDK.
 @MainActor public struct ColorPalette {
     public init() {
+        navigationBarGlyph = .white
         navigationBarTitle = text
         navigationBarSubtitle = textLowEmphasis
         navigationBarTintColor = tintColor
@@ -103,6 +104,8 @@ import UIKit
     public lazy var composerInputHighlightedBorder: UIColor = innerBorder
 
     // MARK: - Navigation Bar
+    
+    public var navigationBarGlyph: UIColor
     
     public var navigationBarTitle: UIColor {
         didSet {
