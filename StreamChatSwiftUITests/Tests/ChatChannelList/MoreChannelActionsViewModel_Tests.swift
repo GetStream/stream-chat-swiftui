@@ -16,19 +16,23 @@ class MoreChannelActionsViewModel_Tests: StreamChatTestCase {
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_moreActionsVM_membersLoaded() {
+    func test_moreActionsVM_membersLoaded() throws {
         // Given
+        let currentUserId = try XCTUnwrap(streamChat?.chatClient.currentUserId)
         let memberId: String = .unique
         let viewModel = makeMoreActionsViewModel(
-            members: [.mock(id: memberId, isOnline: true)]
+            members: [
+                .mock(id: memberId, isOnline: true),
+                .mock(id: currentUserId, isOnline: true)
+            ]
         )
 
         // When
         let members = viewModel.members
 
         // Then
-        XCTAssert(members.count == 1)
-        XCTAssert(members[0].id == memberId)
+        XCTAssert(members.count == 2)
+        XCTAssert(members.map(\.id) == [memberId, currentUserId])
     }
 
     func test_moreActionsVM_chatHeaderInfo() {

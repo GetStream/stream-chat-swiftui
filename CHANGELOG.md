@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix replying to unread messages marking them instantly as read [#989](https://github.com/GetStream/stream-chat-swiftui/pull/989)
 - Fix rendering of the add users button on iOS 26 [#999](https://github.com/GetStream/stream-chat-swiftui/pull/999)
 - Use `ColorPalette.navigationBarTint` for the background of the add users button [#999](https://github.com/GetStream/stream-chat-swiftui/pull/999)
+- Fix showing all the channel members in the more channel actions view [#1001](https://github.com/GetStream/stream-chat-swiftui/pull/1001)
 
 # [4.89.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.89.1)
 _September 23, 2025_
