@@ -5,7 +5,6 @@
 import XCTest
 
 final class QuotedReply_Tests: StreamTestCase {
-    
     let messageCount = 30
     let parentMessage = "1"
     let quotedMessage = "quoted reply"
@@ -107,7 +106,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
     
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_Message() {
-         linkToScenario(withId: 1702)
+        linkToScenario(withId: 1702)
         
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: messageCount)
@@ -133,7 +132,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
     
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_File() {
-         linkToScenario(withId: 1703)
+        linkToScenario(withId: 1703)
         
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: messageCount)
@@ -160,7 +159,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
     
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_Giphy() {
-         linkToScenario(withId: 1704)
+        linkToScenario(withId: 1704)
         
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: messageCount)
@@ -187,7 +186,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
 
     func test_quotedReplyIsDeletedByParticipant_deletedMessageIsShown() {
-         linkToScenario(withId: 388)
+        linkToScenario(withId: 388)
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
@@ -205,7 +204,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
 
     func test_quotedReplyIsDeletedByUser_deletedMessageIsShown() {
-         linkToScenario(withId: 389)
+        linkToScenario(withId: 389)
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(count: 1, messagesCount: 1)
@@ -223,7 +222,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
     
     func test_unreadCount_whenUserSendsInvalidCommand_and_jumpingOnQuotedMessage() throws {
-         linkToScenario(withId: 1705)
+        linkToScenario(withId: 1705)
         
         let invalidCommand = "invalid command"
         
