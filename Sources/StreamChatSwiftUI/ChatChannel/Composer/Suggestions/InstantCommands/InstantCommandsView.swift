@@ -35,7 +35,7 @@ struct InstantCommandsView: View {
                                     }
                                 )
                                 .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                    if let value = value, value != itemHeight {
+                                    if let value, value != itemHeight {
                                         itemHeight = value
                                     }
                                 }

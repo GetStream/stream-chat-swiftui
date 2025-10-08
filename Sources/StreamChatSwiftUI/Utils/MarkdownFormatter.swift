@@ -74,22 +74,20 @@ open class DefaultMarkdownFormatter: MarkdownFormatter {
             return AttributeContainer()
                 .font(fonts.body.monospaced())
         case let .header(level):
-            let font: Font = {
-                switch level {
-                case 1:
-                    return fonts.title
-                case 2:
-                    return fonts.title2
-                case 3:
-                    return fonts.title3
-                case 4:
-                    return fonts.headline
-                case 5:
-                    return fonts.subheadline
-                default:
-                    return fonts.footnote
-                }
-            }()
+            let font: Font = switch level {
+            case 1:
+                fonts.title
+            case 2:
+                fonts.title2
+            case 3:
+                fonts.title3
+            case 4:
+                fonts.headline
+            case 5:
+                fonts.subheadline
+            default:
+                fonts.footnote
+            }
             let foregroundColor: Color? = level >= 6 ? Color(colors.subtitleText) : nil
             if let foregroundColor {
                 return AttributeContainer()

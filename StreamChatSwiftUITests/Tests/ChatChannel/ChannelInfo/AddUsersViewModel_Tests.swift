@@ -35,7 +35,7 @@ import XCTest
             loadedUserIds: [],
             searchController: searchController
         )
-        let expectation = self.expectation(description: "search")
+        let expectation = expectation(description: "search")
 
         // When
         viewModel.searchText = "Test User 1"

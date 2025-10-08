@@ -36,7 +36,7 @@ import SwiftUI
             ),
             token: token
         ) { [weak self] error in
-            if let error = error {
+            if let error {
                 log.error("connecting the user failed \(error)")
                 return
             }
@@ -55,7 +55,7 @@ import SwiftUI
         chatClient.connectGuestUser(
             userInfo: .init(id: credentials.id, name: credentials.name)
         ) { [weak self] error in
-            if let error = error {
+            if let error {
                 log.error("connecting the user failed \(error)")
                 return
             }

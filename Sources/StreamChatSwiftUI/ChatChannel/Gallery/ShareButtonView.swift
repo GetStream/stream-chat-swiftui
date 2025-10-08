@@ -15,7 +15,7 @@ struct ShareButtonView: View {
 
     var body: some View {
         Button(action: {
-            self.isSharePresented = true
+            isSharePresented = true
         }, label: {
             Image(uiImage: images.share)
                 .customizable()

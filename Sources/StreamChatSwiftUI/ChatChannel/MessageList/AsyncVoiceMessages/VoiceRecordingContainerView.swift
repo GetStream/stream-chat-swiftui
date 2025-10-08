@@ -42,10 +42,12 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             VStack {
                 if let quotedMessage = message.quotedMessage {
                     factory.makeQuotedMessageView(
-                        quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
-                        scrolledId: $scrolledId
+                        options: QuotedMessageViewOptions(
+                            quotedMessage: quotedMessage,
+                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                            isInComposer: false,
+                            scrolledId: $scrolledId
+                        )
                     )
                 }
                 VStack(spacing: 2) {
@@ -130,9 +132,9 @@ struct VoiceRecordingView: View {
     private var rateTitle: String {
         switch rate {
         case .half:
-            return "x0.5"
+            "x0.5"
         default:
-            return "x\(Int(rate.rawValue))"
+            "x\(Int(rate.rawValue))"
         }
     }
     

@@ -72,9 +72,9 @@ import StreamChat
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
     
-    internal var _audioPlayer: AudioPlaying?
-    internal var _audioRecorder: AudioRecording?
-    internal var pollsDateFormatter = PollsDateFormatter()
+    var _audioPlayer: AudioPlaying?
+    var _audioRecorder: AudioRecording?
+    var pollsDateFormatter = PollsDateFormatter()
 
     public init(
         markdownFormatter: MarkdownFormatter = DefaultMarkdownFormatter(),

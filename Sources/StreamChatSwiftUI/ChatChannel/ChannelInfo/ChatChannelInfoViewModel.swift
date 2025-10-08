@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-@MainActor open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+@MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     @Injected(\.chatClient) private var chatClient
 
     @Published public var participants = [ParticipantInfo]()
@@ -110,7 +110,7 @@ import SwiftUI
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
-        let deactivated = participants.filter(\.isDeactivated).count
+        let deactivated = participants.count(where: { $0.isDeactivated })
         return total - displayed - deactivated
     }
 

@@ -63,7 +63,7 @@ import XCTest
 class CustomFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 
-    func makeThreadListLoadingView() -> some View {
+    func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> some View {
         LoadingView()
     }
 }

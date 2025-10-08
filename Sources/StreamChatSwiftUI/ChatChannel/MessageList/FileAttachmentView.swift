@@ -30,10 +30,12 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
         VStack(alignment: message.alignmentInBubble) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                    options: QuotedMessageViewOptions(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
                 )
             }
 

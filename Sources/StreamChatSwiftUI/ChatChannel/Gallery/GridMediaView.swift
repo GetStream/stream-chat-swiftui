@@ -14,9 +14,9 @@ struct GridMediaView: View {
 
     private static var itemWidth: CGFloat {
         if UIDevice.current.userInterfaceIdiom == .phone {
-            return (UIScreen.main.bounds.size.width / 3) - spacing * 3
+            (UIScreen.main.bounds.size.width / 3) - spacing * 3
         } else {
-            return 120
+            120
         }
     }
 

@@ -158,9 +158,9 @@ class InputTextView: UITextView, AccessibilityView {
     
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         if action == #selector(paste(_:)) && onImagePasted != nil && UIPasteboard.general.image != nil {
-            return true
+            true
         } else {
-            return super.canPerformAction(action, withSender: sender)
+            super.canPerformAction(action, withSender: sender)
         }
     }
 }

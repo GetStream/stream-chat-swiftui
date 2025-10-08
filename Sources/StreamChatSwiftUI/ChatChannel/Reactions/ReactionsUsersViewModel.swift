@@ -33,7 +33,7 @@ import SwiftUI
     }
 
     func loadMoreReactions() {
-        guard let messageController = self.messageController else {
+        guard let messageController else {
             return
         }
         guard !isLoading && messageController.hasLoadedAllReactions == false else {

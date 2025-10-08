@@ -16,7 +16,7 @@ import SwiftUI
     /// - Parameter channelId: the channel's id.
     /// - Returns: `ChatChannelController`
     func makeChannelController(for channelId: ChannelId) -> ChatChannelController {
-        if let currentChannelController = currentChannelController, channelId == currentChannelController.cid {
+        if let currentChannelController, channelId == currentChannelController.cid {
             return currentChannelController
         }
         let controller = chatClient.channelController(for: channelId)

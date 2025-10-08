@@ -22,16 +22,16 @@ import UIKit
     private var scheduledUpdates = Set<ChannelId>()
 
     /// Context provided utils.
-    internal lazy var imageLoader = utils.imageLoader
-    internal lazy var imageCDN = utils.imageCDN
-    internal lazy var channelAvatarsMerger = utils.channelAvatarsMerger
-    internal lazy var channelNamer = utils.channelNamer
+    lazy var imageLoader = utils.imageLoader
+    lazy var imageCDN = utils.imageCDN
+    lazy var channelAvatarsMerger = utils.channelAvatarsMerger
+    lazy var channelNamer = utils.channelNamer
 
     /// Placeholder images.
-    internal lazy var placeholder1 = images.userAvatarPlaceholder1
-    internal lazy var placeholder2 = images.userAvatarPlaceholder2
-    internal lazy var placeholder3 = images.userAvatarPlaceholder3
-    internal lazy var placeholder4 = images.userAvatarPlaceholder4
+    lazy var placeholder1 = images.userAvatarPlaceholder1
+    lazy var placeholder2 = images.userAvatarPlaceholder2
+    lazy var placeholder3 = images.userAvatarPlaceholder3
+    lazy var placeholder4 = images.userAvatarPlaceholder4
     
     private var loadedImages = [ChannelId: UIImage]()
     private let didLoadImage = PassthroughSubject<ChannelId, Never>()
@@ -55,7 +55,7 @@ import UIKit
         }
 
         if channel.isDirectMessageChannel {
-            let lastActiveMembers = self.lastActiveMembers(for: channel)
+            let lastActiveMembers = lastActiveMembers(for: channel)
             if let otherMember = lastActiveMembers.first, let url = otherMember.imageURL {
                 loadChannelThumbnail(for: channel.cid, from: url)
                 return placeholder3
@@ -97,8 +97,8 @@ import UIKit
         if scheduledUpdates.isEmpty {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 guard let self else { return }
-                let updates = self.scheduledUpdates
-                self.scheduledUpdates.removeAll()
+                let updates = scheduledUpdates
+                scheduledUpdates.removeAll()
                 updates.forEach { self.didLoadImage.send($0) }
             }
         }
@@ -150,14 +150,14 @@ import UIKit
             resize: true,
             preferredSize: .avatarThumbnailSize
         ) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(image):
                 DispatchQueue.main.async {
                     self.didFinishedLoading(for: cid, image: image)
                 }
             case let .failure(error):
-                self.failedImageLoads.insert(cid)
+                failedImageLoads.insert(cid)
                 log.error("error loading image: \(error.localizedDescription)")
             }
         }

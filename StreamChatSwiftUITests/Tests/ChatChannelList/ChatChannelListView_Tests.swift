@@ -156,11 +156,10 @@ class ChannelAvatarViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
     
     func makeChannelAvatarView(
-        for channel: ChatChannel,
-        with options: ChannelAvatarViewOptions
+        options: ChannelAvatarViewFactoryOptions
     ) -> some View {
         Circle()
             .fill(.red)
-            .frame(width: options.size.width, height: options.size.height)
+            .frame(width: options.options.size.width, height: options.options.size.height)
     }
 }

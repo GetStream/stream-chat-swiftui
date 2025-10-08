@@ -41,26 +41,30 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack {
             viewFactory.makeVideoPlayerHeaderView(
-                title: author.name ?? "",
-                subtitle: author.onlineText,
-                shown: $isShown
+                options: VideoPlayerHeaderViewOptions(
+                    title: author.name ?? "",
+                    subtitle: author.onlineText,
+                    shown: $isShown
+                )
             )
             if let avPlayer {
                 VideoPlayer(player: avPlayer)
             }
             Spacer()
             viewFactory.makeVideoPlayerFooterView(
-                attachment: attachment,
-                shown: $isShown
+                options: VideoPlayerFooterViewOptions(
+                    attachment: attachment,
+                    shown: $isShown
+                )
             )
         }
         .onAppear {
             fileCDN.adjustedURL(for: attachment.payload.videoURL) { result in
                 switch result {
                 case let .success(url):
-                    self.avPlayer = AVPlayer(url: url)
+                    avPlayer = AVPlayer(url: url)
                     try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    self.avPlayer?.play()
+                    avPlayer?.play()
                 case let .failure(error):
                     self.error = error
                 }
@@ -75,9 +79,9 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
 extension ChatUser {
     var onlineText: String {
         if isOnline {
-            return L10n.Message.Title.online
+            L10n.Message.Title.online
         } else {
-            return L10n.Message.Title.offline
+            L10n.Message.Title.offline
         }
     }
 }

@@ -13,11 +13,11 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResults: [ChannelSelectionInfo]
     var loadingSearchResults: Bool
-    var onlineIndicatorShown: (ChatChannel) -> Bool
-    var channelNaming: (ChatChannel) -> String
-    var imageLoader: (ChatChannel) -> UIImage
+    var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
+    var channelNaming: @MainActor (ChatChannel) -> String
+    var imageLoader: @MainActor (ChatChannel) -> UIImage
     var onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
-    var onItemAppear: (Int) -> Void
+    var onItemAppear: @MainActor (Int) -> Void
     
     public init(
         factory: Factory,
@@ -61,7 +61,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
                             channelName: channelNaming(searchResult.channel),
                             avatar: imageLoader(searchResult.channel),
                             onSearchResultTap: onSearchResultTap,
-                            channelDestination: factory.makeChannelDestination()
+                            channelDestination: factory.makeChannelDestination(options: ChannelDestinationOptions())
                         )
                         .onAppear {
                             if let index = searchResults.firstIndex(where: { result in
@@ -95,12 +95,14 @@ struct SearchResultView<Factory: ViewFactory>: View {
     var body: some View {
         ZStack {
             factory.makeChannelListSearchResultItem(
-                searchResult: searchResult,
-                onlineIndicatorShown: onlineIndicatorShown,
-                channelName: channelName,
-                avatar: avatar,
-                onSearchResultTap: onSearchResultTap,
-                channelDestination: channelDestination
+                options: ChannelListSearchResultItemOptions(
+                    searchResult: searchResult,
+                    onlineIndicatorShown: onlineIndicatorShown,
+                    channelName: channelName,
+                    avatar: avatar,
+                    onSearchResultTap: onSearchResultTap,
+                    channelDestination: channelDestination
+                )
             )
 
             NavigationLink(
@@ -134,8 +136,10 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    for: searchResult.channel,
-                    with: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
+                    options: ChannelAvatarViewFactoryOptions(
+                        channel: searchResult.channel,
+                        options: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
+                    )
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

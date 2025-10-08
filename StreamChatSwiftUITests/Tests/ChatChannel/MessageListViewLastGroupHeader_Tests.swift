@@ -72,9 +72,9 @@ import XCTest
 class CustomHeaderViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
 
-    func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
+    func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> some View {
         HStack {
-            MessageAuthorView(message: message)
+            MessageAuthorView(message: options.message)
             Spacer()
         }
         .padding(.leading, CGSize.messageAvatarSize.width + 24)

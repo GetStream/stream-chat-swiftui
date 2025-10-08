@@ -36,9 +36,9 @@ struct WhatsAppChannelHeader: ToolbarContent {
     
     private var channelSubtitle: String {
         if channel.memberCount <= 2 {
-            return channel.onlineInfoText(currentUserId: currentUserId)
+            channel.onlineInfoText(currentUserId: currentUserId)
         } else {
-            return channel
+            channel
                 .lastActiveMembers
                 .map { $0.name ?? $0.id }
                 .joined(separator: ", ")

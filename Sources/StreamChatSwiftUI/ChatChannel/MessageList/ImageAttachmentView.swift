@@ -24,10 +24,12 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         ) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                    options: .init(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
                 )
             }
 
@@ -60,13 +62,15 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         )
         .fullScreenCover(isPresented: $galleryShown, onDismiss: {
-            self.selectedIndex = 0
+            selectedIndex = 0
         }) {
             factory.makeGalleryView(
-                mediaAttachments: sources,
-                message: message,
-                isShown: $galleryShown,
-                options: .init(selectedIndex: selectedIndex)
+                options: GalleryViewOptions(
+                    mediaAttachments: sources,
+                    message: message,
+                    isShown: $galleryShown,
+                    options: .init(selectedIndex: selectedIndex)
+                )
             )
         }
         .accessibilityIdentifier("ImageAttachmentContainer")
@@ -346,9 +350,9 @@ struct LazyLoadingImage: View {
 
     var body: some View {
         ZStack {
-            if let image = image {
+            if let image {
                 imageView(for: image)
-                if let imageTapped = imageTapped {
+                if let imageTapped {
                     // NOTE: needed because of bug with SwiftUI.
                     // The click area expands outside the image view (although not visible).
                     Rectangle()
@@ -422,7 +426,7 @@ extension ChatMessage {
     }
 }
 
-public struct MediaAttachment: Identifiable, Equatable {
+public struct MediaAttachment: Identifiable, Equatable, Sendable {
     public let url: URL
     public let type: MediaAttachmentType
     public var uploadingState: AttachmentUploadingState?
@@ -493,7 +497,7 @@ public struct MediaAttachmentType: RawRepresentable, Sendable {
 }
 
 /// Options for the gallery view.
-public struct MediaViewsOptions {
+public struct MediaViewsOptions: Sendable {
     /// The index of the selected media item.
     public let selectedIndex: Int
 

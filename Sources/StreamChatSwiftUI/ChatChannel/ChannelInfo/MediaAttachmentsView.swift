@@ -72,12 +72,14 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                             .overlay(
                                 BottomRightView {
                                     factory.makeMessageAvatarView(
-                                        for: UserDisplayInfo(
-                                            id: mediaItem.message.author.id,
-                                            name: mediaItem.message.author.name ?? "",
-                                            imageURL: mediaItem.message.author.imageURL,
-                                            size: .init(width: 24, height: 24),
-                                            extraData: mediaItem.message.author.extraData
+                                        options: MessageAvatarViewOptions(
+                                            userDisplayInfo: UserDisplayInfo(
+                                                id: mediaItem.message.author.id,
+                                                name: mediaItem.message.author.name ?? "",
+                                                imageURL: mediaItem.message.author.imageURL,
+                                                size: .init(width: 24, height: 24),
+                                                extraData: mediaItem.message.author.extraData
+                                            )
                                         )
                                     )
                                     .overlay(
@@ -154,10 +156,12 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
         }
         .fullScreenCover(isPresented: $galleryShown) {
             factory.makeGalleryView(
-                mediaAttachments: allMediaAttachments,
-                message: mediaItem.message,
-                isShown: $galleryShown,
-                options: .init(selectedIndex: index)
+                options: GalleryViewOptions(
+                    mediaAttachments: allMediaAttachments,
+                    message: mediaItem.message,
+                    isShown: $galleryShown,
+                    options: .init(selectedIndex: index)
+                )
             )
         }
     }

@@ -18,7 +18,7 @@ open class NukeImageLoader: ImageLoading {
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         var userInfo: [ImageRequest.UserInfoKey: Any]?
-        if let cachingKey = cachingKey {
+        if let cachingKey {
             userInfo = [.imageIdKey: cachingKey]
         }
 
@@ -95,7 +95,7 @@ open class NukeImageLoader: ImageLoading {
         preferredSize: CGSize? = nil,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
-        guard var url = url else {
+        guard var url else {
             Task { @MainActor in
                 completion(.failure(ClientError.Unknown()))
             }
@@ -105,7 +105,7 @@ open class NukeImageLoader: ImageLoading {
         let urlRequest = imageCDN.urlRequest(forImage: url)
 
         var processors = [ImageProcessing]()
-        if let preferredSize = preferredSize, resize == true {
+        if let preferredSize, resize == true {
             processors = [ImageProcessors.LateResize(sizeProvider: {
                 preferredSize
             })]

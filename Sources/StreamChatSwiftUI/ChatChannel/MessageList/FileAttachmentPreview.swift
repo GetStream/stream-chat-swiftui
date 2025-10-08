@@ -39,7 +39,7 @@ public struct FileAttachmentPreview: View {
                         .font(fonts.body)
                         .padding()
                 } else {
-                    if let adjustedUrl = adjustedUrl {
+                    if let adjustedUrl {
                         WebView(
                             url: adjustedUrl,
                             isLoading: $isLoading,
@@ -57,7 +57,7 @@ public struct FileAttachmentPreview: View {
                 fileCDN.adjustedURL(for: url) { result in
                     switch result {
                     case let .success(url):
-                        self.adjustedUrl = url
+                        adjustedUrl = url
                     case let .failure(error):
                         self.error = error
                     }

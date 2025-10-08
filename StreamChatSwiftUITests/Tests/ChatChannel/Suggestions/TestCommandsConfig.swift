@@ -68,7 +68,7 @@ class MockCommandHandler: CommandHandler {
 
     func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text.contains("mock") {
-            return ComposerCommand(
+            ComposerCommand(
                 id: "mock",
                 typingSuggestion: TypingSuggestion(
                     text: text,
@@ -78,15 +78,15 @@ class MockCommandHandler: CommandHandler {
                 replacesMessageSent: true
             )
         } else {
-            return nil
+            nil
         }
     }
 
     func commandHandler(for command: ComposerCommand) -> CommandHandler? {
         if command.typingSuggestion.text.contains("mock") {
-            return self
+            self
         } else {
-            return nil
+            nil
         }
     }
 

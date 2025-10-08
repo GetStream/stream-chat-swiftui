@@ -71,12 +71,12 @@ class TestViewFactory: ViewFactory {
 
     public static let shared = TestViewFactory()
     
-    func makeMessageReactionView(
-        message: ChatMessage,
-        onTapGesture: @escaping @MainActor () -> Void,
-        onLongPressGesture: @escaping @MainActor () -> Void
-    ) -> some View {
-        CustomReactionsContainer(message: message, onTapGesture: onTapGesture, onLongPressGesture: onLongPressGesture)
+    func makeMessageReactionView(options: MessageReactionViewOptions) -> some View {
+        CustomReactionsContainer(
+            message: options.message,
+            onTapGesture: options.onTapGesture,
+            onLongPressGesture: options.onLongPressGesture
+        )
     }
 }
 

@@ -42,10 +42,12 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
         ) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                    options: QuotedMessageViewOptions(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
                 )
             }
 

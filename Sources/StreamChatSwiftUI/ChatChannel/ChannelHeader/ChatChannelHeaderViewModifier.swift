@@ -68,11 +68,13 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                     isActive = true
                 } label: {
                     factory.makeChannelAvatarView(
-                        for: channel,
-                        with: .init(
-                            showOnlineIndicator: onlineIndicatorShown,
-                            size: CGSize(width: 36, height: 36),
-                            avatar: headerImage
+                        options: ChannelAvatarViewFactoryOptions(
+                            channel: channel,
+                            options: .init(
+                                showOnlineIndicator: onlineIndicatorShown,
+                                size: CGSize(width: 36, height: 36),
+                                avatar: headerImage
+                            )
                         )
                     )
                     .offset(x: 4)

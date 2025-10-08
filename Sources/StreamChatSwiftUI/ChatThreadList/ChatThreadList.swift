@@ -89,14 +89,18 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
         LazyVStack(spacing: 0) {
             ForEach(threads) { thread in
                 factory.makeThreadListItem(
-                    thread: thread,
-                    threadDestination: threadDestination,
-                    selectedThread: $selectedThread
+                    options: .init(
+                        thread: thread,
+                        threadDestination: threadDestination,
+                        selectedThread: $selectedThread
+                    )
                 )
                 .background(
                     factory.makeThreadListItemBackground(
-                        thread: thread,
-                        isSelected: selectedThread?.id == thread.id
+                        options: ThreadListItemBackgroundOptions(
+                            thread: thread,
+                            isSelected: selectedThread?.id == thread.id
+                        )
                     )
                 )
                 .contentShape(Rectangle())
@@ -110,7 +114,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
                         onItemAppear(index)
                     }
                 }
-                factory.makeThreadListDividerItem()
+                factory.makeThreadListDividerItem(options: ThreadListDividerItemOptions())
             }
         }
     }

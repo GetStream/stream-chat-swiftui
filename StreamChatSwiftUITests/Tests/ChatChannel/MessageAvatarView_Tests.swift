@@ -121,22 +121,22 @@ struct CustomPlaceholderView: View {
     private var backgroundColor: Color {
         switch state {
         case .empty:
-            return .blue
+            .blue
         case .loading:
-            return .orange
+            .orange
         case .error:
-            return .red
+            .red
         }
     }
     
     private var iconName: String {
         switch state {
         case .empty:
-            return "person.fill"
+            "person.fill"
         case .loading:
-            return "hourglass"
+            "hourglass"
         case .error:
-            return "exclamationmark.triangle.fill"
+            "exclamationmark.triangle.fill"
         }
     }
 }

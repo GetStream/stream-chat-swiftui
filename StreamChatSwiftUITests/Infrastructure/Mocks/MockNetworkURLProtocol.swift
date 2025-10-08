@@ -38,8 +38,8 @@ class MockNetworkURLProtocol: URLProtocol {
 
     /// Cleans up all existing mock responses and current test session id.
     static func reset() {
-        Self.currentSessionId = nil
-        Self.responses.removeAll()
+        currentSessionId = nil
+        responses.removeAll()
     }
 
     override class func canInit(with request: URLRequest) -> Bool {

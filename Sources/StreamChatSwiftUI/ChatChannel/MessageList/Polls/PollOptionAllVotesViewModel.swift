@@ -40,12 +40,12 @@ import SwiftUI
     func refresh() {
         controller.synchronize { [weak self] error in
             guard let self else { return }
-            self.pollVotes = Array(self.controller.votes)
-            if self.pollVotes.isEmpty {
-                self.loadVotes()
+            pollVotes = Array(controller.votes)
+            if pollVotes.isEmpty {
+                loadVotes()
             }
             if error != nil {
-                self.errorShown = true
+                errorShown = true
             }
         }
     }
@@ -76,9 +76,9 @@ import SwiftUI
 
         controller.loadMoreVotes { [weak self] error in
             guard let self else { return }
-            self.loadingVotes = false
+            loadingVotes = false
             if error != nil {
-                self.errorShown = true
+                errorShown = true
             }
         }
     }

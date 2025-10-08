@@ -155,38 +155,38 @@ public struct PhotoAttachmentCell: View {
             .id(idOverlay)
         )
         .onAppear {
-            self.loading = false
+            loading = false
             
             assetLoader.loadImage(from: asset)
             
-            if self.assetURL != nil {
+            if assetURL != nil {
                 return
             }
             
             let options = PHContentEditingInputRequestOptions()
             options.isNetworkAccessAllowed = true
-            self.loading = true
+            loading = true
             
-            self.requestId = asset.requestContentEditingInput(with: options) { input, _ in
-                self.loading = false
+            requestId = asset.requestContentEditingInput(with: options) { input, _ in
+                loading = false
                 if asset.mediaType == .image {
-                    self.assetURL = input?.fullSizeImageURL
+                    assetURL = input?.fullSizeImageURL
                 } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
-                    self.assetURL = url
+                    assetURL = url
                 }
                 
                 // Check file size.
-                if let assetURL = assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
+                if let assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
                     compressing = true
                     assetLoader.compressAsset(at: assetURL, type: assetType) { url in
                         self.assetURL = url
-                        self.compressing = false
+                        compressing = false
                     }
                 }
             }
         }
         .onDisappear {
-            if let requestId = requestId {
+            if let requestId {
                 asset.cancelContentEditingInputRequest(requestId)
                 self.requestId = nil
                 loading = false
@@ -198,7 +198,7 @@ public struct PhotoAttachmentCell: View {
     /// This makes sure that the photo is converted to JPG.
     /// This way it is more compatible with other platforms.
     private func assetJpgURL() -> URL? {
-        guard let assetURL = assetURL else { return nil }
+        guard let assetURL else { return nil }
         guard let assetData = try? Data(contentsOf: assetURL) else { return nil }
         return try? UIImage(data: assetData)?.saveAsJpgToTemporaryUrl()
     }

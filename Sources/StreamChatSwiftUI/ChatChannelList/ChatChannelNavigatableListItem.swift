@@ -97,7 +97,7 @@ public struct ChannelSelectionInfo: Identifiable, Sendable {
         self.channel = channel
         self.message = message
         self.searchType = searchType
-        if let message = message {
+        if let message {
             id = "\(channel.cid.id)-\(message.id)"
         } else {
             id = channel.cid.id

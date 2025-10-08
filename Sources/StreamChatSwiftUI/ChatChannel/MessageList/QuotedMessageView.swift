@@ -19,8 +19,10 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
                 factory.makeQuotedMessageAvatarView(
-                    for: quotedMessage.authorDisplayInfo,
-                    size: CGSize(width: avatarSize, height: avatarSize)
+                    options: QuotedMessageAvatarViewOptions(
+                        userDisplayInfo: quotedMessage.authorDisplayInfo,
+                        size: CGSize(width: avatarSize, height: avatarSize)
+                    )
                 )
 
                 QuotedMessageView(
@@ -38,8 +40,10 @@ struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                 )
 
                 factory.makeQuotedMessageAvatarView(
-                    for: quotedMessage.authorDisplayInfo,
-                    size: CGSize(width: avatarSize, height: avatarSize)
+                    options: QuotedMessageAvatarViewOptions(
+                        userDisplayInfo: quotedMessage.authorDisplayInfo,
+                        size: CGSize(width: avatarSize, height: avatarSize)
+                    )
                 )
             }
         }
@@ -91,7 +95,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             if !quotedMessage.attachmentCounts.isEmpty {
                 ZStack {
                     if messageTypeResolver.hasCustomAttachment(message: quotedMessage) {
-                        factory.makeCustomAttachmentQuotedView(for: quotedMessage)
+                        factory.makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions(message: quotedMessage))
                     } else if hasVoiceAttachments {
                         VoiceRecordingPreview(voiceAttachment: quotedMessage.voiceRecordingAttachments[0].payload)
                     } else if !quotedMessage.imageAttachments.isEmpty {

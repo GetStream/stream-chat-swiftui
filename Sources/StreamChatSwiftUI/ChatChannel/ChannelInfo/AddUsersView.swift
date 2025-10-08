@@ -67,7 +67,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
                                     size: CGSize(width: itemSize, height: itemSize),
                                     extraData: user.extraData
                                 )
-                                factory.makeMessageAvatarView(for: userDisplayInfo)
+                                factory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: userDisplayInfo))
 
                                 Text(user.name ?? user.id)
                                     .multilineTextAlignment(.center)
@@ -94,7 +94,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
 }
 
 /// Options used in the add users view.
-public struct AddUsersOptions {
+public struct AddUsersOptions: Sendable {
     public let loadedUsers: [ChatUser]
     
     public init(loadedUsers: [ChatUser]) {

@@ -127,7 +127,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
 
         chatClient.currentUserController().addDevice(.apn(token: deviceToken)) { error in
-            if let error = error {
+            if let error {
                 log.error("adding a device failed with an error \(error)")
                 return
             }

@@ -63,11 +63,13 @@ public struct GalleryView<Factory: ViewFactory>: View {
         GeometryReader { reader in
             VStack {
                 viewFactory.makeGalleryHeaderView(
-                    title: author.name ?? "",
-                    subtitle: message.map {
-                        utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
-                    } ?? author.onlineText,
-                    shown: $isShown
+                    options: GalleryHeaderViewOptions(
+                        title: author.name ?? "",
+                        subtitle: message.map {
+                            utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
+                        } ?? author.onlineText,
+                        shown: $isShown
+                    )
                 )
 
                 TabView(selection: $selected) {
@@ -145,9 +147,9 @@ public struct GalleryView<Factory: ViewFactory>: View {
 
     private var sharingContent: [UIImage] {
         if let image = loadedImages[selected] {
-            return [image]
+            [image]
         } else {
-            return []
+            []
         }
     }
 }
@@ -183,9 +185,9 @@ struct StreamVideoPlayer: View {
             fileCDN.adjustedURL(for: url) { result in
                 switch result {
                 case let .success(url):
-                    self.avPlayer = AVPlayer(url: url)
+                    avPlayer = AVPlayer(url: url)
                     try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    self.avPlayer?.play()
+                    avPlayer?.play()
                 case let .failure(error):
                     self.error = error
                 }

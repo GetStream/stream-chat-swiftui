@@ -71,10 +71,10 @@ import UIKit
             resize: true,
             preferredSize: .avatarThumbnailSize
         ) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case let .success(image):
-                self.memberAvatars[member.id] = image
+                memberAvatars[member.id] = image
             case let .failure(error):
                 log.error("error loading image: \(error.localizedDescription)")
             }

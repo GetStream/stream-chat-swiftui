@@ -47,9 +47,9 @@ import SwiftUI
         if !loadingNextMessages {
             loadingNextMessages = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAttachments()
-                self.loadingNextMessages = false
+                guard let self else { return }
+                updateAttachments()
+                loadingNextMessages = false
             }
         }
     }
@@ -68,9 +68,9 @@ import SwiftUI
 
         loading = true
         messageSearchController.search(query: query, completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAttachments()
-            self.loading = false
+            guard let self else { return }
+            updateAttachments()
+            loading = false
         })
     }
 

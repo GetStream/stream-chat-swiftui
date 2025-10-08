@@ -30,6 +30,7 @@ struct AttachmentDownloadingStateView: View {
                         .clipShape(Circle())
                         .offset(x: -4, y: -4)
                 }
+
             case .downloaded:
                 EmptyView()
             }

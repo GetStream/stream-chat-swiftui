@@ -48,7 +48,7 @@ struct ReactionsOverlayContainer: View {
 
     private var reactions: [MessageReactionType] {
         images.availableReactions.keys
-            .map { $0 }
+            .map(\.self)
             .sorted(by: utils.sortReactions)
     }
 
@@ -207,9 +207,9 @@ public struct ReactionAnimatableView: View {
 
     private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
         if useLargeIcons {
-            return images.availableReactions[reaction]?.largeIcon
+            images.availableReactions[reaction]?.largeIcon
         } else {
-            return images.availableReactions[reaction]?.smallIcon
+            images.availableReactions[reaction]?.smallIcon
         }
     }
 
@@ -218,7 +218,7 @@ public struct ReactionAnimatableView: View {
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
 
-        if let color = color {
+        if let color {
             return Color(color)
         } else {
             return nil

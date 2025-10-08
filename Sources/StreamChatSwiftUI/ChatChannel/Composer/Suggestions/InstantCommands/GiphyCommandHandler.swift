@@ -38,7 +38,7 @@ public struct GiphyCommandHandler: CommandHandler {
 
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
         if text.hasPrefix(id) {
-            return ComposerCommand(
+            ComposerCommand(
                 id: id,
                 typingSuggestion: TypingSuggestion(
                     text: text,
@@ -50,7 +50,7 @@ public struct GiphyCommandHandler: CommandHandler {
                 displayInfo: displayInfo
             )
         } else {
-            return nil
+            nil
         }
     }
 

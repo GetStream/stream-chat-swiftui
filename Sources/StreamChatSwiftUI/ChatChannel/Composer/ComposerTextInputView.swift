@@ -124,7 +124,7 @@ struct ComposerTextInputView: UIViewRepresentable {
             shouldChangeTextIn range: NSRange,
             replacementText text: String
         ) -> Bool {
-            guard let maxMessageLength = maxMessageLength else { return true }
+            guard let maxMessageLength else { return true }
             let newMessageLength = textView.text.count + (text.count - range.length)
             return newMessageLength <= maxMessageLength
         }
