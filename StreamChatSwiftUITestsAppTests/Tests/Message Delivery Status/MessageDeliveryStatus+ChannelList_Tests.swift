@@ -5,7 +5,6 @@
 import XCTest
 
 final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
-
     let message = "message"
     var failedMessage: String { "failed \(message)" }
 
@@ -63,7 +62,6 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot
                 .assertMessageReadCountInChannelPreview(readBy: 0)
                 .assertMessageDeliveryStatusInChannelPreview(.sent)
-
         }
     }
 
@@ -172,7 +170,6 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 // MARK: Thread Reply
 
 extension MessageDeliveryStatus_ChannelList_Tests {
-
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSent() throws {
         linkToScenario(withId: 430)
 

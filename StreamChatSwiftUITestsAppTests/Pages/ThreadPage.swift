@@ -6,7 +6,5 @@ import Foundation
 import XCTest
 
 class ThreadPage: MessageListPage {
-
     static var alsoSendInChannelCheckbox: XCUIElement { app.buttons["SendInChannelView"] }
-
 }

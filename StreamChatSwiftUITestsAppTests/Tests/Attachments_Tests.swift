@@ -5,10 +5,11 @@
 import XCTest
 
 final class Attachments_Tests: StreamTestCase {
-
     override func setUpWithError() throws {
-        try XCTSkipIf(ProcessInfo().operatingSystemVersion.majorVersion >= 18,
-                      "Attachments tests freeze the test app on iOS > 18")
+        try XCTSkipIf(
+            ProcessInfo().operatingSystemVersion.majorVersion >= 18,
+            "Attachments tests freeze the test app on iOS > 18"
+        )
         
         try super.setUpWithError()
         addTags([.coreFeatures])
@@ -78,5 +79,4 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.assertFile(isPresent: true)
         }
     }
-
 }
