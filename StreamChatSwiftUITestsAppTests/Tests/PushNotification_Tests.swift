@@ -6,7 +6,6 @@ import XCTest
 
 // Requires running a standalone Sinatra server
 final class PushNotification_Tests: StreamTestCase {
-
     let sender = "Han Solo"
     let message = "How are you? 🙂"
     
@@ -30,7 +29,7 @@ final class PushNotification_Tests: StreamTestCase {
         GIVEN("user goes to channel list") {
             userRobot
                 .login()
-                .openChannel()      // this is required to let the mock server know
+                .openChannel() // this is required to let the mock server know
                 .tapOnBackButton() // which channel to use for push notifications
         }
         checkHappyPath(message: message, sender: sender)
@@ -61,7 +60,7 @@ final class PushNotification_Tests: StreamTestCase {
             version: "",
             messageId: "",
             cid: ""
-         )
+        )
 
         GIVEN("user goes to message list") {
             userRobot.login().openChannel()
@@ -125,9 +124,11 @@ final class PushNotification_Tests: StreamTestCase {
 
         mockPushNotification(body: nil)
         WHEN("participant sends a message (push body param is nil)") {
-            participantRobot.wait(2).sendMessage("\(message)_0",
-                                                 withPushNotification: true,
-                                                 bundleIdForPushNotification: app.bundleId())
+            participantRobot.wait(2).sendMessage(
+                "\(message)_0",
+                withPushNotification: true,
+                bundleIdForPushNotification: app.bundleId()
+            )
         }
         THEN("user does not receive a push notification") {
             userRobot.assertPushNotificationDoesNotAppear()
@@ -135,9 +136,11 @@ final class PushNotification_Tests: StreamTestCase {
 
         mockPushNotification(body: "")
         WHEN("participant sends a message (push body param is empty)") {
-            participantRobot.sendMessage("\(message)_1",
-                                                 withPushNotification: true,
-                                                 bundleIdForPushNotification: app.bundleId())
+            participantRobot.sendMessage(
+                "\(message)_1",
+                withPushNotification: true,
+                bundleIdForPushNotification: app.bundleId()
+            )
         }
         THEN("user does not receive a push notification") {
             userRobot.assertPushNotificationDoesNotAppear()
@@ -145,9 +148,11 @@ final class PushNotification_Tests: StreamTestCase {
 
         mockPushNotification(body: 42)
         WHEN("participant sends a message (push body param contains incorrect type)") {
-            participantRobot.sendMessage("\(message)_2",
-                                                 withPushNotification: true,
-                                                 bundleIdForPushNotification: app.bundleId())
+            participantRobot.sendMessage(
+                "\(message)_2",
+                withPushNotification: true,
+                bundleIdForPushNotification: app.bundleId()
+            )
         }
         THEN("user does not receive a push notification") {
             userRobot.assertPushNotificationDoesNotAppear()

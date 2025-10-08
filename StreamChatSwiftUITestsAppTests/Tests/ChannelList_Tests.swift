@@ -5,7 +5,6 @@
 import XCTest
 
 final class ChannelList_Tests: StreamTestCase {
-
     let message = "message"
 
     override func setUpWithError() throws {
@@ -246,7 +245,6 @@ extension ChannelList_Tests {
 // MARK: - Truncate channel
 
 extension ChannelList_Tests {
-
     func test_messageList_and_channelPreview_AreUpdatedWhenChannelTruncatedWithMessage() throws {
         linkToScenario(withId: 357)
 

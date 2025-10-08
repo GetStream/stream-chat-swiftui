@@ -3,11 +3,10 @@
 //
 
 import Foundation
-import XCTest
 import StreamChat
+import XCTest
 
 enum ChannelListPage {
-
     static var userAvatar: XCUIElement {
         return app.buttons["LogoutButton"]
     }
@@ -55,5 +54,4 @@ enum ChannelListPage {
             return cell.images["readIndicatorCheckmark"]
         }
     }
-
 }
