@@ -83,7 +83,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     weak var delegate: MessagesDataSource?
     
     var messages: [ChatMessage] {
-        Array(controller.messages)
+        controller.messages
     }
     
     var hasLoadedAllNextMessages: Bool {
@@ -167,7 +167,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     weak var delegate: MessagesDataSource?
     
     var messages: [ChatMessage] {
-        var replies = Array(messageController.replies)
+        var replies = messageController.replies
         if let message = messageController.message, replies.last != message {
             replies.append(message)
         }
