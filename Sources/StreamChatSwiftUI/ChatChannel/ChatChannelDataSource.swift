@@ -13,7 +13,7 @@ import StreamChat
     ///  - messages, the collection of updated messages.
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
+        didUpdateMessages messages: [ChatMessage],
         changes: [ListChange<ChatMessage>]
     )
 
@@ -35,7 +35,7 @@ import StreamChat
     var delegate: MessagesDataSource? { get set }
 
     /// List of the messages.
-    var messages: LazyCachedMapCollection<ChatMessage> { get }
+    var messages: [ChatMessage] { get }
     
     /// Determines whether all new messages have been fetched.
     var hasLoadedAllNextMessages: Bool { get }
@@ -82,7 +82,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     let controller: ChatChannelController
     weak var delegate: MessagesDataSource?
     
-    var messages: LazyCachedMapCollection<ChatMessage> {
+    var messages: [ChatMessage] {
         controller.messages
     }
     
@@ -166,7 +166,7 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     
     weak var delegate: MessagesDataSource?
     
-    var messages: LazyCachedMapCollection<ChatMessage> {
+    var messages: [ChatMessage] {
         var replies = messageController.replies
         if let message = messageController.message, replies.last != message {
             replies.append(message)

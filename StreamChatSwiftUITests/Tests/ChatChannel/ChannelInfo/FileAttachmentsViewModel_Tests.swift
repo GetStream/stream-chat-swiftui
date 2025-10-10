@@ -41,7 +41,7 @@ import XCTest
         let additional = Array(ChannelInfoMockUtils.generateMessagesWithFileAttachments(count: 20))
         var current = Array(messages)
         current.append(contentsOf: additional)
-        messages = LazyCachedMapCollection(source: current) { $0 }
+        messages = current
         messageSearchController.messages_mock = messages
 
         // Initial load, when only the 5th attachment is displayed.

@@ -8,7 +8,7 @@ import SwiftUI
 /// Stateless component for the channel list.
 /// If used directly, you should provide the thread list.
 public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: View>: View {
-    var threads: LazyCachedMapCollection<ChatThread>
+    var threads: [ChatThread]
     private var factory: Factory
     private var threadDestination: @MainActor (ChatThread) -> Factory.ThreadDestination
     @Binding private var selectedThread: ThreadSelectionInfo?
@@ -24,7 +24,7 @@ public struct ThreadList<Factory: ViewFactory, HeaderView: View, FooterView: Vie
 
     public init(
         factory: Factory,
-        threads: LazyCachedMapCollection<ChatThread>,
+        threads: [ChatThread],
         threadDestination: @escaping @MainActor (ChatThread) -> Factory.ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>,
         onItemTap: @escaping (ChatThread) -> Void,
@@ -63,7 +63,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
 
     private var factory: Factory
-    var threads: LazyCachedMapCollection<ChatThread>
+    var threads: [ChatThread]
     private var threadDestination: @MainActor (ChatThread) -> Factory.ThreadDestination
     @Binding private var selectedThread: ThreadSelectionInfo?
     private var onItemTap: (ChatThread) -> Void
@@ -71,7 +71,7 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        threads: LazyCachedMapCollection<ChatThread>,
+        threads: [ChatThread],
         threadDestination: @escaping @MainActor (ChatThread) -> Factory.ThreadDestination,
         selectedThread: Binding<ThreadSelectionInfo?>,
         onItemTap: @escaping (ChatThread) -> Void,

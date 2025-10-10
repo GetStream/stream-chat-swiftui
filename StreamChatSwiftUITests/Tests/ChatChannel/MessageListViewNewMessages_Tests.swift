@@ -99,7 +99,7 @@ import XCTest
         messages: [ChatMessage],
         channel: ChatChannel
     ) -> some View {
-        let messages = LazyCachedMapCollection(source: messages, map: { $0 })
+        let messages = messages
         let messageListView = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,

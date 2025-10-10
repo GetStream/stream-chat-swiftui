@@ -27,7 +27,7 @@ import UIKit
     private var selectedChannelId: String?
 
     /// Temporarly holding changes while message list is shown.
-    private var queuedChannelsChanges = LazyCachedMapCollection<ChatChannel>()
+    private var queuedChannelsChanges = [ChatChannel]()
 
     private var timer: Timer?
 
@@ -44,7 +44,7 @@ import UIKit
     @Published public var scrolledChannelId: String?
 
     /// Published variables.
-    @Published public var channels = LazyCachedMapCollection<ChatChannel>() {
+    @Published public var channels = [ChatChannel]() {
         didSet {
             if !markDirty {
                 queuedChannelsChanges = []
@@ -539,7 +539,7 @@ import UIKit
     }
 
     private func updateChannels() {
-        channels = controller?.channels ?? LazyCachedMapCollection<ChatChannel>()
+        channels = controller?.channels ?? [ChatChannel]()
     }
 
     private func handleChannelAppearance() {
@@ -586,7 +586,7 @@ import UIKit
             temp[index] = selected
         }
         markDirty = true
-        channels = LazyCachedMapCollection(source: temp, map: { $0 })
+        channels = temp
     }
     
     private func scrollToAndOpen(channel: ChatChannel) {
