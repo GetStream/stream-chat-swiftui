@@ -3855,7 +3855,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-remove-stream-collection-lazy-cached-map-collection";
+				branch = v5;
 				kind = branch;
 			};
 		};
