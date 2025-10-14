@@ -234,6 +234,97 @@ class MessageComposerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - Frozen Channel Tests
+
+    func test_messageComposerView_frozenChannel() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        // Create a channel without sendMessage capability (simulating frozen channel)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: mockChannelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_composerInputView_frozenChannel() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let view = ComposerInputView(
+            factory: factory,
+            text: .constant(""),
+            selectedRangeLocation: .constant(0),
+            command: .constant(nil),
+            addedAssets: [],
+            addedFileURLs: [],
+            addedCustomAttachments: [],
+            quotedMessage: .constant(nil),
+            cooldownDuration: 0,
+            onCustomAttachmentTap: { _ in },
+            removeAttachmentWithId: { _ in }
+        )
+        .environmentObject(viewModel)
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_leadingComposerView_frozenChannel() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
+        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+            .environmentObject(viewModel)
+            .frame(width: 36, height: 36)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_trailingComposerView_frozenChannel() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let view = factory.makeTrailingComposerView(
+            enabled: true,
+            cooldownDuration: 0,
+            onTap: {}
+        )
+        .environmentObject(viewModel)
+        .frame(width: 100, height: 40)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_composerInputView_inputTextView() {
         // Given
         let view = InputTextView(

@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Fix composer not being locked after the channel was frozen [#000](https://github.com/GetStream/stream-chat-swiftui/pull/000)
+
 ### 🔄 Changed
 
 # [4.90.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.90.0)

@@ -50,7 +50,7 @@ public struct AttachmentPickerTypeView: View {
         HStack(spacing: 16) {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                if composerViewModel.channelController.channel?.canUploadFile == true {
+                if composerViewModel.channelController.channel?.canUploadFile == true && composerViewModel.isSendMessageEnabled {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .media,
@@ -60,7 +60,7 @@ public struct AttachmentPickerTypeView: View {
                     .accessibilityIdentifier("PickerTypeButtonMedia")
                 }
 
-                if commandsAvailable {
+                if commandsAvailable && composerViewModel.isSendMessageEnabled {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .instantCommands,
@@ -70,16 +70,18 @@ public struct AttachmentPickerTypeView: View {
                     .accessibilityIdentifier("PickerTypeButtonCommands")
                 }
             case .collapsed:
-                Button {
-                    withAnimation {
-                        pickerTypeState = .expanded(.none)
+                if composerViewModel.isSendMessageEnabled {
+                    Button {
+                        withAnimation {
+                            pickerTypeState = .expanded(.none)
+                        }
+                    } label: {
+                        Image(uiImage: images.shrinkInputArrow)
+                            .renderingMode(.template)
+                            .foregroundColor(Color(colors.highlightedAccentBackground))
                     }
-                } label: {
-                    Image(uiImage: images.shrinkInputArrow)
-                        .renderingMode(.template)
-                        .foregroundColor(Color(colors.highlightedAccentBackground))
+                    .accessibilityIdentifier("PickerTypeButtonCollapsed")
                 }
-                .accessibilityIdentifier("PickerTypeButtonCollapsed")
             }
         }
         .accessibilityElement(children: .contain)
