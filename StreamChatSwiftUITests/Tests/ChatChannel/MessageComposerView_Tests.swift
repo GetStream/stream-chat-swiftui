@@ -204,7 +204,7 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Given
         let factory = DefaultViewFactory.shared
         let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile])
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile])
         let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
 
         // When
