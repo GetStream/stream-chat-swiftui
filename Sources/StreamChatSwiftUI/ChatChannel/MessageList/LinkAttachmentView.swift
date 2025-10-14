@@ -51,7 +51,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
 
             if #available(iOS 15, *) {
                 HStack {
-                    StreamTextView(message: message)
+                    factory.makeAttachmentTextView(message: message)
                         .standardPadding()
                     Spacer()
                 }

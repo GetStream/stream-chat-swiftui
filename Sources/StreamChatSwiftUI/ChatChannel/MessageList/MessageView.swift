@@ -167,7 +167,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 )
             }
 
-            StreamTextView(message: message)
+            factory.makeAttachmentTextView(message: message)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)

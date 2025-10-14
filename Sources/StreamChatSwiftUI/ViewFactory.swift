@@ -1182,4 +1182,12 @@ public protocol ViewFactory: AnyObject {
         options: AddUsersOptions,
         onUserTap: @escaping (ChatUser) -> Void
     ) -> AddUsersViewType
+    
+    associatedtype AttachmentTextViewType: View
+    /// Creates a view for displaying the text of an attachment.
+    /// - Parameter message: The message containing the attachment.
+    /// - Returns: The view shown in the attachment text slot.
+    func makeAttachmentTextView(
+        message: ChatMessage
+    ) -> AttachmentTextViewType
 }
