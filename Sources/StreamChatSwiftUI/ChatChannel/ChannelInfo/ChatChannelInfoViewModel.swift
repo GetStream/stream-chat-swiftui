@@ -91,7 +91,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         }
     }
 
-    public var leaveButtonTitle: String {
+    open var leaveButtonTitle: String {
         if channel.isDirectMessageChannel {
             L10n.Alert.Actions.deleteChannelTitle
         } else {
@@ -99,7 +99,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         }
     }
 
-    public var leaveConversationDescription: String {
+    open var leaveConversationDescription: String {
         if channel.isDirectMessageChannel {
             L10n.Alert.Actions.deleteChannelMessage
         } else {
