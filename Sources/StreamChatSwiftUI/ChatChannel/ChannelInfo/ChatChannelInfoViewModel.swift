@@ -43,6 +43,10 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
             channel.ownCapabilities.contains(.leaveChannel)
         }
     }
+    
+    open var shouldShowMuteChannelButton: Bool {
+        channel.ownCapabilities.contains(.muteChannel)
+    }
 
     open var canRenameChannel: Bool {
         channel.ownCapabilities.contains(.updateChannel)
