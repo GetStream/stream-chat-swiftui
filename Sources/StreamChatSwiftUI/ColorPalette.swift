@@ -8,9 +8,14 @@ import UIKit
 /// Provides the colors used throughout the SDK.
 public struct ColorPalette {
     public init() {
+        navigationBarGlyph = .white
         navigationBarTitle = text
         navigationBarSubtitle = textLowEmphasis
         navigationBarTintColor = tintColor
+
+        messageLinkAttachmentAuthorColor = tintColor
+        messageLinkAttachmentTitleColor = Color(text)
+        messageLinkAttachmentTextColor = Color(text)
     }
 
     /// Tint color used in UI components.
@@ -86,6 +91,12 @@ public struct ColorPalette {
     public lazy var selectedReactionBackgroundColor: UIColor? = nil
     public var voiceMessageControlBackground: UIColor = .streamWhiteStatic
 
+    // MARK: - Link Attachment View
+
+    public var messageLinkAttachmentAuthorColor: Color
+    public var messageLinkAttachmentTitleColor: Color
+    public var messageLinkAttachmentTextColor: Color
+
     // MARK: - Composer
 
     public lazy var composerPlaceholderColor: UIColor = subtitleText
@@ -93,6 +104,8 @@ public struct ColorPalette {
     public lazy var composerInputHighlightedBorder: UIColor = innerBorder
 
     // MARK: - Navigation Bar
+    
+    public var navigationBarGlyph: UIColor
     
     public var navigationBarTitle: UIColor {
         didSet {

@@ -115,7 +115,7 @@ internal enum L10n {
       }
       /// Remove User
       internal static var removeUserConfirmationTitle: String { L10n.tr("Localizable", "channel.item.remove-user-confirmation-title") }
-      /// Send direct message
+      /// Send Direct Message
       internal static var sendDirectMessage: String { L10n.tr("Localizable", "channel.item.send-direct-message") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
@@ -257,6 +257,8 @@ internal enum L10n {
       internal static var giphy: String { L10n.tr("Localizable", "composer.placeholder.giphy") }
       /// Send a message
       internal static var message: String { L10n.tr("Localizable", "composer.placeholder.message") }
+      /// You can't send messages in this channel
+      internal static var messageDisabled: String { L10n.tr("Localizable", "composer.placeholder.messageDisabled") }
       /// Slow mode ON
       internal static var slowMode: String { L10n.tr("Localizable", "composer.placeholder.slow-mode") }
     }
