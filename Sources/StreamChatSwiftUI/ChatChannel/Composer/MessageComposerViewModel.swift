@@ -444,6 +444,11 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
     
+    /// A Boolean value indicating whether sending message is enabled.
+    public var isSendMessageEnabled: Bool {
+        channelController.channel?.canSendMessage ?? true
+    }
+
     public var sendButtonEnabled: Bool {
         if let composerCommand = composerCommand,
            let handler = commandsHandler.commandHandler(for: composerCommand) {
