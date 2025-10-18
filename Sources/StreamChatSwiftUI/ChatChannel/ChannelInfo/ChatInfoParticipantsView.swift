@@ -41,14 +41,24 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                     )
                     factory.makeMessageAvatarView(for: displayInfo)
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(participant.displayName)
-                            .lineLimit(1)
-                            .font(fonts.bodyBold)
-                        Text(participant.onlineInfoText)
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.textLowEmphasis))
+                    HStack(alignment:.center){
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(participant.displayName)
+                                .lineLimit(1)
+                                .font(fonts.bodyBold)
+                            Text(participant.onlineInfoText)
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.textLowEmphasis))
+                        }
+                        Spacer()
+                        
+                        if factory.chatClient.currentUserId == participant.chatUser.id {
+                            Text(L10n.chatGroupInfoOwner)
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.textLowEmphasis))
+                        }
                     }
+
                     Spacer()
                 }
                 .padding(.all, 8)
