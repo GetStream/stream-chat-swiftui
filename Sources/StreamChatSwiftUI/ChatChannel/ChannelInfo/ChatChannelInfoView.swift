@@ -101,7 +101,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                             )
                         }
                     }
-                }
+                }.padding(.top)
             }
             .overlay(
                 popupShown ?
