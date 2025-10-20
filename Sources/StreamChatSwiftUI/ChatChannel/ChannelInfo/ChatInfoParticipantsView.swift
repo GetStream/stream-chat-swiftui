@@ -16,16 +16,19 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
     let factory: Factory
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
+    private let channel: ChatChannel
     
     public init(
         factory: Factory = DefaultViewFactory.shared,
         participants: [ParticipantInfo],
+        channel: ChatChannel,
         onItemAppear: @escaping (ParticipantInfo) -> Void,
         selectedParticipant: Binding<ParticipantInfo?> = .constant(nil)
     ) {
         self.factory = factory
         self.participants = participants
         self.onItemAppear = onItemAppear
+        self.channel = channel
         _selectedParticipant = selectedParticipant
     }
 
@@ -41,7 +44,7 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                     )
                     factory.makeMessageAvatarView(for: displayInfo)
 
-                    HStack(alignment:.center){
+                    HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(participant.displayName)
                                 .lineLimit(1)
@@ -52,7 +55,7 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                         }
                         Spacer()
                         
-                        if factory.chatClient.currentUserId == participant.chatUser.id {
+                        if channel.createdBy?.id == participant.chatUser.id {
                             Text(L10n.chatGroupInfoOwner)
                                 .font(fonts.footnote)
                                 .foregroundColor(Color(colors.textLowEmphasis))

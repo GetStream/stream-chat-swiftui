@@ -53,6 +53,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                         ChatInfoParticipantsView(
                             factory: factory,
                             participants: viewModel.displayedParticipants,
+                            channel: viewModel.channel,
                             onItemAppear: viewModel.onParticipantAppear(_:),
                             selectedParticipant: $viewModel.selectedParticipant
                         )
