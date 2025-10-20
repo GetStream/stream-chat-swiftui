@@ -109,7 +109,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack {
-            factory.makeAttachmentTextView(message: message)
+            factory.makeAttachmentTextView(options: .init(mesage: message))
                 .standardPadding()
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()

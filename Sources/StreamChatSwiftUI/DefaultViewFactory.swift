@@ -1153,9 +1153,9 @@ extension ViewFactory {
     }
     
     public func makeAttachmentTextView(
-        message: ChatMessage
+        options: AttachmentTextViewOptions
     ) -> some View {
-        StreamTextView(message: message)
+        StreamTextView(message: options.message)
     }
 }
 

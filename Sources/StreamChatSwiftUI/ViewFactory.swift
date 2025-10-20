@@ -1185,9 +1185,9 @@ public protocol ViewFactory: AnyObject {
     
     associatedtype AttachmentTextViewType: View
     /// Creates a view for displaying the text of an attachment.
-    /// - Parameter message: The message containing the attachment.
+    /// - Parameter options: Configuration options for the attachment text view, such as message.
     /// - Returns: The view shown in the attachment text slot.
     func makeAttachmentTextView(
-        message: ChatMessage
+        options: AttachmentTextViewOptions
     ) -> AttachmentTextViewType
 }
