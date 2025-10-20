@@ -18,7 +18,7 @@ public struct MessageView<Factory: ViewFactory>: View {
     public var isFirst: Bool
     @Binding public var scrolledId: String?
 
-    public init(factory: Factory = DefaultViewFactory.shared, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
+    public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
         self.factory = factory
         self.message = message
         self.contentWidth = contentWidth
@@ -248,7 +248,7 @@ struct StreamTextView: View {
 }
 
 // Options for the attachment text view.
-open class AttachmentTextViewOptions {
+public class AttachmentTextViewOptions {
     // The message to display the text for.
     public let message: ChatMessage
     

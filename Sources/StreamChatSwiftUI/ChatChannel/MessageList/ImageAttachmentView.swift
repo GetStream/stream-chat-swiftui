@@ -101,7 +101,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
     var message: ChatMessage
     let injectedBackgroundColor: UIColor?
 
-    public init(factory: Factory, message: ChatMessage, injectedBackgroundColor: UIColor? = nil) {
+    public init(factory: Factory = DefaultViewFactory.shared, message: ChatMessage, injectedBackgroundColor: UIColor? = nil) {
         self.factory = factory
         self.message = message
         self.injectedBackgroundColor = injectedBackgroundColor
