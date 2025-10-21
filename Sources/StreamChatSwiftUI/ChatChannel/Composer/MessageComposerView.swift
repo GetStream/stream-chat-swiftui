@@ -229,20 +229,17 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }
         })
-        .onReceive(NotificationCenter.default.publisher(for: .overrideCommandsOverlayVisibility)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .commandsOverlayHiddenNotification)) { _ in
             guard utils.messageListConfig.hidesCommandsOverlayOnMessageListTap else {
                 return
             }
             viewModel.composerCommand = nil
         }
-        .onReceive(NotificationCenter.default.publisher(for: .overridePickerTypeState)) { notification in
+        .onReceive(NotificationCenter.default.publisher(for: .attachmentPickerHiddenNotification)) { _ in
             guard utils.messageListConfig.hidesAttachmentsPickersOnMessageListTap else {
                 return
             }
-            guard let pickerTypeState = notification.object as? PickerTypeState else {
-                return
-            }
-            viewModel.pickerTypeState = pickerTypeState
+            viewModel.pickerTypeState = .expanded(.none)
         }
         .accessibilityElement(children: .contain)
     }
@@ -464,9 +461,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 // MARK: - Notification Names
 
 extension Notification.Name {
-    /// Notification sent when the picker type state should be overridden.
-    static let overridePickerTypeState = Notification.Name("overridePickerTypeState")
+    /// Notification sent when the attachments picker should be hidden.
+    static let attachmentPickerHiddenNotification = Notification.Name("attachmentPickerHiddenNotification")
 
-    /// Notification sent when the commands overlay visibility should be overridden.
-    static let overrideCommandsOverlayVisibility = Notification.Name("overrideCommandsOverlayVisibility")
+    /// Notification sent when the commands overlay should be hidden.
+    static let commandsOverlayHiddenNotification = Notification.Name("commandsOverlayHiddenNotification")
 }

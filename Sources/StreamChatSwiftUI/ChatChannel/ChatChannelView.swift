@@ -221,12 +221,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private func hideComposerCommandsAndAttachmentsPicker() {
         NotificationCenter.default.post(
-            name: .overridePickerTypeState,
-            object: PickerTypeState.expanded(.none)
+            name: .attachmentPickerHiddenNotification, object: nil
         )
         NotificationCenter.default.post(
-            name: .overrideCommandsOverlayVisibility,
-            object: nil
+            name: .commandsOverlayHiddenNotification, object: nil
         )
     }
 }
