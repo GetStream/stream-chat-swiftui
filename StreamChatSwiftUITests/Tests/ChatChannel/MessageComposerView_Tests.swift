@@ -894,6 +894,166 @@ class MessageComposerView_Tests: StreamChatTestCase {
             onMessageSent: {}
         )
     }
+    
+    // MARK: - Notification Tests
+    
+    func test_commandsOverlayHiddenNotification_hidesCommandsOverlay() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(
+                hidesCommandsOverlayOnMessageListTap: true
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        
+        // Set up a command to be shown
+        viewModel.composerCommand = ComposerCommand(
+            id: "testCommand",
+            typingSuggestion: TypingSuggestion.empty,
+            displayInfo: nil
+        )
+        
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        view.addToViewHierarchy()
+
+        // When
+        NotificationCenter.default.post(
+            name: .commandsOverlayHiddenNotification,
+            object: nil
+        )
+        
+        // Then
+        XCTAssertNil(viewModel.composerCommand)
+    }
+    
+    func test_commandsOverlayHiddenNotification_respectsConfigSetting() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(
+                hidesCommandsOverlayOnMessageListTap: false
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        
+        // Set up a command to be shown
+        let testCommand = ComposerCommand(
+            id: "testCommand",
+            typingSuggestion: TypingSuggestion.empty,
+            displayInfo: nil
+        )
+        viewModel.composerCommand = testCommand
+        
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        view.addToViewHierarchy()
+
+        // When
+        NotificationCenter.default.post(
+            name: .commandsOverlayHiddenNotification,
+            object: nil
+        )
+        
+        // Then
+        XCTAssertNotNil(viewModel.composerCommand)
+        XCTAssertEqual(viewModel.composerCommand?.id, testCommand.id)
+    }
+    
+    func test_attachmentPickerHiddenNotification_hidesAttachmentPicker() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(
+                hidesAttachmentsPickersOnMessageListTap: true
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        
+        // Set up attachment picker to be shown
+        viewModel.pickerTypeState = .expanded(.media)
+        
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        view.addToViewHierarchy()
+
+        // When
+        NotificationCenter.default.post(
+            name: .attachmentPickerHiddenNotification,
+            object: nil
+        )
+        
+        // Then
+        XCTAssertEqual(viewModel.pickerTypeState, .expanded(.none))
+    }
+    
+    func test_attachmentPickerHiddenNotification_respectsConfigSetting() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(
+                hidesAttachmentsPickersOnMessageListTap: false
+            )
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        
+        // Set up attachment picker to be shown
+        viewModel.pickerTypeState = .expanded(.media)
+        
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        view.addToViewHierarchy()
+
+        // When
+        NotificationCenter.default.post(
+            name: .attachmentPickerHiddenNotification,
+            object: nil
+        )
+        
+        // Then
+        XCTAssertEqual(viewModel.pickerTypeState, .expanded(.media))
+    }
 }
 
 class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
