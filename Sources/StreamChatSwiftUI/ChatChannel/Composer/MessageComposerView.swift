@@ -187,8 +187,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     // If the attachment picker is open, we should dismiss it.
                     viewModel.pickerTypeState = .expanded(.none)
                 }
-            } else if !visible && keyboardShown && utils.messageListConfig.hidesCommandsOverlayOnMessageListTap {
-                viewModel.composerCommand = nil
             }
             keyboardShown = visible
             editedMessageWillShow = false
@@ -231,6 +229,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }
         })
+        .onReceive(NotificationCenter.default.publisher(for: .overrideCommandsOverlayVisibility)) { _ in
+            guard utils.messageListConfig.hidesCommandsOverlayOnMessageListTap else {
+                return
+            }
+            viewModel.composerCommand = nil
+        }
         .onReceive(NotificationCenter.default.publisher(for: .overridePickerTypeState)) { notification in
             guard utils.messageListConfig.hidesAttachmentsPickersOnMessageListTap else {
                 return
@@ -462,4 +466,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 extension Notification.Name {
     /// Notification sent when the picker type state should be overridden.
     static let overridePickerTypeState = Notification.Name("overridePickerTypeState")
+
+    /// Notification sent when the commands overlay visibility should be overridden.
+    static let overrideCommandsOverlayVisibility = Notification.Name("overrideCommandsOverlayVisibility")
 }

@@ -74,10 +74,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
                         .dismissKeyboardOnTap(enabled: true) {
-                            NotificationCenter.default.post(
-                                name: .overridePickerTypeState,
-                                object: PickerTypeState.expanded(.none)
-                            )
+                            hideComposerCommandsAndAttachmentsPicker()
                         }
                         .overlay(
                             viewModel.currentDateString != nil ?
@@ -88,10 +85,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         ZStack {
                             factory.makeEmptyMessagesView(for: channel, colors: colors)
                                 .dismissKeyboardOnTap(enabled: keyboardShown) {
-                                    NotificationCenter.default.post(
-                                        name: .overridePickerTypeState,
-                                        object: PickerTypeState.collapsed
-                                    )
+                                    hideComposerCommandsAndAttachmentsPicker()
                                 }
                             if viewModel.shouldShowTypingIndicator {
                                 factory.makeTypingIndicatorBottomView(
@@ -223,5 +217,16 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     private var bottomPadding: CGFloat {
         let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
         return bottomPadding
+    }
+
+    private func hideComposerCommandsAndAttachmentsPicker() {
+        NotificationCenter.default.post(
+            name: .overridePickerTypeState,
+            object: PickerTypeState.expanded(.none)
+        )
+        NotificationCenter.default.post(
+            name: .overrideCommandsOverlayVisibility,
+            object: nil
+        )
     }
 }
