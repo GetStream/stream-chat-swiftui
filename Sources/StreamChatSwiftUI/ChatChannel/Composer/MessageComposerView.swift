@@ -231,6 +231,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }
         })
+        .onReceive(NotificationCenter.default.publisher(for: .overridePickerTypeState)) { notification in
+            guard utils.messageListConfig.hidesAttachmentsPickersOnMessageListTap else {
+                return
+            }
+            guard let pickerTypeState = notification.object as? PickerTypeState else {
+                return
+            }
+            viewModel.pickerTypeState = pickerTypeState
+        }
         .accessibilityElement(children: .contain)
     }
 }
@@ -446,4 +455,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     private var isInputDisabled: Bool {
         isInCooldown || isChannelFrozen
     }
+}
+
+// MARK: - Notification Names
+
+extension Notification.Name {
+    /// Notification sent when the picker type state should be overridden.
+    static let overridePickerTypeState = Notification.Name("overridePickerTypeState")
 }

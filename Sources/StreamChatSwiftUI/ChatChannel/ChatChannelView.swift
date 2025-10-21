@@ -73,6 +73,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
+                        .dismissKeyboardOnTap(enabled: true) {
+                            NotificationCenter.default.post(
+                                name: .overridePickerTypeState,
+                                object: PickerTypeState.expanded(.none)
+                            )
+                        }
                         .overlay(
                             viewModel.currentDateString != nil ?
                                 factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
@@ -81,7 +87,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     } else {
                         ZStack {
                             factory.makeEmptyMessagesView(for: channel, colors: colors)
-                                .dismissKeyboardOnTap(enabled: keyboardShown)
+                                .dismissKeyboardOnTap(enabled: keyboardShown) {
+                                    NotificationCenter.default.post(
+                                        name: .overridePickerTypeState,
+                                        object: PickerTypeState.collapsed
+                                    )
+                                }
                             if viewModel.shouldShowTypingIndicator {
                                 factory.makeTypingIndicatorBottomView(
                                     channel: channel,
