@@ -38,7 +38,7 @@ public struct MessageListConfig {
         draftMessagesEnabled: Bool = false,
         downloadFileAttachmentsEnabled: Bool = false,
         hidesCommandsOverlayOnMessageListTap: Bool = true,
-        hidesAttachmentsPickersOnMessageListTap: Bool = false
+        hidesAttachmentsPickersOnMessageListTap: Bool = true
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -102,9 +102,9 @@ public struct MessageListConfig {
     /// It is enabled by default.
     public let hidesCommandsOverlayOnMessageListTap: Bool
 
-    /// A boolean to enable collapsing the attachments keyboard picker when tapping the message list.
+    /// A boolean to enable hiding the attachments keyboard picker when tapping the message list.
     ///
-    /// IT is disabled by default.
+    /// It is enabled by default.
     public let hidesAttachmentsPickersOnMessageListTap: Bool
 
     /// A boolean to enable the alert actions for bounced messages.
