@@ -282,7 +282,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     }
     
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
-        var actions = [ParticipantAction]()
+        var actions = [ParticipantAction?]()
 
         var directMessageAction = ParticipantAction(
             title: L10n.Channel.Item.sendDirectMessage,
@@ -343,7 +343,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
         actions.append(cancel)
 
-        return actions
+        return actions.compactMap({$0})
     }
     
     public func muteAction(
@@ -407,11 +407,11 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         return unmuteUser
     }
     
-    public func removeUserAction(
+    open func removeUserAction(
         participant: ParticipantInfo,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
-    ) -> ParticipantAction {
+    ) -> ParticipantAction? {
         let action = { [weak self] in
             guard let self else {
                 onError(ClientError.Unexpected("Self is nil"))
