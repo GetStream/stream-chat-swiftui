@@ -9,6 +9,7 @@ import SwiftUI
 public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
@@ -186,6 +187,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     // If the attachment picker is open, we should dismiss it.
                     viewModel.pickerTypeState = .expanded(.none)
                 }
+            } else if !visible && keyboardShown && utils.messageListConfig.hidesCommandsOverlayOnMessageListTap {
+                viewModel.composerCommand = nil
             }
             keyboardShown = visible
             editedMessageWillShow = false
