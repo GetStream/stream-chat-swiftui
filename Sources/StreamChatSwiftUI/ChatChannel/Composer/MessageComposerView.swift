@@ -9,6 +9,7 @@ import SwiftUI
 public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.utils) private var utils
 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
@@ -228,6 +229,18 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }
         })
+        .onReceive(NotificationCenter.default.publisher(for: .commandsOverlayHiddenNotification)) { _ in
+            guard utils.messageListConfig.hidesCommandsOverlayOnMessageListTap else {
+                return
+            }
+            viewModel.composerCommand = nil
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .attachmentPickerHiddenNotification)) { _ in
+            guard utils.messageListConfig.hidesAttachmentsPickersOnMessageListTap else {
+                return
+            }
+            viewModel.pickerTypeState = .expanded(.none)
+        }
         .accessibilityElement(children: .contain)
     }
 }
@@ -443,4 +456,14 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     private var isInputDisabled: Bool {
         isInCooldown || isChannelFrozen
     }
+}
+
+// MARK: - Notification Names
+
+extension Notification.Name {
+    /// Notification sent when the attachments picker should be hidden.
+    static let attachmentPickerHiddenNotification = Notification.Name("attachmentPickerHiddenNotification")
+
+    /// Notification sent when the commands overlay should be hidden.
+    static let commandsOverlayHiddenNotification = Notification.Name("commandsOverlayHiddenNotification")
 }

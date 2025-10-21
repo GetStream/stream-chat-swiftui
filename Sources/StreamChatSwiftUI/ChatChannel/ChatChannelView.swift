@@ -73,6 +73,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
+                        .dismissKeyboardOnTap(enabled: true) {
+                            hideComposerCommandsAndAttachmentsPicker()
+                        }
                         .overlay(
                             viewModel.currentDateString != nil ?
                                 factory.makeDateIndicatorView(dateString: viewModel.currentDateString!)
@@ -81,7 +84,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     } else {
                         ZStack {
                             factory.makeEmptyMessagesView(for: channel, colors: colors)
-                                .dismissKeyboardOnTap(enabled: keyboardShown)
+                                .dismissKeyboardOnTap(enabled: keyboardShown) {
+                                    hideComposerCommandsAndAttachmentsPicker()
+                                }
                             if viewModel.shouldShowTypingIndicator {
                                 factory.makeTypingIndicatorBottomView(
                                     channel: channel,
@@ -212,5 +217,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     private var bottomPadding: CGFloat {
         let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
         return bottomPadding
+    }
+
+    private func hideComposerCommandsAndAttachmentsPicker() {
+        NotificationCenter.default.post(
+            name: .attachmentPickerHiddenNotification, object: nil
+        )
+        NotificationCenter.default.post(
+            name: .commandsOverlayHiddenNotification, object: nil
+        )
     }
 }
