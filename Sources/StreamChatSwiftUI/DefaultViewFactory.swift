@@ -1151,6 +1151,12 @@ extension ViewFactory {
     ) -> some View {
         AddUsersView(loadedUserIds: options.loadedUsers.map(\.id), onUserTap: onUserTap)
     }
+    
+    public func makeAttachmentTextView(
+        options: AttachmentTextViewOptions
+    ) -> some View {
+        StreamTextView(message: options.message)
+    }
 }
 
 /// Default class conforming to `ViewFactory`, used throughout the SDK.

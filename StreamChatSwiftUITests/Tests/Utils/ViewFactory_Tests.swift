@@ -1043,6 +1043,17 @@ class ViewFactory_Tests: StreamChatTestCase {
         // Then
         XCTAssert(view is AddUsersView<DefaultViewFactory>)
     }
+
+    func test_viewFactory_makeAttachmentTextView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeAttachmentTextView(options: .init(mesage: message))
+        
+        // Then
+        XCTAssert(view is StreamTextView)
+    }
 }
 
 extension ChannelAction: Equatable {
