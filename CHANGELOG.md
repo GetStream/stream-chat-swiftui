@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Fix composer not being locked after the channel was frozen [#1015](https://github.com/GetStream/stream-chat-swiftui/pull/1015)
 - Fix `PollOptionAllVotesView` not updated on poll cast events [#1025](https://github.com/GetStream/stream-chat-swiftui/pull/1025)
+- Fix action sheet not showing when discarding Poll creation on iOS 26 [#1027](https://github.com/GetStream/stream-chat-swiftui/pull/1027)
 
 # [4.90.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.90.0)
 _October 08, 2025_
