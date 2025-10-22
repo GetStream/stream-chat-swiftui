@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.91.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.91.0)
+_October 22, 2025_
+
 ### ✅ Added
 - Add the `makeAttachmentTextView` method to ViewFactory [#1013](https://github.com/GetStream/stream-chat-swiftui/pull/1013)
 - Allow dismissing commands overlay when tapping the message list [#1024](https://github.com/GetStream/stream-chat-swiftui/pull/1024)
