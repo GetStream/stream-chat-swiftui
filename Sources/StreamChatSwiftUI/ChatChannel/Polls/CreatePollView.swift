@@ -175,6 +175,17 @@ public struct CreatePollView: View {
                     } label: {
                         Text(L10n.Alert.Actions.cancel)
                     }
+                    .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
+                        ActionSheet(
+                            title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
+                            buttons: [
+                                .destructive(Text(L10n.Alert.Actions.discardChanges)) {
+                                    presentationMode.wrappedValue.dismiss()
+                                },
+                                .default(Text(L10n.Alert.Actions.keepEditing))
+                            ]
+                        )
+                    }
                 }
                 
                 ToolbarItem(placement: .principal) {
@@ -195,17 +206,6 @@ public struct CreatePollView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
-                ActionSheet(
-                    title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
-                    buttons: [
-                        .destructive(Text(L10n.Alert.Actions.discardChanges)) {
-                            presentationMode.wrappedValue.dismiss()
-                        },
-                        .cancel(Text(L10n.Alert.Actions.keepEditing))
-                    ]
-                )
-            }
             .alert(isPresented: $viewModel.errorShown) {
                 Alert.defaultErrorAlert
             }
