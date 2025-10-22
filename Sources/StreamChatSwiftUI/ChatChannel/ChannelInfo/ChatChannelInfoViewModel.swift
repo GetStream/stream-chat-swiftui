@@ -286,7 +286,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
         var directMessageAction = ParticipantAction(
             title: L10n.Channel.Item.sendDirectMessage,
-            iconName: "message.circle.fill",
+            iconName: "message",
             action: {},
             confirmationPopup: nil,
             isDestructive: false
