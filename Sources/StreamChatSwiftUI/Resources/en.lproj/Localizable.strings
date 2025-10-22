@@ -236,3 +236,5 @@
 "thread.error.message" = "Error loading threads";
 "thread.no-content.message" = "No threads here yet...";
 "thread.item.replied-to" = "replied to: %@";
+
+"chat_group_info_owner" = "Owner";

@@ -43,6 +43,10 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
             channel.ownCapabilities.contains(.leaveChannel)
         }
     }
+    
+    open var shouldShowMuteChannelButton: Bool {
+        channel.ownCapabilities.contains(.muteChannel)
+    }
 
     open var canRenameChannel: Bool {
         channel.ownCapabilities.contains(.updateChannel)
@@ -87,7 +91,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         }
     }
 
-    public var leaveButtonTitle: String {
+    open var leaveButtonTitle: String {
         if channel.isDirectMessageChannel {
             L10n.Alert.Actions.deleteChannelTitle
         } else {
@@ -95,7 +99,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         }
     }
 
-    public var leaveConversationDescription: String {
+    open var leaveConversationDescription: String {
         if channel.isDirectMessageChannel {
             L10n.Alert.Actions.deleteChannelMessage
         } else {
@@ -278,11 +282,11 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
     }
     
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
-        var actions = [ParticipantAction]()
+        var actions = [ParticipantAction?]()
 
         var directMessageAction = ParticipantAction(
             title: L10n.Channel.Item.sendDirectMessage,
-            iconName: "message.circle.fill",
+            iconName: "message",
             action: {},
             confirmationPopup: nil,
             isDestructive: false
@@ -339,7 +343,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
 
         actions.append(cancel)
 
-        return actions
+        return actions.compactMap({$0})
     }
     
     public func muteAction(
@@ -403,11 +407,11 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         return unmuteUser
     }
     
-    public func removeUserAction(
+    open func removeUserAction(
         participant: ParticipantInfo,
         onDismiss: @escaping () -> Void,
         onError: @escaping (Error) -> Void
-    ) -> ParticipantAction {
+    ) -> ParticipantAction? {
         let action = { [weak self] in
             guard let self else {
                 onError(ClientError.Unexpected("Self is nil"))
