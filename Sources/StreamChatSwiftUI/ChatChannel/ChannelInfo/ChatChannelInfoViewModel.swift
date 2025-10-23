@@ -184,7 +184,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping () -> Void) {
+    open func leaveConversationTapped(completion: @escaping () -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
         } else {
@@ -229,9 +229,7 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         addUsersShown = false
     }
 
-    // MARK: - private
-
-    private func removeUserFromConversation(completion: @escaping () -> Void) {
+    public func removeUserFromConversation(completion: @escaping () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
             if error != nil {
@@ -241,7 +239,9 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
             }
         }
     }
-
+    
+    // MARK: - private
+    
     private func deleteChannel(completion: @escaping () -> Void) {
         channelController.deleteChannel { [weak self] error in
             if error != nil {
