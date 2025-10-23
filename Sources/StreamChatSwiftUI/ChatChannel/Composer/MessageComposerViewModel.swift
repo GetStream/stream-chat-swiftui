@@ -908,14 +908,6 @@ extension MessageComposerViewModel: EventsControllerDelegate {
                 fillDraftMessage()
             }
         }
-
-        if let event = event as? DraftDeletedEvent {
-            let isFromSameThread = messageController?.messageId == event.threadId
-            let isFromSameChannel = channelController.cid == event.cid && messageController == nil
-            if isFromSameThread || isFromSameChannel {
-                clearInputData()
-            }
-        }
     }
 }
 
