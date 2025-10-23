@@ -92,6 +92,7 @@ App Thinning Size Report.txt
 app-thinning.plist
 *.dmg
 yeetd-normal.pkg
+*LinkMap.txt
 
 # VSCode
 .vscode

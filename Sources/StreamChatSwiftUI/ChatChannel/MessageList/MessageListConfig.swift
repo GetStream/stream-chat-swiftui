@@ -36,7 +36,9 @@ public struct MessageListConfig {
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
         draftMessagesEnabled: Bool = false,
-        downloadFileAttachmentsEnabled: Bool = false
+        downloadFileAttachmentsEnabled: Bool = false,
+        hidesCommandsOverlayOnMessageListTap: Bool = true,
+        hidesAttachmentsPickersOnMessageListTap: Bool = true
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -66,6 +68,8 @@ public struct MessageListConfig {
         self.skipEditedMessageLabel = skipEditedMessageLabel
         self.draftMessagesEnabled = draftMessagesEnabled
         self.downloadFileAttachmentsEnabled = downloadFileAttachmentsEnabled
+        self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
+        self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
     }
 
     public let messageListType: MessageListType
@@ -92,6 +96,16 @@ public struct MessageListConfig {
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
     public let userBlockingEnabled: Bool
+
+    /// A boolean to enable hiding the commands overlay when tapping the message list.
+    ///
+    /// It is enabled by default.
+    public let hidesCommandsOverlayOnMessageListTap: Bool
+
+    /// A boolean to enable hiding the attachments keyboard picker when tapping the message list.
+    ///
+    /// It is enabled by default.
+    public let hidesAttachmentsPickersOnMessageListTap: Bool
 
     /// A boolean to enable the alert actions for bounced messages.
     ///

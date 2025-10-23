@@ -321,8 +321,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 ) : nil
         )
-        .modifier(factory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
-        .dismissKeyboardOnTap(enabled: keyboardShown)
+        .modifier(factory.makeMessageListContainerModifier())
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
         }

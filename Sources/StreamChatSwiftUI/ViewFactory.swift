@@ -1182,4 +1182,12 @@ import SwiftUI
         options: AddUsersOptions,
         onUserTap: @escaping @MainActor (ChatUser) -> Void
     ) -> AddUsersViewType
+    
+    associatedtype AttachmentTextViewType: View
+    /// Creates a view for displaying the text of an attachment.
+    /// - Parameter options: Configuration options for the attachment text view, such as message.
+    /// - Returns: The view shown in the attachment text slot.
+    func makeAttachmentTextView(
+        options: AttachmentTextViewOptions
+    ) -> AttachmentTextViewType
 }

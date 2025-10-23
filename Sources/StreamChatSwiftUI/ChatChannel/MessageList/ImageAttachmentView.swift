@@ -49,7 +49,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 }
 
                 if !message.text.isEmpty {
-                    AttachmentTextView(message: message)
+                    AttachmentTextView(factory: factory, message: message)
                         .frame(width: width)
                 }
             }
@@ -97,21 +97,23 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     }
 }
 
-public struct AttachmentTextView: View {
+public struct AttachmentTextView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
+    var factory: Factory
     var message: ChatMessage
     let injectedBackgroundColor: UIColor?
 
-    public init(message: ChatMessage, injectedBackgroundColor: UIColor? = nil) {
+    public init(factory: Factory = DefaultViewFactory.shared, message: ChatMessage, injectedBackgroundColor: UIColor? = nil) {
+        self.factory = factory
         self.message = message
         self.injectedBackgroundColor = injectedBackgroundColor
     }
 
     public var body: some View {
         HStack {
-            StreamTextView(message: message)
+            factory.makeAttachmentTextView(options: .init(mesage: message))
                 .standardPadding()
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()

@@ -444,6 +444,11 @@ import SwiftUI
         }
     }
     
+    /// A Boolean value indicating whether sending message is enabled.
+    public var isSendMessageEnabled: Bool {
+        channelController.channel?.canSendMessage ?? true
+    }
+
     public var sendButtonEnabled: Bool {
         if let composerCommand,
            let handler = commandsHandler.commandHandler(for: composerCommand) {

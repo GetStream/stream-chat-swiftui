@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.90.0")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.91.0")
     ],
     targets: [
         .target(
@@ -28,8 +28,6 @@ let package = Package(
     ]
 )
 
-#if swift(>=5.6)
 package.dependencies.append(
     .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
 )
-#endif
