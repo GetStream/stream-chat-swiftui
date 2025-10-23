@@ -132,7 +132,6 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
     }
 
     private var showTrailingSwipeActions: Bool {
-        #if DEBUG
         let view = factory.makeTrailingSwipeActionsView(
             channel: channel,
             offsetX: offsetX,
@@ -140,11 +139,8 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             swipedChannelId: $swipedChannelId,
             leftButtonTapped: trailingLeftButtonTapped,
             rightButtonTapped: trailingRightButtonTapped
-        )
-        return !(view is EmptyView)
-        #else
-        return !(trailingSwipeActions is EmptyView)
-        #endif
+        ) as? TrailingSwipeActionsView
+        return view?.hasActions ?? true
     }
 
     private var leadingSwipeActions: some View {
@@ -276,20 +272,27 @@ public struct TrailingSwipeActionsView: View {
     var buttonWidth: CGFloat
     var leftButtonTapped: (ChatChannel) -> Void
     var rightButtonTapped: (ChatChannel) -> Void
+    
+    var hasActions: Bool {
+        channel.ownCapabilities.contains(.moreOptionsChannel) ||
+        channel.ownCapabilities.contains(.deleteChannel)
+    }
 
     public var body: some View {
         HStack {
             Spacer()
             ZStack {
                 HStack(spacing: 0) {
-                    ActionItemButton(imageName: "ellipsis", action: {
-                        withAnimation {
-                            leftButtonTapped(channel)
-                        }
-                    })
-                    .frame(width: buttonWidth)
-                    .foregroundColor(Color(colors.text))
-                    .background(Color(colors.background1))
+                    if channel.ownCapabilities.contains(.moreOptionsChannel) {
+                        ActionItemButton(imageName: "ellipsis", action: {
+                            withAnimation {
+                                leftButtonTapped(channel)
+                            }
+                        })
+                        .frame(width: buttonWidth)
+                        .foregroundColor(Color(colors.text))
+                        .background(Color(colors.background1))
+                    }
 
                     if channel.ownCapabilities.contains(.deleteChannel) {
                         ActionItemButton(imageName: "trash", action: {
@@ -330,4 +333,12 @@ public struct ActionItemButton: View {
             }
         }
     }
+}
+
+/*
+ If you wanna add this button to 'ChannelCapability' of ChatChannel manual
+ */
+extension ChannelCapability {
+    /// Ability to add more Options the channel.
+    public static let moreOptionsChannel: Self = "moreOptions-channel"
 }
