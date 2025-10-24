@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://sonarcloud.io/summary/new_code?id=GetStream_stream-chat-swiftui"><img src="https://sonarcloud.io/api/project_badges/measure?project=GetStream_stream-chat-swiftui&metric=coverage" /></a>
 
-  <img id="stream-chat-swiftui-label" alt="StreamChatSwiftUI" src="https://img.shields.io/badge/StreamChatSwiftUI-9.57%20MB-blue"/>
+  <img id="stream-chat-swiftui-label" alt="StreamChatSwiftUI" src="https://img.shields.io/badge/StreamChatSwiftUI-9.58%20MB-blue"/>
 </p>
 
 ## SwiftUI StreamChat SDK
@@ -38,6 +38,17 @@ The SwiftUI SDK offers three types of components:
 - Screens - Easiest to integrate, but offer small customizations, like branding and text changes.
 - Stateful components - Offer more customization options and possibility to inject custom views. Also fairly simple to integrate, if the extension points are suitable for your chat use-case. These components come with view models.
 - Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience.
+
+## Documentation Generation
+
+To generate the documentation for SwiftUI StreamChat SDK, run the following command:
+
+```bash
+xcodebuild docbuild -skipMacroValidation -skipPackagePluginValidation -derivedDataPath .derivedData -scheme StreamChatSwiftUI -destination generic/platform=iOS | xcpretty
+open .derivedData/Build/Products/Debug-iphoneos/StreamChatSwiftUI.doccarchive
+```
+
+This will build the documentation archive and automatically open it in Xcode.
 
 ## Free for Makers
 

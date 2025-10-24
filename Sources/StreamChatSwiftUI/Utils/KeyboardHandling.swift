@@ -63,7 +63,7 @@ extension View {
     ///   - enabled: If true, tapping on the view dismisses the view, otherwise keyboard stays visible.
     ///   - onTapped: A closure which is triggered when keyboard is dismissed after tapping the view.
     func dismissKeyboardOnTap(enabled: Bool, onKeyboardDismissed: (() -> Void)? = nil) -> some View {
-        modifier(HideKeyboardOnTapGesture(shouldAdd: enabled))
+        modifier(HideKeyboardOnTapGesture(shouldAdd: enabled, onTapped: onKeyboardDismissed))
     }
 }
 
