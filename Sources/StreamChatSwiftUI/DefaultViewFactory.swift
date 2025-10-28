@@ -610,7 +610,8 @@ extension ViewFactory {
             message: parentMessage,
             replyCount: replyCount,
             showReplyCount: false,
-            isRightAligned: message.isRightAligned
+            isRightAligned: message.isRightAligned,
+            threadReplyMessage: message // Pass the actual reply message (shown in channel)
         )
     }
 

@@ -173,6 +173,18 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
             } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
                 self?.scrolledId = jumpToReplyId
+                // Trigger highlight when jumping to reply in thread
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.highlightedMessageId = jumpToReplyId
+                }
+                // Clear scroll ID after 2 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.scrolledId = nil
+                }
+                // Clear highlight after animation completes
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+                    self?.highlightedMessageId = nil
+                }
                 self?.messageCachingUtils.jumpToReplyId = nil
             } else if messageController == nil {
                 self?.scrolledId = scrollToMessage?.messageId
@@ -233,6 +245,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {
             threadMessage = message
             threadMessageShown = true
+
+            // If there's a specific reply message to highlight (for showReplyInChannel messages),
+            // we need to highlight that specific message in the thread. Otherwise, highlight the
+            // parent message (which is the root of the thread).
+            if let replyMessage = notification.userInfo?[MessageRepliesConstants.threadReplyMessage] as? ChatMessage {
+                messageCachingUtils.jumpToReplyId = replyMessage.messageId
+            } else {
+                messageCachingUtils.jumpToReplyId = message.messageId
+            }
         }
     }
 
