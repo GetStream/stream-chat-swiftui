@@ -9,25 +9,25 @@ import SwiftUI
 /// Default implementations for the `ViewFactory`.
 extension ViewFactory {
     // MARK: channels
-    
+
     public func makeNoChannelsView() -> some View {
         NoChannelsView()
     }
-    
+
     public func makeLoadingView() -> some View {
         RedactedLoadingView(factory: self)
     }
-    
+
     public func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode {
         .inline
     }
-    
+
     public func makeChannelListHeaderViewModifier(
         title: String
     ) -> some ChannelListHeaderViewModifier {
         DefaultChannelListHeaderModifier(title: title)
     }
-    
+
     public func supportedMoreChannelActions(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
@@ -40,7 +40,7 @@ extension ViewFactory {
             onError: onError
         )
     }
-    
+
     public func makeMoreChannelActionsView(
         for channel: ChatChannel,
         swipedChannelId: Binding<String?>,
@@ -58,7 +58,7 @@ extension ViewFactory {
             onDismiss: onDismiss
         )
     }
-    
+
     public func makeChannelListItem(
         channel: ChatChannel,
         channelName: String,
@@ -97,7 +97,7 @@ extension ViewFactory {
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
         )
     }
-    
+
     public func makeChannelAvatarView(
         for channel: ChatChannel,
         with options: ChannelAvatarViewOptions
@@ -109,7 +109,7 @@ extension ViewFactory {
             size: options.size
         )
     }
-    
+
     public func makeChannelListBackground(colors: ColorPalette) -> some View {
         Color(colors.background)
             .edgesIgnoringSafeArea(.bottom)
@@ -130,7 +130,7 @@ extension ViewFactory {
     public func makeChannelListDividerItem() -> some View {
         Divider()
     }
-    
+
     public func makeTrailingSwipeActionsView(
         channel: ChatChannel,
         offsetX: CGFloat,
@@ -147,7 +147,7 @@ extension ViewFactory {
             rightButtonTapped: rightButtonTapped
         )
     }
-    
+
     public func makeLeadingSwipeActionsView(
         channel: ChatChannel,
         offsetX: CGFloat,
@@ -157,21 +157,21 @@ extension ViewFactory {
     ) -> EmptyView {
         EmptyView()
     }
-    
+
     public func makeChannelListTopView(
         searchText: Binding<String>
     ) -> some View {
         SearchBar(text: searchText)
     }
-    
+
     public func makeChannelListFooterView() -> some View {
         EmptyView()
     }
-    
+
     public func makeChannelListStickyFooterView() -> some View {
         EmptyView()
     }
-    
+
     public func makeSearchResultsView(
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
@@ -194,7 +194,7 @@ extension ViewFactory {
             onItemAppear: onItemAppear
         )
     }
-    
+
     public func makeChannelListSearchResultItem(
         searchResult: ChannelSelectionInfo,
         onlineIndicatorShown: Bool,
@@ -213,17 +213,17 @@ extension ViewFactory {
             channelDestination: channelDestination
         )
     }
-    
+
     public func makeChannelListContentModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
-    
+
     public func makeChannelListModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
-    
+
     // MARK: messages
-    
+
     public func makeChannelDestination() -> (ChannelSelectionInfo) -> ChatChannelView<Self> {
         { [unowned self] selectionInfo in
             let controller = InjectedValues[\.utils]
@@ -236,7 +236,7 @@ extension ViewFactory {
             )
         }
     }
-    
+
     public func makeMessageThreadDestination() -> (ChatChannel, ChatMessage) -> ChatChannelView<Self> {
         { [unowned self] channel, message in
             let channelController = InjectedValues[\.utils]
@@ -258,11 +258,11 @@ extension ViewFactory {
     public func makeMessageListModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
-    
+
     public func makeMessageListContainerModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
-    
+
     public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
         MessageBubbleModifier(
             message: messageModifierInfo.message,
@@ -285,43 +285,43 @@ extension ViewFactory {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityIdentifier("EmptyMessagesView")
     }
-    
+
     public func makeMessageAvatarView(for userDisplayInfo: UserDisplayInfo) -> some View {
         MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: userDisplayInfo.size ?? .messageAvatarSize)
     }
-    
+
     public func makeQuotedMessageAvatarView(
         for userDisplayInfo: UserDisplayInfo,
         size: CGSize
     ) -> some View {
         MessageAvatarView(avatarURL: userDisplayInfo.imageURL, size: size)
     }
-    
+
     public func makeChannelHeaderViewModifier(
         for channel: ChatChannel
     ) -> some ChatChannelHeaderViewModifier {
         DefaultChannelHeaderModifier(factory: self, channel: channel)
     }
-    
+
     public func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> some ViewModifier {
         ChangeChannelBarsVisibilityModifier(shouldShow: shouldShow)
     }
-    
+
     public func makeChannelLoadingView() -> some View {
         LoadingView()
     }
-    
+
     public func makeMessageThreadHeaderViewModifier() -> some MessageThreadHeaderViewModifier {
         DefaultMessageThreadHeaderModifier()
     }
-    
+
     public func makeMessageListBackground(
         colors: ColorPalette,
         isInThread: Bool
     ) -> some View {
         Color(colors.background)
     }
-    
+
     public func makeMessageContainerView(
         channel: ChatChannel,
         message: ChatMessage,
@@ -329,6 +329,7 @@ extension ViewFactory {
         showsAllInfo: Bool,
         isInThread: Bool,
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         isLast: Bool
@@ -342,11 +343,12 @@ extension ViewFactory {
             isInThread: isInThread,
             isLast: isLast,
             scrolledId: scrolledId,
+            highlightedMessageId: highlightedMessageId,
             quotedMessage: quotedMessage,
             onLongPress: onLongPress
         )
     }
-    
+
     public func makeMessageTextView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -360,15 +362,15 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeMessageDateView(for message: ChatMessage) -> some View {
         MessageDateView(message: message)
     }
-    
+
     public func makeMessageAuthorAndDateView(for message: ChatMessage) -> some View {
         MessageAuthorAndDateView(message: message)
     }
-    
+
     public func makeLastInGroupHeaderView(for message: ChatMessage) -> some View {
         EmptyView()
     }
@@ -395,7 +397,7 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeGiphyAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -410,7 +412,7 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeLinkAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -425,7 +427,7 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeFileAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -440,7 +442,7 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeVideoAttachmentView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -454,7 +456,7 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeGalleryView(
         mediaAttachments: [MediaAttachment],
         message: ChatMessage,
@@ -470,7 +472,7 @@ extension ViewFactory {
             message: message
         )
     }
-    
+
     public func makeGalleryHeaderView(
         title: String,
         subtitle: String,
@@ -478,7 +480,7 @@ extension ViewFactory {
     ) -> some View {
         GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
     }
-    
+
     public func makeVideoPlayerView(
         attachment: ChatMessageVideoAttachment,
         message: ChatMessage,
@@ -492,7 +494,7 @@ extension ViewFactory {
             isShown: isShown
         )
     }
-    
+
     public func makeVideoPlayerHeaderView(
         title: String,
         subtitle: String,
@@ -500,7 +502,7 @@ extension ViewFactory {
     ) -> some View {
         GalleryHeaderView(title: title, subtitle: subtitle, isShown: shown)
     }
-    
+
     public func makeVideoPlayerFooterView(
         attachment: ChatMessageVideoAttachment,
         shown: Binding<Bool>
@@ -510,7 +512,7 @@ extension ViewFactory {
             shown: shown
         )
     }
-    
+
     public func makeDeletedMessageView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -521,13 +523,13 @@ extension ViewFactory {
             isFirst: isFirst
         )
     }
-    
+
     public func makeSystemMessageView(
         message: ChatMessage
     ) -> some View {
         SystemMessageView(message: message.text)
     }
-    
+
     public func makeEmojiTextView(
         message: ChatMessage,
         scrolledId: Binding<String?>,
@@ -540,7 +542,7 @@ extension ViewFactory {
             isFirst: isFirst
         )
     }
-    
+
     public func makeCustomAttachmentViewType(
         for message: ChatMessage,
         isFirst: Bool,
@@ -549,7 +551,7 @@ extension ViewFactory {
     ) -> some View {
         EmptyView()
     }
-    
+
     public func makeScrollToBottomButton(
         unreadCount: Int,
         onScrollToBottom: @escaping () -> Void
@@ -559,15 +561,15 @@ extension ViewFactory {
             onScrollToBottom: onScrollToBottom
         )
     }
-    
+
     public func makeDateIndicatorView(dateString: String) -> some View {
         DateIndicatorView(dateString: dateString)
     }
-    
+
     public func makeMessageListDateIndicator(date: Date) -> some View {
         DateIndicatorView(date: date)
     }
-    
+
     public func makeTypingIndicatorBottomView(
         channel: ChatChannel,
         currentUserId: UserId?
@@ -575,14 +577,14 @@ extension ViewFactory {
         let typingIndicatorString = channel.typingIndicatorString(currentUserId: currentUserId)
         return TypingIndicatorBottomView(typingIndicatorString: typingIndicatorString)
     }
-    
+
     public func makeGiphyBadgeViewType(
         for message: ChatMessage,
         availableWidth: CGFloat
     ) -> some View {
         GiphyBadgeView()
     }
-    
+
     public func makeMessageRepliesView(
         channel: ChatChannel,
         message: ChatMessage,
@@ -595,7 +597,7 @@ extension ViewFactory {
             replyCount: replyCount
         )
     }
-    
+
     public func makeMessageRepliesShownInChannelView(
         channel: ChatChannel,
         message: ChatMessage,
@@ -611,7 +613,7 @@ extension ViewFactory {
             isRightAligned: message.isRightAligned
         )
     }
-    
+
     public func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,
@@ -628,7 +630,7 @@ extension ViewFactory {
             onMessageSent: onMessageSent
         )
     }
-    
+
     public func makeLeadingComposerView(
         state: Binding<PickerTypeState>,
         channelConfig: ChannelConfig?
@@ -639,7 +641,7 @@ extension ViewFactory {
         )
         .padding(.bottom, 8)
     }
-    
+
     @ViewBuilder
     public func makeComposerInputView(
         text: Binding<String>,
@@ -690,7 +692,7 @@ extension ViewFactory {
             )
         }
     }
-    
+
     public func makeComposerTextInputView(
         text: Binding<String>,
         height: Binding<CGFloat>,
@@ -710,7 +712,7 @@ extension ViewFactory {
             currentHeight: currentHeight
         )
     }
-    
+
     public func makeTrailingComposerView(
         enabled: Bool,
         cooldownDuration: Int,
@@ -718,7 +720,7 @@ extension ViewFactory {
     ) -> some View {
         TrailingComposerView(onTap: onTap)
     }
-    
+
     public func makeComposerRecordingView(
         viewModel: MessageComposerViewModel,
         gestureLocation: CGPoint
@@ -727,21 +729,21 @@ extension ViewFactory {
             viewModel.stopRecording()
         }
     }
-    
+
     public func makeComposerRecordingLockedView(
         viewModel: MessageComposerViewModel
     ) -> some View {
         LockedView(viewModel: viewModel)
     }
-    
+
     public func makeComposerRecordingTipView() -> some View {
         RecordingTipView()
     }
-    
+
     public func makeComposerViewModifier() -> some ViewModifier {
         EmptyViewModifier()
     }
-    
+
     public func makeAttachmentPickerView(
         attachmentPickerState: Binding<AttachmentPickerState>,
         filePickerShown: Binding<Bool>,
@@ -779,7 +781,7 @@ extension ViewFactory {
         .offset(y: isDisplayed ? 0 : popupHeight)
         .animation(.spring())
     }
-    
+
     public func makeVoiceRecordingView(
         for message: ChatMessage,
         isFirst: Bool,
@@ -794,21 +796,21 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeCustomAttachmentView(
         addedCustomAttachments: [CustomAttachment],
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
     ) -> some View {
         EmptyView()
     }
-    
+
     public func makeCustomAttachmentPreviewView(
         addedCustomAttachments: [CustomAttachment],
         onCustomAttachmentTap: @escaping (CustomAttachment) -> Void
     ) -> some View {
         EmptyView()
     }
-    
+
     public func makeAttachmentSourcePickerView(
         selected: AttachmentPickerState,
         onPickerStateChange: @escaping (AttachmentPickerState) -> Void
@@ -818,7 +820,7 @@ extension ViewFactory {
             onTap: onPickerStateChange
         )
     }
-    
+
     public func makePhotoAttachmentPickerView(
         assets: PHFetchResultCollection,
         onAssetTap: @escaping (AddedAsset) -> Void,
@@ -832,7 +834,7 @@ extension ViewFactory {
             )
         }
     }
-    
+
     public func makeFilePickerView(
         filePickerShown: Binding<Bool>,
         addedFileURLs: Binding<[URL]>
@@ -842,7 +844,7 @@ extension ViewFactory {
             addedFileURLs: addedFileURLs
         )
     }
-    
+
     public func makeCameraPickerView(
         selected: Binding<AttachmentPickerState>,
         cameraPickerShown: Binding<Bool>,
@@ -854,11 +856,11 @@ extension ViewFactory {
             cameraImageAdded: cameraImageAdded
         )
     }
-    
+
     public func makeAssetsAccessPermissionView() -> some View {
         AssetsAccessPermissionView()
     }
-    
+
     public func makeSendInChannelView(
         showReplyInChannel: Binding<Bool>,
         isDirectMessage: Bool
@@ -868,7 +870,7 @@ extension ViewFactory {
             isDirectMessage: isDirectMessage
         )
     }
-    
+
     public func supportedMessageActions(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -884,7 +886,7 @@ extension ViewFactory {
             onError: onError
         )
     }
-    
+
     public func makeMessageActionsView(
         for message: ChatMessage,
         channel: ChatChannel,
@@ -897,10 +899,10 @@ extension ViewFactory {
             onFinish: onFinish,
             onError: onError
         )
-        
+
         return MessageActionsView(messageActions: messageActions)
     }
-    
+
     public func makeReactionsUsersView(
         message: ChatMessage,
         maxHeight: CGFloat
@@ -910,7 +912,7 @@ extension ViewFactory {
             maxHeight: maxHeight
         )
     }
-    
+
     public func makeBottomReactionsView(
         message: ChatMessage,
         showsAllInfo: Bool,
@@ -925,7 +927,7 @@ extension ViewFactory {
         )
         .id(message.reactionScoresId)
     }
-    
+
     public func makeMessageReactionView(
         message: ChatMessage,
         onTapGesture: @escaping () -> Void,
@@ -937,7 +939,7 @@ extension ViewFactory {
             onLongPressGesture: onLongPressGesture
         )
     }
-    
+
     public func makeReactionsOverlayView(
         channel: ChatChannel,
         currentSnapshot: UIImage,
@@ -954,7 +956,7 @@ extension ViewFactory {
             onActionExecuted: onActionExecuted
         )
     }
-    
+
     public func makeReactionsContentView(
         message: ChatMessage,
         contentRect: CGRect,
@@ -966,7 +968,7 @@ extension ViewFactory {
             onReactionTap: onReactionTap
         )
     }
-    
+
     public func makeReactionsBackgroundView(
         currentSnapshot: UIImage,
         popInAnimationInProgress: Bool
@@ -975,13 +977,13 @@ extension ViewFactory {
             .overlay(Color.black.opacity(popInAnimationInProgress ? 0 : 0.1))
             .blur(radius: popInAnimationInProgress ? 0 : 4)
     }
-    
+
     public func makeQuotedMessageHeaderView(
         quotedMessage: Binding<ChatMessage?>
     ) -> some View {
         QuotedMessageHeaderView(quotedMessage: quotedMessage)
     }
-    
+
     public func makeQuotedMessageView(
         quotedMessage: ChatMessage,
         fillAvailableSpace: Bool,
@@ -996,17 +998,17 @@ extension ViewFactory {
             scrolledId: scrolledId
         )
     }
-    
+
     public func makeCustomAttachmentQuotedView(for message: ChatMessage) -> some View {
         EmptyView()
     }
-    
+
     public func makeEditedMessageHeaderView(
         editedMessage: Binding<ChatMessage?>
     ) -> some View {
         EditMessageHeaderView(editedMessage: editedMessage)
     }
-    
+
     public func makeCommandsContainerView(
         suggestions: [String: Any],
         handleCommand: @escaping ([String: Any]) -> Void
@@ -1016,7 +1018,7 @@ extension ViewFactory {
             handleCommand: handleCommand
         )
     }
-    
+
     public func makeMessageReadIndicatorView(
         channel: ChatChannel,
         message: ChatMessage
@@ -1032,7 +1034,7 @@ extension ViewFactory {
             localState: message.localState
         )
     }
-    
+
     public func makeNewMessagesIndicatorView(
         newMessagesStartId: Binding<String?>,
         count: Int
@@ -1042,7 +1044,7 @@ extension ViewFactory {
             count: count
         )
     }
-    
+
     public func makeJumpToUnreadButton(
         channel: ChatChannel,
         onJumpToMessage: @escaping () -> Void,
@@ -1059,14 +1061,14 @@ extension ViewFactory {
             Spacer()
         }
     }
-    
+
     public func makeComposerPollView(
         channelController: ChatChannelController,
         messageController: ChatMessageController?
     ) -> some View {
         ComposerPollView(channelController: channelController, messageController: messageController)
     }
-    
+
     public func makePollView(message: ChatMessage, poll: Poll, isFirst: Bool) -> some View {
         PollAttachmentView(factory: self, message: message, poll: poll, isFirst: isFirst)
     }
@@ -1144,14 +1146,14 @@ extension ViewFactory {
     public func makeThreadListDividerItem() -> some View {
         Divider()
     }
-    
+
     public func makeAddUsersView(
         options: AddUsersOptions,
         onUserTap: @escaping (ChatUser) -> Void
     ) -> some View {
         AddUsersView(loadedUserIds: options.loadedUsers.map(\.id), onUserTap: onUserTap)
     }
-    
+
     public func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> some View {
@@ -1162,10 +1164,10 @@ extension ViewFactory {
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
 public class DefaultViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
-    
+
     private init() {
         // Private init.
     }
-    
+
     public static let shared = DefaultViewFactory()
 }

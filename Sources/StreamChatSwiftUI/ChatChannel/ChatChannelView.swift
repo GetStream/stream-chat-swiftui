@@ -49,6 +49,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             messages: viewModel.messages,
                             messagesGroupingInfo: viewModel.messagesGroupingInfo,
                             scrolledId: $viewModel.scrolledId,
+                            highlightedMessageId: $viewModel.highlightedMessageId,
                             showScrollToLatestButton: $viewModel.showScrollToLatestButton,
                             quotedMessage: $viewModel.quotedMessage,
                             currentDateString: viewModel.currentDateString,

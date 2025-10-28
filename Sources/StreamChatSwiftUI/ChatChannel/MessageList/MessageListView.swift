@@ -15,6 +15,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var messages: LazyCachedMapCollection<ChatMessage>
     var messagesGroupingInfo: [String: [String]]
     @Binding var scrolledId: String?
+    @Binding var highlightedMessageId: String?
     @Binding var showScrollToLatestButton: Bool
     @Binding var quotedMessage: ChatMessage?
     @Binding var scrollPosition: String?
@@ -24,12 +25,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var listId: String
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
-    
+
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: () -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
     var onJumpToMessage: ((String) -> Bool)?
-    
+
     @State private var width: CGFloat?
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
@@ -55,7 +56,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     private var lastInGroupHeaderSize: CGFloat {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
-    
+
     private var newMessagesSeparatorSize: CGFloat {
         messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
     }
@@ -68,6 +69,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         messages: LazyCachedMapCollection<ChatMessage>,
         messagesGroupingInfo: [String: [String]],
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         showScrollToLatestButton: Binding<Bool>,
         quotedMessage: Binding<ChatMessage?>,
         currentDateString: String? = nil,
@@ -96,6 +98,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.shouldShowTypingIndicator = shouldShowTypingIndicator
         self.loadingNextMessages = loadingNextMessages
         _scrolledId = scrolledId
+        _highlightedMessageId = highlightedMessageId
         _showScrollToLatestButton = showScrollToLatestButton
         _quotedMessage = quotedMessage
         _scrollPosition = scrollPosition
@@ -143,6 +146,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 showsAllInfo: showsAllData(for: message),
                                 isInThread: isMessageThread,
                                 scrolledId: $scrolledId,
+                                highlightedMessageId: $highlightedMessageId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
                                 isLast: !showsLastInGroupInfo && message == messages.last
@@ -175,7 +179,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             factory.makeMessageListDateIndicator(date: messageDate!)
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
                                             : nil
-                                        
+
                                         showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
                                                 newMessagesStartId: $firstUnreadMessageId,
@@ -319,7 +323,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
     }
-    
+
     private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
         var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
         if showUnreadSeparator {
@@ -333,7 +337,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo, showUnreadSeparator: showUnreadSeparator)
         return offset
     }
-    
+
     private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
         channel.unreadCount.messages
     }
@@ -388,7 +392,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
 struct ScrollPositionModifier: ViewModifier {
     @Binding var scrollPosition: String?
-    
+
     func body(content: Content) -> some View {
         #if swift(>=5.9)
         if #available(iOS 17, *) {
@@ -405,7 +409,7 @@ struct ScrollPositionModifier: ViewModifier {
 
 struct ScrollTargetLayoutModifier: ViewModifier {
     var enabled: Bool
-    
+
     func body(content: Content) -> some View {
         if !enabled {
             return content
@@ -431,15 +435,15 @@ public enum ScrollDirection {
 
 public struct NewMessagesIndicator: View {
     @Injected(\.colors) var colors
-    
+
     @Binding var newMessagesStartId: String?
     var count: Int
-    
+
     public init(newMessagesStartId: Binding<String?>, count: Int) {
         _newMessagesStartId = newMessagesStartId
         self.count = count
     }
-    
+
     public var body: some View {
         HStack {
             Text("\(L10n.MessageList.newMessages(count))")

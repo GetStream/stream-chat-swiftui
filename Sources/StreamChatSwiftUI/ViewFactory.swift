@@ -58,7 +58,7 @@ public protocol ViewFactory: AnyObject {
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void
     ) -> ChannelListItemType
-    
+
     associatedtype ChannelAvatarViewType: View
     /// Creates the channel avatar view shown in the channel list, search results and the channel header.
     /// - Parameters:
@@ -169,7 +169,7 @@ public protocol ViewFactory: AnyObject {
     /// Creates the view always visible at the bottom of the channel list.
     /// - Returns: view shown at the bottom of the channel list.
     func makeChannelListStickyFooterView() -> ChannelListStickyFooterViewType
-    
+
     associatedtype ChannelListSearchResultsViewType: View
     /// Creates the view shown when the user is searching the channel list.
     /// - Parameters:
@@ -244,7 +244,7 @@ public protocol ViewFactory: AnyObject {
     associatedtype MessageListModifier: ViewModifier
     /// Returns a view modifier applied to the message list.
     func makeMessageListModifier() -> MessageListModifier
-    
+
     associatedtype MessageListContainerModifier: ViewModifier
     /// Returns a view modifier applied to the message list container.
     func makeMessageListContainerModifier() -> MessageListContainerModifier
@@ -281,13 +281,13 @@ public protocol ViewFactory: AnyObject {
     /// Creates the channel header view modifier.
     /// - Parameter channel: the displayed channel.
     func makeChannelHeaderViewModifier(for channel: ChatChannel) -> ChatHeaderViewModifier
-    
+
     associatedtype ChangeBarsVisibilityModifier: ViewModifier
     /// Creates a view modifier that changes the visibility of bars.
     /// - Parameter shouldShow: A Boolean value indicating whether the bars should be shown.
     /// - Returns: A view modifier that changes the visibility of bars.
     func makeChannelBarsVisibilityViewModifier(shouldShow: Bool) -> ChangeBarsVisibilityModifier
-    
+
     associatedtype ChannelLoadingViewType: View
     /// Creates a loading view for the channel.
     func makeChannelLoadingView() -> ChannelLoadingViewType
@@ -327,6 +327,7 @@ public protocol ViewFactory: AnyObject {
         showsAllInfo: Bool,
         isInThread: Bool,
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         isLast: Bool
@@ -448,7 +449,7 @@ public protocol ViewFactory: AnyObject {
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) -> VideoAttachmentViewType
-    
+
     associatedtype GalleryViewType: View
     /// Creates the gallery view.
     /// - Parameters:
@@ -463,7 +464,7 @@ public protocol ViewFactory: AnyObject {
         isShown: Binding<Bool>,
         options: MediaViewsOptions
     ) -> GalleryViewType
-    
+
     associatedtype GalleryHeaderViewType: View
     /// Creates the gallery header view presented with a sheet.
     /// - Parameters:
@@ -476,7 +477,7 @@ public protocol ViewFactory: AnyObject {
         subtitle: String,
         shown: Binding<Bool>
     ) -> GalleryHeaderViewType
-    
+
     associatedtype VideoPlayerViewType: View
     /// Creates the video player view.
     /// - Parameters:
@@ -491,7 +492,7 @@ public protocol ViewFactory: AnyObject {
         isShown: Binding<Bool>,
         options: MediaViewsOptions
     ) -> VideoPlayerViewType
-    
+
     associatedtype VideoPlayerHeaderViewType: View
     /// Creates the video player header view presented with a sheet.
     /// - Parameters:
@@ -504,7 +505,7 @@ public protocol ViewFactory: AnyObject {
         subtitle: String,
         shown: Binding<Bool>
     ) -> VideoPlayerHeaderViewType
-    
+
     associatedtype VideoPlayerFooterViewType: View
     /// Creates the video player footer view presented with a sheet.
     /// - Parameters:
@@ -546,7 +547,7 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>,
         isFirst: Bool
     ) -> EmojiTextViewType
-    
+
     associatedtype VoiceRecordingViewType: View
     /// Creates a view that displays voice recordings.
     /// - Parameters:
@@ -635,7 +636,7 @@ public protocol ViewFactory: AnyObject {
         message: ChatMessage,
         replyCount: Int
     ) -> MessageRepliesViewType
-    
+
     associatedtype MessageRepliesShownInChannelViewType: View
     /// Creates the message replies view for a reply that is also shown in a channel.
     /// - Parameters:
@@ -708,7 +709,7 @@ public protocol ViewFactory: AnyObject {
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping (String) -> Void
     ) -> ComposerInputViewType
-    
+
     associatedtype ComposerTextInputViewType: View
     /// Creates the composer input view.
     /// - Parameters:
@@ -742,7 +743,7 @@ public protocol ViewFactory: AnyObject {
         cooldownDuration: Int,
         onTap: @escaping () -> Void
     ) -> TrailingComposerViewType
-    
+
     associatedtype ComposerRecordingViewType: View
     /// Creates a view shown when the composer is recording a voice message.
     /// - Parameters:
@@ -753,7 +754,7 @@ public protocol ViewFactory: AnyObject {
         viewModel: MessageComposerViewModel,
         gestureLocation: CGPoint
     ) -> ComposerRecordingViewType
-    
+
     associatedtype ComposerRecordingLockedViewType: View
     /// Creates a view shown when a voice recording is locked.
     ///  - Parameter viewModel: the composer view model.
@@ -761,7 +762,7 @@ public protocol ViewFactory: AnyObject {
     func makeComposerRecordingLockedView(
         viewModel: MessageComposerViewModel
     ) -> ComposerRecordingLockedViewType
-    
+
     associatedtype ComposerRecordingTipViewType: View
     /// Creates a view shown when a recording tip is displayed.
     /// - Returns: view shown in the recording tip slot.
@@ -931,7 +932,7 @@ public protocol ViewFactory: AnyObject {
         message: ChatMessage,
         maxHeight: CGFloat
     ) -> ReactionsUsersViewType
-    
+
     associatedtype ReactionsBottomViewType: View
     /// Creates a reactions view displayed below the message.
     /// This method is called only if `ReactionsPlacement` is set to `bottom`.
@@ -1014,7 +1015,7 @@ public protocol ViewFactory: AnyObject {
         isInComposer: Bool,
         scrolledId: Binding<String?>
     ) -> QuotedMessageViewType
-    
+
     associatedtype CustomAttachmentQuotedViewType: View
     /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
     /// - Parameter message: the quoted message.
@@ -1051,7 +1052,7 @@ public protocol ViewFactory: AnyObject {
         channel: ChatChannel,
         message: ChatMessage
     ) -> MessageReadIndicatorViewType
-    
+
     associatedtype NewMessagesIndicatorViewType: View
     /// Creates a separator view showing the number of new messages in the message list.
     /// - Parameters:
@@ -1062,7 +1063,7 @@ public protocol ViewFactory: AnyObject {
         newMessagesStartId: Binding<String?>,
         count: Int
     ) -> NewMessagesIndicatorViewType
-    
+
     associatedtype JumpToUnreadButtonType: View
     /// Creates a jump to unread button.
     /// - Parameters:
@@ -1171,7 +1172,7 @@ public protocol ViewFactory: AnyObject {
     associatedtype ThreadListDividerItem: View
     /// Creates the thread list divider item.
     func makeThreadListDividerItem() -> ThreadListDividerItem
-    
+
     associatedtype AddUsersViewType: View
     /// Creates a view for adding users to a chat or channel.
     /// - Parameters:
@@ -1182,7 +1183,7 @@ public protocol ViewFactory: AnyObject {
         options: AddUsersOptions,
         onUserTap: @escaping (ChatUser) -> Void
     ) -> AddUsersViewType
-    
+
     associatedtype AttachmentTextViewType: View
     /// Creates a view for displaying the text of an attachment.
     /// - Parameter options: Configuration options for the attachment text view, such as message.

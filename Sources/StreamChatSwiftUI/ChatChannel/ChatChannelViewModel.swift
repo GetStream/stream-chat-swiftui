@@ -11,7 +11,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
-    
+
     private var channelDataSource: ChannelDataSource
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
@@ -24,7 +24,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return 5
         }
     }()
-    
+
     private var timer: Timer?
     private var currentDate: Date? {
         didSet {
@@ -39,10 +39,10 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var currentUserSentNewMessage = false
 
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
-    
+
     private lazy var messagesDateFormatter = utils.dateFormatter
     private lazy var messageCachingUtils = utils.messageCachingUtils
-    
+
     private var loadingPreviousMessages: Bool = false
     private var loadingMessagesAround: Bool = false
     private var scrollsToUnreadAfterJumpToMessage = false
@@ -51,11 +51,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var onlineIndicatorShown = false
     private var lastReadMessageId: String?
     var throttler = Throttler(interval: 3, broadcastLatestEvent: true)
-    
+
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
-    
+
     @Published public var scrolledId: String?
+    @Published public var highlightedMessageId: String?
     @Published public var listId = UUID().uuidString
 
     @Published public var showScrollToLatestButton = false
@@ -139,7 +140,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public var isMessageThread: Bool {
         messageController != nil
     }
-            
+
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
@@ -177,42 +178,42 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 self?.scrolledId = scrollToMessage?.messageId
             }
         }
-              
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didReceiveMemoryWarning),
             name: UIApplication.didReceiveMemoryWarningNotification,
             object: nil
         )
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onViewAppear),
             name: .messageSheetHiddenNotification,
             object: nil
         )
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onViewDissappear),
             name: .messageSheetShownNotification,
             object: nil
         )
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onShowChannelAlertBanner),
             name: .showChannelAlertBannerNotification,
             object: nil
         )
-        
+
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -221,7 +222,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 object: nil
             )
         }
-                
+
         channelName = channel?.name ?? ""
         checkHeaderType()
         checkUnreadCount()
@@ -234,18 +235,18 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             threadMessageShown = true
         }
     }
-    
+
     @objc
     private func onShowChannelAlertBanner() {
         showAlertBanner = true
     }
-    
+
     @objc
     private func didReceiveMemoryWarning() {
         ImageCache.shared.removeAll()
         messageCachingUtils.clearCache()
     }
-    
+
     @objc
     private func applicationWillEnterForeground() {
         guard let first = messages.first else { return }
@@ -256,7 +257,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             sendThreadReadEvent()
         }
     }
-    
+
     public func scrollToLastMessage() {
         if channelDataSource.hasLoadedAllNextMessages {
             updateScrolledIdToNewestMessage()
@@ -297,8 +298,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 if scrolledId == nil {
                     scrolledId = messageId
                 }
+                // Trigger highlight after a short delay to allow scroll animation to start
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.highlightedMessageId = messageId
+                }
+                // Clear scroll ID after 2 seconds
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.scrolledId = nil
+                }
+                // Clear highlight after animation completes (0.6s delay from StreamChatUI implementation)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+                    self?.highlightedMessageId = nil
                 }
                 return true
             } else {
@@ -310,7 +320,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     messageCachingUtils.jumpToReplyId = message?.messageId
                     return false
                 }
-                
+
                 scrolledId = nil
                 if loadingMessagesAround {
                     return false
@@ -325,21 +335,29 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     if toJumpId == baseId, let message = self?.channelController.dataStore.message(id: toJumpId) {
                         toJumpId = message.messageId
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                         self?.scrolledId = toJumpId
                         self?.loadingMessagesAround = false
+                        // Trigger highlight after scroll starts
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            self?.highlightedMessageId = toJumpId
+                        }
+                        // Clear highlight after animation completes
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            self?.highlightedMessageId = nil
+                        }
                     }
                 }
                 return false
             }
         }
     }
-    
+
     open func handleMessageAppear(index: Int, scrollDirection: ScrollDirection) {
         if index >= channelDataSource.messages.count || loadingMessagesAround {
             return
         }
-        
+
         let message = messages[index]
         if scrollDirection == .up {
             checkForOlderMessages(index: index)
@@ -362,7 +380,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             sendThreadReadEvent()
         }
     }
-    
+
     open func groupMessages() {
         var temp = [String: [String]]()
         for (index, message) in messages.enumerated() {
@@ -374,7 +392,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             } else if index == messages.count - 1 {
                 temp[message.id] = [lastMessageKey]
             }
-            
+
             let previous = index - 1
             let previousMessage = messages[previous]
             let currentAuthorId = message.author.id
@@ -405,15 +423,15 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 prevInfo.append(lastMessageKey)
                 temp[previousMessage.id] = prevInfo
             }
-            
+
             if temp[message.id]?.isEmpty == true {
                 temp[message.id] = nil
             }
         }
-        
+
         messagesGroupingInfo = temp
     }
-    
+
     func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateMessages messages: LazyCachedMapCollection<ChatMessage>,
@@ -422,12 +440,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if !isActive {
             return
         }
-        
+
         // Set unread state before updating messages for ensuring the state is up to date before `handleMessageAppear` is called
         if lastReadMessageId != nil && firstUnreadMessageId == nil {
             firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         }
-        
+
         if shouldAnimate(changes: changes) {
             withAnimation {
                 self.messages = messages
@@ -435,20 +453,20 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         } else {
             self.messages = messages
         }
-        
+
         refreshMessageListIfNeeded()
-        
+
         // Jump to a message but we were already scrolled to the bottom
         if !channelDataSource.hasLoadedAllNextMessages {
             showScrollToLatestButton = true
         }
-        
+
         // Set scroll id after the message id has changed
         if scrollsToUnreadAfterJumpToMessage, let firstUnreadMessageId {
             scrollsToUnreadAfterJumpToMessage = false
             scrolledId = firstUnreadMessageId
         }
-        
+
         if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
         } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
@@ -456,7 +474,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             currentUserSentNewMessage = false
         }
     }
-    
+
     func dataSource(
         channelDataSource: ChannelDataSource,
         didUpdateChannel channel: EntityChange<ChatChannel>,
@@ -501,7 +519,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             viewModel: self
         )
     }
-    
+
     @objc public func onViewAppear() {
         utils.originalTranslationsStore.clear()
         setActive()
@@ -509,22 +527,22 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         firstUnreadMessageId = channelDataSource.firstUnreadMessageId
         checkNameChange()
     }
-    
+
     @objc public func onViewDissappear() {
         isActive = false
     }
-    
+
     public func setActive() {
         isActive = true
     }
-    
+
     // MARK: - private
-    
+
     private func checkForOlderMessages(index: Int) {
         guard index >= channelDataSource.messages.count - 25 else { return }
         guard !loadingPreviousMessages else { return }
         guard !channelController.hasLoadedAllPreviousMessages else { return }
-        
+
         log.debug("Loading previous messages")
         loadingPreviousMessages = true
         channelDataSource.loadPreviousMessages(
@@ -538,14 +556,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         )
     }
-        
+
     private func checkForNewerMessages(index: Int) {
         guard index <= 5 else { return }
         guard !loadingNextMessages else { return }
         guard !channelController.hasLoadedAllNextMessages else { return }
-        
+
         loadingNextMessages = true
-        
+
         if scrollPosition != messages.first?.messageId {
             scrollPosition = messages[index].messageId
         }
@@ -557,13 +575,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
-    
+
     private func save(lastDate: Date) {
         if disableDateIndicator {
             enableDateIndicator()
             return
         }
-        
+
         currentDate = lastDate
         timer?.invalidate()
         timer = Timer.scheduledTimer(
@@ -574,7 +592,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         )
     }
-    
+
     private func sendReadEventIfNeeded(for message: ChatMessage) {
         guard let channel, channel.unreadCount.messages > 0 else {
             return
@@ -587,7 +605,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
         }
     }
-    
+
     private func refreshMessageListIfNeeded() {
         let count = messages.count
         if count > lastRefreshThreshold {
@@ -595,7 +613,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             listId = UUID().uuidString
         }
     }
-    
+
     private func checkReadIndicators(for channel: EntityChange<ChatChannel>) {
         switch channel {
         case let .update(chatChannel):
@@ -612,33 +630,33 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             log.debug("skip updating of messages in channel update")
         }
     }
-    
+
     private func checkNameChange() {
         let currentChannelName = channel?.name ?? ""
         var nameChanged = false
-        
+
         if currentChannelName != channelName {
             channelName = currentChannelName
             nameChanged = true
         }
-        
+
         if nameChanged {
             triggerHeaderChange()
         }
     }
-    
+
     private func checkOnlineIndicator() {
         guard let channel else { return }
         let updated = !channel.lastActiveMembers.filter { member in
             member.id != chatClient.currentUserId && member.isOnline
         }.isEmpty
-        
+
         if updated != onlineIndicatorShown {
             onlineIndicatorShown = updated
             triggerHeaderChange()
         }
     }
-    
+
     private func triggerHeaderChange() {
         // Toolbar is not updated unless there's a state change.
         // Therefore, we manually need to update the state for a short period of time.
@@ -648,17 +666,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             self?.channelHeaderType = headerType
         }
     }
-    
+
     private func checkHeaderType() {
         guard let channel = channel else {
             return
         }
-        
+
         let type: ChannelHeaderType
         let typingUsers = channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId
         )
-        
+
         if !reactionsShown && isMessageThread {
             type = .messageThread
         } else if !typingUsers.isEmpty && utils.messageListConfig.typingIndicatorPlacement == .navigationBar {
@@ -666,7 +684,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         } else {
             type = .regular
         }
-        
+
         if type != channelHeaderType {
             channelHeaderType = type
         } else if type == .typingIndicator {
@@ -678,16 +696,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             }
         }
     }
-    
+
     private func checkUnreadCount() {
         guard !isMessageThread else { return }
-        
+
         guard let channel = channelController.channel else { return }
         // Delay marking any messages as read until channel has loaded for the first time (slow internet + observer delay)
         guard !hasSetInitialCanMarkRead else { return }
         hasSetInitialCanMarkRead = true
         canMarkRead = true
-        
+
         if channel.unreadCount.messages > 0 {
             if channelDataSource.firstUnreadMessageId != nil {
                 firstUnreadMessageId = channelController.firstUnreadMessageId
@@ -706,7 +724,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         guard messageController?.replies.isEmpty == false else {
             return false
         }
-        
+
         return channelDataSource.hasLoadedAllNextMessages
     }
 
@@ -721,13 +739,13 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             currentDateString = nil
             return
         }
-        
+
         let dateString = messageListDateOverlay.string(from: currentDate)
         if currentDateString != dateString {
             currentDateString = dateString
         }
     }
-    
+
     private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges {
             return false
@@ -738,7 +756,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if channelController.channel == nil {
             return false
         }
-        
+
         var animateChanges = false
         for change in changes {
             switch change {
@@ -760,16 +778,16 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 continue
             }
         }
-        
+
         return animateChanges
     }
-    
+
     private func enableDateIndicator() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.disableDateIndicator = false
         }
     }
-    
+
     private func checkTypingIndicator() {
         guard let channel = channel else { return }
         let shouldShow = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
@@ -779,14 +797,14 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             shouldShowTypingIndicator = shouldShow
         }
     }
-    
+
     private func updateScrolledIdToNewestMessage() {
         if scrolledId != nil {
             scrolledId = nil
         }
         scrolledId = messages.first?.messageId
     }
-    
+
     private func cleanupAudioPlayer() {
         guard utils.composerConfig.isVoiceRecordingEnabled else { return }
         utils.audioPlayer.seek(to: 0)
@@ -794,7 +812,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         utils.audioPlayer.stop()
         utils._audioPlayer = nil
     }
-    
+
     deinit {
         messageCachingUtils.clearCache()
         if messageController == nil {
@@ -812,19 +830,19 @@ extension ChatMessage: Identifiable {
     public var scrollMessageId: String {
         messageId
     }
-    
+
     var messageId: String {
         InjectedValues[\.utils].messageIdBuilder.makeMessageId(for: self)
     }
-    
+
     var baseId: String {
         isDeleted ? "\(id)$deleted" : "\(id)$"
     }
-    
+
     var pinStateId: String {
         pinDetails != nil ? "pinned" : "notPinned"
     }
-    
+
     var repliesCountId: String {
         var repliesCountId = ""
         if replyCount > 0 {
@@ -833,7 +851,7 @@ extension ChatMessage: Identifiable {
 
         return repliesCountId
     }
-    
+
     var reactionScoresId: String {
         var output = ""
         if reactionScores.isEmpty {
@@ -876,10 +894,10 @@ let lastMessageKey = "lastMessage"
 extension Notification.Name {
     /// A notification for notifying when an error occured and an alert banner should be shown at the top of the message list.
     static let showChannelAlertBannerNotification = Notification.Name("showChannelAlertBannerNotification")
-    
+
     /// A notification for notifying when message dismissed a sheet.
     static let messageSheetHiddenNotification = Notification.Name("messageSheetHiddenNotification")
-    
+
     /// A notification for notifying when message view displays a sheet.
     ///
     /// When a sheet is presented, the message cell is not reloaded.

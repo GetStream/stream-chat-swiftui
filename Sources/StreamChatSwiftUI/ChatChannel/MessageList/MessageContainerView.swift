@@ -9,7 +9,7 @@ import SwiftUI
 public struct MessageContainerView<Factory: ViewFactory>: View {
     @StateObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
-    
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -24,6 +24,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     var isInThread: Bool
     var isLast: Bool
     @Binding var scrolledId: String?
+    @Binding var highlightedMessageId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
 
@@ -37,7 +38,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private var paddingValue: CGFloat {
         utils.messageListConfig.messagePaddings.singleBottom
     }
-    
+
     private var groupMessageInterItemSpacing: CGFloat {
         utils.messageListConfig.messagePaddings.groupBottom
     }
@@ -51,6 +52,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isInThread: Bool,
         isLast: Bool,
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         viewModel: MessageViewModel? = nil
@@ -70,6 +72,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             )
         )
         _scrolledId = scrolledId
+        _highlightedMessageId = highlightedMessageId
         _quotedMessage = quotedMessage
     }
 
@@ -213,7 +216,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             .accessibility(identifier: "MessageRepliesView")
                         }
                     }
-                    
+
                     if bottomReactionsShown {
                         factory.makeBottomReactionsView(message: message, showsAllInfo: showsAllInfo) {
                             handleGestureForMessage(
@@ -284,7 +287,15 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
-        .background(messageViewModel.isPinned ? Color(colors.pinnedBackground) : nil)
+        .background(
+            Group {
+                if let highlightedMessageId = highlightedMessageId, highlightedMessageId == message.messageId {
+                    Color(colors.messageCellHighlightBackground)
+                } else if messageViewModel.isPinned {
+                    Color(colors.pinnedBackground)
+                }
+            }
+        )
         .padding(.bottom, messageViewModel.isPinned ? paddingValue / 2 : 0)
         .transition(
             message.isSentByCurrentUser ?
@@ -323,14 +334,14 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         }
         return reactionsShown
     }
-    
+
     private var bottomReactionsShown: Bool {
         if messageListConfig.messageDisplayOptions.reactionsPlacement == .top {
             return false
         }
         return reactionsShown
     }
-    
+
     private var reactionsShown: Bool {
         !message.reactionScores.isEmpty
             && !message.isDeleted
