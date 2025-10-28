@@ -27,7 +27,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_messageContainerEdited_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -45,7 +45,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_messageContainerEditedAIGenerated_snapshot() {
         // Given
         let key = "ai_generated"
@@ -74,7 +74,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_messageContainerCurrentUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
@@ -97,7 +97,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_messageContainerOtherUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
@@ -337,7 +337,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
                 .spanish: "Hola"
             ]
         )
-        
+
         // When
         let view = testMessageViewContainer(message: message)
             .environment(\.channelTranslationLanguage, .spanish)
@@ -345,7 +345,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_translatedText_myMessageIsNotTranslated_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -358,7 +358,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             ],
             isSentByCurrentUser: true
         )
-        
+
         // When
         let view = testMessageViewContainer(message: message)
             .environment(\.channelTranslationLanguage, .spanish)
@@ -387,6 +387,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
+            highlightedMessageId: .constant(nil),
             quotedMessage: .constant(nil)
         ) { _ in
             exp.fulfill()
@@ -421,6 +422,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
+            highlightedMessageId: .constant(nil),
             quotedMessage: .constant(nil)
         ) { _ in
             exp.fulfill()
@@ -578,12 +580,54 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageContainerHighlighted_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: "test-message-id",
+            cid: .unique,
+            text: "This message is highlighted",
+            author: .mock(id: .unique, name: "Test User"),
+            isSentByCurrentUser: false
+        )
+        let messageId = message.messageId
+
+        // When
+        let view = testMessageViewContainer(
+            message: message,
+            highlightedMessageId: messageId
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageContainerNotHighlighted_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: "test-message-id",
+            cid: .unique,
+            text: "This message is not highlighted",
+            author: .mock(id: .unique, name: "Test User"),
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = testMessageViewContainer(
+            message: message,
+            highlightedMessageId: "different-message-id"
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(
         message: ChatMessage,
         channel: ChatChannel? = nil,
-        messageViewModel: MessageViewModel? = nil
+        messageViewModel: MessageViewModel? = nil,
+        highlightedMessageId: String? = nil
     ) -> some View {
         MessageContainerView(
             factory: DefaultViewFactory.shared,
@@ -594,6 +638,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
+            highlightedMessageId: .constant(highlightedMessageId),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
             viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel)

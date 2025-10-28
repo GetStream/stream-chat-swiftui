@@ -54,6 +54,7 @@ final class MessageViewMultiRowReactions_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: true,
             scrolledId: .constant(nil),
+            highlightedMessageId: .constant(nil),
             quotedMessage: .constant(nil),
             onLongPress: { _ in }
         )
