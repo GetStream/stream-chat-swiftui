@@ -56,6 +56,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public var messageController: ChatMessageController?
     
     @Published public var scrolledId: String?
+    @Published public var highlightedMessageId: String?
     @Published public var listId = UUID().uuidString
 
     @Published public var showScrollToLatestButton = false
@@ -172,6 +173,18 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
             } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
                 self?.scrolledId = jumpToReplyId
+                // Trigger highlight when jumping to reply in thread
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.highlightedMessageId = jumpToReplyId
+                }
+                // Clear scroll ID after 2 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.scrolledId = nil
+                }
+                // Clear highlight after animation completes
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+                    self?.highlightedMessageId = nil
+                }
                 self?.messageCachingUtils.jumpToReplyId = nil
             } else if messageController == nil {
                 self?.scrolledId = scrollToMessage?.messageId
@@ -232,6 +245,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {
             threadMessage = message
             threadMessageShown = true
+
+            // Only set jumpToReplyId if there's a specific reply message to highlight
+            // (for showReplyInChannel messages). The parent message should never be highlighted.
+            if let replyMessage = notification.userInfo?[MessageRepliesConstants.threadReplyMessage] as? ChatMessage {
+                messageCachingUtils.jumpToReplyId = replyMessage.messageId
+            }
         }
     }
     
@@ -297,8 +316,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 if scrolledId == nil {
                     scrolledId = messageId
                 }
+                // Trigger highlight after a short delay to allow scroll animation to start
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.highlightedMessageId = messageId
+                }
+                // Clear scroll ID after 2 seconds
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.scrolledId = nil
+                }
+                // Clear highlight after animation completes (0.6s delay from StreamChatUI implementation)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+                    self?.highlightedMessageId = nil
                 }
                 return true
             } else {
@@ -325,9 +353,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     if toJumpId == baseId, let message = self?.channelController.dataStore.message(id: toJumpId) {
                         toJumpId = message.messageId
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                         self?.scrolledId = toJumpId
                         self?.loadingMessagesAround = false
+                        // Trigger highlight after scroll starts
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            self?.highlightedMessageId = toJumpId
+                        }
+                        // Clear highlight after animation completes
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            self?.highlightedMessageId = nil
+                        }
                     }
                 }
                 return false

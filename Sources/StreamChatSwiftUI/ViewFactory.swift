@@ -327,6 +327,7 @@ public protocol ViewFactory: AnyObject {
         showsAllInfo: Bool,
         isInThread: Bool,
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         isLast: Bool

@@ -24,6 +24,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     var isInThread: Bool
     var isLast: Bool
     @Binding var scrolledId: String?
+    @Binding var highlightedMessageId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
 
@@ -51,6 +52,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isInThread: Bool,
         isLast: Bool,
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         viewModel: MessageViewModel? = nil
@@ -70,6 +72,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             )
         )
         _scrolledId = scrolledId
+        _highlightedMessageId = highlightedMessageId
         _quotedMessage = quotedMessage
     }
 
@@ -284,7 +287,15 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
-        .background(messageViewModel.isPinned ? Color(colors.pinnedBackground) : nil)
+        .background(
+            Group {
+                if let highlightedMessageId = highlightedMessageId, highlightedMessageId == message.messageId {
+                    Color(colors.messageCellHighlightBackground)
+                } else if messageViewModel.isPinned {
+                    Color(colors.pinnedBackground)
+                }
+            }
+        )
         .padding(.bottom, messageViewModel.isPinned ? paddingValue / 2 : 0)
         .transition(
             message.isSentByCurrentUser ?

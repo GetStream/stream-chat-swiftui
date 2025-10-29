@@ -329,6 +329,7 @@ extension ViewFactory {
         showsAllInfo: Bool,
         isInThread: Bool,
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         isLast: Bool
@@ -342,6 +343,7 @@ extension ViewFactory {
             isInThread: isInThread,
             isLast: isLast,
             scrolledId: scrolledId,
+            highlightedMessageId: highlightedMessageId,
             quotedMessage: quotedMessage,
             onLongPress: onLongPress
         )
@@ -608,7 +610,8 @@ extension ViewFactory {
             message: parentMessage,
             replyCount: replyCount,
             showReplyCount: false,
-            isRightAligned: message.isRightAligned
+            isRightAligned: message.isRightAligned,
+            threadReplyMessage: message // Pass the actual reply message (shown in channel)
         )
     }
     

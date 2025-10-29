@@ -15,6 +15,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var messages: LazyCachedMapCollection<ChatMessage>
     var messagesGroupingInfo: [String: [String]]
     @Binding var scrolledId: String?
+    @Binding var highlightedMessageId: String?
     @Binding var showScrollToLatestButton: Bool
     @Binding var quotedMessage: ChatMessage?
     @Binding var scrollPosition: String?
@@ -68,6 +69,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         messages: LazyCachedMapCollection<ChatMessage>,
         messagesGroupingInfo: [String: [String]],
         scrolledId: Binding<String?>,
+        highlightedMessageId: Binding<String?>,
         showScrollToLatestButton: Binding<Bool>,
         quotedMessage: Binding<ChatMessage?>,
         currentDateString: String? = nil,
@@ -96,6 +98,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.shouldShowTypingIndicator = shouldShowTypingIndicator
         self.loadingNextMessages = loadingNextMessages
         _scrolledId = scrolledId
+        _highlightedMessageId = highlightedMessageId
         _showScrollToLatestButton = showScrollToLatestButton
         _quotedMessage = quotedMessage
         _scrollPosition = scrollPosition
@@ -143,6 +146,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 showsAllInfo: showsAllData(for: message),
                                 isInThread: isMessageThread,
                                 scrolledId: $scrolledId,
+                                highlightedMessageId: $highlightedMessageId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
                                 isLast: !showsLastInGroupInfo && message == messages.last
