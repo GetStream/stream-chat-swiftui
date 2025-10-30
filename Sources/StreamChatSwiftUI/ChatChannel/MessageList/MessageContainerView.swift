@@ -9,7 +9,8 @@ import SwiftUI
 public struct MessageContainerView<Factory: ViewFactory>: View {
     @StateObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
-    
+    @Environment(\.highlightedMessageId) var highlightedMessageId
+
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -24,7 +25,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     var isInThread: Bool
     var isLast: Bool
     @Binding var scrolledId: String?
-    @Binding var highlightedMessageId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
 
@@ -52,7 +52,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         isInThread: Bool,
         isLast: Bool,
         scrolledId: Binding<String?>,
-        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         viewModel: MessageViewModel? = nil
@@ -72,7 +71,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             )
         )
         _scrolledId = scrolledId
-        _highlightedMessageId = highlightedMessageId
         _quotedMessage = quotedMessage
     }
 
@@ -406,6 +404,18 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 )
             )
         }
+    }
+}
+
+// Environment plumbing colocated to avoid adding new files to the package list.
+private struct HighlightedMessageIdKey: EnvironmentKey {
+    static let defaultValue: String? = nil
+}
+
+extension EnvironmentValues {
+    var highlightedMessageId: String? {
+        get { self[HighlightedMessageIdKey.self] }
+        set { self[HighlightedMessageIdKey.self] = newValue }
     }
 }
 

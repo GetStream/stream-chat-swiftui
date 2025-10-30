@@ -91,7 +91,6 @@ class MessageListViewAvatars_Tests: StreamChatTestCase {
             messages: messages,
             messagesGroupingInfo: [:],
             scrolledId: .constant(nil),
-            highlightedMessageId: .constant(nil),
             showScrollToLatestButton: .constant(false),
             quotedMessage: .constant(nil),
             currentDateString: nil,

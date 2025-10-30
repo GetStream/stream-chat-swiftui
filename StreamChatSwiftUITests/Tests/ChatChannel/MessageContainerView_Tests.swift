@@ -387,7 +387,6 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
-            highlightedMessageId: .constant(nil),
             quotedMessage: .constant(nil)
         ) { _ in
             exp.fulfill()
@@ -422,7 +421,6 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
-            highlightedMessageId: .constant(nil),
             quotedMessage: .constant(nil)
         ) { _ in
             exp.fulfill()
@@ -638,11 +636,11 @@ class MessageContainerView_Tests: StreamChatTestCase {
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
-            highlightedMessageId: .constant(highlightedMessageId),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
             viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel)
         )
+        .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: 200)
     }
 }

@@ -329,7 +329,6 @@ extension ViewFactory {
         showsAllInfo: Bool,
         isInThread: Bool,
         scrolledId: Binding<String?>,
-        highlightedMessageId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         isLast: Bool
@@ -343,7 +342,6 @@ extension ViewFactory {
             isInThread: isInThread,
             isLast: isLast,
             scrolledId: scrolledId,
-            highlightedMessageId: highlightedMessageId,
             quotedMessage: quotedMessage,
             onLongPress: onLongPress
         )
