@@ -578,12 +578,54 @@ class MessageContainerView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageContainerHighlighted_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: "test-message-id",
+            cid: .unique,
+            text: "This message is highlighted",
+            author: .mock(id: .unique, name: "Test User"),
+            isSentByCurrentUser: false
+        )
+        let messageId = message.messageId
+
+        // When
+        let view = testMessageViewContainer(
+            message: message,
+            highlightedMessageId: messageId
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageContainerNotHighlighted_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: "test-message-id",
+            cid: .unique,
+            text: "This message is not highlighted",
+            author: .mock(id: .unique, name: "Test User"),
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = testMessageViewContainer(
+            message: message,
+            highlightedMessageId: "different-message-id"
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(
         message: ChatMessage,
         channel: ChatChannel? = nil,
-        messageViewModel: MessageViewModel? = nil
+        messageViewModel: MessageViewModel? = nil,
+        highlightedMessageId: String? = nil
     ) -> some View {
         MessageContainerView(
             factory: DefaultViewFactory.shared,
@@ -598,6 +640,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
             onLongPress: { _ in },
             viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel)
         )
+        .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: 200)
     }
 }

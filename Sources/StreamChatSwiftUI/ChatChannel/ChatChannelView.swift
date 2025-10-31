@@ -73,6 +73,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
+                        .environment(\.highlightedMessageId, viewModel.highlightedMessageId)
                         .dismissKeyboardOnTap(enabled: true) {
                             hideComposerCommandsAndAttachmentsPicker()
                         }
