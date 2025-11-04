@@ -22,7 +22,7 @@ class InternetConnectionMock: InternetConnection, @unchecked Sendable {
 class InternetConnectionMonitorMock: InternetConnectionMonitor, @unchecked Sendable {
     weak var delegate: InternetConnectionDelegate?
 
-    var status: InternetConnection.Status = .unknown {
+    var status: InternetConnectionStatus = .unknown {
         didSet {
             delegate?.internetConnectionStatusDidChange(status: status)
         }
