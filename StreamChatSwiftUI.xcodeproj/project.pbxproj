@@ -95,6 +95,8 @@
 		4FA3741D2D799FC300294721 /* AppConfigurationTranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3741C2D799FC300294721 /* AppConfigurationTranslationView.swift */; };
 		4FA3741F2D79A64F00294721 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3741E2D79A64900294721 /* AppConfiguration.swift */; };
 		4FAF7A552EAA1940006F74A1 /* StreamCore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAF7A542EAA193B006F74A1 /* StreamCore+Extensions.swift */; };
+		4FB52B472EBB63F700491977 /* StreamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4FB52B462EBB63F700491977 /* StreamCore */; };
+		4FB52B492EBB643700491977 /* StreamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4FB52B482EBB643700491977 /* StreamCore */; };
 		4FCD7DA72D632121000EEB0F /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCD7DA62D63211B000EEB0F /* MarkdownFormatter.swift */; };
 		4FCD7DBD2D633F72000EEB0F /* AttributedString+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */; };
 		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
@@ -529,6 +531,7 @@
 		C14A465B284665B100EF498E /* SDKIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A465A284665B100EF498E /* SDKIdentifier.swift */; };
 		C52A0B5F2E1557F900176379 /* VideoPlayerFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52A0B5E2E1557F300176379 /* VideoPlayerFooterView.swift */; };
 		E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E3A1C01B282BAC66002D1E26 /* Sentry */; };
+		E3A1C01D282BAC66002D1E27 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = 82FF61EB2B6AB789007185B6 /* StreamChat */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1158,6 +1161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84E95A77284A486600699FD3 /* StreamChat in Frameworks */,
+				4FB52B492EBB643700491977 /* StreamCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1177,6 +1181,8 @@
 			files = (
 				8465FCE6274695B400AF091E /* StreamChatSwiftUI.framework in Frameworks */,
 				E3A1C01C282BAC66002D1E26 /* Sentry in Frameworks */,
+				E3A1C01D282BAC66002D1E27 /* StreamChat in Frameworks */,
+				4FB52B472EBB63F700491977 /* StreamCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2369,6 +2375,7 @@
 			name = StreamChatSwiftUI;
 			packageProductDependencies = (
 				84E95A76284A486600699FD3 /* StreamChat */,
+				4FB52B482EBB643700491977 /* StreamCore */,
 			);
 			productName = StreamChatSwiftUI;
 			productReference = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */;
@@ -2413,6 +2420,8 @@
 			name = DemoAppSwiftUI;
 			packageProductDependencies = (
 				E3A1C01B282BAC66002D1E26 /* Sentry */,
+				82FF61EB2B6AB789007185B6 /* StreamChat */,
+				4FB52B462EBB63F700491977 /* StreamCore */,
 			);
 			productName = DemoAppSwiftUI;
 			productReference = 8465FCBC27468B6900AF091E /* DemoAppSwiftUI.app */;
@@ -2462,6 +2471,7 @@
 				8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				84E95A75284A486600699FD3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
 				82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */,
+				4FB52B452EBB63F700491977 /* XCRemoteSwiftPackageReference "stream-core-swift" */,
 			);
 			productRefGroup = 8465FBB62746873A00AF091E /* Products */;
 			projectDirPath = "";
@@ -3822,6 +3832,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4FB52B452EBB63F700491977 /* XCRemoteSwiftPackageReference "stream-core-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GetStream/stream-core-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
 		82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift-test-helpers.git";
@@ -3865,6 +3883,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4FB52B462EBB63F700491977 /* StreamCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FB52B452EBB63F700491977 /* XCRemoteSwiftPackageReference "stream-core-swift" */;
+			productName = StreamCore;
+		};
+		4FB52B482EBB643700491977 /* StreamCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FB52B452EBB63F700491977 /* XCRemoteSwiftPackageReference "stream-core-swift" */;
+			productName = StreamCore;
+		};
 		8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
