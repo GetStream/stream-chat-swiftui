@@ -326,7 +326,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.scrolledId = nil
                 }
-                // Clear highlight after animation completes (0.6s delay from StreamChatUI implementation)
+                // Clear highlight after animation completes
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
                     withAnimation {
                         self?.highlightedMessageId = nil
