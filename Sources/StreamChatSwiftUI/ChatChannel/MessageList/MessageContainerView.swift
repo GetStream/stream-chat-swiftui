@@ -287,7 +287,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         .padding(.top, isLast ? paddingValue : 0)
         .background(
             Group {
-                if let highlightedMessageId = highlightedMessageId, highlightedMessageId == message.messageId {
+                if utils.messageListConfig.highlightMessageWhenJumping,
+                   let highlightedMessageId = highlightedMessageId,
+                   highlightedMessageId == message.messageId {
                     Color(colors.messageCellHighlightBackground)
                 } else if messageViewModel.isPinned {
                     Color(colors.pinnedBackground)
