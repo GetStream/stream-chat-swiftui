@@ -183,7 +183,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 }
                 // Clear highlight after animation completes
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
-                    self?.highlightedMessageId = nil
+                    withAnimation {
+                        self?.highlightedMessageId = nil
+                    }
                 }
                 self?.messageCachingUtils.jumpToReplyId = nil
             } else if messageController == nil {
@@ -326,7 +328,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 }
                 // Clear highlight after animation completes (0.6s delay from StreamChatUI implementation)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
-                    self?.highlightedMessageId = nil
+                    withAnimation {
+                        self?.highlightedMessageId = nil
+                    }
                 }
                 return true
             } else {
@@ -362,7 +366,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                         }
                         // Clear highlight after animation completes
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            self?.highlightedMessageId = nil
+                            withAnimation {
+                                self?.highlightedMessageId = nil
+                            }
                         }
                     }
                 }
