@@ -120,9 +120,3 @@ public struct ReactionIcon: View {
             .foregroundColor(color)
     }
 }
-
-extension MessageReactionType: Identifiable {
-    public var id: String {
-        rawValue
-    }
-}

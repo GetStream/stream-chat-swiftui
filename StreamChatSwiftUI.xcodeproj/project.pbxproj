@@ -3850,7 +3850,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-stream-core-web-socket-client";
+				branch = v5;
 				kind = branch;
 			};
 		};

@@ -79,9 +79,3 @@ struct ReactionsUsersView: View {
         .accessibilityIdentifier("ReactionsUsersView")
     }
 }
-
-extension ChatMessageReaction: Identifiable {
-    public var id: String {
-        "\(author.id)-\(type.rawValue)"
-    }
-}

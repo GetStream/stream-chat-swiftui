@@ -135,7 +135,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     }
 }
 
-extension PollVote: Identifiable {
+extension PollVote {
     var displayId: String {
         "\(id)-\(optionId ?? user?.id ?? "")-\(pollId)"
     }
