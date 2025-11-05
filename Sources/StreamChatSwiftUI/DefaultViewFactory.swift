@@ -1027,9 +1027,11 @@ extension ViewFactory {
             message: message
         )
         let showReadCount = channel.memberCount > 2 && !message.isLastActionFailed
+        let showDelivered = message.deliveryStatus(for: channel) == .delivered
         return MessageReadIndicatorView(
             readUsers: readUsers,
             showReadCount: showReadCount,
+            showDelivered: showDelivered,
             localState: message.localState
         )
     }
