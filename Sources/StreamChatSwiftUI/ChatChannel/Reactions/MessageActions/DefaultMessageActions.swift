@@ -121,16 +121,14 @@ public extension MessageAction {
             messageActions.append(copyAction)
         }
 
-        if message.isRootOfThread {
-            if isInsideThreadView {
-                let markThreadUnreadAction = markThreadAsUnreadAction(
-                    messageController: messageController,
-                    message: message,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(markThreadUnreadAction)
-            }
+        if message.isRootOfThread && isInsideThreadView {
+            let markThreadUnreadAction = markThreadAsUnreadAction(
+                messageController: messageController,
+                message: message,
+                onFinish: onFinish,
+                onError: onError
+            )
+            messageActions.append(markThreadUnreadAction)
         } else if !message.isSentByCurrentUser && channel.canReceiveReadEvents {
             if !message.isPartOfThread || message.showReplyInChannel {
                 let markUnreadAction = markAsUnreadAction(
