@@ -85,9 +85,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                 MessageReadIndicatorView(
                                     readUsers: channel.readUsers(
                                         currentUserId: chatClient.currentUserId,
-                                        message: channel.latestMessages.first
+                                        message: channel.previewMessage
                                     ),
-                                    showReadCount: false
+                                    showReadCount: false,
+                                    showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
                                 )
                             }
                             SubtitleText(text: injectedChannelInfo?.timestamp ?? channel.timestampText)
@@ -159,9 +160,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var shouldShowReadEvents: Bool {
-        if let message = channel.latestMessages.first,
-           message.isSentByCurrentUser,
-           !message.isDeleted {
+        if let message = channel.previewMessage,
+           message.isSentByCurrentUser {
             return channel.config.readEventsEnabled
         }
 
