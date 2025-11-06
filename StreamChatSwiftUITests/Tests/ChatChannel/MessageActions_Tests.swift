@@ -418,6 +418,7 @@ class MessageActions_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.firstUnreadMessageId, message.messageId)
         XCTAssertTrue(viewModel.currentUserMarkedMessageUnread)
         XCTAssertEqual(viewModel.scrolledId, message.messageId)
+        XCTAssertEqual(viewModel.skipHighlightMessageId, message.messageId)
         XCTAssertFalse(viewModel.reactionsShown)
     }
     
