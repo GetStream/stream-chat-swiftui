@@ -3,7 +3,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add message highlighting on jumping to a quoted message [#1032](https://github.com/GetStream/stream-chat-swiftui/pull/1032)
+- Display double grey checkmark when delivery events are enabled [#1038](https://github.com/GetStream/stream-chat-swiftui/pull/1038)
+
+### 🐞 Fixed
+- Fix composer deleting newly entered text after deleting draft text [#1030](https://github.com/GetStream/stream-chat-swiftui/pull/1030)
 
 # [4.91.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.91.0)
 _October 22, 2025_

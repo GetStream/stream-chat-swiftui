@@ -8,6 +8,7 @@ import SwiftUI
 enum MessageRepliesConstants {
     static let selectedMessageThread = "selectedMessageThread"
     static let selectedMessage = "selectedMessage"
+    static let threadReplyMessage = "threadReplyMessage"
 }
 
 /// View shown below a message, when there are replies to it.
@@ -21,6 +22,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
+    var threadReplyMessage: ChatMessage? // The actual reply message (for showReplyInChannel messages)
 
     public init(
         factory: Factory,
@@ -28,7 +30,8 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         message: ChatMessage,
         replyCount: Int,
         showReplyCount: Bool = true,
-        isRightAligned: Bool? = nil
+        isRightAligned: Bool? = nil,
+        threadReplyMessage: ChatMessage? = nil
     ) {
         self.factory = factory
         self.channel = channel
@@ -36,6 +39,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         self.replyCount = replyCount
         self.isRightAligned = isRightAligned ?? message.isRightAligned
         self.showReplyCount = showReplyCount
+        self.threadReplyMessage = threadReplyMessage
     }
 
     public var body: some View {
@@ -44,10 +48,14 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             resignFirstResponder()
             // NOTE: this is used to avoid breaking changes.
             // Will be updated in a major release.
+            var userInfo: [String: Any] = [MessageRepliesConstants.selectedMessage: message]
+            if let threadReplyMessage = threadReplyMessage {
+                userInfo[MessageRepliesConstants.threadReplyMessage] = threadReplyMessage
+            }
             NotificationCenter.default.post(
                 name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
                 object: nil,
-                userInfo: [MessageRepliesConstants.selectedMessage: message]
+                userInfo: userInfo
             )
         } label: {
             HStack {
