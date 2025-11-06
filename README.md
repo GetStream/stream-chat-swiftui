@@ -39,6 +39,17 @@ The SwiftUI SDK offers three types of components:
 - Stateful components - Offer more customization options and possibility to inject custom views. Also fairly simple to integrate, if the extension points are suitable for your chat use-case. These components come with view models.
 - Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience.
 
+## Documentation Generation
+
+To generate the documentation for SwiftUI StreamChat SDK, run the following command:
+
+```bash
+xcodebuild docbuild -skipMacroValidation -skipPackagePluginValidation -derivedDataPath .derivedData -scheme StreamChatSwiftUI -destination generic/platform=iOS | xcpretty
+open .derivedData/Build/Products/Debug-iphoneos/StreamChatSwiftUI.doccarchive
+```
+
+This will build the documentation archive and automatically open it in Xcode.
+
 ## Free for Makers
 
 Stream is free for most side and hobby projects. You can use Stream Chat for free if you have less than five team members and no more than $10,000 in monthly revenue.

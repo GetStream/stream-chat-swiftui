@@ -389,7 +389,7 @@ import XCTest
         let mutedUser = ChatUser.mock(id: .unique)
         let viewModel = ChatChannelInfoViewModel(channel: channel)
         let currentUserController = CurrentChatUserController_Mock(client: chatClient)
-        let currentUser = CurrentChatUser.mock(id: .unique, mutedUsers: [mutedUser])
+        let currentUser = CurrentChatUser.mock(currentUserId: .unique, mutedUsers: [mutedUser])
         currentUserController.currentUser_mock = currentUser
         viewModel.currentUserController = currentUserController
 

@@ -103,7 +103,7 @@ final class MessageList_Tests: StreamTestCase {
         linkToScenario(withId: 254)
 
         let message = "message"
-        let author = "Han Solo"
+        let author = "Count Dooku"
 
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()

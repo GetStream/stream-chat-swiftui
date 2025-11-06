@@ -6,7 +6,7 @@ import XCTest
 
 // Requires running a standalone Sinatra server
 final class PushNotification_Tests: StreamTestCase {
-    let sender = "Han Solo"
+    let sender = "Count Dooku"
     let message = "How are you? 🙂"
     
     override func setUpWithError() throws {
