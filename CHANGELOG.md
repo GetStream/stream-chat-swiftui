@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix composer deleting newly entered text after deleting draft text [#1030](https://github.com/GetStream/stream-chat-swiftui/pull/1030)
+- Fix mark unread action not shown for messages that are root of a thread in the channel view [#1041](https://github.com/GetStream/stream-chat-swiftui/pull/1041)
 
 # [4.91.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.91.0)
 _October 22, 2025_
