@@ -772,6 +772,84 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(0, channelController.markReadCallCount)
     }
 
+    // MARK: - highlightMessage Tests
+    
+    func test_highlightMessage_highlightsWhenSkipHighlightMessageIdIsNotSet() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let testExpectation = XCTestExpectation(description: "Message should be highlighted")
+        
+        // When
+        viewModel.highlightMessage(withId: message.messageId)
+        
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.highlightedMessageId, message.messageId)
+            testExpectation.fulfill()
+        }
+        
+        wait(for: [testExpectation], timeout: defaultTimeout)
+    }
+    
+    func test_highlightMessage_highlightsWhenSkipHighlightMessageIdDoesNotMatch() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.skipHighlightMessageId = message1.messageId
+        let testExpectation = XCTestExpectation(description: "Message should be highlighted")
+        
+        // When
+        viewModel.highlightMessage(withId: message2.messageId)
+        
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.highlightedMessageId, message2.messageId)
+            XCTAssertEqual(viewModel.skipHighlightMessageId, message1.messageId)
+            testExpectation.fulfill()
+        }
+        
+        wait(for: [testExpectation], timeout: defaultTimeout)
+    }
+    
+    func test_highlightMessage_doesNotHighlightWhenSkipHighlightMessageIdMatches() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.skipHighlightMessageId = message.messageId
+        let testExpectation = XCTestExpectation(description: "Message should not be highlighted")
+        
+        // When
+        viewModel.highlightMessage(withId: message.messageId)
+        
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertNil(viewModel.highlightedMessageId)
+            testExpectation.fulfill()
+        }
+        
+        wait(for: [testExpectation], timeout: defaultTimeout)
+    }
+    
+    func test_highlightMessage_clearsSkipHighlightMessageIdAfterSkipping() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.skipHighlightMessageId = message.messageId
+        
+        // When
+        viewModel.highlightMessage(withId: message.messageId)
+        
+        // Then
+        XCTAssertNil(viewModel.skipHighlightMessageId)
+        XCTAssertNil(viewModel.highlightedMessageId)
+    }
+
     // MARK: - private
 
     private func makeChannelController(
