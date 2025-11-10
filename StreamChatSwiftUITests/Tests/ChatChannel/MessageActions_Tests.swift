@@ -72,6 +72,105 @@ import XCTest
         XCTAssert(messageActions[5].title == "Mute User")
     }
 
+    func test_messageActions_partOfThread() {
+        // Given
+        let channel = mockDMChannel
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            parentMessageId: .unique,
+            showReplyInChannel: false,
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssertEqual(messageActions.count, 4)
+        XCTAssertEqual(messageActions[0].title, "Reply")
+        XCTAssertEqual(messageActions[1].title, "Pin to conversation")
+        XCTAssertEqual(messageActions[2].title, "Copy Message")
+        XCTAssertEqual(messageActions[3].title, "Mute User")
+    }
+
+    func test_messageActions_partOfThreadButAlsoInChannel() {
+        // Given
+        let channel = mockDMChannel
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            parentMessageId: .unique,
+            showReplyInChannel: true,
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssertEqual(messageActions.count, 5)
+        XCTAssertEqual(messageActions[0].title, "Reply")
+        XCTAssertEqual(messageActions[1].title, "Pin to conversation")
+        XCTAssertEqual(messageActions[2].title, "Copy Message")
+        XCTAssertEqual(messageActions[3].title, "Mark Unread")
+        XCTAssertEqual(messageActions[4].title, "Mute User")
+    }
+
+    func test_messageActions_rootOfThreadButAlsoInChannel() {
+        // Given
+        let channel = mockDMChannel
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Test",
+            author: .mock(id: .unique),
+            parentMessageId: .unique,
+            showReplyInChannel: true,
+            replyCount: 3,
+            isSentByCurrentUser: false
+        )
+        let factory = DefaultViewFactory.shared
+
+        // When
+        let messageActions = MessageAction.defaultActions(
+            factory: factory,
+            for: message,
+            channel: channel,
+            chatClient: chatClient,
+            onFinish: { _ in },
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssertEqual(messageActions.count, 5)
+        XCTAssertEqual(messageActions[0].title, "Reply")
+        XCTAssertEqual(messageActions[1].title, "Pin to conversation")
+        XCTAssertEqual(messageActions[2].title, "Copy Message")
+        XCTAssertEqual(messageActions[3].title, "Mark Unread")
+        XCTAssertEqual(messageActions[4].title, "Mute User")
+    }
+
     func test_messageActions_otherUserDefaultReadEventsDisabled() {
         // Given
         let channel = ChatChannel.mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage])
@@ -418,6 +517,7 @@ import XCTest
         XCTAssertEqual(viewModel.firstUnreadMessageId, message.messageId)
         XCTAssertTrue(viewModel.currentUserMarkedMessageUnread)
         XCTAssertEqual(viewModel.scrolledId, message.messageId)
+        XCTAssertEqual(viewModel.skipHighlightMessageId, message.messageId)
         XCTAssertFalse(viewModel.reactionsShown)
     }
     
