@@ -21,9 +21,9 @@ jobs:
     strategy:
       matrix:
         include:
-          # - ios: "26.1" TODO: IOS-1181
-          #   device: "iPhone 17 Pro"
-          #   setup_runtime: false
+          - ios: "26.1"
+            device: "iPhone 17 Pro"
+            setup_runtime: false
           - ios: "18.5"
             device: "iPhone 16 Pro"
             setup_runtime: false
