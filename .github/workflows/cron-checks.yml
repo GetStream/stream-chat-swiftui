@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - ios: "26.1"
+          - ios: "26.0"
             device: "iPhone 17 Pro"
             setup_runtime: false
           - ios: "18.5"
