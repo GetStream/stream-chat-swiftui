@@ -21,28 +21,24 @@ jobs:
     strategy:
       matrix:
         include:
-          # - ios: "26.0" TODO: IOS-1181
+          # - ios: "26.1" TODO: IOS-1181
           #   device: "iPhone 17 Pro"
-          #   xcode: "26.0.1"
           #   setup_runtime: false
           - ios: "18.5"
             device: "iPhone 16 Pro"
-            xcode: "26.0.1"
             setup_runtime: false
           - ios: "17.5"
             device: "iPhone 15 Pro"
-            xcode: "26.0.1"
             setup_runtime: true
           - ios: "16.4"
             device: "iPhone 14 Pro"
-            xcode: "16.4"
             setup_runtime: true
       fail-fast: false
     runs-on: macos-15
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-      XCODE_VERSION: ${{ matrix.xcode }}
+      XCODE_VERSION: "26.1"
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
@@ -92,7 +88,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - xcode: 26.0.1 # swift 6.2
+          - xcode: 26.1 # swift 6.2
             os: macos-15
           - xcode: 16.4 # swift 6.1
             os: macos-15
