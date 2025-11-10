@@ -58,8 +58,6 @@ struct StartPage: View {
     }
 
     private func connectUser(withCredentials credentials: UserCredentials) {
-        chatClient.logout {}
-
         let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .debug
 
