@@ -4,6 +4,7 @@
 
 import Foundation
 @testable import StreamChat
+@testable import StreamCore
 
 class WebSocketPingControllerMock: WebSocketPingController, @unchecked Sendable {
     var connectionStateDidChange_connectionStates: [WebSocketConnectionState] = []

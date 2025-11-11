@@ -632,4 +632,12 @@ import SwiftUI
     /// - Parameter options: the options for creating the add users view.
     /// - Returns: The view shown in the add users slot.
     func makeAddUsersView(options: AddUsersViewOptions) -> AddUsersViewType
+    
+    associatedtype AttachmentTextViewType: View
+    /// Creates a view for displaying the text of an attachment.
+    /// - Parameter options: Configuration options for the attachment text view, such as message.
+    /// - Returns: The view shown in the attachment text slot.
+    func makeAttachmentTextView(
+        options: AttachmentTextViewOptions
+    ) -> AttachmentTextViewType
 }

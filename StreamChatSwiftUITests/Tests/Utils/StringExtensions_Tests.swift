@@ -44,14 +44,6 @@ class String_Extensions_Tests: XCTestCase {
         XCTAssertFalse("#".containsEmoji)
     }
 
-    func testLevenshtein() throws {
-        XCTAssertEqual("".levenshtein(""), "".levenshtein(""))
-        XCTAssertEqual("".levenshtein(""), 0)
-        XCTAssertEqual("a".levenshtein(""), 1)
-        XCTAssertEqual("".levenshtein("a"), 1)
-        XCTAssertEqual("tommaso".levenshtein("ToMmAsO"), 4)
-    }
-
     func testValidURL() {
         XCTAssert("https://example.com".isURL == true)
     }
@@ -60,25 +52,5 @@ class String_Extensions_Tests: XCTestCase {
         XCTAssert("https:/example".isURL == false)
         XCTAssert("example".isURL == false)
         XCTAssert("invalid_url".isURL == false)
-    }
-    
-    func testRangesOfString() {
-        let mention = "@Martin"
-        let string = "Hey \(mention), how are you?"
-        let result = string
-            .ranges(of: mention, options: [.caseInsensitive])
-            .map { NSRange($0, in: string) }
-            .first
-        XCTAssertEqual(result, NSRange(location: 4, length: 7))
-    }
-    
-    func testRangesOfStringNotFound() {
-        let string = "Hey @Martin, how are you?"
-        let mention = "@Alexey"
-        let result = string
-            .ranges(of: mention, options: [.caseInsensitive])
-            .map { NSRange($0, in: string) }
-            .first
-        XCTAssertEqual(result, nil)
     }
 }

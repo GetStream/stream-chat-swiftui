@@ -850,7 +850,7 @@ import SwiftUI
     }
 }
 
-extension ChatMessage: Identifiable {
+extension ChatMessage {
     @MainActor public var scrollMessageId: String {
         messageId
     }

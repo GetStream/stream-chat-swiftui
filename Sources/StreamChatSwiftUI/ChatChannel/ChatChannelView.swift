@@ -84,7 +84,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         )
                     } else {
                         ZStack {
-                            factory.makeEmptyMessagesView(for: channel, colors: colors)
+                            factory.makeEmptyMessagesView(options: EmptyMessagesViewOptions(channel: channel, colors: colors))
                                 .dismissKeyboardOnTap(enabled: keyboardShown) {
                                     hideComposerCommandsAndAttachmentsPicker()
                                 }

@@ -180,8 +180,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     }
 }
 
-extension PollOption: Identifiable {}
-
 struct PollOptionView<Factory: ViewFactory>: View {
     @ObservedObject var viewModel: PollAttachmentViewModel
     

@@ -34,9 +34,8 @@ public extension ChatClient {
                 webSocketClientBuilder: {
                     WebSocketClient_Mock(
                         sessionConfiguration: $0,
-                        requestEncoder: $1,
-                        eventDecoder: $2,
-                        eventNotificationCenter: $3
+                        eventDecoder: $1,
+                        eventNotificationCenter: $2
                     )
                 },
                 databaseContainerBuilder: {

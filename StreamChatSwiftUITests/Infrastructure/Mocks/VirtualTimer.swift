@@ -6,7 +6,7 @@ import Foundation
 @testable import StreamChat
 import XCTest
 
-struct VirtualTimeTimer: StreamChat.Timer {
+struct VirtualTimeTimer: TimerScheduling {
     static var time: VirtualTime!
 
     static func schedule(timeInterval: TimeInterval, queue: DispatchQueue, onFire: @escaping () -> Void) -> TimerControl {

@@ -58,20 +58,20 @@ struct StartPage: View {
     }
 
     private func connectUser(withCredentials credentials: UserCredentials) {
-        chatClient.logout {}
-
         let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .debug
 
         streamChat = StreamChat(chatClient: chatClient)
 
-        chatClient.connectUser(
-            userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
-            token: token
-        ) { error in
-            if let error = error {
-                log.error("connecting the user failed \(error)")
-                return
+        chatClient.logout {
+            chatClient.connectUser(
+                userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
+                token: token
+            ) { error in
+                if let error = error {
+                    log.error("connecting the user failed \(error)")
+                    return
+                }
             }
         }
     }

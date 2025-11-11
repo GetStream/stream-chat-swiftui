@@ -301,7 +301,7 @@ import XCTest
 
         // When
         let pickerTypeState: Binding<PickerTypeState> = .constant(.expanded(.none))
-        let view = factory.makeLeadingComposerView(state: pickerTypeState, channelConfig: nil)
+        let view = factory.makeLeadingComposerView(options: LeadingComposerViewOptions(state: pickerTypeState, channelConfig: nil))
             .environmentObject(viewModel)
             .frame(width: 36, height: 36)
 
@@ -317,11 +317,11 @@ import XCTest
         let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
 
         // When
-        let view = factory.makeTrailingComposerView(
+        let view = factory.makeTrailingComposerView(options: TrailingComposerViewOptions(
             enabled: true,
             cooldownDuration: 0,
             onTap: {}
-        )
+        ))
         .environmentObject(viewModel)
         .frame(width: 100, height: 40)
 

@@ -81,7 +81,7 @@ import SwiftUI
             .combineLatest($maxVotesEnabled)
             .map { $0 && $1 }
             .removeDuplicates()
-            .assignWeakly(to: \.showsMaxVotesError, on: self)
+            .assign(to: \.showsMaxVotesError, onWeak: self)
             .store(in: &cancellables)
         $options
             .map { options in
@@ -97,7 +97,7 @@ import SwiftUI
                 return errorIndices
             }
             .removeDuplicates()
-            .assignWeakly(to: \.optionsErrorIndices, on: self)
+            .assign(to: \.optionsErrorIndices, onWeak: self)
             .store(in: &cancellables)
     }
         

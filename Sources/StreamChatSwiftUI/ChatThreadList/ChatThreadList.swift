@@ -119,10 +119,3 @@ public struct ThreadsLazyVStack<Factory: ViewFactory>: View {
         }
     }
 }
-
-/// Determines the uniqueness of the channel list item.
-extension ChatThread: Identifiable {
-    public var id: String {
-        parentMessageId
-    }
-}

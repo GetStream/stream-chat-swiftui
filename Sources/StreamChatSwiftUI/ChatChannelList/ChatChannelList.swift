@@ -211,10 +211,3 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         .modifier(factory.makeChannelListModifier(options: ChannelListModifierOptions()))
     }
 }
-
-/// Determines the uniqueness of the channel list item.
-extension ChatChannel: Identifiable {
-    public var id: String {
-        cid.rawValue
-    }
-}

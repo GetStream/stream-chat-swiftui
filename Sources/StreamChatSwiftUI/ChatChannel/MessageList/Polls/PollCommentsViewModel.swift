@@ -45,7 +45,7 @@ import SwiftUI
         $comments
             .dropFirst()
             .map { _ in true }
-            .assignWeakly(to: \.animateChanges, on: self)
+            .assign(to: \.animateChanges, onWeak: self)
             .store(in: &cancellables)
     }
     

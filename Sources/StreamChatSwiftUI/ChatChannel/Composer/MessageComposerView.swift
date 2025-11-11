@@ -410,13 +410,15 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
 
                 factory.makeComposerTextInputView(
-                    text: $text,
-                    height: $textHeight,
-                    selectedRangeLocation: $selectedRangeLocation,
-                    placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
-                    editable: !isInputDisabled,
-                    maxMessageLength: maxMessageLength,
-                    currentHeight: textFieldHeight
+                    options: ComposerTextInputViewOptions(
+                        text: $text,
+                        height: $textHeight,
+                        selectedRangeLocation: $selectedRangeLocation,
+                        placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
+                        editable: !isInputDisabled,
+                        maxMessageLength: maxMessageLength,
+                        currentHeight: textFieldHeight
+                    )
                 )
                 .environmentObject(viewModel)
                 .accessibilityIdentifier("ComposerTextInputView")

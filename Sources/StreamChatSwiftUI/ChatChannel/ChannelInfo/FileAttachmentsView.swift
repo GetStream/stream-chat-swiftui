@@ -108,5 +108,3 @@ struct MonthlyAttachmentsHeader: View {
         .background(Color(colors.background6))
     }
 }
-
-extension ChatMessageFileAttachment: Identifiable {}
