@@ -98,6 +98,40 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - Init with ChatChannelViewModel snapshot tests
+
+    func test_messageListView_viewModelInit_withReactions() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(config: .init(reactionsEnabled: true))
+        let view = makeMessageListViewWithViewModel(channel: channel, messages: [.mock(id: .unique, cid: channel.cid, text: "Hello", author: .mock(id: .unique), reactionScores: [MessageReactionType(rawValue: "like"): 1])])
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageListView_viewModelInit_noReactions() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(config: .init(reactionsEnabled: false))
+        let view = makeMessageListViewWithViewModel(channel: channel, messages: [.mock(id: .unique, cid: channel.cid, text: "Hello", author: .mock(id: .unique))])
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageListView_viewModelInit_unreadIndicator() {
+        // Given
+        var channel = ChatChannel.mockDMChannel()
+        // Set unread count on the channel
+        channel = ChatChannel.mockDMChannel(unreadCount: .mock(messages: 2))
+        let view = makeMessageListViewWithViewModel(channel: channel, messages: [.mock(id: .unique, cid: channel.cid, text: "Unread 1", author: .mock(id: .unique))])
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
     func makeMessageListView(
@@ -137,5 +171,27 @@ class MessageListView_Tests: StreamChatTestCase {
         )
 
         return messageListView
+    }
+
+    private func makeMessageListViewWithViewModel(
+        channel: ChatChannel,
+        messages: [ChatMessage]
+    ) -> MessageListView<DefaultViewFactory> {
+        // Create a mock channel controller seeded with channel and messages
+        let controller = ChatChannelTestHelpers.makeChannelController(
+            chatClient: chatClient,
+            chatChannel: channel,
+            messages: messages
+        )
+
+        // Build the view model
+        let viewModel = ChatChannelViewModel(channelController: controller)
+
+        // Return the view using the new initializer
+        return MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            viewModel: viewModel
+        )
     }
 }
