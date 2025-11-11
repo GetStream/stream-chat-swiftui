@@ -99,6 +99,7 @@
 		4FB52B492EBB643700491977 /* StreamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4FB52B482EBB643700491977 /* StreamCore */; };
 		4FCD7DA72D632121000EEB0F /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCD7DA62D63211B000EEB0F /* MarkdownFormatter.swift */; };
 		4FCD7DBD2D633F72000EEB0F /* AttributedString+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */; };
+		4FD307F62EC353BE0062127C /* StreamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4FD307F52EC353BE0062127C /* StreamCore */; };
 		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
 		4FD964622D353D88001B6838 /* FilePickerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD964612D353D82001B6838 /* FilePickerView_Tests.swift */; };
 		4FEAB3182BFF71F70057E511 /* SwiftUI+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */; };
@@ -1153,6 +1154,7 @@
 				82FF61EC2B6AB789007185B6 /* StreamChat in Frameworks */,
 				A35D803B283E89F50084FE25 /* StreamChatSwiftUI.framework in Frameworks */,
 				8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */,
+				4FD307F62EC353BE0062127C /* StreamCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2349,6 +2351,7 @@
 			packageProductDependencies = (
 				8400A34B282C081E0067D3A0 /* OHHTTPStubs */,
 				82FF61EB2B6AB789007185B6 /* StreamChat */,
+				4FD307F52EC353BE0062127C /* StreamCore */,
 			);
 			productName = StreamChatSwiftUITestsApp;
 			productReference = 8402EAC3282BF69900CCA696 /* StreamChatSwiftUITestsApp.app */;
@@ -3889,6 +3892,11 @@
 			productName = StreamCore;
 		};
 		4FB52B482EBB643700491977 /* StreamCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FB52B452EBB63F700491977 /* XCRemoteSwiftPackageReference "stream-core-swift" */;
+			productName = StreamCore;
+		};
+		4FD307F52EC353BE0062127C /* StreamCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FB52B452EBB63F700491977 /* XCRemoteSwiftPackageReference "stream-core-swift" */;
 			productName = StreamCore;
