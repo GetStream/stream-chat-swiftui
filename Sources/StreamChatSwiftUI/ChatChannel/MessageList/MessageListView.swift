@@ -118,7 +118,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     public init(
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
-        viewModel: ChatChannelViewModel
+        viewModel: ChatChannelViewModel,
+        onLongPress: @escaping (MessageDisplayInfo) -> Void = { _ in }
     ) {
         self.init(
             factory: factory,
@@ -152,17 +153,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             ),
             onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
             onScrollToBottom: viewModel.scrollToLastMessage,
-            onLongPress: { displayInfo in
-                let bouncedEnabled = InjectedValues[\.utils].messageListConfig.bouncedMessagesAlertActionsEnabled
-                if bouncedEnabled && displayInfo.message.isBounced {
-                    viewModel.showBouncedActionsView(for: displayInfo.message)
-                } else {
-                    withAnimation {
-                        // Avoid capturing self during init; snapshot an empty view.
-                        viewModel.showReactionOverlay(for: AnyView(EmptyView()))
-                    }
-                }
-            },
+            onLongPress: onLongPress,
             onJumpToMessage: viewModel.jumpToMessage(messageId:)
         )
     }
