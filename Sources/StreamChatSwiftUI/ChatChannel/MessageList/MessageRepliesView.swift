@@ -167,3 +167,25 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         }
     }
 }
+
+extension ChatMessageController {
+    @MainActor var observableObject: ObservableObject { .init(controller: self) }
+
+    final class ObservableObject: SwiftUI.ObservableObject, ChatMessageControllerDelegate {
+        let controller: ChatMessageController
+        @Published public private(set) var message: ChatMessage?
+
+        init(controller: ChatMessageController) {
+            self.controller = controller
+            controller.delegate = self
+            message = controller.message
+        }
+        
+        func messageController(
+            _ controller: ChatMessageController,
+            didChangeMessage change: EntityChange<ChatMessage>
+        ) {
+            message = controller.message
+        }
+    }
+}
