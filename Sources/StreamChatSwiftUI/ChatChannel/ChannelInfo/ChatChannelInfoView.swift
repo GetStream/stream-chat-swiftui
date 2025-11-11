@@ -53,6 +53,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                         ChatInfoParticipantsView(
                             factory: factory,
                             participants: viewModel.displayedParticipants,
+                            channel: viewModel.channel,
                             onItemAppear: viewModel.onParticipantAppear(_:),
                             selectedParticipant: $viewModel.selectedParticipant
                         )
@@ -101,7 +102,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                             )
                         }
                     }
-                }
+                }.padding(.top)
             }
             .overlay(
                 popupShown ?
@@ -158,7 +159,8 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    let viewModel: ChatChannelInfoViewModel
+   @ObservedObject var viewModel: ChatChannelInfoViewModel
+    
     
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
