@@ -65,8 +65,8 @@ jobs:
 
   build-old-xcode:
     name: Build SDKs (Old Xcode)
-    runs-on: macos-14
-    if: false  # Disabled for now ${{ github.event.inputs.record_snapshots != 'true' }}
+    runs-on: macos-15
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "16.1"
     steps:
