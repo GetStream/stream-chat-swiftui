@@ -78,7 +78,7 @@ jobs:
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
     - name: Build SwiftUI
-      run: bundle exec fastlane test_ui device:"iPhone 16" build_for_testing:true
+      run: bundle exec fastlane test_ui device:"iPhone 16 Pro (18.4)" build_for_testing:true
       timeout-minutes: 25
     - name: Build XCFrameworks
       run: bundle exec fastlane build_xcframeworks
