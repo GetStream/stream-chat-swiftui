@@ -3,7 +3,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Expose `AddedVoiceRecordingsView` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
+- Expose `FilePickerView.init(fileURLs:)` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
+- Add `MessageComposerViewModel.updateAddedAssets()` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
 
 # [4.92.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.92.0)
 _November 07, 2025_
