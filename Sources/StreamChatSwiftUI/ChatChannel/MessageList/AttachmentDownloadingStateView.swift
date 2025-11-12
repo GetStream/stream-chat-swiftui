@@ -33,6 +33,8 @@ struct AttachmentDownloadingStateView: View {
 
             case .downloaded:
                 EmptyView()
+            @unknown default:
+                EmptyView()
             }
         }
         .id("\(url.absoluteString)-\(downloadState.state))")
