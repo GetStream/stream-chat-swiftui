@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Expose `FilePickerView.init(fileURLs:)` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
 - Add `MessageComposerViewModel.updateAddedAssets()` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
 
+### 🐞 Fixed
+- Fix `Throttler` crash in `ChatChannelViewModel.handleMessageAppear()` [#1050](https://github.com/GetStream/stream-chat-swiftui/pull/1050)
+- Remove unnecessary channel query call when leaving the channel view in a mid-page [#1050](https://github.com/GetStream/stream-chat-swiftui/pull/1050)
+
 # [4.92.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.92.0)
 _November 07, 2025_
 
