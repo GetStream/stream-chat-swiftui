@@ -3871,7 +3871,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-cron-checks";
+				branch = v5;
 				kind = branch;
 			};
 		};
