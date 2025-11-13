@@ -874,6 +874,10 @@ open class MessageComposerViewModel: ObservableObject {
         return checkAttachmentSize(with: url)
     }
     
+    public func updateAddedAssets(_ assets: [AddedAsset]) {
+        addedAssets = assets
+    }
+    
     private func checkAttachmentSize(with url: URL?) -> Bool {
         guard let url = url else { return true }
         
