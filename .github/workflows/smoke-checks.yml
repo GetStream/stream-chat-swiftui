@@ -66,7 +66,7 @@ jobs:
   build-old-xcode:
     name: Build SDKs (Old Xcode)
     runs-on: macos-14
-    if: false  # Disabled for now ${{ github.event.inputs.record_snapshots != 'true' }}
+    if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "16.1"
     steps:
@@ -78,7 +78,7 @@ jobs:
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
     - name: Build SwiftUI
-      run: bundle exec fastlane test_ui device:"iPhone 16" build_for_testing:true
+      run: bundle exec fastlane test_ui device:"iPhone 16 (18.1)" build_for_testing:true
       timeout-minutes: 25
     - name: Build XCFrameworks
       run: bundle exec fastlane build_xcframeworks

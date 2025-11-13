@@ -797,6 +797,8 @@ import SwiftUI
                 }
             case .move:
                 continue
+            @unknown default:
+                continue
             }
         }
         
