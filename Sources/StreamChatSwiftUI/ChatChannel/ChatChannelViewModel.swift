@@ -50,7 +50,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var channelName = ""
     private var onlineIndicatorShown = false
     private var lastReadMessageId: String?
-    var throttler = Throttler(interval: 3, broadcastLatestEvent: true)
+    var throttler = Throttler(interval: 3, broadcastLatestEvent: true, queue: .main)
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -833,14 +833,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     deinit {
+        throttler.cancel()
         messageCachingUtils.clearCache()
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
             cleanupAudioPlayer()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-            if !channelDataSource.hasLoadedAllNextMessages {
-                channelDataSource.loadFirstPage { _ in }
-            }
         }
     }
 }
