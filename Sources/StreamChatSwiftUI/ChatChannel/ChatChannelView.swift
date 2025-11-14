@@ -145,7 +145,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     .opacity(0) // Fixes showing accessibility button shape
                 }
                 .overlay(
-                    viewModel.reactionsShown ?
+                    viewModel.currentSnapshot != nil && messageDisplayInfo != nil && viewModel.reactionsShown ?
                         factory.makeReactionsOverlayView(
                             channel: channel,
                             currentSnapshot: viewModel.currentSnapshot!,

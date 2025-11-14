@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Fix `Throttler` crash in `ChatChannelViewModel.handleMessageAppear()` [#1050](https://github.com/GetStream/stream-chat-swiftui/pull/1050)
 - Remove unnecessary channel query call when leaving the channel view in a mid-page [#1050](https://github.com/GetStream/stream-chat-swiftui/pull/1050)
+- Fix crash when force unwrapping `messageDisplayInfo` in `ChatChannelView` [#1052](https://github.com/GetStream/stream-chat-swiftui/pull/1052)
 
 # [4.92.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.92.0)
 _November 07, 2025_
