@@ -196,10 +196,34 @@ open class MessageComposerViewModel: ObservableObject {
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
 
+    /// A Boolean value indicating whether the file picker is enabled.
+    open var filePickerEnabled: Bool {
+        channelController.channel?.config.uploadsEnabled == true
+        && channelController.channel?.canUploadFile == true
+    }
+
+    /// A Boolean value indicating whether the camera picker is enabled.
+    open var cameraPickerEnabled: Bool {
+        channelController.channel?.config.uploadsEnabled == true
+        && channelController.channel?.canUploadFile == true
+    }
+
+    /// A Boolean value indicating whether the gallery picker is enabled.
+    open var galleryPickerEnabled: Bool {
+        channelController.channel?.config.uploadsEnabled == true
+        && channelController.channel?.canUploadFile == true
+    }
+
+    /// A Boolean value indicating whether the poll picker is enabled.
+    open var pollPickerEnabled: Bool {
+        canSendPoll
+    }
+
+    /// A Boolean value indicating whether the user can send a poll.
     public var canSendPoll: Bool {
         channelController.channel?.config.pollsEnabled == true
-            && channelController.channel?.canSendPoll == true
-            && messageController == nil
+        && channelController.channel?.canSendPoll == true
+        && messageController == nil
     }
 
     internal lazy var audioRecorder: AudioRecording = {

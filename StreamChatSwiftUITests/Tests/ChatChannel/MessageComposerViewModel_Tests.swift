@@ -1203,6 +1203,247 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
     }
+    
+    // MARK: - Picker Enabled Tests
+    
+    func test_messageComposerVM_filePickerEnabled_whenUploadsEnabledAndCanUploadFile() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.uploadFile]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertTrue(viewModel.filePickerEnabled)
+    }
+    
+    func test_messageComposerVM_filePickerDisabled_whenUploadsDisabled() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: false)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.uploadFile]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.filePickerEnabled)
+    }
+    
+    func test_messageComposerVM_filePickerDisabled_whenCannotUploadFile() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: []
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.filePickerEnabled)
+    }
+    
+    func test_messageComposerVM_cameraPickerEnabled_whenUploadsEnabledAndCanUploadFile() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.uploadFile]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertTrue(viewModel.cameraPickerEnabled)
+    }
+    
+    func test_messageComposerVM_cameraPickerDisabled_whenUploadsDisabled() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: false)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.uploadFile]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.cameraPickerEnabled)
+    }
+    
+    func test_messageComposerVM_cameraPickerDisabled_whenCannotUploadFile() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: []
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.cameraPickerEnabled)
+    }
+    
+    func test_messageComposerVM_galleryPickerEnabled_whenUploadsEnabledAndCanUploadFile() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.uploadFile]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertTrue(viewModel.galleryPickerEnabled)
+    }
+    
+    func test_messageComposerVM_galleryPickerDisabled_whenUploadsDisabled() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: false)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.uploadFile]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.galleryPickerEnabled)
+    }
+    
+    func test_messageComposerVM_galleryPickerDisabled_whenCannotUploadFile() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(uploadsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: []
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.galleryPickerEnabled)
+    }
+    
+    func test_messageComposerVM_pollPickerEnabled_whenPollsEnabledAndCanSendPoll() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(pollsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.sendPoll]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertTrue(viewModel.pollPickerEnabled)
+    }
+    
+    func test_messageComposerVM_pollPickerDisabled_whenPollsDisabled() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(pollsEnabled: false)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.sendPoll]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.pollPickerEnabled)
+    }
+    
+    func test_messageComposerVM_pollPickerDisabled_whenCannotSendPoll() {
+        // Given
+        let channelController = makeChannelController()
+        let channelConfig = ChannelConfig(pollsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: []
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.pollPickerEnabled)
+    }
+    
+    func test_messageComposerVM_pollPickerDisabled_whenInsideThread() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let channelConfig = ChannelConfig(pollsEnabled: true)
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig,
+            ownCapabilities: [.sendPoll]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        
+        // Then
+        XCTAssertFalse(viewModel.pollPickerEnabled)
+    }
 
     // MARK: - private
 

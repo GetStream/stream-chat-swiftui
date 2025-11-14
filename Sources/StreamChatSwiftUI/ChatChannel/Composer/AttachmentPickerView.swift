@@ -144,32 +144,38 @@ public struct AttachmentSourcePickerView: View {
 
     public var body: some View {
         HStack(alignment: .center, spacing: 24) {
-            AttachmentPickerButton(
-                icon: images.attachmentPickerPhotos,
-                pickerType: .photos,
-                isSelected: selected == .photos,
-                onTap: onTap
-            )
-            .accessibilityIdentifier("attachmentPickerPhotos")
+            if viewModel.galleryPickerEnabled {
+                AttachmentPickerButton(
+                    icon: images.attachmentPickerPhotos,
+                    pickerType: .photos,
+                    isSelected: selected == .photos,
+                    onTap: onTap
+                )
+                .accessibilityIdentifier("attachmentPickerPhotos")
+            }
 
+            if viewModel.filePickerEnabled {
             AttachmentPickerButton(
-                icon: images.attachmentPickerFolder,
-                pickerType: .files,
-                isSelected: selected == .files,
-                onTap: onTap
-            )
-            .accessibilityLabel(L10n.Composer.Picker.file)
-            .accessibilityIdentifier("attachmentPickerFiles")
+                    icon: images.attachmentPickerFolder,
+                    pickerType: .files,
+                    isSelected: selected == .files,
+                    onTap: onTap
+                )
+                .accessibilityLabel(L10n.Composer.Picker.file)
+                .accessibilityIdentifier("attachmentPickerFiles")
+            }
 
+            if viewModel.cameraPickerEnabled {
             AttachmentPickerButton(
                 icon: images.attachmentPickerCamera,
                 pickerType: .camera,
-                isSelected: selected == .camera,
-                onTap: onTap
-            )
-            .accessibilityIdentifier("attachmentPickerCamera")
+                    isSelected: selected == .camera,
+                    onTap: onTap
+                )
+                .accessibilityIdentifier("attachmentPickerCamera")
+            }
             
-            if viewModel.canSendPoll {
+            if viewModel.pollPickerEnabled {
                 AttachmentPickerButton(
                     icon: images.attachmentPickerPolls,
                     pickerType: .polls,
