@@ -167,4 +167,76 @@ class ChatChannelView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    // MARK: - Reactions Overlay Tests
+    
+    func test_chatChannelView_doesNotCrash_whenCurrentSnapshotIsNil_andReactionsShownIsTrue() {
+        // Given
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: mockChannel.cid,
+            text: "Test message",
+            author: .mock(id: .unique, name: "User")
+        )
+        controller.simulateInitial(channel: mockChannel, messages: [message], state: .remoteDataFetched)
+        
+        let viewModel = ChatChannelViewModel(channelController: controller)
+        
+        // When
+        viewModel.currentSnapshot = nil
+        viewModel.reactionsShown = true
+        
+        let view = ChatChannelView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: controller
+        )
+        
+        // Then - Should not crash when rendering
+        let hostingController = UIHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
+        XCTAssertNil(viewModel.currentSnapshot)
+        XCTAssertTrue(viewModel.reactionsShown)
+    }
+    
+    func test_chatChannelView_doesNotCrash_whenMessageDisplayInfoIsNil_andReactionsShownIsTrue() {
+        // Given
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: mockChannel.cid,
+            text: "Test message",
+            author: .mock(id: .unique, name: "User")
+        )
+        controller.simulateInitial(channel: mockChannel, messages: [message], state: .remoteDataFetched)
+        
+        let viewModel = ChatChannelViewModel(channelController: controller)
+        
+        // When
+        viewModel.showReactionOverlay(for: AnyView(EmptyView()))
+        // messageDisplayInfo remains nil (not set)
+        
+        let view = ChatChannelView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: controller
+        )
+        
+        // Then - Should not crash when rendering
+        let hostingController = UIHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
+        XCTAssertNotNil(viewModel.currentSnapshot)
+        XCTAssertTrue(viewModel.reactionsShown)
+    }
 }
