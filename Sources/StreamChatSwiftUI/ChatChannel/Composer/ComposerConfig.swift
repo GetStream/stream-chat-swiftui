@@ -13,6 +13,7 @@ public struct ComposerConfig {
     public var inputViewCornerRadius: CGFloat
     public var inputFont: UIFont
     public var gallerySupportedTypes: GallerySupportedTypes
+    public var maxGalleryAssetsCount: Int?
     public var inputPaddingsConfig: PaddingsConfig
     public var adjustMessageOnSend: (String) -> (String)
     public var adjustMessageOnRead: (String) -> (String)
@@ -33,6 +34,7 @@ public struct ComposerConfig {
         inputViewCornerRadius: CGFloat = 20,
         inputFont: UIFont = UIFont.preferredFont(forTextStyle: .body),
         gallerySupportedTypes: GallerySupportedTypes = .imagesAndVideo,
+        maxGalleryAssetsCount: Int? = nil,
         inputPaddingsConfig: PaddingsConfig = .composerInput,
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
         adjustMessageOnRead: @escaping (String) -> (String) = { $0 },
@@ -47,6 +49,7 @@ public struct ComposerConfig {
         self.adjustMessageOnRead = adjustMessageOnRead
         self.attachmentPayloadConverter = attachmentPayloadConverter
         self.gallerySupportedTypes = gallerySupportedTypes
+        self.maxGalleryAssetsCount = maxGalleryAssetsCount
         self.inputPaddingsConfig = inputPaddingsConfig
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
     }
