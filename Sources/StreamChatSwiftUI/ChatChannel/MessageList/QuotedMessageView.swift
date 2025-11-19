@@ -109,63 +109,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack(alignment: .top) {
-            if !quotedMessage.attachmentCounts.isEmpty {
-                ZStack {
-                    if messageTypeResolver.hasCustomAttachment(message: quotedMessage) {
-                        factory.makeCustomAttachmentQuotedView(for: quotedMessage)
-                    } else if hasVoiceAttachments {
-                        VoiceRecordingPreview(voiceAttachment: quotedMessage.voiceRecordingAttachments[0].payload)
-                    } else if !quotedMessage.imageAttachments.isEmpty {
-                        LazyLoadingImage(
-                            source: MediaAttachment(url: quotedMessage.imageAttachments[0].imageURL, type: .image),
-                            width: attachmentSize.width,
-                            height: attachmentSize.height,
-                            resize: false
-                        )
-                    } else if !quotedMessage.giphyAttachments.isEmpty {
-                        LazyGiphyView(
-                            source: quotedMessage.giphyAttachments[0].previewURL,
-                            width: attachmentSize.width
-                        )
-                    } else if !quotedMessage.fileAttachments.isEmpty {
-                        Image(uiImage: filePreviewImage(for: quotedMessage.fileAttachments[0].assetURL))
-                    } else if !quotedMessage.videoAttachments.isEmpty {
-                        VideoAttachmentView(
-                            attachment: quotedMessage.videoAttachments[0],
-                            message: quotedMessage,
-                            width: attachmentSize.width,
-                            ratio: 1.0,
-                            cornerRadius: 0
-                        )
-                    } else if !quotedMessage.linkAttachments.isEmpty {
-                        LazyImage(
-                            imageURL: quotedMessage.linkAttachments[0].previewURL ?? quotedMessage.linkAttachments[0]
-                                .originalURL
-                        )
-                        .onDisappear(.cancel)
-                        .processors([ImageProcessors.Resize(width: attachmentSize.width)])
-                        .priority(.high)
-                    }
-                }
-                .frame(width: hasVoiceAttachments ? nil : attachmentSize.width, height: attachmentSize.height)
-                .aspectRatio(1, contentMode: .fill)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .allowsHitTesting(false)
-            } else if let poll = quotedMessage.poll, !quotedMessage.isDeleted {
-                Text("📊 \(poll.name)")
-            }
-
-            if !hasVoiceAttachments {
-                Text(textForMessage)
-                    .foregroundColor(textColor(for: quotedMessage))
-                    .lineLimit(3)
-                    .font(fonts.footnote)
-                    .accessibility(identifier: "quotedMessageText")
-            }
-
-            if fillAvailableSpace {
-                Spacer()
-            }
+            QuotedMessageContentView(
+                factory: factory,
+                quotedMessage: quotedMessage,
+                fillAvailableSpace: fillAvailableSpace,
+                forceLeftToRight: forceLeftToRight,
+                attachmentSize: attachmentSize
+            )
         }
         .id(quotedMessage.messageId)
         .padding(
@@ -194,6 +144,103 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         let color = quotedMessage.isSentByCurrentUser ?
             colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
         return color
+    }
+    
+    private var hasVoiceAttachments: Bool {
+        !quotedMessage.voiceRecordingAttachments.isEmpty
+    }
+}
+
+struct QuotedMessageContentView<Factory: ViewFactory>: View {
+    @Environment(\.channelTranslationLanguage) var translationLanguage
+
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.utils) private var utils
+
+    public var factory: Factory
+    public var quotedMessage: ChatMessage
+    public var fillAvailableSpace: Bool
+    public var forceLeftToRight: Bool
+    public let attachmentSize: CGSize
+
+    private var messageTypeResolver: MessageTypeResolving {
+        utils.messageTypeResolver
+    }
+
+    public init(
+        factory: Factory,
+        quotedMessage: ChatMessage,
+        fillAvailableSpace: Bool,
+        forceLeftToRight: Bool,
+        attachmentSize: CGSize = CGSize(width: 36, height: 36)
+    ) {
+        self.factory = factory
+        self.quotedMessage = quotedMessage
+        self.fillAvailableSpace = fillAvailableSpace
+        self.forceLeftToRight = forceLeftToRight
+        self.attachmentSize = attachmentSize
+    }
+
+    var body: some View {
+        if !quotedMessage.attachmentCounts.isEmpty {
+            ZStack {
+                if messageTypeResolver.hasCustomAttachment(message: quotedMessage) {
+                    factory.makeCustomAttachmentQuotedView(for: quotedMessage)
+                } else if hasVoiceAttachments {
+                    VoiceRecordingPreview(voiceAttachment: quotedMessage.voiceRecordingAttachments[0].payload)
+                } else if !quotedMessage.imageAttachments.isEmpty {
+                    LazyLoadingImage(
+                        source: MediaAttachment(url: quotedMessage.imageAttachments[0].imageURL, type: .image),
+                        width: attachmentSize.width,
+                        height: attachmentSize.height,
+                        resize: false
+                    )
+                } else if !quotedMessage.giphyAttachments.isEmpty {
+                    LazyGiphyView(
+                        source: quotedMessage.giphyAttachments[0].previewURL,
+                        width: attachmentSize.width
+                    )
+                } else if !quotedMessage.fileAttachments.isEmpty {
+                    Image(uiImage: filePreviewImage(for: quotedMessage.fileAttachments[0].assetURL))
+                } else if !quotedMessage.videoAttachments.isEmpty {
+                    VideoAttachmentView(
+                        attachment: quotedMessage.videoAttachments[0],
+                        message: quotedMessage,
+                        width: attachmentSize.width,
+                        ratio: 1.0,
+                        cornerRadius: 0
+                    )
+                } else if !quotedMessage.linkAttachments.isEmpty {
+                    LazyImage(
+                        imageURL: quotedMessage.linkAttachments[0].previewURL ?? quotedMessage.linkAttachments[0]
+                            .originalURL
+                    )
+                    .onDisappear(.cancel)
+                    .processors([ImageProcessors.Resize(width: attachmentSize.width)])
+                    .priority(.high)
+                }
+            }
+            .frame(width: hasVoiceAttachments ? nil : attachmentSize.width, height: attachmentSize.height)
+            .aspectRatio(1, contentMode: .fill)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .allowsHitTesting(false)
+        } else if let poll = quotedMessage.poll, !quotedMessage.isDeleted {
+            Text("📊 \(poll.name)")
+        }
+
+        if !hasVoiceAttachments {
+            Text(textForMessage)
+                .foregroundColor(textColor(for: quotedMessage))
+                .lineLimit(3)
+                .font(fonts.footnote)
+                .accessibility(identifier: "quotedMessageText")
+        }
+
+        if fillAvailableSpace {
+            Spacer()
+        }
     }
 
     private func filePreviewImage(for url: URL) -> UIImage {
