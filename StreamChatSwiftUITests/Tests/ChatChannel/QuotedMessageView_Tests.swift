@@ -113,4 +113,105 @@ class QuotedMessageView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+    
+    // MARK: - Custom Size Tests
+    
+    func test_quotedMessageViewContainer_customAttachmentSize_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: "test",
+            cid: .unique,
+            text: "Image attachment",
+            author: .mock(id: "test", name: "martin"),
+            attachments: [
+                ChatMessageImageAttachment.mock(
+                    id: .unique,
+                    imageURL: .localYodaImage
+                ).asAnyAttachment
+            ]
+        )
+        let customAttachmentSize = CGSize(width: 60, height: 60)
+        let view = QuotedMessageViewContainer(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: message,
+            fillAvailableSpace: true,
+            scrolledId: .constant(nil),
+            attachmentSize: customAttachmentSize
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_quotedMessageViewContainer_customAvatarSize_snapshot() {
+        // Given
+        let customAvatarSize = CGSize(width: 40, height: 40)
+        let view = QuotedMessageViewContainer(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: testMessage,
+            fillAvailableSpace: true,
+            scrolledId: .constant(nil),
+            quotedAuthorAvatarSize: customAvatarSize
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_quotedMessageView_customAttachmentSize_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: "test",
+            cid: .unique,
+            text: "Image attachment",
+            author: .mock(id: "test", name: "martin"),
+            attachments: [
+                ChatMessageImageAttachment.mock(
+                    id: .unique,
+                    imageURL: .localYodaImage
+                ).asAnyAttachment
+            ]
+        )
+        let customAttachmentSize = CGSize(width: 50, height: 50)
+        let view = QuotedMessageView(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: message,
+            fillAvailableSpace: true,
+            forceLeftToRight: true,
+            attachmentSize: customAttachmentSize
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_quotedMessageViewContainer_defaultSizes() {
+        // Given
+        let container = QuotedMessageViewContainer(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: testMessage,
+            fillAvailableSpace: true,
+            scrolledId: .constant(nil)
+        )
+        
+        // Then - Default sizes should be applied
+        XCTAssertEqual(container.attachmentSize, CGSize(width: 36, height: 36))
+        XCTAssertEqual(container.quotedAuthorAvatarSize, CGSize(width: 24, height: 24))
+    }
+    
+    func test_quotedMessageView_defaultAttachmentSize() {
+        // Given
+        let view = QuotedMessageView(
+            factory: DefaultViewFactory.shared,
+            quotedMessage: testMessage,
+            fillAvailableSpace: true,
+            forceLeftToRight: true
+        )
+        
+        // Then - Default attachment size should be applied
+        XCTAssertEqual(view.attachmentSize, CGSize(width: 36, height: 36))
+    }
 }
