@@ -48,7 +48,7 @@ struct CreateGroupView: View, KeyboardReadable {
                 }
             }
             .listStyle(.plain)
-        }
+        }.padding(.top)
         .toolbarThemed(content: {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink {
