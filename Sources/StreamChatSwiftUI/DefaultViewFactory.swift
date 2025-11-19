@@ -998,6 +998,17 @@ extension ViewFactory {
         )
     }
     
+    public func makeQuotedMessageContentView(
+        quotedMessage: ChatMessage,
+        options: QuotedMessageContentViewOptions
+    ) -> some View {
+        QuotedMessageContentView(
+            factory: self,
+            quotedMessage: quotedMessage,
+            options: options
+        )
+    }
+    
     public func makeCustomAttachmentQuotedView(for message: ChatMessage) -> some View {
         EmptyView()
     }

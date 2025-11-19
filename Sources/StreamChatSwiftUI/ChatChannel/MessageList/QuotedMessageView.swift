@@ -109,12 +109,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack(alignment: .top) {
-            QuotedMessageContentView(
-                factory: factory,
+            factory.makeQuotedMessageContentView(
                 quotedMessage: quotedMessage,
-                fillAvailableSpace: fillAvailableSpace,
-                forceLeftToRight: forceLeftToRight,
-                attachmentSize: attachmentSize
+                options: QuotedMessageContentViewOptions(
+                    fillAvailableSpace: fillAvailableSpace,
+                    forceLeftToRight: forceLeftToRight,
+                    attachmentSize: attachmentSize
+                )
             )
         }
         .id(quotedMessage.messageId)
@@ -151,7 +152,30 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     }
 }
 
-struct QuotedMessageContentView<Factory: ViewFactory>: View {
+/// Options for configuring the quoted message content view.
+public struct QuotedMessageContentViewOptions {
+    /// Whether the quoted container should take all the available space.
+    public let fillAvailableSpace: Bool
+    /// Whether to force left to right layout.
+    public let forceLeftToRight: Bool
+    /// The size of the attachment preview.
+    public let attachmentSize: CGSize
+
+    public init(
+        fillAvailableSpace: Bool,
+        forceLeftToRight: Bool,
+        attachmentSize: CGSize = CGSize(width: 36, height: 36)
+    ) {
+        self.fillAvailableSpace = fillAvailableSpace
+        self.forceLeftToRight = forceLeftToRight
+        self.attachmentSize = attachmentSize
+    }
+}
+
+/// The quoted message content view.
+///
+/// It is the view that is embedded in quoted message bubble view.
+public struct QuotedMessageContentView<Factory: ViewFactory>: View {
     @Environment(\.channelTranslationLanguage) var translationLanguage
 
     @Injected(\.images) private var images
@@ -161,9 +185,7 @@ struct QuotedMessageContentView<Factory: ViewFactory>: View {
 
     public var factory: Factory
     public var quotedMessage: ChatMessage
-    public var fillAvailableSpace: Bool
-    public var forceLeftToRight: Bool
-    public let attachmentSize: CGSize
+    public var options: QuotedMessageContentViewOptions
 
     private var messageTypeResolver: MessageTypeResolving {
         utils.messageTypeResolver
@@ -172,18 +194,14 @@ struct QuotedMessageContentView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         quotedMessage: ChatMessage,
-        fillAvailableSpace: Bool,
-        forceLeftToRight: Bool,
-        attachmentSize: CGSize = CGSize(width: 36, height: 36)
+        options: QuotedMessageContentViewOptions
     ) {
         self.factory = factory
         self.quotedMessage = quotedMessage
-        self.fillAvailableSpace = fillAvailableSpace
-        self.forceLeftToRight = forceLeftToRight
-        self.attachmentSize = attachmentSize
+        self.options = options
     }
 
-    var body: some View {
+    public var body: some View {
         if !quotedMessage.attachmentCounts.isEmpty {
             ZStack {
                 if messageTypeResolver.hasCustomAttachment(message: quotedMessage) {
@@ -193,14 +211,14 @@ struct QuotedMessageContentView<Factory: ViewFactory>: View {
                 } else if !quotedMessage.imageAttachments.isEmpty {
                     LazyLoadingImage(
                         source: MediaAttachment(url: quotedMessage.imageAttachments[0].imageURL, type: .image),
-                        width: attachmentSize.width,
-                        height: attachmentSize.height,
+                        width: options.attachmentSize.width,
+                        height: options.attachmentSize.height,
                         resize: false
                     )
                 } else if !quotedMessage.giphyAttachments.isEmpty {
                     LazyGiphyView(
                         source: quotedMessage.giphyAttachments[0].previewURL,
-                        width: attachmentSize.width
+                        width: options.attachmentSize.width
                     )
                 } else if !quotedMessage.fileAttachments.isEmpty {
                     Image(uiImage: filePreviewImage(for: quotedMessage.fileAttachments[0].assetURL))
@@ -208,7 +226,7 @@ struct QuotedMessageContentView<Factory: ViewFactory>: View {
                     VideoAttachmentView(
                         attachment: quotedMessage.videoAttachments[0],
                         message: quotedMessage,
-                        width: attachmentSize.width,
+                        width: options.attachmentSize.width,
                         ratio: 1.0,
                         cornerRadius: 0
                     )
@@ -218,11 +236,11 @@ struct QuotedMessageContentView<Factory: ViewFactory>: View {
                             .originalURL
                     )
                     .onDisappear(.cancel)
-                    .processors([ImageProcessors.Resize(width: attachmentSize.width)])
+                    .processors([ImageProcessors.Resize(width: options.attachmentSize.width)])
                     .priority(.high)
                 }
             }
-            .frame(width: hasVoiceAttachments ? nil : attachmentSize.width, height: attachmentSize.height)
+            .frame(width: hasVoiceAttachments ? nil : options.attachmentSize.width, height: options.attachmentSize.height)
             .aspectRatio(1, contentMode: .fill)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .allowsHitTesting(false)
@@ -238,7 +256,7 @@ struct QuotedMessageContentView<Factory: ViewFactory>: View {
                 .accessibility(identifier: "quotedMessageText")
         }
 
-        if fillAvailableSpace {
+        if options.fillAvailableSpace {
             Spacer()
         }
     }
