@@ -1015,6 +1015,18 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>
     ) -> QuotedMessageViewType
     
+    associatedtype QuotedMessageContentViewType: View
+    /// Creates the quoted message content view.
+    ///
+    /// It is the view that is embedded in quoted message bubble view.
+    ///
+    /// - Parameters:
+    ///  - options: configuration options for the quoted message content view.
+    /// - Returns: view displayed in the quoted message content slot.
+    func makeQuotedMessageContentView(
+        options: QuotedMessageContentViewOptions
+    ) -> QuotedMessageContentViewType
+    
     associatedtype CustomAttachmentQuotedViewType: View
     /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
     /// - Parameter message: the quoted message.
