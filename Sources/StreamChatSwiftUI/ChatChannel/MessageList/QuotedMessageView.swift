@@ -110,9 +110,10 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     public var body: some View {
         HStack(alignment: .top) {
             factory.makeQuotedMessageContentView(
-                quotedMessage: quotedMessage,
                 options: QuotedMessageContentViewOptions(
+                    quotedMessage: quotedMessage,
                     fillAvailableSpace: fillAvailableSpace,
+                    forceLeftToRight: forceLeftToRight,
                     attachmentSize: attachmentSize
                 )
             )
@@ -153,16 +154,24 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 
 /// Options for configuring the quoted message content view.
 public struct QuotedMessageContentViewOptions {
+    /// The quoted message to display.
+    public let quotedMessage: ChatMessage
     /// Whether the quoted container should take all the available space.
     public let fillAvailableSpace: Bool
+    /// Whether to force left to right layout.
+    public let forceLeftToRight: Bool
     /// The size of the attachment preview.
     public let attachmentSize: CGSize
 
     public init(
+        quotedMessage: ChatMessage,
         fillAvailableSpace: Bool,
+        forceLeftToRight: Bool,
         attachmentSize: CGSize = CGSize(width: 36, height: 36)
     ) {
+        self.quotedMessage = quotedMessage
         self.fillAvailableSpace = fillAvailableSpace
+        self.forceLeftToRight = forceLeftToRight
         self.attachmentSize = attachmentSize
     }
 }
@@ -179,8 +188,11 @@ public struct QuotedMessageContentView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
     public var factory: Factory
-    public var quotedMessage: ChatMessage
     public var options: QuotedMessageContentViewOptions
+    
+    private var quotedMessage: ChatMessage {
+        options.quotedMessage
+    }
 
     private var messageTypeResolver: MessageTypeResolving {
         utils.messageTypeResolver
@@ -188,11 +200,9 @@ public struct QuotedMessageContentView<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        quotedMessage: ChatMessage,
         options: QuotedMessageContentViewOptions
     ) {
         self.factory = factory
-        self.quotedMessage = quotedMessage
         self.options = options
     }
 

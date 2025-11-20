@@ -999,12 +999,10 @@ extension ViewFactory {
     }
     
     public func makeQuotedMessageContentView(
-        quotedMessage: ChatMessage,
         options: QuotedMessageContentViewOptions
     ) -> some View {
         QuotedMessageContentView(
             factory: self,
-            quotedMessage: quotedMessage,
             options: options
         )
     }

@@ -272,11 +272,10 @@ private class CustomQuotedContentViewFactory: ViewFactory {
     static let shared = CustomQuotedContentViewFactory()
     
     func makeQuotedMessageContentView(
-        quotedMessage: ChatMessage,
         options: QuotedMessageContentViewOptions
     ) -> some View {
         Group {
-            if let footballGameAttachmentPayload = quotedMessage
+            if let footballGameAttachmentPayload = options.quotedMessage
                 .attachments(payloadType: FootballGameAttachmentPayload.self)
                 .first?
                 .payload {
@@ -286,7 +285,6 @@ private class CustomQuotedContentViewFactory: ViewFactory {
                 // Fallback to default content view
                 QuotedMessageContentView(
                     factory: self,
-                    quotedMessage: quotedMessage,
                     options: options
                 )
             }

@@ -1021,11 +1021,9 @@ public protocol ViewFactory: AnyObject {
     /// It is the view that is embedded in quoted message bubble view.
     ///
     /// - Parameters:
-    ///  - quotedMessage: the quoted message.
     ///  - options: configuration options for the quoted message content view.
     /// - Returns: view displayed in the quoted message content slot.
     func makeQuotedMessageContentView(
-        quotedMessage: ChatMessage,
         options: QuotedMessageContentViewOptions
     ) -> QuotedMessageContentViewType
     
