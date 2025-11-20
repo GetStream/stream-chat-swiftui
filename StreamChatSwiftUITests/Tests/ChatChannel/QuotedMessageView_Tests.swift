@@ -253,10 +253,9 @@ class QuotedMessageView_Tests: StreamChatTestCase {
     }
 }
 
-
 // MARK: - Custom Football Game Attachment for Custom Quoted Message
 
-fileprivate struct FootballGameAttachmentPayload: AttachmentPayload {
+private struct FootballGameAttachmentPayload: AttachmentPayload {
     let homeTeam: String
     let awayTeam: String
     let homeScore: Int
@@ -265,7 +264,7 @@ fileprivate struct FootballGameAttachmentPayload: AttachmentPayload {
     static let type: AttachmentType = .init(rawValue: "football_game")
 }
 
-fileprivate class CustomQuotedContentViewFactory: ViewFactory {
+private class CustomQuotedContentViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
     
     private init() {}
@@ -295,7 +294,7 @@ fileprivate class CustomQuotedContentViewFactory: ViewFactory {
     }
 }
 
-fileprivate struct FootballGameQuotedView: View {
+private struct FootballGameQuotedView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     

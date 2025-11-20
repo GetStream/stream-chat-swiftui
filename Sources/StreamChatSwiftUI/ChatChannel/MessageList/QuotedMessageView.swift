@@ -21,7 +21,7 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
         fillAvailableSpace: Bool,
         forceLeftToRight: Bool = false,
         scrolledId: Binding<String?>,
-        attachmentSize: CGSize =  CGSize(width: 36, height: 36),
+        attachmentSize: CGSize = CGSize(width: 36, height: 36),
         quotedAuthorAvatarSize: CGSize = CGSize(width: 24, height: 24)
     ) {
         self.factory = factory
