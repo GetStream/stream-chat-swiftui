@@ -113,7 +113,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 options: QuotedMessageContentViewOptions(
                     quotedMessage: quotedMessage,
                     fillAvailableSpace: fillAvailableSpace,
-                    forceLeftToRight: forceLeftToRight,
                     attachmentSize: attachmentSize
                 )
             )
@@ -158,20 +157,16 @@ public struct QuotedMessageContentViewOptions {
     public let quotedMessage: ChatMessage
     /// Whether the quoted container should take all the available space.
     public let fillAvailableSpace: Bool
-    /// Whether to force left to right layout.
-    public let forceLeftToRight: Bool
     /// The size of the attachment preview.
     public let attachmentSize: CGSize
 
     public init(
         quotedMessage: ChatMessage,
         fillAvailableSpace: Bool,
-        forceLeftToRight: Bool,
         attachmentSize: CGSize = CGSize(width: 36, height: 36)
     ) {
         self.quotedMessage = quotedMessage
         self.fillAvailableSpace = fillAvailableSpace
-        self.forceLeftToRight = forceLeftToRight
         self.attachmentSize = attachmentSize
     }
 }
