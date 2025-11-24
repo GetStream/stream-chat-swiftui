@@ -46,7 +46,8 @@ struct NewChatView: View, KeyboardReadable {
             }
             .padding()
 
-            if viewModel.state != .selected {
+            // Show create group button and info label when not in selected state or when searching
+            if viewModel.state != .selected || !viewModel.searchText.isEmpty {
                 // Show create group button if no search text and no users selected
                 if viewModel.searchText.isEmpty && viewModel.selectedUsers.isEmpty {
                     CreateGroupButton(isNewChatShown: $isNewChatShown)
@@ -89,7 +90,7 @@ struct NewChatView: View, KeyboardReadable {
                             .foregroundColor(Color(colors.textLowEmphasis))
                     }
                 }
-            } else if viewModel.state == .selected, let controller = viewModel.channelController {
+            } else if viewModel.state == .selected && viewModel.searchText.isEmpty, let controller = viewModel.channelController {
                 ChatChannelView(
                     viewFactory: DemoAppFactory.shared,
                     channelController: controller
@@ -162,13 +163,11 @@ struct SearchUsersView: View {
         HStack {
             TextField("Type a name", text: $viewModel.searchText)
             Button {
-                if viewModel.state == .selected {
-                    withAnimation {
-                        viewModel.state = .searching
-                    }
+                if viewModel.state == .selected && viewModel.searchText.isEmpty {
+                    viewModel.showSearchResults()
                 }
             } label: {
-                Image(systemName: viewModel.state == .selected ? "person.badge.plus" : "person")
+                Image(systemName: viewModel.state == .selected && viewModel.searchText.isEmpty ? "person.badge.plus" : "person")
             }
         }
     }

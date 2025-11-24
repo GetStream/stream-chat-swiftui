@@ -14,6 +14,11 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             operation?.cancel()
             state = .loading
 
+            // Reset the flag when user starts typing
+            if !searchText.isEmpty {
+                isShowingSearchResults = false
+            }
+
             // Update info label text
             if !searchText.isEmpty {
                 infoLabelText = "Matches for \"\(searchText)\""
@@ -32,7 +37,10 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                         // Update state based on results
                         DispatchQueue.main.async {
                             self.chatUsers = self.searchController.userArray
-                            if !self.selectedUsers.isEmpty {
+                            // If there's search text, show search results even if users are selected
+                            if !self.searchText.isEmpty {
+                                self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
+                            } else if !self.selectedUsers.isEmpty && !self.isShowingSearchResults {
                                 self.update(for: .selected)
                             } else {
                                 self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
@@ -72,6 +80,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     private var loadingNextUsers: Bool = false
     private var hasPerformedInitialSearch = false
+    private var isShowingSearchResults = false
     var channelController: ChatChannelController?
 
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
@@ -93,7 +102,10 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
             DispatchQueue.main.async {
                 self.chatUsers = self.searchController.userArray
-                if !self.selectedUsers.isEmpty {
+                // If there's search text, show search results even if users are selected
+                if !self.searchText.isEmpty {
+                    self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
+                } else if !self.selectedUsers.isEmpty {
                     self.update(for: .selected)
                 } else {
                     self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
@@ -109,6 +121,24 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
         selectedUsers.append(user)
         searchText = ""
+        isShowingSearchResults = false
+    }
+
+    func showSearchResults() {
+        // Trigger search to show all users when "Add user" button is clicked
+        if searchText.isEmpty {
+            isShowingSearchResults = true
+            // Force a search to show all users
+            state = .loading
+            searchController.search(term: nil) { [weak self] _ in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.chatUsers = self.searchController.userArray
+                    // Always show search results when button is clicked, even if users are selected
+                    self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
+                }
+            }
+        }
     }
 
     func onlineInfo(for user: ChatUser) -> String {
@@ -156,7 +186,10 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     ) {
         chatUsers = controller.userArray
         // Update state when users change
-        if !selectedUsers.isEmpty {
+        // If there's search text or we're showing search results, show search results even if users are selected
+        if !searchText.isEmpty || isShowingSearchResults {
+            update(for: chatUsers.isEmpty ? .noUsers : .searching)
+        } else if !selectedUsers.isEmpty {
             update(for: .selected)
         } else {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
