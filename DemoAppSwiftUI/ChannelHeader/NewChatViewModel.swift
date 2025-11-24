@@ -11,62 +11,104 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     @Published var searchText: String = "" {
         didSet {
-            searchUsers(with: searchText)
+            operation?.cancel()
+            state = .loading
+
+            // Update info label text
+            if !searchText.isEmpty {
+                infoLabelText = "Matches for \"\(searchText)\""
+            } else {
+                infoLabelText = "On the platform"
+            }
+
+            operation = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                let term = self.searchText.isEmpty ? nil : self.searchText
+                self.searchController.search(term: term) { [weak self] error in
+                    guard let self = self else { return }
+                    if error != nil {
+                        self.state = .error
+                    } else {
+                        // Update state based on results
+                        DispatchQueue.main.async {
+                            self.chatUsers = self.searchController.userArray
+                            if !self.selectedUsers.isEmpty {
+                                self.update(for: .selected)
+                            } else {
+                                self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
+                            }
+                        }
+                    }
+                }
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(throttleTime), execute: operation!)
         }
     }
 
-    @Published var messageText: String = ""
     @Published var chatUsers = [ChatUser]()
     @Published var state: NewChatState = .initial
+    @Published var infoLabelText = "On the platform"
     @Published var selectedUsers = [ChatUser]() {
         didSet {
-            if !updatingSelectedUsers {
-                updatingSelectedUsers = true
-                if !selectedUsers.isEmpty {
-                    do {
-                        try makeChannelController()
-                    } catch {
-                        state = .error
-                        updatingSelectedUsers = false
-                    }
-
-                } else {
-                    withAnimation {
-                        state = .loaded
-                        updatingSelectedUsers = false
-                    }
+            if !selectedUsers.isEmpty {
+                update(for: .selected)
+                do {
+                    let selectedUserIds = Set(selectedUsers.map(\.id))
+                    channelController = try chatClient.channelController(
+                        createDirectMessageChannelWith: selectedUserIds,
+                        name: nil,
+                        imageURL: nil,
+                        extraData: [:]
+                    )
+                } catch {
+                    state = .error
                 }
+            } else {
+                update(for: .searching)
             }
         }
     }
 
     private var loadingNextUsers: Bool = false
-    private var updatingSelectedUsers: Bool = false
-
+    private var hasPerformedInitialSearch = false
     var channelController: ChatChannelController?
 
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
+    private var operation: DispatchWorkItem?
+    private let throttleTime = 1000
 
     init() {
-        chatUsers = searchController.userArray
         searchController.delegate = self
-        // Empty initial search to get all users
-        searchUsers(with: nil)
+    }
+
+    func loadInitialUsers() {
+        guard !hasPerformedInitialSearch else { return }
+        hasPerformedInitialSearch = true
+
+        state = .loading
+        searchController.search(term: nil) { [weak self] _ in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                self.chatUsers = self.searchController.userArray
+                if !self.selectedUsers.isEmpty {
+                    self.update(for: .selected)
+                } else {
+                    self.update(for: self.chatUsers.isEmpty ? .noUsers : .searching)
+                }
+            }
+        }
     }
 
     func userTapped(_ user: ChatUser) {
-        if updatingSelectedUsers {
+        guard !selectedUsers.contains(user) else {
             return
         }
 
-        if selectedUsers.contains(user) {
-            selectedUsers.removeAll { selected in
-                selected == user
-            }
-        } else {
-            selectedUsers.append(user)
-        }
+        selectedUsers.append(user)
+        searchText = ""
     }
 
     func onlineInfo(for user: ChatUser) -> String {
@@ -74,9 +116,9 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             return "Online"
         } else if let lastActiveAt = user.lastActiveAt,
                   let timeAgo = lastSeenDateFormatter(lastActiveAt) {
-            return timeAgo
+            return "Last seen: \(timeAgo)"
         } else {
-            return "Offline"
+            return "Never seen"
         }
     }
 
@@ -91,11 +133,8 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             return
         }
 
-        if index < chatUsers.count - 10 {
-            return
-        }
-
-        if !loadingNextUsers {
+        // Load more when near bottom
+        if index >= chatUsers.count - 10 && !loadingNextUsers {
             loadingNextUsers = true
             searchController.loadNextUsers { [weak self] _ in
                 guard let self = self else { return }
@@ -105,6 +144,10 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         }
     }
 
+    private func update(for newState: NewChatState) {
+        state = newState
+    }
+
     // MARK: - ChatUserSearchControllerDelegate
 
     func controller(
@@ -112,48 +155,20 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
         chatUsers = controller.userArray
-    }
-
-    // MARK: - private
-
-    private func searchUsers(with term: String?) {
-        state = .loading
-        searchController.search(term: term) { [weak self] error in
-            if error != nil {
-                self?.state = .error
-            } else {
-                self?.state = .loaded
-            }
-        }
-    }
-
-    private func makeChannelController() throws {
-        let selectedUserIds = Set(selectedUsers.map(\.id))
-        channelController = try chatClient.channelController(
-            createDirectMessageChannelWith: selectedUserIds,
-            name: nil,
-            imageURL: nil,
-            extraData: [:]
-        )
-        channelController?.synchronize { [weak self] error in
-            if error != nil {
-                self?.state = .error
-                self?.updatingSelectedUsers = false
-            } else {
-                withAnimation {
-                    self?.state = .channel
-                    self?.updatingSelectedUsers = false
-                }
-            }
+        // Update state when users change
+        if !selectedUsers.isEmpty {
+            update(for: .selected)
+        } else {
+            update(for: chatUsers.isEmpty ? .noUsers : .searching)
         }
     }
 }
 
 enum NewChatState {
     case initial
+    case searching
     case loading
     case noUsers
+    case selected
     case error
-    case loaded
-    case channel
 }

@@ -18,7 +18,24 @@ class DemoAppFactory: ViewFactory {
     func makeChannelListHeaderViewModifier(title: String) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: title)
     }
-    
+
+    func makeMessageComposerViewType(
+        with channelController: ChatChannelController,
+        messageController: ChatMessageController?,
+        quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
+        onMessageSent: @escaping () -> Void
+    ) -> MessageComposerView<DemoAppFactory> {
+        return MessageComposerView(
+            viewFactory: self,
+            channelController: channelController,
+            messageController: messageController,
+            quotedMessage: quotedMessage,
+            editedMessage: editedMessage,
+            onMessageSent: onMessageSent
+        )
+    }
+
     func supportedMoreChannelActions(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,

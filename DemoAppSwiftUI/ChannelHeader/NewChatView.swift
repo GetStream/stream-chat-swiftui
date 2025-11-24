@@ -46,16 +46,21 @@ struct NewChatView: View, KeyboardReadable {
             }
             .padding()
 
-            if viewModel.state != .channel {
-                CreateGroupButton(isNewChatShown: $isNewChatShown)
-                UsersHeaderView()
+            if viewModel.state != .selected {
+                // Show create group button if no search text and no users selected
+                if viewModel.searchText.isEmpty && viewModel.selectedUsers.isEmpty {
+                    CreateGroupButton(isNewChatShown: $isNewChatShown)
+                }
+
+                // Show info label
+                UsersHeaderView(title: viewModel.infoLabelText)
             }
 
             if viewModel.state == .loading {
                 VerticallyCenteredView {
                     ProgressView()
                 }
-            } else if viewModel.state == .loaded {
+            } else if viewModel.state == .searching {
                 List(viewModel.chatUsers) { user in
                     Button {
                         withAnimation {
@@ -75,23 +80,35 @@ struct NewChatView: View, KeyboardReadable {
                 .listStyle(.plain)
             } else if viewModel.state == .noUsers {
                 VerticallyCenteredView {
-                    Text("No user matches these keywords")
-                        .font(.title2)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                    VStack {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 40))
+                            .foregroundColor(Color(colors.textLowEmphasis))
+                        Text("No user matches these keywords...")
+                            .font(.title2)
+                            .foregroundColor(Color(colors.textLowEmphasis))
+                    }
                 }
-            } else if viewModel.state == .error {
+            } else if viewModel.state == .selected, let controller = viewModel.channelController {
                 VerticallyCenteredView {
-                    Text("Error loading the users")
-                        .font(.title2)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                    VStack {
+                        Text("No chats here yet...")
+                            .font(.title2)
+                            .foregroundColor(Color(colors.textLowEmphasis))
+                    }
                 }
-            } else if viewModel.state == .channel, let controller = viewModel.channelController {
                 Divider()
                 ChatChannelView(
                     viewFactory: DemoAppFactory.shared,
                     channelController: controller
                 )
                 .modifier(TabBarVisibilityModifier())
+            } else if viewModel.state == .error {
+                VerticallyCenteredView {
+                    Text("Error loading the users")
+                        .font(.title2)
+                        .foregroundColor(Color(colors.textLowEmphasis))
+                }
             } else {
                 Spacer()
             }
@@ -107,6 +124,9 @@ struct NewChatView: View, KeyboardReadable {
             keyboardShown = visible
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
+        .onAppear {
+            viewModel.loadInitialUsers()
+        }
     }
 }
 
@@ -143,19 +163,19 @@ struct SelectedUserView: View {
 }
 
 struct SearchUsersView: View {
-    @StateObject var viewModel: NewChatViewModel
+    @ObservedObject var viewModel: NewChatViewModel
 
     var body: some View {
         HStack {
             TextField("Type a name", text: $viewModel.searchText)
             Button {
-                if viewModel.state == .channel {
+                if viewModel.state == .selected {
                     withAnimation {
-                        viewModel.state = .loaded
+                        viewModel.state = .searching
                     }
                 }
             } label: {
-                Image(systemName: "person.badge.plus")
+                Image(systemName: viewModel.state == .selected ? "person.badge.plus" : "person")
             }
         }
     }
@@ -237,7 +257,7 @@ struct UsersHeaderView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
 
-    var title = "On the platform"
+    var title: String
 
     var body: some View {
         HStack {

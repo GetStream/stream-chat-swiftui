@@ -33,7 +33,7 @@ struct CreateGroupView: View, KeyboardReadable {
                 .padding(.all, !viewModel.selectedUsers.isEmpty ? 16 : 0)
             }
 
-            UsersHeaderView()
+            UsersHeaderView(title: "On the platform")
             List(viewModel.chatUsers) { user in
                 Button {
                     withAnimation {

@@ -100,10 +100,15 @@ class CreateGroupViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private func searchUsers(with term: String?) {
         state = .loading
         searchController.search(term: term) { [weak self] error in
+            guard let self = self else { return }
             if error != nil {
-                self?.state = .error
+                self.state = .error
             } else {
-                self?.state = .loaded
+                // Update state based on results
+                DispatchQueue.main.async {
+                    self.chatUsers = self.searchController.userArray
+                    self.state = self.chatUsers.isEmpty ? .noUsers : .searching
+                }
             }
         }
     }
