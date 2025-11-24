@@ -185,8 +185,27 @@ struct NewChatView: View, KeyboardReadable {
             keyboardShown = visible
         }
         .modifier(HideKeyboardOnTapGesture(shouldAdd: keyboardShown))
+        .modifier(TabBarVisibilityModifier())
         .onAppear {
             viewModel.loadInitialUsers()
+            // Ensure tab bar is hidden when view appears
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                if #available(iOS 16.0, *) {
+                    // Already handled by modifier
+                } else {
+                    UITabBar.appearance().isHidden = true
+                }
+            }
+        }
+        .onDisappear {
+            // Restore tab bar when leaving the view
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                if #available(iOS 16.0, *) {
+                    // Already handled by modifier
+                } else {
+                    UITabBar.appearance().isHidden = false
+                }
+            }
         }
     }
 }
