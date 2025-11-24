@@ -92,20 +92,61 @@ struct NewChatView: View, KeyboardReadable {
                 }
             } else if viewModel.state == .selected && viewModel.searchText.isEmpty && !viewModel.isShowingSearchResults {
                 if let controller = viewModel.channelController {
-                    ChatChannelView(
-                        viewFactory: DemoAppFactory.shared,
-                        channelController: controller
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .modifier(TabBarVisibilityModifier())
-                    .id("channel-\(controller.cid?.rawValue ?? "new")")
-                    .onAppear {
-                        // Ensure tab bar stays hidden when view appears
-                        if UIDevice.current.userInterfaceIdiom == .phone {
-                            if #available(iOS 16.0, *) {
-                                // Already handled by modifier
-                            } else {
-                                UITabBar.appearance().isHidden = true
+                    // Show custom view for new channels (channel not yet created)
+                    if !viewModel.channelCreated && controller.channel == nil {
+                        VStack(spacing: 0) {
+                            VStack {
+                                Spacer()
+                                Text("No chats here yet...")
+                                    .font(.title2)
+                                    .foregroundColor(Color(colors.textLowEmphasis))
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                            Divider()
+
+                            // Show composer even without synchronized channel
+                            DemoAppFactory.shared.makeMessageComposerViewType(
+                                with: controller,
+                                messageController: nil,
+                                quotedMessage: .constant(nil),
+                                editedMessage: .constant(nil),
+                                onMessageSent: {
+                                    // After message is sent, channel will be synchronized
+                                    // The delegate will trigger view update
+                                }
+                            )
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .modifier(TabBarVisibilityModifier())
+                        .onAppear {
+                            // Ensure tab bar stays hidden
+                            if UIDevice.current.userInterfaceIdiom == .phone {
+                                if #available(iOS 16.0, *) {
+                                    // Already handled by modifier
+                                } else {
+                                    UITabBar.appearance().isHidden = true
+                                }
+                            }
+                        }
+                    } else {
+                        // Channel exists, show normal ChatChannelView
+                        ChatChannelView(
+                            viewFactory: DemoAppFactory.shared,
+                            channelController: controller
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .modifier(TabBarVisibilityModifier())
+                        .id("channel-\(controller.cid?.rawValue ?? "new")")
+                        .onAppear {
+                            // Ensure tab bar stays hidden
+                            if UIDevice.current.userInterfaceIdiom == .phone {
+                                if #available(iOS 16.0, *) {
+                                    // Already handled by modifier
+                                } else {
+                                    UITabBar.appearance().isHidden = true
+                                }
                             }
                         }
                     }

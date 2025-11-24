@@ -6,7 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
-class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
+class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate, ChatChannelControllerDelegate {
     @Injected(\.chatClient) var chatClient
 
     @Published var searchText: String = "" {
@@ -61,7 +61,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
         didSet {
             if !selectedUsers.isEmpty {
                 isShowingSearchResults = false
-                // Only create channel controller if it doesn't exist or users changed
+                // Create channel controller but don't synchronize until first message
                 let selectedUserIds = Set(selectedUsers.map(\.id))
                 let currentUserIds = Set((channelController?.channel?.lastActiveMembers.map(\.id) ?? []).filter { $0 != chatClient.currentUserId })
 
@@ -73,6 +73,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
                             imageURL: nil,
                             extraData: [:]
                         )
+                        // Don't synchronize - wait for first message
                     } catch {
                         state = .error
                         return
@@ -89,7 +90,19 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     private var loadingNextUsers: Bool = false
     private var hasPerformedInitialSearch = false
     var isShowingSearchResults = false
-    var channelController: ChatChannelController?
+    @Published var channelCreated = false
+    var channelController: ChatChannelController? {
+        didSet {
+            // Observe channel creation
+            if let controller = channelController {
+                controller.delegate = self
+                // Check if channel already exists
+                channelCreated = controller.channel != nil
+            } else {
+                channelCreated = false
+            }
+        }
+    }
 
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
@@ -209,6 +222,20 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
         } else {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
+        }
+    }
+
+    // MARK: - ChatChannelControllerDelegate
+
+    func channelController(
+        _ channelController: ChatChannelController,
+        didUpdateChannel channel: EntityChange<ChatChannel>
+    ) {
+        // When channel is created (after first message), update the flag
+        DispatchQueue.main.async { [weak self] in
+            if channelController.channel != nil {
+                self?.channelCreated = true
+            }
         }
     }
 }

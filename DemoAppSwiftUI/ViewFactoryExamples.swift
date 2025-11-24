@@ -6,11 +6,90 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
+class NewChatComposerViewModel: MessageComposerViewModel {
+    private var hasSynchronized = false
+
+    override func sendMessage(
+        quotedMessage: ChatMessage?,
+        editedMessage: ChatMessage?,
+        isSilent: Bool = false,
+        skipPush: Bool = false,
+        skipEnrichUrl: Bool = false,
+        extraData: [String: RawJSON] = [:],
+        completion: @escaping () -> Void
+    ) {
+        if !hasSynchronized {
+            hasSynchronized = true
+            channelController.synchronize { [weak self] error in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error when creating the channel: \(error.localizedDescription)")
+                    self.errorShown = true
+                } else {
+                    // Delete any draft message that might have been saved before channel creation
+                    self.deleteDraftMessage()
+                    // Call parent's sendMessage after synchronization
+                    self.sendMessageAfterSync(
+                        quotedMessage: quotedMessage,
+                        editedMessage: editedMessage,
+                        isSilent: isSilent,
+                        skipPush: skipPush,
+                        skipEnrichUrl: skipEnrichUrl,
+                        extraData: extraData,
+                        completion: {
+                            // After message is sent, clear text and delete draft
+                            DispatchQueue.main.async {
+                                self.text = ""
+                                self.deleteDraftMessage()
+                                // Delete again after a short delay to catch any late saves
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    self.deleteDraftMessage()
+                                }
+                            }
+                            completion()
+                        }
+                    )
+                }
+            }
+        } else {
+            super.sendMessage(
+                quotedMessage: quotedMessage,
+                editedMessage: editedMessage,
+                isSilent: isSilent,
+                skipPush: skipPush,
+                skipEnrichUrl: skipEnrichUrl,
+                extraData: extraData,
+                completion: completion
+            )
+        }
+    }
+
+    private func sendMessageAfterSync(
+        quotedMessage: ChatMessage?,
+        editedMessage: ChatMessage?,
+        isSilent: Bool,
+        skipPush: Bool,
+        skipEnrichUrl: Bool,
+        extraData: [String: RawJSON],
+        completion: @escaping () -> Void
+    ) {
+        super.sendMessage(
+            quotedMessage: quotedMessage,
+            editedMessage: editedMessage,
+            isSilent: isSilent,
+            skipPush: skipPush,
+            skipEnrichUrl: skipEnrichUrl,
+            extraData: extraData,
+            completion: completion
+        )
+    }
+}
+
 class DemoAppFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 
     private init() {}
-    
+
     private var mentionsHandler = MentionsHandler()
 
     public static let shared = DemoAppFactory()
@@ -42,14 +121,35 @@ class DemoAppFactory: ViewFactory {
         editedMessage: Binding<ChatMessage?>,
         onMessageSent: @escaping () -> Void
     ) -> MessageComposerView<DemoAppFactory> {
-        return MessageComposerView(
-            viewFactory: self,
-            channelController: channelController,
-            messageController: messageController,
-            quotedMessage: quotedMessage,
-            editedMessage: editedMessage,
-            onMessageSent: onMessageSent
-        )
+        // Check if channel needs synchronization (new channel, not yet created)
+        let needsSync = channelController.channel == nil
+
+        if needsSync {
+            // Use custom view model that synchronizes on first message send
+            let viewModel = NewChatComposerViewModel(
+                channelController: channelController,
+                messageController: messageController,
+                quotedMessage: .some(quotedMessage)
+            )
+            return MessageComposerView(
+                viewFactory: self,
+                viewModel: viewModel,
+                channelController: channelController,
+                messageController: messageController,
+                quotedMessage: quotedMessage,
+                editedMessage: editedMessage,
+                onMessageSent: onMessageSent
+            )
+        } else {
+            return MessageComposerView(
+                viewFactory: self,
+                channelController: channelController,
+                messageController: messageController,
+                quotedMessage: quotedMessage,
+                editedMessage: editedMessage,
+                onMessageSent: onMessageSent
+            )
+        }
     }
 
     func supportedMoreChannelActions(
@@ -73,7 +173,7 @@ class DemoAppFactory: ViewFactory {
 
         return actions
     }
-    
+
     func makeChannelListItem(
         channel: ChatChannel,
         channelName: String,
@@ -109,11 +209,11 @@ class DemoAppFactory: ViewFactory {
             leadingSwipeButtonTapped: leadingSwipeButtonTapped
         )
     }
-    
+
     public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
         ShowProfileModifier(messageModifierInfo: messageModifierInfo, mentionsHandler: mentionsHandler)
     }
-    
+
     private func archiveChannelAction(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
@@ -147,7 +247,7 @@ class DemoAppFactory: ViewFactory {
             isDestructive: false
         )
     }
-    
+
     private func pinChannelAction(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,
@@ -186,9 +286,9 @@ class DemoAppFactory: ViewFactory {
 
 struct ShowProfileModifier: ViewModifier {
     let messageModifierInfo: MessageModifierInfo
-    
+
     @ObservedObject var mentionsHandler: MentionsHandler
-    
+
     func body(content: Content) -> some View {
         content
             .modifier(
@@ -210,9 +310,9 @@ class MentionsHandler: ObservableObject {
 struct ProfileURLModifier: ViewModifier {
     @ObservedObject var mentionsHandler: MentionsHandler
     var messageModifierInfo: MessageModifierInfo
-    
+
     @State var showProfile = false
-    
+
     func body(content: Content) -> some View {
         if !messageModifierInfo.message.mentionedUsers.isEmpty {
             content
