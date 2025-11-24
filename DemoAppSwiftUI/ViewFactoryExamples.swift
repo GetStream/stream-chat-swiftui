@@ -29,8 +29,9 @@ class NewChatComposerViewModel: MessageComposerViewModel {
                     print("Error when creating the channel: \(error.localizedDescription)")
                     self.errorShown = true
                 } else {
-                    // Delete any draft message that might have been saved before channel creation
-                    self.deleteDraftMessage()
+                    // Skip deleting draft before sending - it will be deleted after sending anyway
+                    // This avoids the error "You can't modify the channel because the channel hasn't been created yet"
+                    // which can occur if the channel isn't fully ready for modifications immediately after synchronization
                     // Call parent's sendMessage after synchronization
                     // Attachments are preserved in addedAssets, addedFileURLs, addedCustomAttachments,
                     // and addedVoiceRecordings properties, and will be converted to payloads by
