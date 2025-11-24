@@ -20,6 +20,9 @@ class NewChatComposerViewModel: MessageComposerViewModel {
     ) {
         if !hasSynchronized {
             hasSynchronized = true
+            // Synchronize channel before sending first message
+            // All attachments (images, files, giphies, voice recordings, etc.) are preserved
+            // in the view model's @Published properties and will be included when the message is sent
             channelController.synchronize { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
@@ -29,6 +32,9 @@ class NewChatComposerViewModel: MessageComposerViewModel {
                     // Delete any draft message that might have been saved before channel creation
                     self.deleteDraftMessage()
                     // Call parent's sendMessage after synchronization
+                    // Attachments are preserved in addedAssets, addedFileURLs, addedCustomAttachments,
+                    // and addedVoiceRecordings properties, and will be converted to payloads by
+                    // convertAddedAssetsToPayloads() in the parent's sendMessage method
                     self.sendMessageAfterSync(
                         quotedMessage: quotedMessage,
                         editedMessage: editedMessage,

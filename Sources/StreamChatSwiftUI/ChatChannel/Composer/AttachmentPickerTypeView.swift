@@ -50,7 +50,9 @@ public struct AttachmentPickerTypeView: View {
         HStack(spacing: 16) {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                if composerViewModel.channelController.channel?.canUploadFile == true && composerViewModel.isSendMessageEnabled {
+                // Allow attachments even when channel is nil (not yet synchronized)
+                // The channel will be synchronized before sending the message
+                if (composerViewModel.channelController.channel?.canUploadFile ?? true) && composerViewModel.isSendMessageEnabled {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .media,
