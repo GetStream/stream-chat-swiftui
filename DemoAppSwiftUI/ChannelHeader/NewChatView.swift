@@ -20,41 +20,44 @@ struct NewChatView: View, KeyboardReadable {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("TO:")
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+            // Only show TO: section and search when channel is not yet created
+            if viewModel.channelController?.channel == nil {
+                HStack {
+                    Text("TO:")
+                        .font(fonts.footnote)
+                        .foregroundColor(Color(colors.textLowEmphasis))
 
-                VStack {
-                    if !viewModel.selectedUsers.isEmpty {
-                        LazyVGrid(columns: columns, alignment: .leading) {
-                            ForEach(viewModel.selectedUsers) { user in
-                                SelectedUserView(user: user)
-                                    .onTapGesture(
-                                        perform: {
-                                            withAnimation {
-                                                viewModel.userTapped(user)
+                    VStack {
+                        if !viewModel.selectedUsers.isEmpty {
+                            LazyVGrid(columns: columns, alignment: .leading) {
+                                ForEach(viewModel.selectedUsers) { user in
+                                    SelectedUserView(user: user)
+                                        .onTapGesture(
+                                            perform: {
+                                                withAnimation {
+                                                    viewModel.userTapped(user)
+                                                }
                                             }
-                                        }
-                                    )
+                                        )
+                                }
                             }
                         }
+
+                        SearchUsersView(viewModel: viewModel)
+                    }
+                }
+                .padding()
+
+                // Show create group button and info label when not in selected state or when searching
+                if viewModel.state != .selected || !viewModel.searchText.isEmpty {
+                    // Show create group button if no search text and no users selected
+                    if viewModel.searchText.isEmpty && viewModel.selectedUsers.isEmpty {
+                        CreateGroupButton(isNewChatShown: $isNewChatShown)
                     }
 
-                    SearchUsersView(viewModel: viewModel)
+                    // Show info label
+                    UsersHeaderView(title: viewModel.infoLabelText)
                 }
-            }
-            .padding()
-
-            // Show create group button and info label when not in selected state or when searching
-            if viewModel.state != .selected || !viewModel.searchText.isEmpty {
-                // Show create group button if no search text and no users selected
-                if viewModel.searchText.isEmpty && viewModel.selectedUsers.isEmpty {
-                    CreateGroupButton(isNewChatShown: $isNewChatShown)
-                }
-
-                // Show info label
-                UsersHeaderView(title: viewModel.infoLabelText)
             }
 
             if viewModel.state == .loading {
@@ -167,9 +170,15 @@ struct NewChatView: View, KeyboardReadable {
         }
         .toolbarThemed {
             ToolbarItem(placement: .principal) {
-                Text("New Chat")
-                    .font(fonts.bodyBold)
-                    .foregroundColor(Color(colors.navigationBarTitle))
+                Group {
+                    if !viewModel.channelCreated {
+                        Text("New Chat")
+                            .font(fonts.bodyBold)
+                            .foregroundColor(Color(colors.navigationBarTitle))
+                    } else {
+                        EmptyView()
+                    }
+                }
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
