@@ -90,13 +90,30 @@ struct NewChatView: View, KeyboardReadable {
                             .foregroundColor(Color(colors.textLowEmphasis))
                     }
                 }
-            } else if viewModel.state == .selected && viewModel.searchText.isEmpty, let controller = viewModel.channelController {
-                ChatChannelView(
-                    viewFactory: DemoAppFactory.shared,
-                    channelController: controller
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .modifier(TabBarVisibilityModifier())
+            } else if viewModel.state == .selected && viewModel.searchText.isEmpty && !viewModel.isShowingSearchResults {
+                if let controller = viewModel.channelController {
+                    ChatChannelView(
+                        viewFactory: DemoAppFactory.shared,
+                        channelController: controller
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(TabBarVisibilityModifier())
+                    .id("channel-\(controller.cid?.rawValue ?? "new")")
+                    .onAppear {
+                        // Ensure tab bar stays hidden when view appears
+                        if UIDevice.current.userInterfaceIdiom == .phone {
+                            if #available(iOS 16.0, *) {
+                                // Already handled by modifier
+                            } else {
+                                UITabBar.appearance().isHidden = true
+                            }
+                        }
+                    }
+                } else {
+                    VerticallyCenteredView {
+                        ProgressView()
+                    }
+                }
             } else if viewModel.state == .error {
                 VerticallyCenteredView {
                     Text("Error loading the users")
@@ -126,8 +143,18 @@ struct NewChatView: View, KeyboardReadable {
 
 struct TabBarVisibilityModifier: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
-            content.toolbar(.hidden, for: .tabBar)
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            if #available(iOS 16.0, *) {
+                content.toolbar(.hidden, for: .tabBar)
+            } else {
+                content
+                    .onAppear {
+                        UITabBar.appearance().isHidden = true
+                    }
+                    .onDisappear {
+                        UITabBar.appearance().isHidden = false
+                    }
+            }
         } else {
             content
         }

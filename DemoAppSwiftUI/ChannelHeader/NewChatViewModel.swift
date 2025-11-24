@@ -60,19 +60,27 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     @Published var selectedUsers = [ChatUser]() {
         didSet {
             if !selectedUsers.isEmpty {
-                update(for: .selected)
-                do {
-                    let selectedUserIds = Set(selectedUsers.map(\.id))
-                    channelController = try chatClient.channelController(
-                        createDirectMessageChannelWith: selectedUserIds,
-                        name: nil,
-                        imageURL: nil,
-                        extraData: [:]
-                    )
-                } catch {
-                    state = .error
+                isShowingSearchResults = false
+                // Only create channel controller if it doesn't exist or users changed
+                let selectedUserIds = Set(selectedUsers.map(\.id))
+                let currentUserIds = Set((channelController?.channel?.lastActiveMembers.map(\.id) ?? []).filter { $0 != chatClient.currentUserId })
+
+                if channelController == nil || selectedUserIds != currentUserIds {
+                    do {
+                        channelController = try chatClient.channelController(
+                            createDirectMessageChannelWith: selectedUserIds,
+                            name: nil,
+                            imageURL: nil,
+                            extraData: [:]
+                        )
+                    } catch {
+                        state = .error
+                        return
+                    }
                 }
+                update(for: .selected)
             } else {
+                channelController = nil
                 update(for: .searching)
             }
         }
@@ -80,7 +88,7 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
 
     private var loadingNextUsers: Bool = false
     private var hasPerformedInitialSearch = false
-    private var isShowingSearchResults = false
+    var isShowingSearchResults = false
     var channelController: ChatChannelController?
 
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
@@ -186,11 +194,19 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate {
     ) {
         chatUsers = controller.userArray
         // Update state when users change
-        // If there's search text or we're showing search results, show search results even if users are selected
-        if !searchText.isEmpty || isShowingSearchResults {
+        // Don't change state if we're in selected mode and search text is empty (user is composing)
+        if state == .selected && searchText.isEmpty && !selectedUsers.isEmpty && !isShowingSearchResults {
+            // Keep the selected state - don't change it
+            return
+        }
+
+        // If there's search text, show search results even if users are selected
+        if !searchText.isEmpty {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
-        } else if !selectedUsers.isEmpty {
+        } else if !selectedUsers.isEmpty && !isShowingSearchResults {
             update(for: .selected)
+        } else if isShowingSearchResults {
+            update(for: chatUsers.isEmpty ? .noUsers : .searching)
         } else {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
         }
