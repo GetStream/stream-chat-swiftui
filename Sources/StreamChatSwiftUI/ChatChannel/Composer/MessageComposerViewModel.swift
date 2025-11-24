@@ -60,7 +60,10 @@ open class MessageComposerViewModel: ObservableObject {
                         pickerTypeState = .collapsed
                     }
                 }
-                channelController.sendKeystrokeEvent()
+                // Only send keystroke event if channel is synchronized and ready
+                if channelController.channel != nil {
+                    channelController.sendKeystrokeEvent()
+                }
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
                     composerCommand = nil
