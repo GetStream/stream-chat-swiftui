@@ -19,6 +19,22 @@ class DemoAppFactory: ViewFactory {
         CustomChannelModifier(title: title)
     }
 
+    func makeEmptyMessagesView(
+        for channel: ChatChannel,
+        colors: ColorPalette
+    ) -> some View {
+        VStack {
+            Spacer()
+            Text("No chats here yet...")
+                .font(.title2)
+                .foregroundColor(Color(colors.textLowEmphasis))
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(colors.background))
+        .accessibilityIdentifier("EmptyMessagesView")
+    }
+
     func makeMessageComposerViewType(
         with channelController: ChatChannelController,
         messageController: ChatMessageController?,

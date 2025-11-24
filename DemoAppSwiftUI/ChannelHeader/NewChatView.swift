@@ -90,18 +90,11 @@ struct NewChatView: View, KeyboardReadable {
                     }
                 }
             } else if viewModel.state == .selected, let controller = viewModel.channelController {
-                VerticallyCenteredView {
-                    VStack {
-                        Text("No chats here yet...")
-                            .font(.title2)
-                            .foregroundColor(Color(colors.textLowEmphasis))
-                    }
-                }
-                Divider()
                 ChatChannelView(
                     viewFactory: DemoAppFactory.shared,
                     channelController: controller
                 )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .modifier(TabBarVisibilityModifier())
             } else if viewModel.state == .error {
                 VerticallyCenteredView {
