@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Add the `maxGalleryAssetsCount` to the composer config [#1053](https://github.com/GetStream/stream-chat-swiftui/pull/1053)
 - Expose `QuotedMessageViewContainer` [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
 - Add `QuotedMessageContentView` and `ViewFactory.makeQuotedMessageContentView()` [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
 - Allow customizing the attachment size and avatar size of the quoted message view [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
