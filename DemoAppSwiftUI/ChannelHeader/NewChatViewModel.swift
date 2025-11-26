@@ -206,20 +206,15 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate, Chat
         didChangeUsers changes: [ListChange<ChatUser>]
     ) {
         chatUsers = controller.userArray
-        // Update state when users change
-        // Don't change state if we're in selected mode and search text is empty (user is composing)
-        if state == .selected && searchText.isEmpty && !selectedUsers.isEmpty && !isShowingSearchResults {
-            // Keep the selected state - don't change it
+
+        guard !(state == .selected && searchText.isEmpty && !selectedUsers.isEmpty && !isShowingSearchResults) else {
             return
         }
 
-        // If there's search text, show search results even if users are selected
         if !searchText.isEmpty {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
         } else if !selectedUsers.isEmpty && !isShowingSearchResults {
             update(for: .selected)
-        } else if isShowingSearchResults {
-            update(for: chatUsers.isEmpty ? .noUsers : .searching)
         } else {
             update(for: chatUsers.isEmpty ? .noUsers : .searching)
         }
@@ -231,11 +226,8 @@ class NewChatViewModel: ObservableObject, ChatUserSearchControllerDelegate, Chat
         _ channelController: ChatChannelController,
         didUpdateChannel channel: EntityChange<ChatChannel>
     ) {
-        // When channel is created (after first message), update the flag
         DispatchQueue.main.async { [weak self] in
-            if channelController.channel != nil {
-                self?.channelCreated = true
-            }
+            self?.channelCreated = channelController.channel != nil
         }
     }
 }

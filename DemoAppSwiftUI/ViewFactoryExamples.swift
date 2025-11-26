@@ -20,22 +20,12 @@ class NewChatComposerViewModel: MessageComposerViewModel {
     ) {
         if !hasSynchronized {
             hasSynchronized = true
-            // Synchronize channel before sending first message
-            // All attachments (images, files, giphies, voice recordings, etc.) are preserved
-            // in the view model's @Published properties and will be included when the message is sent
             channelController.synchronize { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
                     print("Error when creating the channel: \(error.localizedDescription)")
                     self.errorShown = true
                 } else {
-                    // Skip deleting draft before sending - it will be deleted after sending anyway
-                    // This avoids the error "You can't modify the channel because the channel hasn't been created yet"
-                    // which can occur if the channel isn't fully ready for modifications immediately after synchronization
-                    // Call parent's sendMessage after synchronization
-                    // Attachments are preserved in addedAssets, addedFileURLs, addedCustomAttachments,
-                    // and addedVoiceRecordings properties, and will be converted to payloads by
-                    // convertAddedAssetsToPayloads() in the parent's sendMessage method
                     self.sendMessageAfterSync(
                         quotedMessage: quotedMessage,
                         editedMessage: editedMessage,
@@ -44,11 +34,9 @@ class NewChatComposerViewModel: MessageComposerViewModel {
                         skipEnrichUrl: skipEnrichUrl,
                         extraData: extraData,
                         completion: {
-                            // After message is sent, clear text and delete draft
                             DispatchQueue.main.async {
                                 self.text = ""
                                 self.deleteDraftMessage()
-                                // Delete again after a short delay to catch any late saves
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     self.deleteDraftMessage()
                                 }

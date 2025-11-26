@@ -115,26 +115,12 @@ struct NewChatView: View, KeyboardReadable {
                                 messageController: nil,
                                 quotedMessage: .constant(nil),
                                 editedMessage: .constant(nil),
-                                onMessageSent: {
-                                    // After message is sent, channel will be synchronized
-                                    // The delegate will trigger view update
-                                }
+                                onMessageSent: {}
                             )
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .modifier(TabBarVisibilityModifier())
-                        .onAppear {
-                            // Ensure tab bar stays hidden
-                            if UIDevice.current.userInterfaceIdiom == .phone {
-                                if #available(iOS 16.0, *) {
-                                    // Already handled by modifier
-                                } else {
-                                    UITabBar.appearance().isHidden = true
-                                }
-                            }
-                        }
                     } else {
-                        // Channel exists, show normal ChatChannelView
                         ChatChannelView(
                             viewFactory: DemoAppFactory.shared,
                             channelController: controller
@@ -142,16 +128,6 @@ struct NewChatView: View, KeyboardReadable {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .modifier(TabBarVisibilityModifier())
                         .id("channel-\(controller.cid?.rawValue ?? "new")")
-                        .onAppear {
-                            // Ensure tab bar stays hidden
-                            if UIDevice.current.userInterfaceIdiom == .phone {
-                                if #available(iOS 16.0, *) {
-                                    // Already handled by modifier
-                                } else {
-                                    UITabBar.appearance().isHidden = true
-                                }
-                            }
-                        }
                     }
                 } else {
                     VerticallyCenteredView {
@@ -170,14 +146,10 @@ struct NewChatView: View, KeyboardReadable {
         }
         .toolbarThemed {
             ToolbarItem(placement: .principal) {
-                Group {
-                    if !viewModel.channelCreated {
-                        Text("New Chat")
-                            .font(fonts.bodyBold)
-                            .foregroundColor(Color(colors.navigationBarTitle))
-                    } else {
-                        EmptyView()
-                    }
+                if !viewModel.channelCreated {
+                    Text("New Chat")
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationBarTitle))
                 }
             }
         }
@@ -188,24 +160,6 @@ struct NewChatView: View, KeyboardReadable {
         .modifier(TabBarVisibilityModifier())
         .onAppear {
             viewModel.loadInitialUsers()
-            // Ensure tab bar is hidden when view appears
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                if #available(iOS 16.0, *) {
-                    // Already handled by modifier
-                } else {
-                    UITabBar.appearance().isHidden = true
-                }
-            }
-        }
-        .onDisappear {
-            // Restore tab bar when leaving the view
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                if #available(iOS 16.0, *) {
-                    // Already handled by modifier
-                } else {
-                    UITabBar.appearance().isHidden = false
-                }
-            }
         }
     }
 }

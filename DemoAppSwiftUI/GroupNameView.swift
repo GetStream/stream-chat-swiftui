@@ -106,7 +106,7 @@ struct GroupControlsView: View {
                             viewFactory: DemoAppFactory.shared,
                             channelController: controller
                         )
-                        .modifier(HideTabBarModifierForGroupCreation())
+                        .modifier(TabBarVisibilityModifier())
                         .onDisappear {
                             isNewChatShown = false
                         }
@@ -118,27 +118,6 @@ struct GroupControlsView: View {
                 EmptyView()
             }
             .isDetailLink(false)
-        }
-    }
-}
-
-struct HideTabBarModifierForGroupCreation: ViewModifier {
-    func body(content: Content) -> some View {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            if #available(iOS 16.0, *) {
-                content
-                    .toolbar(.hidden, for: .tabBar)
-            } else {
-                content
-                    .onAppear {
-                        UITabBar.appearance().isHidden = true
-                    }
-                    .onDisappear {
-                        UITabBar.appearance().isHidden = false
-                    }
-            }
-        } else {
-            content
         }
     }
 }
