@@ -532,6 +532,36 @@ class ChatChannelListViewModel_Tests: StreamChatTestCase {
         // Then
         XCTAssertNil(viewModel.selectedChannel, "selectedChannel should be cleared immediately when opening another channel")
     }
+    
+    // MARK: - Optimized Channel List Updates
+    
+    func test_channelListOptimizedUpdates_whenStackedViewAndSelection_thenUpdatesSkipped() {
+        // Given
+        let config = MessageListConfig(updateChannelsFromMessageList: false, iPadSplitViewEnabled: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+
+        // When
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = .init(channel: existingChannel, message: nil)
+        let insertedChannel = ChatChannel.mockDMChannel()
+        channelListController.simulate(
+            channels: [insertedChannel, existingChannel],
+            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.channels.count, 1)
+        
+        // When selection is popped, changes are applied
+        viewModel.selectedChannel = nil
+        
+        XCTAssertEqual(viewModel.channels.count, 2)
+    }
 
     // MARK: - private
 
