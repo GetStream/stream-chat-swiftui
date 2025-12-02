@@ -64,7 +64,8 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy {
             requestEncoder: requestEncoder,
             requestDecoder: requestDecoder,
             attachmentDownloader: StreamAttachmentDownloader(sessionConfiguration: sessionConfiguration),
-            attachmentUploader: attachmentUploader
+            attachmentUploader: attachmentUploader,
+            cdnClient: CDNClient
         )
     }
 
