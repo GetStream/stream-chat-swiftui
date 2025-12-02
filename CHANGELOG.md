@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.94.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.94.0)
+_December 02, 2025_
+
 ### ✅ Added
 - Add the `maxGalleryAssetsCount` to the composer config [#1053](https://github.com/GetStream/stream-chat-swiftui/pull/1053)
 - Expose `QuotedMessageViewContainer` [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
