@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
-- Fix reading messages from muted users
+- Fix reading messages from muted users [#1063](https://github.com/GetStream/stream-chat-swiftui/pull/1063)
 
 # [4.94.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.94.0)
 _December 02, 2025_
