@@ -767,7 +767,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+    internal func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
         if !utils.messageListConfig.messageDisplayOptions.animateChanges {
             return false
         }
@@ -967,6 +967,10 @@ open class LivestreamChannelViewModel: ChatChannelViewModel {
 
     override public func scrollToLastMessage() {
         updateScrolledIdToNewestMessage()
+    }
+
+    override func shouldAnimate(changes: [ListChange<ChatMessage>]) -> Bool {
+        false
     }
 
     override func dataSource(
