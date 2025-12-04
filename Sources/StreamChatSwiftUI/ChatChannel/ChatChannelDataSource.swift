@@ -2,6 +2,7 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
+import Foundation
 import StreamChat
 
 /// Data source providing the chat messages.
