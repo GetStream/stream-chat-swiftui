@@ -38,6 +38,16 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         factory = viewFactory
     }
 
+    public init(
+        viewFactory: Factory = DefaultViewFactory.shared,
+        livestreamViewModel: LivestreamChannelViewModel
+    ) {
+        _viewModel = StateObject(
+            wrappedValue: livestreamViewModel
+        )
+        factory = viewFactory
+    }
+
     public var body: some View {
         ZStack {
             if let channel = viewModel.channel {
