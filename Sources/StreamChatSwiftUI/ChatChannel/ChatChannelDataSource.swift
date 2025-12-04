@@ -21,11 +21,9 @@ protocol MessagesDataSource: AnyObject {
     /// - Parameters:
     ///  - channelDataSource: the channel's data source.
     ///  - channel: the updated channel.
-    ///  - channelController: the channel's controller.
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateChannel channel: EntityChange<ChatChannel>,
-        channelController: ChatChannelController
+        didUpdateChannel channel: EntityChange<ChatChannel>
     )
 }
 
@@ -126,8 +124,7 @@ class ChatChannelDataSource: ChannelDataSource, ChatChannelControllerDelegate {
     ) {
         delegate?.dataSource(
             channelDataSource: self,
-            didUpdateChannel: channel,
-            channelController: channelController
+            didUpdateChannel: channel
         )
     }
 
@@ -246,5 +243,87 @@ class MessageThreadDataSource: ChannelDataSource, ChatMessageControllerDelegate 
     
     func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
         messageController.loadFirstPage(completion)
+    }
+}
+
+/// Implementation of `ChannelDataSource`. Loads the messages of a livestream channel.
+class LivestreamChannelDataSource: ChannelDataSource, LivestreamChannelControllerDelegate {
+    let controller: LivestreamChannelController
+    weak var delegate: MessagesDataSource?
+    
+    // Cache to convert array to LazyCachedMapCollection
+    private var cachedMessages: LazyCachedMapCollection<ChatMessage> = []
+    
+    var messages: LazyCachedMapCollection<ChatMessage> {
+        cachedMessages
+    }
+    
+    var hasLoadedAllNextMessages: Bool {
+        controller.hasLoadedAllNextMessages
+    }
+    
+    var firstUnreadMessageId: String? {
+        // Livestream channels don't support read receipts
+        nil
+    }
+
+    init(controller: LivestreamChannelController) {
+        self.controller = controller
+        self.controller.delegate = self
+        self.cachedMessages = LazyCachedMapCollection(source: controller.messages, map: { $0 })
+    }
+
+    func livestreamChannelController(
+        _ controller: LivestreamChannelController,
+        didUpdateMessages messages: [ChatMessage]
+    ) {
+        // Convert array to LazyCachedMapCollection
+        cachedMessages = LazyCachedMapCollection(source: messages, map: { $0 })
+        
+        // Create changes array - for simplicity, we'll treat all updates as insertions
+        // This is a limitation since LivestreamChannelController doesn't provide ListChange details
+        let changes: [ListChange<ChatMessage>] = messages.enumerated().map { index, message in
+            .insert(message, index: IndexPath(row: index, section: 0))
+        }
+        
+        delegate?.dataSource(
+            channelDataSource: self,
+            didUpdateMessages: cachedMessages,
+            changes: changes
+        )
+    }
+
+    func livestreamChannelController(
+        _ controller: LivestreamChannelController,
+        didUpdateChannel channel: ChatChannel
+    ) {
+        delegate?.dataSource(channelDataSource: self, didUpdateChannel: .update(channel))
+    }
+
+    func loadPreviousMessages(
+        before messageId: MessageId?,
+        limit: Int,
+        completion: ((Error?) -> Void)?
+    ) {
+        controller.loadPreviousMessages(
+            before: messageId,
+            limit: limit,
+            completion: completion
+        )
+    }
+    
+    func loadNextMessages(limit: Int, completion: ((Error?) -> Void)?) {
+        controller.loadNextMessages(limit: limit, completion: completion)
+    }
+    
+    func loadPageAroundMessageId(
+        _ messageId: MessageId,
+        completion: ((Error?) -> Void)?
+    ) {
+        controller.loadPageAroundMessageId(messageId, completion: completion)
+    }
+    
+    func loadFirstPage(_ completion: ((_ error: Error?) -> Void)?) {
+        controller.loadFirstPage(completion)
     }
 }

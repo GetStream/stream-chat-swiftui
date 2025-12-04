@@ -12,7 +12,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     
-    private var channelDataSource: ChannelDataSource
+    internal var channelDataSource: ChannelDataSource
     private var cancellables = Set<AnyCancellable>()
     private var lastRefreshThreshold = 200
     private let refreshThreshold = 200
@@ -43,8 +43,8 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private lazy var messagesDateFormatter = utils.dateFormatter
     private lazy var messageCachingUtils = utils.messageCachingUtils
     
-    private var loadingPreviousMessages: Bool = false
-    private var loadingMessagesAround: Bool = false
+    internal var loadingPreviousMessages: Bool = false
+    internal var loadingMessagesAround: Bool = false
     private var scrollsToUnreadAfterJumpToMessage = false
     private var disableDateIndicator = false
     private var channelName = ""
@@ -138,7 +138,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     // it should not call markRead() in any scenario.
     public var currentUserMarkedMessageUnread: Bool = false
 
-    @Published public private(set) var channel: ChatChannel?
+    @Published public internal(set) var channel: ChatChannel?
 
     public var isMessageThread: Bool {
         messageController != nil
@@ -147,16 +147,19 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
-        scrollToMessage: ChatMessage? = nil
+        scrollToMessage: ChatMessage? = nil,
+        syncOnAppear: Bool = true
     ) {
         self.channelController = channelController
         if InjectedValues[\.utils].shouldSyncChannelControllerOnAppear(channelController)
-            && messageController == nil {
+            && messageController == nil && syncOnAppear {
             channelController.synchronize()
         }
         if let messageController = messageController {
             self.messageController = messageController
-            messageController.synchronize()
+            if syncOnAppear {
+                messageController.synchronize()
+            }
             channelDataSource = MessageThreadDataSource(
                 channelController: channelController,
                 messageController: messageController
@@ -496,8 +499,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     func dataSource(
         channelDataSource: ChannelDataSource,
-        didUpdateChannel channel: EntityChange<ChatChannel>,
-        channelController: ChatChannelController
+        didUpdateChannel channel: EntityChange<ChatChannel>
     ) {
         self.channel = channel.item
         checkReadIndicators(for: channel)
@@ -633,7 +635,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func checkReadIndicators(for channel: EntityChange<ChatChannel>) {
+    internal func checkReadIndicators(for channel: EntityChange<ChatChannel>) {
         switch channel {
         case let .update(chatChannel):
             let newReadsString = chatChannel.readsString
@@ -664,7 +666,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func checkOnlineIndicator() {
+    internal func checkOnlineIndicator() {
         guard let channel else { return }
         let updated = !channel.lastActiveMembers.filter { member in
             member.id != chatClient.currentUserId && member.isOnline
@@ -686,7 +688,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func checkHeaderType() {
+    internal func checkHeaderType() {
         guard let channel = channel else {
             return
         }
@@ -716,7 +718,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func checkUnreadCount() {
+    internal func checkUnreadCount() {
         guard !isMessageThread else { return }
         
         guard let channel = channelController.channel else { return }
@@ -807,7 +809,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func checkTypingIndicator() {
+    internal func checkTypingIndicator() {
         guard let channel = channel else { return }
         let shouldShow = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
             && utils.messageListConfig.typingIndicatorPlacement == .bottomOverlay
@@ -817,7 +819,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
     
-    private func updateScrolledIdToNewestMessage() {
+    internal func updateScrolledIdToNewestMessage() {
         if scrolledId != nil {
             scrolledId = nil
         }
@@ -919,4 +921,67 @@ extension Notification.Name {
     ///
     /// When a sheet is presented, the message cell is not reloaded.
     static let messageSheetShownNotification = Notification.Name("messageSheetShownNotification")
+}
+
+/// View model for livestream channels using `LivestreamChannelController`.
+open class LivestreamChannelViewModel: ChatChannelViewModel {
+    @Injected(\.chatClient) private var livestreamChatClient
+    
+    /// The livestream channel controller.
+    public let livestreamChannelController: LivestreamChannelController
+    
+    public init(
+        livestreamChannelController: LivestreamChannelController
+    ) {
+        self.livestreamChannelController = livestreamChannelController
+        
+        // Create a temporary ChatChannelController to satisfy the parent initializer
+        // The parent class requires ChatChannelController, but we'll use LivestreamChannelController
+        // for all operations. We need a valid controller to pass to super.init.
+        let tempController: ChatChannelController
+        if let cid = livestreamChannelController.cid {
+            tempController = livestreamChannelController.client.channelController(for: cid)
+        } else {
+            tempController = livestreamChannelController.client.channelController(for: ChannelId(type: .livestream, id: UUID().uuidString))
+        }
+        
+        super.init(
+            channelController: tempController,
+            messageController: nil,
+            scrollToMessage: nil,
+            syncOnAppear: false
+        )
+
+        livestreamChannelController.synchronize()
+
+        Task { @MainActor in
+            let dataSource = LivestreamChannelDataSource(controller: livestreamChannelController)
+            channelDataSource = dataSource
+            channelDataSource.delegate = self
+            self.messages = self.channelDataSource.messages
+        }
+
+        // Update channel from livestream controller
+        channel = livestreamChannelController.channel
+    }
+
+    override public func scrollToLastMessage() {
+        updateScrolledIdToNewestMessage()
+    }
+
+    override func dataSource(
+        channelDataSource: any ChannelDataSource,
+        didUpdateChannel channel: EntityChange<ChatChannel>
+    ) {
+        self.channel = channel.item
+        checkHeaderType()
+        checkOnlineIndicator()
+    }
+
+    override public func checkUnreadCount() {
+        // Livestream channels don't support read receipts, so skip unread count logic
+        guard !isMessageThread else { return }
+        guard livestreamChannelController.channel != nil else { return }
+        // Skip read receipt logic for livestream
+    }
 }
