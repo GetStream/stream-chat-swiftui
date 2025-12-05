@@ -10,6 +10,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @StateObject var messageViewModel: MessageViewModel
     @Environment(\.channelTranslationLanguage) var translationLanguage
     @Environment(\.highlightedMessageId) var highlightedMessageId
+    @Environment(\.messageListSwipe) var messageListSwipe
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -32,7 +33,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @State private var computeFrame = false
     @State private var offsetX: CGFloat = 0
     @State private var offsetYAvatar: CGFloat = 0
-    @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
     private var paddingValue: CGFloat {
@@ -129,6 +129,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 .onChange(of: computeFrame, perform: { _ in
                                     frame = proxy.frame(in: .global)
                                 })
+                                .onChange(of: messageListSwipe, perform: { messageListSwipe in
+                                    handleMessageListSwipe(messageListSwipe, geometry: proxy)
+                                })
                         }
                     )
                     .onTapGesture(count: 2) {
@@ -140,40 +143,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         handleGestureForMessage(showsMessageActions: true)
                     })
                     .offset(x: min(self.offsetX, maximumHorizontalSwipeDisplacement))
-                    .simultaneousGesture(
-                        DragGesture(
-                            minimumDistance: minimumSwipeDistance,
-                            coordinateSpace: .local
-                        )
-                        .updating($offset) { (value, gestureState, _) in
-                            guard messageViewModel.isSwipeToQuoteReplyPossible else {
-                                return
-                            }
-                            // Using updating since onEnded is not called if the gesture is canceled.
-                            let diff = CGSize(
-                                width: value.location.x - value.startLocation.x,
-                                height: value.location.y - value.startLocation.y
-                            )
-
-                            if diff == .zero {
-                                gestureState = .zero
-                            } else {
-                                gestureState = value.translation
-                            }
-                        }
-                    )
-                    .onChange(of: offset, perform: { _ in
-                        if !channel.config.quotesEnabled {
-                            return
-                        }
-
-                        if offset == .zero {
-                            // gesture ended or cancelled
-                            setOffsetX(value: 0)
-                        } else {
-                            dragChanged(to: offset.width)
-                        }
-                    })
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
 
@@ -350,6 +319,18 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
+    }
+    
+    private func handleMessageListSwipe(_ messageListSwipe: MessageListSwipe?, geometry: GeometryProxy) {
+        guard messageViewModel.isSwipeToQuoteReplyPossible else { return }
+        guard let messageListSwipe else { return }
+        // The view is moving during the swipe handling, therefore we skip the contains check if it is in progress
+        guard offsetX > 0 || geometry.frame(in: .global).contains(messageListSwipe.startLocation) else { return }
+        if messageListSwipe.horizontalOffset == 0 {
+            setOffsetX(value: 0)
+        } else {
+            dragChanged(to: messageListSwipe.horizontalOffset)
+        }
     }
 
     private func dragChanged(to value: CGFloat) {

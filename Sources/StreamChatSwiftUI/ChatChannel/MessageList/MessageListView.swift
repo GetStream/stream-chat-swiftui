@@ -36,6 +36,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var scrollDirection = ScrollDirection.up
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
+    @State private var messageListSwipe: MessageListSwipe?
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -191,6 +192,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 isLast: !showsLastInGroupInfo && message == messages.last
                             )
                             .environment(\.channelTranslationLanguage, channel.membership?.language)
+                            .environment(\.messageListSwipe, messageListSwipe)
                             .onAppear {
                                 if index == nil {
                                     index = messageListDateUtils.index(for: message, in: messages)
@@ -310,6 +312,20 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     }
                 }
+                .if(channel.config.quotesEnabled, transform: { view in
+                    view.simultaneousGesture(
+                        DragGesture(
+                            minimumDistance: utils.messageListConfig.messageDisplayOptions.minimumSwipeGestureDistance,
+                            coordinateSpace: .global
+                        )
+                        .onChanged { value in
+                            messageListSwipe = MessageListSwipe(startLocation: value.startLocation, horizontalOffset: value.translation.width)
+                        }
+                        .onEnded { value in
+                            messageListSwipe = MessageListSwipe(startLocation: value.startLocation, horizontalOffset: 0)
+                        }
+                    )
+                })
                 .accessibilityIdentifier("MessageListScrollView")
             }
 
@@ -651,6 +667,15 @@ private struct MessageViewModelKey: EnvironmentKey {
     static let defaultValue: MessageViewModel? = nil
 }
 
+private struct MessageListSwipeKey: EnvironmentKey {
+    static let defaultValue: MessageListSwipe? = nil
+}
+
+struct MessageListSwipe: Equatable {
+    let startLocation: CGPoint
+    let horizontalOffset: CGFloat
+}
+
 extension EnvironmentValues {
     var channelTranslationLanguage: TranslationLanguage? {
         get {
@@ -667,6 +692,20 @@ extension EnvironmentValues {
         }
         set {
             self[MessageViewModelKey.self] = newValue
+        }
+    }
+    
+    /// Propagates the drag state to message items.
+    ///
+    /// - Important: Since iOS 26 simultaneous gestures do not update ancestors.
+    /// The gesture handler should be attached to the ScrollView and then propagating
+    /// the state to items which decide if the drag should be handled.
+    var messageListSwipe: MessageListSwipe? {
+        get {
+            self[MessageListSwipeKey.self]
+        }
+        set {
+            self[MessageListSwipeKey.self] = newValue
         }
     }
 }
