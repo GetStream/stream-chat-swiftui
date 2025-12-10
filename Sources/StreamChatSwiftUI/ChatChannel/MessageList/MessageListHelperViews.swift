@@ -100,11 +100,18 @@ public struct MessageReadIndicatorView: View {
     
     var readUsers: [ChatUser]
     var showReadCount: Bool
+    var showDelivered: Bool
     var localState: LocalMessageState?
     
-    public init(readUsers: [ChatUser], showReadCount: Bool, localState: LocalMessageState? = nil) {
+    public init(
+        readUsers: [ChatUser],
+        showReadCount: Bool,
+        showDelivered: Bool = false,
+        localState: LocalMessageState? = nil
+    ) {
         self.readUsers = readUsers
         self.showReadCount = showReadCount
+        self.showDelivered = showDelivered
         self.localState = localState
     }
     
@@ -135,7 +142,7 @@ public struct MessageReadIndicatorView: View {
     }
     
     private var image: UIImage {
-        shouldShowReads ? images.readByAll : (isMessageSending ? images.messageReceiptSending : images.messageSent)
+        shouldShowReads || showDelivered ? images.readByAll : (isMessageSending ? images.messageReceiptSending : images.messageSent)
     }
 
     private var isMessageSending: Bool {

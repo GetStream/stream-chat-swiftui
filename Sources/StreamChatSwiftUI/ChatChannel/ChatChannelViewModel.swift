@@ -50,13 +50,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private var channelName = ""
     private var onlineIndicatorShown = false
     private var lastReadMessageId: String?
-    var throttler = Throttler(interval: 3, broadcastLatestEvent: true)
+    var throttler = Throttler(interval: 3, broadcastLatestEvent: true, queue: .main)
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?
     
     @Published public var scrolledId: String?
+    @Published public var highlightedMessageId: String?
     @Published public var listId = UUID().uuidString
+    // A boolean to skip highlighting of a message when scrolling to it.
+    // This is used for scenarios when scrolling to message Id should not highlight it.
+    var skipHighlightMessageId: String?
 
     @Published public var showScrollToLatestButton = false
     @Published var showAlertBanner = false
@@ -172,6 +176,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 self?.messageCachingUtils.jumpToReplyId = scrollToMessage.messageId
             } else if messageController != nil, let jumpToReplyId = self?.messageCachingUtils.jumpToReplyId {
                 self?.scrolledId = jumpToReplyId
+                // Clear scroll ID after 2 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.scrolledId = nil
+                }
+                self?.highlightMessage(withId: jumpToReplyId)
                 self?.messageCachingUtils.jumpToReplyId = nil
             } else if messageController == nil {
                 self?.scrolledId = scrollToMessage?.messageId
@@ -232,6 +241,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {
             threadMessage = message
             threadMessageShown = true
+
+            // Only set jumpToReplyId if there's a specific reply message to highlight
+            // (for showReplyInChannel messages). The parent message should never be highlighted.
+            if let replyMessage = notification.userInfo?[MessageRepliesConstants.threadReplyMessage] as? ChatMessage {
+                messageCachingUtils.jumpToReplyId = replyMessage.messageId
+            }
         }
     }
     
@@ -297,9 +312,11 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                 if scrolledId == nil {
                     scrolledId = messageId
                 }
+                // Clear scroll ID after 2 seconds
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.scrolledId = nil
                 }
+                highlightMessage(withId: messageId)
                 return true
             } else {
                 let message = channelController.dataStore.message(id: baseId)
@@ -325,16 +342,36 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
                     if toJumpId == baseId, let message = self?.channelController.dataStore.message(id: toJumpId) {
                         toJumpId = message.messageId
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                         self?.scrolledId = toJumpId
                         self?.loadingMessagesAround = false
+                        self?.highlightMessage(withId: toJumpId)
                     }
                 }
                 return false
             }
         }
     }
-    
+
+    /// Highlights the message background.
+    ///
+    /// - Parameter messageId: The ID of the message to highlight.
+    public func highlightMessage(withId messageId: MessageId) {
+        if skipHighlightMessageId == messageId {
+            skipHighlightMessageId = nil
+            return
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.highlightedMessageId = messageId
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+            withAnimation {
+                self?.highlightedMessageId = nil
+            }
+        }
+    }
+
     open func handleMessageAppear(index: Int, scrollDirection: ScrollDirection) {
         if index >= channelDataSource.messages.count || loadingMessagesAround {
             return
@@ -519,7 +556,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     // MARK: - private
-    
+
     private func checkForOlderMessages(index: Int) {
         guard index >= channelDataSource.messages.count - 25 else { return }
         guard !loadingPreviousMessages else { return }
@@ -796,14 +833,12 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     deinit {
+        throttler.cancel()
         messageCachingUtils.clearCache()
         if messageController == nil {
             utils.channelControllerFactory.clearCurrentController()
             cleanupAudioPlayer()
             ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-            if !channelDataSource.hasLoadedAllNextMessages {
-                channelDataSource.loadFirstPage { _ in }
-            }
         }
     }
 }

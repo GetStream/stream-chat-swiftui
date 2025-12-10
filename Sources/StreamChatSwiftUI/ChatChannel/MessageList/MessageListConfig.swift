@@ -26,6 +26,7 @@ public struct MessageListConfig {
         iPadSplitViewEnabled: Bool = true,
         scrollingAnchor: UnitPoint = .center,
         showNewMessagesSeparator: Bool = true,
+        highlightMessageWhenJumping: Bool = true,
         handleTabBarVisibility: Bool = true,
         messageListAlignment: MessageListAlignment = .standard,
         uniqueReactionsEnabled: Bool = false,
@@ -57,6 +58,7 @@ public struct MessageListConfig {
         self.iPadSplitViewEnabled = iPadSplitViewEnabled
         self.scrollingAnchor = scrollingAnchor
         self.showNewMessagesSeparator = showNewMessagesSeparator
+        self.highlightMessageWhenJumping = highlightMessageWhenJumping
         self.handleTabBarVisibility = handleTabBarVisibility
         self.messageListAlignment = messageListAlignment
         self.uniqueReactionsEnabled = uniqueReactionsEnabled
@@ -121,6 +123,11 @@ public struct MessageListConfig {
 
     /// A boolean value that determines if download action is shown for file attachments.
     public let downloadFileAttachmentsEnabled: Bool
+
+    /// Highlights the message background when jumping to a message.
+    ///
+    /// By default it is enabled and it uses the color from `ColorPalette.messageCellHighlightBackground`.
+    public let highlightMessageWhenJumping: Bool
 }
 
 /// Contains information about the message paddings.

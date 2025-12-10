@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-struct AddedVoiceRecordingsView: View {
+public struct AddedVoiceRecordingsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     

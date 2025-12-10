@@ -534,14 +534,126 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         let message2 = ChatMessage.mock()
         let channelController = makeChannelController(messages: [message1, message2])
         let viewModel = ChatChannelViewModel(channelController: channelController)
-        
+
         // When
         let shouldJump = viewModel.jumpToMessage(messageId: .unknownMessageId)
-    
+
         // Then
         XCTAssert(shouldJump == false)
     }
-    
+
+    func test_chatChannelVM_jumpToMessage_setsHighlightedMessageId() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let testExpectation = XCTestExpectation(description: "Highlight should be set")
+        testExpectation.assertForOverFulfill = false
+
+        // When
+        let shouldJump = viewModel.jumpToMessage(messageId: message2.messageId)
+
+        // Then
+        XCTAssert(shouldJump == true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            XCTAssertEqual(viewModel.highlightedMessageId, message2.messageId)
+            testExpectation.fulfill()
+        }
+
+        wait(for: [testExpectation], timeout: 1.0)
+    }
+
+    func test_chatChannelVM_jumpToMessage_clearsHighlightedMessageId() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let testExpectation = XCTestExpectation(description: "Highlight should be cleared")
+
+        // When
+        _ = viewModel.jumpToMessage(messageId: message2.messageId)
+
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            XCTAssertNil(viewModel.highlightedMessageId)
+            testExpectation.fulfill()
+        }
+
+        wait(for: [testExpectation], timeout: 1.5)
+    }
+
+    func test_chatChannelVM_jumpToMessage_setsScrolledId() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        _ = viewModel.jumpToMessage(messageId: message2.messageId)
+
+        // Then
+        XCTAssertEqual(viewModel.scrolledId, message2.messageId)
+    }
+
+    func test_chatChannelVM_selectedMessageThread_opensThread() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique)
+        )
+
+        // When
+        NotificationCenter.default.post(
+            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            object: nil,
+            userInfo: [MessageRepliesConstants.selectedMessage: message]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.threadMessage, message)
+        XCTAssertTrue(viewModel.threadMessageShown)
+    }
+
+    func test_chatChannelVM_selectedMessageThread_withThreadReplyMessage_opensThread() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let parentMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Parent message",
+            author: .mock(id: .unique)
+        )
+        let replyMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Reply message",
+            author: .mock(id: .unique),
+            parentMessageId: parentMessage.id
+        )
+
+        // When
+        NotificationCenter.default.post(
+            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            object: nil,
+            userInfo: [
+                MessageRepliesConstants.selectedMessage: parentMessage,
+                MessageRepliesConstants.threadReplyMessage: replyMessage
+            ]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.threadMessage, parentMessage)
+        XCTAssertTrue(viewModel.threadMessageShown)
+    }
+
     func test_chatChannelVM_crashWhenIndexAccess() {
         // Given
         let message1 = ChatMessage.mock()
@@ -658,6 +770,109 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         
         // Then
         XCTAssertEqual(0, channelController.markReadCallCount)
+    }
+
+    func test_chatChannelVM_handleMessageAppear_doesNotCrashWhenDeallocated() {
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.hasLoadedAllNextMessages_mock = nil
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            unreadCount: ChannelUnreadCount(messages: 1, mentions: 0)
+        )
+
+        for _ in 0..<1000 {
+            autoreleasepool {
+                let viewModel = ChatChannelViewModel(channelController: channelController)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+            }
+        }
+        
+        // Then - Should not crash
+        XCTAssert(true)
+    }
+
+    // MARK: - highlightMessage Tests
+    
+    func test_highlightMessage_highlightsWhenSkipHighlightMessageIdIsNotSet() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let testExpectation = XCTestExpectation(description: "Message should be highlighted")
+        
+        // When
+        viewModel.highlightMessage(withId: message.messageId)
+        
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.highlightedMessageId, message.messageId)
+            testExpectation.fulfill()
+        }
+        
+        wait(for: [testExpectation], timeout: defaultTimeout)
+    }
+    
+    func test_highlightMessage_highlightsWhenSkipHighlightMessageIdDoesNotMatch() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.skipHighlightMessageId = message1.messageId
+        let testExpectation = XCTestExpectation(description: "Message should be highlighted")
+        
+        // When
+        viewModel.highlightMessage(withId: message2.messageId)
+        
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.highlightedMessageId, message2.messageId)
+            XCTAssertEqual(viewModel.skipHighlightMessageId, message1.messageId)
+            testExpectation.fulfill()
+        }
+        
+        wait(for: [testExpectation], timeout: defaultTimeout)
+    }
+    
+    func test_highlightMessage_doesNotHighlightWhenSkipHighlightMessageIdMatches() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.skipHighlightMessageId = message.messageId
+        let testExpectation = XCTestExpectation(description: "Message should not be highlighted")
+        
+        // When
+        viewModel.highlightMessage(withId: message.messageId)
+        
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertNil(viewModel.highlightedMessageId)
+            testExpectation.fulfill()
+        }
+        
+        wait(for: [testExpectation], timeout: defaultTimeout)
+    }
+    
+    func test_highlightMessage_clearsSkipHighlightMessageIdAfterSkipping() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.skipHighlightMessageId = message.messageId
+        
+        // When
+        viewModel.highlightMessage(withId: message.messageId)
+        
+        // Then
+        XCTAssertNil(viewModel.skipHighlightMessageId)
+        XCTAssertNil(viewModel.highlightedMessageId)
     }
 
     // MARK: - private

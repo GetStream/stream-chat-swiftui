@@ -59,7 +59,8 @@ public struct ColorPalette {
     public var highlightedBackground: UIColor = .streamGrayGainsboro
     public var highlightedAccentBackground: UIColor = .streamAccentBlue
     public var highlightedAccentBackground1: UIColor = .streamBlueAlice
-    public var pinnedBackground: UIColor = .streamHighlight
+    public var pinnedBackground: UIColor = .streamYellowBackground
+    public var messageCellHighlightBackground: UIColor = .streamYellowBackground
 
     // MARK: - Borders and shadows
 
@@ -166,7 +167,7 @@ private extension UIColor {
     static let streamAccentGreen = mode(0x20e070, 0x20e070)
     static let streamGrayDisabledText = mode(0x72767e, 0x72767e)
     static let streamInnerBorder = mode(0xdbdde1, 0x272a30)
-    static let streamHighlight = mode(0xfbf4dd, 0x333024)
+    static let streamYellowBackground = mode(0xfbf4dd, 0x333024)
     static let streamDisabled = mode(0xb4b7bb, 0x4c525c)
 
     // Currently we are not using the correct shadow color from figma's color palette. This is to avoid

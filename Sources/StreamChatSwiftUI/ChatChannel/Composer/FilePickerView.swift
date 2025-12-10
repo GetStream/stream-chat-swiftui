@@ -9,6 +9,10 @@ import UniformTypeIdentifiers
 public struct FilePickerView: UIViewControllerRepresentable {
     @Injected(\.chatClient) var client
     @Binding var fileURLs: [URL]
+    
+    public init(fileURLs: Binding<[URL]>) {
+        self._fileURLs = fileURLs
+    }
 
     public func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
         let picker = UIDocumentPickerViewController(forOpeningContentTypes: openingContentTypes)
