@@ -691,6 +691,9 @@ import SwiftUI
             fetchOptions.predicate = predicate
         }
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        if let maxGalleryAssetsCount = utils.composerConfig.maxGalleryAssetsCount {
+            fetchOptions.fetchLimit = maxGalleryAssetsCount
+        }
         let assets = PHAsset.fetchAssets(with: fetchOptions)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             self?.imageAssets = assets
@@ -876,6 +879,10 @@ import SwiftUI
         }
         
         return checkAttachmentSize(with: url)
+    }
+    
+    public func updateAddedAssets(_ assets: [AddedAsset]) {
+        addedAssets = assets
     }
     
     private func checkAttachmentSize(with url: URL?) -> Bool {

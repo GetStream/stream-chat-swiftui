@@ -50,7 +50,7 @@ import SwiftUI
     private var channelName = ""
     private var onlineIndicatorShown = false
     private var lastReadMessageId: String?
-    var throttler = Throttler(interval: 3, broadcastLatestEvent: true)
+    var throttler = Throttler(interval: 3, broadcastLatestEvent: true, queue: .main)
     
     public var channelController: ChatChannelController
     public var messageController: ChatMessageController?

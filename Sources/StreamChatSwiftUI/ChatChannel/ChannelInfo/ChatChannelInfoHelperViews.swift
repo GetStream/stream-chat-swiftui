@@ -76,13 +76,15 @@ public struct ChatInfoOptionsView<Factory: ViewFactory>: View {
 
             Divider()
 
-            ChannelInfoItemView(
-                icon: images.muted,
-                title: viewModel.mutedText,
-                verticalPadding: 12
-            ) {
-                Toggle(isOn: $viewModel.muted) {
-                    EmptyView()
+            if viewModel.shouldShowMuteChannelButton {
+                ChannelInfoItemView(
+                    icon: images.muted,
+                    title: viewModel.mutedText,
+                    verticalPadding: 12
+                ) {
+                    Toggle(isOn: $viewModel.muted) {
+                        EmptyView()
+                    }
                 }
             }
 

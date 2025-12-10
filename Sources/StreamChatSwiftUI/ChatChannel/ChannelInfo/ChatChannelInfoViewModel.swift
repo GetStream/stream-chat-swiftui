@@ -44,6 +44,10 @@ import SwiftUI
             channel.ownCapabilities.contains(.leaveChannel)
         }
     }
+    
+    open var shouldShowMuteChannelButton: Bool {
+        channel.ownCapabilities.contains(.muteChannel)
+    }
 
     open var canRenameChannel: Bool {
         channel.ownCapabilities.contains(.updateChannel)
@@ -88,7 +92,7 @@ import SwiftUI
         }
     }
 
-    public var leaveButtonTitle: String {
+    open var leaveButtonTitle: String {
         if channel.isDirectMessageChannel {
             L10n.Alert.Actions.deleteChannelTitle
         } else {
@@ -96,7 +100,7 @@ import SwiftUI
         }
     }
 
-    public var leaveConversationDescription: String {
+    open var leaveConversationDescription: String {
         if channel.isDirectMessageChannel {
             L10n.Alert.Actions.deleteChannelMessage
         } else {

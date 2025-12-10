@@ -16,7 +16,7 @@ import UIKit
     @Injected(\.utils) private var utils: Utils
 
     /// Context provided utils.
-    lazy var channelNamer = utils.channelNamer
+    internal lazy var channelNamer = utils.channelNamer
 
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
@@ -25,18 +25,24 @@ import UIKit
 
     /// Used when screen is shown from a deeplink.
     private var selectedChannelId: String?
-
-    /// Temporarly holding changes while message list is shown.
-    private var queuedChannelsChanges = [ChatChannel]()
-
+    
     private var timer: Timer?
 
     /// Controls loading the channels.
     public private(set) var loadingNextChannels: Bool = false
 
-    /// Checks if the queued changes are completely applied.
-    private var markDirty = false
-
+    /// True, if channel updates were skipped and are applied when selectedChannel is set to nil
+    private var skippedChannelUpdates = false
+    
+    /// True, if channel updates can be skipped for optimizing view refreshes while showing message list.
+    ///
+    /// - Important: Only meant for stacked navigation view style.
+    private var canSkipChannelUpdates: Bool {
+        guard isIphone || !utils.messageListConfig.iPadSplitViewEnabled else { return false }
+        guard selectedChannel != nil || !searchText.isEmpty else { return false }
+        return true
+    }
+    
     /// Index of the selected channel.
     private var selectedChannelIndex: Int?
     
@@ -44,23 +50,15 @@ import UIKit
     @Published public var scrolledChannelId: String?
 
     /// Published variables.
-    @Published public var channels = [ChatChannel]() {
-        didSet {
-            if !markDirty {
-                queuedChannelsChanges = []
-            } else {
-                markDirty = false
-            }
-        }
-    }
+    @Published public var channels = [ChatChannel]()
 
     @Published public var selectedChannel: ChannelSelectionInfo? {
         willSet {
             hideTabBar = newValue != nil
             if selectedChannel != nil && newValue == nil {
                 // pop happened, apply the queued changes.
-                if !queuedChannelsChanges.isEmpty {
-                    channels = queuedChannelsChanges
+                if skippedChannelUpdates {
+                    updateChannels()
                 }
             }
             if newValue == nil {
@@ -147,7 +145,7 @@ import UIKit
     ) {
         self.searchType = searchType
         self.selectedChannelId = selectedChannelId
-        if let channelListController {
+        if let channelListController = channelListController {
             controller = channelListController
         } else {
             makeDefaultChannelListController()
@@ -178,8 +176,8 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             controller?.loadNextChannels(limit: 30) { [weak self] _ in
-                guard let self else { return }
-                loadingNextChannels = false
+                guard let self = self else { return }
+                self.loadingNextChannels = false
             }
         }
     }
@@ -317,8 +315,8 @@ import UIKit
     // MARK: - private
 
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
-        if selectedChannel != nil || !searchText.isEmpty {
-            queuedChannelsChanges = controller.channels
+        if canSkipChannelUpdates {
+            skippedChannelUpdates = true
             updateChannelsIfNeeded()
         } else {
             channels = controller.channels
@@ -370,15 +368,15 @@ import UIKit
         loading = channels.isEmpty
 
         controller?.synchronize { [weak self] error in
-            guard let self else { return }
-            loading = false
+            guard let self = self else { return }
+            self.loading = false
             if error != nil {
                 // handle error
-                setChannelAlertType(.error)
+                self.setChannelAlertType(.error)
             } else {
                 // access channels
-                updateChannels()
-                checkForDeeplinks()
+                self.updateChannels()
+                self.checkForDeeplinks()
             }
         }
     }
@@ -406,7 +404,7 @@ import UIKit
     }
 
     private func loadAdditionalMessageSearchResults(index: Int) {
-        guard let messageSearchController else {
+        guard let messageSearchController = messageSearchController else {
             return
         }
 
@@ -417,14 +415,14 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             messageSearchController.loadNextMessages { [weak self] _ in
-                guard let self else { return }
-                loadingNextChannels = false
+                guard let self = self else { return }
+                self.loadingNextChannels = false
             }
         }
     }
 
     private func loadAdditionalChannelSearchResults(index: Int) {
-        guard let channelListSearchController else {
+        guard let channelListSearchController = self.channelListSearchController else {
             return
         }
 
@@ -435,9 +433,9 @@ import UIKit
         if !loadingNextChannels {
             loadingNextChannels = true
             channelListSearchController.loadNextChannels { [weak self] _ in
-                guard let self else { return }
-                loadingNextChannels = false
-                updateChannelSearchResults()
+                guard let self = self else { return }
+                self.loadingNextChannels = false
+                self.updateChannelSearchResults()
             }
         }
     }
@@ -543,11 +541,11 @@ import UIKit
     }
 
     private func handleChannelAppearance() {
-        if !queuedChannelsChanges.isEmpty && selectedChannel == nil {
-            channels = queuedChannelsChanges
-        } else if !queuedChannelsChanges.isEmpty {
-            handleQueuedChanges()
-        } else if queuedChannelsChanges.isEmpty && selectedChannel != nil {
+        if skippedChannelUpdates && selectedChannel == nil {
+            updateChannels()
+        } else if skippedChannelUpdates {
+            updateSelectedChannelData()
+        } else if !skippedChannelUpdates && selectedChannel != nil {
             if selectedChannel?.injectedChannelInfo == nil {
                 selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
             }
@@ -564,10 +562,10 @@ import UIKit
         }
     }
 
-    private func handleQueuedChanges() {
+    private func updateSelectedChannelData() {
         let selected = selectedChannel?.channel
         var index: Int?
-        var temp = Array(queuedChannelsChanges)
+        var temp = Array(controller?.channels ?? [])
         for i in 0..<temp.count {
             let current = temp[i]
             if current.cid == selected?.cid {
@@ -585,7 +583,6 @@ import UIKit
         if let index, let selected {
             temp[index] = selected
         }
-        markDirty = true
         channels = temp
     }
     
@@ -624,7 +621,7 @@ import UIKit
     }
 }
 
-let dismissChannel = "io.getstream.dismissChannel"
+internal let dismissChannel = "io.getstream.dismissChannel"
 
 private let hideTabBarNotification = "io.getstream.hideTabBar"
 

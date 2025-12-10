@@ -3,7 +3,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Open `ChatChannelInfoViewModel.leaveButtonTitle` and `ChatChannelInfoViewModel.leaveConversationDescription` [#1018](https://github.com/GetStream/stream-chat-swiftui/pull/1018)
+### 🐞 Fixed
+- Use `muteChannel` capability for showing mute channel button in the `ChatChannelInfoView` [#1018](https://github.com/GetStream/stream-chat-swiftui/pull/1018)
+
+# [4.94.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.94.0)
+_December 02, 2025_
+
+### ✅ Added
+- Add the `maxGalleryAssetsCount` to the composer config [#1053](https://github.com/GetStream/stream-chat-swiftui/pull/1053)
+- Expose `QuotedMessageViewContainer` [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
+- Add `QuotedMessageContentView` and `ViewFactory.makeQuotedMessageContentView()` [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
+- Allow customizing the attachment size and avatar size of the quoted message view [#1056](https://github.com/GetStream/stream-chat-swiftui/pull/1056)
+### 🐞 Fixed
+- Fix channel list skipping some updates on iPad [#1059](https://github.com/GetStream/stream-chat-swiftui/pull/1059)
+
+# [4.93.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.93.0)
+_November 18, 2025_
+
+### ✅ Added
+- Expose `AddedVoiceRecordingsView` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
+- Expose `FilePickerView.init(fileURLs:)` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
+- Add `MessageComposerViewModel.updateAddedAssets()` [#1049](https://github.com/GetStream/stream-chat-swiftui/pull/1049)
+
+### 🐞 Fixed
+- Fix `Throttler` crash in `ChatChannelViewModel.handleMessageAppear()` [#1050](https://github.com/GetStream/stream-chat-swiftui/pull/1050)
+- Remove unnecessary channel query call when leaving the channel view in a mid-page [#1050](https://github.com/GetStream/stream-chat-swiftui/pull/1050)
+- Fix crash when force unwrapping `messageDisplayInfo` in `ChatChannelView` [#1052](https://github.com/GetStream/stream-chat-swiftui/pull/1052)
 
 # [4.92.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.92.0)
 _November 07, 2025_

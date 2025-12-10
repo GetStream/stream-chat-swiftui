@@ -21,7 +21,7 @@ import XCTest
         let channel = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel, .updateChannelMembers],
+            ownCapabilities: [.deleteChannel, .updateChannel, .updateChannelMembers, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -43,6 +43,7 @@ import XCTest
         )
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
+            ownCapabilities: [.muteChannel],
             lastActiveMembers: members
         )
 
@@ -63,6 +64,7 @@ import XCTest
         )
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
+            ownCapabilities: [.muteChannel],
             lastActiveMembers: members
         )
 
@@ -82,6 +84,7 @@ import XCTest
         )
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
+            ownCapabilities: [.muteChannel],
             lastActiveMembers: members
         )
 
@@ -101,6 +104,7 @@ import XCTest
         )
         let channel = ChatChannel.mockDMChannel(
             name: "Direct channel",
+            ownCapabilities: [.muteChannel],
             lastActiveMembers: members,
             muteDetails: MuteDetails(createdAt: Date(), updatedAt: Date(), expiresAt: nil)
         )
@@ -123,7 +127,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.deleteChannel, .updateChannel, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -146,7 +150,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.leaveChannel, .updateChannel],
+            ownCapabilities: [.leaveChannel, .updateChannel, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -170,7 +174,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.leaveChannel, .updateChannel],
+            ownCapabilities: [.leaveChannel, .updateChannel, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -193,7 +197,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.deleteChannel, .updateChannel, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -219,7 +223,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.deleteChannel, .updateChannel, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -244,7 +248,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.deleteChannel, .updateChannel, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -268,7 +272,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.updateChannel, .leaveChannel, .updateChannelMembers],
+            ownCapabilities: [.updateChannel, .leaveChannel, .updateChannelMembers, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -297,7 +301,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.deleteChannel, .updateChannel],
+            ownCapabilities: [.deleteChannel, .muteChannel, .updateChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -322,7 +326,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.updateChannelMembers],
+            ownCapabilities: [.updateChannelMembers, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -350,7 +354,7 @@ import XCTest
             cid: .unique,
             name: "Test Group",
             config: config,
-            ownCapabilities: [.updateChannelMembers],
+            ownCapabilities: [.updateChannelMembers, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -376,7 +380,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.updateChannelMembers],
+            ownCapabilities: [.updateChannelMembers, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )
@@ -402,7 +406,7 @@ import XCTest
         let group = ChatChannel.mock(
             cid: .unique,
             name: "Test Group",
-            ownCapabilities: [.updateChannelMembers],
+            ownCapabilities: [.updateChannelMembers, .muteChannel],
             lastActiveMembers: members,
             memberCount: members.count
         )

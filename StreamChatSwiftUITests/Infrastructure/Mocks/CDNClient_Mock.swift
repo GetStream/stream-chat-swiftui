@@ -6,6 +6,16 @@ import Foundation
 @testable import StreamChat
 
 final class CDNClient_Mock: CDNClient, @unchecked Sendable {
+    lazy var deleteAttachmentMockFunc = MockFunc.mock(for: deleteAttachment)
+    func deleteAttachment(remoteUrl: URL, completion: @escaping ((any Error)?) -> Void) {
+        deleteAttachmentMockFunc.callAndReturn(
+            (
+                remoteUrl,
+                completion
+            )
+        )
+    }
+
     static var maxAttachmentSize: Int64 = .max
 
     lazy var uploadAttachmentMockFunc = MockFunc.mock(for: uploadAttachment)
