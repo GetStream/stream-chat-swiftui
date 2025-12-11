@@ -772,6 +772,31 @@ class ChatChannelViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(0, channelController.markReadCallCount)
     }
 
+    func test_chatChannelVM_handleMessageAppear_doesNotCrashWhenDeallocated() {
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.hasLoadedAllNextMessages_mock = nil
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            unreadCount: ChannelUnreadCount(messages: 1, mentions: 0)
+        )
+
+        for _ in 0..<1000 {
+            autoreleasepool {
+                let viewModel = ChatChannelViewModel(channelController: channelController)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+                viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+            }
+        }
+        
+        // Then - Should not crash
+        XCTAssert(true)
+    }
+
     // MARK: - highlightMessage Tests
     
     func test_highlightMessage_highlightsWhenSkipHighlightMessageIdIsNotSet() {

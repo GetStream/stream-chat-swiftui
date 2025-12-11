@@ -114,6 +114,49 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         }
     }
+    
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        channel: ChatChannel,
+        viewModel: ChatChannelViewModel,
+        onLongPress: @escaping (MessageDisplayInfo) -> Void = { _ in }
+    ) {
+        self.init(
+            factory: factory,
+            channel: channel,
+            messages: viewModel.messages,
+            messagesGroupingInfo: viewModel.messagesGroupingInfo,
+            scrolledId: Binding(
+                get: { viewModel.scrolledId },
+                set: { viewModel.scrolledId = $0 }
+            ),
+            showScrollToLatestButton: Binding(
+                get: { viewModel.showScrollToLatestButton },
+                set: { viewModel.showScrollToLatestButton = $0 }
+            ),
+            quotedMessage: Binding(
+                get: { viewModel.quotedMessage },
+                set: { viewModel.quotedMessage = $0 }
+            ),
+            currentDateString: viewModel.currentDateString,
+            listId: viewModel.listId,
+            isMessageThread: viewModel.isMessageThread,
+            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+            scrollPosition: Binding(
+                get: { viewModel.scrollPosition },
+                set: { viewModel.scrollPosition = $0 }
+            ),
+            loadingNextMessages: viewModel.loadingNextMessages,
+            firstUnreadMessageId: Binding(
+                get: { viewModel.firstUnreadMessageId },
+                set: { viewModel.firstUnreadMessageId = $0 }
+            ),
+            onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
+            onScrollToBottom: viewModel.scrollToLastMessage,
+            onLongPress: onLongPress,
+            onJumpToMessage: viewModel.jumpToMessage(messageId:)
+        )
+    }
 
     public var body: some View {
         ZStack {
