@@ -14,7 +14,6 @@ sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
 derived_data_path = 'derived_data'
 source_packages_path = 'spm_cache'
-buildcache_xcargs = 'CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++'
 is_localhost = !is_ci
 project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
@@ -262,7 +261,6 @@ lane :test_ui do |options|
     build_for_testing: options[:build_for_testing],
     skip_build: options[:skip_build],
     number_of_retries: options[:record].to_s.empty? ? 1 : nil,
-    xcargs: buildcache_xcargs,
     fail_build: !record_mode
   )
 
@@ -295,8 +293,7 @@ lane :build_test_app_and_frameworks do
     derived_data_path: derived_data_path,
     cloned_source_packages_path: source_packages_path,
     clean: is_localhost,
-    build_for_testing: true,
-    xcargs: buildcache_xcargs
+    build_for_testing: true
   )
 end
 
@@ -325,7 +322,6 @@ lane :test_e2e_mock do |options|
     cloned_source_packages_path: source_packages_path,
     clean: is_localhost,
     test_without_building: options[:test_without_building],
-    xcargs: buildcache_xcargs,
     devices: options[:device],
     prelaunch_simulator: is_ci,
     number_of_retries: 3
@@ -385,8 +381,7 @@ lane :build_demo do |options|
     derived_data_path: derived_data_path,
     cloned_source_packages_path: source_packages_path,
     build_for_testing: true,
-    devices: options[:device],
-    xcargs: buildcache_xcargs
+    devices: options[:device]
   )
 end
 
