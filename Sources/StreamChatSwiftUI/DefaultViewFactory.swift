@@ -1102,6 +1102,7 @@ extension ViewFactory {
         return ChatThreadListNavigatableItem(
             thread: thread,
             threadListItem: ChatThreadListItem(
+                factory: self,
                 viewModel: .init(thread: thread)
             ),
             threadDestination: threadDestination,
@@ -1119,7 +1120,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListLoadingView() -> some View {
-        ChatThreadListLoadingView()
+        ChatThreadListLoadingView(factory: self)
     }
 
     public func makeThreadListContainerViewModifier(viewModel: ChatThreadListViewModel) -> some ViewModifier {
