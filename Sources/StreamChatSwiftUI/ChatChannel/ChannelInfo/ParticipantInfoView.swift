@@ -14,6 +14,18 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
     
     var onDismiss: () -> Void
     
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        participant: ParticipantInfo,
+        actions: [ParticipantAction],
+        onDismiss: @escaping () -> Void
+    ) {
+        self.factory = factory
+        self.participant = participant
+        self.actions = actions
+        self.onDismiss = onDismiss
+    }
+    
     @State private var alertShown = false
     @State private var alertAction: ParticipantAction? {
         didSet {

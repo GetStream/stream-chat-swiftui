@@ -14,6 +14,16 @@ struct ReactionUserView<Factory: ViewFactory>: View {
     var reaction: ChatMessageReaction
     var imageSize: CGFloat
 
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        reaction: ChatMessageReaction,
+        imageSize: CGFloat
+    ) {
+        self.factory = factory
+        self.reaction = reaction
+        self.imageSize = imageSize
+    }
+
     private var isCurrentUser: Bool {
         chatClient.currentUserId == reaction.author.id
     }

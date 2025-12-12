@@ -20,7 +20,11 @@ struct ReactionsUsersView<Factory: ViewFactory>: View {
 
     private let columns: [GridItem]
 
-    init(factory: Factory, message: ChatMessage, maxHeight: CGFloat) {
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        message: ChatMessage,
+        maxHeight: CGFloat
+    ) {
         self.factory = factory
         self.maxHeight = maxHeight
         _viewModel = StateObject(wrappedValue: ReactionsUsersViewModel(message: message))
@@ -30,7 +34,11 @@ struct ReactionsUsersView<Factory: ViewFactory>: View {
         )
     }
 
-    init(factory: Factory, viewModel: ReactionsUsersViewModel, maxHeight: CGFloat) {
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        viewModel: ReactionsUsersViewModel,
+        maxHeight: CGFloat
+    ) {
         self.factory = factory
         self.maxHeight = maxHeight
         _viewModel = StateObject(wrappedValue: viewModel)

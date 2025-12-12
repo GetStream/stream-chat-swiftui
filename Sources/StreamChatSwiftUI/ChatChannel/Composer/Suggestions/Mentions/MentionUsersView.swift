@@ -15,7 +15,11 @@ public struct MentionUsersView<Factory: ViewFactory>: View {
     var users: [ChatUser]
     var userSelected: (ChatUser) -> Void
 
-    public init(factory: Factory, users: [ChatUser], userSelected: @escaping (ChatUser) -> Void) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        users: [ChatUser],
+        userSelected: @escaping (ChatUser) -> Void
+    ) {
         self.factory = factory
         self.users = users
         self.userSelected = userSelected
@@ -60,7 +64,11 @@ public struct MentionUserView<Factory: ViewFactory>: View {
     var user: ChatUser
     var userSelected: (ChatUser) -> Void
 
-    public init(factory: Factory, user: ChatUser, userSelected: @escaping (ChatUser) -> Void) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        user: ChatUser,
+        userSelected: @escaping (ChatUser) -> Void
+    ) {
         self.factory = factory
         self.user = user
         self.userSelected = userSelected

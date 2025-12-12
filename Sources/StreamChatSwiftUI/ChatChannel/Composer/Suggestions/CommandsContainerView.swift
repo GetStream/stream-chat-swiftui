@@ -11,7 +11,11 @@ struct CommandsContainerView<Factory: ViewFactory>: View {
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
 
-    init(factory: Factory, suggestions: [String: Any], handleCommand: @escaping ([String: Any]) -> Void) {
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        suggestions: [String: Any],
+        handleCommand: @escaping ([String: Any]) -> Void
+    ) {
         self.factory = factory
         self.suggestions = suggestions
         self.handleCommand = handleCommand
