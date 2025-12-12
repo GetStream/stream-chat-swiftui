@@ -60,18 +60,28 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         } label: {
             HStack {
                 if !isRightAligned {
-                    MessageAvatarView(
-                        avatarURL: message.threadParticipants.first?.imageURL,
-                        size: .init(width: 16, height: 16)
-                    )
+                    if let participant = message.threadParticipants.first {
+                        let displayInfo = UserDisplayInfo(
+                            id: participant.id,
+                            name: participant.name ?? participant.id,
+                            imageURL: participant.imageURL,
+                            size: .init(width: 16, height: 16)
+                        )
+                        factory.makeMessageAvatarView(for: displayInfo)
+                    }
                 }
                 Text(title)
                     .font(fonts.footnoteBold)
                 if isRightAligned {
-                    MessageAvatarView(
-                        avatarURL: message.threadParticipants.first?.imageURL,
-                        size: .init(width: 16, height: 16)
-                    )
+                    if let participant = message.threadParticipants.first {
+                        let displayInfo = UserDisplayInfo(
+                            id: participant.id,
+                            name: participant.name ?? participant.id,
+                            imageURL: participant.imageURL,
+                            size: .init(width: 16, height: 16)
+                        )
+                        factory.makeMessageAvatarView(for: displayInfo)
+                    }
                 }
             }
             .padding(.horizontal, 16)

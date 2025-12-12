@@ -907,6 +907,7 @@ extension ViewFactory {
         maxHeight: CGFloat
     ) -> some View {
         ReactionsUsersView(
+            factory: self,
             message: message,
             maxHeight: maxHeight
         )
@@ -1022,6 +1023,7 @@ extension ViewFactory {
         handleCommand: @escaping ([String: Any]) -> Void
     ) -> some View {
         CommandsContainerView(
+            factory: self,
             suggestions: suggestions,
             handleCommand: handleCommand
         )
