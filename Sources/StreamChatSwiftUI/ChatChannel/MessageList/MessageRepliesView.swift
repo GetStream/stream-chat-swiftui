@@ -25,7 +25,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var threadReplyMessage: ChatMessage? // The actual reply message (for showReplyInChannel messages)
 
     public init(
-        factory: Factory = DefaultViewFactory.shared,
+        factory: Factory,
         channel: ChatChannel,
         message: ChatMessage,
         replyCount: Int,
