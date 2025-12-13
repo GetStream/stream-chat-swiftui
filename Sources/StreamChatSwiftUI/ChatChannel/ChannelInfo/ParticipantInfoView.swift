@@ -4,14 +4,27 @@
 
 import SwiftUI
 
-struct ParticipantInfoView: View {
+struct ParticipantInfoView<Factory: ViewFactory>: View {
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
     
+    var factory: Factory
     let participant: ParticipantInfo
     var actions: [ParticipantAction]
     
     var onDismiss: () -> Void
+    
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        participant: ParticipantInfo,
+        actions: [ParticipantAction],
+        onDismiss: @escaping () -> Void
+    ) {
+        self.factory = factory
+        self.participant = participant
+        self.actions = actions
+        self.onDismiss = onDismiss
+    }
     
     @State private var alertShown = false
     @State private var alertAction: ParticipantAction? {
@@ -31,13 +44,15 @@ struct ParticipantInfoView: View {
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
                 
-                MessageAvatarView(
-                    avatarURL: participant.chatUser.imageURL,
-                    size: CGSize(width: 64, height: 64),
-                    showOnlineIndicator: participant.chatUser.isOnline
+                let displayInfo = UserDisplayInfo(
+                    id: participant.chatUser.id,
+                    name: participant.chatUser.name ?? participant.chatUser.id,
+                    imageURL: participant.chatUser.imageURL,
+                    size: CGSize(width: 64, height: 64)
                 )
-                .padding()
-                
+                factory.makeMessageAvatarView(for: displayInfo)
+                    .padding()
+
                 VStack {
                     ForEach(actions) { action in
                         Divider()

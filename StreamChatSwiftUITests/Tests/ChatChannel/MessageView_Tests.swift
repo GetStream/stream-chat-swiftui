@@ -478,7 +478,7 @@ class MessageView_Tests: StreamChatTestCase {
         )
 
         // When
-        adjustAppearance() { appearance in
+        adjustAppearance { appearance in
             appearance.colors.messageCurrentUserBackground = [.orange]
             appearance.colors.background8 = .yellow
             appearance.colors.voiceMessageControlBackground = .cyan
@@ -681,7 +681,8 @@ class MessageView_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Message with replies",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            threadParticipants: [.mock(id: .unique)]
         )
 
         // When
@@ -704,7 +705,8 @@ class MessageView_Tests: StreamChatTestCase {
             id: .unique,
             cid: channel.cid,
             text: "Message with replies",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            threadParticipants: [.mock(id: .unique)]
         )
 
         // When
