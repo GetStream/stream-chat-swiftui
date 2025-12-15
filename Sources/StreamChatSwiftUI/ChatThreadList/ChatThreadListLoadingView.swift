@@ -5,15 +5,23 @@
 import SwiftUI
 
 /// The default thread list loading view.
-public struct ChatThreadListLoadingView: View {
+public struct ChatThreadListLoadingView<Factory: ViewFactory>: View {
+    let factory: Factory
+
+    public init(factory: Factory = DefaultViewFactory.shared) {
+        self.factory = factory
+    }
+
     public var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach((0..<10)) { _ in
                     ChatThreadListItemContentView(
+                        factory: factory,
                         channelNameText: placeholder(length: 8),
                         parentMessageText: placeholder(length: 50),
                         unreadRepliesCount: 0,
+                        replyAuthorId: placeholder(length: 8),
                         replyAuthorName: placeholder(length: 8),
                         replyAuthorUrl: URL(string: "url"),
                         replyAuthorIsOnline: false,
