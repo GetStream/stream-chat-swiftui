@@ -16,17 +16,18 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     
     private var cancellables = Set<AnyCancellable>()
     private(set) var animateChanges = false
-    private var loadingVotes = false
-        
-    init(poll: Poll, option: PollOption) {
+    var loadingVotes = false
+
+    init(poll: Poll, option: PollOption, controller: PollVoteListController? = nil) {
         self.poll = poll
         self.option = option
         let query = PollVoteListQuery(
             pollId: poll.id,
-            optionId: option.id
+            optionId: option.id,
+            pagination: .init(pageSize: 25)
         )
-        controller = InjectedValues[\.chatClient].pollVoteListController(query: query)
-        controller.delegate = self
+        self.controller = controller ?? InjectedValues[\.chatClient].pollVoteListController(query: query)
+        self.controller.delegate = self
         refresh()
         
         // No animation for initial load
@@ -41,9 +42,6 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
         controller.synchronize { [weak self] error in
             guard let self else { return }
             self.pollVotes = Array(self.controller.votes)
-            if self.pollVotes.isEmpty {
-                self.loadVotes()
-            }
             if error != nil {
                 self.errorShown = true
             }
@@ -51,10 +49,14 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     }
     
     func onAppear(vote: PollVote) {
-        guard !loadingVotes,
-              let index = pollVotes.firstIndex(where: { $0 == vote }),
-              index > pollVotes.count - 10 else { return }
-        
+        guard let index = pollVotes.firstIndex(where: { $0 == vote }) else {
+            return
+        }
+
+        guard index > pollVotes.count - 10 && pollVotes.count > 25 else {
+            return
+        }
+
         loadVotes()
     }
 
@@ -76,6 +78,10 @@ class PollOptionAllVotesViewModel: ObservableObject, PollVoteListControllerDeleg
     }
 
     private func loadVotes() {
+        if loadingVotes || controller.hasLoadedAllVotes {
+            return
+        }
+
         loadingVotes = true
 
         controller.loadMoreVotes { [weak self] error in

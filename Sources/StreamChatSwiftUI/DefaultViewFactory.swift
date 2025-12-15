@@ -907,6 +907,7 @@ extension ViewFactory {
         maxHeight: CGFloat
     ) -> some View {
         ReactionsUsersView(
+            factory: self,
             message: message,
             maxHeight: maxHeight
         )
@@ -1022,6 +1023,7 @@ extension ViewFactory {
         handleCommand: @escaping ([String: Any]) -> Void
     ) -> some View {
         CommandsContainerView(
+            factory: self,
             suggestions: suggestions,
             handleCommand: handleCommand
         )
@@ -1100,6 +1102,7 @@ extension ViewFactory {
         return ChatThreadListNavigatableItem(
             thread: thread,
             threadListItem: ChatThreadListItem(
+                factory: self,
                 viewModel: .init(thread: thread)
             ),
             threadDestination: threadDestination,
@@ -1117,7 +1120,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListLoadingView() -> some View {
-        ChatThreadListLoadingView()
+        ChatThreadListLoadingView(factory: self)
     }
 
     public func makeThreadListContainerViewModifier(viewModel: ChatThreadListViewModel) -> some ViewModifier {

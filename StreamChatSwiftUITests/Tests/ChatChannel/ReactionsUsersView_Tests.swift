@@ -28,8 +28,12 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = ReactionsUsersView(viewModel: mockViewModel, maxHeight: 140)
-            .frame(width: 250)
+        let view = ReactionsUsersView(
+            factory: DefaultViewFactory.shared,
+            viewModel: mockViewModel,
+            maxHeight: 140
+        )
+        .frame(width: 250)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -58,8 +62,12 @@ class ReactionsUsersView_Tests: StreamChatTestCase {
         )
 
         // When
-        let view = ReactionsUsersView(viewModel: mockViewModel, maxHeight: 280)
-            .frame(width: defaultScreenSize.width, height: 320)
+        let view = ReactionsUsersView(
+            factory: DefaultViewFactory.shared,
+            viewModel: mockViewModel,
+            maxHeight: 280
+        )
+        .frame(width: defaultScreenSize.width, height: 320)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
