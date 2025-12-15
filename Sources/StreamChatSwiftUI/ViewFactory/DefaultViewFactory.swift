@@ -536,11 +536,7 @@ extension ViewFactory {
     public func makeLeadingComposerView(
         options: LeadingComposerViewOptions
     ) -> some View {
-        AttachmentPickerTypeView(
-            pickerTypeState: options.state,
-            channelConfig: options.channelConfig
-        )
-        .padding(.bottom, 8)
+        LeadingComposerView()
     }
     
     @ViewBuilder
@@ -835,13 +831,13 @@ extension ViewFactory {
     }
     
     public func makeQuotedMessageContentView(
-            options: QuotedMessageContentViewOptions
-        ) -> some View {
-            QuotedMessageContentView(
-                factory: self,
-                options: options
-            )
-        }
+        options: QuotedMessageContentViewOptions
+    ) -> some View {
+        QuotedMessageContentView(
+            factory: self,
+            options: options
+        )
+    }
     
     public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
         EmptyView()

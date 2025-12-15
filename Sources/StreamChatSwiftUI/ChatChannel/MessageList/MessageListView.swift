@@ -328,6 +328,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         onScrollToBottom: onScrollToBottom
                     )
                 )
+                .offset(y: -bottomInset - 20)
             }
 
             if shouldShowTypingIndicator {

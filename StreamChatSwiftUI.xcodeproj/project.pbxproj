@@ -136,6 +136,7 @@
 		8402EACD282BF69B00CCA696 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8402EACC282BF69B00CCA696 /* Preview Assets.xcassets */; };
 		8402EAD2282BFC8700CCA696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8402EAD1282BFC8700CCA696 /* AppDelegate.swift */; };
 		8402EAD4282BFCCA00CCA696 /* UserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8402EAD3282BFCCA00CCA696 /* UserCredentials.swift */; };
+		8406EAA22EF06E0E0054333C /* LeadingComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8406EAA12EF06E0E0054333C /* LeadingComposerView.swift */; };
 		840A3F3828193AB20084E9CC /* ChatChannelInfoView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840A3F3728193AB20084E9CC /* ChatChannelInfoView_Tests.swift */; };
 		8413C4552B4409B600190AF4 /* PinChannelHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413C4542B4409B600190AF4 /* PinChannelHelpers.swift */; };
 		8413D90227A9654600A89432 /* SearchResultsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */; };
@@ -727,6 +728,7 @@
 		8402EACC282BF69B00CCA696 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8402EAD1282BFC8700CCA696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8402EAD3282BFCCA00CCA696 /* UserCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentials.swift; sourceTree = "<group>"; };
+		8406EAA12EF06E0E0054333C /* LeadingComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadingComposerView.swift; sourceTree = "<group>"; };
 		840A3F3728193AB20084E9CC /* ChatChannelInfoView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelInfoView_Tests.swift; sourceTree = "<group>"; };
 		8413C4542B4409B600190AF4 /* PinChannelHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinChannelHelpers.swift; sourceTree = "<group>"; };
 		8413D90127A9654600A89432 /* SearchResultsView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView_Tests.swift; sourceTree = "<group>"; };
@@ -1808,6 +1810,7 @@
 				8465FD122746A95600AF091E /* SendMessageButton.swift */,
 				8492975127B156D000A8EEB0 /* SlowModeView.swift */,
 				84EADEB12B2883C60046B50C /* TrailingComposerView.swift */,
+				8406EAA12EF06E0E0054333C /* LeadingComposerView.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -2665,6 +2668,7 @@
 				841B64D42775F5540016FF3B /* GiphyCommandHandler.swift in Sources */,
 				8434E58127707F19001E1B83 /* GridMediaView.swift in Sources */,
 				ADE0F5662CB962470053B8B9 /* ActionBannerView.swift in Sources */,
+				8406EAA22EF06E0E0054333C /* LeadingComposerView.swift in Sources */,
 				84BB4C4C2841104700CBE004 /* MessageListDateUtils.swift in Sources */,
 				84EB881A2E8ABA610076DC17 /* ParticipantInfoView.swift in Sources */,
 				8465FDC12746A95700AF091E /* NoChannelsView.swift in Sources */,
