@@ -24,6 +24,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var listId: String
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
+    var bottomInset: CGFloat
     
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: @MainActor () -> Void
@@ -74,6 +75,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         listId: String,
         isMessageThread: Bool = false,
         shouldShowTypingIndicator: Bool = false,
+        bottomInset: CGFloat = 0,
         scrollPosition: Binding<String?> = .constant(nil),
         loadingNextMessages: Bool = false,
         firstUnreadMessageId: Binding<MessageId?> = .constant(nil),
@@ -94,6 +96,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onLongPress = onLongPress
         self.onJumpToMessage = onJumpToMessage
         self.shouldShowTypingIndicator = shouldShowTypingIndicator
+        self.bottomInset = bottomInset
         self.loadingNextMessages = loadingNextMessages
         _scrolledId = scrolledId
         _showScrollToLatestButton = showScrollToLatestButton
@@ -139,6 +142,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             listId: viewModel.listId,
             isMessageThread: viewModel.isMessageThread,
             shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+            bottomInset: 0,
             scrollPosition: Binding(
                 get: { viewModel.scrollPosition },
                 set: { viewModel.scrollPosition = $0 }
@@ -198,6 +202,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     onMessageAppear(index, scrollDirection)
                                 }
                             }
+                            .padding(.bottom, message == messages.first ? bottomInset : 0)
                             .padding(
                                 .top,
                                 messageDate != nil ?

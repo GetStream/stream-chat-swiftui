@@ -37,6 +37,7 @@ import SwiftUI
     private var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
     private var currentUserSentNewMessage = false
+    private var skipScrollUpdates = true
 
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
@@ -230,6 +231,11 @@ import SwiftUI
                 object: nil
             )
         }
+        
+        // TODO: improve this.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: { [weak self] in
+            self?.skipScrollUpdates = false
+        })
                 
         channelName = channel?.name ?? ""
         checkHeaderType()
@@ -822,6 +828,7 @@ import SwiftUI
     }
     
     private func updateScrolledIdToNewestMessage() {
+        guard !skipScrollUpdates else { return }
         if scrolledId != nil {
             scrolledId = nil
         }

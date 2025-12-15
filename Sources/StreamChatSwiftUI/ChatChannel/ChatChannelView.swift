@@ -18,16 +18,20 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var messageDisplayInfo: MessageDisplayInfo?
     @State private var keyboardShown = false
     @State private var tabBarAvailable: Bool = false
-
+    @State private var floatingComposerHeight: CGFloat
+    
     private var factory: Factory
+    private let composerPlacement: ComposerPlacement
 
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelViewModel? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
-        scrollToMessage: ChatMessage? = nil
+        scrollToMessage: ChatMessage? = nil,
+        composerPlacement: ComposerPlacement = .floating
     ) {
+        _floatingComposerHeight = State(initialValue: Self.defaultFloatingComposerHeight())
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeChannelViewModel(
                 with: channelController,
@@ -36,6 +40,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
         factory = viewFactory
+        self.composerPlacement = composerPlacement
     }
 
     public var body: some View {
@@ -55,6 +60,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             listId: viewModel.listId,
                             isMessageThread: viewModel.isMessageThread,
                             shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+                            bottomInset: composerPlacement == .floating ? floatingComposerHeight : 0,
                             scrollPosition: $viewModel.scrollPosition,
                             loadingNextMessages: viewModel.loadingNextMessages,
                             firstUnreadMessageId: $viewModel.firstUnreadMessageId,
@@ -73,6 +79,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
+                        .edgesIgnoringSafeArea(.bottom)
                         .environment(\.highlightedMessageId, viewModel.highlightedMessageId)
                         .dismissKeyboardOnTap(enabled: true) {
                             hideComposerCommandsAndAttachmentsPicker()
@@ -100,6 +107,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     Divider()
+                        .opacity(composerPlacement == .docked ? 1 : 0)
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
                             view.modifier(factory.makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions(shouldShow: false)))
@@ -118,21 +126,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         .animation(nil)
 
-                    factory.makeMessageComposerViewType(
-                        options: MessageComposerViewTypeOptions(
-                            channelController: viewModel.channelController,
-                            messageController: viewModel.messageController,
-                            quotedMessage: $viewModel.quotedMessage,
-                            editedMessage: $viewModel.editedMessage,
-                            onMessageSent: {
-                                viewModel.messageSentTapped()
-                            }
-                        )
-                    )
-                    .opacity((
-                        utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
-                            .reactionsShown && viewModel.channel?.isFrozen == false
-                    ) ? 0 : 1)
+                    if composerPlacement == .docked {
+                        composerView
+                            .opacity((
+                                utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
+                                    .reactionsShown && viewModel.channel?.isFrozen == false
+                            ) ? 0 : 1)
+                    }
 
                     NavigationLink(
                         isActive: $viewModel.threadMessageShown
@@ -171,6 +171,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         .edgesIgnoringSafeArea(.all)
                         : nil
                 )
+                .modifier(FloatingComposerContainer(
+                    composerPlacement: composerPlacement,
+                    composer: {
+                        composerView
+                            .opacity(viewModel.reactionsShown ? 0 : 1)
+                    }
+                ))
             } else {
                 factory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
             }
@@ -212,6 +219,20 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
         .accentColor(colors.tintColor)
     }
+    
+    private var composerView: some View {
+        factory.makeMessageComposerViewType(
+            options: MessageComposerViewTypeOptions(
+                channelController: viewModel.channelController,
+                messageController: viewModel.messageController,
+                quotedMessage: $viewModel.quotedMessage,
+                editedMessage: $viewModel.editedMessage,
+                onMessageSent: {
+                    viewModel.messageSentTapped()
+                }
+            )
+        )
+    }
 
     private var generatingSnapshot: Bool {
         if #available(iOS 26, *) {
@@ -233,5 +254,45 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         NotificationCenter.default.post(
             name: .commandsOverlayHiddenNotification, object: nil
         )
+    }
+}
+
+public enum ComposerPlacement {
+    case docked
+    case floating
+}
+
+private extension ChatChannelView {
+    static func defaultFloatingComposerHeight() -> CGFloat {
+        let utils = InjectedValues[\.utils]
+        let baseHeight = utils.composerConfig.inputViewMinHeight
+        let outerPadding: CGFloat = 16 // HStack padding (.all, 8)
+        return baseHeight + outerPadding
+    }
+}
+
+private struct FloatingComposerContainer<Composer: View>: ViewModifier {
+    let composerPlacement: ComposerPlacement
+    let composer: () -> Composer
+
+    func body(content: Content) -> some View {
+        if composerPlacement == .docked {
+            content
+        } else {
+            if #available(iOS 15.0, *) {
+                content
+                    .overlay(alignment: .bottom) {
+                        composer()
+                    }
+            } else {
+                content
+                    .overlay(
+                        VStack {
+                            Spacer()
+                            composer()
+                        }
+                    )
+            }
+        }
     }
 }
