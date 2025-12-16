@@ -9,12 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Use `muteChannel` capability for showing mute channel button in the `ChatChannelInfoView` [#1018](https://github.com/GetStream/stream-chat-swiftui/pull/1018)
 - Fix `PollOptionAllVotesViewModel` not loading more votes [#1067](https://github.com/GetStream/stream-chat-swiftui/pull/1067)
+- Fix "sliderThumb.pdf" asset not single scaled [#1070](https://github.com/GetStream/stream-chat-swiftui/pull/1070)
 - Fix `ViewFactory.makeMessageAvatarView()` not used in some views [#1068](https://github.com/GetStream/stream-chat-swiftui/pull/1068)
   - `MessageRepliesView`
   - `ReactionsUsersView`
   - `MentionUsersView`
   - `ParticipantInfoView`
   - `ChatThreadListItem`
+- Fix reading messages from muted users [#1063](https://github.com/GetStream/stream-chat-swiftui/pull/1063)
 
 # [4.94.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.94.0)
 _December 02, 2025_
