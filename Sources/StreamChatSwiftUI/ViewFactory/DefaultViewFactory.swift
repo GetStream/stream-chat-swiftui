@@ -835,13 +835,13 @@ extension ViewFactory {
     }
     
     public func makeQuotedMessageContentView(
-            options: QuotedMessageContentViewOptions
-        ) -> some View {
-            QuotedMessageContentView(
-                factory: self,
-                options: options
-            )
-        }
+        options: QuotedMessageContentViewOptions
+    ) -> some View {
+        QuotedMessageContentView(
+            factory: self,
+            options: options
+        )
+    }
     
     public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
         EmptyView()
