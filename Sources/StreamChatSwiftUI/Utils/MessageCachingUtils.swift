@@ -19,11 +19,14 @@ class MessageCachingUtils {
     }
     
     var jumpToReplyId: String?
+    
+    var swipeToReplyId: MessageId?
 
     func clearCache() {
         log.debug("Clearing cached message data")
         scrollOffset = 0
         messageThreadShown = false
+        swipeToReplyId = nil
     }
 }
 

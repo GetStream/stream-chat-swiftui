@@ -326,6 +326,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         .onEnded { _ in
                             guard let offset = messageListSwipe?.horizontalOffset, offset != 0 else { return }
+                            utils.messageCachingUtils.swipeToReplyId = nil
                             messageListSwipe = nil
                         }
                     )

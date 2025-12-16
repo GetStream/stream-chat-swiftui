@@ -331,8 +331,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             setOffsetX(value: 0)
             return
         }
-        // The view is moving during the swipe handling, therefore we skip the contains check if it is in progress
-        guard offsetX > 0 || geometry.frame(in: .global).contains(messageListSwipe.startLocation) else { return }
+        if utils.messageCachingUtils.swipeToReplyId == nil, geometry.frame(in: .global).contains(messageListSwipe.startLocation) {
+            utils.messageCachingUtils.swipeToReplyId = message.id
+        }
+        guard utils.messageCachingUtils.swipeToReplyId == message.id else { return }
         if messageListSwipe.horizontalOffset == 0 {
             setOffsetX(value: 0)
         } else {
