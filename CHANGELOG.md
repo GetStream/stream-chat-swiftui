@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Open `ChatChannelInfoViewModel.leaveButtonTitle` and `ChatChannelInfoViewModel.leaveConversationDescription` [#1018](https://github.com/GetStream/stream-chat-swiftui/pull/1018)
+- Open `ChatThreadListViewModel.preselectThreadIfNeeded()` [#1069](https://github.com/GetStream/stream-chat-swiftui/pull/1069)
 ### 🐞 Fixed
 - Use `muteChannel` capability for showing mute channel button in the `ChatChannelInfoView` [#1018](https://github.com/GetStream/stream-chat-swiftui/pull/1018)
 - Fix `PollOptionAllVotesViewModel` not loading more votes [#1067](https://github.com/GetStream/stream-chat-swiftui/pull/1067)
