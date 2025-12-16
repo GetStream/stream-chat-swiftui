@@ -323,7 +323,14 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     
     private func handleMessageListSwipe(_ messageListSwipe: MessageListSwipe?, geometry: GeometryProxy) {
         guard messageViewModel.isSwipeToQuoteReplyPossible else { return }
-        guard let messageListSwipe else { return }
+        guard let messageListSwipe else {
+            setOffsetX(value: 0)
+            return
+        }
+        if quotedMessage == message {
+            setOffsetX(value: 0)
+            return
+        }
         // The view is moving during the swipe handling, therefore we skip the contains check if it is in progress
         guard offsetX > 0 || geometry.frame(in: .global).contains(messageListSwipe.startLocation) else { return }
         if messageListSwipe.horizontalOffset == 0 {

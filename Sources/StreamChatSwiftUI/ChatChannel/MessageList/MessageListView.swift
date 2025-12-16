@@ -319,13 +319,14 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             coordinateSpace: .global
                         )
                         .onChanged { value in
+                            guard value.velocity == .zero || abs(value.velocity.width) > abs(value.velocity.height) else { return }
                             guard abs(value.translation.width) > abs(value.translation.height) else { return }
                             guard value.translation.width != messageListSwipe?.horizontalOffset else { return }
                             messageListSwipe = MessageListSwipe(startLocation: value.startLocation, horizontalOffset: value.translation.width)
                         }
-                        .onEnded { value in
+                        .onEnded { _ in
                             guard let offset = messageListSwipe?.horizontalOffset, offset != 0 else { return }
-                            messageListSwipe = MessageListSwipe(startLocation: value.startLocation, horizontalOffset: 0)
+                            messageListSwipe = nil
                         }
                     )
                 })
