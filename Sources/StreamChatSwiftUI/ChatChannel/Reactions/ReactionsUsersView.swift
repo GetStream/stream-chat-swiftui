@@ -6,30 +6,46 @@ import StreamChat
 import SwiftUI
 
 /// View displaying users who have reacted to a message.
-struct ReactionsUsersView: View {
+struct ReactionsUsersView<Factory: ViewFactory>: View {
     @StateObject private var viewModel: ReactionsUsersViewModel
     
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
+    var factory: Factory
     var maxHeight: CGFloat
 
-    private static let columnCount = 4
-    private static let itemSize: CGFloat = 64
+    let columnCount = 4
+    let itemSize: CGFloat = 64
 
-    private let columns = Array(
-        repeating: GridItem(.adaptive(minimum: itemSize), alignment: .top),
-        count: columnCount
-    )
-    
-    init(message: ChatMessage, maxHeight: CGFloat) {
+    private let columns: [GridItem]
+
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        message: ChatMessage,
+        maxHeight: CGFloat
+    ) {
+        self.factory = factory
         self.maxHeight = maxHeight
         _viewModel = StateObject(wrappedValue: ReactionsUsersViewModel(message: message))
+        self.columns = Array(
+            repeating: GridItem(.adaptive(minimum: itemSize), alignment: .top),
+            count: columnCount
+        )
     }
 
-    init(viewModel: ReactionsUsersViewModel, maxHeight: CGFloat) {
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        viewModel: ReactionsUsersViewModel,
+        maxHeight: CGFloat
+    ) {
+        self.factory = factory
         self.maxHeight = maxHeight
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.columns = Array(
+            repeating: GridItem(.adaptive(minimum: itemSize), alignment: .top),
+            count: columnCount
+        )
     }
 
     var body: some View {
@@ -45,13 +61,14 @@ struct ReactionsUsersView: View {
                     .fontWeight(.bold)
                     .padding()
 
-                if viewModel.reactions.count > Self.columnCount {
+                if viewModel.reactions.count > columnCount {
                     ScrollView {
                         LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
                             ForEach(viewModel.reactions) { reaction in
                                 ReactionUserView(
+                                    factory: factory,
                                     reaction: reaction,
-                                    imageSize: Self.itemSize
+                                    imageSize: itemSize
                                 )
                             }
                         }
@@ -61,8 +78,9 @@ struct ReactionsUsersView: View {
                     HStack(alignment: .top, spacing: 0) {
                         ForEach(viewModel.reactions) { reaction in
                             ReactionUserView(
+                                factory: factory,
                                 reaction: reaction,
-                                imageSize: Self.itemSize
+                                imageSize: itemSize
                             )
                         }
                     }
