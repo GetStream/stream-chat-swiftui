@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.95.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.95.1)
+_December 18, 2025_
+
 ### ✅ Added
 - Open `ChatChannelInfoViewModel.leaveButtonTitle` and `ChatChannelInfoViewModel.leaveConversationDescription` [#1018](https://github.com/GetStream/stream-chat-swiftui/pull/1018)
 - Open `ChatThreadListViewModel.preselectThreadIfNeeded()` [#1069](https://github.com/GetStream/stream-chat-swiftui/pull/1069)
