@@ -740,11 +740,36 @@ import XCTest
         XCTAssertEqual(1, channelController.markReadCallCount)
     }
     
-    func test_chatChannelVM_sendReadEventIfNeeded_whenChannelHasNoUnreadMessages() {
+    func test_chatChannelVM_sendReadEventIfNeeded_whenChannelHasNoReads_thenMarkReadIsCalled() {
         // Given
         let message = ChatMessage.mock()
         let channelController = makeChannelController(messages: [message])
-        channelController.channel_mock = .mock(cid: .unique, unreadCount: ChannelUnreadCount(messages: 0, mentions: 0))
+        channelController.channel_mock = .mockDMChannel(reads: [])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.currentUserMarkedMessageUnread = false
+        viewModel.throttler = Throttler_Mock(interval: 0)
+        
+        // When
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+        
+        // Then
+        XCTAssertEqual(1, channelController.markReadCallCount)
+    }
+    
+    func test_chatChannelVM_sendReadEventIfNeeded_whenChannelReadHasMoreRecentTimestamp_thenMarkReadIsNotCalled() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.channel_mock = .mockDMChannel(
+            reads: [.mock(
+                lastReadAt: .distantFuture,
+                lastReadMessageId: .unique,
+                unreadMessagesCount: 0,
+                user: .mock(id: chatClient.currentUserId ?? "")
+            )]
+        )
+        channelController.hasLoadedAllNextMessages_mock = true
         let viewModel = ChatChannelViewModel(channelController: channelController)
         viewModel.currentUserMarkedMessageUnread = false
         viewModel.throttler = Throttler_Mock(interval: 0)

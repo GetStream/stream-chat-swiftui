@@ -573,7 +573,7 @@ import XCTest
         let view = viewFactory.makeCommandsContainerView(options: CommandsContainerViewOptions(suggestions: [:]) { _ in })
 
         // Then
-        XCTAssert(view is CommandsContainerView)
+        XCTAssert(view is CommandsContainerView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeLeadingSwipeActionsView() {
@@ -659,7 +659,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is ReactionsUsersView)
+        XCTAssert(view is ReactionsUsersView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeChannelListFooterView() {

@@ -134,6 +134,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             
             if let selectedParticipant = viewModel.selectedParticipant {
                 ParticipantInfoView(
+                    factory: factory,
                     participant: selectedParticipant,
                     actions: viewModel.participantActions(for: selectedParticipant)
                 ) {

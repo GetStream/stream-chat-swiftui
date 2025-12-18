@@ -6,20 +6,25 @@ import StreamChat
 import SwiftUI
 
 /// View for the thread list item.
-public struct ChatThreadListItem: View {
+public struct ChatThreadListItem<Factory: ViewFactory>: View {
+    var factory: Factory
     var viewModel: ChatThreadListItemViewModel
 
     public init(
+        factory: Factory = DefaultViewFactory.shared,
         viewModel: ChatThreadListItemViewModel
     ) {
+        self.factory = factory
         self.viewModel = viewModel
     }
 
     public var body: some View {
         ChatThreadListItemContentView(
+            factory: factory,
             channelNameText: viewModel.channelNameText,
             parentMessageText: viewModel.parentMessageText,
             unreadRepliesCount: viewModel.unreadRepliesCount,
+            replyAuthorId: viewModel.latestReplyAuthorId,
             replyAuthorName: viewModel.latestReplyAuthorNameText,
             replyAuthorUrl: viewModel.latestReplyAuthorImageURL,
             replyAuthorIsOnline: viewModel.isLatestReplyAuthorOnline,
@@ -109,6 +114,11 @@ public struct ChatThreadListItem: View {
         latestReplyAuthor?.imageURL
     }
 
+    /// The latest reply author's user ID.
+    public var latestReplyAuthorId: String {
+        latestReplyAuthor?.id ?? ""
+    }
+
     /// The formatted channel name text.
     public var channelNameText: String {
         utils.channelNamer(thread.channel, chatClient.currentUserId) ?? ""
@@ -120,22 +130,50 @@ public struct ChatThreadListItem: View {
 }
 
 /// The layout of the thread list item view.
-struct ChatThreadListItemContentView: View {
+struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 
+    var factory: Factory
     var channelNameText: String
     var parentMessageText: String
     var unreadRepliesCount: Int
+    var replyAuthorId: String
     var replyAuthorName: String
     var replyAuthorUrl: URL?
     var replyAuthorIsOnline: Bool
     var replyMessageText: String
     var replyTimestampText: String
     var draftText: String?
+
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        channelNameText: String,
+        parentMessageText: String,
+        unreadRepliesCount: Int,
+        replyAuthorId: String,
+        replyAuthorName: String,
+        replyAuthorUrl: URL?,
+        replyAuthorIsOnline: Bool,
+        replyMessageText: String,
+        replyTimestampText: String,
+        draftText: String? = nil
+    ) {
+        self.factory = factory
+        self.channelNameText = channelNameText
+        self.parentMessageText = parentMessageText
+        self.unreadRepliesCount = unreadRepliesCount
+        self.replyAuthorId = replyAuthorId
+        self.replyAuthorName = replyAuthorName
+        self.replyAuthorUrl = replyAuthorUrl
+        self.replyAuthorIsOnline = replyAuthorIsOnline
+        self.replyMessageText = replyMessageText
+        self.replyTimestampText = replyTimestampText
+        self.draftText = draftText
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -174,11 +212,13 @@ struct ChatThreadListItemContentView: View {
 
     var replyContainerView: some View {
         HStack(spacing: 8) {
-            MessageAvatarView(
-                avatarURL: replyAuthorUrl,
-                size: .init(width: 40, height: 40),
-                showOnlineIndicator: replyAuthorIsOnline
+            let displayInfo = UserDisplayInfo(
+                id: replyAuthorId,
+                name: replyAuthorName,
+                imageURL: replyAuthorUrl,
+                size: .init(width: 40, height: 40)
             )
+            factory.makeMessageAvatarView(for: displayInfo)
             VStack(alignment: .leading) {
                 Text(replyAuthorName)
                     .lineLimit(1)

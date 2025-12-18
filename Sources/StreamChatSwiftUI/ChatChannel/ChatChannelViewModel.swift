@@ -615,10 +615,11 @@ import SwiftUI
     }
     
     private func sendReadEventIfNeeded(for message: ChatMessage) {
-        guard let channel, channel.unreadCount.messages > 0 else {
+        guard let channel, let currentUserId = chatClient.currentUserId else { return }
+        if currentUserMarkedMessageUnread {
             return
         }
-        if currentUserMarkedMessageUnread {
+        if let read = channel.read(for: currentUserId), read.lastReadAt > message.createdAt {
             return
         }
         throttler.execute { [weak self] in

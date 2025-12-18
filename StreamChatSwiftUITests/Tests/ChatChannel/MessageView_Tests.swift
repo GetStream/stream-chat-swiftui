@@ -681,7 +681,8 @@ import XCTest
             id: .unique,
             cid: channel.cid,
             text: "Message with replies",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            threadParticipants: [.mock(id: .unique)]
         )
         
         // When
@@ -704,7 +705,8 @@ import XCTest
             id: .unique,
             cid: channel.cid,
             text: "Message with replies",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            threadParticipants: [.mock(id: .unique)]
         )
         
         // When
