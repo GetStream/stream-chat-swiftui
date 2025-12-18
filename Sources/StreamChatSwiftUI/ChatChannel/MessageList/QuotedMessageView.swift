@@ -126,7 +126,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             hasVoiceAttachments ? [.leading, .top, .bottom] : .all, utils.messageListConfig.messagePaddings.quotedViewPadding
         )
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: quotedMessage,
                     isFirst: true,
@@ -247,7 +247,8 @@ public struct QuotedMessageContentView<Factory: ViewFactory>: View {
                     }
                     .onDisappear(.cancel)
                     .processors([ImageProcessors.Resize(width: options.attachmentSize.width)])
-                    .priority(.high)                }
+                    .priority(.high)
+                }
             }
             .frame(width: hasVoiceAttachments ? nil : options.attachmentSize.width, height: options.attachmentSize.height)
             .aspectRatio(1, contentMode: .fill)

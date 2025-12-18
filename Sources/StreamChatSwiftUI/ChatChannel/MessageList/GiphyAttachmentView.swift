@@ -69,7 +69,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             }
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst

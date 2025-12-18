@@ -197,7 +197,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst
@@ -233,7 +233,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                         .font(fonts.emoji)
                 }
                 .modifier(
-                    factory.makeMessageViewModifier(
+                    factory.styles.makeMessageViewModifier(
                         for: MessageModifierInfo(
                             message: message,
                             isFirst: isFirst

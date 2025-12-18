@@ -253,7 +253,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         .id(listId)
                     }
                     .delayedRendering()
-                    .modifier(factory.makeMessageListModifier(options: MessageListModifierOptions()))
+                    .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
                 }
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
@@ -370,7 +370,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 ) : nil
         )
-        .modifier(factory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
+        .modifier(factory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
         .onDisappear {
             messageRenderingUtil.update(previousTopMessage: nil)
         }

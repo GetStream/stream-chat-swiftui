@@ -169,7 +169,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 .animation(.none, value: viewModel.showCommandsOverlay) : nil,
             alignment: .bottom
         )
-        .modifier(factory.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
             if editedMessage != nil {

@@ -224,7 +224,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .animation(nil) : nil,
             alignment: .bottom
         )
-        .modifier(factory.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
             viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
@@ -459,7 +459,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         .padding(.vertical, shouldAddVerticalPadding ? inputPaddingsConfig.vertical : 0)
         .padding(.leading, inputPaddingsConfig.leading)
         .padding(.trailing, inputPaddingsConfig.trailing)
-        .modifier(factory.styles.composerInputViewModifier)
+        .modifier(
+            factory.styles.makeComposerInputViewModifier(
+                options: .init(keyboardShown: keyboardShown)
+            )
+        )
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }

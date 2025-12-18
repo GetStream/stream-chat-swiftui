@@ -17,7 +17,7 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                         .fontWeight(.semibold)
                 }
                 .padding(.all, 12)
-                .modifier(factory.styles.composerButtonViewModifier)
+                .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
                 .foregroundStyle(.primary)
             } else {
                 Button {} label: {

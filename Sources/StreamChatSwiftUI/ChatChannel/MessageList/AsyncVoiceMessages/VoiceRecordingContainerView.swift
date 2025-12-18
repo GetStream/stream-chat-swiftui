@@ -97,7 +97,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             player.subscribe(handler)
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst,

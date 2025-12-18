@@ -164,7 +164,7 @@ struct ShowProfileModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .modifier(
-                DefaultViewFactory.shared.makeMessageViewModifier(for: messageModifierInfo)
+                DefaultViewFactory.shared.styles.makeMessageViewModifier(for: messageModifierInfo)
             )
             .modifier(
                 ProfileURLModifier(

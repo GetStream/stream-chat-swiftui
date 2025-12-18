@@ -177,14 +177,6 @@ extension ViewFactory {
         )
     }
     
-    public func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
-    public func makeChannelListModifier(options: ChannelListModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
     // MARK: messages
     
     public func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor (ChannelSelectionInfo) -> ChatChannelView<Self> {
@@ -216,28 +208,6 @@ extension ViewFactory {
                 scrollToMessage: message
             )
         }
-    }
-
-    public func makeMessageListModifier(options: MessageListModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
-    public func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
-    public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
-        MessageBubbleModifier(
-            message: messageModifierInfo.message,
-            isFirst: messageModifierInfo.isFirst,
-            injectedBackgroundColor: messageModifierInfo.injectedBackgroundColor,
-            cornerRadius: messageModifierInfo.cornerRadius,
-            forceLeftToRight: messageModifierInfo.forceLeftToRight
-        )
-    }
-
-    public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
-        BouncedMessageActionsModifier(viewModel: viewModel)
     }
 
     public func makeEmptyMessagesView(
@@ -627,11 +597,7 @@ extension ViewFactory {
     public func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> some View {
         RecordingTipView()
     }
-    
-    public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
+
     public func makeAttachmentPickerView(
         options: AttachmentPickerViewOptions
     ) -> some View {

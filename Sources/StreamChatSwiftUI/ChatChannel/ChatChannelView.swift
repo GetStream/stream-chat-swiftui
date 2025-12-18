@@ -214,7 +214,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
-        .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
+        .modifier(factory.styles.makeBouncedMessageActionsModifier(viewModel: viewModel))
         .accentColor(colors.tintColor)
     }
     

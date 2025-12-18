@@ -81,7 +81,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
         }
         .padding(.bottom, 8)
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst,

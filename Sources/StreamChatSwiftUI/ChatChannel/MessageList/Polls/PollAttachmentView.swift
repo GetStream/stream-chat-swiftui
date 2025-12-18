@@ -150,7 +150,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         .disabled(!viewModel.canInteract)
         .padding()
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst

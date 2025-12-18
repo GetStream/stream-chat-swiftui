@@ -208,6 +208,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
             factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
         }
-        .modifier(factory.makeChannelListModifier(options: ChannelListModifierOptions()))
+        .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
     }
 }

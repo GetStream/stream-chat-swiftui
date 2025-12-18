@@ -109,14 +109,6 @@ import SwiftUI
     /// - Returns: view shown in the search results.
     func makeChannelListSearchResultItem(options: ChannelListSearchResultItemOptions<ChannelDestination>) -> ChannelListSearchResultItem
 
-    associatedtype ChannelListContentModifier: ViewModifier
-    /// Returns a view modifier applied to the channel list content (including both header and footer views).
-    func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> ChannelListContentModifier
-
-    associatedtype ChannelListModifier: ViewModifier
-    /// Returns a view modifier applied to the channel list.
-    func makeChannelListModifier(options: ChannelListModifierOptions) -> ChannelListModifier
-
     // MARK: - messages
 
     associatedtype ChannelDestination: View
@@ -132,27 +124,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the empty messages view.
     /// - Returns: View shown in the empty messages slot.
     func makeEmptyMessagesView(options: EmptyMessagesViewOptions) -> EmptyMessagesViewType
-
-    associatedtype MessageListModifier: ViewModifier
-    /// Returns a view modifier applied to the message list.
-    func makeMessageListModifier(options: MessageListModifierOptions) -> MessageListModifier
-    
-    associatedtype MessageListContainerModifier: ViewModifier
-    /// Returns a view modifier applied to the message list container.
-    func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> MessageListContainerModifier
-
-    associatedtype MessageViewModifier: ViewModifier
-    /// Returns a view modifier applied to the message view.
-    /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
-    func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
-
-    associatedtype BouncedMessageActionsModifierType: ViewModifier
-    /// Returns a view modifier applied to the bounced message actions.
-    ///
-    /// This modifier is only used if `Utils.messageListConfig.bouncedMessagesAlertActionsEnabled` is `true`.
-    /// By default the flag is true and the bounced actions are shown as an alert instead of a context menu.
-    /// - Parameter viewModel: the view model of the chat channel view.
-    func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> BouncedMessageActionsModifierType
 
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
@@ -408,10 +379,6 @@ import SwiftUI
     /// Creates a view shown when a recording tip is displayed.
     /// - Returns: view shown in the recording tip slot.
     func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> ComposerRecordingTipViewType
-
-    associatedtype ComposerViewModifier: ViewModifier
-    /// Creates the composer view modifier, that's applied to the whole composer view.
-    func makeComposerViewModifier(options: ComposerViewModifierOptions) -> ComposerViewModifier
 
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.

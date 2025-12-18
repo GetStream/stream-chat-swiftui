@@ -260,6 +260,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
             viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
-        .modifier(viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
+        .modifier(viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }
