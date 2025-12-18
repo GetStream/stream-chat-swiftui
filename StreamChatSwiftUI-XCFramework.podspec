@@ -19,7 +19,7 @@ Pod::Spec.new do |spec|
 
   spec.framework = 'Foundation', 'UIKit', 'SwiftUI'
 
-  spec.dependency 'StreamChat-XCFramework', '~> 4.94.0'
+  spec.dependency 'StreamChat-XCFramework', '~> 4.95.0'
 
   spec.cocoapods_version = '>= 1.11.0'
 end
