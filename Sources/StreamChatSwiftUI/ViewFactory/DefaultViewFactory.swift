@@ -506,7 +506,11 @@ extension ViewFactory {
     public func makeLeadingComposerView(
         options: LeadingComposerViewOptions
     ) -> some View {
-        LeadingComposerView(factory: self)
+        LeadingComposerView(
+            factory: self,
+            pickerTypeState: options.state,
+            channelConfig: options.channelConfig
+        )
     }
     
     @ViewBuilder
