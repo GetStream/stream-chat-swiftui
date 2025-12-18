@@ -38,9 +38,10 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     ///
     /// - Important: Only meant for stacked navigation view style.
     private var canSkipChannelUpdates: Bool {
-        guard isIphone || !utils.messageListConfig.iPadSplitViewEnabled else { return false }
-        guard selectedChannel != nil || !searchText.isEmpty else { return false }
-        return true
+//        guard isIphone || !utils.messageListConfig.iPadSplitViewEnabled else { return false }
+//        guard selectedChannel != nil || !searchText.isEmpty else { return false }
+//        return true
+        return false
     }
     
     /// Index of the selected channel.
