@@ -327,10 +327,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             setOffsetX(value: 0)
             return
         }
-        if quotedMessage == message {
-            setOffsetX(value: 0)
-            return
-        }
         if utils.messageCachingUtils.swipeToReplyId == nil, geometry.frame(in: .global).contains(messageListSwipe.startLocation) {
             utils.messageCachingUtils.swipeToReplyId = message.id
         }
