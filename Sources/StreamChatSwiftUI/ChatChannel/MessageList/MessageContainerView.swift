@@ -324,22 +324,13 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     private func handleMessageListSwipe(_ messageListSwipe: MessageListSwipe?, geometry: GeometryProxy) {
         guard messageViewModel.isSwipeToQuoteReplyPossible else { return }
         guard let messageListSwipe else {
-            // Swiping ended, reset the offset
-            if offsetX != 0 {
-                setOffsetX(value: 0)
-            }
+            setOffsetX(value: 0)
             return
         }
-        // Keep track of which message is handling the swipe (only should start when dragging from the message content)
-        let currentFrame = geometry.frame(in: .global)
-        if utils.messageCachingUtils.swipeToReplyId == nil, currentFrame.contains(messageListSwipe.startLocation) {
+        if utils.messageCachingUtils.swipeToReplyId == nil, geometry.frame(in: .global).contains(messageListSwipe.startLocation) {
             utils.messageCachingUtils.swipeToReplyId = message.id
         }
         guard utils.messageCachingUtils.swipeToReplyId == message.id else { return }
-        
-        // When dragging moves outside of the message row, stop handling swiping
-        guard messageListSwipe.currentLocation.y <= currentFrame.maxY,
-              messageListSwipe.currentLocation.y >= currentFrame.minY else { return }
         if messageListSwipe.horizontalOffset == 0 {
             setOffsetX(value: 0)
         } else {
