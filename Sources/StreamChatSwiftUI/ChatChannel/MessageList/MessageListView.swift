@@ -322,10 +322,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             guard value.velocity == .zero || abs(value.velocity.width) > abs(value.velocity.height) else { return }
                             guard abs(value.translation.width) > abs(value.translation.height) else { return }
                             guard value.translation.width != messageListSwipe?.horizontalOffset else { return }
-                            messageListSwipe = MessageListSwipe(startLocation: value.startLocation, horizontalOffset: value.translation.width)
+                            messageListSwipe = MessageListSwipe(
+                                startLocation: value.startLocation,
+                                currentLocation: value.location,
+                                horizontalOffset: value.translation.width
+                            )
                         }
                         .onEnded { _ in
-                            guard let offset = messageListSwipe?.horizontalOffset, offset != 0 else { return }
+                            guard let offset = messageListSwipe?.horizontalOffset,
+                                  offset != 0 else { return }
                             utils.messageCachingUtils.swipeToReplyId = nil
                             messageListSwipe = nil
                         }
@@ -678,6 +683,7 @@ private struct MessageListSwipeKey: EnvironmentKey {
 
 struct MessageListSwipe: Equatable {
     let startLocation: CGPoint
+    let currentLocation: CGPoint
     let horizontalOffset: CGFloat
 }
 
