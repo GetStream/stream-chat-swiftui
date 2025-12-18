@@ -81,7 +81,7 @@ public struct MentionUserView<Factory: ViewFactory>: View {
                 name: user.name ?? user.id,
                 imageURL: user.imageURL
             )
-            factory.makeMessageAvatarView(for: displayInfo)
+            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.bodyBold)

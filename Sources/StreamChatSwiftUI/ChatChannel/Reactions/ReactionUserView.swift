@@ -44,7 +44,7 @@ struct ReactionUserView<Factory: ViewFactory>: View {
                 imageURL: reaction.author.imageURL,
                 size: CGSize(width: imageSize, height: imageSize)
             )
-            factory.makeMessageAvatarView(for: displayInfo)
+            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
                 .overlay(
                     VStack {
                         Spacer()
