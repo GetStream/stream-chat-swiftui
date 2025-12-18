@@ -198,6 +198,7 @@
 		845161802AE7C4E2000A9230 /* WhatsAppChannelHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */; };
 		8451C4912BD7096000849955 /* PollAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451C4902BD7096000849955 /* PollAttachmentView.swift */; };
 		8451C4932BD713D600849955 /* PollAttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */; };
+		845B3FC62EF1B2D90091ED36 /* LiquidGlassModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845B3FC52EF1B2D90091ED36 /* LiquidGlassModifiers.swift */; };
 		845CFD782BDA6BFD0058F691 /* PollResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CFD772BDA6BFD0058F691 /* PollResultsView.swift */; };
 		8463D9262836617F002B1894 /* ChannelListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8463D9252836617F002B1894 /* ChannelListPage.swift */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
@@ -474,6 +475,8 @@
 		84EADEC12B2AFA690046B50C /* MessageComposerViewModel+Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEC02B2AFA690046B50C /* MessageComposerViewModel+Recording.swift */; };
 		84EADEC32B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEC22B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift */; };
 		84EADEC52B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EADEC42B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift */; };
+		84EB7A612EF40F1B00986E0F /* TrailingInputComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EB7A602EF40F1B00986E0F /* TrailingInputComposerView.swift */; };
+		84EB7A632EF414AA00986E0F /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EB7A622EF414AA00986E0F /* Styles.swift */; };
 		84EB881A2E8ABA610076DC17 /* ParticipantInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EB88192E8ABA610076DC17 /* ParticipantInfoView.swift */; };
 		84EDBC37274FE5CD0057218D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84EDBC36274FE5CD0057218D /* Localizable.strings */; };
 		84F130C12AEAA957006E7B52 /* StreamLazyImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */; };
@@ -792,6 +795,7 @@
 		8451617F2AE7C4E2000A9230 /* WhatsAppChannelHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsAppChannelHeader.swift; sourceTree = "<group>"; };
 		8451C4902BD7096000849955 /* PollAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentView.swift; sourceTree = "<group>"; };
 		8451C4922BD713D600849955 /* PollAttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollAttachmentViewModel.swift; sourceTree = "<group>"; };
+		845B3FC52EF1B2D90091ED36 /* LiquidGlassModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassModifiers.swift; sourceTree = "<group>"; };
 		845CFD772BDA6BFD0058F691 /* PollResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollResultsView.swift; sourceTree = "<group>"; };
 		8463D9252836617F002B1894 /* ChannelListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListPage.swift; sourceTree = "<group>"; };
 		8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StreamChatSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1073,6 +1077,8 @@
 		84EADEC02B2AFA690046B50C /* MessageComposerViewModel+Recording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessageComposerViewModel+Recording.swift"; sourceTree = "<group>"; };
 		84EADEC22B2B24E60046B50C /* AudioSessionFeedbackGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionFeedbackGenerator.swift; sourceTree = "<group>"; };
 		84EADEC42B2C4A5B0046B50C /* AddedVoiceRecordingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddedVoiceRecordingsView.swift; sourceTree = "<group>"; };
+		84EB7A602EF40F1B00986E0F /* TrailingInputComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailingInputComposerView.swift; sourceTree = "<group>"; };
+		84EB7A622EF414AA00986E0F /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		84EB88192E8ABA610076DC17 /* ParticipantInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantInfoView.swift; sourceTree = "<group>"; };
 		84EDBC36274FE5CD0057218D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		84F130C02AEAA957006E7B52 /* StreamLazyImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamLazyImage.swift; sourceTree = "<group>"; };
@@ -1662,6 +1668,7 @@
 				8465FD692746A95700AF091E /* Appearance.swift */,
 				8465FD5E2746A95700AF091E /* Fonts.swift */,
 				8465FD622746A95700AF091E /* Images.swift */,
+				84EB7A622EF414AA00986E0F /* Styles.swift */,
 				8465FD642746A95700AF091E /* ColorPalette.swift */,
 				8465FD632746A95700AF091E /* Utils.swift */,
 				8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */,
@@ -1811,6 +1818,7 @@
 				8492975127B156D000A8EEB0 /* SlowModeView.swift */,
 				84EADEB12B2883C60046B50C /* TrailingComposerView.swift */,
 				8406EAA12EF06E0E0054333C /* LeadingComposerView.swift */,
+				84EB7A602EF40F1B00986E0F /* TrailingInputComposerView.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -1886,6 +1894,7 @@
 				8465FD3B2746A95600AF091E /* StringExtensions.swift */,
 				4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */,
 				8465FD322746A95600AF091E /* ViewExtensions.swift */,
+				845B3FC52EF1B2D90091ED36 /* LiquidGlassModifiers.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2711,6 +2720,7 @@
 				8465FD932746A95700AF091E /* PhotoAttachmentPickerView.swift in Sources */,
 				841B64C82774BA770016FF3B /* CommandsHandler.swift in Sources */,
 				8465FDC42746A95700AF091E /* ChatChannelListScreen.swift in Sources */,
+				84EB7A632EF414AA00986E0F /* Styles.swift in Sources */,
 				8465FD7F2746A95700AF091E /* MessageTypeResolver.swift in Sources */,
 				8465FDA42746A95700AF091E /* NukeImageLoader.swift in Sources */,
 				8465FD842746A95700AF091E /* MessageAvatarView.swift in Sources */,
@@ -2911,8 +2921,10 @@
 				8465FDAF2746A95700AF091E /* UIImage+Extensions.swift in Sources */,
 				8465FDCE2746A95700AF091E /* InjectedValuesExtensions.swift in Sources */,
 				84B738352BE2661B00EC66EC /* PollOptionAllVotesViewModel.swift in Sources */,
+				845B3FC62EF1B2D90091ED36 /* LiquidGlassModifiers.swift in Sources */,
 				8465FDAC2746A95700AF091E /* UIFont+Extensions.swift in Sources */,
 				846D6564279FF0800094B36E /* ReactionUserView.swift in Sources */,
+				84EB7A612EF40F1B00986E0F /* TrailingInputComposerView.swift in Sources */,
 				8465FDB12746A95700AF091E /* ChatChannelNamer.swift in Sources */,
 				8465FD9E2746A95700AF091E /* ChatChannelHelpers.swift in Sources */,
 				84E4F7CF294C69F300DD4CE3 /* MessageIdBuilder.swift in Sources */,

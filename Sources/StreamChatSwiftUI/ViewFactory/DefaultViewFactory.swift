@@ -536,7 +536,7 @@ extension ViewFactory {
     public func makeLeadingComposerView(
         options: LeadingComposerViewOptions
     ) -> some View {
-        LeadingComposerView()
+        LeadingComposerView(factory: self)
     }
     
     @ViewBuilder
@@ -557,7 +557,8 @@ extension ViewFactory {
                     maxMessageLength: options.maxMessageLength,
                     cooldownDuration: options.cooldownDuration,
                     onCustomAttachmentTap: options.onCustomAttachmentTap,
-                    removeAttachmentWithId: options.removeAttachmentWithId
+                    removeAttachmentWithId: options.removeAttachmentWithId,
+                    sendMessage: options.sendMessage
                 )
             }
             .frame(height: 240)
@@ -574,7 +575,8 @@ extension ViewFactory {
                 maxMessageLength: options.maxMessageLength,
                 cooldownDuration: options.cooldownDuration,
                 onCustomAttachmentTap: options.onCustomAttachmentTap,
-                removeAttachmentWithId: options.removeAttachmentWithId
+                removeAttachmentWithId: options.removeAttachmentWithId,
+                sendMessage: options.sendMessage
             )
         }
     }
@@ -593,10 +595,19 @@ extension ViewFactory {
         )
     }
     
+    public func makeComposerInputTrailingView(
+        options: ComposerInputTrailingViewOptions
+    ) -> some View {
+        TrailingInputComposerView(
+            viewModel: options.viewModel,
+            onTap: options.onTap
+        )
+    }
+    
     public func makeTrailingComposerView(
         options: TrailingComposerViewOptions
     ) -> some View {
-        TrailingComposerView(onTap: options.onTap)
+        EmptyView()
     }
     
     public func makeComposerRecordingView(
@@ -994,6 +1005,8 @@ extension ViewFactory {
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
 public class DefaultViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
+    
+    public var styles = LiquidGlassStyles()
         
     private init() {
         // Private init.

@@ -21,7 +21,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var floatingComposerHeight: CGFloat
     
     private var factory: Factory
-    private let composerPlacement: ComposerPlacement
 
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
@@ -40,7 +39,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
         factory = viewFactory
-        self.composerPlacement = composerPlacement
     }
 
     public var body: some View {
@@ -233,6 +231,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
     }
+    
+    private var composerPlacement: ComposerPlacement {
+        factory.styles.composerPlacement
+    }
 
     private var generatingSnapshot: Bool {
         if #available(iOS 26, *) {
@@ -267,7 +269,7 @@ private extension ChatChannelView {
         let utils = InjectedValues[\.utils]
         let baseHeight = utils.composerConfig.inputViewMinHeight
         let outerPadding: CGFloat = 16 // HStack padding (.all, 8)
-        return baseHeight + outerPadding
+        return baseHeight + outerPadding + 10
     }
 }
 

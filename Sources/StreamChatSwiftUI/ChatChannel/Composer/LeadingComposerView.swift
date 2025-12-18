@@ -4,8 +4,10 @@
 
 import SwiftUI
 
-struct LeadingComposerView: View {
+struct LeadingComposerView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
+    
+    var factory: Factory
     
     var body: some View {
         HStack {
@@ -15,17 +17,8 @@ struct LeadingComposerView: View {
                         .fontWeight(.semibold)
                 }
                 .padding(.all, 12)
-                .background(
-                    Circle()
-                        .stroke(Color(colors.innerBorder), lineWidth: 0.5)
-                        .shadow(
-                            color: .black.opacity(0.2),
-                            radius: 12,
-                            y: 6
-                        )
-                )
+                .modifier(factory.styles.composerButtonViewModifier)
                 .foregroundStyle(.primary)
-                .glassEffect(.regular, in: .circle)
             } else {
                 Button {} label: {
                     Image(systemName: "plus")

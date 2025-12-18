@@ -91,7 +91,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         cooldownDuration: viewModel.cooldownDuration,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                         shouldScroll: viewModel.inputComposerShouldScroll,
-                        removeAttachmentWithId: viewModel.removeAttachment(with:)
+                        removeAttachmentWithId: viewModel.removeAttachment(with:),
+                        sendMessage: sendMessage
                     )
                 )
                 .environmentObject(viewModel)
@@ -107,18 +108,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     options: TrailingComposerViewOptions(
                         enabled: viewModel.sendButtonEnabled,
                         cooldownDuration: viewModel.cooldownDuration,
-                        onTap: {
-                            viewModel.sendMessage(
-                                quotedMessage: quotedMessage,
-                                editedMessage: editedMessage
-                            ) {
-                                // Calling onMessageSent() before erasing the edited and quoted message
-                                // so that onMessageSent can use them for state handling.
-                                onMessageSent()
-                                quotedMessage = nil
-                                editedMessage = nil
-                            }
-                        }
+                        onTap: sendMessage
                     )
                 )
                 .environmentObject(viewModel)
@@ -264,6 +254,19 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .accessibilityElement(children: .contain)
     }
+    
+    public func sendMessage() {
+        viewModel.sendMessage(
+            quotedMessage: quotedMessage,
+            editedMessage: editedMessage
+        ) {
+            // Calling onMessageSent() before erasing the edited and quoted message
+            // so that onMessageSent can use them for state handling.
+            onMessageSent()
+            quotedMessage = nil
+            editedMessage = nil
+        }
+    }
 }
 
 /// View for the composer's input (text and media).
@@ -287,6 +290,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var cooldownDuration: Int
     var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
+    var sendMessage: @MainActor () -> Void
 
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
     @State var keyboardShown = false
@@ -303,7 +307,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
-        removeAttachmentWithId: @escaping (String) -> Void
+        removeAttachmentWithId: @escaping (String) -> Void,
+        sendMessage: @escaping @MainActor () -> Void
     ) {
         self.factory = factory
         _text = text
@@ -317,6 +322,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.cooldownDuration = cooldownDuration
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.removeAttachmentWithId = removeAttachmentWithId
+        self.sendMessage = sendMessage
     }
 
     var textFieldHeight: CGFloat {
@@ -438,20 +444,22 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         : nil
                 )
+                
+                factory.makeComposerInputTrailingView(
+                    options: .init(
+                        viewModel: viewModel,
+                        onTap: sendMessage
+                    )
+                )
+                .padding(.trailing, 8)
             }
             .frame(height: textFieldHeight)
         }
+        .padding(.vertical, 2)
         .padding(.vertical, shouldAddVerticalPadding ? inputPaddingsConfig.vertical : 0)
         .padding(.leading, inputPaddingsConfig.leading)
         .padding(.trailing, inputPaddingsConfig.trailing)
-        .background(composerInputBackground)
-        .overlay(
-            RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-                .stroke(Color(keyboardShown ? highlightedBorder : colors.innerBorder))
-        )
-        .clipShape(
-            RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-        )
+        .modifier(factory.styles.composerInputViewModifier)
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }

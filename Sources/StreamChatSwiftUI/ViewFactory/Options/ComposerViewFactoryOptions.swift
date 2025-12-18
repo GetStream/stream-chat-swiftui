@@ -77,6 +77,8 @@ public final class ComposerInputViewOptions: Sendable {
     public let shouldScroll: Bool
     /// Callback to remove an attachment by ID.
     public let removeAttachmentWithId: @MainActor (String) -> Void
+    /// Sends a message.
+    public let sendMessage: @MainActor () -> Void
     
     public init(
         text: Binding<String>,
@@ -90,7 +92,8 @@ public final class ComposerInputViewOptions: Sendable {
         cooldownDuration: Int,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping @MainActor (String) -> Void
+        removeAttachmentWithId: @escaping @MainActor (String) -> Void,
+        sendMessage: @escaping @MainActor () -> Void
     ) {
         self.text = text
         self.selectedRangeLocation = selectedRangeLocation
@@ -104,6 +107,7 @@ public final class ComposerInputViewOptions: Sendable {
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.shouldScroll = shouldScroll
         self.removeAttachmentWithId = removeAttachmentWithId
+        self.sendMessage = sendMessage
     }
 }
 
@@ -140,6 +144,20 @@ public final class ComposerTextInputViewOptions: Sendable {
         self.editable = editable
         self.maxMessageLength = maxMessageLength
         self.currentHeight = currentHeight
+    }
+}
+
+public final class ComposerInputTrailingViewOptions: Sendable {
+    // TODO: improve this.
+    public let viewModel: MessageComposerViewModel
+    public let onTap: @MainActor () -> Void
+    
+    public init(
+        viewModel: MessageComposerViewModel,
+        onTap: @escaping @MainActor () -> Void
+    ) {
+        self.viewModel = viewModel
+        self.onTap = onTap
     }
 }
 

@@ -122,6 +122,8 @@ class iMessageViewFactory: ViewFactory {
 
     static let shared = iMessageViewFactory()
 
+    public var styles = LiquidGlassStyles()
+    
     private init() {}
 
     func makeLeadingSwipeActionsView(

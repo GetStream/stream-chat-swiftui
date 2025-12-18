@@ -13,6 +13,9 @@ import SwiftUI
 
     /// Returns the navigation bar display mode.
     func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode
+    
+    associatedtype StylesType: Styles
+    var styles: StylesType { get set }
 
     // MARK: - channels
 
@@ -379,6 +382,9 @@ import SwiftUI
     /// - Parameter options: the options for creating the composer text input view.
     /// - Returns: View shown in the composer text input slot.
     func makeComposerTextInputView(options: ComposerTextInputViewOptions) -> ComposerTextInputViewType
+    
+    associatedtype ComposerInputTrailingViewType: View
+    func makeComposerInputTrailingView(options: ComposerInputTrailingViewOptions) -> ComposerInputTrailingViewType
 
     associatedtype TrailingComposerViewType: View
     /// Creates the trailing composer view.

@@ -26,6 +26,8 @@ extension ContactAttachmentPayload: Identifiable {
 
 class CustomAttachmentsFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
+    
+    public var styles = LiquidGlassStyles()
 
     private let mockContacts = [
         CustomAttachment(

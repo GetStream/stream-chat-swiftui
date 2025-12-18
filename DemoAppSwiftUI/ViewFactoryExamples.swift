@@ -14,6 +14,8 @@ class DemoAppFactory: ViewFactory {
     private var mentionsHandler = MentionsHandler()
 
     public static let shared = DemoAppFactory()
+    
+    public var styles = LiquidGlassStyles()
 
     func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: options.title)
@@ -230,6 +232,8 @@ struct CustomChannelDestination: View {
 class CustomFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 
+    public var styles = LiquidGlassStyles()
+    
     private init() {}
 
     public static let shared = CustomFactory()

@@ -91,7 +91,8 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     maxMessageLength: channelConfig?.maxMessageLength,
                     cooldownDuration: viewModel.cooldownDuration,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                    removeAttachmentWithId: viewModel.removeAttachment(with:)
+                    removeAttachmentWithId: viewModel.removeAttachment(with:),
+                    sendMessage: {}
                 )
                 .overlay(
                     viewModel.sendButtonEnabled ? sendButton : nil
