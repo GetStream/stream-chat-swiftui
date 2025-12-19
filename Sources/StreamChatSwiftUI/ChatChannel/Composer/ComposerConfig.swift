@@ -18,15 +18,6 @@ public struct ComposerConfig {
     public var adjustMessageOnSend: (String) -> (String)
     public var adjustMessageOnRead: (String) -> (String)
 
-    @available(
-        *,
-        deprecated,
-        message: """
-        Override the MessageComposerViewModel.inputAttachmentsAsPayloads() in order to convert the message attachments to payloads.
-        """
-    )
-    public var attachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload]
-
     public init(
         isVoiceRecordingEnabled: Bool = false,
         inputViewMinHeight: CGFloat = 38,
@@ -37,9 +28,7 @@ public struct ComposerConfig {
         maxGalleryAssetsCount: Int? = nil,
         inputPaddingsConfig: PaddingsConfig = .composerInput,
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
-        adjustMessageOnRead: @escaping (String) -> (String) = { $0 },
-        attachmentPayloadConverter: @escaping (ChatMessage) -> [AnyAttachmentPayload]
-            = ComposerConfig.defaultAttachmentPayloadConverter
+        adjustMessageOnRead: @escaping (String) -> (String) = { $0 }
     ) {
         self.inputViewMinHeight = inputViewMinHeight
         self.inputViewMaxHeight = inputViewMaxHeight
@@ -47,16 +36,10 @@ public struct ComposerConfig {
         self.inputFont = inputFont
         self.adjustMessageOnSend = adjustMessageOnSend
         self.adjustMessageOnRead = adjustMessageOnRead
-        self.attachmentPayloadConverter = attachmentPayloadConverter
         self.gallerySupportedTypes = gallerySupportedTypes
         self.maxGalleryAssetsCount = maxGalleryAssetsCount
         self.inputPaddingsConfig = inputPaddingsConfig
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
-    }
-    
-    public nonisolated(unsafe) static var defaultAttachmentPayloadConverter: (ChatMessage) -> [AnyAttachmentPayload] = { _ in
-        /// This now returns empty array by default since attachmentPayloadConverter has been deprecated.
-        []
     }
 }
 

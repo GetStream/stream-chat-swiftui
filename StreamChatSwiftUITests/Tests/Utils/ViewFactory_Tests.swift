@@ -1157,7 +1157,7 @@ import XCTest
     }
 }
 
-extension ChannelAction: Equatable {
+extension ChannelAction: @retroactive Equatable {
     public static func == (lhs: ChannelAction, rhs: ChannelAction) -> Bool {
         lhs.id == rhs.id
     }

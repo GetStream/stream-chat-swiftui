@@ -731,16 +731,10 @@ import SwiftUI
             cid: channelId,
             messageId: message.id
         )
-
-        var newAttachments = attachments ?? []
-        let fallbackAttachments = utils.composerConfig.attachmentPayloadConverter(message)
-        if !fallbackAttachments.isEmpty {
-            newAttachments = fallbackAttachments
-        }
-
+        
         messageController.editMessage(
             text: adjustedText,
-            attachments: newAttachments
+            attachments: attachments ?? []
         ) { [weak self] error in
             if error != nil {
                 self?.errorShown = true
