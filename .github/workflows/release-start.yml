@@ -26,6 +26,11 @@ jobs:
 
       - uses: ./.github/actions/xcode-cache
 
+      - name: Integration Test
+        run: gh workflow run test.yml --repo GetStream/apple-internal-testing-pipeline # reports to @support on failure
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }}
+
       - name: Create Release PR
         run: bundle exec fastlane release version:"${{ github.event.inputs.version }}" --verbose
         env:
