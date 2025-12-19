@@ -94,6 +94,7 @@ lane :release do |options|
     Dir.chdir('fastlane') { update_img_shields_sdk_sizes }
   end
 
+  check_unsafe_flags
   pod_lint
   release_ios_sdk(
     version: options[:version],
