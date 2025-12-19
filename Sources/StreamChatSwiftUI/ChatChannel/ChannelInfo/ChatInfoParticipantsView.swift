@@ -14,16 +14,19 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
     @Binding var selectedParticipant: ParticipantInfo?
 
     let factory: Factory
+    let channel: ChatChannel
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
     
     public init(
         factory: Factory = DefaultViewFactory.shared,
+        channel: ChatChannel,
         participants: [ParticipantInfo],
         onItemAppear: @escaping (ParticipantInfo) -> Void,
         selectedParticipant: Binding<ParticipantInfo?> = .constant(nil)
     ) {
         self.factory = factory
+        self.channel = channel
         self.participants = participants
         self.onItemAppear = onItemAppear
         _selectedParticipant = selectedParticipant
@@ -41,14 +44,8 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                     )
                     factory.makeMessageAvatarView(for: displayInfo)
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(participant.displayName)
-                            .lineLimit(1)
-                            .font(fonts.bodyBold)
-                        Text(participant.onlineInfoText)
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.textLowEmphasis))
-                    }
+                    participantView(participant: participant)
+                    
                     Spacer()
                 }
                 .padding(.all, 8)
@@ -66,6 +63,26 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
             }
         }
         .background(Color(colors.background))
+    }
+    
+    private func  participantView(participant:ParticipantInfo)-> some View {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(participant.displayName)
+                    .lineLimit(1)
+                    .font(fonts.bodyBold)
+                Text(participant.onlineInfoText)
+                    .font(fonts.footnote)
+                    .foregroundColor(Color(colors.textLowEmphasis))
+            }
+            Spacer()
+            
+            if channel.createdBy?.id == participant.chatUser.id {
+                Text(L10n.chatGroupInfoOwner)
+                    .font(fonts.footnote)
+                    .foregroundColor(Color(colors.textLowEmphasis))
+            }
+        }
     }
 }
 
