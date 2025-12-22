@@ -365,6 +365,8 @@ public final class AttachmentPickerViewOptions: Sendable {
     public let height: CGFloat
     /// The popup height of the picker.
     public let popupHeight: CGFloat
+    /// Snapshot of the currently selected asset identifiers.
+    public let selectedAssetIds: [String]?
     
     public init(
         attachmentPickerState: Binding<AttachmentPickerState>,
@@ -381,7 +383,8 @@ public final class AttachmentPickerViewOptions: Sendable {
         askForAssetsAccessPermissions: @escaping @MainActor () -> Void,
         isDisplayed: Bool,
         height: CGFloat,
-        popupHeight: CGFloat
+        popupHeight: CGFloat,
+        selectedAssetIds: [String]? = nil
     ) {
         self.attachmentPickerState = attachmentPickerState
         self.filePickerShown = filePickerShown
@@ -398,6 +401,7 @@ public final class AttachmentPickerViewOptions: Sendable {
         self.isDisplayed = isDisplayed
         self.height = height
         self.popupHeight = popupHeight
+        self.selectedAssetIds = selectedAssetIds
     }
 }
 
@@ -422,15 +426,19 @@ public final class PhotoAttachmentPickerViewOptions: Sendable {
     public let onAssetTap: @MainActor (AddedAsset) -> Void
     /// Function to check if an asset is selected.
     public let isAssetSelected: @MainActor (String) -> Bool
+    /// Snapshot of the currently selected asset identifiers.
+    public let selectedAssetIds: [String]?
     
     public init(
         assets: PHFetchResultCollection,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
-        isAssetSelected: @escaping @MainActor (String) -> Bool
+        isAssetSelected: @escaping @MainActor (String) -> Bool,
+        selectedAssetIds: [String]? = nil
     ) {
         self.assets = assets
         self.onAssetTap = onAssetTap
         self.isAssetSelected = isAssetSelected
+        self.selectedAssetIds = selectedAssetIds
     }
 }
 

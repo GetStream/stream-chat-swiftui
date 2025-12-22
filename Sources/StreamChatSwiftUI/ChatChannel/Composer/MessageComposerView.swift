@@ -168,7 +168,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
-                    popupHeight: popupSize
+                    popupHeight: popupSize,
+                    selectedAssetIds: viewModel.addedAssets.map(\.id)
                 )
             )
             .environmentObject(viewModel)

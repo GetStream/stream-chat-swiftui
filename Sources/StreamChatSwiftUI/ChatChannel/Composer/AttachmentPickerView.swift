@@ -29,7 +29,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
     var isDisplayed: Bool
     var height: CGFloat
-
+    var selectedAssetIds: [String]?
+    
     public init(
         viewFactory: Factory,
         selectedPickerState: Binding<AttachmentPickerState>,
@@ -45,7 +46,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
         askForAssetsAccessPermissions: @escaping () -> Void,
         isDisplayed: Bool,
-        height: CGFloat
+        height: CGFloat,
+        selectedAssetIds: [String]? = nil
     ) {
         self.viewFactory = viewFactory
         _selectedPickerState = selectedPickerState
@@ -62,6 +64,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         self.askForAssetsAccessPermissions = askForAssetsAccessPermissions
         self.isDisplayed = isDisplayed
         self.height = height
+        self.selectedAssetIds = selectedAssetIds
     }
 
     public var body: some View {
@@ -82,7 +85,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                             options: PhotoAttachmentPickerViewOptions(
                                 assets: collection,
                                 onAssetTap: onAssetTap,
-                                isAssetSelected: isAssetSelected
+                                isAssetSelected: isAssetSelected,
+                                selectedAssetIds: selectedAssetIds
                             )
                         )
                         .edgesIgnoringSafeArea(.bottom)

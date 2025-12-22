@@ -620,7 +620,8 @@ extension ViewFactory {
             cameraImageAdded: options.cameraImageAdded,
             askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
             isDisplayed: options.isDisplayed,
-            height: options.height
+            height: options.height,
+            selectedAssetIds: options.selectedAssetIds
         )
         .offset(y: options.isDisplayed ? 0 : options.popupHeight)
         .animation(.spring())
@@ -666,7 +667,8 @@ extension ViewFactory {
             PhotoAttachmentPickerView(
                 assets: options.assets,
                 onImageTap: options.onAssetTap,
-                imageSelected: options.isAssetSelected
+                imageSelected: options.isAssetSelected,
+                selectedAssetIds: options.selectedAssetIds
             )
         }
     }
