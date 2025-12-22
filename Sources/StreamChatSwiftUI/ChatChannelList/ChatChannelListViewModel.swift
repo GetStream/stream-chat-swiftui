@@ -634,13 +634,13 @@ public func notifyHideTabBar() {
 }
 
 /// Enum for the type of alert presented in the channel list view.
-public enum ChannelAlertType {
+public enum ChannelAlertType: Equatable {
     case deleteChannel(ChatChannel)
     case error
 }
 
 /// Enum describing the type of the custom popup for channel actions.
-public enum ChannelPopupType {
+public enum ChannelPopupType: Equatable {
     /// Shows the 'more actions' popup.
     case moreActions(ChatChannel)
 }

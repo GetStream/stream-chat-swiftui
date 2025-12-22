@@ -23,8 +23,11 @@ extension ChatClient {
         if let maxAttachmentSize, maxAttachmentSize > 0 {
             return maxAttachmentSize
         } else {
-            // TODO: temp fix.
-            return 100 * 1024 * 1024
+            if let customCDNClient = config.customCDNClient {
+                return type(of: customCDNClient).maxAttachmentSize
+            } else {
+                return 100 * 1024 * 1024
+            }
         }
     }
 }

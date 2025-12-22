@@ -204,12 +204,6 @@ public struct ChannelAvatarView: View {
     @State private var channelAvatar = UIImage()
     let channel: ChatChannel?
 
-    @available(
-        *,
-        deprecated,
-        renamed: "init(channel:showOnlineIndicator:size:)",
-        message: "Use automatically refreshing avatar initializer."
-    )
     public init(
         avatar: UIImage,
         showOnlineIndicator: Bool,
