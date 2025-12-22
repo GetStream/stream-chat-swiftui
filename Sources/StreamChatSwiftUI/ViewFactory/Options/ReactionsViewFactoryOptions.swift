@@ -114,14 +114,18 @@ public final class ReactionsContentViewOptions: Sendable {
     public let contentRect: CGRect
     /// Callback when a reaction is tapped.
     public let onReactionTap: @MainActor (MessageReactionType) -> Void
+    /// Callback when the more reactions button is tapped.
+    public let onMoreReactionsTap: @MainActor () -> Void
     
     public init(
         message: ChatMessage,
         contentRect: CGRect,
-        onReactionTap: @escaping @MainActor (MessageReactionType) -> Void
+        onReactionTap: @escaping @MainActor (MessageReactionType) -> Void,
+        onMoreReactionsTap: @escaping @MainActor () -> Void
     ) {
         self.message = message
         self.contentRect = contentRect
         self.onReactionTap = onReactionTap
+        self.onMoreReactionsTap = onMoreReactionsTap
     }
 }

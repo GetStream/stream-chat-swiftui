@@ -781,7 +781,8 @@ extension ViewFactory {
         ReactionsOverlayContainer(
             message: options.message,
             contentRect: options.contentRect,
-            onReactionTap: options.onReactionTap
+            onReactionTap: options.onReactionTap,
+            onMoreReactionsTap: options.onMoreReactionsTap
         )
     }
     

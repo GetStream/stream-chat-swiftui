@@ -19,6 +19,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var initialWidth: CGFloat?
     @State private var orientationChanged = false
     @State private var initialOrigin: CGFloat?
+    @State private var moreReactionsShown = false
 
     var factory: Factory
     var channel: ChatChannel
@@ -147,6 +148,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                                         dismissReactionsOverlay {
                                             viewModel.reactionTapped(reaction)
                                         }
+                                    },
+                                    onMoreReactionsTap: {
+                                        moreReactionsShown.toggle()
                                     }
                                 )
                             )
@@ -234,6 +238,16 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             if isIPad {
                 orientationChanged = true
             }
+        }
+        .sheet(isPresented: $moreReactionsShown) {
+            MoreReactionsView { reactionKey in
+                moreReactionsShown = false
+                let reaction = MessageReactionType(rawValue: reactionKey)
+                dismissReactionsOverlay {
+                    viewModel.reactionTapped(reaction)
+                }
+            }
+            .modifier(PresentationDetentsModifier(height: screenHeight / 3))
         }
     }
 
@@ -395,5 +409,18 @@ struct DeviceRotationViewModifier: ViewModifier {
 extension View {
     func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
         modifier(DeviceRotationViewModifier(action: action))
+    }
+}
+
+struct PresentationDetentsModifier: ViewModifier {
+    var height: CGFloat
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content
+                .presentationDetents([.height(height)])
+        } else {
+            content
+        }
     }
 }

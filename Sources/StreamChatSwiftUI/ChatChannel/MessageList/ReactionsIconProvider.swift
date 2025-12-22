@@ -4,17 +4,27 @@
 
 import StreamChat
 import SwiftUI
+import UIKit
 
 class ReactionsIconProvider {
     @MainActor static var colors: ColorPalette = InjectedValues[\.colors]
     @MainActor static var images: Images = InjectedValues[\.images]
     
     @MainActor static func icon(for reaction: MessageReactionType, useLargeIcons: Bool) -> UIImage? {
+        var icon: UIImage?
         if useLargeIcons {
-            images.availableReactions[reaction]?.largeIcon
+            icon = images.availableReactions[reaction]?.largeIcon
         } else {
-            images.availableReactions[reaction]?.smallIcon
+            icon = images.availableReactions[reaction]?.smallIcon
         }
+        if let icon {
+            return icon
+        }
+        guard let emoji = emojiString(from: reaction.rawValue) else {
+            return nil
+        }
+
+        return image(from: emoji, useLargeIcons: useLargeIcons)
     }
 
     @MainActor static func color(for reaction: MessageReactionType, userReactionIDs: Set<MessageReactionType>) -> Color? {
@@ -25,6 +35,42 @@ class ReactionsIconProvider {
             return Color(color)
         } else {
             return nil
+        }
+    }
+}
+
+private extension ReactionsIconProvider {
+    @MainActor static func emojiString(from identifier: String) -> String? {
+        let components = identifier.split(separator: "-")
+        guard components.allSatisfy({ $0.lowercased().hasPrefix("u") }) else {
+            return identifier
+        }
+
+        var scalars = String.UnicodeScalarView()
+        for component in components {
+            let hex = component.drop { $0 == "u" || $0 == "U" }
+            guard let value = UInt32(hex, radix: 16), let scalar = UnicodeScalar(value) else {
+                return nil
+            }
+            scalars.append(scalar)
+        }
+
+        return String(scalars)
+    }
+
+    @MainActor static func image(from emoji: String, useLargeIcons: Bool) -> UIImage? {
+        let fontSize: CGFloat = useLargeIcons ? 28 : 22
+        let font = UIFont.systemFont(ofSize: fontSize)
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let text = emoji as NSString
+        var size = text.size(withAttributes: attributes)
+        size.width = ceil(size.width)
+        size.height = ceil(size.height)
+
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            UIColor.clear.set()
+            text.draw(at: .zero, withAttributes: attributes)
         }
     }
 }
