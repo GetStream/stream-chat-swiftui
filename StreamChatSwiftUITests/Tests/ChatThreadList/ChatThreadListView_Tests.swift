@@ -62,6 +62,7 @@ import XCTest
 
 class CustomFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
+    var styles = LiquidGlassStyles()
 
     func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> some View {
         LoadingView()

@@ -266,6 +266,7 @@ private struct FootballGameAttachmentPayload: AttachmentPayload {
 
 private class CustomQuotedContentViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
+    var styles = LiquidGlassStyles()
     
     private init() {}
     

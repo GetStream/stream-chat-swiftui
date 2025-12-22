@@ -155,7 +155,8 @@ import XCTest
             quotedMessage: .constant(nil),
             cooldownDuration: 15,
             onCustomAttachmentTap: { _ in },
-            removeAttachmentWithId: { _ in }
+            removeAttachmentWithId: { _ in },
+            sendMessage: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: defaultScreenSize.width, height: 100)
@@ -283,7 +284,8 @@ import XCTest
             quotedMessage: .constant(nil),
             cooldownDuration: 0,
             onCustomAttachmentTap: { _ in },
-            removeAttachmentWithId: { _ in }
+            removeAttachmentWithId: { _ in },
+            sendMessage: {}
         )
         .environmentObject(viewModel)
         .frame(width: defaultScreenSize.width, height: 100)
@@ -527,7 +529,8 @@ import XCTest
             quotedMessage: .constant(nil),
             cooldownDuration: 0,
             onCustomAttachmentTap: { _ in },
-            removeAttachmentWithId: { _ in }
+            removeAttachmentWithId: { _ in },
+            sendMessage: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
@@ -721,7 +724,8 @@ import XCTest
             cooldownDuration: 0,
             onCustomAttachmentTap: { _ in
             },
-            removeAttachmentWithId: { _ in }
+            removeAttachmentWithId: { _ in },
+            sendMessage: {}
         )
         .environmentObject(viewModel)
         .frame(width: size.width, height: size.height)

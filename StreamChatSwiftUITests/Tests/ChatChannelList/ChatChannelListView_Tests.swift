@@ -154,6 +154,7 @@ import XCTest
 
 class ChannelAvatarViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
+    var styles = LiquidGlassStyles()
     
     func makeChannelAvatarView(
         options: ChannelAvatarViewFactoryOptions

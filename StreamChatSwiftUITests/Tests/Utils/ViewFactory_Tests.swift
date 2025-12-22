@@ -689,7 +689,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeChannelListModifier(options: ChannelListModifierOptions())
+        let modifier = viewFactory.styles.makeChannelListModifier(options: ChannelListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -700,7 +700,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageListModifier(options: MessageListModifierOptions())
+        let modifier = viewFactory.styles.makeMessageListModifier(options: MessageListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -711,7 +711,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageViewModifier(
+        let modifier = viewFactory.styles.makeMessageViewModifier(
             for: MessageModifierInfo(
                 message: message,
                 isFirst: false
@@ -727,7 +727,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeComposerViewModifier(options: ComposerViewModifierOptions())
+        let modifier = viewFactory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -760,7 +760,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let viewModifier = viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions())
+        let viewModifier = viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions())
 
         // Then
         XCTAssert(viewModifier is EmptyViewModifier)
@@ -915,7 +915,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions())
+        let modifier = viewFactory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)

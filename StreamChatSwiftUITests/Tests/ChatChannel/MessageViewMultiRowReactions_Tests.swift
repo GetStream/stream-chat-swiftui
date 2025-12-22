@@ -66,6 +66,7 @@ import XCTest
 
 class TestViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
+    var styles = LiquidGlassStyles()
 
     private init() {}
 
