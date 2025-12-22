@@ -155,6 +155,15 @@ import StreamChat
         }
     }
 
+    /// Preselects the the thread if needed, for example, when inside an iPad Split View.
+    open func preselectThreadIfNeeded() {
+        guard isIPad else { return }
+        guard let firstThread = threads.first else { return }
+        guard selectedThread == nil else { return }
+
+        selectedThread = .init(thread: firstThread)
+    }
+
     public func controller(
         _ controller: ChatThreadListController,
         didChangeThreads changes: [ListChange<ChatThread>]
@@ -183,13 +192,5 @@ import StreamChat
 
     private func makeDefaultEventsController() {
         eventsController = chatClient.eventsController()
-    }
-
-    private func preselectThreadIfNeeded() {
-        guard isIPad else { return }
-        guard let firstThread = threads.first else { return }
-        guard selectedThread == nil else { return }
-
-        selectedThread = .init(thread: firstThread)
     }
 }

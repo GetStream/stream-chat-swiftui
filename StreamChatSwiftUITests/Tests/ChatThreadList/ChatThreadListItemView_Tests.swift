@@ -163,7 +163,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
     }
 }
 
-extension ChatThreadListItem {
+extension ChatThreadListItem where Factory == DefaultViewFactory {
     init(thread: ChatThread) {
         self.init(viewModel: ChatThreadListItemViewModel(thread: thread))
     }

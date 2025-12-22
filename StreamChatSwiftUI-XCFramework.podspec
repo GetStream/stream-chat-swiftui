@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'StreamChatSwiftUI-XCFramework'
-  spec.version = '4.94.0'
+  spec.version = '4.95.1'
   spec.summary = 'StreamChat SwiftUI Chat Components'
   spec.description = 'StreamChatSwiftUI SDK offers flexible SwiftUI components able to display data provided by StreamChat SDK.'
 
@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
   spec.license = { type: 'BSD-3', file: 'LICENSE' }
   spec.author = { 'getstream.io' => 'support@getstream.io' }
   spec.social_media_url = 'https://getstream.io'
-  spec.swift_version = '5.9'
+  spec.swift_version = '5.10'
   spec.platform = :ios, '14.0'
   spec.requires_arc = true
 
@@ -19,7 +19,7 @@ Pod::Spec.new do |spec|
 
   spec.framework = 'Foundation', 'UIKit', 'SwiftUI'
 
-  spec.dependency 'StreamChat-XCFramework', '~> 4.94.0'
+  spec.dependency 'StreamChat-XCFramework', '~> 4.95.1'
 
   spec.cocoapods_version = '>= 1.11.0'
 end

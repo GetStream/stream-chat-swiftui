@@ -6,19 +6,31 @@ import StreamChat
 import SwiftUI
 
 /// View for the mentioned users.
-public struct MentionUsersView: View {
+public struct MentionUsersView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
 
+    var factory: Factory
     private let itemHeight: CGFloat = 60
 
     var users: [ChatUser]
     var userSelected: (ChatUser) -> Void
+
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        users: [ChatUser],
+        userSelected: @escaping (ChatUser) -> Void
+    ) {
+        self.factory = factory
+        self.users = users
+        self.userSelected = userSelected
+    }
 
     public var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach(users) { user in
                     MentionUserView(
+                        factory: factory,
                         user: user,
                         userSelected: userSelected
                     )
@@ -43,20 +55,33 @@ public struct MentionUsersView: View {
 }
 
 /// View for one user that can be mentioned.
-public struct MentionUserView: View {
+public struct MentionUserView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
+    var factory: Factory
     var user: ChatUser
     var userSelected: (ChatUser) -> Void
 
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        user: ChatUser,
+        userSelected: @escaping (ChatUser) -> Void
+    ) {
+        self.factory = factory
+        self.user = user
+        self.userSelected = userSelected
+    }
+
     public var body: some View {
         HStack {
-            MessageAvatarView(
-                avatarURL: user.imageURL,
-                showOnlineIndicator: true
+            let displayInfo = UserDisplayInfo(
+                id: user.id,
+                name: user.name ?? user.id,
+                imageURL: user.imageURL
             )
+            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.bodyBold)

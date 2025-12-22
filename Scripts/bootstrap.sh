@@ -30,7 +30,7 @@ if [ "${SKIP_SWIFT_BOOTSTRAP:-}" != true ]; then
   puts "Install SwiftLint v${SWIFT_LINT_VERSION}"
   DOWNLOAD_URL="https://github.com/realm/SwiftLint/releases/download/${SWIFT_LINT_VERSION}/SwiftLint.pkg"
   DOWNLOAD_PATH="/tmp/SwiftLint-${SWIFT_LINT_VERSION}.pkg"
-  curl -sL "$DOWNLOAD_URL" -o "$DOWNLOAD_PATH"
+  wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH"
   sudo installer -pkg "$DOWNLOAD_PATH" -target /
   swiftlint version
 
@@ -39,7 +39,7 @@ if [ "${SKIP_SWIFT_BOOTSTRAP:-}" != true ]; then
   DOWNLOAD_PATH="/tmp/swiftformat-${SWIFT_FORMAT_VERSION}.zip"
   BIN_PATH="/usr/local/bin/swiftformat"
   brew uninstall swiftformat || true
-  curl -sL "$DOWNLOAD_URL" -o "$DOWNLOAD_PATH"
+  wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH"
   unzip -o "$DOWNLOAD_PATH" -d /tmp/swiftformat-${SWIFT_FORMAT_VERSION}
   sudo mv /tmp/swiftformat-${SWIFT_FORMAT_VERSION}/swiftformat "$BIN_PATH"
   sudo chmod +x "$BIN_PATH"
@@ -50,7 +50,7 @@ if [ "${SKIP_SWIFT_BOOTSTRAP:-}" != true ]; then
   DOWNLOAD_PATH="/tmp/swiftgen-${SWIFT_GEN_VERSION}.zip"
   INSTALL_DIR="/usr/local/lib/swiftgen"
   BIN_PATH="/usr/local/bin/swiftgen"
-  curl -sL "$DOWNLOAD_URL" -o "$DOWNLOAD_PATH"
+  wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH"
   sudo rm -rf "$INSTALL_DIR"
   sudo mkdir -p "$INSTALL_DIR"
   sudo unzip -o "$DOWNLOAD_PATH" -d "$INSTALL_DIR"
@@ -62,7 +62,7 @@ fi
 if [[ ${INSTALL_SONAR-default} == true ]]; then
   puts "Install sonar scanner v${SONAR_VERSION}"
   DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_VERSION}-macosx-x64.zip"
-  curl -sL "${DOWNLOAD_URL}" -o ./fastlane/sonar.zip
+  wget "${DOWNLOAD_URL}" -O ./fastlane/sonar.zip
   cd fastlane
   unzip sonar.zip
   rm sonar.zip
@@ -74,12 +74,12 @@ fi
 if [[ ${INSTALL_ALLURE-default} == true ]]; then
   puts "Install allurectl v${ALLURECTL_VERSION}"
   DOWNLOAD_URL="https://github.com/allure-framework/allurectl/releases/download/${ALLURECTL_VERSION}/allurectl_darwin_amd64"
-  curl -sL "${DOWNLOAD_URL}" -o ./fastlane/allurectl
+  wget "${DOWNLOAD_URL}" -O ./fastlane/allurectl
   chmod +x ./fastlane/allurectl
 
   puts "Install xcresults v${XCRESULTS_VERSION}"
   DOWNLOAD_URL="https://github.com/eroshenkoam/xcresults/releases/download/${XCRESULTS_VERSION}/xcresults"
-  curl -sL "${DOWNLOAD_URL}" -o ./fastlane/xcresults
+  wget "${DOWNLOAD_URL}" -O ./fastlane/xcresults
   chmod +x ./fastlane/xcresults
 fi
 

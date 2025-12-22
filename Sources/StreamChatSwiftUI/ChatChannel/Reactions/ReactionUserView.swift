@@ -6,12 +6,23 @@ import StreamChat
 import SwiftUI
 
 /// View displaying single user reaction.
-struct ReactionUserView: View {
+struct ReactionUserView<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.fonts) private var fonts
 
+    var factory: Factory
     var reaction: ChatMessageReaction
     var imageSize: CGFloat
+
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        reaction: ChatMessageReaction,
+        imageSize: CGFloat
+    ) {
+        self.factory = factory
+        self.reaction = reaction
+        self.imageSize = imageSize
+    }
 
     private var isCurrentUser: Bool {
         chatClient.currentUserId == reaction.author.id
@@ -27,18 +38,20 @@ struct ReactionUserView: View {
 
     var body: some View {
         VStack {
-            MessageAvatarView(
-                avatarURL: reaction.author.imageURL,
-                size: CGSize(width: imageSize, height: imageSize),
-                showOnlineIndicator: false
+            let displayInfo = UserDisplayInfo(
+                id: reaction.author.id,
+                name: reaction.author.name ?? reaction.author.id,
+                imageURL: reaction.author.imageURL,
+                size: CGSize(width: imageSize, height: imageSize)
             )
-            .overlay(
-                VStack {
-                    Spacer()
-                    SingleReactionView(reaction: reaction)
-                        .frame(height: imageSize / 2)
-                }
-            )
+            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
+                .overlay(
+                    VStack {
+                        Spacer()
+                        SingleReactionView(reaction: reaction)
+                            .frame(height: imageSize / 2)
+                    }
+                )
 
             Text(authorName)
                 .multilineTextAlignment(.center)

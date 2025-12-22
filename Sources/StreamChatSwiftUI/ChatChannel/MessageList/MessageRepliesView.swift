@@ -61,18 +61,12 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         } label: {
             HStack {
                 if !isRightAligned {
-                    MessageAvatarView(
-                        avatarURL: message.threadParticipants.first?.imageURL,
-                        size: .init(width: 16, height: 16)
-                    )
+                    messageAvatarView
                 }
                 Text(title)
                     .font(fonts.footnoteBold)
                 if isRightAligned {
-                    MessageAvatarView(
-                        avatarURL: message.threadParticipants.first?.imageURL,
-                        size: .init(width: 16, height: 16)
-                    )
+                    messageAvatarView
                 }
             }
             .padding(.horizontal, 16)
@@ -121,6 +115,28 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             L10n.Message.Threads.reply
         } else {
             L10n.Message.Threads.replies
+        }
+    }
+
+    private var messageAvatarView: some View {
+        // This is just a fallback for backwards compatibility
+        // In practice thread participants will never be empty.
+        // So, the factory method will always run.
+        Group {
+            if let participant = message.threadParticipants.first {
+                let displayInfo = UserDisplayInfo(
+                    id: participant.id,
+                    name: participant.name ?? participant.id,
+                    imageURL: participant.imageURL,
+                    size: .init(width: 16, height: 16)
+                )
+                factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
+            } else {
+                MessageAvatarView(
+                    avatarURL: message.threadParticipants.first?.imageURL,
+                    size: .init(width: 16, height: 16)
+                )
+            }
         }
     }
 }
