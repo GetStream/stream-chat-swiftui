@@ -116,7 +116,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         viewModel: ChatChannelViewModel,
-        onLongPress: @escaping (MessageDisplayInfo) -> Void = { _ in }
+        onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void = { _ in }
     ) {
         self.init(
             factory: factory,
