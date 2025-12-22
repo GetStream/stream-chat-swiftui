@@ -794,6 +794,10 @@ extension ViewFactory {
             .blur(radius: options.popInAnimationInProgress ? 0 : 4)
     }
     
+    public func makeMoreReactionsView(options: MoreReactionsViewOptions) -> some View {
+        MoreReactionsView(onEmojiTap: options.onEmojiTap)
+    }
+    
     public func makeQuotedMessageHeaderView(
         options: QuotedMessageHeaderViewOptions
     ) -> some View {

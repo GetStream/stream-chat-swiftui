@@ -14,9 +14,9 @@ struct MoreReactionsView: View {
 
     private let emojiSize: CGFloat = 52
 
-    var onEmojiTap: (String) -> Void
+    var onEmojiTap: @MainActor (String) -> Void
 
-    init(onEmojiTap: @escaping (String) -> Void = { _ in }) {
+    init(onEmojiTap: @escaping @MainActor (String) -> Void) {
         self.onEmojiTap = onEmojiTap
     }
 

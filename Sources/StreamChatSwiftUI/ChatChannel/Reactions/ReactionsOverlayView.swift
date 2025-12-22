@@ -240,13 +240,15 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
         }
         .sheet(isPresented: $moreReactionsShown) {
-            MoreReactionsView { reactionKey in
+            factory.makeMoreReactionsView(options: .init(onEmojiTap: { reactionKey in
                 moreReactionsShown = false
                 let reaction = MessageReactionType(rawValue: reactionKey)
-                dismissReactionsOverlay {
-                    viewModel.reactionTapped(reaction)
+                withAnimation {
+                    dismissReactionsOverlay {
+                        viewModel.reactionTapped(reaction)
+                    }
                 }
-            }
+            }))
             .modifier(PresentationDetentsModifier(height: screenHeight / 3))
         }
     }

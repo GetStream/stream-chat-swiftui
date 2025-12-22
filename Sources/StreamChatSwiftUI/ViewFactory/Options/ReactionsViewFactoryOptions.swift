@@ -129,3 +129,13 @@ public final class ReactionsContentViewOptions: Sendable {
         self.onMoreReactionsTap = onMoreReactionsTap
     }
 }
+
+/// Options for creating the more reactions view.
+public final class MoreReactionsViewOptions: Sendable {
+    /// Called when an emoji is tapped.
+    public let onEmojiTap: @MainActor (String) -> Void
+    
+    public init(onEmojiTap: @escaping @MainActor (String) -> Void) {
+        self.onEmojiTap = onEmojiTap
+    }
+}
