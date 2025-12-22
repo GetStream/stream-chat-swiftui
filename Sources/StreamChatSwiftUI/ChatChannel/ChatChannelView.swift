@@ -180,6 +180,16 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 factory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
             }
         }
+        .onPreferenceChange(FloatingComposerHeightPreferenceKey.self) { value in
+            guard composerPlacement == .floating, value > 0 else { return }
+            let defaultHeight = Self.defaultFloatingComposerHeight()
+            let newHeight = max(value, defaultHeight)
+            if abs(newHeight - floatingComposerHeight) > 0.5 {
+                withAnimation {
+                    floatingComposerHeight = newHeight
+                }
+            }
+        }
         .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible

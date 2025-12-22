@@ -252,6 +252,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
             viewModel.pickerTypeState = .expanded(.none)
         }
+        .preference(key: FloatingComposerHeightPreferenceKey.self, value: composerHeight)
         .accessibilityElement(children: .contain)
     }
     
