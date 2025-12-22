@@ -8,7 +8,7 @@ import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
 open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
-    @Injected(\.chatClient) private var chatClient
+    @Injected(\.chatClient) public var chatClient
 
     @Published public var participants = [ParticipantInfo]()
     @Published public var muted: Bool {
@@ -60,8 +60,8 @@ open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDele
         }
     }
 
-    var channelController: ChatChannelController!
-    var currentUserController: CurrentChatUserController?
+    public var channelController: ChatChannelController!
+    public var currentUserController: CurrentChatUserController?
     
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
