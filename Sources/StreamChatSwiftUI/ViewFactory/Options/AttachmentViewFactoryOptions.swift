@@ -367,6 +367,12 @@ public final class AttachmentPickerViewOptions: Sendable {
     public let popupHeight: CGFloat
     /// Snapshot of the currently selected asset identifiers.
     public let selectedAssetIds: [String]?
+    /// The channel controller.
+    public let channelController: ChatChannelController
+    /// An optional message controller.
+    public let messageController: ChatMessageController?
+    /// Whether a poll can be sent.
+    public let canSendPoll: Bool
     
     public init(
         attachmentPickerState: Binding<AttachmentPickerState>,
@@ -384,7 +390,10 @@ public final class AttachmentPickerViewOptions: Sendable {
         isDisplayed: Bool,
         height: CGFloat,
         popupHeight: CGFloat,
-        selectedAssetIds: [String]? = nil
+        selectedAssetIds: [String]? = nil,
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?,
+        canSendPoll: Bool
     ) {
         self.attachmentPickerState = attachmentPickerState
         self.filePickerShown = filePickerShown
@@ -402,6 +411,9 @@ public final class AttachmentPickerViewOptions: Sendable {
         self.height = height
         self.popupHeight = popupHeight
         self.selectedAssetIds = selectedAssetIds
+        self.channelController = channelController
+        self.messageController = messageController
+        self.canSendPoll = canSendPoll
     }
 }
 
@@ -409,11 +421,18 @@ public final class AttachmentPickerViewOptions: Sendable {
 public final class AttachmentSourcePickerViewOptions: Sendable {
     /// The currently selected picker state.
     public let selected: AttachmentPickerState
+    /// Whether sending polls is allowed.
+    public let canSendPoll: Bool
     /// Callback when the picker state changes.
     public let onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     
-    public init(selected: AttachmentPickerState, onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void) {
+    public init(
+        selected: AttachmentPickerState,
+        canSendPoll: Bool,
+        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void
+    ) {
         self.selected = selected
+        self.canSendPoll = canSendPoll
         self.onPickerStateChange = onPickerStateChange
     }
 }

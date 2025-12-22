@@ -8,8 +8,6 @@ import SwiftUI
 
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
-    @EnvironmentObject var viewModel: MessageComposerViewModel
-    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
@@ -31,6 +29,10 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     var height: CGFloat
     var selectedAssetIds: [String]?
     
+    var channelController: ChatChannelController
+    var messageController: ChatMessageController?
+    var canSendPoll: Bool
+    
     public init(
         viewFactory: Factory,
         selectedPickerState: Binding<AttachmentPickerState>,
@@ -47,7 +49,10 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         askForAssetsAccessPermissions: @escaping () -> Void,
         isDisplayed: Bool,
         height: CGFloat,
-        selectedAssetIds: [String]? = nil
+        selectedAssetIds: [String]? = nil,
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?,
+        canSendPoll: Bool
     ) {
         self.viewFactory = viewFactory
         _selectedPickerState = selectedPickerState
@@ -65,6 +70,9 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         self.isDisplayed = isDisplayed
         self.height = height
         self.selectedAssetIds = selectedAssetIds
+        self.channelController = channelController
+        self.messageController = messageController
+        self.canSendPoll = canSendPoll
     }
 
     public var body: some View {
@@ -72,10 +80,10 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             viewFactory.makeAttachmentSourcePickerView(
                 options: AttachmentSourcePickerViewOptions(
                     selected: selectedPickerState,
+                    canSendPoll: canSendPoll,
                     onPickerStateChange: onPickerStateChange
                 )
             )
-            .environmentObject(viewModel)
 
             if selectedPickerState == .photos {
                 if let assets = photoLibraryAssets {
@@ -115,8 +123,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             } else if selectedPickerState == .polls {
                 viewFactory.makeComposerPollView(
                     options: ComposerPollViewOptions(
-                        channelController: viewModel.channelController,
-                        messageController: viewModel.messageController
+                        channelController: channelController,
+                        messageController: messageController
                     )
                 )
             } else if selectedPickerState == .custom {
@@ -142,20 +150,21 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
 /// View for picking the source of the attachment (photo, files or camera).
 public struct AttachmentSourcePickerView: View {
-    @EnvironmentObject var viewModel: MessageComposerViewModel
-    
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 
     var selected: AttachmentPickerState
+    var canSendPoll: Bool
     var onTap: (AttachmentPickerState) -> Void
 
     public init(
         selected: AttachmentPickerState,
+        canSendPoll: Bool,
         onTap: @escaping (AttachmentPickerState) -> Void
     ) {
         self.selected = selected
         self.onTap = onTap
+        self.canSendPoll = canSendPoll
     }
 
     public var body: some View {
@@ -185,7 +194,7 @@ public struct AttachmentSourcePickerView: View {
             )
             .accessibilityIdentifier("attachmentPickerCamera")
             
-            if viewModel.canSendPoll {
+            if canSendPoll {
                 AttachmentPickerButton(
                     icon: images.attachmentPickerPolls,
                     pickerType: .polls,

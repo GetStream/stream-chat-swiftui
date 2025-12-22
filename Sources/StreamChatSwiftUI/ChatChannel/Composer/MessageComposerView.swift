@@ -169,7 +169,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
                     popupHeight: popupSize,
-                    selectedAssetIds: viewModel.addedAssets.map(\.id)
+                    selectedAssetIds: viewModel.addedAssets.map(\.id),
+                    channelController: viewModel.channelController,
+                    messageController: viewModel.messageController,
+                    canSendPoll: viewModel.canSendPoll
                 )
             )
             .environmentObject(viewModel)

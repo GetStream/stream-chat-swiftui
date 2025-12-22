@@ -621,7 +621,10 @@ extension ViewFactory {
             askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
             isDisplayed: options.isDisplayed,
             height: options.height,
-            selectedAssetIds: options.selectedAssetIds
+            selectedAssetIds: options.selectedAssetIds,
+            channelController: options.channelController,
+            messageController: options.messageController,
+            canSendPoll: options.canSendPoll
         )
         .offset(y: options.isDisplayed ? 0 : options.popupHeight)
         .animation(.spring())
@@ -656,6 +659,7 @@ extension ViewFactory {
     ) -> some View {
         AttachmentSourcePickerView(
             selected: options.selected,
+            canSendPoll: options.canSendPoll,
             onTap: options.onPickerStateChange
         )
     }

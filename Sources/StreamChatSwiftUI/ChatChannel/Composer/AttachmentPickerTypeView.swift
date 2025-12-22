@@ -25,21 +25,27 @@ public enum AttachmentPickerType: Sendable {
     case custom
 }
 
+// TODO: maybe remove this view.
 /// View for picking the attachment type (media or giphy commands).
 public struct AttachmentPickerTypeView: View {
-    @EnvironmentObject private var composerViewModel: MessageComposerViewModel
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
 
     @Binding var pickerTypeState: PickerTypeState
     var channelConfig: ChannelConfig?
+    var channelController: ChatChannelController
+    var isSendMessageEnabled: Bool
 
     public init(
         pickerTypeState: Binding<PickerTypeState>,
-        channelConfig: ChannelConfig?
+        channelConfig: ChannelConfig?,
+        channelController: ChatChannelController,
+        isSendMessageEnabled: Bool
     ) {
         _pickerTypeState = pickerTypeState
         self.channelConfig = channelConfig
+        self.isSendMessageEnabled = isSendMessageEnabled
+        self.channelController = channelController
     }
 
     private var commandsAvailable: Bool {
@@ -50,7 +56,7 @@ public struct AttachmentPickerTypeView: View {
         HStack(spacing: 16) {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                if composerViewModel.channelController.channel?.canUploadFile == true && composerViewModel.isSendMessageEnabled {
+                if channelController.channel?.canUploadFile == true && isSendMessageEnabled {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .media,
@@ -60,7 +66,7 @@ public struct AttachmentPickerTypeView: View {
                     .accessibilityIdentifier("PickerTypeButtonMedia")
                 }
 
-                if commandsAvailable && composerViewModel.isSendMessageEnabled {
+                if commandsAvailable && isSendMessageEnabled {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .instantCommands,
@@ -70,7 +76,7 @@ public struct AttachmentPickerTypeView: View {
                     .accessibilityIdentifier("PickerTypeButtonCommands")
                 }
             case .collapsed:
-                if composerViewModel.isSendMessageEnabled {
+                if isSendMessageEnabled {
                     Button {
                         withAnimation {
                             pickerTypeState = .expanded(.none)
