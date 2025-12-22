@@ -23,7 +23,8 @@ extension ChatClient {
         if let maxAttachmentSize, maxAttachmentSize > 0 {
             return maxAttachmentSize
         } else {
-            return config.maxAttachmentSize
+            // TODO: temp fix.
+            return 100 * 1024 * 1024
         }
     }
 }
