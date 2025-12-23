@@ -984,7 +984,7 @@ extension ViewFactory {
 public class DefaultViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
     
-    public var styles = LiquidGlassStyles()
+    public var styles = RegularStyles()
         
     private init() {
         // Private init.

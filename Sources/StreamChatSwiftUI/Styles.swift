@@ -98,6 +98,20 @@ public class LiquidGlassStyles: Styles {
     }
 }
 
+public class RegularStyles: Styles {
+    public var composerPlacement: ComposerPlacement = .docked
+    
+    public init() {}
+    
+    public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
+        StandardInputViewModifier(keyboardShown: options.keyboardShown)
+    }
+    
+    public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
+        BorderModifier(shape: .circle)
+    }
+}
+
 public struct StandardInputViewModifier: ViewModifier {
     @Injected(\.colors) var colors
     

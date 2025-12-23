@@ -13,7 +13,7 @@ struct TrailingInputComposerView: View {
     var sendMessage: () -> Void
     
     var body: some View {
-        if text.isEmpty {
+        if !sendButtonEnabled {
             VoiceRecordingButton(
                 recordingState: $recordingState,
                 startRecording: startRecording,

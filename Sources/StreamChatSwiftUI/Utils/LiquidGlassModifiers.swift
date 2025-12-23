@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-struct LiquidGlassBackground<BackgroundShape: Shape>: ViewModifier {
+struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
     @Injected(\.colors) var colors
     
     var shape: BackgroundShape
@@ -34,7 +34,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     public func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content
-                .modifier(LiquidGlassBackground(shape: shape))
+                .modifier(BorderModifier(shape: shape))
                 .glassEffect(.regular, in: shape)
         } else {
             content
