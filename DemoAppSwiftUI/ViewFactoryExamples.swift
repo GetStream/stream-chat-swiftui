@@ -29,10 +29,7 @@ class DemoAppFactory: ViewFactory {
         let onError = options.onError
         
         var actions = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: onDismiss,
-            onError: onError
+            for: .init(channel: channel, onDismiss: onDismiss, onError: onError)
         )
         let archiveChannel = archiveChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
         actions.insert(archiveChannel, at: actions.count - 2)
@@ -270,10 +267,7 @@ class CustomFactory: ViewFactory {
         let onError = options.onError
         
         var defaultActions = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: onDismiss,
-            onError: onError
+            for: .init(channel: channel, onDismiss: onDismiss, onError: onError)
         )
         let freeze: @MainActor () -> Void = {
             let controller = self.chatClient.channelController(for: channel.cid)
