@@ -5,15 +5,23 @@
 import SwiftUI
 
 struct TrailingInputComposerView: View {
-    @ObservedObject var viewModel: MessageComposerViewModel
-    var onTap: () -> Void
+    @Binding var text: String
+    @Binding var recordingState: RecordingState
+    var sendButtonEnabled: Bool
+    var startRecording: () -> Void
+    var stopRecording: () -> Void
+    var sendMessage: () -> Void
     
     var body: some View {
-        if viewModel.text.isEmpty {
-            VoiceRecordingButton(viewModel: viewModel)
+        if text.isEmpty {
+            VoiceRecordingButton(
+                recordingState: $recordingState,
+                startRecording: startRecording,
+                stopRecording: stopRecording
+            )
         } else {
-            SendMessageButton(enabled: viewModel.sendButtonEnabled) {
-                onTap()
+            SendMessageButton(enabled: sendButtonEnabled) {
+                sendMessage()
             }
         }
     }

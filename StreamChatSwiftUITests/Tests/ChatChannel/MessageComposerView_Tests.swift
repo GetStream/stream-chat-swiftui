@@ -142,21 +142,30 @@ import XCTest
     func test_composerInputView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
 
         // When
         let view = ComposerInputView(
             factory: factory,
+            channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
+            recordingState: .constant(.initial),
             addedAssets: [],
             addedFileURLs: [],
             addedCustomAttachments: [],
+            addedVoiceRecordings: [],
             quotedMessage: .constant(nil),
             cooldownDuration: 15,
+            sendButtonEnabled: true,
+            isSendMessageEnabled: true,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
-            sendMessage: {}
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: defaultScreenSize.width, height: 100)
@@ -275,17 +284,25 @@ import XCTest
         // When
         let view = ComposerInputView(
             factory: factory,
+            channelController: mockChannelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
+            recordingState: .constant(.initial),
             addedAssets: [],
             addedFileURLs: [],
             addedCustomAttachments: [],
+            addedVoiceRecordings: [],
             quotedMessage: .constant(nil),
             cooldownDuration: 0,
+            sendButtonEnabled: true,
+            isSendMessageEnabled: true,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
-            sendMessage: {}
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
         )
         .environmentObject(viewModel)
         .frame(width: defaultScreenSize.width, height: 100)
@@ -353,7 +370,9 @@ import XCTest
             selectedRangeLocation: .constant(3),
             placeholder: "Send a message",
             editable: true,
-            currentHeight: 38
+            maxMessageLength: nil,
+            currentHeight: 38,
+            onImagePasted: { _ in }
         )
         .frame(width: defaultScreenSize.width, height: 50)
 
@@ -369,7 +388,9 @@ import XCTest
             selectedRangeLocation: .constant(3),
             placeholder: "Send a message",
             editable: true,
-            currentHeight: 38
+            maxMessageLength: nil,
+            currentHeight: 38,
+            onImagePasted: { _ in }
         )
         let inputView = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
@@ -392,7 +413,9 @@ import XCTest
             selectedRangeLocation: .constant(3),
             placeholder: "Send a message",
             editable: true,
-            currentHeight: 38
+            maxMessageLength: nil,
+            currentHeight: 38,
+            onImagePasted: { _ in }
         )
         let inputView = InputTextView(
             frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
@@ -435,7 +458,9 @@ import XCTest
             selectedRangeLocation: .constant(0),
             placeholder: "Send a message",
             editable: true,
-            currentHeight: 36
+            maxMessageLength: nil,
+            currentHeight: 36,
+            onImagePasted: { _ in }
         )
         let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
         let viewWithSize = view.applyDefaultSize()
@@ -507,10 +532,12 @@ import XCTest
 
     func test_composerInputView_command() {
         let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let size = CGSize(width: defaultScreenSize.width, height: 100)
 
         let view = ComposerInputView(
             factory: factory,
+            channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
             command: .constant(.init(
@@ -523,14 +550,21 @@ import XCTest
                     isInstant: true
                 )
             )),
+            recordingState: .constant(.initial),
             addedAssets: [],
             addedFileURLs: [],
             addedCustomAttachments: [],
+            addedVoiceRecordings: [],
             quotedMessage: .constant(nil),
             cooldownDuration: 0,
+            sendButtonEnabled: true,
+            isSendMessageEnabled: true,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
-            sendMessage: {}
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
@@ -709,12 +743,15 @@ import XCTest
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
         let view = ComposerInputView(
             factory: factory,
+            channelController: channelController,
             text: .constant("Hello"),
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
+            recordingState: .constant(.initial),
             addedAssets: [],
             addedFileURLs: [],
             addedCustomAttachments: [],
+            addedVoiceRecordings: [],
             quotedMessage: .constant(
                 .mock(
                     text: "Hello",
@@ -722,10 +759,15 @@ import XCTest
                 )
             ),
             cooldownDuration: 0,
+            sendButtonEnabled: true,
+            isSendMessageEnabled: true,
             onCustomAttachmentTap: { _ in
             },
             removeAttachmentWithId: { _ in },
-            sendMessage: {}
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
         )
         .environmentObject(viewModel)
         .frame(width: size.width, height: size.height)

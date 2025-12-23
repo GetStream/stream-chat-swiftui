@@ -80,19 +80,27 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
+                        channelController: viewModel.channelController,
                         text: $viewModel.text,
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
                         command: $viewModel.composerCommand,
+                        recordingState: $viewModel.recordingState,
                         addedAssets: viewModel.addedAssets,
                         addedFileURLs: viewModel.addedFileURLs,
                         addedCustomAttachments: viewModel.addedCustomAttachments,
+                        addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
                         maxMessageLength: channelConfig?.maxMessageLength,
                         cooldownDuration: viewModel.cooldownDuration,
+                        sendButtonEnabled: viewModel.sendButtonEnabled,
+                        isSendMessageEnabled: viewModel.isSendMessageEnabled,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                         shouldScroll: viewModel.inputComposerShouldScroll,
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
-                        sendMessage: sendMessage
+                        sendMessage: sendMessage,
+                        onImagePasted: viewModel.imagePasted,
+                        startRecording: viewModel.startRecording,
+                        stopRecording: viewModel.stopRecording
                     )
                 )
                 .environmentObject(viewModel)
@@ -276,58 +284,80 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
 /// View for the composer's input (text and media).
 public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
-    @EnvironmentObject var viewModel: MessageComposerViewModel
-    
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
 
     var factory: Factory
+    var channelController: ChatChannelController
     @Binding var text: String
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
+    @Binding var recordingState: RecordingState
     var addedAssets: [AddedAsset]
     var addedFileURLs: [URL]
     var addedCustomAttachments: [CustomAttachment]
+    var addedVoiceRecordings: [AddedVoiceRecording]
     var quotedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
+    var sendButtonEnabled: Bool
+    var isSendMessageEnabled: Bool
     var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     var sendMessage: @MainActor () -> Void
+    var onImagePasted: @MainActor (UIImage) -> Void
+    var startRecording: () -> Void
+    var stopRecording: () -> Void
 
     @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
     @State var keyboardShown = false
 
     public init(
         factory: Factory,
+        channelController: ChatChannelController,
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
+        recordingState: Binding<RecordingState>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
+        addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
+        sendButtonEnabled: Bool,
+        isSendMessageEnabled: Bool,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping (String) -> Void,
-        sendMessage: @escaping @MainActor () -> Void
+        sendMessage: @escaping @MainActor () -> Void,
+        onImagePasted: @escaping @MainActor (UIImage) -> Void,
+        startRecording: @escaping () -> Void,
+        stopRecording: @escaping () -> Void
     ) {
         self.factory = factory
+        self.channelController = channelController
+        self.addedVoiceRecordings = addedVoiceRecordings
         _text = text
         _selectedRangeLocation = selectedRangeLocation
         _command = command
+        _recordingState = recordingState
         self.addedAssets = addedAssets
         self.addedFileURLs = addedFileURLs
         self.addedCustomAttachments = addedCustomAttachments
+        self.isSendMessageEnabled = isSendMessageEnabled
+        self.sendButtonEnabled = sendButtonEnabled
         self.quotedMessage = quotedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.removeAttachmentWithId = removeAttachmentWithId
         self.sendMessage = sendMessage
+        self.onImagePasted = onImagePasted
+        self.startRecording = startRecording
+        self.stopRecording = stopRecording
     }
 
     var textFieldHeight: CGFloat {
@@ -360,7 +390,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         scrolledId: .constant(nil)
                     )
                 )
-                .environment(\.channelTranslationLanguage, viewModel.channelController.channel?.membership?.language)
+                .environment(\.channelTranslationLanguage, channelController.channel?.membership?.language)
             }
 
             if !addedAssets.isEmpty {
@@ -384,9 +414,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .padding(.trailing, 8)
             }
             
-            if !viewModel.addedVoiceRecordings.isEmpty {
+            if !addedVoiceRecordings.isEmpty {
                 AddedVoiceRecordingsView(
-                    addedVoiceRecordings: viewModel.addedVoiceRecordings,
+                    addedVoiceRecordings: addedVoiceRecordings,
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .padding(.trailing, 8)
@@ -429,10 +459,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         editable: !isInputDisabled,
                         maxMessageLength: maxMessageLength,
                         currentHeight: textFieldHeight,
-                        onImagePasted: viewModel.imagePasted
+                        onImagePasted: onImagePasted
                     )
                 )
-                .environmentObject(viewModel)
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)
                 .frame(height: textFieldHeight)
@@ -453,8 +482,12 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 
                 factory.makeComposerInputTrailingView(
                     options: .init(
-                        viewModel: viewModel,
-                        onTap: sendMessage
+                        text: $text,
+                        recordingState: $recordingState,
+                        sendButtonEnabled: sendButtonEnabled,
+                        startRecording: startRecording,
+                        stopRecording: stopRecording,
+                        sendMessage: sendMessage
                     )
                 )
                 .padding(.trailing, 8)
@@ -495,7 +528,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var isChannelFrozen: Bool {
-        !viewModel.isSendMessageEnabled
+        !isSendMessageEnabled
     }
 
     private var isInputDisabled: Bool {

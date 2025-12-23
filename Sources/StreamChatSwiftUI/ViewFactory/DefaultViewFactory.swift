@@ -510,36 +510,52 @@ extension ViewFactory {
             ScrollView {
                 ComposerInputView(
                     factory: self,
+                    channelController: options.channelController,
                     text: options.text,
                     selectedRangeLocation: options.selectedRangeLocation,
                     command: options.command,
+                    recordingState: options.recordingState,
                     addedAssets: options.addedAssets,
                     addedFileURLs: options.addedFileURLs,
                     addedCustomAttachments: options.addedCustomAttachments,
+                    addedVoiceRecordings: options.addedVoiceRecordings,
                     quotedMessage: options.quotedMessage,
                     maxMessageLength: options.maxMessageLength,
                     cooldownDuration: options.cooldownDuration,
+                    sendButtonEnabled: options.sendButtonEnabled,
+                    isSendMessageEnabled: options.isSendMessageEnabled,
                     onCustomAttachmentTap: options.onCustomAttachmentTap,
                     removeAttachmentWithId: options.removeAttachmentWithId,
-                    sendMessage: options.sendMessage
+                    sendMessage: options.sendMessage,
+                    onImagePasted: options.onImagePasted,
+                    startRecording: options.startRecording,
+                    stopRecording: options.stopRecording
                 )
             }
             .frame(height: 240)
         } else {
             ComposerInputView(
                 factory: self,
+                channelController: options.channelController,
                 text: options.text,
                 selectedRangeLocation: options.selectedRangeLocation,
                 command: options.command,
+                recordingState: options.recordingState,
                 addedAssets: options.addedAssets,
                 addedFileURLs: options.addedFileURLs,
                 addedCustomAttachments: options.addedCustomAttachments,
+                addedVoiceRecordings: options.addedVoiceRecordings,
                 quotedMessage: options.quotedMessage,
                 maxMessageLength: options.maxMessageLength,
                 cooldownDuration: options.cooldownDuration,
+                sendButtonEnabled: options.sendButtonEnabled,
+                isSendMessageEnabled: options.isSendMessageEnabled,
                 onCustomAttachmentTap: options.onCustomAttachmentTap,
                 removeAttachmentWithId: options.removeAttachmentWithId,
-                sendMessage: options.sendMessage
+                sendMessage: options.sendMessage,
+                onImagePasted: options.onImagePasted,
+                startRecording: options.startRecording,
+                stopRecording: options.stopRecording
             )
         }
     }
@@ -563,8 +579,12 @@ extension ViewFactory {
         options: ComposerInputTrailingViewOptions
     ) -> some View {
         TrailingInputComposerView(
-            viewModel: options.viewModel,
-            onTap: options.onTap
+            text: options.$text,
+            recordingState: options.$recordingState,
+            sendButtonEnabled: options.sendButtonEnabled,
+            startRecording: options.startRecording,
+            stopRecording: options.stopRecording,
+            sendMessage: options.sendMessage
         )
     }
     

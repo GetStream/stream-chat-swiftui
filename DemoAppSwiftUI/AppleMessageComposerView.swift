@@ -81,18 +81,26 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
 
                 ComposerInputView(
                     factory: DefaultViewFactory.shared,
+                    channelController: viewModel.channelController,
                     text: $viewModel.text,
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
                     command: $viewModel.composerCommand,
+                    recordingState: $viewModel.recordingState,
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
+                    addedVoiceRecordings: viewModel.addedVoiceRecordings,
                     quotedMessage: $quotedMessage,
                     maxMessageLength: channelConfig?.maxMessageLength,
                     cooldownDuration: viewModel.cooldownDuration,
+                    sendButtonEnabled: viewModel.sendButtonEnabled,
+                    isSendMessageEnabled: viewModel.sendButtonEnabled,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     removeAttachmentWithId: viewModel.removeAttachment(with:),
-                    sendMessage: {}
+                    sendMessage: {},
+                    onImagePasted: viewModel.imagePasted,
+                    startRecording: viewModel.startRecording,
+                    stopRecording: viewModel.stopRecording
                 )
                 .overlay(
                     viewModel.sendButtonEnabled ? sendButton : nil

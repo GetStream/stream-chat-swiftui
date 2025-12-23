@@ -842,7 +842,8 @@ import XCTest
                 placeholder: "Send a message",
                 editable: true,
                 maxMessageLength: nil,
-                currentHeight: 40
+                currentHeight: 40,
+                onImagePasted: { _ in }
             )
         )
         
