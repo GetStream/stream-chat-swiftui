@@ -8,11 +8,15 @@ import SwiftUI
 public struct TrailingComposerView: View {
     @Injected(\.utils) private var utils
         
-    @EnvironmentObject var viewModel: MessageComposerViewModel
+    @ObservedObject var viewModel: MessageComposerViewModel
     var onTap: () -> Void
     
-    public init(onTap: @escaping () -> Void) {
+    public init(
+        viewModel: MessageComposerViewModel,
+        onTap: @escaping () -> Void
+    ) {
         self.onTap = onTap
+        self.viewModel = viewModel
     }
     
     public var body: some View {

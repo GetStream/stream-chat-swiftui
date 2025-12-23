@@ -554,7 +554,8 @@ extension ViewFactory {
             placeholder: options.placeholder,
             editable: options.editable,
             maxMessageLength: options.maxMessageLength,
-            currentHeight: options.currentHeight
+            currentHeight: options.currentHeight,
+            onImagePasted: options.onImagePasted
         )
     }
     

@@ -127,6 +127,8 @@ public final class ComposerTextInputViewOptions: Sendable {
     public let maxMessageLength: Int?
     /// The current height of the input.
     public let currentHeight: CGFloat
+    /// Called when an image is pasted.
+    public let onImagePasted: @MainActor (UIImage) -> Void
     
     public init(
         text: Binding<String>,
@@ -135,7 +137,8 @@ public final class ComposerTextInputViewOptions: Sendable {
         placeholder: String,
         editable: Bool,
         maxMessageLength: Int?,
-        currentHeight: CGFloat
+        currentHeight: CGFloat,
+        onImagePasted: @escaping @MainActor (UIImage) -> Void
     ) {
         self.text = text
         self.height = height
@@ -144,6 +147,7 @@ public final class ComposerTextInputViewOptions: Sendable {
         self.editable = editable
         self.maxMessageLength = maxMessageLength
         self.currentHeight = currentHeight
+        self.onImagePasted = onImagePasted
     }
 }
 

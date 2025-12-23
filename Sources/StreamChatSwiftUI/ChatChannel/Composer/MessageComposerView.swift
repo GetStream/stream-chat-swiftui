@@ -428,7 +428,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
                         editable: !isInputDisabled,
                         maxMessageLength: maxMessageLength,
-                        currentHeight: textFieldHeight
+                        currentHeight: textFieldHeight,
+                        onImagePasted: viewModel.imagePasted
                     )
                 )
                 .environmentObject(viewModel)
