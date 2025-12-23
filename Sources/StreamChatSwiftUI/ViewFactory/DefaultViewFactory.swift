@@ -609,7 +609,11 @@ extension ViewFactory {
             cameraImageAdded: options.cameraImageAdded,
             askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
             isDisplayed: options.isDisplayed,
-            height: options.height
+            height: options.height,
+            selectedAssetIds: options.selectedAssetIds,
+            channelController: options.channelController,
+            messageController: options.messageController,
+            canSendPoll: options.canSendPoll
         )
         .offset(y: options.isDisplayed ? 0 : options.popupHeight)
         .animation(.spring())
@@ -644,6 +648,7 @@ extension ViewFactory {
     ) -> some View {
         AttachmentSourcePickerView(
             selected: options.selected,
+            canSendPoll: options.canSendPoll,
             onTap: options.onPickerStateChange
         )
     }
@@ -655,7 +660,8 @@ extension ViewFactory {
             PhotoAttachmentPickerView(
                 assets: options.assets,
                 onImageTap: options.onAssetTap,
-                imageSelected: options.isAssetSelected
+                imageSelected: options.isAssetSelected,
+                selectedAssetIds: options.selectedAssetIds
             )
         }
     }
@@ -757,7 +763,8 @@ extension ViewFactory {
         ReactionsOverlayContainer(
             message: options.message,
             contentRect: options.contentRect,
-            onReactionTap: options.onReactionTap
+            onReactionTap: options.onReactionTap,
+            onMoreReactionsTap: options.onMoreReactionsTap
         )
     }
     
@@ -767,6 +774,10 @@ extension ViewFactory {
         Image(uiImage: options.currentSnapshot)
             .overlay(Color.black.opacity(options.popInAnimationInProgress ? 0 : 0.1))
             .blur(radius: options.popInAnimationInProgress ? 0 : 4)
+    }
+    
+    public func makeMoreReactionsView(options: MoreReactionsViewOptions) -> some View {
+        MoreReactionsView(onEmojiTap: options.onEmojiTap)
     }
     
     public func makeQuotedMessageHeaderView(

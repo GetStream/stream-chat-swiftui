@@ -461,6 +461,11 @@ import SwiftUI
 
     associatedtype ReactionsContentView: View
     func makeReactionsContentView(options: ReactionsContentViewOptions) -> ReactionsContentView
+    
+    associatedtype MoreReactionsViewType: View
+    /// Creates the more reactions view.
+    /// - Parameter options: The options for creating the more reactions view.
+    func makeMoreReactionsView(options: MoreReactionsViewOptions) -> MoreReactionsViewType
 
     associatedtype QuotedMessageHeaderViewType: View
     /// Creates the quoted message header view in the composer.

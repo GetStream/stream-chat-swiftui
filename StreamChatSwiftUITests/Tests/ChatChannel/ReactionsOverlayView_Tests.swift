@@ -174,7 +174,8 @@ import XCTest
         let view = ReactionsOverlayContainer(
             message: message,
             contentRect: .init(x: -60, y: 200, width: 300, height: 300),
-            onReactionTap: { _ in }
+            onReactionTap: { _ in },
+            onMoreReactionsTap: {}
         )
 
         // Then
@@ -190,7 +191,8 @@ import XCTest
         let view = ReactionsAnimatableView(
             message: message,
             reactions: reactions,
-            onReactionTap: { _ in }
+            onReactionTap: { _ in },
+            onMoreReactionsTap: {}
         )
 
         // Then

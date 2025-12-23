@@ -804,7 +804,8 @@ import XCTest
             options: ReactionsContentViewOptions(
                 message: .mock(),
                 contentRect: .zero,
-                onReactionTap: { _ in }
+                onReactionTap: { _ in },
+                onMoreReactionsTap: {}
             )
         )
 
