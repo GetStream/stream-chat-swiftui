@@ -67,8 +67,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
         self.onActionExecuted = onActionExecuted
-        messageActionsCount = factory.supportedMessageActions(
-            options:
+        messageActionsCount = InjectedValues[\.utils].messageListConfig.supportedMessageActions(
             .init(
                 message: messageDisplayInfo.message,
                 channel: channel,

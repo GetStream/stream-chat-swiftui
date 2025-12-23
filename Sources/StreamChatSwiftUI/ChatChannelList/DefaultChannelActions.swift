@@ -7,18 +7,13 @@ import SwiftUI
 
 extension ChannelAction {
     /// Returns the default channel actions.
-    ///
-    ///  - Parameters:
-    ///     - channel: the current channel.
-    ///     - chatClient: the chat client.
-    ///     - onDimiss: called when the action is executed.
-    ///  - Returns: array of `ChannelAction`.
-    @MainActor public static func defaultActions(
-        for channel: ChatChannel,
-        chatClient: ChatClient,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
-    ) -> [ChannelAction] {
+    /// - Parameter options: The configuration options affecting the set of actions.
+    /// - Returns: An array of channel actions for the current configuration options.
+    @MainActor public static func defaultActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
+        let channel = options.channel
+        let chatClient = InjectedValues[\.chatClient]
+        let onDismiss = options.onDismiss
+        let onError = options.onError
         var actions = [ChannelAction]()
 
         let viewInfo = viewInfo(for: channel)

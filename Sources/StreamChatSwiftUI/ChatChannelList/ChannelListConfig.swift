@@ -8,15 +8,17 @@ import SwiftUI
 /// A configuration for channel lists.
 public struct ChannelListConfig {
     public init(
+        channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default,
         messageRelativeDateFormatEnabled: Bool = false,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         showChannelListDividerOnLastItem: Bool = true,
-        channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default
+        supportedMoreChannelActions: @escaping @MainActor (SupportedMoreChannelActionsOptions) -> [ChannelAction] = ChannelAction.defaultActions(for:)
     ) {
-        self.navigationBarDisplayMode = navigationBarDisplayMode
-        self.messageRelativeDateFormatEnabled = messageRelativeDateFormatEnabled
-        self.showChannelListDividerOnLastItem = showChannelListDividerOnLastItem
         self.channelItemMutedStyle = channelItemMutedStyle
+        self.messageRelativeDateFormatEnabled = messageRelativeDateFormatEnabled
+        self.navigationBarDisplayMode = navigationBarDisplayMode
+        self.showChannelListDividerOnLastItem = showChannelListDividerOnLastItem
+        self.supportedMoreChannelActions = supportedMoreChannelActions
     }
 
     /// If true, the timestamp format depends on the time passed.
@@ -35,4 +37,9 @@ public struct ChannelListConfig {
 
     /// The style for the channel item when it is muted.
     public var channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default
+    
+    /// Returns the supported channel actions.
+    /// - Parameter options: the options for getting supported channel actions.
+    /// - Returns: list of `ChannelAction` items.
+    public var supportedMoreChannelActions: @MainActor (SupportedMoreChannelActionsOptions) -> [ChannelAction]
 }

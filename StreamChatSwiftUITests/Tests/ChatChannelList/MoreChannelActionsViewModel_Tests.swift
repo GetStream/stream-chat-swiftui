@@ -85,10 +85,11 @@ import XCTest
         )
 
         let channelActions = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: {},
-            onError: { _ in }
+            for: SupportedMoreChannelActionsOptions(
+                channel: channel,
+                onDismiss: {},
+                onError: { _ in }
+            )
         )
 
         let moreActionsVM = MoreChannelActionsViewModel(

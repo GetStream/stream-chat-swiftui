@@ -49,30 +49,6 @@ import XCTest
         XCTAssert(viewModifier is DefaultChannelListHeaderModifier)
     }
 
-    func test_viewFactory_supportedMoreChannelActions() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let channel: ChatChannel = .mockDMChannel()
-        let expected = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: {},
-            onError: { _ in }
-        )
-
-        // When
-        let actions = viewFactory.supportedMoreChannelActions(
-            options: SupportedMoreChannelActionsOptions(
-                channel: channel,
-                onDismiss: {},
-                onError: { _ in }
-            )
-        )
-
-        // Then
-        XCTAssert(actions == expected)
-    }
-
     func test_viewFactory_makeMoreChannelActionsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -392,32 +368,6 @@ import XCTest
 
         // Then
         XCTAssert(view is AssetsAccessPermissionView)
-    }
-
-    func test_viewFactory_supportedMessageActions() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let expected = MessageAction.defaultActions(
-            factory: DefaultViewFactory.shared,
-            for: message,
-            channel: .mockDMChannel(),
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
-        )
-
-        // When
-        let actions = viewFactory.supportedMessageActions(
-            options: SupportedMessageActionsOptions(
-                message: message,
-                channel: .mockDMChannel(),
-                onFinish: { _ in },
-                onError: { _ in }
-            )
-        )
-
-        // Then
-        XCTAssert(actions == expected)
     }
 
     func test_viewFactory_makeMessageActionsView() {
