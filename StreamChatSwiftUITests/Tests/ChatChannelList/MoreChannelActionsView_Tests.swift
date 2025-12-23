@@ -13,10 +13,11 @@ import XCTest
         // Given
         let channel: ChatChannel = .mockDMChannel(name: "test")
         let actions = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: {},
-            onError: { _ in }
+            for: .init(
+                channel: channel,
+                onDismiss: {},
+                onError: { _ in }
+            )
         )
 
         // When

@@ -9,20 +9,14 @@ import SwiftUI
 
 public extension MessageAction {
     /// Returns the default message actions.
-    ///
-    ///  - Parameters:
-    ///     - message: the current message.
-    ///     - chatClient: the chat client.
-    ///     - onDimiss: called when the action is executed.
-    ///  - Returns: array of `MessageAction`.
-    @MainActor static func defaultActions(
-        factory: some ViewFactory,
-        for message: ChatMessage,
-        channel: ChatChannel,
-        chatClient: ChatClient,
-        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
-        onError: @escaping @MainActor (Error) -> Void
-    ) -> [MessageAction] {
+    /// - Parameter options: The configuration options affecting the set of actions.
+    /// - Returns: An array of message actions for the current configuration options.
+    @MainActor static func defaultActions(for options: SupportedMessageActionsOptions) -> [MessageAction] {
+        let message = options.message
+        let channel = options.channel
+        let chatClient = InjectedValues[\.chatClient]
+        let onFinish = options.onFinish
+        let onError = options.onError
         var messageActions = [MessageAction]()
 
         if message.localState == .sendingFailed {
@@ -81,7 +75,6 @@ public extension MessageAction {
 
         if channel.config.repliesEnabled && !message.isPartOfThread && !isInsideThreadView {
             let replyThread = threadReplyAction(
-                factory: factory,
                 for: message,
                 channel: channel
             )
@@ -393,7 +386,6 @@ public extension MessageAction {
 
     /// The action to reply to the message in a thread
     static func threadReplyAction(
-        factory: some ViewFactory,
         for message: ChatMessage,
         channel: ChatChannel
     ) -> MessageAction {

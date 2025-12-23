@@ -12,17 +12,17 @@ import XCTest
         let utils = Utils(messageListConfig: .init(userBlockingEnabled: true))
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let actions = MessageAction.defaultActions(
-            factory: DefaultViewFactory.shared,
-            for: .mock(
-                id: .unique,
-                cid: .unique,
-                text: "test",
-                author: .mock(id: .unique)
-            ),
-            channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .readEvents]),
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: .init(
+                message: .mock(
+                    id: .unique,
+                    cid: .unique,
+                    text: "test",
+                    author: .mock(id: .unique)
+                ),
+                channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .readEvents]),
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
         let viewModel = MessageActionsViewModel(messageActions: actions)
         let action = actions[6]

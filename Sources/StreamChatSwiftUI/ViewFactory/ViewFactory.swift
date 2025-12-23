@@ -11,9 +11,6 @@ import SwiftUI
 @MainActor public protocol ViewFactory: AnyObject {
     var chatClient: ChatClient { get }
 
-    /// Returns the navigation bar display mode.
-    func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode
-    
     associatedtype StylesType: Styles
     var styles: StylesType { get set }
 
@@ -63,11 +60,6 @@ import SwiftUI
     /// Creates the more channel actions view.
     /// - Parameter options: the options for creating the more channel actions view.
     func makeMoreChannelActionsView(options: MoreChannelActionsViewOptions) -> MoreActionsView
-
-    /// Returns the supported  channel actions.
-    /// - Parameter options: the options for getting supported channel actions.
-    /// - Returns: list of `ChannelAction` items.
-    func supportedMoreChannelActions(options: SupportedMoreChannelActionsOptions) -> [ChannelAction]
 
     associatedtype TrailingSwipeActionsViewType: View
     /// Creates the trailing swipe actions view in the channel list.
@@ -425,11 +417,6 @@ import SwiftUI
     associatedtype AssetsAccessPermissionViewType: View
     /// Creates the assets access permission view.
     func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> AssetsAccessPermissionViewType
-
-    /// Returns the supported  message actions.
-    /// - Parameter options: the options for getting supported message actions.
-    /// - Returns: list of `MessageAction` items.
-    func supportedMessageActions(options: SupportedMessageActionsOptions) -> [MessageAction]
 
     associatedtype SendInChannelViewType: View
     /// Creates the view that allows thread messages to be sent in a channel.

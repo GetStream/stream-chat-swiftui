@@ -28,24 +28,13 @@ extension ViewFactory {
         DefaultChannelListHeaderModifier(title: options.title)
     }
     
-    public func supportedMoreChannelActions(
-        options: SupportedMoreChannelActionsOptions
-    ) -> [ChannelAction] {
-        ChannelAction.defaultActions(
-            for: options.channel,
-            chatClient: chatClient,
-            onDismiss: options.onDismiss,
-            onError: options.onError
-        )
-    }
-    
     public func makeMoreChannelActionsView(
         options: MoreChannelActionsViewOptions
     ) -> some View {
         MoreChannelActionsView(
             channel: options.channel,
-            channelActions: supportedMoreChannelActions(
-                options: SupportedMoreChannelActionsOptions(
+            channelActions: InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
+                SupportedMoreChannelActionsOptions(
                     channel: options.channel,
                     onDismiss: options.onDismiss,
                     onError: options.onError
@@ -709,24 +698,11 @@ extension ViewFactory {
         )
     }
     
-    public func supportedMessageActions(
-        options: SupportedMessageActionsOptions
-    ) -> [MessageAction] {
-        MessageAction.defaultActions(
-            factory: self,
-            for: options.message,
-            channel: options.channel,
-            chatClient: chatClient,
-            onFinish: options.onFinish,
-            onError: options.onError
-        )
-    }
-    
     public func makeMessageActionsView(
         options: MessageActionsViewOptions
     ) -> some View {
-        let messageActions = supportedMessageActions(
-            options: SupportedMessageActionsOptions(
+        let messageActions = InjectedValues[\.utils].messageListConfig.supportedMessageActions(
+            SupportedMessageActionsOptions(
                 message: options.message,
                 channel: options.channel,
                 onFinish: options.onFinish,
