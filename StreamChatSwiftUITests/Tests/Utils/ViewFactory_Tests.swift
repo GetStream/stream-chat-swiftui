@@ -38,17 +38,6 @@ import XCTest
         XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_navigationBarDisplayMode() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let displayMode = viewFactory.navigationBarDisplayMode()
-
-        // Then
-        XCTAssert(displayMode == .inline)
-    }
-
     func test_viewFactory_makeChannelListHeaderViewModifier() {
         // Given
         let viewFactory = DefaultViewFactory.shared

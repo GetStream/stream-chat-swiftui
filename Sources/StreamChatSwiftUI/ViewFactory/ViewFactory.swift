@@ -11,9 +11,6 @@ import SwiftUI
 @MainActor public protocol ViewFactory: AnyObject {
     var chatClient: ChatClient { get }
 
-    /// Returns the navigation bar display mode.
-    func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode
-    
     associatedtype StylesType: Styles
     var styles: StylesType { get set }
 

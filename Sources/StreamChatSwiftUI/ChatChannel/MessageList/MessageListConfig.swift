@@ -39,7 +39,8 @@ public struct MessageListConfig {
         draftMessagesEnabled: Bool = false,
         downloadFileAttachmentsEnabled: Bool = false,
         hidesCommandsOverlayOnMessageListTap: Bool = true,
-        hidesAttachmentsPickersOnMessageListTap: Bool = true
+        hidesAttachmentsPickersOnMessageListTap: Bool = true,
+        navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -72,6 +73,7 @@ public struct MessageListConfig {
         self.downloadFileAttachmentsEnabled = downloadFileAttachmentsEnabled
         self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
         self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
+        self.navigationBarDisplayMode = navigationBarDisplayMode
     }
 
     public let messageListType: MessageListType
@@ -128,6 +130,9 @@ public struct MessageListConfig {
     ///
     /// By default it is enabled and it uses the color from `ColorPalette.messageCellHighlightBackground`.
     public let highlightMessageWhenJumping: Bool
+    
+    /// A style for displaying the title of a navigation bar.
+    public var navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode
 }
 
 /// Contains information about the message paddings.

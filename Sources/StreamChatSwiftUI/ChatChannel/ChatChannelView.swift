@@ -180,7 +180,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 factory.makeChannelLoadingView(options: ChannelLoadingViewOptions())
             }
         }
-        .navigationBarTitleDisplayMode(factory.navigationBarDisplayMode())
+        .navigationBarTitleDisplayMode(utils.messageListConfig.navigationBarDisplayMode)
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible
         })

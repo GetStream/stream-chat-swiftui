@@ -143,7 +143,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         }
         .modifier(viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: title)))
-        .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
+        .navigationBarTitleDisplayMode(utils.channelListConfig.navigationBarDisplayMode)
         .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
 

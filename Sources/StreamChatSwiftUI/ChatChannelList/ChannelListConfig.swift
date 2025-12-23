@@ -3,14 +3,17 @@
 //
 
 import Foundation
+import SwiftUI
 
 /// A configuration for channel lists.
 public struct ChannelListConfig {
     public init(
         messageRelativeDateFormatEnabled: Bool = false,
+        navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         showChannelListDividerOnLastItem: Bool = true,
         channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default
     ) {
+        self.navigationBarDisplayMode = navigationBarDisplayMode
         self.messageRelativeDateFormatEnabled = messageRelativeDateFormatEnabled
         self.showChannelListDividerOnLastItem = showChannelListDividerOnLastItem
         self.channelItemMutedStyle = channelItemMutedStyle
@@ -20,6 +23,9 @@ public struct ChannelListConfig {
     ///
     /// Different date formats are used for today, yesterday, last 7 days, and older dates.
     public var messageRelativeDateFormatEnabled: Bool
+    
+    /// A style for displaying the title of a navigation bar.
+    public var navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode
 
     /// A boolean indicating whether the channel list should show a divider
     /// on the last item.
