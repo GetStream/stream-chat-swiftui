@@ -24,7 +24,7 @@ import StreamChatCommonUI
     public var imageProcessor: ImageProcessor
     public var imageMerger: ImageMerging
     public var fileCDN: FileCDN
-    public var channelNamer: ChatChannelNamer
+    public var channelNameFormatter: ChannelNameFormatter
     public var chatUserNamer: ChatUserNamer
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
@@ -97,7 +97,7 @@ import StreamChatCommonUI
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         pollsConfig: PollsConfig = PollsConfig(),
-        channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
+        channelNameFormatter: ChannelNameFormatter = DefaultChannelNameFormatter(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
@@ -117,7 +117,7 @@ import StreamChatCommonUI
         self.imageProcessor = imageProcessor
         self.imageMerger = imageMerger
         self.fileCDN = fileCDN
-        self.channelNamer = channelNamer
+        self.channelNameFormatter = channelNameFormatter
         self.chatUserNamer = chatUserNamer
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver

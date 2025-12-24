@@ -16,7 +16,7 @@ import UIKit
     @Injected(\.utils) private var utils: Utils
 
     /// Context provided utils.
-    internal lazy var channelNamer = utils.channelNamer
+    internal lazy var channelNameFormatter = utils.channelNameFormatter
 
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
@@ -160,7 +160,10 @@ import UIKit
     /// - Parameter channel: the channel whose display name is asked for.
     /// - Returns: `String` with the channel name.
     public func name(forChannel channel: ChatChannel) -> String {
-        channelNamer(channel, chatClient.currentUserId) ?? ""
+        channelNameFormatter.format(
+            channel: channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 
     /// Checks if there are new channels to be loaded.

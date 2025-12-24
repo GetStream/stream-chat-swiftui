@@ -121,7 +121,10 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
 
     /// The formatted channel name text.
     public var channelNameText: String {
-        utils.channelNamer(thread.channel, chatClient.currentUserId) ?? ""
+        utils.channelNameFormatter.format(
+            channel: thread.channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 
     private var latestReplyAuthor: ChatUser? {
