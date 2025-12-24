@@ -9,22 +9,15 @@ import SwiftUI
 public struct ChannelListConfig {
     public init(
         channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default,
-        messageRelativeDateFormatEnabled: Bool = false,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         showChannelListDividerOnLastItem: Bool = true,
         supportedMoreChannelActions: @escaping @MainActor (SupportedMoreChannelActionsOptions) -> [ChannelAction] = ChannelAction.defaultActions(for:)
     ) {
         self.channelItemMutedStyle = channelItemMutedStyle
-        self.messageRelativeDateFormatEnabled = messageRelativeDateFormatEnabled
         self.navigationBarDisplayMode = navigationBarDisplayMode
         self.showChannelListDividerOnLastItem = showChannelListDividerOnLastItem
         self.supportedMoreChannelActions = supportedMoreChannelActions
     }
-
-    /// If true, the timestamp format depends on the time passed.
-    ///
-    /// Different date formats are used for today, yesterday, last 7 days, and older dates.
-    public var messageRelativeDateFormatEnabled: Bool
     
     /// A style for displaying the title of a navigation bar.
     public var navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode

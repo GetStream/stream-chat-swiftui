@@ -78,8 +78,8 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
 
     /// The formatted latest reply timestamp.
     public var latestReplyTimestampText: String {
-        utils.dateFormatter.string(
-            from: thread.latestReplies.last?.createdAt ?? .distantPast
+        utils.messageTimestampFormatter.format(
+            thread.latestReplies.last?.createdAt ?? .distantPast
         )
     }
 

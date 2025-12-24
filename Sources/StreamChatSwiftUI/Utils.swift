@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
@@ -15,7 +16,7 @@ import StreamChat
     /// Date formatter where the format depends on the time passed.
     ///
     /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
-    public var messageRelativeDateFormatter: DateFormatter
+    public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: DateFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
@@ -74,12 +75,12 @@ import StreamChat
     
     var _audioPlayer: AudioPlaying?
     var _audioRecorder: AudioRecording?
-    var pollsDateFormatter = PollsDateFormatter()
+    var pollsDateFormatter: PollTimestampFormatter = DefaultPollTimestampFormatter()
 
     public init(
         markdownFormatter: MarkdownFormatter = DefaultMarkdownFormatter(),
         dateFormatter: DateFormatter = .makeDefault(),
-        messageRelativeDateFormatter: DateFormatter = MessageRelativeDateFormatter(),
+        messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: DateFormatter = GalleryHeaderViewDateFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
@@ -108,7 +109,7 @@ import StreamChat
     ) {
         self.markdownFormatter = markdownFormatter
         self.dateFormatter = dateFormatter
-        self.messageRelativeDateFormatter = messageRelativeDateFormatter
+        self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
