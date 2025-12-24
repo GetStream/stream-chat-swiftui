@@ -571,7 +571,7 @@ public struct DateIndicatorView: View {
     var dateString: String
 
     public init(date: Date) {
-        dateString = DateFormatter.messageListDateOverlay.string(from: date)
+        dateString = InjectedValues[\.utils].messageDateSeparatorFormatter.format(date)
     }
 
     public init(dateString: String) {

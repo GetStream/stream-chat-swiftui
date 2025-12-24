@@ -66,7 +66,7 @@ public struct GalleryView<Factory: ViewFactory>: View {
                     options: GalleryHeaderViewOptions(
                         title: author.name ?? "",
                         subtitle: message.map {
-                            utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
+                            utils.galleryHeaderViewDateFormatter.format($0.createdAt)
                         } ?? author.onlineText,
                         shown: $isShown
                     )

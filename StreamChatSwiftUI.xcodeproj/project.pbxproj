@@ -509,7 +509,6 @@
 		AD3AB65C2CB730090014D4D7 /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65B2CB730090014D4D7 /* Shimmer.swift */; };
 		AD3AB65E2CB731360014D4D7 /* ChatThreadListLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */; };
 		AD3AB6602CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */; };
-		AD3DB82F2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB82E2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift */; };
 		AD3DB8342E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */; };
 		AD51D9182DB9543A0068D0B0 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */; };
 		AD5C0A5F2D6FDD9700E1E500 /* BouncedMessageActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */; };
@@ -1106,7 +1105,6 @@
 		AD3AB65B2CB730090014D4D7 /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
 		AD3AB65D2CB731360014D4D7 /* ChatThreadListLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListLoadingView.swift; sourceTree = "<group>"; };
 		AD3AB65F2CB7403C0014D4D7 /* ChatThreadListHeaderViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadListHeaderViewModifier.swift; sourceTree = "<group>"; };
-		AD3DB82E2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryHeaderViewDateFormatter.swift; sourceTree = "<group>"; };
 		AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentsConverter_Tests.swift; sourceTree = "<group>"; };
 		AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
 		AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BouncedMessageActionsModifier.swift; sourceTree = "<group>"; };
@@ -1889,7 +1887,6 @@
 		8465FD382746A95600AF091E /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				AD3DB82E2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift */,
 				4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */,
 				8465FD392746A95600AF091E /* AutoLayoutHelpers.swift */,
 				8465FD452746A95600AF091E /* Cache.swift */,
@@ -2686,7 +2683,6 @@
 				8434E583277088D9001E1B83 /* TitleWithCloseButton.swift in Sources */,
 				8465FDB52746A95700AF091E /* Cache.swift in Sources */,
 				84A1CAD12816C6900046595A /* AddUsersViewModel.swift in Sources */,
-				AD3DB82F2E7C2E190023D377 /* GalleryHeaderViewDateFormatter.swift in Sources */,
 				84289BEF2807246E00282ABE /* FileAttachmentsViewModel.swift in Sources */,
 				84AB7B2A2773D97E00631A10 /* MentionsCommandHandler.swift in Sources */,
 				84DEC8EA2761089A00172876 /* MessageThreadHeaderViewModifier.swift in Sources */,

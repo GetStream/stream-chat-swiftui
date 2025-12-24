@@ -17,7 +17,8 @@ import StreamChatCommonUI
     ///
     /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
     public var messageTimestampFormatter: MessageTimestampFormatter
-    public var galleryHeaderViewDateFormatter: DateFormatter
+    public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
+    public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
     public var imageCDN: ImageCDN
@@ -81,7 +82,8 @@ import StreamChatCommonUI
         markdownFormatter: MarkdownFormatter = DefaultMarkdownFormatter(),
         dateFormatter: DateFormatter = .makeDefault(),
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
-        galleryHeaderViewDateFormatter: DateFormatter = GalleryHeaderViewDateFormatter(),
+        galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
+        messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
         imageCDN: ImageCDN = StreamImageCDN(),
@@ -111,6 +113,7 @@ import StreamChatCommonUI
         self.dateFormatter = dateFormatter
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
+        self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
         self.imageCDN = imageCDN
