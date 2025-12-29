@@ -43,7 +43,7 @@ private extension ReactionsIconProvider {
     @MainActor static func emojiString(from identifier: String) -> String? {
         let components = identifier.split(separator: "-")
         guard components.allSatisfy({ $0.lowercased().hasPrefix("u") }) else {
-            return identifier
+            return nil
         }
 
         var scalars = String.UnicodeScalarView()
