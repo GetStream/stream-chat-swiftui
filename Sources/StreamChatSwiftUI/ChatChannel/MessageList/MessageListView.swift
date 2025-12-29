@@ -260,7 +260,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .background(
                     factory.makeMessageListBackground(
                         options: MessageListBackgroundOptions(
-                            colors: colors,
                             isInThread: isMessageThread
                         )
                     )

@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 
 /// Main interface to the SwiftUI SDK.
 ///

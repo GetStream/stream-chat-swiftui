@@ -85,7 +85,7 @@ struct GroupControlsView: View {
                 Image(systemName: "checkmark")
                     .renderingMode(.template)
                     .foregroundColor(
-                        viewModel.canCreateGroup ? colors.tintColor : Color(colors.textLowEmphasis)
+                        viewModel.canCreateGroup ? Color(colors.accentPrimary) : Color(colors.textLowEmphasis)
                     )
             }
             .disabled(!viewModel.canCreateGroup)

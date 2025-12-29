@@ -11,9 +11,9 @@ import UIKit
 /// View model for the `ChatChannelListView`.
 @MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
     /// Context provided dependencies.
-    @Injected(\.chatClient) private var chatClient: ChatClient
-    @Injected(\.images) private var images: Images
-    @Injected(\.utils) private var utils: Utils
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
 
     /// Context provided utils.
     internal lazy var channelNameFormatter = utils.channelNameFormatter

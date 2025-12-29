@@ -125,7 +125,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         })
         .background(
-            viewFactory.makeChannelListBackground(options: ChannelListBackgroundOptions(colors: colors))
+            viewFactory.makeChannelListBackground(options: .init())
         )
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {

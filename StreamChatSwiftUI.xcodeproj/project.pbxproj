@@ -299,11 +299,8 @@
 		8465FDCA2746A95700AF091E /* MoreChannelActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD5B2746A95700AF091E /* MoreChannelActionsViewModel.swift */; };
 		8465FDCB2746A95700AF091E /* ChatChannelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD5C2746A95700AF091E /* ChatChannelListView.swift */; };
 		8465FDCC2746A95700AF091E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8465FD5D2746A95700AF091E /* README.md */; };
-		8465FDCD2746A95700AF091E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD5E2746A95700AF091E /* Fonts.swift */; };
 		8465FDCE2746A95700AF091E /* InjectedValuesExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */; };
-		8465FDD12746A95700AF091E /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD622746A95700AF091E /* Images.swift */; };
 		8465FDD22746A95800AF091E /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD632746A95700AF091E /* Utils.swift */; };
-		8465FDD32746A95800AF091E /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD642746A95700AF091E /* ColorPalette.swift */; };
 		8465FDD72746A95800AF091E /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD692746A95700AF091E /* Appearance.swift */; };
 		8465FDD82746AA2700AF091E /* StreamChatSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 8465FD602746A95700AF091E /* StreamChatSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8465FDDD2747A14700AF091E /* CustomComposerAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */; };
@@ -882,12 +879,9 @@
 		8465FD5B2746A95700AF091E /* MoreChannelActionsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreChannelActionsViewModel.swift; sourceTree = "<group>"; };
 		8465FD5C2746A95700AF091E /* ChatChannelListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatChannelListView.swift; sourceTree = "<group>"; };
 		8465FD5D2746A95700AF091E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		8465FD5E2746A95700AF091E /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectedValuesExtensions.swift; sourceTree = "<group>"; };
 		8465FD602746A95700AF091E /* StreamChatSwiftUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamChatSwiftUI.h; sourceTree = "<group>"; };
-		8465FD622746A95700AF091E /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		8465FD632746A95700AF091E /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		8465FD642746A95700AF091E /* ColorPalette.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		8465FD682746A95700AF091E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8465FD692746A95700AF091E /* Appearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		8465FDDC2747A14700AF091E /* CustomComposerAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComposerAttachmentView.swift; sourceTree = "<group>"; };
@@ -1634,10 +1628,7 @@
 			children = (
 				8465FCF22746A95600AF091E /* StreamChat.swift */,
 				8465FD692746A95700AF091E /* Appearance.swift */,
-				8465FD5E2746A95700AF091E /* Fonts.swift */,
-				8465FD622746A95700AF091E /* Images.swift */,
 				84EB7A622EF414AA00986E0F /* Styles.swift */,
-				8465FD642746A95700AF091E /* ColorPalette.swift */,
 				8465FD632746A95700AF091E /* Utils.swift */,
 				8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */,
 				84EB88092E8A747D0076DC17 /* ViewFactory */,
@@ -2636,7 +2627,6 @@
 				8465FDA32746A95700AF091E /* ViewExtensions.swift in Sources */,
 				8465FDA22746A95700AF091E /* ChatChannelViewModel.swift in Sources */,
 				8465FD982746A95700AF091E /* ReactionsOverlayView.swift in Sources */,
-				8465FDCD2746A95700AF091E /* Fonts.swift in Sources */,
 				AD9138AE2E71C81D00581EB0 /* PercentageProgressView.swift in Sources */,
 				8465FD9A2746A95700AF091E /* ReactionsHelperViews.swift in Sources */,
 				8465FDC02746A95700AF091E /* ChatChannelList.swift in Sources */,
@@ -2722,7 +2712,6 @@
 				8465FDC92746A95700AF091E /* ChatChannelSwipeableListItem.swift in Sources */,
 				82D64B6A2AD7E5AC00C5C79E /* SwiftyGifManager.swift in Sources */,
 				841BA9F12BCD6FBD000C73E4 /* CreatePollView.swift in Sources */,
-				8465FDD32746A95800AF091E /* ColorPalette.swift in Sources */,
 				8465FD782746A95700AF091E /* FileAttachmentView.swift in Sources */,
 				AD5C0A5F2D6FDD9700E1E500 /* BouncedMessageActionsModifier.swift in Sources */,
 				84EADEA22B2735D80046B50C /* VoiceRecordingContainerView.swift in Sources */,
@@ -2766,7 +2755,6 @@
 				91B763A4283EB19900B458A9 /* MoreChannelActionsFullScreenWrappingView.swift in Sources */,
 				8465FD852746A95700AF091E /* MessageView.swift in Sources */,
 				8465FDCA2746A95700AF091E /* MoreChannelActionsViewModel.swift in Sources */,
-				8465FDD12746A95700AF091E /* Images.swift in Sources */,
 				844EF8ED2809AACD00CC82F9 /* NoContentView.swift in Sources */,
 				4FCD7DBD2D633F72000EEB0F /* AttributedString+Extensions.swift in Sources */,
 				84A1CACD2816BC420046595A /* ChatChannelInfoHelperViews.swift in Sources */,
@@ -3829,7 +3817,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = v5;
+				branch = "v5-unify-common";
 				kind = branch;
 			};
 		};

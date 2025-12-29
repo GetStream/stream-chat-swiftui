@@ -186,7 +186,7 @@ struct CreateGroupButton: View {
             HStack {
                 Image(systemName: "person.3")
                     .renderingMode(.template)
-                    .foregroundColor(colors.tintColor)
+                    .foregroundColor(Color(colors.accentPrimary))
 
                 Text("Create a group")
                     .font(fonts.bodyBold)
@@ -227,7 +227,7 @@ struct ChatUserView: View {
             if isSelected {
                 Image(systemName: "checkmark")
                     .renderingMode(.template)
-                    .foregroundColor(colors.tintColor)
+                    .foregroundColor(Color(colors.accentPrimary))
             }
         }
     }

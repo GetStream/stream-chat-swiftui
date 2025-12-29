@@ -62,7 +62,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                         }, label: {
                             Text(commentButtonTitle)
                                 .bold()
-                                .foregroundColor(colors.tintColor)
+                                .foregroundColor(Color(colors.accentPrimary))
                         })
                         .frame(maxWidth: .infinity)
                         .withPollsBackground()

@@ -3,7 +3,7 @@
 {% if tables.count > 0 %}
 {% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
 import Foundation
-
+import StreamChatCommonUI
 
 // MARK: - Strings
 

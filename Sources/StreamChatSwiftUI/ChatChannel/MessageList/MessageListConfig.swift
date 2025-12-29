@@ -252,7 +252,7 @@ public struct MessageDisplayOptions {
     public static var defaultLinkDisplay: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] {
         { _ in
             [
-                NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)
+                NSAttributedString.Key.foregroundColor: InjectedValues[\.colors].accentPrimary
             ]
         }
     }

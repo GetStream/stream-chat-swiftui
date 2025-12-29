@@ -77,7 +77,7 @@ struct iMessagePocView: View {
             }
             .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
             .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
-            .accentColor(colors.tintColor)
+            .accentColor(Color(colors.accentPrimary))
             .navigationTitle("Messages")
         }
     }

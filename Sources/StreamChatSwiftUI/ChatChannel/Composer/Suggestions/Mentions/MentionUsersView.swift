@@ -88,7 +88,7 @@ public struct MentionUserView<Factory: ViewFactory>: View {
             Spacer()
             Text(utils.commandsConfig.mentionsSymbol)
                 .font(fonts.title)
-                .foregroundColor(colors.tintColor)
+                .foregroundColor(Color(colors.accentPrimary))
         }
         .standardPadding()
         .highPriorityGesture(

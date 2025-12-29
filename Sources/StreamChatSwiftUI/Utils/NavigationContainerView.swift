@@ -16,12 +16,12 @@ struct NavigationContainerView<Content: View>: View {
                 NavigationStack {
                     content()
                 }
-                .accentColor(colors.navigationBarTintColor)
+                .accentColor(Color(colors.navigationBarTintColor))
             } else {
                 NavigationView {
                     content()
                 }
-                .accentColor(colors.navigationBarTintColor)
+                .accentColor(Color(colors.navigationBarTintColor))
             }
         } else {
             content()

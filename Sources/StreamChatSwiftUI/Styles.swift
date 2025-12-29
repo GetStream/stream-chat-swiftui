@@ -133,7 +133,6 @@ public struct StandardInputViewModifier: ViewModifier {
     }
     
     private var highlightedBorder: UIColor {
-        var colors = colors
         return colors.composerInputHighlightedBorder
     }
 }

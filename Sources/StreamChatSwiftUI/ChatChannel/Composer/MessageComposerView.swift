@@ -445,7 +445,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     .padding(.horizontal, 8)
                     .font(fonts.footnoteBold)
                     .frame(height: 24)
-                    .background(colors.tintColor)
+                    .background(Color(colors.accentPrimary))
                     .foregroundColor(Color(colors.staticColorText))
                     .cornerRadius(16)
                 }
@@ -510,12 +510,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var composerInputBackground: Color {
-        var colors = colors
         return Color(colors.composerInputBackground)
     }
     
     private var highlightedBorder: UIColor {
-        var colors = colors
         return colors.composerInputHighlightedBorder
     }
 

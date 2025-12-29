@@ -277,7 +277,7 @@ struct PollVotesIndicatorView: View {
                     .frame(width: reader.size.width, height: height)
 
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : colors.tintColor)
+                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : (Color(colors.accentPrimary)))
                     .frame(width: reader.size.width * ratio, height: height)
             }
         }

@@ -224,7 +224,7 @@ struct VideoPlayIcon: View {
     var width: CGFloat = 24
     
     var body: some View {
-        Image(uiImage: images.playFilled)
+        Image(uiImage: images.playFill)
             .customizable()
             .frame(width: width)
             .foregroundColor(.white)

@@ -52,6 +52,6 @@ public struct ActionItemView: View {
         }
 
         // Default image.
-        return images.photoDefault
+        return images.imagePlaceholder
     }
 }
