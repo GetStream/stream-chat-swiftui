@@ -52,7 +52,7 @@ import XCTest
         let color = ReactionsIconProvider.color(for: reaction, userReactionIDs: [reaction])
         
         // Then
-        XCTAssert(color == Color(colors.reactionCurrentUserColor!))
+        XCTAssert(color == Color(colors.reactionCurrentUserColor))
     }
     
     func test_reactionsIconProvider_otherUserColor() {
@@ -63,6 +63,6 @@ import XCTest
         let color = ReactionsIconProvider.color(for: reaction, userReactionIDs: [])
         
         // Then
-        XCTAssert(color == Color(colors.reactionOtherUserColor!))
+        XCTAssert(color == Color(colors.reactionOtherUserColor))
     }
 }

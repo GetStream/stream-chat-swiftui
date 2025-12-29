@@ -5,6 +5,7 @@
 import Photos
 import SnapshotTesting
 @testable import StreamChat
+@testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
 import StreamSwiftTestHelpers
@@ -545,7 +546,7 @@ import XCTest
                 typingSuggestion: .empty,
                 displayInfo: CommandDisplayInfo(
                     displayName: "Giphy",
-                    icon: Images().commandGiphy,
+                    icon: Appearance.Images().commandGiphy,
                     format: "",
                     isInstant: true
                 )
@@ -572,8 +573,8 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
 
         // Themed
-        streamChat?.appearance.colors.tintColor = .mint
-        streamChat?.appearance.colors.staticColorText = .black
+        streamChat?.appearance.colorPalette.accentPrimary = UIColor(Color.mint)
+        streamChat?.appearance.colorPalette.staticColorText = .black
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
     }
   
