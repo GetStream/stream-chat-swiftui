@@ -468,6 +468,7 @@
 		84F2908E276B92A40045472D /* GalleryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908D276B92A40045472D /* GalleryHeaderView.swift */; };
 		84F29090276CC1280045472D /* ShareButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2908F276CC1280045472D /* ShareButtonView.swift */; };
 		84F73F8728699FD7006A39C3 /* InstantCommandsView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F73F8628699FD7006A39C3 /* InstantCommandsView_Tests.swift */; };
+		84FB9A362F02E8FA00543EE4 /* StreamChatCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 84FB9A352F02E8FA00543EE4 /* StreamChatCommonUI */; };
 		84FF723F2782FB2E006E26C8 /* iMessagePocView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF723E2782FB2E006E26C8 /* iMessagePocView.swift */; };
 		91B763A4283EB19900B458A9 /* MoreChannelActionsFullScreenWrappingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B763A3283EB19800B458A9 /* MoreChannelActionsFullScreenWrappingView.swift */; };
 		91B763A6283EB39600B458A9 /* MoreChannelActionsFullScreenWrappingView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B763A5283EB39600B458A9 /* MoreChannelActionsFullScreenWrappingView_Tests.swift */; };
@@ -1147,6 +1148,7 @@
 				8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */,
 				84E7F9E62EFAF9BF00BA56A3 /* StreamChatTestMockServer in Frameworks */,
 				8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */,
+				84FB9A362F02E8FA00543EE4 /* StreamChatCommonUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2360,6 +2362,7 @@
 				8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */,
 				84E7F9E52EFAF9BF00BA56A3 /* StreamChatTestMockServer */,
 				84E7F9E72EFAF9BF00BA56A3 /* StreamChatTestTools */,
+				84FB9A352F02E8FA00543EE4 /* StreamChatCommonUI */,
 			);
 			productName = StreamChatSwiftUITests;
 			productReference = 8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */;
@@ -3886,6 +3889,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
 			productName = StreamChatTestTools;
+		};
+		84FB9A352F02E8FA00543EE4 /* StreamChatCommonUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
+			productName = StreamChatCommonUI;
 		};
 		E3A1C01B282BAC66002D1E26 /* Sentry */ = {
 			isa = XCSwiftPackageProductDependency;

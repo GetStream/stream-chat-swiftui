@@ -18,6 +18,7 @@ import StreamChatCommonUI
         appearance: Appearance = Appearance(),
         utils: Utils = Utils()
     ) {
+        Appearance.bundle = .streamChatUI
         self.chatClient = chatClient
         self.appearance = appearance
         self.utils = utils
