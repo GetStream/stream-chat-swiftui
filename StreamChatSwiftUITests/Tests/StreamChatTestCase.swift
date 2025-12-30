@@ -19,10 +19,15 @@ import XCTest
         return client
     }()
 
-    public var streamChat: StreamChat?
+    public var streamChat: StreamChat? {
+        willSet {
+            Appearance.bundle = Bundle(for: type(of: self))
+        }
+    }
 
     override open func setUp() {
         super.setUp()
+        Appearance.bundle = Bundle(for: type(of: self))
         streamChat = StreamChat(
             chatClient: chatClient,
             utils: Utils(videoPreviewLoader: VideoPreviewLoader_Mock(), imageLoader: ImageLoader_Mock())
