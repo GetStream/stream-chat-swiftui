@@ -30,7 +30,7 @@ jobs:
           - ios: "17.5"
             device: "iPhone 15 Pro"
             setup_runtime: true
-          - ios: "16.4"
+          - ios: "16.1"
             device: "iPhone 14 Pro"
             setup_runtime: true
       fail-fast: false
