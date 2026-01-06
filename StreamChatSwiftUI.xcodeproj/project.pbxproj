@@ -511,6 +511,8 @@
 		ADA77F052E1EC2B700A3641F /* MessageAvatarView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA77F042E1EC2B700A3641F /* MessageAvatarView_Tests.swift */; };
 		ADCE871A2F0C290B00F6A7C3 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = ADCE87192F0C290B00F6A7C3 /* StreamChat */; };
 		ADCE871C2F0C291600F6A7C3 /* StreamChatCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = ADCE871B2F0C291600F6A7C3 /* StreamChatCommonUI */; };
+		ADCE87772F0D261600F6A7C3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCF42746A95600AF091E /* Localizable.strings */; };
+		ADCE87782F0D261600F6A7C3 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 8465FCF62746A95600AF091E /* Localizable.stringsdict */; };
 		ADE0F55E2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55D2CB838420053B8B9 /* ChatThreadListErrorBannerView.swift */; };
 		ADE0F5602CB846EC0053B8B9 /* FloatingBannerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F55F2CB846EC0053B8B9 /* FloatingBannerViewModifier.swift */; };
 		ADE0F5622CB8556F0053B8B9 /* ChatThreadListFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE0F5612CB8556F0053B8B9 /* ChatThreadListFooterView.swift */; };
@@ -2494,6 +2496,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADCE87772F0D261600F6A7C3 /* Localizable.strings in Resources */,
+				ADCE87782F0D261600F6A7C3 /* Localizable.stringsdict in Resources */,
 				847A7FD02F04103E006C6B1E /* Assets.xcassets in Resources */,
 				847A7FD22F0410AA006C6B1E /* Assets.xcassets in Resources */,
 				847305BF28243DFA004AC770 /* mock.html in Resources */,
