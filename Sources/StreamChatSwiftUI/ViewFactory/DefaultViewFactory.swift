@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import Photos
@@ -529,6 +529,7 @@ extension ViewFactory {
             messageController: options.messageController,
             quotedMessage: options.quotedMessage,
             editedMessage: options.editedMessage,
+            willSendMessage: options.willSendMessage,
             onMessageSent: options.onMessageSent
         )
     }
