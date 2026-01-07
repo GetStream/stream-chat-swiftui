@@ -6,7 +6,9 @@ import Foundation
 import SwiftUI
 
 /// A configuration for channel lists.
+@MainActor
 public struct ChannelListConfig {
+    @MainActor
     public init(
         channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
