@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -38,8 +38,6 @@ final class UserRobot: Robot {
         if !cells.firstMatch.exists {
             for _ in 0...10 {
                 app.terminate()
-                server.stop()
-                _ = server.start(port: UInt16(MockServerConfiguration.port))
                 sleep(1)
                 app.launch()
                 login()
@@ -58,6 +56,13 @@ final class UserRobot: Robot {
         ChannelListPage.cells.allElementsBoundByIndex[channelCellIndex].waitForHitPoint().safeTap()
         return self
     }
+    
+    @discardableResult
+    public func sleep(_ seconds: Double) -> Self {
+        let sleepTime = UInt32(seconds * 1_000_000)
+        usleep(sleepTime)
+        return self
+    }
 }
 
 // MARK: Message List
@@ -65,7 +70,9 @@ final class UserRobot: Robot {
 extension UserRobot {
     @discardableResult
     func openContextMenu(messageCellIndex: Int = 0) -> Self {
-        messageCell(withIndex: messageCellIndex).press(forDuration: 1)
+        let messageCell = messageCell(withIndex: messageCellIndex)
+        let messageBubble = attributes.messageBubble(in: messageCell)
+        messageBubble.press(forDuration: 1)
         return self
     }
 
@@ -87,15 +94,10 @@ extension UserRobot {
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
-        server.channelsEndpointWasCalled = false
-
         typeText(text)
         composer.sendButton.safeTap()
 
         if waitForAppearance {
-            server.waitForWebsocketMessage(withText: text)
-            server.waitForHttpMessage(withText: text)
-
             let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
             let textView = attributes.text(in: cell)
             _ = textView.waitForText(text)
@@ -143,7 +145,7 @@ extension UserRobot {
 
     @discardableResult
     private func reactionAction(
-        reactionType: TestData.Reactions,
+        reactionType: ReactionType,
         eventType: EventType,
         messageCellIndex: Int
     ) -> Self {
@@ -169,7 +171,7 @@ extension UserRobot {
     }
 
     @discardableResult
-    func addReaction(type: TestData.Reactions, messageCellIndex: Int = 0) -> Self {
+    func addReaction(type: ReactionType, messageCellIndex: Int = 0) -> Self {
         reactionAction(
             reactionType: type,
             eventType: .reactionNew,
@@ -178,7 +180,7 @@ extension UserRobot {
     }
 
     @discardableResult
-    func deleteReaction(type: TestData.Reactions, messageCellIndex: Int = 0) -> Self {
+    func deleteReaction(type: ReactionType, messageCellIndex: Int = 0) -> Self {
         reactionAction(
             reactionType: type,
             eventType: .reactionDeleted,
@@ -204,7 +206,6 @@ extension UserRobot {
         selectOptionFromContextMenu(option: .reply, forMessageAtIndex: messageCellIndex)
         sendMessage(
             text,
-            at: messageCellIndex,
             waitForAppearance: waitForAppearance,
             file: file,
             line: line
@@ -282,7 +283,7 @@ extension UserRobot {
     }
 
     @discardableResult
-    func replyToMessageInThread(
+    func sendMessageInThread(
         _ text: String,
         alsoSendInChannel: Bool = false,
         messageCellIndex: Int = 0,
@@ -349,6 +350,13 @@ extension UserRobot {
         }
         return self
     }
+    
+    @discardableResult
+    func swipeMessage(at index: Int = 0) -> Self {
+        let cell = messageCell(withIndex: index).waitForHitPoint()
+        cell.staticTexts.firstMatch.swipeRight()
+        return self
+    }
 
     @discardableResult
     func openComposerCommands() -> Self {
@@ -360,7 +368,7 @@ extension UserRobot {
     }
 
     @discardableResult
-    func sendGiphy(text: String = "Test", useComposerCommand: Bool = false, send: Bool = true) -> Self {
+    func uploadGiphy(text: String = "Test", useComposerCommand: Bool = false, send: Bool = true) -> Self {
         if useComposerCommand {
             openComposerCommands()
             MessageListPage.ComposerCommands.giphyImage.wait().safeTap()
@@ -378,7 +386,7 @@ extension UserRobot {
     func replyWithGiphy(useComposerCommand: Bool = false, messageCellIndex: Int = 0) -> Self {
         return self
             .selectOptionFromContextMenu(option: .reply, forMessageAtIndex: messageCellIndex)
-            .sendGiphy(useComposerCommand: useComposerCommand)
+            .uploadGiphy(useComposerCommand: useComposerCommand)
     }
 
     @discardableResult
@@ -394,7 +402,7 @@ extension UserRobot {
         if alsoSendInChannel {
             threadCheckbox.wait().safeTap()
         }
-        return sendGiphy(useComposerCommand: useComposerCommand)
+        return uploadGiphy(useComposerCommand: useComposerCommand)
     }
 
     @discardableResult
@@ -406,8 +414,12 @@ extension UserRobot {
 
     @discardableResult
     func uploadImage(count: Int = 1, send: Bool = true) -> Self {
-        for i in 1...count {
+        let firstImageIndex = 1
+        for i in firstImageIndex...count {
             MessageListPage.Composer.attachmentButton.wait().safeTap()
+            if i == firstImageIndex && SpringBoard.photoAccessPopUp.exists {
+                SpringBoard.photoAccessPopUp.safeTap()
+            }
             MessageListPage.AttachmentMenu.photoOrVideoButton.wait().safeTap()
             
             // Wait for privacy message to appear before proceed on iOS 17, otherwise XCTest crashes
@@ -415,15 +427,20 @@ extension UserRobot {
                 app.otherElements["PXGSingleViewContainerView_AX"].wait()
             }
             
-            MessageListPage.AttachmentMenu.images.waitCount(1).allElementsBoundByIndex[i].safeTap()
+            let images = MessageListPage.AttachmentMenu.images.waitCount(1)
+            if images.count < 1 {
+                XCTFail("There are no images.")
+            } else {
+                images.allElementsBoundByIndex[i].safeTap()
+            }
         }
         if send { sendMessage("", waitForAppearance: false) }
         return self
     }
 
     @discardableResult
-    func mentionParticipant(manually: Bool = false) -> Self {
-        let text = "@\(UserDetails.countDookuId)"
+    func mentionParticipant(_ userId: String, manually: Bool = false) -> Self {
+        let text = "@\(userId)"
         if manually {
             typeText(text)
         } else {
@@ -444,7 +461,7 @@ extension UserRobot {
     }
 
     @discardableResult
-    func addParticipant(withUserId userId: String = UserDetails.leiaOrganaId) -> Self {
+    func addParticipant(withUserId userId: String = "leia_organa") -> Self {
         tapOnDebugMenu()
         debugAlert.addMember.firstMatch.safeTap()
         debugAlert.addMemberTextField.firstMatch
@@ -455,7 +472,7 @@ extension UserRobot {
     }
 
     @discardableResult
-    func removeParticipant(withUserId userId: String = UserDetails.leiaOrganaId) -> Self {
+    func removeParticipant(withUserId userId: String = "leia_organa") -> Self {
         tapOnDebugMenu()
         debugAlert.removeMember.firstMatch.safeTap()
         debugAlert.selectMember(withUserId: userId).firstMatch.safeTap()

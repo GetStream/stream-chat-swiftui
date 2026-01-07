@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -124,9 +124,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             messageController: viewModel.messageController,
                             quotedMessage: $viewModel.quotedMessage,
                             editedMessage: $viewModel.editedMessage,
-                            onMessageSent: {
-                                viewModel.messageSentTapped()
-                            }
+                            willSendMessage: { viewModel.messageSentTapped() },
+                            onMessageSent: {}
                         )
                     )
                     .opacity((
