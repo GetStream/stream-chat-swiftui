@@ -506,7 +506,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }
-        .accessibilityIdentifier("ComposerInputView")
     }
 
     private var composerInputBackground: Color {
