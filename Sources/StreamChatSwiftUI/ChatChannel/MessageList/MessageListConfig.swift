@@ -7,7 +7,9 @@ import StreamChat
 import SwiftUI
 
 /// Configuration for the message list.
+@MainActor
 public struct MessageListConfig {
+    @MainActor
     public init(
         messageListType: MessageListType = .messaging,
         typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
