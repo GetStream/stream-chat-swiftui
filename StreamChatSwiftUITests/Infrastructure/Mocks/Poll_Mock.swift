@@ -18,7 +18,7 @@ extension Poll {
         let voter = ChatUser.mock(id: "voter", name: "voter")
         let vote = PollVote(
             id: voteId,
-            createdAt: Date(),
+            createdAt: Date(timeIntervalSince1970: 100),
             updatedAt: Date(),
             pollId: pollId,
             optionId: "test",
@@ -126,7 +126,7 @@ extension PollVote {
     ) -> PollVote {
         PollVote(
             id: .unique,
-            createdAt: Date(),
+            createdAt: Date(timeIntervalSince1970: 100),
             updatedAt: Date(),
             pollId: pollId,
             optionId: optionId,
