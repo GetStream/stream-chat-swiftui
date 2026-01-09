@@ -5,6 +5,12 @@
 import XCTest
 
 final class Reactions_Tests: StreamTestCase {
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        addTags([.coreFeatures])
+        assertMockServer()
+    }
+
     func test_addsReaction() throws {
         linkToScenario(withId: 270)
 
@@ -57,7 +63,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user adds the reaction") {
             userRobot
@@ -78,7 +84,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("user adds the reaction") {
             userRobot
@@ -148,7 +154,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant adds the reaction") {
             participantRobot.addReaction(type: .wow)
@@ -167,7 +173,7 @@ final class Reactions_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
+            participantRobot.sendMessage(message, waitBeforeSending: 0.5)
         }
         AND("participant adds the reaction") {
             participantRobot.addReaction(type: .sad)
@@ -183,8 +189,8 @@ final class Reactions_Tests: StreamTestCase {
 
     func test_addReactionWhileOffline() throws {
         linkToScenario(withId: 94)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+
+        throw XCTSkip("Check out SWUI-245")
 
         let message = "test message"
 

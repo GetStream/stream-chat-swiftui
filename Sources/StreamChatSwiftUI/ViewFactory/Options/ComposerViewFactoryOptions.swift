@@ -1,5 +1,5 @@
 //
-// Copyright © 2026 Stream.io Inc. All rights reserved.
+// Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -18,8 +18,6 @@ public final class MessageComposerViewTypeOptions: Sendable {
     public let quotedMessage: Binding<ChatMessage?>
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
-    /// A closure triggered just before sending a new message.
-    public let willSendMessage: @MainActor () -> Void
     /// Callback when a message is sent.
     public let onMessageSent: @MainActor () -> Void
     
@@ -28,7 +26,6 @@ public final class MessageComposerViewTypeOptions: Sendable {
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        willSendMessage: @escaping @MainActor () -> Void,
         onMessageSent: @escaping @MainActor () -> Void
     ) {
         self.channelController = channelController
@@ -36,7 +33,6 @@ public final class MessageComposerViewTypeOptions: Sendable {
         self.quotedMessage = quotedMessage
         self.editedMessage = editedMessage
         self.onMessageSent = onMessageSent
-        self.willSendMessage = willSendMessage
     }
 }
 

@@ -1,5 +1,5 @@
 //
-// Copyright © 2026 Stream.io Inc. All rights reserved.
+// Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -110,16 +110,12 @@ class MessageListPage {
     }
 
     enum Attributes {
-        static func messageBubble(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["MessageView"]
-        }
-        
         static func reactionButton(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.otherElements["ReactionsContainer"]
         }
 
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
-            app.buttons.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView' or identifier LIKE 'MessageAvatarViewPlaceholder'")).firstMatch
+            messageCell.buttons["MessageAvatarViewPlaceholder"]
         }
 
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
@@ -171,10 +167,7 @@ class MessageListPage {
         }
 
         // FIXME:
-        static func statusCheckmark(
-            for status: StreamChatTestMockServer.MessageDeliveryStatus? = nil,
-            in messageCell: XCUIElement
-        ) -> XCUIElement {
+        static func statusCheckmark(for status: MessageDeliveryStatus? = nil, in messageCell: XCUIElement) -> XCUIElement {
             messageCell.images["readIndicatorCheckmark"]
         }
 
@@ -232,7 +225,7 @@ class MessageListPage {
         }
 
         static func files(in messageCell: XCUIElement) -> XCUIElementQuery {
-            messageCell.buttons.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer'")).images
+            messageCell.buttons.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer'"))
         }
 
         static func videoPlayer() -> XCUIElement {

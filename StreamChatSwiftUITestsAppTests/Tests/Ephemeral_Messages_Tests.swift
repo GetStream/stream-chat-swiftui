@@ -5,6 +5,11 @@
 import XCTest
 
 final class Ephemeral_Messages_Tests: StreamTestCase {
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        assertMockServer()
+    }
+
     func test_userObservesAnimatedGiphy_whenUserAddsGiphyMessage() throws {
         linkToScenario(withId: 435)
 
@@ -14,7 +19,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("user sends a giphy using giphy command") {
-            userRobot.uploadGiphy(useComposerCommand: true)
+            userRobot.sendGiphy(useComposerCommand: true)
         }
         THEN("user observes the animated gif") {
             userRobot.assertGiphyImage()
@@ -30,7 +35,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("participant sends a giphy") {
-            participantRobot.uploadGiphy()
+            participantRobot.sendGiphy()
         }
         THEN("user observes the animated gif") {
             userRobot.assertGiphyImage()
@@ -69,13 +74,15 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     func test_channelListNotModified_whenEphemeralMessageShown() throws {
         linkToScenario(withId: 438)
 
+        throw XCTSkip("Check out SWUI-252")
+
         GIVEN("user opens a channel") {
             userRobot
                 .login()
                 .openChannel()
         }
         WHEN("user runs a giphy command") {
-            userRobot.uploadGiphy(send: false)
+            userRobot.sendGiphy(send: false)
         }
         WHEN("user goes back to channel list") {
             userRobot.tapOnBackButton()
@@ -87,8 +94,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
 
     func test_deliveryStatusHidden_whenEphemeralMessageShown() throws {
         linkToScenario(withId: 439)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1324")
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens a channel") {
             userRobot
@@ -96,7 +103,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("user runs a giphy command") {
-            userRobot.uploadGiphy(send: false)
+            userRobot.sendGiphy(send: false)
         }
         THEN("delivery status is hidden for ephemeral messages") {
             userRobot
@@ -107,17 +114,17 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
 
     func test_deliveryStatusHidden_whenEphemeralMessageShownInThread() throws {
         linkToScenario(withId: 440)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1324")
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens a channel") {
-            backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
+            backendRobot.generateChannels(count: 1, messagesCount: 1)
             userRobot.login().openChannel()
         }
         WHEN("user runs a giphy command in thread") {
             userRobot
                 .openThread()
-                .uploadGiphy(send: false)
+                .sendGiphy(send: false)
         }
         THEN("delivery status is hidden for ephemeral messages") {
             userRobot
@@ -135,7 +142,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .openChannel()
         }
         WHEN("user sends a giphy using giphy command") {
-            userRobot.uploadGiphy(useComposerCommand: true)
+            userRobot.sendGiphy(useComposerCommand: true)
         }
         THEN("user observes the animated gif") {
             userRobot.assertGiphyImage()

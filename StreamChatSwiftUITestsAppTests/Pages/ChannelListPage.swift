@@ -50,10 +50,7 @@ enum ChannelListPage {
             cell.staticTexts["UnreadIndicatorView"]
         }
 
-        static func statusCheckmark(
-            for status: StreamChatTestMockServer.MessageDeliveryStatus?,
-            in cell: XCUIElement
-        ) -> XCUIElement {
+        static func statusCheckmark(for status: MessageDeliveryStatus?, in cell: XCUIElement) -> XCUIElement {
             return cell.images["readIndicatorCheckmark"]
         }
     }
