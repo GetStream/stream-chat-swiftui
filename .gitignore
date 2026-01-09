@@ -93,6 +93,7 @@ app-thinning.plist
 *.dmg
 yeetd-normal.pkg
 *LinkMap.txt
+stream-chat-test-mock-server
 
 # VSCode
 .vscode

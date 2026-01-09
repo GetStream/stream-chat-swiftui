@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -31,6 +31,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         messageController: ChatMessageController? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
+        willSendMessage: @escaping () -> Void,
         onMessageSent: @escaping () -> Void
     ) {
         factory = viewFactory
@@ -45,10 +46,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         _quotedMessage = quotedMessage
         _editedMessage = editedMessage
         self.onMessageSent = onMessageSent
+        self.willSendMessage = willSendMessage
     }
 
     @StateObject var viewModel: MessageComposerViewModel
 
+    var willSendMessage: () -> Void
     var onMessageSent: () -> Void
 
     public var body: some View {
@@ -116,7 +119,19 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     options: TrailingComposerViewOptions(
                         enabled: viewModel.sendButtonEnabled,
                         cooldownDuration: viewModel.cooldownDuration,
-                        onTap: sendMessage
+                        onTap: {
+                            willSendMessage()
+                            viewModel.sendMessage(
+                                quotedMessage: quotedMessage,
+                                editedMessage: editedMessage
+                            ) {
+                                // Calling onMessageSent() before erasing the edited and quoted message
+                                // so that onMessageSent can use them for state handling.
+                                onMessageSent()
+                                quotedMessage = nil
+                                editedMessage = nil
+                            }
+                        }
                     )
                 )
                 .environmentObject(viewModel)
