@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 
 /// Main interface to the SwiftUI SDK.
 ///
@@ -17,6 +18,7 @@ import StreamChat
         appearance: Appearance = Appearance(),
         utils: Utils = Utils()
     ) {
+        Appearance.bundle = .streamChatUI
         self.chatClient = chatClient
         self.appearance = appearance
         self.utils = utils

@@ -126,7 +126,6 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
         if let injectedBackgroundColor {
             return injectedBackgroundColor
         }
-        var colors = colors
         if message.isSentByCurrentUser {
             if message.type == .ephemeral {
                 return colors.background8

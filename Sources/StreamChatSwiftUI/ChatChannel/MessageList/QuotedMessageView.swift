@@ -144,7 +144,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             return colors.highlightedAccentBackground1
         }
 
-        var colors = colors
         let color = quotedMessage.isSentByCurrentUser ?
             colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
         return color

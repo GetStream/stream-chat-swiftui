@@ -88,14 +88,7 @@ public final class ChannelAvatarViewFactoryOptions: Sendable {
 }
 
 /// Options for creating the channel list background.
-public final class ChannelListBackgroundOptions: Sendable {
-    /// The color palette to use.
-    public let colors: ColorPalette
-    
-    public init(colors: ColorPalette) {
-        self.colors = colors
-    }
-}
+public final class ChannelListBackgroundOptions: Sendable {}
 
 /// Options for creating the channel list item background.
 public final class ChannelListItemBackgroundOptions: Sendable {

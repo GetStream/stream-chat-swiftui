@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 
 extension ChatChannel {
     /// Returns the online info text for a channel.

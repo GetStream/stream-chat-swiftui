@@ -85,7 +85,7 @@ extension ViewFactory {
     }
     
     public func makeChannelListBackground(options: ChannelListBackgroundOptions) -> some View {
-        Color(options.colors.background)
+        Color(InjectedValues[\.colors].background)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -202,7 +202,7 @@ extension ViewFactory {
     public func makeEmptyMessagesView(
         options: EmptyMessagesViewOptions
     ) -> some View {
-        Color(options.colors.background)
+        Color(InjectedValues[\.colors].background)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityIdentifier("EmptyMessagesView")
     }
@@ -238,7 +238,7 @@ extension ViewFactory {
     public func makeMessageListBackground(
         options: MessageListBackgroundOptions
     ) -> some View {
-        Color(options.colors.background)
+        Color(InjectedValues[\.colors].background)
     }
     
     public func makeMessageContainerView(

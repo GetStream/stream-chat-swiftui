@@ -125,7 +125,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         })
         .background(
-            viewFactory.makeChannelListBackground(options: ChannelListBackgroundOptions(colors: colors))
+            viewFactory.makeChannelListBackground(options: .init())
         )
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {
@@ -247,7 +247,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkTabBarAppearance()
                         viewModel.checkForChannels(index: index)
                     },
-                    channelNaming: viewModel.name(forChannel:),
                     channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),

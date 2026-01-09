@@ -52,7 +52,6 @@ struct iMessagePocView: View {
                         viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
                     },
                     onItemAppear: viewModel.checkForChannels(index:),
-                    channelNaming: viewModel.name(forChannel:),
                     channelDestination: factory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
@@ -78,7 +77,7 @@ struct iMessagePocView: View {
             }
             .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
             .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
-            .accentColor(colors.tintColor)
+            .accentColor(Color(colors.accentPrimary))
             .navigationTitle("Messages")
         }
     }

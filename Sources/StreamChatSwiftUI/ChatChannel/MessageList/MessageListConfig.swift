@@ -7,7 +7,9 @@ import StreamChat
 import SwiftUI
 
 /// Configuration for the message list.
+@MainActor
 public struct MessageListConfig {
+    @MainActor
     public init(
         messageListType: MessageListType = .messaging,
         typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
@@ -252,7 +254,7 @@ public struct MessageDisplayOptions {
     public static var defaultLinkDisplay: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] {
         { _ in
             [
-                NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)
+                NSAttributedString.Key.foregroundColor: InjectedValues[\.colors].accentPrimary
             ]
         }
     }

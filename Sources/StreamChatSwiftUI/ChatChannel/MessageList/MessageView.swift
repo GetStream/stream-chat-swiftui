@@ -300,7 +300,7 @@ public struct LinkDetectionTextView: View {
 
     @State var text: AttributedString?
     @State var linkDetector = TextLinkDetector()
-    @State var tintColor = InjectedValues[\.colors].tintColor
+    @State var tintColor = Color(InjectedValues[\.colors].accentPrimary)
         
     public init(
         message: ChatMessage

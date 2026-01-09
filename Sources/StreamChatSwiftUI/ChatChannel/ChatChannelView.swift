@@ -89,7 +89,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         )
                     } else {
                         ZStack {
-                            factory.makeEmptyMessagesView(options: EmptyMessagesViewOptions(channel: channel, colors: colors))
+                            factory.makeEmptyMessagesView(options: EmptyMessagesViewOptions(channel: channel))
                                 .dismissKeyboardOnTap(enabled: keyboardShown) {
                                     hideComposerCommandsAndAttachmentsPicker()
                                 }
@@ -225,7 +225,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
         .modifier(factory.styles.makeBouncedMessageActionsModifier(viewModel: viewModel))
-        .accentColor(colors.tintColor)
+        .accentColor(Color(colors.accentPrimary))
     }
     
     private var composerView: some View {

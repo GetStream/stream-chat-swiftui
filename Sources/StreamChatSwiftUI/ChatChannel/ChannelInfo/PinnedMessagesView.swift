@@ -140,7 +140,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                     Spacer()
 
                     SubtitleText(
-                        text: utils.messageRelativeDateFormatter.string(from: message.createdAt)
+                        text: utils.messageTimestampFormatter.format(message.createdAt)
                     )
                 }
             }

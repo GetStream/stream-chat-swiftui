@@ -3,6 +3,7 @@
 //
 
 @testable import StreamChat
+@testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 @_exported @testable import StreamChatTestTools
 @_exported import StreamSwiftTestHelpers
@@ -18,10 +19,15 @@ import XCTest
         return client
     }()
 
-    public var streamChat: StreamChat?
+    public var streamChat: StreamChat? {
+        willSet {
+            Appearance.bundle = Bundle(for: type(of: self))
+        }
+    }
 
     override open func setUp() {
         super.setUp()
+        Appearance.bundle = Bundle(for: type(of: self))
         streamChat = StreamChat(
             chatClient: chatClient,
             utils: Utils(videoPreviewLoader: VideoPreviewLoader_Mock(), imageLoader: ImageLoader_Mock())
@@ -37,11 +43,11 @@ import XCTest
     
     func setThemedNavigationBarAppearance() {
         adjustAppearance { appearance in
-            appearance.colors.navigationBarTintColor = .purple
-            appearance.colors.navigationBarTitle = .blue
-            appearance.colors.navigationBarSubtitle = .cyan
-            appearance.colors.navigationBarBackground = .yellow
-            appearance.colors.navigationBarGlyph = .green
+            appearance.colorPalette.navigationBarTintColor = .purple
+            appearance.colorPalette.navigationBarTitle = .blue
+            appearance.colorPalette.navigationBarSubtitle = .cyan
+            appearance.colorPalette.navigationBarBackground = .yellow
+            appearance.colorPalette.navigationBarGlyph = .green
         }
     }
 }

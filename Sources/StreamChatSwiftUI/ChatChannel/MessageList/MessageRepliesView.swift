@@ -98,7 +98,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     axis: (x: 0, y: 1, z: 0)
                 )
             )
-            .foregroundColor(colors.tintColor)
+            .foregroundColor(Color(colors.accentPrimary))
         }
     }
     

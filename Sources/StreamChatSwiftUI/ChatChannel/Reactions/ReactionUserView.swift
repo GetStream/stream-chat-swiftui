@@ -121,7 +121,6 @@ struct ReactionImageView: View {
     var backgroundColor: Color
 
     private var reactionColor: UIColor? {
-        var colors = colors
         return isSentByCurrentUser ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
     }
 

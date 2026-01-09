@@ -3,12 +3,13 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 import UIKit
 
 class ReactionsIconProvider {
-    @MainActor static var colors: ColorPalette = InjectedValues[\.colors]
-    @MainActor static var images: Images = InjectedValues[\.images]
+    @MainActor static var colors: Appearance.ColorPalette = InjectedValues[\.colors]
+    @MainActor static var images: Appearance.Images = InjectedValues[\.images]
     
     @MainActor static func icon(for reaction: MessageReactionType, useLargeIcons: Bool) -> UIImage? {
         var icon: UIImage?
@@ -30,12 +31,7 @@ class ReactionsIconProvider {
     @MainActor static func color(for reaction: MessageReactionType, userReactionIDs: Set<MessageReactionType>) -> Color? {
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-
-        if let color {
-            return Color(color)
-        } else {
-            return nil
-        }
+        return Color(color)
     }
 }
 
