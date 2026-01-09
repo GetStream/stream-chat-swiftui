@@ -79,8 +79,7 @@ jobs:
         name: Test Data E2E (iOS ${{ matrix.ios }})
         path: |
           fastlane/recordings
-          fastlane/sinatra_log.txt
-          fastlane/test_output/report.junit
+          fastlane/stream-chat-test-mock-server/logs/*
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
 
