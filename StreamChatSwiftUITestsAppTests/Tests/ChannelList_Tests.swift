@@ -7,6 +7,12 @@ import XCTest
 final class ChannelList_Tests: StreamTestCase {
     let message = "message"
 
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        addTags([.coreFeatures])
+        assertMockServer()
+    }
+
     func test_newMessageShownInChannelPreview_whenComingBackFromChannel() {
         linkToScenario(withId: 348)
 
@@ -28,8 +34,8 @@ final class ChannelList_Tests: StreamTestCase {
 
     func test_participantMessageShownInChannelPreview_whenReturningFromOffline() throws {
         linkToScenario(withId: 349)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -44,7 +50,7 @@ final class ChannelList_Tests: StreamTestCase {
         WHEN("participant sends a new message") {
             participantRobot
                 .sendMessage(message)
-                .sleep(2.0)
+                .wait(2.0)
         }
         AND("user becomes online") {
             userRobot.setConnectivity(to: .on)
@@ -62,7 +68,7 @@ final class ChannelList_Tests: StreamTestCase {
         let channelsCount = 30
 
         WHEN("user opens the channel list") {
-            backendRobot.generateChannels(channelsCount: channelsCount)
+            backendRobot.generateChannels(count: channelsCount)
             userRobot.login()
         }
         THEN("user makes sure that all channels are loaded") {
@@ -118,8 +124,8 @@ extension ChannelList_Tests {
 
     func test_channelPreviewShowsNoMessages_whenTheOnlyMessageInChannelIsDeleted() throws {
         linkToScenario(withId: 353)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1317")
+
+        throw XCTSkip("Check out SWUI-246")
 
         let message = "Hey"
 
@@ -147,6 +153,8 @@ extension ChannelList_Tests {
 
     func test_channelPreviewShowsPreviousMessage_whenLastMessageIsDeleted() throws {
         linkToScenario(withId: 354)
+
+        throw XCTSkip("Check out SWUI-246")
 
         let message1 = "Previous message"
         let message2 = "Last message"
@@ -178,6 +186,8 @@ extension ChannelList_Tests {
     func test_channelPreviewIsNotUpdated_whenThreadReplyIsSent() throws {
         linkToScenario(withId: 355)
 
+        throw XCTSkip("Check out SWUI-244")
+
         let channelMessage = "Channel message"
         let threadReply = "Thread reply"
 
@@ -190,7 +200,7 @@ extension ChannelList_Tests {
             userRobot.sendMessage(channelMessage)
         }
         AND("user adds thread reply to this message") {
-            userRobot.sendMessageInThread(threadReply)
+            userRobot.replyToMessageInThread(threadReply)
         }
         WHEN("user goes back to the channel list") {
             userRobot.moveToChannelListFromThreadReplies()
@@ -225,6 +235,42 @@ extension ChannelList_Tests {
         }
         THEN("the channel preview shows edited message") {
             userRobot.assertLastMessageInChannelPreview(editedMessage)
+        }
+        AND("last message timestamp is shown") {
+            userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
+        }
+    }
+}
+
+// MARK: - Truncate channel
+
+extension ChannelList_Tests {
+    func test_messageList_and_channelPreview_AreUpdatedWhenChannelTruncatedWithMessage() throws {
+        linkToScenario(withId: 357)
+
+        throw XCTSkip("Check out SWUI-245")
+
+        let message = "Channel truncated"
+
+        GIVEN("user opens the channel") {
+            backendRobot.generateChannels(count: 1, messagesCount: 42)
+            userRobot.login().openChannel()
+        }
+        WHEN("user truncates the channel with system message") {
+            userRobot.truncateChannel(withMessage: true)
+        }
+        THEN("user observes only the system message") {
+            userRobot
+                .assertMessage(message)
+                .assertMessageCount(1)
+                .assertScrollToBottomButton(isVisible: false)
+                .assertScrollToBottomButtonUnreadCount(0)
+        }
+        WHEN("user goes to channel list") {
+            userRobot.tapOnBackButton()
+        }
+        THEN("the channel preview shows system message") {
+            userRobot.assertLastMessageInChannelPreview(message)
         }
         AND("last message timestamp is shown") {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)

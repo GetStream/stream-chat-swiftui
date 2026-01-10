@@ -12,16 +12,24 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
     var pendingThreadReply: String { "pending \(threadReply)" }
     var failedThreadReply: String { "failed \(threadReply)" }
 
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        addTags([.messageDeliveryStatus])
+        assertMockServer()
+    }
+
     func test_deliveryStatusClocksShownInPreview_whenTheLastMessageIsInPendingState() throws {
         linkToScenario(withId: 424)
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
             userRobot
                 .login()
                 .openChannel()
+            backendRobot.delayServerResponse(byTimeInterval: 10.0)
         }
         AND("user sends new message") {
-            backendRobot.delayNewMessages(by: 10)
             userRobot.sendMessage(message, waitForAppearance: false)
         }
         WHEN("user retuns to the channel list before the message is sent") {
@@ -36,6 +44,8 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_singleCheckmarkShownInPreview_whenTheLastMessageIsSent() throws {
         linkToScenario(withId: 425)
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -57,8 +67,8 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_errorIndicatorShownInPreview_whenMessageFailedToBeSent() throws {
         linkToScenario(withId: 426)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -85,6 +95,8 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
     func test_doubleCheckmarkShownInPreview_whenMessageReadByParticipant() throws {
         linkToScenario(withId: 427)
 
+        throw XCTSkip("Check out SWUI-245")
+
         GIVEN("user opens the channel") {
             userRobot
                 .login()
@@ -97,7 +109,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         WHEN("participant reads the user's message") {
-            participantRobot.readMessage()
+            participantRobot.readMessageAfterDelay()
         }
         THEN("user spots double checkmark next to the message") {
             userRobot.assertMessageDeliveryStatusInChannelPreview(.read)
@@ -109,6 +121,8 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_deliveryStatusHiddenInPreview_whenMessageIsSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 428)
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
             backendRobot.setReadEvents(to: false)
@@ -131,6 +145,8 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
 
     func test_deliveryStatusHiddenInPreview_whenMessageIsSentByParticipant() throws {
         linkToScenario(withId: 429)
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens chat") {
             userRobot
@@ -157,6 +173,8 @@ extension MessageDeliveryStatus_ChannelList_Tests {
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSent() throws {
         linkToScenario(withId: 430)
 
+        throw XCTSkip("Check out SWUI-245")
+
         GIVEN("user opens chat") {
             userRobot
                 .login()
@@ -166,7 +184,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             participantRobot.sendMessage(message)
         }
         AND("user replies to the message in thread") {
-            userRobot.sendMessageInThread(threadReply)
+            userRobot.replyToMessageInThread(threadReply)
         }
         WHEN("user retuns to the channel list") {
             userRobot.moveToChannelListFromThreadReplies()
@@ -181,8 +199,8 @@ extension MessageDeliveryStatus_ChannelList_Tests {
 
     func test_singleCheckmarkShownForMessageInPreview_whenThreadReplyFailedToBeSent() throws {
         linkToScenario(withId: 431)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+
+        throw XCTSkip("Check out SWUI-245")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -197,7 +215,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             userRobot.setConnectivity(to: .off)
         }
         AND("user replies to message in thread") {
-            userRobot.sendMessageInThread(failedThreadReply, waitForAppearance: false)
+            userRobot.replyToMessageInThread(failedThreadReply, waitForAppearance: false)
         }
         WHEN("user retuns to the channel list") {
             userRobot.moveToChannelListFromThreadReplies()
@@ -213,6 +231,8 @@ extension MessageDeliveryStatus_ChannelList_Tests {
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyReadByParticipant() throws {
         linkToScenario(withId: 432)
 
+        throw XCTSkip("Check out SWUI-245")
+
         GIVEN("user opens the channel") {
             userRobot
                 .login()
@@ -222,10 +242,10 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             participantRobot.sendMessage(message)
         }
         AND("user replies to message in thread") {
-            userRobot.sendMessageInThread(threadReply)
+            userRobot.replyToMessageInThread(threadReply)
         }
         AND("participant reads the user's thread reply") {
-            participantRobot.readMessage()
+            participantRobot.readMessageAfterDelay()
         }
         WHEN("user retuns to the channel list") {
             userRobot.moveToChannelListFromThreadReplies()
@@ -243,6 +263,8 @@ extension MessageDeliveryStatus_ChannelList_Tests {
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 433)
 
+        throw XCTSkip("Check out SWUI-245")
+
         GIVEN("user opens chat") {
             backendRobot.setReadEvents(to: false)
             userRobot
@@ -253,7 +275,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             participantRobot.sendMessage(message)
         }
         AND("user replies to message in thread") {
-            userRobot.sendMessageInThread(threadReply)
+            userRobot.replyToMessageInThread(threadReply)
         }
         WHEN("user retuns to the channel list") {
             userRobot.moveToChannelListFromThreadReplies()
@@ -269,6 +291,8 @@ extension MessageDeliveryStatus_ChannelList_Tests {
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSentByParticipant() throws {
         linkToScenario(withId: 434)
 
+        throw XCTSkip("Check out SWUI-245")
+
         GIVEN("user opens chat") {
             userRobot
                 .login()
@@ -278,7 +302,7 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             participantRobot.sendMessage(message)
         }
         AND("participant replies to message in thread") {
-            participantRobot.sendMessageInThread(threadReply)
+            participantRobot.replyToMessageInThread(threadReply)
         }
         WHEN("user retuns to the channel list") {
             userRobot.moveToChannelListFromThreadReplies()

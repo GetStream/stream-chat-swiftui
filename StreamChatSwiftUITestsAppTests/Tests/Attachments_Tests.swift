@@ -4,12 +4,26 @@
 
 import XCTest
 
-// NOTE: Attachments tests used to freeze the test app on iOS > 18"
 final class Attachments_Tests: StreamTestCase {
+    override func setUpWithError() throws {
+        try XCTSkipIf(
+            ProcessInfo().operatingSystemVersion.majorVersion >= 18,
+            "Attachments tests freeze the test app on iOS > 18"
+        )
+        
+        try super.setUpWithError()
+        addTags([.coreFeatures])
+        assertMockServer()
+    }
+    
+    override func tearDownWithError() throws {
+        if ProcessInfo().operatingSystemVersion.majorVersion < 18 {
+            try super.tearDownWithError()
+        }
+    }
+
     func test_uploadImage() throws {
         linkToScenario(withId: 310)
-        
-        throw XCTSkip("Simulator cannot access photos.")
 
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
@@ -59,35 +73,10 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.login().openChannel()
         }
         WHEN("participant uploads a file") {
-            participantRobot.uploadAttachment(type: .file)
+            participantRobot.uploadAttachment(type: .file, waitBeforeSending: 2)
         }
         THEN("user can see uploaded file") {
             userRobot.assertFile(isPresent: true)
-        }
-    }
-    
-    func test_restartImageUpload() throws {
-        linkToScenario(withId: 9821)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        WHEN("user sends an image beeing offline") {
-            userRobot
-                .setConnectivity(to: .off)
-                .uploadImage()
-        }
-        AND("user restarts an image upload being online") {
-            userRobot
-                .setConnectivity(to: .on)
-//                .restartImageUpload()
-        }
-        THEN("user can see uploaded image") {
-            userRobot.assertImage(isPresent: true)
         }
     }
 }

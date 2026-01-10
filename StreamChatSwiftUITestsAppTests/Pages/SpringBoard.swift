@@ -22,10 +22,4 @@ enum SpringBoard {
     static var testAppIcon: XCUIElement {
         app.icons["Chat UI Tests"]
     }
-    
-    static var photoAccessPopUp: XCUIElement {
-        app.buttons
-            .matching(NSPredicate(format: "label LIKE 'Allow Full Access'"))
-            .firstMatch
-    }
 }
