@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -21,5 +21,11 @@ enum SpringBoard {
 
     static var testAppIcon: XCUIElement {
         app.icons["Chat UI Tests"]
+    }
+    
+    static var photoAccessPopUp: XCUIElement {
+        app.buttons
+            .matching(NSPredicate(format: "label LIKE 'Allow Full Access'"))
+            .firstMatch
     }
 }

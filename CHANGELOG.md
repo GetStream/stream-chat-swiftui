@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix updating member count in `ChatChannelInfoView` header [#1081](https://github.com/GetStream/stream-chat-swiftui/pull/1081)
 
 # [4.95.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.95.1)
 _December 18, 2025_

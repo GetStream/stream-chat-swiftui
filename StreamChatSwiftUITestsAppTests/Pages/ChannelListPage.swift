@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import Foundation
@@ -50,7 +50,10 @@ enum ChannelListPage {
             cell.staticTexts["UnreadIndicatorView"]
         }
 
-        static func statusCheckmark(for status: MessageDeliveryStatus?, in cell: XCUIElement) -> XCUIElement {
+        static func statusCheckmark(
+            for status: StreamChatTestMockServer.MessageDeliveryStatus?,
+            in cell: XCUIElement
+        ) -> XCUIElement {
             return cell.images["readIndicatorCheckmark"]
         }
     }

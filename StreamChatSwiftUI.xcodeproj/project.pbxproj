@@ -108,7 +108,6 @@
 		820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */; };
 		825AADF4283CCDB000237498 /* ThreadPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AADF3283CCDB000237498 /* ThreadPage.swift */; };
 		827352FD290BE91100A87385 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8492974827ABDDBF00A8EEB0 /* NotificationsHandler.swift */; };
-		829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */; };
 		829AB4D42858A532002DC629 /* Reactions_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829AB4D32858A532002DC629 /* Reactions_Tests.swift */; };
 		829CD5CE2848CA6B003C3877 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829CD5CD2848CA6B003C3877 /* Settings.swift */; };
 		829EF8772A9362C00045D166 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 829EF8762A9362C00045D166 /* PrivacyInfo.xcprivacy */; };
@@ -697,7 +696,6 @@
 		4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+UIAlertController.swift"; sourceTree = "<group>"; };
 		820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedReply_Tests.swift; sourceTree = "<group>"; };
 		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
-		829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamTestCase+Tags.swift"; sourceTree = "<group>"; };
 		829AB4D32858A532002DC629 /* Reactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions_Tests.swift; sourceTree = "<group>"; };
 		829CD5CD2848CA6B003C3877 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		829EF8762A9362C00045D166 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -2240,13 +2238,12 @@
 			isa = PBXGroup;
 			children = (
 				A3600B3F283F651200E1C930 /* Base TestCase */,
+				82A1814528FD69E8005F9D43 /* Message Delivery Status */,
 				82A1813D28FD68A3005F9D43 /* ChannelList_Tests.swift */,
 				A3600B31283E9E4700E1C930 /* MessageList_Tests.swift */,
 				829AB4D32858A532002DC629 /* Reactions_Tests.swift */,
 				82A1813B28F9BA53005F9D43 /* Attachments_Tests.swift */,
 				82A1814328FD69AE005F9D43 /* SlowMode_Tests.swift */,
-				829AB4D128578ACF002DC629 /* StreamTestCase+Tags.swift */,
-				82A1814528FD69E8005F9D43 /* Message Delivery Status */,
 				82A1813F28FD691B005F9D43 /* Ephemeral_Messages_Tests.swift */,
 				82A1814128FD694A005F9D43 /* PushNotification_Tests.swift */,
 				820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */,
@@ -2587,7 +2584,6 @@
 				82A1814728FD69F8005F9D43 /* MessageDeliveryStatus_Tests.swift in Sources */,
 				A3600B2F283E9E1900E1C930 /* UserRobot+Asserts.swift in Sources */,
 				82A1814028FD691B005F9D43 /* Ephemeral_Messages_Tests.swift in Sources */,
-				829AB4D228578ACF002DC629 /* StreamTestCase+Tags.swift in Sources */,
 				82A1813C28F9BA53005F9D43 /* Attachments_Tests.swift in Sources */,
 				A3600B35283E9EBA00E1C930 /* Bundle+Target.swift in Sources */,
 				82A1813A28F84CAA005F9D43 /* SpringBoard.swift in Sources */,

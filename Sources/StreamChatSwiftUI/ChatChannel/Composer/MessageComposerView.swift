@@ -1,5 +1,5 @@
 //
-// Copyright © 2025 Stream.io Inc. All rights reserved.
+// Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
 import StreamChat
@@ -108,13 +108,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         enabled: viewModel.sendButtonEnabled,
                         cooldownDuration: viewModel.cooldownDuration,
                         onTap: {
+                            // Calling onMessageSent() before erasing the edited and quoted message
+                            // so that onMessageSent can use them for state handling.
+                            onMessageSent()
                             viewModel.sendMessage(
                                 quotedMessage: quotedMessage,
                                 editedMessage: editedMessage
                             ) {
-                                // Calling onMessageSent() before erasing the edited and quoted message
-                                // so that onMessageSent can use them for state handling.
-                                onMessageSent()
                                 quotedMessage = nil
                                 editedMessage = nil
                             }
