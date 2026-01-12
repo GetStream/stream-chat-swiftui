@@ -22,6 +22,8 @@ group :fastlane_dependencies do
 end
 
 group :sinatra_dependencies do
+  gem 'eventmachine'
+  gem 'faye-websocket'
   gem 'puma'
   gem 'rackup'
 end

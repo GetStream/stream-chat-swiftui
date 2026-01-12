@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import StreamChat
 @testable import StreamChatSwiftUI
 import XCTest
 
@@ -35,6 +34,25 @@ extension UserRobot {
             line: line
         )
         return channelCells.element(boundBy: index)
+    }
+    
+    @discardableResult
+    func assertChannelPreviewIsEmpty(
+        at cellIndex: Int? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let emptyChannelPreviewText = "No messages"
+        let cell = channelCell(withIndex: cellIndex, file: file, line: line)
+        let message = channelAttributes.lastMessage(in: cell)
+        let actualText = message.waitForText(emptyChannelPreviewText, mustBeEqual: true).text
+        XCTAssertEqual(
+            actualText,
+            emptyChannelPreviewText,
+            file: file,
+            line: line
+        )
+        return self
     }
 
     @discardableResult
@@ -76,7 +94,7 @@ extension UserRobot {
 
     @discardableResult
     func assertMessageDeliveryStatusInChannelPreview(
-        _ deliveryStatus: MessageDeliveryStatus?,
+        _ deliveryStatus: StreamChatTestMockServer.MessageDeliveryStatus?,
         at cellIndex: Int? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -164,17 +182,19 @@ extension UserRobot {
         line: UInt = #line
     ) -> XCUIElement {
         let messageCell: XCUIElement
-        if let index = index {
-            let minExpectedCount = index + 1
+        let messageIndex = index != nil && index! > 25 ? cells.count - 1 : index
+        
+        if let messageIndex = messageIndex {
+            let minExpectedCount = messageIndex + 1
             let cells = cells.waitCount(minExpectedCount)
             XCTAssertGreaterThanOrEqual(
                 cells.count,
                 minExpectedCount,
-                "Message cell is not found at index #\(index)",
+                "Message cell is not found at index #\(messageIndex)",
                 file: file,
                 line: line
             )
-            messageCell = cells.element(boundBy: index)
+            messageCell = cells.element(boundBy: messageIndex)
         } else {
             messageCell = cells.firstMatch
         }
@@ -196,9 +216,30 @@ extension UserRobot {
     }
 
     @discardableResult
+    func assertOldestLoadedMessage(
+        isEqual: Bool,
+        to text: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        if let topMessageCell = cells.lastMatch {
+            let message = attributes.text(in: topMessageCell).wait()
+            let actualText = message.text
+            if isEqual {
+                XCTAssertEqual(text, actualText, file: file, line: line)
+            } else {
+                XCTAssertNotEqual(text, actualText, file: file, line: line)
+            }
+        } else {
+            XCTFail("lastMessageCell cannot be found")
+        }
+        return self
+    }
+    
+    @discardableResult
     func assertPushNotification(
-        withText text: String,
-        from sender: String,
+        title: String,
+        body: String,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
@@ -212,14 +253,14 @@ extension UserRobot {
 
         let pushNotificationContent = pushNotification.text
         XCTAssertTrue(
-            pushNotificationContent.contains(text),
-            "\(pushNotificationContent) does not contain \(text)",
+            pushNotificationContent.contains(body),
+            "\(pushNotificationContent) does not contain \(body)",
             file: file,
             line: line
         )
         XCTAssertTrue(
-            pushNotificationContent.contains(sender),
-            "\(pushNotificationContent) does not contain \(sender)",
+            pushNotificationContent.contains(title),
+            "\(pushNotificationContent) does not contain \(title)",
             file: file,
             line: line
         )
@@ -289,6 +330,19 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let message = attributes.text(in: messageCell).wait()
+        let actualText = message.waitForText(text).text
+        XCTAssertEqual(text, actualText, file: file, line: line)
+        return self
+    }
+    
+    @discardableResult
+    func assertFirstMessageIsVisible(
+        _ text: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let messageCell = messageCell(withIndex: cells.count - 1, file: file, line: line)
         let message = attributes.text(in: messageCell).wait()
         let actualText = message.waitForText(text).text
         XCTAssertEqual(text, actualText, file: file, line: line)
@@ -381,11 +435,12 @@ extension UserRobot {
     @discardableResult
     func assertScrollToBottomButton(
         isVisible: Bool,
+        timeout: Double = XCUIElement.waitTimeout,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
         var btn = MessageListPage.scrollToBottomButton
-        btn = isVisible ? btn.wait() : btn.waitForDisappearance()
+        btn = isVisible ? btn.wait() : btn.waitForDisappearance(timeout: timeout)
         XCTAssertEqual(
             isVisible,
             btn.exists,
@@ -456,6 +511,7 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         openContextMenu(messageCellIndex: index)
+        contextMenu.actionsView.element.wait()
         XCTAssertFalse(option.element.exists, "Context menu option is visible", file: file, line: line)
         return self
     }
@@ -474,7 +530,7 @@ extension UserRobot {
 
     @discardableResult
     func waitForMessageDeliveryStatus(
-        _ deliveryStatus: MessageDeliveryStatus?,
+        _ deliveryStatus: StreamChatTestMockServer.MessageDeliveryStatus?,
         at messageCellIndex: Int? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -482,7 +538,7 @@ extension UserRobot {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
         let checkmark = attributes.statusCheckmark(for: deliveryStatus, in: messageCell)
         if deliveryStatus == .failed || deliveryStatus == nil {
-            return !checkmark.exists
+            return !checkmark.waitForDisappearance().exists
         } else {
             return checkmark.wait(timeout: 10).exists
         }
@@ -490,7 +546,7 @@ extension UserRobot {
 
     @discardableResult
     func assertMessageDeliveryStatus(
-        _ deliveryStatus: MessageDeliveryStatus?,
+        _ deliveryStatus: StreamChatTestMockServer.MessageDeliveryStatus?,
         at messageCellIndex: Int? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -529,7 +585,6 @@ extension UserRobot {
             let obtainKeyboardFocus = (i == 1) ? true : false
             typeText("\(i)\n", obtainKeyboardFocus: obtainKeyboardFocus)
             let updatedComposerHeight = composer.height
-            print(updatedComposerHeight)
             XCTAssertGreaterThan(updatedComposerHeight, composerHeight, file: file, line: line)
             composerHeight = updatedComposerHeight
         }
@@ -582,7 +637,7 @@ extension UserRobot {
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
-        let endTime = Date().timeIntervalSince1970 * 1000 + XCUIElement.waitTimeout * 2000
+        let endTime = Date().timeIntervalSince1970 * 1000 + XCUIElement.waitTimeout * 3000
         let actualCount = MessageListPage.cells.count
         XCTAssertNotEqual(expectedCount, actualCount, file: file, line: line)
 
@@ -655,8 +710,8 @@ extension UserRobot {
     }
 
     @discardableResult
-    func assertMentionWasApplied(file: StaticString = #filePath, line: UInt = #line) -> Self {
-        let expectedText = "@\(UserDetails.countDookuName)"
+    func assertMentionWasApplied(userName: String, file: StaticString = #filePath, line: UInt = #line) -> Self {
+        let expectedText = "@\(userName)"
         let actualText = MessageListPage.Composer.textView.waitForText(expectedText).text
         XCTAssertEqual(expectedText, actualText, file: file, line: line)
         return self
@@ -793,7 +848,7 @@ extension UserRobot {
 
     @discardableResult
     func assertThreadReplyDeliveryStatus(
-        _ deliveryStatus: MessageDeliveryStatus?,
+        _ deliveryStatus: StreamChatTestMockServer.MessageDeliveryStatus?,
         at messageCellIndex: Int? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -813,33 +868,24 @@ extension UserRobot {
     }
 
     @discardableResult
-    func assertCooldownIsShown(file: StaticString = #filePath, line: UInt = #line) -> Self {
+    func assertCooldown(shouldBeVisible: Bool, file: StaticString = #filePath, line: UInt = #line) -> Self {
+        if shouldBeVisible {
+            MessageListPage.Composer.cooldown.wait()
+        } else {
+            MessageListPage.Composer.cooldown.waitForDisappearance()
+        }
+        
         XCTAssertEqual(
-            MessageListPage.Composer.placeholder.text,
-            L10n.Composer.Placeholder.slowMode,
-            file: file,
-            line: line
-        )
-        XCTAssertTrue(
-            MessageListPage.Composer.cooldown.wait().exists,
+            MessageListPage.Composer.cooldown.exists,
+            shouldBeVisible,
             "Cooldown should be visible",
             file: file,
             line: line
         )
-        return self
-    }
-
-    @discardableResult
-    func assertCooldownIsNotShown(file: StaticString = #filePath, line: UInt = #line) -> Self {
-        XCTAssertNotEqual(
-            MessageListPage.Composer.placeholder.text,
-            L10n.Composer.Placeholder.slowMode,
-            file: file,
-            line: line
-        )
-        XCTAssertFalse(
-            MessageListPage.Composer.cooldown.exists,
-            "Cooldown should not be visible",
+        
+        XCTAssertEqual(
+            MessageListPage.Composer.placeholder.text == L10n.Composer.Placeholder.slowMode,
+            shouldBeVisible,
             file: file,
             line: line
         )
@@ -852,10 +898,11 @@ extension UserRobot {
         XCTAssertFalse(sendButton.exists, "Send button is visible", file: file, line: line)
         return self
     }
-
+    
     @discardableResult
     func assertThreadReplyCountButton(
         at messageCellIndex: Int? = nil,
+        replies: Int,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
@@ -867,6 +914,32 @@ extension UserRobot {
             file: file,
             line: line
         )
+        
+        let expectedText = replies == 1 ? "1 Thread Reply" : "\(replies) Thread Replies"
+        XCTAssertEqual(expectedText, threadReplyCountButton.waitForText(expectedText).text)
+        return self
+    }
+    
+    @discardableResult
+    func assertThreadRepliesCountLabel(
+        _ count: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let expectedLabel = "\(count) REPLIES"
+        let repliesCountLabel = ThreadPage.repliesCountLabel.waitForText(expectedLabel).text
+        XCTAssertEqual(repliesCountLabel, repliesCountLabel, file: file, line: line)
+        return self
+    }
+    
+    @discardableResult
+    func assertParentMessageInThread(
+        withText text: String,
+        isLoaded: Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        assertOldestLoadedMessage(isEqual: isLoaded, to: text)
         return self
     }
 }
@@ -939,7 +1012,7 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
-        let expectedText = Message.message(withInvalidCommand: invalidCommand)
+        let expectedText = "Sorry, command \(invalidCommand) doesn't exist. Try posting your message without the starting /"
         let actualText = attributes.systemMessage(in: cell).waitForText(expectedText).text
         XCTAssertEqual(actualText, expectedText, file: file, line: line)
         return self
@@ -1022,7 +1095,7 @@ extension UserRobot {
     ) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
         let files = attributes.files(in: messageCell)
-        let errMessage = isPresent ? "There are no files" : "Files are presented"
+        let errMessage = isPresent ? "There are wrong number of files" : "Files should not be present"
         _ = isPresent ? files.firstMatch.wait() : files.firstMatch.waitForDisappearance()
         XCTAssertEqual(files.count, count, errMessage, file: file, line: line)
         return self

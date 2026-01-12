@@ -110,12 +110,16 @@ class MessageListPage {
     }
 
     enum Attributes {
+        static func messageBubble(in messageCell: XCUIElement) -> XCUIElement {
+            messageCell.otherElements["MessageView"]
+        }
+        
         static func reactionButton(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.otherElements["ReactionsContainer"]
         }
 
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.buttons["MessageAvatarViewPlaceholder"]
+            app.buttons.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView' or identifier LIKE 'MessageAvatarViewPlaceholder'")).firstMatch
         }
 
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
@@ -167,7 +171,10 @@ class MessageListPage {
         }
 
         // FIXME:
-        static func statusCheckmark(for status: MessageDeliveryStatus? = nil, in messageCell: XCUIElement) -> XCUIElement {
+        static func statusCheckmark(
+            for status: StreamChatTestMockServer.MessageDeliveryStatus? = nil,
+            in messageCell: XCUIElement
+        ) -> XCUIElement {
             messageCell.images["readIndicatorCheckmark"]
         }
 
@@ -225,7 +232,7 @@ class MessageListPage {
         }
 
         static func files(in messageCell: XCUIElement) -> XCUIElementQuery {
-            messageCell.buttons.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer'"))
+            messageCell.buttons.matching(NSPredicate(format: "identifier LIKE 'FileAttachmentsContainer' AND label != ''")).images
         }
 
         static func videoPlayer() -> XCUIElement {

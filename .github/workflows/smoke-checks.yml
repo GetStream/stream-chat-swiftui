@@ -118,8 +118,6 @@ jobs:
       with:
         name: Test Data UI
         path: |
-          fastlane/recordings
-          fastlane/sinatra_log.txt
           fastlane/test_output/snapshots
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
@@ -199,8 +197,7 @@ jobs:
         name: Test Data E2E ${{ matrix.batch }}
         path: |
           fastlane/recordings
-          fastlane/sinatra_log.txt
-          fastlane/test_output/report.junit
+          fastlane/stream-chat-test-mock-server/logs/*
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
 
