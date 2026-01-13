@@ -60,6 +60,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
     }
 
+    private let bottomId = "BottomID"
     private let scrollAreaId = "scrollArea"
 
     public init(
@@ -218,7 +219,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             factory.makeMessageListDateIndicator(date: messageDate!)
                                             .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
                                             : nil
-                                        
+
                                         showUnreadSeparator ?
                                             factory.makeNewMessagesIndicatorView(
                                                 newMessagesStartId: $firstUnreadMessageId,
@@ -249,6 +250,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     .delayedRendering()
                     .modifier(factory.makeMessageListModifier())
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
+                    .overlay(
+                        VStack {
+                            // Workaround to make scrolling to bottom more precise
+                            Color.clear
+                                .frame(height: 0)
+                                .id(bottomId)
+
+                            Spacer()
+                        }
+                    )
                 }
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
@@ -302,7 +313,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                             withAnimation {
                                 if messages.first?.id == scrolledId {
-                                    scrollView.scrollTo(scrolledId, anchor: .top)
+                                    scrollView.scrollTo(bottomId, anchor: .bottom)
                                 } else {
                                     scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
                                 }
