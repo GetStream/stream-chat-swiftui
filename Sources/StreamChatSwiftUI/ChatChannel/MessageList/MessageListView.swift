@@ -302,7 +302,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                             withAnimation {
                                 if messages.first?.id == scrolledId {
-                                    scrollView.scrollTo(scrolledId, anchor: .top)
+                                    scrollView.scrollTo(scrolledId, anchor: .bottom)
                                 } else {
                                     scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
                                 }
