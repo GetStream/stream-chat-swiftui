@@ -172,7 +172,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     VStack {
+                        // Workaround to make scrolling to bottom more precise
                         Text("")
+                            .foregroundColor(.clear)
                             .frame(height: 0)
                             .id(bottomId)
 
