@@ -171,7 +171,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                     }
 
-                    VStack {
+                    VStack(spacing: 0) {
                         // Workaround to make scrolling to bottom more precise
                         Text("")
                             .foregroundColor(.clear)
