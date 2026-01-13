@@ -488,7 +488,6 @@ extension ViewFactory {
             messageController: options.messageController,
             quotedMessage: options.quotedMessage,
             editedMessage: options.editedMessage,
-            willSendMessage: options.willSendMessage,
             onMessageSent: options.onMessageSent
         )
     }

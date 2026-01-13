@@ -40,7 +40,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         .frame(width: defaultScreenSize.width, height: 100)
@@ -64,7 +63,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         .frame(width: defaultScreenSize.width, height: 250)
@@ -88,7 +86,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         .frame(width: defaultScreenSize.width, height: 120)
@@ -112,7 +109,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         .frame(width: defaultScreenSize.width, height: 120)
@@ -136,7 +132,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         .frame(width: defaultScreenSize.width, height: 200)
@@ -272,7 +267,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         .frame(width: defaultScreenSize.width, height: 100)
@@ -732,7 +726,6 @@ import XCTest
             channelController: channelController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
     }
@@ -949,7 +942,6 @@ import XCTest
             channelController: channelController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(editedMessage),
-            willSendMessage: {},
             onMessageSent: {}
         )
     }
@@ -983,7 +975,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         view.addToViewHierarchy()
@@ -1026,7 +1017,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         view.addToViewHierarchy()
@@ -1065,7 +1055,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         view.addToViewHierarchy()
@@ -1103,7 +1092,6 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            willSendMessage: {},
             onMessageSent: {}
         )
         view.addToViewHierarchy()
