@@ -5,26 +5,8 @@
 import XCTest
 
 final class Ephemeral_Messages_Tests: StreamTestCase {
-<<<<<<< HEAD
     override func setUpWithError() throws {
         try super.setUpWithError()
-        assertMockServer()
-=======
-    func test_userObservesAnimatedGiphy_whenUserAddsGiphyMessage() throws {
-        linkToScenario(withId: 435)
-
-        GIVEN("user opens a channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        WHEN("user sends a giphy using giphy command") {
-            userRobot.uploadGiphy(useComposerCommand: true)
-        }
-        THEN("user observes the animated gif") {
-            userRobot.assertGiphyImage()
-        }
->>>>>>> a3f5bc2449df2c248490747dc6b8f7c23cad4cce
     }
 
     func test_userObservesAnimatedGiphy_whenParticipantAddsGiphyMessage() throws {
@@ -131,23 +113,4 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
                 .assertMessageReadCount(readBy: 0)
         }
     }
-<<<<<<< HEAD
-=======
-
-    func test_userObservesAnimatedGiphy_afterAddingGiphyThroughComposerMenu() throws {
-        linkToScenario(withId: 441)
-
-        GIVEN("user opens a channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        WHEN("user sends a giphy using giphy command") {
-            userRobot.uploadGiphy(useComposerCommand: true)
-        }
-        THEN("user observes the animated gif") {
-            userRobot.assertGiphyImage()
-        }
-    }
->>>>>>> a3f5bc2449df2c248490747dc6b8f7c23cad4cce
 }
