@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.96.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.96.0)
+_January 13, 2026_
+
 ### 🐞 Fixed
 - Fix updating member count in `ChatChannelInfoView` header [#1081](https://github.com/GetStream/stream-chat-swiftui/pull/1081)
 - Fix the message list jumping when opening the channel [#1101](https://github.com/GetStream/stream-chat-swiftui/pull/1101)
