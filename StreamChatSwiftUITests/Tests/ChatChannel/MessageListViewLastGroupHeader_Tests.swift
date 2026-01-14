@@ -71,6 +71,7 @@ import XCTest
 
 class CustomHeaderViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
+    var styles = LiquidGlassStyles()
 
     func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> some View {
         HStack {

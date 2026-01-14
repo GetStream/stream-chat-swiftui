@@ -59,7 +59,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                         }
                         .foregroundColor(
                             action.style == .primary ?
-                                colors.tintColor :
+                                Color(colors.accentPrimary) :
                                 Color(colors.textLowEmphasis)
                         )
                         .font(fonts.bodyBold)
@@ -69,7 +69,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             }
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst

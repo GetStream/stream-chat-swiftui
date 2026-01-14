@@ -150,7 +150,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         .disabled(!viewModel.canInteract)
         .padding()
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst
@@ -277,7 +277,7 @@ struct PollVotesIndicatorView: View {
                     .frame(width: reader.size.width, height: height)
 
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : colors.tintColor)
+                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : (Color(colors.accentPrimary)))
                     .frame(width: reader.size.width * ratio, height: height)
             }
         }

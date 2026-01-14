@@ -718,7 +718,7 @@ import SwiftUI
     ///  - addedCustomAttachments: list of added custom attachments.
     ///  - cameraImageAdded: called when an asset from the camera is added.
     ///  - askForAssetsAccessPermissions: provides access to photos library (and others if needed).
-    ///  - isDisplayed: thether the attachment picker view is displayed.
+    ///  - isDisplayed: whether the attachment picker view is displayed.
     ///  - height: the current  height of the picker.
     ///  - popupHeight: the  height of the popup when displayed.
     /// - Returns: view displayed in the attachment picker slot.

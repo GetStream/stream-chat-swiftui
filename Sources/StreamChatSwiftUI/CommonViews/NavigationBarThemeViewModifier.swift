@@ -17,7 +17,7 @@ private struct NavigationBarThemeViewModifier<T: ToolbarContent>: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .accentColor(colors.tintColor)
+            .accentColor(Color(colors.accentPrimary))
             .modifier(NavigationBarBackgroundViewModifier())
             .toolbar {
                 toolbarContent()

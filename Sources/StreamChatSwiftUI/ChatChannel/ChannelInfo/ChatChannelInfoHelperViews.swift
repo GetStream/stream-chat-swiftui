@@ -158,7 +158,7 @@ public struct ChannelNameUpdateView: View {
                     viewModel.confirmGroupRenaming()
                 } label: {
                     Image(systemName: "checkmark")
-                        .foregroundColor(colors.tintColor)
+                        .foregroundColor(Color(colors.accentPrimary))
                 }
             }
         }

@@ -55,7 +55,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             }
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message, isFirst: isFirst && message.videoAttachments.isEmpty
                 )
@@ -126,7 +126,6 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
         if let injectedBackgroundColor {
             return injectedBackgroundColor
         }
-        var colors = colors
         if message.isSentByCurrentUser {
             if message.type == .ephemeral {
                 return colors.background8

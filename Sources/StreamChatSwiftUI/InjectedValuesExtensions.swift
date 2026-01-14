@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 
 extension InjectedValues {
     /// Provides access to the `ChatClient` instance.
@@ -17,12 +18,12 @@ extension InjectedValues {
     }
 
     /// Provides access to the `ColorPalette` instance.
-    @MainActor public var colors: ColorPalette {
+    @MainActor public var colors: Appearance.ColorPalette {
         get {
-            streamChat.appearance.colors
+            streamChat.appearance.colorPalette
         }
         set {
-            streamChat.appearance.colors = newValue
+            streamChat.appearance.colorPalette = newValue
         }
     }
 
@@ -37,7 +38,7 @@ extension InjectedValues {
     }
 
     /// Provides access to the `Images` instance.
-    @MainActor public var images: Images {
+    @MainActor public var images: Appearance.Images {
         get {
             streamChat.appearance.images
         }
@@ -47,12 +48,12 @@ extension InjectedValues {
     }
 
     /// Provides access to the `Fonts` instance.
-    @MainActor public var fonts: Fonts {
+    @MainActor public var fonts: Appearance.FontsSwiftUI {
         get {
-            streamChat.appearance.fonts
+            streamChat.appearance.fontsSwiftUI
         }
         set {
-            streamChat.appearance.fonts = newValue
+            streamChat.appearance.fontsSwiftUI = newValue
         }
     }
 }

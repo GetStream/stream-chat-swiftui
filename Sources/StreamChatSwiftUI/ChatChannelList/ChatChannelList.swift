@@ -20,7 +20,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var imageLoader: @MainActor (ChatChannel) -> UIImage
     private var onItemTap: @MainActor (ChatChannel) -> Void
     private var onItemAppear: @MainActor (Int) -> Void
-    private var channelNaming: @MainActor (ChatChannel) -> String
     private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
@@ -37,7 +36,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
         imageLoader: (@MainActor (ChatChannel) -> UIImage)? = nil,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void,
-        channelNaming: (@MainActor (ChatChannel) -> String)? = nil,
         channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void = { _ in },
         trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void = { _ in },
@@ -47,14 +45,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.channels = channels
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
-        if let channelNaming {
-            self.channelNaming = channelNaming
-        } else {
-            let channelNamer = InjectedValues[\.utils].channelNamer
-            self.channelNaming = { channel in
-                channelNamer(channel, InjectedValues[\.chatClient].currentUserId) ?? ""
-            }
-        }
         self.channelDestination = channelDestination
         if let imageLoader {
             self.imageLoader = imageLoader
@@ -108,7 +98,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
             imageLoader: imageLoader,
             onItemTap: onItemTap,
             onItemAppear: onItemAppear,
-            channelNaming: channelNaming,
             channelDestination: channelDestination,
             trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
@@ -119,6 +108,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
 
 /// LazyVStack displaying list of channels.
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
@@ -130,7 +120,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     private var imageLoader: @MainActor (ChatChannel) -> UIImage
     private var onItemTap: @MainActor (ChatChannel) -> Void
     private var onItemAppear: @MainActor (Int) -> Void
-    private var channelNaming: @MainActor (ChatChannel) -> String
     private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
     private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
@@ -145,7 +134,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void,
-        channelNaming: @escaping @MainActor (ChatChannel) -> String,
         channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
@@ -155,7 +143,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         self.channels = channels
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
-        self.channelNaming = channelNaming
         self.channelDestination = channelDestination
         self.imageLoader = imageLoader
         self.onlineIndicatorShown = onlineIndicatorShown
@@ -172,7 +159,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                 factory.makeChannelListItem(
                     options: ChannelListItemOptions(
                         channel: channel,
-                        channelName: channelNaming(channel),
+                        channelName: name(for: channel),
                         avatar: imageLoader(channel),
                         onlineIndicatorShown: onlineIndicatorShown(channel),
                         disabled: swipedChannelId == channel.id,
@@ -208,6 +195,13 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
             factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
         }
-        .modifier(factory.makeChannelListModifier(options: ChannelListModifierOptions()))
+        .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
+    }
+    
+    private func name(for channel: ChatChannel) -> String {
+        utils.channelNameFormatter.format(
+            channel: channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 }

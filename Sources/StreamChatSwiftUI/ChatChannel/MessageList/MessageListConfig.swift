@@ -7,7 +7,9 @@ import StreamChat
 import SwiftUI
 
 /// Configuration for the message list.
+@MainActor
 public struct MessageListConfig {
+    @MainActor
     public init(
         messageListType: MessageListType = .messaging,
         typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
@@ -39,7 +41,9 @@ public struct MessageListConfig {
         draftMessagesEnabled: Bool = false,
         downloadFileAttachmentsEnabled: Bool = false,
         hidesCommandsOverlayOnMessageListTap: Bool = true,
-        hidesAttachmentsPickersOnMessageListTap: Bool = true
+        hidesAttachmentsPickersOnMessageListTap: Bool = true,
+        navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
+        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = MessageAction.defaultActions(for:)
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -72,6 +76,8 @@ public struct MessageListConfig {
         self.downloadFileAttachmentsEnabled = downloadFileAttachmentsEnabled
         self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
         self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
+        self.navigationBarDisplayMode = navigationBarDisplayMode
+        self.supportedMessageActions = supportedMessageActions
     }
 
     public let messageListType: MessageListType
@@ -128,6 +134,14 @@ public struct MessageListConfig {
     ///
     /// By default it is enabled and it uses the color from `ColorPalette.messageCellHighlightBackground`.
     public let highlightMessageWhenJumping: Bool
+    
+    /// A style for displaying the title of a navigation bar.
+    public var navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode
+    
+    /// Returns the supported  message actions.
+    /// - Parameter options: the options for getting supported message actions.
+    /// - Returns: list of `MessageAction` items.
+    public var supportedMessageActions: @MainActor (SupportedMessageActionsOptions) -> [MessageAction]
 }
 
 /// Contains information about the message paddings.
@@ -240,7 +254,7 @@ public struct MessageDisplayOptions {
     public static var defaultLinkDisplay: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] {
         { _ in
             [
-                NSAttributedString.Key.foregroundColor: UIColor(InjectedValues[\.colors].tintColor)
+                NSAttributedString.Key.foregroundColor: InjectedValues[\.colors].accentPrimary
             ]
         }
     }

@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 // MARK: - Thread List Options
@@ -81,9 +82,9 @@ public final class ThreadListFooterViewOptions: Sendable {
 /// Options for creating the thread list background.
 public final class ThreadListBackgroundOptions: Sendable {
     /// The color palette to use.
-    public let colors: ColorPalette
+    public let colors: Appearance.ColorPalette
     
-    public init(colors: ColorPalette) {
+    public init(colors: Appearance.ColorPalette) {
         self.colors = colors
     }
 }

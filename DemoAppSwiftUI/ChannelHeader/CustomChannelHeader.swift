@@ -33,7 +33,7 @@ public struct CustomChannelHeader: ToolbarContent {
                     .frame(width: 24, height: 24)
                     .foregroundColor(Color(colors.navigationBarGlyph))
                     .padding(.all, 8)
-                    .background(colors.navigationBarTintColor)
+                    .background(Color(colors.navigationBarTintColor))
                     .clipShape(Circle())
             }
             .accessibilityLabel(Text("New Channel"))

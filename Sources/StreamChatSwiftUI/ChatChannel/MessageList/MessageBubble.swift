@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// Contains info needed for a modifier to be applied to the message view.
@@ -218,11 +219,10 @@ extension ChatMessage {
     ///  - colors: The color pallete.
     ///  - injectedBackgroundColor: If you need a custom background color injected.
     /// - Returns: The background colors (can be many for gradients) for the message cell.
-    @MainActor public func bubbleBackground(colors: ColorPalette, injectedBackgroundColor: UIColor? = nil) -> [Color] {
+    @MainActor public func bubbleBackground(colors: Appearance.ColorPalette, injectedBackgroundColor: UIColor? = nil) -> [Color] {
         if let injectedBackgroundColor {
             return [Color(injectedBackgroundColor)]
         }
-        var colors = colors
         if isSentByCurrentUser {
             if type == .ephemeral {
                 return colors.messageCurrentUserEmphemeralBackground.map { Color($0) }

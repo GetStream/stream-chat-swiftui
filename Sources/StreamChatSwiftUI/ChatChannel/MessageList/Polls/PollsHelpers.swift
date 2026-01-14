@@ -27,33 +27,18 @@ struct PollDateIndicatorView: View {
     @Injected(\.utils) var utils
     @Injected(\.colors) var colors
     
-    var dateFormatter: (Date) -> String {
-        utils.pollsDateFormatter.dateString(for:)
-    }
-    
     let date: Date
     
     var body: some View {
-        Text(dateFormatter(date))
+        Text(text)
             .font(fonts.subheadline)
             .foregroundColor(Color(colors.textLowEmphasis))
     }
-}
-
-class PollsDateFormatter {
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("MMM dd HH:mm")
-        return formatter
-    }()
     
-    func dateString(for date: Date) -> String {
-        // Check if the date is today
-        if Calendar.current.isDateInToday(date) {
-            L10n.Dates.today
-        } else {
-            // If it's not today, format the date normally
-            dateFormatter.string(from: date)
-        }
+    var text: String {
+        let formatter = utils.pollsDateFormatter
+        let voteDay = formatter.formatDay(date)
+        let voteTime = formatter.formatTime(date)
+        return [voteDay, voteTime].joined(separator: " ")
     }
 }

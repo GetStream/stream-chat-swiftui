@@ -83,8 +83,8 @@ import XCTest
 
         // When
         adjustAppearance { appearance in
-            appearance.colors.text = .red
-            appearance.colors.subtitleText = .blue
+            appearance.colorPalette.text = .red
+            appearance.colorPalette.subtitleText = .blue
         }
         let size = CGSize(width: 300, height: 100)
         let view = ChannelTitleView(channel: channel, shouldShowTypingIndicator: true)

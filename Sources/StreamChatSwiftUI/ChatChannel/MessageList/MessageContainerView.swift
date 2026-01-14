@@ -308,7 +308,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                    highlightedMessageId == message.messageId {
                     Color(colors.messageCellHighlightBackground)
                 } else if messageViewModel.isPinned {
-                    Color(colors.pinnedBackground)
+                    Color(colors.pinnedMessageBackground)
                 }
             }
         )

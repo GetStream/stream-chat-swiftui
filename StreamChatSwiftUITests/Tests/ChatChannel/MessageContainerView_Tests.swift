@@ -4,6 +4,7 @@
 
 import SnapshotTesting
 @testable import StreamChat
+@testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
 import StreamSwiftTestHelpers
@@ -78,9 +79,10 @@ import XCTest
     func test_messageContainerCurrentUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
-        var colors = ColorPalette()
+        var colors = Appearance.ColorPalette()
         colors.messageCurrentUserTextColor = .red
-        let appearance = Appearance(colors: colors)
+        var appearance = Appearance()
+        appearance.colorPalette = colors
         streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
         let message = ChatMessage.mock(
             id: .unique,
@@ -101,9 +103,10 @@ import XCTest
     func test_messageContainerOtherUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
-        var colors = ColorPalette()
+        var colors = Appearance.ColorPalette()
         colors.messageOtherUserTextColor = .red
-        let appearance = Appearance(colors: colors)
+        var appearance = Appearance()
+        appearance.colorPalette = colors
         streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
         let message = ChatMessage.mock(
             id: .unique,

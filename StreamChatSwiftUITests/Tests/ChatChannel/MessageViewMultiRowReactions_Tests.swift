@@ -66,6 +66,7 @@ import XCTest
 
 class TestViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
+    var styles = LiquidGlassStyles()
 
     private init() {}
 
@@ -226,15 +227,9 @@ struct CustomMessageReactionView: View {
     }
 
     private func color(for reaction: MessageReactionType) -> Color? {
-        var colors = colors
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-
-        if let color {
-            return Color(color)
-        } else {
-            return nil
-        }
+        return Color(color)
     }
 
     private var userReactionIDs: Set<MessageReactionType> {

@@ -155,13 +155,9 @@ public struct ChannelTitleView: View {
         chatClient.currentUserId ?? ""
     }
 
-    private var channelNamer: ChatChannelNamer {
-        utils.channelNamer
-    }
-
     public var body: some View {
         VStack(spacing: 2) {
-            Text(channelNamer(channel, currentUserId) ?? "")
+            Text(name(for: channel))
                 .font(fonts.bodyBold)
                 .foregroundColor(Color(colors.navigationBarTitle))
                 .accessibilityIdentifier("chatName")
@@ -178,5 +174,12 @@ public struct ChannelTitleView: View {
                     .accessibilityIdentifier("chatOnlineInfo")
             }
         }
+    }
+    
+    private func name(for channel: ChatChannel) -> String {
+        utils.channelNameFormatter.format(
+            channel: channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 }

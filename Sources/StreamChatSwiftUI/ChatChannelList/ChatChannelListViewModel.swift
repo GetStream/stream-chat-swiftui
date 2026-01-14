@@ -11,12 +11,12 @@ import UIKit
 /// View model for the `ChatChannelListView`.
 @MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
     /// Context provided dependencies.
-    @Injected(\.chatClient) private var chatClient: ChatClient
-    @Injected(\.images) private var images: Images
-    @Injected(\.utils) private var utils: Utils
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.images) private var images
+    @Injected(\.utils) private var utils
 
     /// Context provided utils.
-    internal lazy var channelNamer = utils.channelNamer
+    internal lazy var channelNameFormatter = utils.channelNameFormatter
 
     /// The maximum number of images that combine to form a single avatar
     private let maxNumberOfImagesInCombinedAvatar = 4
@@ -160,7 +160,10 @@ import UIKit
     /// - Parameter channel: the channel whose display name is asked for.
     /// - Returns: `String` with the channel name.
     public func name(forChannel channel: ChatChannel) -> String {
-        channelNamer(channel, chatClient.currentUserId) ?? ""
+        channelNameFormatter.format(
+            channel: channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 
     /// Checks if there are new channels to be loaded.

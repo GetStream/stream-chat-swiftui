@@ -64,7 +64,7 @@ struct DemoUserView: View {
             if user.isGuest {
                 Image(systemName: "person.fill")
                     .resizable()
-                    .foregroundColor(colors.tintColor)
+                    .foregroundColor(Color(colors.accentPrimary))
                     .frame(width: imageSize, height: imageSize)
                     .aspectRatio(contentMode: .fit)
                     .background(Color(colors.background6))
@@ -88,7 +88,7 @@ struct DemoUserView: View {
 
             Image(systemName: "arrow.forward")
                 .renderingMode(.template)
-                .foregroundColor(colors.tintColor)
+                .foregroundColor(Color(colors.accentPrimary))
         }
     }
 }

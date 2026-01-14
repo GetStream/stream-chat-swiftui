@@ -7,7 +7,6 @@ import UIKit
 
 /// SwiftUI wrapper for a text field with multiple rows.
 struct ComposerTextInputView: UIViewRepresentable {
-    @EnvironmentObject var composerViewModel: MessageComposerViewModel
     @Injected(\.utils) private var utils
 
     @Binding var text: String
@@ -18,6 +17,7 @@ struct ComposerTextInputView: UIViewRepresentable {
     var editable: Bool
     var maxMessageLength: Int?
     var currentHeight: CGFloat
+    var onImagePasted: @MainActor (UIImage) -> Void
 
     func makeUIView(context: Context) -> InputTextView {
         let inputTextView: InputTextView
@@ -29,13 +29,12 @@ struct ComposerTextInputView: UIViewRepresentable {
         context.coordinator.textView = inputTextView
         inputTextView.delegate = context.coordinator
         inputTextView.isEditable = editable
+        inputTextView.adjustsFontForContentSizeCategory = true
         inputTextView.layoutManager.delegate = context.coordinator
         inputTextView.placeholderLabel.text = placeholder
         inputTextView.contentInsetAdjustmentBehavior = .never
         inputTextView.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
-        inputTextView.onImagePasted = {
-            composerViewModel.imagePasted($0)
-        }
+        inputTextView.onImagePasted = onImagePasted
 
         if utils.messageListConfig.becomesFirstResponderOnOpen {
             inputTextView.becomeFirstResponder()

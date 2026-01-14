@@ -8,11 +8,15 @@ import SwiftUI
 public struct TrailingComposerView: View {
     @Injected(\.utils) private var utils
         
-    @EnvironmentObject var viewModel: MessageComposerViewModel
+    @ObservedObject var viewModel: MessageComposerViewModel
     var onTap: () -> Void
     
-    public init(onTap: @escaping () -> Void) {
+    public init(
+        viewModel: MessageComposerViewModel,
+        onTap: @escaping () -> Void
+    ) {
         self.onTap = onTap
+        self.viewModel = viewModel
     }
     
     public var body: some View {
@@ -24,7 +28,11 @@ public struct TrailingComposerView: View {
                         onTap: onTap
                     )
                     if utils.composerConfig.isVoiceRecordingEnabled {
-                        VoiceRecordingButton(viewModel: viewModel)
+                        VoiceRecordingButton(
+                            recordingState: $viewModel.recordingState,
+                            startRecording: viewModel.startRecording,
+                            stopRecording: viewModel.stopRecording
+                        )
                     }
                 }
                 .padding(.bottom, 8)
@@ -41,15 +49,13 @@ public struct TrailingComposerView: View {
 public struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
     @Injected(\.utils) var utils
-    
-    @ObservedObject var viewModel: MessageComposerViewModel
-    
+        
     @State private var longPressed = false
     @State private var longPressStarted: Date?
-
-    public init(viewModel: MessageComposerViewModel) {
-        self.viewModel = viewModel
-    }
+    
+    @Binding var recordingState: RecordingState
+    var startRecording: () -> Void
+    var stopRecording: () -> Void
 
     public var body: some View {
         Image(systemName: "mic")
@@ -62,25 +68,25 @@ public struct VoiceRecordingButton: View {
                             longPressed = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 if longPressed {
-                                    viewModel.recordingState = .recording(value.location)
-                                    viewModel.startRecording()
+                                    recordingState = .recording(value.location)
+                                    startRecording()
                                 }
                             }
-                        } else if case .recording = viewModel.recordingState {
-                            viewModel.recordingState = .recording(value.location)
+                        } else if case .recording = recordingState {
+                            recordingState = .recording(value.location)
                         }
                     }
                     .onEnded { _ in
                         longPressed = false
                         if let longPressStarted, Date().timeIntervalSince(longPressStarted) <= 1 {
-                            if viewModel.recordingState != .showingTip {
-                                viewModel.recordingState = .showingTip
+                            if recordingState != .showingTip {
+                                recordingState = .showingTip
                             }
                             self.longPressStarted = nil
                             return
                         }
-                        if viewModel.recordingState != .locked {
-                            viewModel.stopRecording()
+                        if recordingState != .locked {
+                            stopRecording()
                         }
                     }
             )
@@ -88,8 +94,8 @@ public struct VoiceRecordingButton: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityLabel(Text(L10n.Composer.AudioRecording.start))
             .accessibilityAction {
-                viewModel.recordingState = .recording(.zero)
-                viewModel.startRecording()
+                recordingState = .recording(.zero)
+                startRecording()
             }
     }
 }

@@ -125,7 +125,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         })
         .background(
-            viewFactory.makeChannelListBackground(options: ChannelListBackgroundOptions(colors: colors))
+            viewFactory.makeChannelListBackground(options: .init())
         )
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {
@@ -143,7 +143,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         }
         .modifier(viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: title)))
-        .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
+        .navigationBarTitleDisplayMode(utils.channelListConfig.navigationBarDisplayMode)
         .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
 
@@ -247,7 +247,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkTabBarAppearance()
                         viewModel.checkForChannels(index: index)
                     },
-                    channelNaming: viewModel.name(forChannel:),
                     channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
@@ -260,6 +259,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
             viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
-        .modifier(viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
+        .modifier(viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }

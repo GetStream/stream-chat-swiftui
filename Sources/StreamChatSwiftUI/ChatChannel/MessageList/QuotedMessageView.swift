@@ -126,7 +126,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             hasVoiceAttachments ? [.leading, .top, .bottom] : .all, utils.messageListConfig.messagePaddings.quotedViewPadding
         )
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: quotedMessage,
                     isFirst: true,
@@ -144,7 +144,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             return colors.highlightedAccentBackground1
         }
 
-        var colors = colors
         let color = quotedMessage.isSentByCurrentUser ?
             colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
         return color

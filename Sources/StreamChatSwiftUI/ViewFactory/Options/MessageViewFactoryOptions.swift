@@ -12,24 +12,18 @@ import SwiftUI
 public final class EmptyMessagesViewOptions: Sendable {
     /// The channel to display empty state for.
     public let channel: ChatChannel
-    /// The color palette to use.
-    public let colors: ColorPalette
     
-    public init(channel: ChatChannel, colors: ColorPalette) {
+    public init(channel: ChatChannel) {
         self.channel = channel
-        self.colors = colors
     }
 }
 
 /// Options for creating the message list background.
 public final class MessageListBackgroundOptions: Sendable {
-    /// The color palette to use.
-    public let colors: ColorPalette
     /// Whether the view is in a thread.
     public let isInThread: Bool
     
-    public init(colors: ColorPalette, isInThread: Bool) {
-        self.colors = colors
+    public init(isInThread: Bool) {
         self.isInThread = isInThread
     }
 }

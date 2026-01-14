@@ -3,6 +3,7 @@
 //
 
 import Photos
+import StreamChatCommonUI
 import SwiftUI
 
 /// View for the photo attachment picker.
@@ -14,17 +15,25 @@ public struct PhotoAttachmentPickerView: View {
     var assets: PHFetchResultCollection
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
+    var selectedAssetIds: [String]?
+    
+    private var selectedAssetIdsSet: Set<String>? {
+        guard let selectedAssetIds else { return nil }
+        return Set(selectedAssetIds)
+    }
     
     let columns = [GridItem(.adaptive(minimum: 120), spacing: 2)]
     
     public init(
         assets: PHFetchResultCollection,
         onImageTap: @escaping (AddedAsset) -> Void,
-        imageSelected: @escaping (String) -> Bool
+        imageSelected: @escaping (String) -> Bool,
+        selectedAssetIds: [String]? = nil
     ) {
         self.assets = assets
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
+        self.selectedAssetIds = selectedAssetIds
     }
     
     public var body: some View {
@@ -35,7 +44,8 @@ public struct PhotoAttachmentPickerView: View {
                         assetLoader: assetLoader,
                         asset: asset,
                         onImageTap: onImageTap,
-                        imageSelected: imageSelected
+                        imageSelected: imageSelected,
+                        selectedAssetIds: selectedAssetIdsSet
                     )
                 }
             }
@@ -62,6 +72,7 @@ public struct PhotoAttachmentCell: View {
     var asset: PHAsset
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
+    var selectedAssetIds: Set<String>?
     
     private var assetType: AssetType {
         asset.mediaType == .video ? .video : .image
@@ -72,13 +83,15 @@ public struct PhotoAttachmentCell: View {
         requestId: PHContentEditingInputRequestID? = nil,
         asset: PHAsset,
         onImageTap: @escaping (AddedAsset) -> Void,
-        imageSelected: @escaping (String) -> Bool
+        imageSelected: @escaping (String) -> Bool,
+        selectedAssetIds: Set<String>? = nil
     ) {
         self.assetLoader = assetLoader
         _requestId = State(initialValue: requestId)
         self.asset = asset
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
+        self.selectedAssetIds = selectedAssetIds
     }
  
     public var body: some View {
@@ -135,7 +148,7 @@ public struct PhotoAttachmentCell: View {
         .aspectRatio(1, contentMode: .fill)
         .overlay(
             ZStack {
-                if imageSelected(asset.localIdentifier) {
+                if isAssetSelected(asset.localIdentifier) {
                     TopRightView {
                         Image(uiImage: images.checkmarkFilled)
                             .renderingMode(.template)
@@ -201,5 +214,24 @@ public struct PhotoAttachmentCell: View {
         guard let assetURL else { return nil }
         guard let assetData = try? Data(contentsOf: assetURL) else { return nil }
         return try? UIImage(data: assetData)?.saveAsJpgToTemporaryUrl()
+    }
+    
+    private func isAssetSelected(_ id: String) -> Bool {
+        if let selectedAssetIds {
+            return selectedAssetIds.contains(id)
+        }
+        return imageSelected(id)
+    }
+}
+
+extension UIImage {
+    func saveAsJpgToTemporaryUrl() throws -> URL? {
+        guard let imageData = jpegData(compressionQuality: 1.0) else { return nil }
+        let imageName = "\(UUID().uuidString).jpg"
+        let documentDirectory = NSTemporaryDirectory()
+        let localPath = documentDirectory.appending(imageName)
+        let photoURL = URL(fileURLWithPath: localPath)
+        try imageData.write(to: photoURL)
+        return photoURL
     }
 }

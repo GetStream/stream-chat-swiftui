@@ -18,16 +18,15 @@ import XCTest
             author: .mock(id: chatClient.currentUserId!),
             isSentByCurrentUser: true
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -50,16 +49,15 @@ import XCTest
             author: .mock(id: .unique),
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -84,16 +82,15 @@ import XCTest
             showReplyInChannel: false,
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -116,16 +113,15 @@ import XCTest
             showReplyInChannel: true,
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -150,16 +146,15 @@ import XCTest
             replyCount: 3,
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -181,16 +176,15 @@ import XCTest
             author: .mock(id: .unique),
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -216,16 +210,15 @@ import XCTest
             author: .mock(id: .unique),
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -255,16 +248,15 @@ import XCTest
                 expiresAt: nil
             )
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -287,16 +279,15 @@ import XCTest
             author: .mock(id: chatClient.currentUserId!),
             localState: .sendingFailed
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -324,16 +315,15 @@ import XCTest
             attachments: attachments,
             localState: .pendingSend
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -362,16 +352,15 @@ import XCTest
             isBounced: true,
             moderationsDetails: moderationDetails
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -401,16 +390,15 @@ import XCTest
             ],
             isSentByCurrentUser: true
         )
-        let factory = DefaultViewFactory.shared
 
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
 
         // Then
@@ -432,16 +420,15 @@ import XCTest
             author: .mock(id: chatClient.currentUserId!),
             isSentByCurrentUser: true
         )
-        let factory = DefaultViewFactory.shared
         
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
         
         // Then
@@ -458,16 +445,15 @@ import XCTest
             author: .mock(id: .unique),
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
         
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
         
         // Then
@@ -484,16 +470,15 @@ import XCTest
             author: .mock(id: .unique),
             isSentByCurrentUser: false
         )
-        let factory = DefaultViewFactory.shared
         
         // When
         let messageActions = MessageAction.defaultActions(
-            factory: factory,
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
+            for: SupportedMessageActionsOptions(
+                message: message,
+                channel: channel,
+                onFinish: { _ in },
+                onError: { _ in }
+            )
         )
         
         // Then

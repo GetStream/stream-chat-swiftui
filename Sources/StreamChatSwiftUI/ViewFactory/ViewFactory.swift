@@ -11,8 +11,8 @@ import SwiftUI
 @MainActor public protocol ViewFactory: AnyObject {
     var chatClient: ChatClient { get }
 
-    /// Returns the navigation bar display mode.
-    func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode
+    associatedtype StylesType: Styles
+    var styles: StylesType { get set }
 
     // MARK: - channels
 
@@ -61,11 +61,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the more channel actions view.
     func makeMoreChannelActionsView(options: MoreChannelActionsViewOptions) -> MoreActionsView
 
-    /// Returns the supported  channel actions.
-    /// - Parameter options: the options for getting supported channel actions.
-    /// - Returns: list of `ChannelAction` items.
-    func supportedMoreChannelActions(options: SupportedMoreChannelActionsOptions) -> [ChannelAction]
-
     associatedtype TrailingSwipeActionsViewType: View
     /// Creates the trailing swipe actions view in the channel list.
     /// - Parameter options: the options for creating the trailing swipe actions view.
@@ -106,14 +101,6 @@ import SwiftUI
     /// - Returns: view shown in the search results.
     func makeChannelListSearchResultItem(options: ChannelListSearchResultItemOptions<ChannelDestination>) -> ChannelListSearchResultItem
 
-    associatedtype ChannelListContentModifier: ViewModifier
-    /// Returns a view modifier applied to the channel list content (including both header and footer views).
-    func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> ChannelListContentModifier
-
-    associatedtype ChannelListModifier: ViewModifier
-    /// Returns a view modifier applied to the channel list.
-    func makeChannelListModifier(options: ChannelListModifierOptions) -> ChannelListModifier
-
     // MARK: - messages
 
     associatedtype ChannelDestination: View
@@ -129,27 +116,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the empty messages view.
     /// - Returns: View shown in the empty messages slot.
     func makeEmptyMessagesView(options: EmptyMessagesViewOptions) -> EmptyMessagesViewType
-
-    associatedtype MessageListModifier: ViewModifier
-    /// Returns a view modifier applied to the message list.
-    func makeMessageListModifier(options: MessageListModifierOptions) -> MessageListModifier
-    
-    associatedtype MessageListContainerModifier: ViewModifier
-    /// Returns a view modifier applied to the message list container.
-    func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> MessageListContainerModifier
-
-    associatedtype MessageViewModifier: ViewModifier
-    /// Returns a view modifier applied to the message view.
-    /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
-    func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
-
-    associatedtype BouncedMessageActionsModifierType: ViewModifier
-    /// Returns a view modifier applied to the bounced message actions.
-    ///
-    /// This modifier is only used if `Utils.messageListConfig.bouncedMessagesAlertActionsEnabled` is `true`.
-    /// By default the flag is true and the bounced actions are shown as an alert instead of a context menu.
-    /// - Parameter viewModel: the view model of the chat channel view.
-    func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> BouncedMessageActionsModifierType
 
     associatedtype UserAvatar: View
     /// Creates the message avatar view.
@@ -379,6 +345,9 @@ import SwiftUI
     /// - Parameter options: the options for creating the composer text input view.
     /// - Returns: View shown in the composer text input slot.
     func makeComposerTextInputView(options: ComposerTextInputViewOptions) -> ComposerTextInputViewType
+    
+    associatedtype ComposerInputTrailingViewType: View
+    func makeComposerInputTrailingView(options: ComposerInputTrailingViewOptions) -> ComposerInputTrailingViewType
 
     associatedtype TrailingComposerViewType: View
     /// Creates the trailing composer view.
@@ -402,10 +371,6 @@ import SwiftUI
     /// Creates a view shown when a recording tip is displayed.
     /// - Returns: view shown in the recording tip slot.
     func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> ComposerRecordingTipViewType
-
-    associatedtype ComposerViewModifier: ViewModifier
-    /// Creates the composer view modifier, that's applied to the whole composer view.
-    func makeComposerViewModifier(options: ComposerViewModifierOptions) -> ComposerViewModifier
 
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.
@@ -453,11 +418,6 @@ import SwiftUI
     /// Creates the assets access permission view.
     func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> AssetsAccessPermissionViewType
 
-    /// Returns the supported  message actions.
-    /// - Parameter options: the options for getting supported message actions.
-    /// - Returns: list of `MessageAction` items.
-    func supportedMessageActions(options: SupportedMessageActionsOptions) -> [MessageAction]
-
     associatedtype SendInChannelViewType: View
     /// Creates the view that allows thread messages to be sent in a channel.
     /// - Parameter options: the options for creating the send in channel view.
@@ -501,6 +461,11 @@ import SwiftUI
 
     associatedtype ReactionsContentView: View
     func makeReactionsContentView(options: ReactionsContentViewOptions) -> ReactionsContentView
+    
+    associatedtype MoreReactionsViewType: View
+    /// Creates the more reactions view.
+    /// - Parameter options: The options for creating the more reactions view.
+    func makeMoreReactionsView(options: MoreReactionsViewOptions) -> MoreReactionsViewType
 
     associatedtype QuotedMessageHeaderViewType: View
     /// Creates the quoted message header view in the composer.

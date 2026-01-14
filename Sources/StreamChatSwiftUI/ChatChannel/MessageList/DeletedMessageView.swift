@@ -43,7 +43,7 @@ public struct DeletedMessageView: View {
                     }
 
                     if deletedMessageVisibility == .visibleForCurrentUser {
-                        Image(uiImage: images.eye)
+                        Image(uiImage: images.onlyVisibleToCurrentUser)
                             .customizable()
                             .frame(maxWidth: 12)
                             .accessibilityIdentifier("onlyVisibleToYouImageView")

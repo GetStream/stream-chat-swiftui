@@ -23,7 +23,7 @@ struct SearchBar: View, KeyboardReadable {
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .overlay(
                     HStack {
-                        Image(uiImage: images.searchIcon)
+                        Image(uiImage: images.emptySearch)
                             .customizable()
                             .foregroundColor(Color(colors.textLowEmphasis))
                             .frame(maxHeight: 18)
@@ -35,7 +35,7 @@ struct SearchBar: View, KeyboardReadable {
                             Button(action: {
                                 text = ""
                             }) {
-                                Image(uiImage: images.searchCloseIcon)
+                                Image(uiImage: images.searchClose)
                                     .customizable()
                                     .frame(width: 18, height: 18)
                                     .foregroundColor(Color(colors.textLowEmphasis))
@@ -56,7 +56,7 @@ struct SearchBar: View, KeyboardReadable {
                     resignFirstResponder()
                 }) {
                     Text(L10n.Message.Search.cancel)
-                        .foregroundColor(colors.tintColor)
+                        .foregroundColor(Color(colors.accentPrimary))
                 }
                 .frame(height: 20)
                 .padding(.trailing, 8)

@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
@@ -15,15 +16,16 @@ import StreamChat
     /// Date formatter where the format depends on the time passed.
     ///
     /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
-    public var messageRelativeDateFormatter: DateFormatter
-    public var galleryHeaderViewDateFormatter: DateFormatter
+    public var messageTimestampFormatter: MessageTimestampFormatter
+    public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
+    public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
     public var videoPreviewLoader: VideoPreviewLoader
     public var imageLoader: ImageLoading
     public var imageCDN: ImageCDN
     public var imageProcessor: ImageProcessor
     public var imageMerger: ImageMerging
     public var fileCDN: FileCDN
-    public var channelNamer: ChatChannelNamer
+    public var channelNameFormatter: ChannelNameFormatter
     public var chatUserNamer: ChatUserNamer
     public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
@@ -74,13 +76,14 @@ import StreamChat
     
     var _audioPlayer: AudioPlaying?
     var _audioRecorder: AudioRecording?
-    var pollsDateFormatter = PollsDateFormatter()
+    var pollsDateFormatter: PollTimestampFormatter = DefaultPollTimestampFormatter()
 
     public init(
         markdownFormatter: MarkdownFormatter = DefaultMarkdownFormatter(),
         dateFormatter: DateFormatter = .makeDefault(),
-        messageRelativeDateFormatter: DateFormatter = MessageRelativeDateFormatter(),
-        galleryHeaderViewDateFormatter: DateFormatter = GalleryHeaderViewDateFormatter(),
+        messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
+        galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
+        messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
         videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
         imageLoader: ImageLoading = NukeImageLoader(),
         imageCDN: ImageCDN = StreamImageCDN(),
@@ -96,7 +99,7 @@ import StreamChat
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         pollsConfig: PollsConfig = PollsConfig(),
-        channelNamer: @escaping ChatChannelNamer = DefaultChatChannelNamer(),
+        channelNameFormatter: ChannelNameFormatter = DefaultChannelNameFormatter(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
@@ -108,15 +111,16 @@ import StreamChat
     ) {
         self.markdownFormatter = markdownFormatter
         self.dateFormatter = dateFormatter
-        self.messageRelativeDateFormatter = messageRelativeDateFormatter
+        self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
+        self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
         self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
         self.imageCDN = imageCDN
         self.imageProcessor = imageProcessor
         self.imageMerger = imageMerger
         self.fileCDN = fileCDN
-        self.channelNamer = channelNamer
+        self.channelNameFormatter = channelNameFormatter
         self.chatUserNamer = chatUserNamer
         self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver

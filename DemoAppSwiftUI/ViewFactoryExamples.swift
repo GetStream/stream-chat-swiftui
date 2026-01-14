@@ -14,6 +14,8 @@ class DemoAppFactory: ViewFactory {
     private var mentionsHandler = MentionsHandler()
 
     public static let shared = DemoAppFactory()
+    
+    public var styles = RegularStyles()
 
     func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: options.title)
@@ -27,10 +29,7 @@ class DemoAppFactory: ViewFactory {
         let onError = options.onError
         
         var actions = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: onDismiss,
-            onError: onError
+            for: .init(channel: channel, onDismiss: onDismiss, onError: onError)
         )
         let archiveChannel = archiveChannelAction(for: channel, onDismiss: onDismiss, onError: onError)
         actions.insert(archiveChannel, at: actions.count - 2)
@@ -162,7 +161,7 @@ struct ShowProfileModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .modifier(
-                DefaultViewFactory.shared.makeMessageViewModifier(for: messageModifierInfo)
+                DefaultViewFactory.shared.styles.makeMessageViewModifier(for: messageModifierInfo)
             )
             .modifier(
                 ProfileURLModifier(
@@ -230,6 +229,8 @@ struct CustomChannelDestination: View {
 class CustomFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 
+    public var styles = LiquidGlassStyles()
+    
     private init() {}
 
     public static let shared = CustomFactory()
@@ -266,10 +267,7 @@ class CustomFactory: ViewFactory {
         let onError = options.onError
         
         var defaultActions = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: onDismiss,
-            onError: onError
+            for: .init(channel: channel, onDismiss: onDismiss, onError: onError)
         )
         let freeze: @MainActor () -> Void = {
             let controller = self.chatClient.channelController(for: channel.cid)

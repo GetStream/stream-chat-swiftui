@@ -4,7 +4,7 @@
 
 import Foundation
 
-public enum RecordingState: Equatable {
+public enum RecordingState: Equatable, Sendable {
     case initial
     case showingTip
     case recording(CGPoint)

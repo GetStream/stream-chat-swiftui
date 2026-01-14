@@ -25,7 +25,7 @@ import UIKit
     lazy var imageLoader = utils.imageLoader
     lazy var imageCDN = utils.imageCDN
     lazy var channelAvatarsMerger = utils.channelAvatarsMerger
-    lazy var channelNamer = utils.channelNamer
+    lazy var channelNameFormatter = utils.channelNameFormatter
 
     /// Placeholder images.
     lazy var placeholder1 = images.userAvatarPlaceholder1

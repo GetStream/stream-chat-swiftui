@@ -61,7 +61,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
             .padding(.all, 4)
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst
@@ -211,7 +211,7 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         Button(action: { downloadAttachment() }) {
             Image(uiImage: images.download)
                 .renderingMode(.template)
-                .foregroundColor(colors.tintColor)
+                .foregroundColor(Color(colors.accentPrimary))
                 .frame(width: 24, height: 24)
         }
         .accessibilityLabel("Download")
@@ -221,7 +221,7 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         Button(action: { shareSheetShown = true }) {
             Image(uiImage: images.share)
                 .renderingMode(.template)
-                .foregroundColor(colors.tintColor)
+                .foregroundColor(Color(colors.accentPrimary))
                 .frame(width: 24, height: 24)
         }
         .accessibilityLabel("Share")

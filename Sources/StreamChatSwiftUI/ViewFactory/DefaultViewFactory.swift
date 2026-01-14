@@ -28,24 +28,13 @@ extension ViewFactory {
         DefaultChannelListHeaderModifier(title: options.title)
     }
     
-    public func supportedMoreChannelActions(
-        options: SupportedMoreChannelActionsOptions
-    ) -> [ChannelAction] {
-        ChannelAction.defaultActions(
-            for: options.channel,
-            chatClient: chatClient,
-            onDismiss: options.onDismiss,
-            onError: options.onError
-        )
-    }
-    
     public func makeMoreChannelActionsView(
         options: MoreChannelActionsViewOptions
     ) -> some View {
         MoreChannelActionsView(
             channel: options.channel,
-            channelActions: supportedMoreChannelActions(
-                options: SupportedMoreChannelActionsOptions(
+            channelActions: InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
+                SupportedMoreChannelActionsOptions(
                     channel: options.channel,
                     onDismiss: options.onDismiss,
                     onError: options.onError
@@ -96,7 +85,7 @@ extension ViewFactory {
     }
     
     public func makeChannelListBackground(options: ChannelListBackgroundOptions) -> some View {
-        Color(options.colors.background)
+        Color(InjectedValues[\.colors].background)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -177,14 +166,6 @@ extension ViewFactory {
         )
     }
     
-    public func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
-    public func makeChannelListModifier(options: ChannelListModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
     // MARK: messages
     
     public func makeChannelDestination(options: ChannelDestinationOptions) -> @MainActor (ChannelSelectionInfo) -> ChatChannelView<Self> {
@@ -218,32 +199,10 @@ extension ViewFactory {
         }
     }
 
-    public func makeMessageListModifier(options: MessageListModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
-    public func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
-    public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
-        MessageBubbleModifier(
-            message: messageModifierInfo.message,
-            isFirst: messageModifierInfo.isFirst,
-            injectedBackgroundColor: messageModifierInfo.injectedBackgroundColor,
-            cornerRadius: messageModifierInfo.cornerRadius,
-            forceLeftToRight: messageModifierInfo.forceLeftToRight
-        )
-    }
-
-    public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
-        BouncedMessageActionsModifier(viewModel: viewModel)
-    }
-
     public func makeEmptyMessagesView(
         options: EmptyMessagesViewOptions
     ) -> some View {
-        Color(options.colors.background)
+        Color(InjectedValues[\.colors].background)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityIdentifier("EmptyMessagesView")
     }
@@ -279,7 +238,7 @@ extension ViewFactory {
     public func makeMessageListBackground(
         options: MessageListBackgroundOptions
     ) -> some View {
-        Color(options.colors.background)
+        Color(InjectedValues[\.colors].background)
     }
     
     public func makeMessageContainerView(
@@ -536,11 +495,11 @@ extension ViewFactory {
     public func makeLeadingComposerView(
         options: LeadingComposerViewOptions
     ) -> some View {
-        AttachmentPickerTypeView(
+        LeadingComposerView(
+            factory: self,
             pickerTypeState: options.state,
             channelConfig: options.channelConfig
         )
-        .padding(.bottom, 8)
     }
     
     @ViewBuilder
@@ -551,34 +510,52 @@ extension ViewFactory {
             ScrollView {
                 ComposerInputView(
                     factory: self,
+                    channelController: options.channelController,
                     text: options.text,
                     selectedRangeLocation: options.selectedRangeLocation,
                     command: options.command,
+                    recordingState: options.recordingState,
                     addedAssets: options.addedAssets,
                     addedFileURLs: options.addedFileURLs,
                     addedCustomAttachments: options.addedCustomAttachments,
+                    addedVoiceRecordings: options.addedVoiceRecordings,
                     quotedMessage: options.quotedMessage,
                     maxMessageLength: options.maxMessageLength,
                     cooldownDuration: options.cooldownDuration,
+                    sendButtonEnabled: options.sendButtonEnabled,
+                    isSendMessageEnabled: options.isSendMessageEnabled,
                     onCustomAttachmentTap: options.onCustomAttachmentTap,
-                    removeAttachmentWithId: options.removeAttachmentWithId
+                    removeAttachmentWithId: options.removeAttachmentWithId,
+                    sendMessage: options.sendMessage,
+                    onImagePasted: options.onImagePasted,
+                    startRecording: options.startRecording,
+                    stopRecording: options.stopRecording
                 )
             }
             .frame(height: 240)
         } else {
             ComposerInputView(
                 factory: self,
+                channelController: options.channelController,
                 text: options.text,
                 selectedRangeLocation: options.selectedRangeLocation,
                 command: options.command,
+                recordingState: options.recordingState,
                 addedAssets: options.addedAssets,
                 addedFileURLs: options.addedFileURLs,
                 addedCustomAttachments: options.addedCustomAttachments,
+                addedVoiceRecordings: options.addedVoiceRecordings,
                 quotedMessage: options.quotedMessage,
                 maxMessageLength: options.maxMessageLength,
                 cooldownDuration: options.cooldownDuration,
+                sendButtonEnabled: options.sendButtonEnabled,
+                isSendMessageEnabled: options.isSendMessageEnabled,
                 onCustomAttachmentTap: options.onCustomAttachmentTap,
-                removeAttachmentWithId: options.removeAttachmentWithId
+                removeAttachmentWithId: options.removeAttachmentWithId,
+                sendMessage: options.sendMessage,
+                onImagePasted: options.onImagePasted,
+                startRecording: options.startRecording,
+                stopRecording: options.stopRecording
             )
         }
     }
@@ -593,14 +570,28 @@ extension ViewFactory {
             placeholder: options.placeholder,
             editable: options.editable,
             maxMessageLength: options.maxMessageLength,
-            currentHeight: options.currentHeight
+            currentHeight: options.currentHeight,
+            onImagePasted: options.onImagePasted
+        )
+    }
+    
+    public func makeComposerInputTrailingView(
+        options: ComposerInputTrailingViewOptions
+    ) -> some View {
+        TrailingInputComposerView(
+            text: options.$text,
+            recordingState: options.$recordingState,
+            sendButtonEnabled: options.sendButtonEnabled,
+            startRecording: options.startRecording,
+            stopRecording: options.stopRecording,
+            sendMessage: options.sendMessage
         )
     }
     
     public func makeTrailingComposerView(
         options: TrailingComposerViewOptions
     ) -> some View {
-        TrailingComposerView(onTap: options.onTap)
+        EmptyView()
     }
     
     public func makeComposerRecordingView(
@@ -620,11 +611,7 @@ extension ViewFactory {
     public func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> some View {
         RecordingTipView()
     }
-    
-    public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
-        EmptyViewModifier()
-    }
-    
+
     public func makeAttachmentPickerView(
         options: AttachmentPickerViewOptions
     ) -> some View {
@@ -643,7 +630,11 @@ extension ViewFactory {
             cameraImageAdded: options.cameraImageAdded,
             askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
             isDisplayed: options.isDisplayed,
-            height: options.height
+            height: options.height,
+            selectedAssetIds: options.selectedAssetIds,
+            channelController: options.channelController,
+            messageController: options.messageController,
+            canSendPoll: options.canSendPoll
         )
         .offset(y: options.isDisplayed ? 0 : options.popupHeight)
         .animation(.spring())
@@ -678,6 +669,7 @@ extension ViewFactory {
     ) -> some View {
         AttachmentSourcePickerView(
             selected: options.selected,
+            canSendPoll: options.canSendPoll,
             onTap: options.onPickerStateChange
         )
     }
@@ -689,7 +681,8 @@ extension ViewFactory {
             PhotoAttachmentPickerView(
                 assets: options.assets,
                 onImageTap: options.onAssetTap,
-                imageSelected: options.isAssetSelected
+                imageSelected: options.isAssetSelected,
+                selectedAssetIds: options.selectedAssetIds
             )
         }
     }
@@ -726,24 +719,11 @@ extension ViewFactory {
         )
     }
     
-    public func supportedMessageActions(
-        options: SupportedMessageActionsOptions
-    ) -> [MessageAction] {
-        MessageAction.defaultActions(
-            factory: self,
-            for: options.message,
-            channel: options.channel,
-            chatClient: chatClient,
-            onFinish: options.onFinish,
-            onError: options.onError
-        )
-    }
-    
     public func makeMessageActionsView(
         options: MessageActionsViewOptions
     ) -> some View {
-        let messageActions = supportedMessageActions(
-            options: SupportedMessageActionsOptions(
+        let messageActions = InjectedValues[\.utils].messageListConfig.supportedMessageActions(
+            SupportedMessageActionsOptions(
                 message: options.message,
                 channel: options.channel,
                 onFinish: options.onFinish,
@@ -804,7 +784,8 @@ extension ViewFactory {
         ReactionsOverlayContainer(
             message: options.message,
             contentRect: options.contentRect,
-            onReactionTap: options.onReactionTap
+            onReactionTap: options.onReactionTap,
+            onMoreReactionsTap: options.onMoreReactionsTap
         )
     }
     
@@ -814,6 +795,10 @@ extension ViewFactory {
         Image(uiImage: options.currentSnapshot)
             .overlay(Color.black.opacity(options.popInAnimationInProgress ? 0 : 0.1))
             .blur(radius: options.popInAnimationInProgress ? 0 : 4)
+    }
+    
+    public func makeMoreReactionsView(options: MoreReactionsViewOptions) -> some View {
+        MoreReactionsView(onEmojiTap: options.onEmojiTap)
     }
     
     public func makeQuotedMessageHeaderView(
@@ -998,6 +983,8 @@ extension ViewFactory {
 /// Default class conforming to `ViewFactory`, used throughout the SDK.
 public class DefaultViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
+    
+    public var styles = RegularStyles()
         
     private init() {
         // Private init.

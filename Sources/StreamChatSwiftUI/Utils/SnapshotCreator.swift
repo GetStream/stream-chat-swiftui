@@ -20,7 +20,7 @@ public class DefaultSnapshotCreator: SnapshotCreator {
 
     public func makeSnapshot(for view: AnyView) -> UIImage {
         guard let uiView: UIView = topVC()?.view else {
-            return images.snapshot
+            return images.imagePlaceholder
         }
         return makeSnapshot(from: uiView)
     }

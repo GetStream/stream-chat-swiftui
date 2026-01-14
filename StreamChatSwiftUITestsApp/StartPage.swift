@@ -81,6 +81,8 @@ class DemoAppFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 
     private init() {}
+    
+    public var styles = RegularStyles()
 
     public static let shared = DemoAppFactory()
 

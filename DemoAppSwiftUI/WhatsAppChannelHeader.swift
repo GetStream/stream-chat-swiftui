@@ -30,10 +30,6 @@ struct WhatsAppChannelHeader: ToolbarContent {
         chatClient.currentUserId ?? ""
     }
     
-    private var channelNamer: ChatChannelNamer {
-        utils.channelNamer
-    }
-    
     private var channelSubtitle: String {
         if channel.memberCount <= 2 {
             channel.onlineInfoText(currentUserId: currentUserId)
@@ -54,7 +50,7 @@ struct WhatsAppChannelHeader: ToolbarContent {
                     size: CGSize(width: 36, height: 36)
                 )
                 VStack(alignment: .leading) {
-                    Text(channelNamer(channel, currentUserId) ?? "")
+                    Text(name(for: channel))
                         .font(fonts.bodyBold)
                     Text(channelSubtitle)
                         .font(fonts.caption1)
@@ -76,5 +72,12 @@ struct WhatsAppChannelHeader: ToolbarContent {
                 })
             }
         }
+    }
+    
+    private func name(for channel: ChatChannel) -> String {
+        utils.channelNameFormatter.format(
+            channel: channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 }

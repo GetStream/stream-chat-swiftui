@@ -207,7 +207,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
                         .frame(width: glyphSize, height: glyphSize)
                         .foregroundColor(Color(colors.navigationBarGlyph))
                         .padding(.all, 8)
-                        .background(colors.navigationBarTintColor)
+                        .background(Color(colors.navigationBarTintColor))
                         .clipShape(Circle())
                 }
             }

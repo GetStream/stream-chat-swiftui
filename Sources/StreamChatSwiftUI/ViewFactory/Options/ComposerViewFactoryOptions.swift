@@ -53,57 +53,93 @@ public final class LeadingComposerViewOptions: Sendable {
 
 /// Options for creating the composer input view.
 public final class ComposerInputViewOptions: Sendable {
+    /// The channel controller.
+    public let channelController: ChatChannelController
     /// Binding to the text input.
     public let text: Binding<String>
     /// Binding to the selected range location.
     public let selectedRangeLocation: Binding<Int>
     /// Binding to the current command.
     public let command: Binding<ComposerCommand?>
+    /// Binding to the recording state.
+    public let recordingState: Binding<RecordingState>
     /// The added assets.
     public let addedAssets: [AddedAsset]
     /// The added file URLs.
     public let addedFileURLs: [URL]
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
+    /// The added voice recordings.
+    public let addedVoiceRecordings: [AddedVoiceRecording]
     /// Binding to the quoted message.
     public let quotedMessage: Binding<ChatMessage?>
     /// The maximum message length.
     public let maxMessageLength: Int?
     /// The cooldown duration in seconds.
     public let cooldownDuration: Int
+    /// Whether the send button is enabled.
+    public let sendButtonEnabled: Bool
+    /// Whether sending a message is enabled.
+    public let isSendMessageEnabled: Bool
     /// Callback when a custom attachment is tapped.
     public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     /// Whether the input should scroll.
     public let shouldScroll: Bool
     /// Callback to remove an attachment by ID.
     public let removeAttachmentWithId: @MainActor (String) -> Void
+    /// Sends a message.
+    public let sendMessage: @MainActor () -> Void
+    /// Called when an image is pasted.
+    public let onImagePasted: @MainActor (UIImage) -> Void
+    /// Start a recording.
+    public let startRecording: @MainActor () -> Void
+    /// Stop a recording.
+    public let stopRecording: @MainActor () -> Void
     
     public init(
+        channelController: ChatChannelController,
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
+        recordingState: Binding<RecordingState>,
         addedAssets: [AddedAsset],
         addedFileURLs: [URL],
         addedCustomAttachments: [CustomAttachment],
+        addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
+        sendButtonEnabled: Bool,
+        isSendMessageEnabled: Bool,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         shouldScroll: Bool,
-        removeAttachmentWithId: @escaping @MainActor (String) -> Void
+        removeAttachmentWithId: @escaping @MainActor (String) -> Void,
+        sendMessage: @escaping @MainActor () -> Void,
+        onImagePasted: @escaping @MainActor (UIImage) -> Void,
+        startRecording: @escaping @MainActor () -> Void,
+        stopRecording: @escaping @MainActor () -> Void
     ) {
+        self.channelController = channelController
         self.text = text
         self.selectedRangeLocation = selectedRangeLocation
         self.command = command
+        self.recordingState = recordingState
         self.addedAssets = addedAssets
         self.addedFileURLs = addedFileURLs
         self.addedCustomAttachments = addedCustomAttachments
+        self.addedVoiceRecordings = addedVoiceRecordings
         self.quotedMessage = quotedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
+        self.sendButtonEnabled = sendButtonEnabled
+        self.isSendMessageEnabled = isSendMessageEnabled
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.shouldScroll = shouldScroll
         self.removeAttachmentWithId = removeAttachmentWithId
+        self.sendMessage = sendMessage
+        self.onImagePasted = onImagePasted
+        self.startRecording = startRecording
+        self.stopRecording = stopRecording
     }
 }
 
@@ -123,6 +159,8 @@ public final class ComposerTextInputViewOptions: Sendable {
     public let maxMessageLength: Int?
     /// The current height of the input.
     public let currentHeight: CGFloat
+    /// Called when an image is pasted.
+    public let onImagePasted: @MainActor (UIImage) -> Void
     
     public init(
         text: Binding<String>,
@@ -131,7 +169,8 @@ public final class ComposerTextInputViewOptions: Sendable {
         placeholder: String,
         editable: Bool,
         maxMessageLength: Int?,
-        currentHeight: CGFloat
+        currentHeight: CGFloat,
+        onImagePasted: @escaping @MainActor (UIImage) -> Void
     ) {
         self.text = text
         self.height = height
@@ -140,6 +179,32 @@ public final class ComposerTextInputViewOptions: Sendable {
         self.editable = editable
         self.maxMessageLength = maxMessageLength
         self.currentHeight = currentHeight
+        self.onImagePasted = onImagePasted
+    }
+}
+
+public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
+    @Binding public var text: String
+    @Binding public var recordingState: RecordingState
+    public let sendButtonEnabled: Bool
+    public let startRecording: () -> Void
+    public let stopRecording: () -> Void
+    public let sendMessage: () -> Void
+
+    public init(
+        text: Binding<String>,
+        recordingState: Binding<RecordingState>,
+        sendButtonEnabled: Bool,
+        startRecording: @escaping () -> Void,
+        stopRecording: @escaping () -> Void,
+        sendMessage: @escaping () -> Void
+    ) {
+        _text = text
+        _recordingState = recordingState
+        self.sendButtonEnabled = sendButtonEnabled
+        self.startRecording = startRecording
+        self.stopRecording = stopRecording
+        self.sendMessage = sendMessage
     }
 }
 

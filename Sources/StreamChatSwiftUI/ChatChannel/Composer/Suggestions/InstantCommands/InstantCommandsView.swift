@@ -88,7 +88,7 @@ struct InstantCommandsHeader: View {
                 .renderingMode(.template)
                 .resizable()
                 .frame(width: 24, height: 24)
-                .foregroundColor(colors.tintColor)
+                .foregroundColor(Color(colors.accentPrimary))
                 .accessibilityIdentifier("InstantCommandsImage")
             Text(L10n.Composer.Suggestions.Commands.header)
                 .font(fonts.body)

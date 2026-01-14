@@ -97,7 +97,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             player.subscribe(handler)
         }
         .modifier(
-            factory.makeMessageViewModifier(
+            factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
                     isFirst: isFirst,
@@ -144,7 +144,7 @@ struct VoiceRecordingView: View {
             Button(action: {
                 handlePlayTap()
             }, label: {
-                Image(uiImage: isPlaying ? images.pauseFilled : images.playFilled)
+                Image(uiImage: isPlaying ? images.pauseFill : images.playFill)
                     .frame(width: 36, height: 36)
                     .foregroundColor(.primary)
                     .modifier(

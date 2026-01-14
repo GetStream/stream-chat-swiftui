@@ -16,7 +16,7 @@ import UIKit
     @Injected(\.images) private var images
 
     /// Private vars.
-    private lazy var channelNamer = utils.channelNamer
+    private lazy var channelNameFormatter = utils.channelNameFormatter
     private lazy var imageLoader = utils.imageLoader
     private lazy var imageCDN = utils.imageCDN
     private lazy var placeholder2 = images.userAvatarPlaceholder2
@@ -35,7 +35,7 @@ import UIKit
 
     /// Computed vars.
     public var chatName: String {
-        name(forChannel: channel)
+        name(for: channel)
     }
 
     public var subtitleText: String {
@@ -86,8 +86,11 @@ import UIKit
 
     // MARK: - private
 
-    private func name(forChannel channel: ChatChannel) -> String {
-        channelNamer(channel, chatClient.currentUserId) ?? ""
+    private func name(for channel: ChatChannel) -> String {
+        utils.channelNameFormatter.format(
+            channel: channel,
+            forCurrentUserId: chatClient.currentUserId
+        ) ?? ""
     }
 }
 

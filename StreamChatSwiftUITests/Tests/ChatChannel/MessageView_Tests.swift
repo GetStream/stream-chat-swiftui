@@ -4,6 +4,7 @@
 
 import SnapshotTesting
 @testable import StreamChat
+@testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 import StreamSwiftTestHelpers
 import SwiftUI
@@ -479,12 +480,12 @@ import XCTest
         
         // When
         adjustAppearance { appearance in
-            appearance.colors.messageCurrentUserBackground = [.orange]
-            appearance.colors.background8 = .yellow
-            appearance.colors.voiceMessageControlBackground = .cyan
-            appearance.colors.messageCurrentUserTextColor = .blue
-            appearance.colors.textLowEmphasis = .red
-            appearance.images.playFilled = UIImage(systemName: "star")!
+            appearance.colorPalette.messageCurrentUserBackground = [.orange]
+            appearance.colorPalette.background8 = .yellow
+            appearance.colorPalette.voiceMessageControlBackground = .cyan
+            appearance.colorPalette.messageCurrentUserTextColor = .blue
+            appearance.colorPalette.textLowEmphasis = .red
+            appearance.images.playFill = UIImage(systemName: "star")!
             appearance.images.fileAac = UIImage(systemName: "scribble")!
         }
         let view = MessageView(
@@ -577,13 +578,15 @@ import XCTest
     
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
-        var colorPalette = ColorPalette()
+        var colorPalette = Appearance.ColorPalette()
         colorPalette.messageLinkAttachmentAuthorColor = .orange
         colorPalette.messageLinkAttachmentTitleColor = .blue
         colorPalette.messageLinkAttachmentTextColor = .red
+        var appearance = Appearance()
+        appearance.colorPalette = colorPalette
         streamChat = StreamChat(
             chatClient: chatClient,
-            appearance: .init(colors: colorPalette)
+            appearance: appearance
         )
         
         // When

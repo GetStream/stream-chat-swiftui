@@ -37,8 +37,6 @@ import SwiftUI
     private var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
     private var currentUserSentNewMessage = false
-
-    private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
     
     private lazy var messagesDateFormatter = utils.dateFormatter
     private lazy var messageCachingUtils = utils.messageCachingUtils
@@ -762,7 +760,7 @@ import SwiftUI
             return
         }
         
-        let dateString = messageListDateOverlay.string(from: currentDate)
+        let dateString = utils.messageDateSeparatorFormatter.format(currentDate)
         if currentDateString != dateString {
             currentDateString = dateString
         }

@@ -81,17 +81,26 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
 
                 ComposerInputView(
                     factory: DefaultViewFactory.shared,
+                    channelController: viewModel.channelController,
                     text: $viewModel.text,
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
                     command: $viewModel.composerCommand,
+                    recordingState: $viewModel.recordingState,
                     addedAssets: viewModel.addedAssets,
                     addedFileURLs: viewModel.addedFileURLs,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
+                    addedVoiceRecordings: viewModel.addedVoiceRecordings,
                     quotedMessage: $quotedMessage,
                     maxMessageLength: channelConfig?.maxMessageLength,
                     cooldownDuration: viewModel.cooldownDuration,
+                    sendButtonEnabled: viewModel.sendButtonEnabled,
+                    isSendMessageEnabled: viewModel.sendButtonEnabled,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                    removeAttachmentWithId: viewModel.removeAttachment(with:)
+                    removeAttachmentWithId: viewModel.removeAttachment(with:),
+                    sendMessage: {},
+                    onImagePasted: viewModel.imagePasted,
+                    startRecording: viewModel.startRecording,
+                    stopRecording: viewModel.stopRecording
                 )
                 .overlay(
                     viewModel.sendButtonEnabled ? sendButton : nil
@@ -115,7 +124,11 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
-                    popupHeight: popupSize
+                    popupHeight: popupSize,
+                    selectedAssetIds: viewModel.addedAssets.map(\.id),
+                    channelController: viewModel.channelController,
+                    messageController: viewModel.messageController,
+                    canSendPoll: viewModel.canSendPoll
                 )
             )
         }
@@ -168,7 +181,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 .animation(.none, value: viewModel.showCommandsOverlay) : nil,
             alignment: .bottom
         )
-        .modifier(factory.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
             viewModel.text = editedMessage?.text ?? ""
             if editedMessage != nil {

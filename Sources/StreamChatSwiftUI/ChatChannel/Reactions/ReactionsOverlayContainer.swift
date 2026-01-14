@@ -13,15 +13,18 @@ struct ReactionsOverlayContainer: View {
     let message: ChatMessage
     let contentRect: CGRect
     var onReactionTap: (MessageReactionType) -> Void
+    var onMoreReactionsTap: () -> Void
 
     init(
         message: ChatMessage,
         contentRect: CGRect,
-        onReactionTap: @escaping (MessageReactionType) -> Void
+        onReactionTap: @escaping (MessageReactionType) -> Void,
+        onMoreReactionsTap: @escaping () -> Void
     ) {
         self.message = message
         self.contentRect = contentRect
         self.onReactionTap = onReactionTap
+        self.onMoreReactionsTap = onMoreReactionsTap
     }
 
     var body: some View {
@@ -31,7 +34,8 @@ struct ReactionsOverlayContainer: View {
                     message: message,
                     useLargeIcons: true,
                     reactions: reactions,
-                    onReactionTap: onReactionTap
+                    onReactionTap: onReactionTap,
+                    onMoreReactionsTap: onMoreReactionsTap
                 )
             }
 
@@ -90,6 +94,7 @@ public struct ReactionsAnimatableView: View {
     var useLargeIcons = false
     var reactions: [MessageReactionType]
     var onReactionTap: (MessageReactionType) -> Void
+    var onMoreReactionsTap: () -> Void
 
     @State var animationStates: [CGFloat]
 
@@ -97,12 +102,14 @@ public struct ReactionsAnimatableView: View {
         message: ChatMessage,
         useLargeIcons: Bool = false,
         reactions: [MessageReactionType],
-        onReactionTap: @escaping (MessageReactionType) -> Void
+        onReactionTap: @escaping (MessageReactionType) -> Void,
+        onMoreReactionsTap: @escaping () -> Void
     ) {
         self.message = message
         self.useLargeIcons = useLargeIcons
         self.reactions = reactions
         self.onReactionTap = onReactionTap
+        self.onMoreReactionsTap = onMoreReactionsTap
         _animationStates = State(
             initialValue: [CGFloat](repeating: 0, count: reactions.count)
         )
@@ -119,6 +126,17 @@ public struct ReactionsAnimatableView: View {
                     animationStates: $animationStates,
                     onReactionTap: onReactionTap
                 )
+            }
+            
+            Button {
+                onMoreReactionsTap()
+            } label: {
+                Image(systemName: "plus")
+                    .foregroundColor(.primary)
+                    .padding(.all, 6)
+                    .overlay(
+                        Circle().stroke(Color(colors.innerBorder), lineWidth: 1)
+                    )
             }
         }
         .padding(.all, 6)
@@ -188,7 +206,6 @@ public struct ReactionAnimatableView: View {
     }
 
     private func reactionSelectedBackgroundColor(for reaction: MessageReactionType) -> Color? {
-        var colors = colors
         guard let color = colors.selectedReactionBackgroundColor else {
             return nil
         }
@@ -214,15 +231,9 @@ public struct ReactionAnimatableView: View {
     }
 
     private func color(for reaction: MessageReactionType) -> Color? {
-        var colors = colors
         let containsUserReaction = userReactionIDs.contains(reaction)
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-
-        if let color {
-            return Color(color)
-        } else {
-            return nil
-        }
+        return Color(color)
     }
 
     private var userReactionIDs: Set<MessageReactionType> {

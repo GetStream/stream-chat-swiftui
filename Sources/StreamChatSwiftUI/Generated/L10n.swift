@@ -1,7 +1,7 @@
 // Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
 import Foundation
-
+import StreamChatCommonUI
 
 // MARK: - Strings
 
@@ -646,7 +646,7 @@ internal enum L10n {
 extension L10n {
 
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-     let format = StreamConcurrency.onMain { Appearance.localizationProvider(key, table) }
+     let format = StreamConcurrency.onMain { Appearance.default.localizationProvider(key, table) }
      return String(format: format, locale: Locale.current, arguments: args)
   }
 }

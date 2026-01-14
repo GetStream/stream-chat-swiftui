@@ -5,6 +5,7 @@
 import Combine
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.

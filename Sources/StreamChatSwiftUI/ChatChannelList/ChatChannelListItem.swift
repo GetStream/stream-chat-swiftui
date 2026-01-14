@@ -376,10 +376,8 @@ extension ChatChannel {
     @MainActor public var timestampText: String {
         if let lastMessageAt {
             let utils = InjectedValues[\.utils]
-            let formatter = utils.channelListConfig.messageRelativeDateFormatEnabled ?
-                utils.messageRelativeDateFormatter :
-                utils.dateFormatter
-            return formatter.string(from: lastMessageAt)
+            let formatter = utils.messageTimestampFormatter
+            return formatter.format(lastMessageAt)
         } else {
             return ""
         }

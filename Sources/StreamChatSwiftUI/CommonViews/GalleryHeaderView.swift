@@ -46,8 +46,8 @@ struct GalleryHeaderView: View {
     
     private var closeImageColor: Color {
         // Note that default design uses `text` color
-        guard colors.navigationBarTintColor != colors.tintColor else { return Color(colors.text) }
-        return colors.navigationBarTintColor
+        guard colors.navigationBarTintColor != colors.accentPrimary else { return Color(colors.text) }
+        return Color(colors.navigationBarTintColor)
     }
 }
 

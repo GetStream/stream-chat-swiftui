@@ -120,14 +120,14 @@ public struct MessageReadIndicatorView: View {
             if showReadCount && shouldShowReads {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
-                    .foregroundColor(colors.tintColor)
+                    .foregroundColor(Color(colors.accentPrimary))
                     .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: image
             )
             .customizable()
-            .foregroundColor(shouldShowReads ? colors.tintColor : Color(colors.textLowEmphasis))
+            .foregroundColor(shouldShowReads ? Color(colors.accentPrimary) : Color(colors.textLowEmphasis))
             .frame(height: 16)
             .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(
@@ -142,7 +142,7 @@ public struct MessageReadIndicatorView: View {
     }
     
     private var image: UIImage {
-        shouldShowReads || showDelivered ? images.readByAll : (isMessageSending ? images.messageReceiptSending : images.messageSent)
+        shouldShowReads || showDelivered ? images.messageDeliveryStatusRead : (isMessageSending ? images.messageDeliveryStatusSending : images.messageDeliveryStatusSent)
     }
 
     private var isMessageSending: Bool {

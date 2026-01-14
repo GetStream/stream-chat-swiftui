@@ -20,7 +20,7 @@ public struct DiscardButtonView: View {
                 .fill(Color.white)
                 .frame(width: 16, height: 16)
 
-            Image(uiImage: images.closeFilled)
+            Image(uiImage: images.closeFill)
                 .renderingMode(.template)
                 .foregroundColor(color)
         }

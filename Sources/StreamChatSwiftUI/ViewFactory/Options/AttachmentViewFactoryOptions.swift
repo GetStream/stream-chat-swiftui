@@ -365,6 +365,14 @@ public final class AttachmentPickerViewOptions: Sendable {
     public let height: CGFloat
     /// The popup height of the picker.
     public let popupHeight: CGFloat
+    /// Snapshot of the currently selected asset identifiers.
+    public let selectedAssetIds: [String]?
+    /// The channel controller.
+    public let channelController: ChatChannelController
+    /// An optional message controller.
+    public let messageController: ChatMessageController?
+    /// Whether a poll can be sent.
+    public let canSendPoll: Bool
     
     public init(
         attachmentPickerState: Binding<AttachmentPickerState>,
@@ -381,7 +389,11 @@ public final class AttachmentPickerViewOptions: Sendable {
         askForAssetsAccessPermissions: @escaping @MainActor () -> Void,
         isDisplayed: Bool,
         height: CGFloat,
-        popupHeight: CGFloat
+        popupHeight: CGFloat,
+        selectedAssetIds: [String]? = nil,
+        channelController: ChatChannelController,
+        messageController: ChatMessageController?,
+        canSendPoll: Bool
     ) {
         self.attachmentPickerState = attachmentPickerState
         self.filePickerShown = filePickerShown
@@ -398,6 +410,10 @@ public final class AttachmentPickerViewOptions: Sendable {
         self.isDisplayed = isDisplayed
         self.height = height
         self.popupHeight = popupHeight
+        self.selectedAssetIds = selectedAssetIds
+        self.channelController = channelController
+        self.messageController = messageController
+        self.canSendPoll = canSendPoll
     }
 }
 
@@ -405,11 +421,18 @@ public final class AttachmentPickerViewOptions: Sendable {
 public final class AttachmentSourcePickerViewOptions: Sendable {
     /// The currently selected picker state.
     public let selected: AttachmentPickerState
+    /// Whether sending polls is allowed.
+    public let canSendPoll: Bool
     /// Callback when the picker state changes.
     public let onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     
-    public init(selected: AttachmentPickerState, onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void) {
+    public init(
+        selected: AttachmentPickerState,
+        canSendPoll: Bool,
+        onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void
+    ) {
         self.selected = selected
+        self.canSendPoll = canSendPoll
         self.onPickerStateChange = onPickerStateChange
     }
 }
@@ -422,15 +445,19 @@ public final class PhotoAttachmentPickerViewOptions: Sendable {
     public let onAssetTap: @MainActor (AddedAsset) -> Void
     /// Function to check if an asset is selected.
     public let isAssetSelected: @MainActor (String) -> Bool
+    /// Snapshot of the currently selected asset identifiers.
+    public let selectedAssetIds: [String]?
     
     public init(
         assets: PHFetchResultCollection,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
-        isAssetSelected: @escaping @MainActor (String) -> Bool
+        isAssetSelected: @escaping @MainActor (String) -> Bool,
+        selectedAssetIds: [String]? = nil
     ) {
         self.assets = assets
         self.onAssetTap = onAssetTap
         self.isAssetSelected = isAssetSelected
+        self.selectedAssetIds = selectedAssetIds
     }
 }
 

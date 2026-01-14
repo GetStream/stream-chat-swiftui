@@ -71,7 +71,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         let utils = Utils(
             channelListConfig: ChannelListConfig(
-                messageRelativeDateFormatEnabled: true,
                 channelItemMutedStyle: .afterChannelName
             ),
             messageListConfig: MessageListConfig(

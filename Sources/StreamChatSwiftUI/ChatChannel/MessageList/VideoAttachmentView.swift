@@ -32,7 +32,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                     )
                 }
                 .modifier(
-                    factory.makeMessageViewModifier(
+                    factory.styles.makeMessageViewModifier(
                         for: MessageModifierInfo(
                             message: message,
                             isFirst: false
@@ -54,7 +54,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
         }
         .if(!message.text.isEmpty, transform: { view in
             view.modifier(
-                factory.makeMessageViewModifier(
+                factory.styles.makeMessageViewModifier(
                     for: MessageModifierInfo(
                         message: message,
                         isFirst: true,
@@ -224,7 +224,7 @@ struct VideoPlayIcon: View {
     var width: CGFloat = 24
     
     var body: some View {
-        Image(uiImage: images.playFilled)
+        Image(uiImage: images.playFill)
             .customizable()
             .frame(width: width)
             .foregroundColor(.white)

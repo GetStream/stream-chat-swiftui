@@ -38,17 +38,6 @@ import XCTest
         XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_navigationBarDisplayMode() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let displayMode = viewFactory.navigationBarDisplayMode()
-
-        // Then
-        XCTAssert(displayMode == .inline)
-    }
-
     func test_viewFactory_makeChannelListHeaderViewModifier() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -58,30 +47,6 @@ import XCTest
 
         // Then
         XCTAssert(viewModifier is DefaultChannelListHeaderModifier)
-    }
-
-    func test_viewFactory_supportedMoreChannelActions() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let channel: ChatChannel = .mockDMChannel()
-        let expected = ChannelAction.defaultActions(
-            for: channel,
-            chatClient: chatClient,
-            onDismiss: {},
-            onError: { _ in }
-        )
-
-        // When
-        let actions = viewFactory.supportedMoreChannelActions(
-            options: SupportedMoreChannelActionsOptions(
-                channel: channel,
-                onDismiss: {},
-                onError: { _ in }
-            )
-        )
-
-        // Then
-        XCTAssert(actions == expected)
     }
 
     func test_viewFactory_makeMoreChannelActionsView() {
@@ -405,32 +370,6 @@ import XCTest
         XCTAssert(view is AssetsAccessPermissionView)
     }
 
-    func test_viewFactory_supportedMessageActions() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let expected = MessageAction.defaultActions(
-            factory: DefaultViewFactory.shared,
-            for: message,
-            channel: .mockDMChannel(),
-            chatClient: chatClient,
-            onFinish: { _ in },
-            onError: { _ in }
-        )
-
-        // When
-        let actions = viewFactory.supportedMessageActions(
-            options: SupportedMessageActionsOptions(
-                message: message,
-                channel: .mockDMChannel(),
-                onFinish: { _ in },
-                onError: { _ in }
-            )
-        )
-
-        // Then
-        XCTAssert(actions == expected)
-    }
-
     func test_viewFactory_makeMessageActionsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -689,7 +628,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeChannelListModifier(options: ChannelListModifierOptions())
+        let modifier = viewFactory.styles.makeChannelListModifier(options: ChannelListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -700,7 +639,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageListModifier(options: MessageListModifierOptions())
+        let modifier = viewFactory.styles.makeMessageListModifier(options: MessageListModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -711,7 +650,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageViewModifier(
+        let modifier = viewFactory.styles.makeMessageViewModifier(
             for: MessageModifierInfo(
                 message: message,
                 isFirst: false
@@ -727,7 +666,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeComposerViewModifier(options: ComposerViewModifierOptions())
+        let modifier = viewFactory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)
@@ -760,7 +699,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let viewModifier = viewFactory.makeChannelListContentModifier(options: ChannelListContentModifierOptions())
+        let viewModifier = viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions())
 
         // Then
         XCTAssert(viewModifier is EmptyViewModifier)
@@ -865,7 +804,8 @@ import XCTest
             options: ReactionsContentViewOptions(
                 message: .mock(),
                 contentRect: .zero,
-                onReactionTap: { _ in }
+                onReactionTap: { _ in },
+                onMoreReactionsTap: {}
             )
         )
 
@@ -902,7 +842,8 @@ import XCTest
                 placeholder: "Send a message",
                 editable: true,
                 maxMessageLength: nil,
-                currentHeight: 40
+                currentHeight: 40,
+                onImagePasted: { _ in }
             )
         )
         
@@ -915,7 +856,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let modifier = viewFactory.makeMessageListContainerModifier(options: MessageListContainerModifierOptions())
+        let modifier = viewFactory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions())
 
         // Then
         XCTAssert(modifier is EmptyViewModifier)

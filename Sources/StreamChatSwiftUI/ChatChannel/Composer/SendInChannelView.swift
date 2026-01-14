@@ -19,7 +19,7 @@ struct SendInChannelView: View {
                 sendInChannel.toggle()
             } label: {
                 Image(systemName: sendInChannel ? "checkmark.square.fill" : "square")
-                    .foregroundColor(sendInChannel ? colors.tintColor : Color(colors.background7))
+                    .foregroundColor(sendInChannel ? Color(colors.accentPrimary) : Color(colors.background7))
             }
 
             Text(isDirectMessage ? L10n.Composer.Checkmark.directMessageReply : L10n.Composer.Checkmark.channelReply)
