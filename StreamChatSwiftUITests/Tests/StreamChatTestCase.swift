@@ -30,7 +30,11 @@ import XCTest
         Appearance.bundle = Bundle(for: type(of: self))
         streamChat = StreamChat(
             chatClient: chatClient,
-            utils: Utils(videoPreviewLoader: VideoPreviewLoader_Mock(), imageLoader: ImageLoader_Mock())
+            utils: Utils(
+                videoPreviewLoader: VideoPreviewLoader_Mock(),
+                imageLoader: ImageLoader_Mock(),
+                composerConfig: .init(isVoiceRecordingEnabled: true)
+            )
         )
     }
     
