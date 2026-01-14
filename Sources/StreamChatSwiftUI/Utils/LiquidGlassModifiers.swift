@@ -33,9 +33,13 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     }
     
     public func body(content: Content) -> some View {
+        #if swift(>=6.2)
         content
             .modifier(BorderModifier(shape: shape))
             .glassEffect(.regular, in: shape)
+        #else
+        content
+        #endif
     }
 }
 
