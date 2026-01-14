@@ -11,11 +11,6 @@ final class UserRobot: Robot {
     let composer = MessageListPage.Composer.self
     let contextMenu = MessageListPage.ContextMenu.self
     let debugAlert = MessageListPage.Alert.Debug.self
-    private var server: StreamMockServer
-
-    init(_ server: StreamMockServer) {
-        self.server = server
-    }
 
     @discardableResult
     func login() -> Self {
