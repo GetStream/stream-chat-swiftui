@@ -3863,7 +3863,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = v5;
+				branch = "scale-fonts";
 				kind = branch;
 			};
 		};
