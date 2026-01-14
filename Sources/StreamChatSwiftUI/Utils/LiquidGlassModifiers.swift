@@ -24,6 +24,7 @@ struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
 }
 
 // TODO: fallback
+@available(iOS 26.0, *)
 public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     var shape: BackgroundShape
     
@@ -32,13 +33,9 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     }
     
     public func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .modifier(BorderModifier(shape: shape))
-                .glassEffect(.regular, in: shape)
-        } else {
-            content
-        }
+        content
+            .modifier(BorderModifier(shape: shape))
+            .glassEffect(.regular, in: shape)
     }
 }
 
