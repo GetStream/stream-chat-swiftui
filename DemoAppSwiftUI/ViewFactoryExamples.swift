@@ -226,7 +226,6 @@ struct CustomChannelDestination: View {
     }
 }
 
-@available(iOS 26, *)
 class CustomFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
 

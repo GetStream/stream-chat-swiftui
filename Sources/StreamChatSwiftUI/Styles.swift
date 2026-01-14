@@ -84,7 +84,6 @@ extension Styles {
     }
 }
 
-@available(iOS 26.0, *)
 public class LiquidGlassStyles: Styles {
     public var composerPlacement: ComposerPlacement = .floating
     

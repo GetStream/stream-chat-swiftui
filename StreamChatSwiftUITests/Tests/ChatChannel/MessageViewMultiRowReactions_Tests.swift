@@ -32,7 +32,6 @@ import XCTest
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    @available(iOS 26, *)
     func test_messageViewMultiRowReactions_snapshot() {
         // Given
         let viewFactory = TestViewFactory.shared
@@ -65,7 +64,6 @@ import XCTest
     }
 }
 
-@available(iOS 26, *)
 class TestViewFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient
     var styles = LiquidGlassStyles()
