@@ -24,6 +24,7 @@ extension ContactAttachmentPayload: Identifiable {
     }
 }
 
+@available(iOS 26, *)
 class CustomAttachmentsFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
     

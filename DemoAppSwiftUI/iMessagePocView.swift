@@ -6,6 +6,7 @@ import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
 
+@available(iOS 26, *)
 struct iMessagePocView: View {
     @Injected(\.colors) var colors
 
@@ -115,6 +116,7 @@ class iMessageChatChannelListViewModel: ChatChannelListViewModel {
     }
 }
 
+@available(iOS 26, *)
 class iMessageViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
     @Injected(\.colors) var colors
