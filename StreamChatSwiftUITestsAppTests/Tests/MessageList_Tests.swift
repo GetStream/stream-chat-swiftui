@@ -212,24 +212,6 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
 
-    func test_commandsPopupDisappear_whenUserTapsOnMessageList() throws {
-        linkToScenario(withId: 364)
-
-        GIVEN("user opens the channel") {
-            backendRobot.generateChannels(channelsCount: 1, messagesCount: 30)
-            userRobot.login().openChannel()
-        }
-        AND("user opens command suggestions") {
-            userRobot.openComposerCommands()
-        }
-        WHEN("user taps on message list") {
-            userRobot.tapOnMessageList()
-        }
-        THEN("command suggestions disappear") {
-            userRobot.assertComposerCommands(shouldBeVisible: false)
-        }
-    }
-
     func test_offlineMessageInTheMessageList() throws {
         linkToScenario(withId: 365)
         

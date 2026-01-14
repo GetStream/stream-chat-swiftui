@@ -116,18 +116,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     options: TrailingComposerViewOptions(
                         enabled: viewModel.sendButtonEnabled,
                         cooldownDuration: viewModel.cooldownDuration,
-                        onTap: {
-                            // Calling onMessageSent() before erasing the edited and quoted message
-                            // so that onMessageSent can use them for state handling.
-                            onMessageSent()
-                            viewModel.sendMessage(
-                                quotedMessage: quotedMessage,
-                                editedMessage: editedMessage
-                            ) {
-                                quotedMessage = nil
-                                editedMessage = nil
-                            }
-                        }
+                        onTap: sendMessage
                     )
                 )
                 .environmentObject(viewModel)
@@ -495,7 +484,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     options: .init(
                         text: $text,
                         recordingState: $recordingState,
-                        sendButtonEnabled: sendButtonEnabled,
+                        sendMessageButtonState: sendMessageButtonState,
                         startRecording: startRecording,
                         stopRecording: stopRecording,
                         sendMessage: sendMessage
@@ -517,6 +506,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }
+    }
+
+    private var sendMessageButtonState: SendMessageButtonState {
+        if isInCooldown {
+            return .slowMode(cooldownDuration)
+        }
+
+        if text.isEmpty && utils.composerConfig.isVoiceRecordingEnabled {
+            return .audio
+        }
+
+        return .regular(isSendMessageEnabled)
     }
 
     private var composerInputBackground: Color {
