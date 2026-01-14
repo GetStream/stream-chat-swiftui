@@ -105,7 +105,8 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    @available(iOS 26, *)
     func test_channelListView_channelAvatarUpdated() {
         // Given
         let controller = makeChannelListController()
@@ -152,10 +153,24 @@ import XCTest
     }
 }
 
+@available(iOS 26, *)
 class ChannelAvatarViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
     var styles = LiquidGlassStyles()
     
+    func makeChannelAvatarView(
+        options: ChannelAvatarViewFactoryOptions
+    ) -> some View {
+        Circle()
+            .fill(.red)
+            .frame(width: options.options.size.width, height: options.options.size.height)
+    }
+}
+
+class ChannelAvatarViewRegularFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+    var styles = RegularStyles()
+
     func makeChannelAvatarView(
         options: ChannelAvatarViewFactoryOptions
     ) -> some View {

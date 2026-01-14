@@ -29,6 +29,7 @@ import XCTest
         DelayedRenderingViewModifier.isEnabled = true
     }
 
+    @available(iOS 26, *)
     func test_messageListView_headerOnTop() {
         // Given
         let controller = ChatChannelController_Mock.mock(
@@ -69,6 +70,7 @@ import XCTest
     }
 }
 
+@available(iOS 26, *)
 class CustomHeaderViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
     var styles = LiquidGlassStyles()

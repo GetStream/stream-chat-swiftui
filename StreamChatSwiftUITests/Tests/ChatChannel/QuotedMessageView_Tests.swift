@@ -214,7 +214,8 @@ import XCTest
         // Then - Default attachment size should be applied
         XCTAssertEqual(view.attachmentSize, CGSize(width: 36, height: 36))
     }
-    
+
+    @available(iOS 26, *)
     func test_quotedMessageView_customContentView_snapshot() {
         // Given - Create a custom football game result attachment
         let footballGamePayload = FootballGameAttachmentPayload(
@@ -264,6 +265,7 @@ private struct FootballGameAttachmentPayload: AttachmentPayload {
     static let type: AttachmentType = .init(rawValue: "football_game")
 }
 
+@available(iOS 26, *)
 private class CustomQuotedContentViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient
     var styles = LiquidGlassStyles()
