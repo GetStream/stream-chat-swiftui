@@ -101,8 +101,7 @@ lane :publish_release do |options|
     skip_git_status_check: false,
     version: release_version,
     sdk_names: sdk_names,
-    github_repo: github_repo,
-    upload_assets: ['Products/StreamChatSwiftUI.zip']
+    github_repo: github_repo
   )
 
   update_spm(version: release_version)
