@@ -32,6 +32,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     }
     
     public func body(content: Content) -> some View {
+        #if swift(>=6.2)
         if #available(iOS 26.0, *) {
             content
                 .modifier(BorderModifier(shape: shape))
@@ -39,6 +40,9 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
         } else {
             content
         }
+        #else
+        content
+        #endif
     }
 }
 

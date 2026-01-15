@@ -4,25 +4,34 @@
 
 import SwiftUI
 
+public enum SendMessageButtonState {
+    case regular(Bool)
+    case audio
+    case slowMode(Int)
+}
+
 struct TrailingInputComposerView: View {
     @Binding var text: String
     @Binding var recordingState: RecordingState
-    var sendButtonEnabled: Bool
+    var sendMessageButtonState: SendMessageButtonState
     var startRecording: () -> Void
     var stopRecording: () -> Void
     var sendMessage: () -> Void
     
     var body: some View {
-        if !sendButtonEnabled {
+        switch sendMessageButtonState {
+        case .regular(let isEnabled):
+            SendMessageButton(enabled: isEnabled) {
+                sendMessage()
+            }
+        case .audio:
             VoiceRecordingButton(
                 recordingState: $recordingState,
                 startRecording: startRecording,
                 stopRecording: stopRecording
             )
-        } else {
-            SendMessageButton(enabled: sendButtonEnabled) {
-                sendMessage()
-            }
+        case .slowMode(let cooldown):
+            SlowModeView(cooldownDuration: cooldown)
         }
     }
 }

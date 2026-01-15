@@ -3,7 +3,6 @@
 //
 
 import Foundation
-@testable import StreamChatSwiftUI
 import XCTest
 
 let channelAttributes = ChannelListPage.Attributes.self
@@ -884,7 +883,7 @@ extension UserRobot {
         )
         
         XCTAssertEqual(
-            MessageListPage.Composer.placeholder.text == L10n.Composer.Placeholder.slowMode,
+            MessageListPage.Composer.placeholder.text == "Slow mode ON",
             shouldBeVisible,
             file: file,
             line: line

@@ -31,7 +31,7 @@ import XCTest
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
-    
+
     func test_messageViewMultiRowReactions_snapshot() {
         // Given
         let viewFactory = TestViewFactory.shared

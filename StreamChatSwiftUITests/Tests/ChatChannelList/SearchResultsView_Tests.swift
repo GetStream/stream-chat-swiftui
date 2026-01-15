@@ -141,7 +141,7 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_searchResultsView_channelAvatarUpdated() {
         // Given
         let channel1 = ChatChannel.mock(cid: .unique, name: "Test 1")

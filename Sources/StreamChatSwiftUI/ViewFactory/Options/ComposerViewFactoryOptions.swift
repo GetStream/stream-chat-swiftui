@@ -186,7 +186,7 @@ public final class ComposerTextInputViewOptions: Sendable {
 public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     @Binding public var text: String
     @Binding public var recordingState: RecordingState
-    public let sendButtonEnabled: Bool
+    public let sendMessageButtonState: SendMessageButtonState
     public let startRecording: () -> Void
     public let stopRecording: () -> Void
     public let sendMessage: () -> Void
@@ -194,14 +194,14 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     public init(
         text: Binding<String>,
         recordingState: Binding<RecordingState>,
-        sendButtonEnabled: Bool,
+        sendMessageButtonState: SendMessageButtonState,
         startRecording: @escaping () -> Void,
         stopRecording: @escaping () -> Void,
         sendMessage: @escaping () -> Void
     ) {
         _text = text
         _recordingState = recordingState
-        self.sendButtonEnabled = sendButtonEnabled
+        self.sendMessageButtonState = sendMessageButtonState
         self.startRecording = startRecording
         self.stopRecording = stopRecording
         self.sendMessage = sendMessage

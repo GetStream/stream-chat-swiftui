@@ -25,7 +25,7 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_chatChannelHeaderModifier_channelAvatarUpdated() {
         // Given
         let channel = ChatChannel.mockDMChannel(name: "Test channel")

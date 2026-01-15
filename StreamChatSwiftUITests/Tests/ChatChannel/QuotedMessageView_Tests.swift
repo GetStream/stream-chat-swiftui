@@ -214,7 +214,7 @@ import XCTest
         // Then - Default attachment size should be applied
         XCTAssertEqual(view.attachmentSize, CGSize(width: 36, height: 36))
     }
-    
+
     func test_quotedMessageView_customContentView_snapshot() {
         // Given - Create a custom football game result attachment
         let footballGamePayload = FootballGameAttachmentPayload(
