@@ -32,6 +32,7 @@ public struct UserDisplayInfo: Sendable {
     public let id: String
     public let name: String
     public let imageURL: URL?
+    public let isOnline: Bool
     public let role: UserRole?
     public let size: CGSize?
     public let extraData: [String: RawJSON]
@@ -40,6 +41,7 @@ public struct UserDisplayInfo: Sendable {
         id: String,
         name: String,
         imageURL: URL?,
+        online: Bool,
         role: UserRole? = nil,
         size: CGSize? = nil,
         extraData: [String: RawJSON] = [:]
@@ -47,6 +49,7 @@ public struct UserDisplayInfo: Sendable {
         self.id = id
         self.name = name
         self.imageURL = imageURL
+        self.isOnline = online
         self.role = role
         self.size = size
         self.extraData = extraData
@@ -59,6 +62,7 @@ extension ChatMessage {
             id: author.id,
             name: author.name ?? author.id,
             imageURL: author.imageURL,
+            online: author.isOnline,
             role: author.userRole,
             extraData: author.extraData
         )

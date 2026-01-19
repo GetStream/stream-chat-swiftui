@@ -117,14 +117,18 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
 
     var body: some View {
         HStack {
-            factory.makeMessageAvatarView(
-                options: .init(userDisplayInfo: UserDisplayInfo(
-                    id: message.author.id,
-                    name: message.author.name ?? "",
-                    imageURL: message.author.imageURL,
-                    size: avatarSize,
-                    extraData: message.author.extraData
-                ))
+            factory.makeUserAvatarView(
+                options: .init(
+                    userDisplayInfo: UserDisplayInfo(
+                        id: message.author.id,
+                        name: message.author.name ?? "",
+                        imageURL: message.author.imageURL,
+                        online: message.author.isOnline,
+                        size: avatarSize,
+                        extraData: message.author.extraData
+                    ),
+                    size: .md
+                )
             )
 
             VStack(alignment: .leading, spacing: 4) {

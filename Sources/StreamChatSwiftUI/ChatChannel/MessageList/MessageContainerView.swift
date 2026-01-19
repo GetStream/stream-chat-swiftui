@@ -83,8 +83,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
                     if let userDisplayInfo = messageViewModel.userDisplayInfo {
-                        factory.makeMessageAvatarView(
-                            options: MessageAvatarViewOptions(userDisplayInfo: userDisplayInfo)
+                        factory.makeUserAvatarView(
+                            options: UserAvatarViewOptions(userDisplayInfo: userDisplayInfo, size: .md)
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)

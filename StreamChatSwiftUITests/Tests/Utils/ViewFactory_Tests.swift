@@ -101,7 +101,7 @@ import XCTest
         )
 
         // When
-        let view = viewFactory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: userInfo))
+        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo))
 
         // Then
         XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)

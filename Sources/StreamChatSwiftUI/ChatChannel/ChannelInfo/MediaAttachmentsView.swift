@@ -71,15 +71,17 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                             }
                             .overlay(
                                 BottomRightView {
-                                    factory.makeMessageAvatarView(
-                                        options: MessageAvatarViewOptions(
+                                    factory.makeUserAvatarView(
+                                        options: UserAvatarViewOptions(
                                             userDisplayInfo: UserDisplayInfo(
                                                 id: mediaItem.message.author.id,
                                                 name: mediaItem.message.author.name ?? "",
                                                 imageURL: mediaItem.message.author.imageURL,
+                                                online: mediaItem.message.author.isOnline,
                                                 size: .init(width: 24, height: 24),
                                                 extraData: mediaItem.message.author.extraData
-                                            )
+                                            ),
+                                            size: .md
                                         )
                                     )
                                     .overlay(

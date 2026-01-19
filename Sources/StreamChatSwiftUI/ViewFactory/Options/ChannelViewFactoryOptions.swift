@@ -78,12 +78,12 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
 public final class ChannelAvatarViewFactoryOptions: Sendable {
     /// The channel to display the avatar for.
     public let channel: ChatChannel
-    /// Additional options for the avatar view.
-    public let options: ChannelAvatarViewOptions
+    /// The size class of the avatar.
+    public let size: AvatarSize
     
-    public init(channel: ChatChannel, options: ChannelAvatarViewOptions) {
+    public init(channel: ChatChannel, size: AvatarSize) {
         self.channel = channel
-        self.options = options
+        self.size = size
     }
 }
 

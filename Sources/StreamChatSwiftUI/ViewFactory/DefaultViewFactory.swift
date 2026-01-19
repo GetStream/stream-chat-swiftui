@@ -76,11 +76,10 @@ extension ViewFactory {
     public func makeChannelAvatarView(
         options: ChannelAvatarViewFactoryOptions
     ) -> some View {
-        ChannelAvatarView(
+        ChannelAvatar(
             channel: options.channel,
-            showOnlineIndicator: options.options.showOnlineIndicator,
-            avatar: options.options.avatar,
-            size: options.options.size
+            size: options.size,
+            border: true
         )
     }
     
@@ -207,16 +206,15 @@ extension ViewFactory {
             .accessibilityIdentifier("EmptyMessagesView")
     }
     
-    public func makeMessageAvatarView(options: MessageAvatarViewOptions) -> some View {
-        MessageAvatarView(avatarURL: options.userDisplayInfo.imageURL, size: options.userDisplayInfo.size ?? .messageAvatarSize)
+    public func makeUserAvatarView(options: UserAvatarViewOptions) -> some View {
+        UserAvatar(
+            user: options.userDisplayInfo,
+            size: options.size,
+            indicator: true,
+            border: true
+        )
     }
-    
-    public func makeQuotedMessageAvatarView(
-        options: QuotedMessageAvatarViewOptions
-    ) -> some View {
-        MessageAvatarView(avatarURL: options.userDisplayInfo.imageURL, size: options.size)
-    }
-    
+        
     public func makeChannelHeaderViewModifier(
         options: ChannelHeaderViewModifierOptions
     ) -> some ChatChannelHeaderViewModifier {

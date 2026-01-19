@@ -31,25 +31,18 @@ public final class MessageListBackgroundOptions: Sendable {
 // MARK: - Message Avatar Options
 
 /// Options for creating the message avatar view.
-public final class MessageAvatarViewOptions: Sendable {
+public final class UserAvatarViewOptions: Sendable {
     /// Information about the user to display.
     public let userDisplayInfo: UserDisplayInfo
+    /// The size class of the avatar.
+    public let size: AvatarSize
     
-    public init(userDisplayInfo: UserDisplayInfo) {
-        self.userDisplayInfo = userDisplayInfo
-    }
-}
-
-/// Options for creating the quoted message avatar view.
-public final class QuotedMessageAvatarViewOptions: Sendable {
-    /// Information about the user to display.
-    public let userDisplayInfo: UserDisplayInfo
-    /// The size of the avatar.
-    public let size: CGSize
-    
-    public init(userDisplayInfo: UserDisplayInfo, size: CGSize) {
-        self.userDisplayInfo = userDisplayInfo
+    public init(
+        userDisplayInfo: UserDisplayInfo,
+        size: AvatarSize
+    ) {
         self.size = size
+        self.userDisplayInfo = userDisplayInfo
     }
 }
 

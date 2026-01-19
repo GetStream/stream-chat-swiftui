@@ -117,15 +117,10 @@ import SwiftUI
     /// - Returns: View shown in the empty messages slot.
     func makeEmptyMessagesView(options: EmptyMessagesViewOptions) -> EmptyMessagesViewType
 
-    associatedtype UserAvatar: View
-    /// Creates the message avatar view.
+    associatedtype UserAvatarViewType: View
+    /// Creates an avatar view for user.
     /// - Parameter options: the options for creating the message avatar view.
-    func makeMessageAvatarView(options: MessageAvatarViewOptions) -> UserAvatar
-
-    associatedtype QuotedUserAvatar: View
-    /// Creates the user avatar shown in quoted messages.
-    /// - Parameter options: the options for creating the quoted message avatar view.
-    func makeQuotedMessageAvatarView(options: QuotedMessageAvatarViewOptions) -> QuotedUserAvatar
+    func makeUserAvatarView(options: UserAvatarViewOptions) -> UserAvatarViewType
 
     associatedtype ChatHeaderViewModifier: ChatChannelHeaderViewModifier
     /// Creates the channel header view modifier.

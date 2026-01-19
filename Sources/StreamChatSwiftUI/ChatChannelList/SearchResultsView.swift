@@ -138,7 +138,7 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
                 factory.makeChannelAvatarView(
                     options: ChannelAvatarViewFactoryOptions(
                         channel: searchResult.channel,
-                        options: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
+                        size: .lg
                     )
                 )
 

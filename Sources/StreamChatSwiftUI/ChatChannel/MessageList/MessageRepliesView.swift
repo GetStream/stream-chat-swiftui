@@ -128,9 +128,10 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     id: participant.id,
                     name: participant.name ?? participant.id,
                     imageURL: participant.imageURL,
+                    online: participant.isOnline,
                     size: .init(width: 16, height: 16)
                 )
-                factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
+                factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: .md))
             } else {
                 MessageAvatarView(
                     avatarURL: message.threadParticipants.first?.imageURL,

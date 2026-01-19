@@ -75,6 +75,10 @@ struct ThumbnailImage<Content, Failure, Loading, Placeholder>: View where Conten
             phase = .loading
             let thumbnail = try await withThrowingTaskGroup(of: Image.self, returning: Image.self) { [size] group in
                 group.addTask {
+                    let cacheKey = url.absoluteString + "?size=\(Int(size.width))x\(Int(size.height))"
+                    if let cachedImage = Image.thumbnailImageCache[cacheKey] {
+                        return cachedImage
+                    }
                     let imageSource: CGImageSource? = try await {
                         if url.isFileURL {
                             return CGImageSourceCreateWithURL(url as CFURL, nil)
@@ -94,7 +98,9 @@ struct ThumbnailImage<Content, Failure, Loading, Placeholder>: View where Conten
                     guard let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else {
                         throw ThumbnailImageError.thumbnailGeneration
                     }
-                    return Image(decorative: cgImage, scale: scale)
+                    let image = Image(decorative: cgImage, scale: scale)
+                    Image.thumbnailImageCache[cacheKey] = image
+                    return image
                 }
                 return try await group.next() ?? Image(systemName: "exclamationmark.triangle")
             }
@@ -116,4 +122,8 @@ extension ThumbnailImage {
 
 enum ThumbnailImageError: Error {
     case thumbnailGeneration
+}
+
+extension Image {
+    static let thumbnailImageCache = Cache<String, Image>(countLimit: 25)
 }

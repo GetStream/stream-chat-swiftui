@@ -43,9 +43,10 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                                             id: comment.user?.id ?? "",
                                             name: comment.user?.name ?? "",
                                             imageURL: comment.user?.imageURL,
+                                            online: comment.user?.isOnline ?? false,
                                             extraData: comment.user?.extraData ?? [:]
                                         )
-                                        factory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: displayInfo))
+                                        factory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: displayInfo, size: .md))
                                     }
                                     Text(authorTitle(for: comment))
                                     Spacer()

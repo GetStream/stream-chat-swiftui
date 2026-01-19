@@ -50,7 +50,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 factory.makeChannelAvatarView(
                     options: ChannelAvatarViewFactoryOptions(
                         channel: channel,
-                        options: .init(showOnlineIndicator: onlineIndicatorShown)
+                        size: .lg
                     )
                 )
 
