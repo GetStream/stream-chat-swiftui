@@ -48,8 +48,8 @@ final class AvatarTests: StreamChatTestCase {
                         url: nil,
                         initials: "EC",
                         size: size,
-                        indicator: .online,
-                        border: false
+                        online: true,
+                        border: true
                     )
                 }
             }
@@ -59,7 +59,7 @@ final class AvatarTests: StreamChatTestCase {
                         url: nil,
                         initials: "",
                         size: size,
-                        indicator: .offline,
+                        online: true,
                         border: true
                     )
                 }

@@ -77,7 +77,7 @@ public struct UserAvatar: View {
     let url: URL?
     let initials: String
     let size: ComponentSize
-    let indicator: AvatarIndicator
+    let online: Bool
     let border: Bool
     
     public init(
@@ -89,7 +89,7 @@ public struct UserAvatar: View {
             url: user.imageURL,
             initials: Self.intials(from: user.name ?? ""),
             size: size,
-            indicator: user.isOnline ? .online : .offline,
+            online: user.isOnline,
             border: border
         )
     }
@@ -98,7 +98,7 @@ public struct UserAvatar: View {
         url: URL?,
         initials: String,
         size: ComponentSize,
-        indicator: AvatarIndicator,
+        online: Bool,
         border: Bool
     ) {
         self.url = url
@@ -109,7 +109,7 @@ public struct UserAvatar: View {
             }
         }()
         self.size = size
-        self.indicator = indicator
+        self.online = online
         self.border = border
     }
     
@@ -137,7 +137,7 @@ public struct UserAvatar: View {
             size: size,
             border: border
         )
-        .avatarIndicator(indicator, size: size)
+        .avatarIndicator(online, size: size)
     }
     
     var iconSize: CGSize {
@@ -226,24 +226,20 @@ extension ComponentSize {
 
 // MARK: - Avatar Presence Indicator
 
-public enum AvatarIndicator: CaseIterable {
-    case online, offline, none
-}
-
 extension View {
-    func avatarIndicator(_ indicator: AvatarIndicator, size: ComponentSize) -> some View {
-        modifier(AvatarIndicatorViewModifier(indicator: indicator, size: size))
+    func avatarIndicator(_ online: Bool, size: ComponentSize) -> some View {
+        modifier(AvatarIndicatorViewModifier(online: online, size: size))
     }
 }
 
 private struct AvatarIndicatorViewModifier: ViewModifier {
-    let indicator: AvatarIndicator
+    let online: Bool
     let size: ComponentSize
     
     func body(content: Content) -> some View {
         content
             .overlay(
-                indicator != .none ? OnlineIndicator(online: indicator == .online, size: size) : nil, alignment: .topTrailing
+                OnlineIndicator(online: online, size: size), alignment: .topTrailing
             )
     }
 
@@ -321,7 +317,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         url: avatarURL,
                         initials: "PA",
                         size: size,
-                        indicator: .online,
+                        online: true,
                         border: true
                     )
                 }
@@ -332,7 +328,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         url: nil,
                         initials: "PA",
                         size: size,
-                        indicator: .online,
+                        online: true,
                         border: true
                     )
                 }
@@ -343,7 +339,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         url: nil,
                         initials: "",
                         size: size,
-                        indicator: .offline,
+                        online: false,
                         border: true
                     )
                 }
