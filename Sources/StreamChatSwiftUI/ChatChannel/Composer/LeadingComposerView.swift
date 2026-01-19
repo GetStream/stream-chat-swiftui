@@ -7,7 +7,8 @@ import SwiftUI
 
 struct LeadingComposerView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
-    
+    @Injected(\.images) var images
+
     var factory: Factory
     
     @Binding var pickerTypeState: PickerTypeState
@@ -25,8 +26,7 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "plus")
-                        .fontWeight(.semibold)
+                    Image(uiImage: images.composerAdd)
                 }
                 .padding(.all, 12)
                 .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
@@ -42,7 +42,7 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "plus")
+                    Image(uiImage: images.composerAdd)
                 }
                 .padding(.all, 12)
                 .background(Color(UIColor.secondarySystemBackground))
@@ -51,5 +51,21 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
             }
         }
         .padding(.leading, 8)
+    }
+}
+
+// TODO: Move to Common Module
+
+import StreamChatCommonUI
+import UIKit
+
+extension Appearance.Images {
+    var composerAdd: UIImage {
+        UIImage(
+            systemName: "plus",
+            withConfiguration: UIImage.SymbolConfiguration(
+                weight: .light
+            )
+        )!
     }
 }
