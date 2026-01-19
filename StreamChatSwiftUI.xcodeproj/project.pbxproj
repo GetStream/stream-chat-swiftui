@@ -101,6 +101,8 @@
 		4FD3592A2C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */; };
 		4FD964622D353D88001B6838 /* FilePickerView_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD964612D353D82001B6838 /* FilePickerView_Tests.swift */; };
 		4FEAB3182BFF71F70057E511 /* SwiftUI+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */; };
+		4FF6557E2F19273E000FE4C9 /* Compatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF6557B2F19273E000FE4C9 /* Compatibility.swift */; };
+		4FF6557F2F19273E000FE4C9 /* Compatibility+TaskViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF6557C2F19273E000FE4C9 /* Compatibility+TaskViewModifier.swift */; };
 		8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */; };
 		8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */; };
 		820A61A029D6D78E002257FB /* QuotedReply_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */; };
@@ -686,6 +688,8 @@
 		4FD359292C05EA8F00B1D63B /* CreatePollViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePollViewModel_Tests.swift; sourceTree = "<group>"; };
 		4FD964612D353D82001B6838 /* FilePickerView_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerView_Tests.swift; sourceTree = "<group>"; };
 		4FEAB3172BFF71F70057E511 /* SwiftUI+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+UIAlertController.swift"; sourceTree = "<group>"; };
+		4FF6557B2F19273E000FE4C9 /* Compatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compatibility.swift; sourceTree = "<group>"; };
+		4FF6557C2F19273E000FE4C9 /* Compatibility+TaskViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Compatibility+TaskViewModifier.swift"; sourceTree = "<group>"; };
 		820A619F29D6D78E002257FB /* QuotedReply_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotedReply_Tests.swift; sourceTree = "<group>"; };
 		825AADF3283CCDB000237498 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
 		829AB4D32858A532002DC629 /* Reactions_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions_Tests.swift; sourceTree = "<group>"; };
@@ -1114,6 +1118,8 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4FF653EA2F192670000FE4C9 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		4FF655892F1A6FF3000FE4C9 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		84EB88092E8A747D0076DC17 /* ViewFactory */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewFactory; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -1644,6 +1650,7 @@
 				84EB7A622EF414AA00986E0F /* Styles.swift */,
 				8465FD632746A95700AF091E /* Utils.swift */,
 				8465FD5F2746A95700AF091E /* InjectedValuesExtensions.swift */,
+				4FF653EA2F192670000FE4C9 /* DesignSystem */,
 				84EB88092E8A747D0076DC17 /* ViewFactory */,
 				8465FD4C2746A95600AF091E /* ChatChannelList */,
 				8465FCFC2746A95600AF091E /* ChatChannel */,
@@ -1875,6 +1882,8 @@
 		8465FD382746A95600AF091E /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				4FF6557B2F19273E000FE4C9 /* Compatibility.swift */,
+				4FF6557C2F19273E000FE4C9 /* Compatibility+TaskViewModifier.swift */,
 				4FCD7DBC2D633F6C000EEB0F /* AttributedString+Extensions.swift */,
 				8465FD392746A95600AF091E /* AutoLayoutHelpers.swift */,
 				8465FD452746A95600AF091E /* Cache.swift */,
@@ -2065,6 +2074,7 @@
 		84C94D4027579EAF007FE2B9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				4FF655892F1A6FF3000FE4C9 /* DesignSystem */,
 				842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */,
 				84E6EC24279AEE9F0017207B /* StreamChatTestCase.swift */,
 				84C94C7D27567CC2007FE2B9 /* ChatChannelList */,
@@ -2349,6 +2359,7 @@
 				8465FCE42746954F00AF091E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				4FF653EA2F192670000FE4C9 /* DesignSystem */,
 				84EB88092E8A747D0076DC17 /* ViewFactory */,
 			);
 			name = StreamChatSwiftUI;
@@ -2373,6 +2384,9 @@
 			);
 			dependencies = (
 				8465FBC02746873A00AF091E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4FF655892F1A6FF3000FE4C9 /* DesignSystem */,
 			);
 			name = StreamChatSwiftUITests;
 			packageProductDependencies = (
@@ -2720,6 +2734,8 @@
 				4FCD7DA72D632121000EEB0F /* MarkdownFormatter.swift in Sources */,
 				AD51D9182DB9543A0068D0B0 /* MessageViewModel.swift in Sources */,
 				4F9173FD2DDDFFE8003C30B5 /* ChannelListConfig.swift in Sources */,
+				4FF6557E2F19273E000FE4C9 /* Compatibility.swift in Sources */,
+				4FF6557F2F19273E000FE4C9 /* Compatibility+TaskViewModifier.swift in Sources */,
 				8465FDC22746A95700AF091E /* ChatChannelNavigatableListItem.swift in Sources */,
 				8465FDAD2746A95700AF091E /* ImageCDN.swift in Sources */,
 				84289BE12807190500282ABE /* ChatChannelInfoView.swift in Sources */,
@@ -3863,7 +3879,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = v5;
+				branch = "v5-token-based-colors";
 				kind = branch;
 			};
 		};
