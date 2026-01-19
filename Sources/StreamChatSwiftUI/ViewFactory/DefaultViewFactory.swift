@@ -591,7 +591,8 @@ extension ViewFactory {
     public func makeTrailingComposerView(
         options: TrailingComposerViewOptions
     ) -> some View {
-        EmptyView()
+        Spacer()
+            .frame(width: 8)
     }
     
     public func makeComposerRecordingView(
