@@ -5,10 +5,6 @@
 import XCTest
 
 final class Ephemeral_Messages_Tests: StreamTestCase {
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-    }
-
     func test_userObservesAnimatedGiphy_whenParticipantAddsGiphyMessage() throws {
         linkToScenario(withId: 436)
 
