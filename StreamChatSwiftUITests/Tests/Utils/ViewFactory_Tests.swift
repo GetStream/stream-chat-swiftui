@@ -839,7 +839,7 @@ import XCTest
                 text: .constant("test"),
                 height: .constant(40),
                 selectedRangeLocation: .constant(0),
-                placeholder: "Send a message",
+                placeholder: "Message",
                 editable: true,
                 maxMessageLength: nil,
                 currentHeight: 40,
