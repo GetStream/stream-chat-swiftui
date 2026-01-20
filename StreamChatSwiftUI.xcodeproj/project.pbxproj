@@ -3847,7 +3847,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-token-based-colors";
+				branch = v5;
 				kind = branch;
 			};
 		};
