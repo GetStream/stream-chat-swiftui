@@ -48,7 +48,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    options: ChannelAvatarViewFactoryOptions(
+                    options: ChannelAvatarViewOptions(
                         channel: channel,
                         size: .lg
                     )
@@ -175,22 +175,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             return images.muted
         }
         return nil
-    }
-}
-
-/// Options for setting up the channel avatar view.
-public struct ChannelAvatarViewOptions: Sendable {
-    /// Whether the online indicator should be shown.
-    public var showOnlineIndicator: Bool
-    /// Size of the avatar.
-    public var size: CGSize
-    /// Optional avatar image. If not provided, it will be loaded by the channel header loader.
-    public var avatar: UIImage?
-
-    public init(showOnlineIndicator: Bool, size: CGSize = .defaultAvatarSize, avatar: UIImage? = nil) {
-        self.showOnlineIndicator = showOnlineIndicator
-        self.size = size
-        self.avatar = avatar
     }
 }
 

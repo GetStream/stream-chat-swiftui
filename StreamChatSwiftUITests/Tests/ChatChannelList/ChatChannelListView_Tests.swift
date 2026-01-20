@@ -157,11 +157,11 @@ class ChannelAvatarViewFactory: ViewFactory {
     var styles = LiquidGlassStyles()
     
     func makeChannelAvatarView(
-        options: ChannelAvatarViewFactoryOptions
+        options: ChannelAvatarViewOptions
     ) -> some View {
         Circle()
             .fill(.red)
-            .frame(width: options.options.size.width, height: options.options.size.height)
+            .frame(width: options.size.rawValue, height: options.size.rawValue)
     }
 }
 
@@ -170,10 +170,10 @@ class ChannelAvatarViewRegularFactory: ViewFactory {
     var styles = RegularStyles()
 
     func makeChannelAvatarView(
-        options: ChannelAvatarViewFactoryOptions
+        options: ChannelAvatarViewOptions
     ) -> some View {
         Circle()
             .fill(.red)
-            .frame(width: options.options.size.width, height: options.options.size.height)
+            .frame(width: options.size.rawValue, height: options.size.rawValue)
     }
 }

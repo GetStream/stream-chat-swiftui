@@ -38,7 +38,7 @@ import SwiftUI
     /// Creates the channel avatar view shown in the channel list, search results and the channel header.
     /// - Parameter options: the options for creating the channel avatar view.
     /// - Returns: view displayed in the channel avatar slot.
-    func makeChannelAvatarView(options: ChannelAvatarViewFactoryOptions) -> ChannelAvatarViewType
+    func makeChannelAvatarView(options: ChannelAvatarViewOptions) -> ChannelAvatarViewType
 
     associatedtype ChannelListBackground: View
     /// Creates the background for the channel list.

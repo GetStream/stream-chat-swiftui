@@ -68,7 +68,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                     isActive = true
                 } label: {
                     factory.makeChannelAvatarView(
-                        options: ChannelAvatarViewFactoryOptions(
+                        options: ChannelAvatarViewOptions(
                             channel: channel,
                             size: .lg
                         )

@@ -136,7 +136,7 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    options: ChannelAvatarViewFactoryOptions(
+                    options: ChannelAvatarViewOptions(
                         channel: searchResult.channel,
                         size: .lg
                     )

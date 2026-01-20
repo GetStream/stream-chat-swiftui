@@ -97,33 +97,12 @@ import XCTest
             id: .unique,
             name: .unique,
             imageURL: URL(string: "https://example.com"),
+            online: true,
             role: .user
         )
 
         // When
-        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo))
-
-        // Then
-        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
-    }
-
-    func test_viewFactory_makeQuotedMessageAvatarView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let userInfo = UserDisplayInfo(
-            id: .unique,
-            name: .unique,
-            imageURL: URL(string: "https://example.com"),
-            role: .user
-        )
-
-        // When
-        let view = viewFactory.makeQuotedMessageAvatarView(
-            options: QuotedMessageAvatarViewOptions(
-                userDisplayInfo: userInfo,
-                size: CGSize(width: 16, height: 16)
-            )
-        )
+        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: .md))
 
         // Then
         XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
@@ -990,9 +969,9 @@ import XCTest
         
         // When
         let view = viewFactory.makeChannelAvatarView(
-            options: ChannelAvatarViewFactoryOptions(
+            options: ChannelAvatarViewOptions(
                 channel: .mockNonDMChannel(),
-                options: .init(showOnlineIndicator: false)
+                size: .md
             )
         )
         

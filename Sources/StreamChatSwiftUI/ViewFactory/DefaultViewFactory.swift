@@ -74,7 +74,7 @@ extension ViewFactory {
     }
     
     public func makeChannelAvatarView(
-        options: ChannelAvatarViewFactoryOptions
+        options: ChannelAvatarViewOptions
     ) -> some View {
         ChannelAvatar(
             channel: options.channel,

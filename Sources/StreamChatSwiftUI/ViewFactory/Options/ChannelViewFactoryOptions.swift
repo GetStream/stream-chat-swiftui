@@ -75,7 +75,7 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
 }
 
 /// Options for creating the channel avatar view.
-public final class ChannelAvatarViewFactoryOptions: Sendable {
+public final class ChannelAvatarViewOptions: Sendable {
     /// The channel to display the avatar for.
     public let channel: ChatChannel
     /// The size class of the avatar.

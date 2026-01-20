@@ -11,12 +11,12 @@ import SwiftUI
 import XCTest
 
 final class AvatarTests: StreamChatTestCase {
-    func test_channelAvatar_placeholders() async throws {
+    func test_groupAvatar_placeholders() async throws {
         // Given
         let view = HStack(spacing: 2) {
             VStack(spacing: 2) {
                 ForEach(AvatarSize.allCases, id: \.self) { size in
-                    ChannelAvatar(
+                    GroupAvatar(
                         url: TestImages.yoda.url,
                         size: size,
                         border: true
@@ -25,7 +25,7 @@ final class AvatarTests: StreamChatTestCase {
             }
             VStack(spacing: 2) {
                 ForEach(AvatarSize.allCases, id: \.self) { size in
-                    ChannelAvatar(
+                    GroupAvatar(
                         url: TestImages.yoda.url,
                         size: size,
                         border: true
