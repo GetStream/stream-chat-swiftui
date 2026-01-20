@@ -46,9 +46,6 @@ import XCTest
     
     func test_reactionsIconProvider_currentUserColor() {
         // Given
-        adjustAppearance { appearance in
-            appearance.colorPalette.reactionCurrentUserColor = .black
-        }
         let reaction = MessageReactionType(rawValue: "like")
         
         // When
