@@ -8,8 +8,8 @@ import SwiftUI
 import UIKit
 
 class ReactionsIconProvider {
-    @MainActor static var colors: Appearance.ColorPalette = InjectedValues[\.colors]
-    @MainActor static var images: Appearance.Images = InjectedValues[\.images]
+    @MainActor static var colors: Appearance.ColorPalette { InjectedValues[\.colors] }
+    @MainActor static var images: Appearance.Images { InjectedValues[\.images] }
     
     @MainActor static func icon(for reaction: MessageReactionType, useLargeIcons: Bool) -> UIImage? {
         var icon: UIImage?
