@@ -5,15 +5,6 @@
 import StreamChat
 import SwiftUI
 
-public enum AvatarPlaceholderState {
-    /// The placeholder when no image is available.
-    case empty
-    /// The placeholder shown while the image is loading.
-    case loading
-    /// The placeholder shown when there is an error loading the image.
-    case error(Error)
-}
-
 public struct MessageAvatarView<Placeholder>: View where Placeholder: View {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors

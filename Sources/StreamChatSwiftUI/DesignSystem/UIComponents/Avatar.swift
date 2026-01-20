@@ -15,33 +15,43 @@ public struct ChannelAvatar: View {
     let url: URL?
     let size: AvatarSize
     let border: Bool
+    let directMessageUser: UserDisplayInfo?
     
     public init(
         channel: ChatChannel,
         size: AvatarSize,
         border: Bool
     ) {
-        self.init(
-            url: channel.imageURL,
-            size: size,
-            border: border
-        )
-    }
-    
-    public init(
-        url: URL?,
-        size: AvatarSize,
-        border: Bool
-    ) {
-        self.url = url
+        url = channel.imageURL
         self.size = size
         self.border = border
+        directMessageUser = {
+            guard channel.isDirectMessageChannel, channel.memberCount == 2 else { return nil }
+            let currentUserId = InjectedValues[\.chatClient].currentUserId
+            guard let member = channel.lastActiveMembers.first(where: { $0.id != currentUserId }) else { return nil }
+            return UserDisplayInfo(member: member)
+        }()
     }
     
     public var body: some View {
+        if let directMessageUser {
+            UserAvatar(user: directMessageUser, size: size, indicator: true, border: border)
+        } else {
+            GroupAvatar(url: url, size: size, border: border)
+        }
+    }
+}
+
+struct GroupAvatar: View {
+    @Injected(\.colors) var colors
+    let url: URL?
+    let size: AvatarSize
+    let border: Bool
+    
+    var body: some View {
         Avatar(
             url: url,
-            placeholder: {
+            placeholder: { _ in
                 colors.avatarBgDefault.toColor
                     .overlay(
                         Image(systemName: "person.3")
@@ -89,7 +99,7 @@ public struct UserAvatar: View {
     ) {
         self.init(
             url: user.imageURL,
-            initials: Self.intials(from: user.name ?? ""),
+            initials: Self.intials(from: user.name),
             size: size,
             indicator: indicator ? (user.isOnline ? .online : .offline) : .none,
             border: border
@@ -118,7 +128,7 @@ public struct UserAvatar: View {
     public var body: some View {
         Avatar(
             url: url,
-            placeholder: {
+            placeholder: { _ in
                 colors.avatarBgDefault.toColor
                     .overlay(
                         VStack {
@@ -179,37 +189,51 @@ extension UserAvatar {
 
 struct Avatar<Placeholder>: View where Placeholder: View {
     @Injected(\.colors) var colors
+    @Injected(\.utils) var utils
     
     let url: URL?
-    @ViewBuilder let placeholder: () -> Placeholder
+    @ViewBuilder let placeholder: (AvatarPlaceholderState) -> Placeholder
     let size: AvatarSize
     let border: Bool
     
     init(
         url: URL?,
-        placeholder: @escaping () -> Placeholder,
+        placeholder: @escaping (AvatarPlaceholderState) -> Placeholder,
         size: AvatarSize,
         border: Bool
     ) {
-        self.url = url
+        self.url = {
+            guard let url else { return nil }
+            return InjectedValues[\.utils.imageCDN].thumbnailURL(originalURL: url, preferredSize: size.frameSize)
+        }()
         self.placeholder = placeholder
         self.size = size
         self.border = border
     }
     
     var body: some View {
-        ThumbnailImage(
-            url: url,
-            size: size.frameSize,
-            content: { image in
-                image
+        LazyImage(imageURL: url) { state in
+            switch state {
+            case let .loaded(image):
+                Image(uiImage: image)
                     .resizable()
-                    .scaledToFill()
+                    .aspectRatio(contentMode: .fill)
                     .overlay(
                         border ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
                     )
-            },
-            placeholder: placeholder
+            case .loading:
+                placeholder(.loading)
+            case .placeholder:
+                placeholder(.empty)
+            case let .error(error):
+                placeholder(.error(error))
+            }
+        }
+        .onDisappear(.cancel)
+        .priority(.normal)
+        .frame(
+            width: size.rawValue,
+            height: size.rawValue
         )
         .clipped()
     }
@@ -228,6 +252,15 @@ public enum AvatarSize: CGFloat, CaseIterable, Sendable {
 
 public enum AvatarIndicator: CaseIterable {
     case online, offline, none
+}
+
+public enum AvatarPlaceholderState {
+    /// The placeholder when no image is available.
+    case empty
+    /// The placeholder shown while the image is loading.
+    case loading
+    /// The placeholder shown when there is an error loading the image.
+    case error(Error)
 }
 
 extension View {
@@ -297,7 +330,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         HStack(spacing: 12) {
             VStack(spacing: 12) {
                 ForEach(AvatarSize.allCases, id: \.self) { size in
-                    ChannelAvatar(
+                    GroupAvatar(
                         url: channelURL,
                         size: size,
                         border: true
@@ -306,7 +339,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
             }
             VStack(spacing: 12) {
                 ForEach(AvatarSize.allCases, id: \.self) { size in
-                    ChannelAvatar(
+                    GroupAvatar(
                         url: nil,
                         size: size,
                         border: true

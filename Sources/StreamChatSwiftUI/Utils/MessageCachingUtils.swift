@@ -54,6 +54,18 @@ public struct UserDisplayInfo: Sendable {
         self.size = size
         self.extraData = extraData
     }
+    
+    init(member: ChatChannelMember) {
+        self.init(
+            id: member.id,
+            name: member.name ?? member.id,
+            imageURL: member.imageURL,
+            online: member.isOnline,
+            role: member.userRole,
+            size: nil,
+            extraData: member.memberExtraData
+        )
+    }
 }
 
 extension ChatMessage {
