@@ -56,7 +56,7 @@ import XCTest
             Text("Test")
                 .applyDefaultSize()
                 .toolbar {
-                    DefaultChatChannelHeader(channel: channel, headerImage: .circleImage, isActive: .constant(false))
+                    DefaultChatChannelHeader(channel: channel, isActive: .constant(false))
                 }
         }
         .applyDefaultSize()

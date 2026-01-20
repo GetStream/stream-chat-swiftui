@@ -16,8 +16,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
     @Binding var swipedChannelId: String?
     @Binding var scrolledChannelId: String?
     private var scrollable: Bool
-    private var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
-    private var imageLoader: @MainActor (ChatChannel) -> UIImage
     private var onItemTap: @MainActor (ChatChannel) -> Void
     private var onItemAppear: @MainActor (Int) -> Void
     private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
@@ -32,8 +30,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
         swipedChannelId: Binding<String?>,
         scrolledChannelId: Binding<String?> = .constant(nil),
         scrollable: Bool = true,
-        onlineIndicatorShown: (@MainActor (ChatChannel) -> Bool)? = nil,
-        imageLoader: (@MainActor (ChatChannel) -> UIImage)? = nil,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void,
         channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
@@ -46,18 +42,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
         self.channelDestination = channelDestination
-        if let imageLoader {
-            self.imageLoader = imageLoader
-        } else {
-            self.imageLoader = InjectedValues[\.utils].channelHeaderLoader.image(for:)
-        }
-        if let onlineIndicatorShown {
-            self.onlineIndicatorShown = onlineIndicatorShown
-        } else {
-            self.onlineIndicatorShown = { channel in
-                channel.shouldShowOnlineIndicator
-            }
-        }
         self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
@@ -94,8 +78,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
             channels: channels,
             selectedChannel: $selectedChannel,
             swipedChannelId: $swipedChannelId,
-            onlineIndicatorShown: onlineIndicatorShown,
-            imageLoader: imageLoader,
             onItemTap: onItemTap,
             onItemAppear: onItemAppear,
             channelDestination: channelDestination,
@@ -116,8 +98,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     var channels: [ChatChannel]
     @Binding var selectedChannel: ChannelSelectionInfo?
     @Binding var swipedChannelId: String?
-    private var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
-    private var imageLoader: @MainActor (ChatChannel) -> UIImage
     private var onItemTap: @MainActor (ChatChannel) -> Void
     private var onItemAppear: @MainActor (Int) -> Void
     private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
@@ -130,8 +110,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         channels: [ChatChannel],
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
-        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void,
         channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
@@ -144,8 +122,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         self.onItemTap = onItemTap
         self.onItemAppear = onItemAppear
         self.channelDestination = channelDestination
-        self.imageLoader = imageLoader
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
@@ -160,8 +136,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     options: ChannelListItemOptions(
                         channel: channel,
                         channelName: name(for: channel),
-                        avatar: imageLoader(channel),
-                        onlineIndicatorShown: onlineIndicatorShown(channel),
                         disabled: swipedChannelId == channel.id,
                         selectedChannel: $selectedChannel,
                         swipedChannelId: $swipedChannelId,

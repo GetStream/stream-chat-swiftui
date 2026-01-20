@@ -54,8 +54,6 @@ extension ViewFactory {
             factory: self,
             channel: options.channel,
             channelName: options.channelName,
-            avatar: options.avatar,
-            onlineIndicatorShown: options.onlineIndicatorShown,
             disabled: options.disabled,
             handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
             selectedChannel: options.selectedChannel,
@@ -144,9 +142,7 @@ extension ViewFactory {
             selectedChannel: options.selectedChannel,
             searchResults: options.searchResults,
             loadingSearchResults: options.loadingSearchResults,
-            onlineIndicatorShown: options.onlineIndicatorShown,
             channelNaming: options.channelNaming,
-            imageLoader: options.imageLoader,
             onSearchResultTap: options.onSearchResultTap,
             onItemAppear: options.onItemAppear
         )
@@ -158,9 +154,7 @@ extension ViewFactory {
         SearchResultItem(
             factory: self,
             searchResult: options.searchResult,
-            onlineIndicatorShown: options.onlineIndicatorShown,
             channelName: options.channelName,
-            avatar: options.avatar,
             onSearchResultTap: options.onSearchResultTap,
             channelDestination: options.channelDestination
         )

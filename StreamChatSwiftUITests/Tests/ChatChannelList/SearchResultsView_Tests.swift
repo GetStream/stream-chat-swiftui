@@ -40,9 +40,7 @@ import XCTest
             selectedChannel: .constant(nil),
             searchResults: searchResults,
             loadingSearchResults: false,
-            onlineIndicatorShown: { _ in false },
             channelNaming: { $0.name ?? "" },
-            imageLoader: { _ in UIImage(systemName: "person.circle")! },
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
@@ -86,9 +84,7 @@ import XCTest
             selectedChannel: .constant(nil),
             searchResults: searchResults,
             loadingSearchResults: false,
-            onlineIndicatorShown: { _ in false },
             channelNaming: { $0.name ?? "" },
-            imageLoader: { _ in UIImage(systemName: "person.circle")! },
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
@@ -108,9 +104,7 @@ import XCTest
             selectedChannel: .constant(nil),
             searchResults: searchResults,
             loadingSearchResults: false,
-            onlineIndicatorShown: { _ in false },
             channelNaming: { $0.name ?? "" },
-            imageLoader: { _ in UIImage(systemName: "person.circle")! },
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
@@ -130,9 +124,7 @@ import XCTest
             selectedChannel: .constant(nil),
             searchResults: searchResults,
             loadingSearchResults: true,
-            onlineIndicatorShown: { _ in false },
             channelNaming: { $0.name ?? "" },
-            imageLoader: { _ in UIImage(systemName: "person.circle")! },
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )
@@ -163,9 +155,7 @@ import XCTest
             selectedChannel: .constant(nil),
             searchResults: searchResults,
             loadingSearchResults: false,
-            onlineIndicatorShown: { _ in false },
             channelNaming: { $0.name ?? "" },
-            imageLoader: { _ in UIImage(systemName: "person.circle")! },
             onSearchResultTap: { _ in },
             onItemAppear: { _ in }
         )

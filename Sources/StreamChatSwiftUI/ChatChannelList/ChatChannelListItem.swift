@@ -17,8 +17,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
-    var avatar: UIImage
-    var onlineIndicatorShown: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
 
@@ -27,8 +25,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         channel: ChatChannel,
         channelName: String,
         injectedChannelInfo: InjectedChannelInfo? = nil,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
         disabled: Bool = false,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
@@ -36,8 +32,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         self.channel = channel
         self.channelName = channelName
         self.injectedChannelInfo = injectedChannelInfo
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.disabled = disabled
         self.onItemTap = onItemTap
     }
@@ -247,13 +241,6 @@ extension ChatChannel {
         !currentlyTypingUsersFiltered(
             currentUserId: InjectedValues[\.chatClient].currentUserId
         ).isEmpty && config.typingEventsEnabled
-    }
-    
-    @MainActor public var shouldShowOnlineIndicator: Bool {
-        !lastActiveMembers.filter { member in
-            member.isOnline && member.id != InjectedValues[\.chatClient].currentUserId
-        }
-        .isEmpty
     }
 
     @MainActor public var subtitleText: String {

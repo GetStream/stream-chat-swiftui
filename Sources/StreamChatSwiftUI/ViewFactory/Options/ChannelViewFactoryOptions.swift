@@ -24,10 +24,6 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
     public let channel: ChatChannel
     /// The name of the channel.
     public let channelName: String
-    /// The avatar image for the channel.
-    public let avatar: UIImage
-    /// Whether to show the online indicator.
-    public let onlineIndicatorShown: Bool
     /// Whether the item is disabled.
     public let disabled: Bool
     /// Binding to the currently selected channel.
@@ -48,8 +44,6 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
     public init(
         channel: ChatChannel,
         channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
         disabled: Bool,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
@@ -61,8 +55,6 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
     ) {
         self.channel = channel
         self.channelName = channelName
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.disabled = disabled
         self.selectedChannel = selectedChannel
         self.swipedChannelId = swipedChannelId
@@ -225,12 +217,8 @@ public final class SearchResultsViewOptions: Sendable {
     public let searchResults: [ChannelSelectionInfo]
     /// Whether search results are currently loading.
     public let loadingSearchResults: Bool
-    /// Function to determine if online indicator should be shown.
-    public let onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
     /// Function to get the channel name.
     public let channelNaming: @MainActor (ChatChannel) -> String
-    /// Function to load the channel image.
-    public let imageLoader: @MainActor (ChatChannel) -> UIImage
     /// Callback when a search result is tapped.
     public let onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     /// Callback when an item appears in the list.
@@ -240,18 +228,14 @@ public final class SearchResultsViewOptions: Sendable {
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
         channelNaming: @escaping @MainActor (ChatChannel) -> String,
-        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
         onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void
     ) {
         self.selectedChannel = selectedChannel
         self.searchResults = searchResults
         self.loadingSearchResults = loadingSearchResults
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.channelNaming = channelNaming
-        self.imageLoader = imageLoader
         self.onSearchResultTap = onSearchResultTap
         self.onItemAppear = onItemAppear
     }
@@ -261,12 +245,8 @@ public final class SearchResultsViewOptions: Sendable {
 public final class ChannelListSearchResultItemOptions<ChannelDestination: View> {
     /// The search result to display.
     public let searchResult: ChannelSelectionInfo
-    /// Whether to show the online indicator.
-    public let onlineIndicatorShown: Bool
     /// The name of the channel.
     public let channelName: String
-    /// The avatar image for the channel.
-    public let avatar: UIImage
     /// Callback when the search result is tapped.
     public let onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     /// The destination view for channel navigation.
@@ -274,16 +254,12 @@ public final class ChannelListSearchResultItemOptions<ChannelDestination: View> 
     
     public init(
         searchResult: ChannelSelectionInfo,
-        onlineIndicatorShown: Bool,
         channelName: String,
-        avatar: UIImage,
         onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
         channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination
     ) {
         self.searchResult = searchResult
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.channelName = channelName
-        self.avatar = avatar
         self.onSearchResultTap = onSearchResultTap
         self.channelDestination = channelDestination
     }

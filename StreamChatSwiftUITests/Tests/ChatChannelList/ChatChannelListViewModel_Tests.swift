@@ -136,32 +136,6 @@ import XCTest
         XCTAssert(name == expectedName)
     }
 
-    func test_channelListVM_onlineIndicatorShown() {
-        // Given
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: [.mock(id: .unique, isOnline: true)]
-        )
-        let viewModel = makeDefaultChannelListVM(channels: [channel])
-
-        // When
-        let onlineIndicatorShown = viewModel.onlineIndicatorShown(for: channel)
-
-        // Then
-        XCTAssert(onlineIndicatorShown == true)
-    }
-
-    func test_channelListVM_onlineIndicatorNotShown() {
-        // Given
-        let channel = ChatChannel.mockDMChannel()
-        let viewModel = makeDefaultChannelListVM(channels: [channel])
-
-        // When
-        let onlineIndicatorShown = viewModel.onlineIndicatorShown(for: channel)
-
-        // Then
-        XCTAssert(onlineIndicatorShown == false)
-    }
-
     func test_channelListVM_onMoreTapped() {
         // Given
         let channel = ChatChannel.mockDMChannel()

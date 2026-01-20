@@ -14,7 +14,7 @@ struct BlockedUsersView: View {
                 List {
                     ForEach(viewModel.blockedUsers) { blockedUser in
                         HStack {
-                            MessageAvatarView(avatarURL: blockedUser.imageURL, size: .init(width: 48, height: 48))
+                            UserAvatar(user: blockedUser, size: .lg)
                             Text(blockedUser.name ?? blockedUser.id)
                                 .font(.headline)
                             Spacer()

@@ -193,7 +193,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
-    private var channelHeaderLoader: ChannelHeaderLoader { InjectedValues[\.utils].channelHeaderLoader }
     private var onItemTap: @MainActor (ChatChannel) -> Void
 
     public init(
@@ -224,9 +223,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         selectedChannel: $viewModel.selectedChannel,
                         searchResults: viewModel.searchResults,
                         loadingSearchResults: viewModel.loadingSearchResults,
-                        onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
                         channelNaming: viewModel.name(forChannel:),
-                        imageLoader: channelHeaderLoader.image(for:),
                         onSearchResultTap: { searchResult in
                             viewModel.selectedChannel = searchResult
                         },
@@ -240,8 +237,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     selectedChannel: $viewModel.selectedChannel,
                     swipedChannelId: $viewModel.swipedChannelId,
                     scrolledChannelId: $viewModel.scrolledChannelId,
-                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                    imageLoader: channelHeaderLoader.image(for:),
                     onItemTap: onItemTap,
                     onItemAppear: { index in
                         viewModel.checkTabBarAppearance()

@@ -22,6 +22,7 @@ import XCTest
 
         // When
         let view = MoreChannelActionsView(
+            factory: DefaultViewFactory.shared,
             channel: channel,
             channelActions: actions,
             swipedChannelId: .constant(nil),

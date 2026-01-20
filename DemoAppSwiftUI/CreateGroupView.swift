@@ -77,18 +77,14 @@ struct CreateGroupView: View, KeyboardReadable {
 struct SelectedUserGroupView: View {
     @Injected(\.fonts) var fonts
 
-    private let avatarSize: CGFloat = 50
+    private let avatarSize: AvatarSize = AvatarSize.lg
 
     @StateObject var viewModel: CreateGroupViewModel
     var user: ChatUser
 
     var body: some View {
         VStack {
-            MessageAvatarView(
-                avatarURL: user.imageURL,
-                size: CGSize(width: avatarSize, height: avatarSize)
-            )
-
+            UserAvatar(user: user, size: avatarSize)
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.footnote)
@@ -113,7 +109,7 @@ struct SelectedUserGroupView: View {
             }
             .offset(x: 6, y: -4)
         )
-        .frame(width: avatarSize)
+        .frame(width: avatarSize.rawValue)
     }
 }
 

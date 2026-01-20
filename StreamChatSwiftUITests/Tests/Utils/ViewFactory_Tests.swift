@@ -65,7 +65,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is MoreChannelActionsView)
+        XCTAssert(view is MoreChannelActionsView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeSearchResultsView() {
@@ -78,9 +78,7 @@ import XCTest
                 selectedChannel: .constant(nil),
                 searchResults: [],
                 loadingSearchResults: false,
-                onlineIndicatorShown: { _ in true },
                 channelNaming: { _ in "Test" },
-                imageLoader: { _ in UIImage(systemName: "person")! },
                 onSearchResultTap: { _ in },
                 onItemAppear: { _ in }
             )
@@ -90,7 +88,7 @@ import XCTest
         XCTAssert(view is SearchResultsView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeMessageAvatarView() {
+    func test_viewFactory_makeUserAvatarView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         let userInfo = UserDisplayInfo(
@@ -105,7 +103,7 @@ import XCTest
         let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: .md))
 
         // Then
-        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
+        XCTAssert(view is UserAvatar)
     }
 
     func test_viewFactory_makeChannelHeaderViewModifier() {
@@ -976,7 +974,7 @@ import XCTest
         )
         
         // Then
-        XCTAssert(view is ChannelAvatarView)
+        XCTAssert(view is ChannelAvatar)
     }
     
     func test_viewFactory_makeGalleryView() {

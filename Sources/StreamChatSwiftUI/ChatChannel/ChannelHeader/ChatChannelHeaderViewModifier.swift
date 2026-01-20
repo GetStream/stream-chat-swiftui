@@ -36,18 +36,15 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
 
     private var factory: Factory
     public var channel: ChatChannel
-    public var headerImage: UIImage
     @Binding public var isActive: Bool
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
-        headerImage: UIImage,
         isActive: Binding<Bool>
     ) {
         self.factory = factory
         self.channel = channel
-        self.headerImage = headerImage
         _isActive = isActive
     }
 
@@ -91,7 +88,6 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
 
 /// The default header modifier.
 public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHeaderViewModifier {
-    @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
     @State private var isActive: Bool = false
 
     private var factory: Factory
@@ -112,7 +108,6 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                     DefaultChatChannelHeader(
                         factory: factory,
                         channel: channel,
-                        headerImage: channelHeaderLoader.image(for: channel),
                         isActive: $isActive
                     )
                     #if compiler(>=6.2)
@@ -125,7 +120,6 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                     DefaultChatChannelHeader(
                         factory: factory,
                         channel: channel,
-                        headerImage: channelHeaderLoader.image(for: channel),
                         isActive: $isActive
                     )
                 }

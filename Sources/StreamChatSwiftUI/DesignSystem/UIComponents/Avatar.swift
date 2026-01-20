@@ -14,17 +14,20 @@ public struct ChannelAvatar: View {
     
     let url: URL?
     let size: AvatarSize
+    let indicator: Bool
     let border: Bool
     let directMessageUser: UserDisplayInfo?
     
     public init(
         channel: ChatChannel,
         size: AvatarSize,
-        border: Bool
+        indicator: Bool = true,
+        border: Bool = true
     ) {
         url = channel.imageURL
         self.size = size
         self.border = border
+        self.indicator = indicator
         directMessageUser = {
             guard channel.isDirectMessageChannel, channel.memberCount == 2 else { return nil }
             let currentUserId = InjectedValues[\.chatClient].currentUserId
@@ -38,7 +41,7 @@ public struct ChannelAvatar: View {
             UserAvatar(
                 user: directMessageUser,
                 size: size,
-                indicator: true,
+                indicator: indicator,
                 border: border
             )
             .accessibilityIdentifier("ChannelAvatar")
@@ -103,10 +106,25 @@ public struct UserAvatar: View {
     let border: Bool
     
     public init(
+        user: ChatUser,
+        size: AvatarSize,
+        indicator: Bool = true,
+        border: Bool = true
+    ) {
+        self.init(
+            url: user.imageURL,
+            initials: Self.intials(from: user.name ?? ""),
+            size: size,
+            indicator: indicator ? (user.isOnline ? .online : .offline) : .none,
+            border: border
+        )
+    }
+    
+    public init(
         user: UserDisplayInfo,
         size: AvatarSize,
-        indicator: Bool,
-        border: Bool
+        indicator: Bool = true,
+        border: Bool = true
     ) {
         self.init(
             url: user.imageURL,
