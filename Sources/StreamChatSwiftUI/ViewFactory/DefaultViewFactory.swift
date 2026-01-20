@@ -32,6 +32,7 @@ extension ViewFactory {
         options: MoreChannelActionsViewOptions
     ) -> some View {
         MoreChannelActionsView(
+            factory: self,
             channel: options.channel,
             channelActions: InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
                 SupportedMoreChannelActionsOptions(

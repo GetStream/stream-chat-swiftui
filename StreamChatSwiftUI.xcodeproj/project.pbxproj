@@ -232,7 +232,6 @@
 		8465FD812746A95700AF091E /* SystemMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0A2746A95600AF091E /* SystemMessageView.swift */; };
 		8465FD822746A95700AF091E /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0B2746A95600AF091E /* LinkTextView.swift */; };
 		8465FD832746A95700AF091E /* LinkAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */; };
-		8465FD842746A95700AF091E /* MessageAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0D2746A95600AF091E /* MessageAvatarView.swift */; };
 		8465FD852746A95700AF091E /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0E2746A95600AF091E /* MessageView.swift */; };
 		8465FD862746A95700AF091E /* MessageComposerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD102746A95600AF091E /* MessageComposerViewModel.swift */; };
 		8465FD872746A95700AF091E /* AttachmentPickerTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */; };
@@ -820,7 +819,6 @@
 		8465FD0A2746A95600AF091E /* SystemMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemMessageView.swift; sourceTree = "<group>"; };
 		8465FD0B2746A95600AF091E /* LinkTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkTextView.swift; sourceTree = "<group>"; };
 		8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkAttachmentView.swift; sourceTree = "<group>"; };
-		8465FD0D2746A95600AF091E /* MessageAvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageAvatarView.swift; sourceTree = "<group>"; };
 		8465FD0E2746A95600AF091E /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		8465FD102746A95600AF091E /* MessageComposerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposerViewModel.swift; sourceTree = "<group>"; };
 		8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentPickerTypeView.swift; sourceTree = "<group>"; };
@@ -1737,7 +1735,6 @@
 				8465FD0E2746A95600AF091E /* MessageView.swift */,
 				AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */,
 				84DEC8E02760D24100172876 /* MessageRepliesView.swift */,
-				8465FD0D2746A95600AF091E /* MessageAvatarView.swift */,
 				ADF544372DC93C0D0024A0B3 /* MessageTranslationFooterView.swift */,
 				8465FCFE2746A95600AF091E /* ImageAttachmentView.swift */,
 				84A75FBA274EA29B00225CE8 /* GiphyAttachmentView.swift */,
@@ -2697,7 +2694,6 @@
 				84EB7A632EF414AA00986E0F /* Styles.swift in Sources */,
 				8465FD7F2746A95700AF091E /* MessageTypeResolver.swift in Sources */,
 				8465FDA42746A95700AF091E /* NukeImageLoader.swift in Sources */,
-				8465FD842746A95700AF091E /* MessageAvatarView.swift in Sources */,
 				82D64B672AD7E5AC00C5C79E /* NSImage+SwiftyGif.swift in Sources */,
 				8465FDC72746A95700AF091E /* ChatChannelListViewModel.swift in Sources */,
 				8465FD822746A95700AF091E /* LinkTextView.swift in Sources */,

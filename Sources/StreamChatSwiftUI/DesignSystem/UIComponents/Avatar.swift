@@ -35,9 +35,20 @@ public struct ChannelAvatar: View {
     
     public var body: some View {
         if let directMessageUser {
-            UserAvatar(user: directMessageUser, size: size, indicator: true, border: border)
+            UserAvatar(
+                user: directMessageUser,
+                size: size,
+                indicator: true,
+                border: border
+            )
+            .accessibilityIdentifier("ChannelAvatar")
         } else {
-            GroupAvatar(url: url, size: size, border: border)
+            GroupAvatar(
+                url: url,
+                size: size,
+                border: border
+            )
+            .accessibilityIdentifier("ChannelAvatar")
         }
     }
 }
@@ -151,6 +162,7 @@ public struct UserAvatar: View {
         )
         .cornerRadius(DesignSystemTokens.radiusMax)
         .avatarIndicator(indicator, size: size)
+        .accessibilityIdentifier("UserAvatar")
     }
     
     var iconSize: CGSize {
@@ -248,6 +260,8 @@ public enum AvatarSize: CGFloat, CaseIterable, Sendable {
     case xs = 20
     
     var frameSize: CGSize { CGSize(width: rawValue, height: rawValue) }
+    
+    @MainActor static var messageAvatarSize = AvatarSize.md
 }
 
 public enum AvatarIndicator: CaseIterable {
@@ -325,7 +339,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
 #Preview(traits: .fixedLayout(width: 200, height: 200)) {
     @Previewable let avatarURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/b/b2/Padmegreenscrshot.jpg")!
     @Previewable let channelURL = URL(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/960px-Aerial_view_of_the_Amazon_Rainforest.jpg")!
-    let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
+    @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
     VStack(spacing: 12) {
         HStack(spacing: 12) {
             VStack(spacing: 12) {

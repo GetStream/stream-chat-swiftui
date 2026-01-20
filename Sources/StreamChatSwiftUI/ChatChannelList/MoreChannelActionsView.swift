@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Default view for the channel more actions view.
-public struct MoreChannelActionsView: View {
+public struct MoreChannelActionsView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
@@ -21,8 +21,11 @@ public struct MoreChannelActionsView: View {
             isPresented = presentedView != nil
         }
     }
+    
+    public let factory: Factory
 
     public init(
+        factory: Factory,
         channel: ChatChannel,
         channelActions: [ChannelAction],
         swipedChannelId: Binding<String?>,
@@ -34,6 +37,7 @@ public struct MoreChannelActionsView: View {
                 actions: channelActions
             )
         )
+        self.factory = factory
         self.onDismiss = onDismiss
         _swipedChannelId = swipedChannelId
     }
@@ -125,18 +129,16 @@ public struct MoreChannelActionsView: View {
             if viewModel.members.count == 1 {
                 let member = viewModel.members[0]
                 ChannelMemberView(
-                    avatar: viewModel.image(for: member),
-                    name: member.name ?? member.id,
-                    onlineIndicatorShown: member.isOnline
+                    factory: factory,
+                    userDisplayInfo: UserDisplayInfo(member: member)
                 )
             } else {
                 ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: 16) {
                         ForEach(viewModel.members) { member in
                             ChannelMemberView(
-                                avatar: viewModel.image(for: member),
-                                name: member.name ?? member.id,
-                                onlineIndicatorShown: member.isOnline
+                                factory: factory,
+                                userDisplayInfo: UserDisplayInfo(member: member)
                             )
                         }
                     }
@@ -148,30 +150,33 @@ public struct MoreChannelActionsView: View {
 }
 
 /// View displaying channel members with image and name.
-public struct ChannelMemberView: View {
+public struct ChannelMemberView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
 
-    let avatar: UIImage
-    let name: String
-    let onlineIndicatorShown: Bool
-
+    let factory: Factory
+    let userDisplayInfo: UserDisplayInfo
     let memberSize = CGSize(width: 64, height: 64)
 
     public var body: some View {
         VStack(alignment: .center) {
-            ChannelAvatarView(
-                avatar: avatar,
-                showOnlineIndicator: onlineIndicatorShown,
-                size: memberSize
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    userDisplayInfo: userDisplayInfo,
+                    size: .lg
+                )
             )
             .accessibilityHidden(true)
 
-            Text(name)
+            Text(userDisplayInfo.name)
                 .font(fonts.footnoteBold)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .frame(maxWidth: memberSize.width, maxHeight: 34, alignment: .top)
-                .accessibilityLabel(Text(name) + Text(onlineIndicatorShown ? ", \(L10n.Message.Title.online)" : ""))
+                .accessibilityLabel(Text(accessibilityLabel))
         }
+    }
+    
+    var accessibilityLabel: String {
+        userDisplayInfo.name + (userDisplayInfo.isOnline ? ", \(L10n.Message.Title.online)" : "")
     }
 }

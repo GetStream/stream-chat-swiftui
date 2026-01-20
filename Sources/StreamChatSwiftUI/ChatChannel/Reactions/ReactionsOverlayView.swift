@@ -373,7 +373,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         if messageDisplayInfo.message.isRightAligned {
             availableWidth - messageActionsWidth - paddingValue / 2
         } else {
-            CGSize.messageAvatarSize.width + paddingValue
+            AvatarSize.messageAvatarSize.rawValue + paddingValue
         }
     }
 

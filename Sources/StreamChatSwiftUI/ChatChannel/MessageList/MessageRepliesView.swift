@@ -133,9 +133,12 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 )
                 factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: .md))
             } else {
-                MessageAvatarView(
-                    avatarURL: message.threadParticipants.first?.imageURL,
-                    size: .init(width: 16, height: 16)
+                UserAvatar(
+                    url: nil,
+                    initials: "",
+                    size: .md,
+                    indicator: .none,
+                    border: true
                 )
             }
         }
