@@ -67,7 +67,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                     factory.makeChannelAvatarView(
                         options: ChannelAvatarViewOptions(
                             channel: channel,
-                            size: .lg
+                            size: AvatarSize.large
                         )
                     )
                     .offset(x: 4)

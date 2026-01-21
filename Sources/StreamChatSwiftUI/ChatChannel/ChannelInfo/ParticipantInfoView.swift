@@ -48,10 +48,9 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                     id: participant.chatUser.id,
                     name: participant.chatUser.name ?? participant.chatUser.id,
                     imageURL: participant.chatUser.imageURL,
-                    online: participant.chatUser.isOnline,
-                    size: CGSize(width: 64, height: 64)
+                    online: participant.chatUser.isOnline
                 )
-                factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: .md))
+                factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: 64))
                     .padding()
 
                 VStack {

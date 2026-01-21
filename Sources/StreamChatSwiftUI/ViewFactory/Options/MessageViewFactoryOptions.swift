@@ -35,11 +35,11 @@ public final class UserAvatarViewOptions: Sendable {
     /// Information about the user to display.
     public let userDisplayInfo: UserDisplayInfo
     /// The size class of the avatar.
-    public let size: AvatarSize
+    public let size: CGFloat
     
     public init(
         userDisplayInfo: UserDisplayInfo,
-        size: AvatarSize
+        size: CGFloat
     ) {
         self.size = size
         self.userDisplayInfo = userDisplayInfo

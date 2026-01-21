@@ -71,9 +71,9 @@ public final class ChannelAvatarViewOptions: Sendable {
     /// The channel to display the avatar for.
     public let channel: ChatChannel
     /// The size class of the avatar.
-    public let size: AvatarSize
+    public let size: CGFloat
     
-    public init(channel: ChatChannel, size: AvatarSize) {
+    public init(channel: ChatChannel, size: CGFloat) {
         self.channel = channel
         self.size = size
     }

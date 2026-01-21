@@ -77,7 +77,7 @@ struct CreateGroupView: View, KeyboardReadable {
 struct SelectedUserGroupView: View {
     @Injected(\.fonts) var fonts
 
-    private let avatarSize: AvatarSize = AvatarSize.lg
+    private let avatarSize: CGFloat = 50
 
     @StateObject var viewModel: CreateGroupViewModel
     var user: ChatUser
@@ -109,7 +109,7 @@ struct SelectedUserGroupView: View {
             }
             .offset(x: 6, y: -4)
         )
-        .frame(width: avatarSize.rawValue)
+        .frame(width: avatarSize)
     }
 }
 

@@ -84,7 +84,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 } else {
                     if let userDisplayInfo = messageViewModel.userDisplayInfo {
                         factory.makeUserAvatarView(
-                            options: UserAvatarViewOptions(userDisplayInfo: userDisplayInfo, size: .md)
+                            options: UserAvatarViewOptions(userDisplayInfo: userDisplayInfo, size: AvatarSize.medium)
                         )
                         .opacity(showsAllInfo ? 1 : 0)
                         .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
@@ -335,7 +335,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         let padding: CGFloat = messageListConfig.messagePaddings.horizontal
         let minimumWidth: CGFloat = 240
         let available = max(minimumWidth, (width ?? 0) - spacerWidth) - 2 * padding
-        let avatarSize: CGFloat = AvatarSize.messageAvatarSize.rawValue + padding
+        let avatarSize: CGFloat = AvatarSize.messageAvatarSize + padding
         let totalWidth = messageViewModel.isRightAligned ? available : available - avatarSize
         return totalWidth
     }

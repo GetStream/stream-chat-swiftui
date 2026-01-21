@@ -128,15 +128,14 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     id: participant.id,
                     name: participant.name ?? participant.id,
                     imageURL: participant.imageURL,
-                    online: participant.isOnline,
-                    size: .init(width: 16, height: 16)
+                    online: participant.isOnline
                 )
-                factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: .md))
+                factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: AvatarSize.extraSmall))
             } else {
                 UserAvatar(
                     url: nil,
                     initials: "",
-                    size: .md,
+                    size: AvatarSize.medium,
                     indicator: .none,
                     border: true
                 )

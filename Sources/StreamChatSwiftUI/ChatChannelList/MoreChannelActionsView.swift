@@ -162,7 +162,7 @@ public struct ChannelMemberView<Factory: ViewFactory>: View {
             factory.makeUserAvatarView(
                 options: UserAvatarViewOptions(
                     userDisplayInfo: userDisplayInfo,
-                    size: .lg
+                    size: AvatarSize.large
                 )
             )
             .accessibilityHidden(true)

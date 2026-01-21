@@ -42,10 +42,9 @@ struct ReactionUserView<Factory: ViewFactory>: View {
                 id: reaction.author.id,
                 name: reaction.author.name ?? reaction.author.id,
                 imageURL: reaction.author.imageURL,
-                online: reaction.author.isOnline,
-                size: CGSize(width: imageSize, height: imageSize)
+                online: reaction.author.isOnline
             )
-            factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: .md))
+            factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: imageSize))
                 .overlay(
                     VStack {
                         Spacer()

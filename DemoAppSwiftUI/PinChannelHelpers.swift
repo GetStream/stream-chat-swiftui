@@ -26,7 +26,7 @@ struct DemoAppChatChannelListItem: View {
             HStack {
                 ChannelAvatar(
                     channel: channel,
-                    size: .md
+                    size: AvatarSize.medium
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

@@ -100,7 +100,7 @@ import XCTest
         )
 
         // When
-        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: .md))
+        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: .medium))
 
         // Then
         XCTAssert(view is UserAvatar)
@@ -969,7 +969,7 @@ import XCTest
         let view = viewFactory.makeChannelAvatarView(
             options: ChannelAvatarViewOptions(
                 channel: .mockNonDMChannel(),
-                size: .md
+                size: .medium
             )
         )
         

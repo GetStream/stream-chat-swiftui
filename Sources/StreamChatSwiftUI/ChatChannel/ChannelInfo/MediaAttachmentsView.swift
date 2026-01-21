@@ -78,10 +78,9 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                                 name: mediaItem.message.author.name ?? "",
                                                 imageURL: mediaItem.message.author.imageURL,
                                                 online: mediaItem.message.author.isOnline,
-                                                size: .init(width: 24, height: 24),
                                                 extraData: mediaItem.message.author.extraData
                                             ),
-                                            size: .md
+                                            size: AvatarSize.small
                                         )
                                     )
                                     .overlay(

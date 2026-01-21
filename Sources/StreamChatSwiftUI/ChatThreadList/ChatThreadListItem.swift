@@ -219,10 +219,9 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
                 id: replyAuthorId,
                 name: replyAuthorName,
                 imageURL: replyAuthorUrl,
-                online: replyAuthorIsOnline,
-                size: .init(width: 40, height: 40)
+                online: replyAuthorIsOnline
             )
-            factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: .md))
+            factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: AvatarSize.large))
             VStack(alignment: .leading) {
                 Text(replyAuthorName)
                     .lineLimit(1)

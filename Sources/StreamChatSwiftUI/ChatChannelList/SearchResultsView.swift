@@ -124,7 +124,7 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
                 factory.makeChannelAvatarView(
                     options: ChannelAvatarViewOptions(
                         channel: searchResult.channel,
-                        size: .lg
+                        size: AvatarSize.large
                     )
                 )
 

@@ -34,7 +34,6 @@ public struct UserDisplayInfo: Sendable {
     public let imageURL: URL?
     public let isOnline: Bool
     public let role: UserRole?
-    public let size: CGSize?
     public let extraData: [String: RawJSON]
 
     public init(
@@ -43,7 +42,6 @@ public struct UserDisplayInfo: Sendable {
         imageURL: URL?,
         online: Bool,
         role: UserRole? = nil,
-        size: CGSize? = nil,
         extraData: [String: RawJSON] = [:]
     ) {
         self.id = id
@@ -51,7 +49,6 @@ public struct UserDisplayInfo: Sendable {
         self.imageURL = imageURL
         self.isOnline = online
         self.role = role
-        self.size = size
         self.extraData = extraData
     }
     
@@ -62,7 +59,6 @@ public struct UserDisplayInfo: Sendable {
             imageURL: member.imageURL,
             online: member.isOnline,
             role: member.userRole,
-            size: nil,
             extraData: member.memberExtraData
         )
     }

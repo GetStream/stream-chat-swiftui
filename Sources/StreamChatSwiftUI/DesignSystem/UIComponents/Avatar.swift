@@ -13,14 +13,14 @@ public struct ChannelAvatar: View {
     @Injected(\.fonts) var fonts
     
     let url: URL?
-    let size: AvatarSize
+    let size: CGFloat
     let indicator: Bool
     let border: Bool
     let directMessageUser: UserDisplayInfo?
     
     public init(
         channel: ChatChannel,
-        size: AvatarSize,
+        size: CGFloat,
         indicator: Bool = true,
         border: Bool = true
     ) {
@@ -59,7 +59,7 @@ public struct ChannelAvatar: View {
 struct GroupAvatar: View {
     @Injected(\.colors) var colors
     let url: URL?
-    let size: AvatarSize
+    let size: CGFloat
     let border: Bool
     
     var body: some View {
@@ -85,10 +85,10 @@ struct GroupAvatar: View {
     var iconSize: CGSize {
         // Width is fine-tuned based on the icon symbol
         switch size {
-        case .lg: CGSize(width: 22, height: 20)
-        case .md: CGSize(width: 18, height: 16)
-        case .sm: CGSize(width: 14, height: 12)
-        case .xs: CGSize(width: 12, height: 10)
+        case AvatarSize.largeSizeClass: CGSize(width: 22, height: 20)
+        case AvatarSize.mediumSizeClass: CGSize(width: 18, height: 16)
+        case AvatarSize.smallSizeClass: CGSize(width: 14, height: 12)
+        default: CGSize(width: 12, height: 10)
         }
     }
 }
@@ -101,13 +101,13 @@ public struct UserAvatar: View {
     
     let url: URL?
     let initials: String
-    let size: AvatarSize
+    let size: CGFloat
     let indicator: AvatarIndicator
     let border: Bool
     
     public init(
         user: ChatUser,
-        size: AvatarSize,
+        size: CGFloat,
         indicator: Bool = true,
         border: Bool = true
     ) {
@@ -122,7 +122,7 @@ public struct UserAvatar: View {
     
     public init(
         user: UserDisplayInfo,
-        size: AvatarSize,
+        size: CGFloat,
         indicator: Bool = true,
         border: Bool = true
     ) {
@@ -138,17 +138,12 @@ public struct UserAvatar: View {
     public init(
         url: URL?,
         initials: String,
-        size: AvatarSize,
+        size: CGFloat,
         indicator: AvatarIndicator,
         border: Bool
     ) {
         self.url = url
-        self.initials = {
-            switch size {
-            case .lg, .md: String(initials.prefix(2))
-            case .sm, .xs: String(initials.prefix(1))
-            }
-        }()
+        self.initials = String(initials.prefix(size >= AvatarSize.medium ? 2 : 1))
         self.size = size
         self.indicator = indicator
         self.border = border
@@ -185,18 +180,18 @@ public struct UserAvatar: View {
     
     var iconSize: CGSize {
         switch size {
-        case .lg: CGSize(width: 16, height: 16)
-        case .md: CGSize(width: 14, height: 14)
-        case .sm: CGSize(width: 10, height: 10)
-        case .xs: CGSize(width: 9, height: 9)
+        case AvatarSize.largeSizeClass: CGSize(width: 16, height: 16)
+        case AvatarSize.mediumSizeClass: CGSize(width: 14, height: 14)
+        case AvatarSize.smallSizeClass: CGSize(width: 10, height: 10)
+        default: CGSize(width: 9, height: 9)
         }
     }
     
     var font: Font {
         switch size {
-        case .lg: fonts.subheadline.weight(.semibold)
-        case .md: fonts.footnote.weight(.semibold)
-        case .sm, .xs: fonts.caption1.weight(.semibold)
+        case AvatarSize.largeSizeClass: fonts.subheadline.weight(.semibold)
+        case AvatarSize.mediumSizeClass: fonts.footnote.weight(.semibold)
+        default: fonts.caption1.weight(.semibold)
         }
     }
 }
@@ -223,18 +218,18 @@ struct Avatar<Placeholder>: View where Placeholder: View {
     
     let url: URL?
     @ViewBuilder let placeholder: (AvatarPlaceholderState) -> Placeholder
-    let size: AvatarSize
+    let size: CGFloat
     let border: Bool
     
     init(
         url: URL?,
         placeholder: @escaping (AvatarPlaceholderState) -> Placeholder,
-        size: AvatarSize,
+        size: CGFloat,
         border: Bool
     ) {
         self.url = {
             guard let url else { return nil }
-            return InjectedValues[\.utils.imageCDN].thumbnailURL(originalURL: url, preferredSize: size.frameSize)
+            return InjectedValues[\.utils.imageCDN].thumbnailURL(originalURL: url, preferredSize: CGSize(width: size, height: size))
         }()
         self.placeholder = placeholder
         self.size = size
@@ -261,25 +256,27 @@ struct Avatar<Placeholder>: View where Placeholder: View {
         }
         .onDisappear(.cancel)
         .priority(.normal)
-        .frame(
-            width: size.rawValue,
-            height: size.rawValue
-        )
+        .frame(width: size, height: size)
         .clipped()
     }
 }
 
 // MARK: - Avatar Styling
 
-public enum AvatarSize: CGFloat, CaseIterable, Sendable {
-    case lg = 40
-    case md = 32
-    case sm = 24
-    case xs = 20
+public enum AvatarSize {
+    public static let large: CGFloat = 40
+    public static let medium: CGFloat = 32
+    public static let small: CGFloat = 24
+    public static let extraSmall: CGFloat = 20
     
-    var frameSize: CGSize { CGSize(width: rawValue, height: rawValue) }
+    static let largeSizeClass: PartialRangeFrom<CGFloat> = AvatarSize.large...
+    static let mediumSizeClass: Range<CGFloat> = AvatarSize.medium..<AvatarSize.large
+    static let smallSizeClass: Range<CGFloat> = AvatarSize.small..<AvatarSize.medium
+    static let extraSmallSizeClass: PartialRangeUpTo<CGFloat> = ..<AvatarSize.small
     
-    @MainActor static var messageAvatarSize = AvatarSize.md
+    static var standardSizes: [CGFloat] { [AvatarSize.large, AvatarSize.medium, AvatarSize.small, AvatarSize.extraSmall] }
+    
+    @MainActor static var messageAvatarSize = AvatarSize.medium
 }
 
 public enum AvatarIndicator: CaseIterable {
@@ -296,14 +293,14 @@ public enum AvatarPlaceholderState {
 }
 
 extension View {
-    func avatarIndicator(_ indicator: AvatarIndicator, size: AvatarSize) -> some View {
+    func avatarIndicator(_ indicator: AvatarIndicator, size: CGFloat) -> some View {
         modifier(AvatarIndicatorViewModifier(indicator: indicator, size: size))
     }
 }
 
 private struct AvatarIndicatorViewModifier: ViewModifier {
     let indicator: AvatarIndicator
-    let size: AvatarSize
+    let size: CGFloat
     
     func body(content: Content) -> some View {
         content
@@ -316,7 +313,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         @Injected(\.colors) var colors
         
         let online: Bool
-        let size: AvatarSize
+        let size: CGFloat
         
         var body: some View {
             Circle()
@@ -331,17 +328,14 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         }
         
         var borderWidth: CGFloat {
-            switch size {
-            case .lg, .md: 2
-            case .sm, .xs: 1
-            }
+            size >= AvatarSize.medium ? 2 : 1
         }
         
         var diameter: CGFloat {
             switch size {
-            case .lg: 14
-            case .md: 12
-            case .sm, .xs: 8
+            case AvatarSize.largeSizeClass: 14
+            case AvatarSize.mediumSizeClass: 12
+            default: 8
             }
         }
         
@@ -361,7 +355,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
     VStack(spacing: 12) {
         HStack(spacing: 12) {
             VStack(spacing: 12) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: channelURL,
                         size: size,
@@ -370,7 +364,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                 }
             }
             VStack(spacing: 12) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: nil,
                         size: size,
@@ -381,7 +375,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         }
         HStack(spacing: 12) {
             VStack(spacing: 12) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     UserAvatar(
                         url: avatarURL,
                         initials: "PA",
@@ -392,7 +386,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                 }
             }
             VStack(spacing: 12) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     UserAvatar(
                         url: nil,
                         initials: "PA",
@@ -403,7 +397,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                 }
             }
             VStack(spacing: 12) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     UserAvatar(
                         url: nil,
                         initials: "",
