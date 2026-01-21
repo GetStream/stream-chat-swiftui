@@ -81,7 +81,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                 .offset(x: self.offsetX)
                 .simultaneousGesture(
                     DragGesture(
-                        minimumDistance: 35,
+                        minimumDistance: 40,
                         coordinateSpace: .local
                     )
                     .updating($offset) { (value, gestureState, _) in
