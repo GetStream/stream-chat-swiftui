@@ -68,4 +68,13 @@ extension Appearance.Images {
             )
         )!
     }
+
+    var composerSend: UIImage {
+        UIImage(
+            systemName: "paperplane",
+            withConfiguration: UIImage.SymbolConfiguration(
+                weight: .regular
+            )
+        )!
+    }
 }

@@ -2,9 +2,10 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChatCommonUI
 import SwiftUI
 
-/// View for the button for sending messages.
+/// The button for sending messages.
 public struct SendMessageButton: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
@@ -21,21 +22,32 @@ public struct SendMessageButton: View {
         Button {
             onTap()
         } label: {
-            Image(uiImage: images.sendArrow)
+            Image(uiImage: images.composerSend)
                 .renderingMode(.template)
-                .rotationEffect(enabled ? Angle(degrees: -90) : .zero)
-                .foregroundColor(
-                    Color(
-                        enabled ? enabledBackground : colors.disabledColorForColor(enabledBackground)
-                    )
-                )
+                .foregroundColor(Color(colors.staticColorText))
         }
+        .frame(width: 32, height: 32)
+        .background(Color(backgroundColor))
+        .clipShape(.circle)
+        .contentShape(.rect)
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")
     }
 
-    private var enabledBackground: UIColor {
-        colors.highlightedAccentBackground
+    private var backgroundColor: UIColor {
+        enabled ? colors.accentPrimary : colors.alternativeInactiveTint
     }
+}
+
+#Preview {
+    SendMessageButton(
+        enabled: true,
+        onTap: {}
+    )
+
+    SendMessageButton(
+        enabled: false,
+        onTap: {}
+    )
 }
