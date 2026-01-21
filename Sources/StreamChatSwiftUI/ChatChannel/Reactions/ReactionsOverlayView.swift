@@ -106,9 +106,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
                 factory.makeUserAvatarView(
                     options: .init(
-                        userDisplayInfo: messageDisplayInfo.message.authorDisplayInfo,
+                        user: messageDisplayInfo.message.author,
                         size: AvatarSize.medium,
-                        indicator: false
+                        showsIndicator: false
                     )
                 )
                 .offset(

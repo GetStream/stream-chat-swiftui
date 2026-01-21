@@ -32,21 +32,6 @@ public struct UserAvatar: View {
     }
     
     public init(
-        user: UserDisplayInfo,
-        size: CGFloat,
-        showsIndicator: Bool = false,
-        showsBorder: Bool = true
-    ) {
-        self.init(
-            url: user.imageURL,
-            initials: Self.initials(from: user.name),
-            size: size,
-            indicator: showsIndicator ? (user.isOnline ? .online : .offline) : .none,
-            showsBorder: showsBorder
-        )
-    }
-    
-    public init(
         url: URL?,
         initials: String,
         size: CGFloat,

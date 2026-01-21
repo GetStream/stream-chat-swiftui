@@ -76,17 +76,11 @@ public struct MentionUserView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack {
-            let displayInfo = UserDisplayInfo(
-                id: user.id,
-                name: user.name ?? user.id,
-                imageURL: user.imageURL,
-                online: user.isOnline
-            )
             factory.makeUserAvatarView(
                 options: .init(
-                    userDisplayInfo: displayInfo,
+                    user: user,
                     size: AvatarSize.medium,
-                    indicator: false
+                    showsIndicator: false
                 )
             )
             Text(user.name ?? user.id)

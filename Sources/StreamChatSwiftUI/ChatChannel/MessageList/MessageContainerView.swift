@@ -82,12 +82,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 if messageViewModel.isRightAligned {
                     MessageSpacer(spacerWidth: spacerWidth)
                 } else {
-                    if let userDisplayInfo = messageViewModel.userDisplayInfo {
+                    if let messageAuthor = messageViewModel.messageAuthor {
                         factory.makeUserAvatarView(
                             options: UserAvatarViewOptions(
-                                userDisplayInfo: userDisplayInfo,
+                                user: messageAuthor,
                                 size: AvatarSize.medium,
-                                indicator: false
+                                showsIndicator: false
                             )
                         )
                         .opacity(showsAllInfo ? 1 : 0)

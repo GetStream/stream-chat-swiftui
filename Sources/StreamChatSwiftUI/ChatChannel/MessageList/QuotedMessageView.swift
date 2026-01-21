@@ -38,9 +38,9 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
                 factory.makeUserAvatarView(
                     options: UserAvatarViewOptions(
-                        userDisplayInfo: quotedMessage.authorDisplayInfo,
+                        user: quotedMessage.author,
                         size: AvatarSize.medium,
-                        indicator: false
+                        showsIndicator: false
                     )
                 )
 
@@ -62,9 +62,9 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
 
                 factory.makeUserAvatarView(
                     options: UserAvatarViewOptions(
-                        userDisplayInfo: quotedMessage.authorDisplayInfo,
+                        user: quotedMessage.author,
                         size: AvatarSize.medium,
-                        indicator: false
+                        showsIndicator: false
                     )
                 )
             }

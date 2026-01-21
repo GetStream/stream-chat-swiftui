@@ -118,27 +118,18 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         }
     }
 
-    private var participantDisplayInfo: UserDisplayInfo {
-        let participant = message.threadParticipants.first
-        let id = participant?.id ?? ""
-        return UserDisplayInfo(
-            id: id,
-            name: participant?.name ?? id,
-            imageURL: participant?.imageURL,
-            online: participant?.isOnline ?? false,
-            role: participant?.userRole,
-            extraData: participant?.extraData ?? [:]
-        )
-    }
-    
-    private var messageAvatarView: some View {
-        factory.makeUserAvatarView(
-            options: .init(
-                userDisplayInfo: participantDisplayInfo,
-                size: AvatarSize.extraSmall,
-                indicator: false
+    @ViewBuilder private var messageAvatarView: some View {
+        if let participant = message.threadParticipants.first {
+            factory.makeUserAvatarView(
+                options: .init(
+                    user: participant,
+                    size: AvatarSize.extraSmall,
+                    showsIndicator: false
+                )
             )
-        )
+        } else {
+            EmptyView()
+        }
     }
 }
 

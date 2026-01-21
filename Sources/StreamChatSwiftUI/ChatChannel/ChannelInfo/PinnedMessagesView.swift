@@ -119,15 +119,9 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
         HStack {
             factory.makeUserAvatarView(
                 options: .init(
-                    userDisplayInfo: UserDisplayInfo(
-                        id: message.author.id,
-                        name: message.author.name ?? "",
-                        imageURL: message.author.imageURL,
-                        online: message.author.isOnline,
-                        extraData: message.author.extraData
-                    ),
+                    user: message.author,
                     size: avatarSize,
-                    indicator: false
+                    showsIndicator: false
                 )
             )
 

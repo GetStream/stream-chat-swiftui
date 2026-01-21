@@ -73,15 +73,9 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                 BottomRightView {
                                     factory.makeUserAvatarView(
                                         options: UserAvatarViewOptions(
-                                            userDisplayInfo: UserDisplayInfo(
-                                                id: mediaItem.message.author.id,
-                                                name: mediaItem.message.author.name ?? "",
-                                                imageURL: mediaItem.message.author.imageURL,
-                                                online: mediaItem.message.author.isOnline,
-                                                extraData: mediaItem.message.author.extraData
-                                            ),
+                                            user: mediaItem.message.author,
                                             size: AvatarSize.small,
-                                            indicator: false
+                                            showsIndicator: false
                                         )
                                     )
                                     .overlay(

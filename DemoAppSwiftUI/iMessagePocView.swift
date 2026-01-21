@@ -32,8 +32,7 @@ struct iMessagePocView: View {
                             ForEach(viewModel.pinnedChannels) { channel in
                                 ChannelAvatar(
                                     channel: channel,
-                                    size: 48,
-                                    indicator: false
+                                    size: 48
                                 )
                                 .padding()
                             }

@@ -38,17 +38,11 @@ struct ReactionUserView<Factory: ViewFactory>: View {
 
     var body: some View {
         VStack {
-            let displayInfo = UserDisplayInfo(
-                id: reaction.author.id,
-                name: reaction.author.name ?? reaction.author.id,
-                imageURL: reaction.author.imageURL,
-                online: reaction.author.isOnline
-            )
             factory.makeUserAvatarView(
                 options: .init(
-                    userDisplayInfo: displayInfo,
+                    user: reaction.author,
                     size: imageSize,
-                    indicator: false
+                    showsIndicator: false
                 )
             )
             .overlay(

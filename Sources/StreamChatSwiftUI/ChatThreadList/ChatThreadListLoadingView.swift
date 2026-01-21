@@ -21,6 +21,7 @@ public struct ChatThreadListLoadingView<Factory: ViewFactory>: View {
                         channelNameText: placeholder(length: 8),
                         parentMessageText: placeholder(length: 50),
                         unreadRepliesCount: 0,
+                        replyAuthor: nil,
                         replyAuthorId: placeholder(length: 8),
                         replyAuthorName: placeholder(length: 8),
                         replyAuthorUrl: URL(string: "url"),

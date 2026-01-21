@@ -130,7 +130,7 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                 let member = viewModel.members[0]
                 ChannelMemberView(
                     factory: factory,
-                    userDisplayInfo: UserDisplayInfo(member: member)
+                    user: member
                 )
             } else {
                 ScrollView(.horizontal) {
@@ -138,7 +138,7 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                         ForEach(viewModel.members) { member in
                             ChannelMemberView(
                                 factory: factory,
-                                userDisplayInfo: UserDisplayInfo(member: member)
+                                user: member
                             )
                         }
                     }
@@ -154,21 +154,21 @@ public struct ChannelMemberView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
 
     let factory: Factory
-    let userDisplayInfo: UserDisplayInfo
+    let user: ChatUser
     let memberSize = CGSize(width: 64, height: 64)
 
     public var body: some View {
         VStack(alignment: .center) {
             factory.makeUserAvatarView(
                 options: UserAvatarViewOptions(
-                    userDisplayInfo: userDisplayInfo,
+                    user: user,
                     size: AvatarSize.large,
-                    indicator: false
+                    showsIndicator: false
                 )
             )
             .accessibilityHidden(true)
 
-            Text(userDisplayInfo.name)
+            Text(user.name ?? user.id)
                 .font(fonts.footnoteBold)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
@@ -178,6 +178,6 @@ public struct ChannelMemberView<Factory: ViewFactory>: View {
     }
     
     var accessibilityLabel: String {
-        userDisplayInfo.name + (userDisplayInfo.isOnline ? ", \(L10n.Message.Title.online)" : "")
+        (user.name ?? user.id) + (user.isOnline ? ", \(L10n.Message.Title.online)" : "")
     }
 }

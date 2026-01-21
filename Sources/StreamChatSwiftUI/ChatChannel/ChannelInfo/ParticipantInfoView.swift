@@ -44,17 +44,11 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
                 
-                let displayInfo = UserDisplayInfo(
-                    id: participant.chatUser.id,
-                    name: participant.chatUser.name ?? participant.chatUser.id,
-                    imageURL: participant.chatUser.imageURL,
-                    online: participant.chatUser.isOnline
-                )
                 factory.makeUserAvatarView(
                     options: .init(
-                        userDisplayInfo: displayInfo,
+                        user: participant.chatUser,
                         size: 64,
-                        indicator: true
+                        showsIndicator: true
                     )
                 )
                 .padding()

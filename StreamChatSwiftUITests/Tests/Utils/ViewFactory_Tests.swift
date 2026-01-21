@@ -91,16 +91,10 @@ import XCTest
     func test_viewFactory_makeUserAvatarView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        let userInfo = UserDisplayInfo(
-            id: .unique,
-            name: .unique,
-            imageURL: URL(string: "https://example.com"),
-            online: true,
-            role: .user
-        )
+        let user = ChatUser.mock(id: .unique)
 
         // When
-        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: AvatarSize.medium, indicator: true))
+        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(user: user, size: AvatarSize.medium, showsIndicator: true))
 
         // Then
         XCTAssert(view is UserAvatar)

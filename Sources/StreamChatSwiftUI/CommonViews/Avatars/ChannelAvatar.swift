@@ -14,7 +14,7 @@ public struct ChannelAvatar: View {
     let size: CGFloat
     let showsIndicator: Bool
     let showsBorder: Bool
-    let directMessageUser: UserDisplayInfo?
+    let directMessageUser: ChatUser?
     
     public init(
         channel: ChatChannel,
@@ -29,8 +29,7 @@ public struct ChannelAvatar: View {
         directMessageUser = {
             guard channel.isDirectMessageChannel, channel.memberCount == 2 else { return nil }
             let currentUserId = InjectedValues[\.chatClient].currentUserId
-            guard let member = channel.lastActiveMembers.first(where: { $0.id != currentUserId }) else { return nil }
-            return UserDisplayInfo(member: member)
+            return channel.lastActiveMembers.first(where: { $0.id != currentUserId })
         }()
     }
     

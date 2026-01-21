@@ -202,9 +202,9 @@ extension ViewFactory {
     
     public func makeUserAvatarView(options: UserAvatarViewOptions) -> some View {
         UserAvatar(
-            user: options.userDisplayInfo,
+            user: options.user,
             size: options.size,
-            showsIndicator: options.indicator
+            showsIndicator: options.showsIndicator
         )
     }
         

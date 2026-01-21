@@ -33,20 +33,20 @@ public final class MessageListBackgroundOptions: Sendable {
 /// Options for creating the message avatar view.
 public final class UserAvatarViewOptions: Sendable {
     /// Information about the user to display.
-    public let userDisplayInfo: UserDisplayInfo
+    public let user: ChatUser
     /// The size of the avatar.
     public let size: CGFloat
     /// True, if the presence indicator should be shown with online and offline states.
-    public let indicator: Bool
+    public let showsIndicator: Bool
     
     public init(
-        userDisplayInfo: UserDisplayInfo,
+        user: ChatUser,
         size: CGFloat,
-        indicator: Bool
+        showsIndicator: Bool
     ) {
         self.size = size
-        self.indicator = indicator
-        self.userDisplayInfo = userDisplayInfo
+        self.showsIndicator = showsIndicator
+        self.user = user
     }
 }
 

@@ -60,18 +60,11 @@ public struct AddUsersView<Factory: ViewFactory>: View {
                         } label: {
                             VStack {
                                 let itemSize: CGFloat = 64
-                                let userDisplayInfo = UserDisplayInfo(
-                                    id: user.id,
-                                    name: user.name ?? "",
-                                    imageURL: user.imageURL,
-                                    online: user.isOnline,
-                                    extraData: user.extraData
-                                )
                                 factory.makeUserAvatarView(
                                     options: UserAvatarViewOptions(
-                                        userDisplayInfo: userDisplayInfo,
+                                        user: user,
                                         size: itemSize,
-                                        indicator: false
+                                        showsIndicator: false
                                     )
                                 )
 
