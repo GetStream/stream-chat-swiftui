@@ -118,35 +118,27 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         }
     }
 
+    private var participantDisplayInfo: UserDisplayInfo {
+        let participant = message.threadParticipants.first
+        let id = participant?.id ?? ""
+        return UserDisplayInfo(
+            id: id,
+            name: participant?.name ?? id,
+            imageURL: participant?.imageURL,
+            online: participant?.isOnline ?? false,
+            role: participant?.userRole,
+            extraData: participant?.extraData ?? [:]
+        )
+    }
+    
     private var messageAvatarView: some View {
-        // This is just a fallback for backwards compatibility
-        // In practice thread participants will never be empty.
-        // So, the factory method will always run.
-        Group {
-            if let participant = message.threadParticipants.first {
-                let displayInfo = UserDisplayInfo(
-                    id: participant.id,
-                    name: participant.name ?? participant.id,
-                    imageURL: participant.imageURL,
-                    online: participant.isOnline
-                )
-                factory.makeUserAvatarView(
-                    options: .init(
-                        userDisplayInfo: displayInfo,
-                        size: AvatarSize.extraSmall,
-                        indicator: false
-                    )
-                )
-            } else {
-                UserAvatar(
-                    url: nil,
-                    initials: "",
-                    size: AvatarSize.medium,
-                    indicator: .none,
-                    border: true
-                )
-            }
-        }
+        factory.makeUserAvatarView(
+            options: .init(
+                userDisplayInfo: participantDisplayInfo,
+                size: AvatarSize.extraSmall,
+                indicator: false
+            )
+        )
     }
 }
 

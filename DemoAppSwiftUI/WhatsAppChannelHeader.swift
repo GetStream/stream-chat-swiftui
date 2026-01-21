@@ -42,7 +42,7 @@ struct WhatsAppChannelHeader: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             HStack {
-                ChannelAvatar(channel: channel, size: 36)
+                ChannelAvatar(channel: channel, size: 36, indicator: false)
                 VStack(alignment: .leading) {
                     Text(name(for: channel))
                         .font(fonts.bodyBold)

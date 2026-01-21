@@ -109,7 +109,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
-    private let avatarSize: CGFloat = 56
+    private let avatarSize: CGFloat = AvatarSize.large
 
     var factory: Factory
     var message: ChatMessage

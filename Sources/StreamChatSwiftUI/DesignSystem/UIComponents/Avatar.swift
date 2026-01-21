@@ -140,7 +140,7 @@ public struct UserAvatar: View {
         initials: String,
         size: CGFloat,
         indicator: AvatarIndicator,
-        border: Bool
+        border: Bool = true
     ) {
         self.url = url
         self.initials = String(initials.prefix(size >= AvatarSize.medium ? 2 : 1))
@@ -276,7 +276,7 @@ public enum AvatarSize {
     
     static var standardSizes: [CGFloat] { [AvatarSize.large, AvatarSize.medium, AvatarSize.small, AvatarSize.extraSmall] }
     
-    @MainActor static var messageAvatarSize = AvatarSize.medium
+    @MainActor public static var messageAvatarSize = AvatarSize.medium
 }
 
 public enum AvatarIndicator: CaseIterable {
