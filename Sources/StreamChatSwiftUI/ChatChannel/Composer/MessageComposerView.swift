@@ -509,6 +509,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
         }
+        .transaction { transaction in
+            transaction.animation = nil
+        }
     }
 
     private var sendMessageButtonState: SendMessageButtonState {
