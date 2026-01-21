@@ -80,7 +80,8 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                                 online: mediaItem.message.author.isOnline,
                                                 extraData: mediaItem.message.author.extraData
                                             ),
-                                            size: AvatarSize.small
+                                            size: AvatarSize.small,
+                                            indicator: false
                                         )
                                     )
                                     .overlay(

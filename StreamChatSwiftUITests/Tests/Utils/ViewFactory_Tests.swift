@@ -100,7 +100,7 @@ import XCTest
         )
 
         // When
-        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: AvatarSize.medium))
+        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userInfo, size: AvatarSize.medium, indicator: true))
 
         // Then
         XCTAssert(view is UserAvatar)

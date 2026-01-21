@@ -82,7 +82,13 @@ public struct MentionUserView<Factory: ViewFactory>: View {
                 imageURL: user.imageURL,
                 online: user.isOnline
             )
-            factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: AvatarSize.medium))
+            factory.makeUserAvatarView(
+                options: .init(
+                    userDisplayInfo: displayInfo,
+                    size: AvatarSize.medium,
+                    indicator: false
+                )
+            )
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.bodyBold)

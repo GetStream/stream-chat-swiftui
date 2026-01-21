@@ -67,7 +67,13 @@ public struct AddUsersView<Factory: ViewFactory>: View {
                                     online: user.isOnline,
                                     extraData: user.extraData
                                 )
-                                factory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: userDisplayInfo, size: itemSize))
+                                factory.makeUserAvatarView(
+                                    options: UserAvatarViewOptions(
+                                        userDisplayInfo: userDisplayInfo,
+                                        size: itemSize,
+                                        indicator: false
+                                    )
+                                )
 
                                 Text(user.name ?? user.id)
                                     .multilineTextAlignment(.center)

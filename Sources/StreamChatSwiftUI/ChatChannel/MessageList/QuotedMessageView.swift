@@ -39,7 +39,8 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                 factory.makeUserAvatarView(
                     options: UserAvatarViewOptions(
                         userDisplayInfo: quotedMessage.authorDisplayInfo,
-                        size: AvatarSize.medium
+                        size: AvatarSize.medium,
+                        indicator: false
                     )
                 )
 
@@ -62,7 +63,8 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                 factory.makeUserAvatarView(
                     options: UserAvatarViewOptions(
                         userDisplayInfo: quotedMessage.authorDisplayInfo,
-                        size: AvatarSize.medium
+                        size: AvatarSize.medium,
+                        indicator: false
                     )
                 )
             }

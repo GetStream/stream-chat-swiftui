@@ -40,7 +40,13 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                         online: participant.chatUser.isOnline,
                         extraData: participant.chatUser.extraData
                     )
-                    factory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: displayInfo, size: AvatarSize.medium))
+                    factory.makeUserAvatarView(
+                        options: UserAvatarViewOptions(
+                            userDisplayInfo: displayInfo,
+                            size: AvatarSize.medium,
+                            indicator: true
+                        )
+                    )
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(participant.displayName)

@@ -70,7 +70,7 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
 public final class ChannelAvatarViewOptions: Sendable {
     /// The channel to display the avatar for.
     public let channel: ChatChannel
-    /// The size class of the avatar.
+    /// The size of the avatar.
     public let size: CGFloat
     
     public init(channel: ChatChannel, size: CGFloat) {

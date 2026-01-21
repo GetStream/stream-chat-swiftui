@@ -126,7 +126,8 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                         online: message.author.isOnline,
                         extraData: message.author.extraData
                     ),
-                    size: avatarSize
+                    size: avatarSize,
+                    indicator: false
                 )
             )
 

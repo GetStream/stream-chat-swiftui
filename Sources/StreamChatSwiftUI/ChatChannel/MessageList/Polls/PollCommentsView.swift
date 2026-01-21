@@ -46,7 +46,13 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                                             online: comment.user?.isOnline ?? false,
                                             extraData: comment.user?.extraData ?? [:]
                                         )
-                                        factory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: displayInfo, size: AvatarSize.medium))
+                                        factory.makeUserAvatarView(
+                                            options: UserAvatarViewOptions(
+                                                userDisplayInfo: displayInfo,
+                                                size: AvatarSize.medium,
+                                                indicator: false
+                                            )
+                                        )
                                     }
                                     Text(authorTitle(for: comment))
                                     Spacer()

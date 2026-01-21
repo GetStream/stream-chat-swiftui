@@ -110,7 +110,8 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                                     online: vote.user?.isOnline ?? false,
                                     extraData: vote.user?.extraData ?? [:]
                                 ),
-                                size: AvatarSize.extraSmall
+                                size: AvatarSize.extraSmall,
+                                indicator: false
                             )
                         )
                     }

@@ -265,7 +265,13 @@ public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
                 online: participant?.chatUser.isOnline ?? false,
                 extraData: participant?.chatUser.extraData ?? [:]
             )
-            factory.makeUserAvatarView(options: UserAvatarViewOptions(userDisplayInfo: displayInfo, size: 64))
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    userDisplayInfo: displayInfo,
+                    size: 64,
+                    indicator: false
+                )
+            )
             
             Text(participant?.onlineInfoText ?? "")
                 .font(fonts.footnote)

@@ -44,14 +44,20 @@ struct ReactionUserView<Factory: ViewFactory>: View {
                 imageURL: reaction.author.imageURL,
                 online: reaction.author.isOnline
             )
-            factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: imageSize))
-                .overlay(
-                    VStack {
-                        Spacer()
-                        SingleReactionView(reaction: reaction)
-                            .frame(height: imageSize / 2)
-                    }
+            factory.makeUserAvatarView(
+                options: .init(
+                    userDisplayInfo: displayInfo,
+                    size: imageSize,
+                    indicator: false
                 )
+            )
+            .overlay(
+                VStack {
+                    Spacer()
+                    SingleReactionView(reaction: reaction)
+                        .frame(height: imageSize / 2)
+                }
+            )
 
             Text(authorName)
                 .multilineTextAlignment(.center)

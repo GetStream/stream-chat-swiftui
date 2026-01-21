@@ -50,8 +50,14 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                     imageURL: participant.chatUser.imageURL,
                     online: participant.chatUser.isOnline
                 )
-                factory.makeUserAvatarView(options: .init(userDisplayInfo: displayInfo, size: 64))
-                    .padding()
+                factory.makeUserAvatarView(
+                    options: .init(
+                        userDisplayInfo: displayInfo,
+                        size: 64,
+                        indicator: true
+                    )
+                )
+                .padding()
 
                 VStack {
                     ForEach(actions) { action in

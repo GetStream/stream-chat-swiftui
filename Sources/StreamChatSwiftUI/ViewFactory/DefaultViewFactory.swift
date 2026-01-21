@@ -205,7 +205,7 @@ extension ViewFactory {
         UserAvatar(
             user: options.userDisplayInfo,
             size: options.size,
-            indicator: true,
+            indicator: options.indicator,
             border: true
         )
     }
