@@ -264,19 +264,17 @@ struct Avatar<Placeholder>: View where Placeholder: View {
 // MARK: - Avatar Styling
 
 public enum AvatarSize {
-    public static let large: CGFloat = 40
-    public static let medium: CGFloat = 32
-    public static let small: CGFloat = 24
-    public static let extraSmall: CGFloat = 20
+    @MainActor public static var large: CGFloat = 40
+    @MainActor public static var medium: CGFloat = 32
+    @MainActor public static var small: CGFloat = 24
+    @MainActor public static var extraSmall: CGFloat = 20
     
-    static let largeSizeClass: PartialRangeFrom<CGFloat> = AvatarSize.large...
-    static let mediumSizeClass: Range<CGFloat> = AvatarSize.medium..<AvatarSize.large
-    static let smallSizeClass: Range<CGFloat> = AvatarSize.small..<AvatarSize.medium
-    static let extraSmallSizeClass: PartialRangeUpTo<CGFloat> = ..<AvatarSize.small
+    @MainActor static var largeSizeClass: PartialRangeFrom<CGFloat> { AvatarSize.large... }
+    @MainActor static var mediumSizeClass: Range<CGFloat> { AvatarSize.medium..<AvatarSize.large }
+    @MainActor static var smallSizeClass: Range<CGFloat> { AvatarSize.small..<AvatarSize.medium }
+    @MainActor static var extraSmallSizeClass: PartialRangeUpTo<CGFloat> { ..<AvatarSize.small }
     
-    static var standardSizes: [CGFloat] { [AvatarSize.large, AvatarSize.medium, AvatarSize.small, AvatarSize.extraSmall] }
-    
-    @MainActor public static var messageAvatarSize = AvatarSize.medium
+    @MainActor static var standardSizes: [CGFloat] { [AvatarSize.large, AvatarSize.medium, AvatarSize.small, AvatarSize.extraSmall] }
 }
 
 public enum AvatarIndicator: CaseIterable {
