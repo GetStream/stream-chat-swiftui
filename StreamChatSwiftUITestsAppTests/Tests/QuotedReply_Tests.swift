@@ -9,7 +9,7 @@ final class QuotedReply_Tests: StreamTestCase {
     let messageCount = 30
     let pageSize = 25
     let quotedText = "1"
-    let parentText = "test"
+    let parentText = "some messsage text"
     let replyText = "quoted reply"
 
     func test_whenSwipingMessage_thenMessageIsQuotedReply() {
