@@ -520,7 +520,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .audio
         }
 
-        return .regular(isSendMessageEnabled)
+        return .regular(sendButtonEnabled)
     }
 
     private var composerInputBackground: Color {

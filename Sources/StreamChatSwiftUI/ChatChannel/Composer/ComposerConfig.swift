@@ -21,7 +21,7 @@ public struct ComposerConfig {
     public init(
         isVoiceRecordingEnabled: Bool = false,
         inputViewMinHeight: CGFloat = 38,
-        inputViewMaxHeight: CGFloat = 76,
+        inputViewMaxHeight: CGFloat = 100,
         inputViewCornerRadius: CGFloat = 20,
         inputFont: UIFont = UIFont.preferredFont(forTextStyle: .body),
         gallerySupportedTypes: GallerySupportedTypes = .imagesAndVideo,
