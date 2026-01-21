@@ -92,7 +92,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                         lineJoin: .round
                     )
                 )
-                .offset(y: -24)
+                .offset(y: -22)
                 .rotation3DEffect(
                     .degrees(isRightAligned ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
