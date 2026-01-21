@@ -15,7 +15,7 @@ final class AvatarTests: StreamChatTestCase {
         // Given
         let view = HStack(spacing: 2) {
             VStack(spacing: 2) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: TestImages.yoda.url,
                         size: size,
@@ -24,7 +24,7 @@ final class AvatarTests: StreamChatTestCase {
                 }
             }
             VStack(spacing: 2) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: TestImages.yoda.url,
                         size: size,
@@ -43,7 +43,7 @@ final class AvatarTests: StreamChatTestCase {
         // Given
         let view = HStack(spacing: 2) {
             VStack(spacing: 2) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     UserAvatar(
                         url: nil,
                         initials: "EC",
@@ -54,7 +54,7 @@ final class AvatarTests: StreamChatTestCase {
                 }
             }
             VStack(spacing: 2) {
-                ForEach(AvatarSize.allCases, id: \.self) { size in
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     UserAvatar(
                         url: nil,
                         initials: "",

@@ -78,6 +78,6 @@ class CustomHeaderViewFactory: ViewFactory {
             MessageAuthorView(message: options.message)
             Spacer()
         }
-        .padding(.leading, AvatarSize.messageAvatarSize.diameter + 24)
+        .padding(.leading, AvatarSize.messageAvatarSize + 24)
     }
 }

@@ -161,7 +161,7 @@ class ChannelAvatarViewFactory: ViewFactory {
     ) -> some View {
         Circle()
             .fill(.red)
-            .frame(width: options.size.rawValue, height: options.size.rawValue)
+            .frame(width: options.size, height: options.size)
     }
 }
 
@@ -174,6 +174,6 @@ class ChannelAvatarViewRegularFactory: ViewFactory {
     ) -> some View {
         Circle()
             .fill(.red)
-            .frame(width: options.size.rawValue, height: options.size.rawValue)
+            .frame(width: options.size, height: options.size)
     }
 }
