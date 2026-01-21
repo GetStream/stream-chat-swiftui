@@ -14,20 +14,20 @@ public struct ChannelAvatar: View {
     
     let url: URL?
     let size: CGFloat
-    let indicator: Bool
-    let border: Bool
+    let showsIndicator: Bool
+    let showsBorder: Bool
     let directMessageUser: UserDisplayInfo?
     
     public init(
         channel: ChatChannel,
         size: CGFloat,
-        indicator: Bool = true,
-        border: Bool = true
+        showsIndicator: Bool = false,
+        showsBorder: Bool = true
     ) {
         url = channel.imageURL
         self.size = size
-        self.border = border
-        self.indicator = indicator
+        self.showsBorder = showsBorder
+        self.showsIndicator = showsIndicator
         directMessageUser = {
             guard channel.isDirectMessageChannel, channel.memberCount == 2 else { return nil }
             let currentUserId = InjectedValues[\.chatClient].currentUserId
@@ -41,15 +41,15 @@ public struct ChannelAvatar: View {
             UserAvatar(
                 user: directMessageUser,
                 size: size,
-                indicator: indicator,
-                border: border
+                showsIndicator: showsIndicator,
+                showsBorder: showsBorder
             )
             .accessibilityIdentifier("ChannelAvatar")
         } else {
             GroupAvatar(
                 url: url,
                 size: size,
-                border: border
+                showsBorder: showsBorder
             )
             .accessibilityIdentifier("ChannelAvatar")
         }
@@ -60,7 +60,13 @@ struct GroupAvatar: View {
     @Injected(\.colors) var colors
     let url: URL?
     let size: CGFloat
-    let border: Bool
+    let showsBorder: Bool
+    
+    init(url: URL?, size: CGFloat, showsBorder: Bool = true) {
+        self.url = url
+        self.size = size
+        self.showsBorder = showsBorder
+    }
     
     var body: some View {
         Avatar(
@@ -77,7 +83,7 @@ struct GroupAvatar: View {
                     )
             },
             size: size,
-            border: border
+            showsBorder: showsBorder
         )
         .cornerRadius(DesignSystemTokens.radiusMax)
     }
@@ -103,35 +109,35 @@ public struct UserAvatar: View {
     let initials: String
     let size: CGFloat
     let indicator: AvatarIndicator
-    let border: Bool
+    let showsBorder: Bool
     
     public init(
         user: ChatUser,
         size: CGFloat,
-        indicator: Bool = true,
-        border: Bool = true
+        showsIndicator: Bool = false,
+        showsBorder: Bool = true
     ) {
         self.init(
             url: user.imageURL,
             initials: Self.intials(from: user.name ?? ""),
             size: size,
-            indicator: indicator ? (user.isOnline ? .online : .offline) : .none,
-            border: border
+            indicator: showsIndicator ? (user.isOnline ? .online : .offline) : .none,
+            showsBorder: showsBorder
         )
     }
     
     public init(
         user: UserDisplayInfo,
         size: CGFloat,
-        indicator: Bool = true,
-        border: Bool = true
+        showsIndicator: Bool = false,
+        showsBorder: Bool = true
     ) {
         self.init(
             url: user.imageURL,
             initials: Self.intials(from: user.name),
             size: size,
-            indicator: indicator ? (user.isOnline ? .online : .offline) : .none,
-            border: border
+            indicator: showsIndicator ? (user.isOnline ? .online : .offline) : .none,
+            showsBorder: showsBorder
         )
     }
     
@@ -140,13 +146,13 @@ public struct UserAvatar: View {
         initials: String,
         size: CGFloat,
         indicator: AvatarIndicator,
-        border: Bool = true
+        showsBorder: Bool = true
     ) {
         self.url = url
         self.initials = String(initials.prefix(size >= AvatarSize.medium ? 2 : 1))
         self.size = size
         self.indicator = indicator
-        self.border = border
+        self.showsBorder = showsBorder
     }
     
     public var body: some View {
@@ -171,7 +177,7 @@ public struct UserAvatar: View {
                     )
             },
             size: size,
-            border: border
+            showsBorder: showsBorder
         )
         .cornerRadius(DesignSystemTokens.radiusMax)
         .avatarIndicator(indicator, size: size)
@@ -219,13 +225,13 @@ struct Avatar<Placeholder>: View where Placeholder: View {
     let url: URL?
     @ViewBuilder let placeholder: (AvatarPlaceholderState) -> Placeholder
     let size: CGFloat
-    let border: Bool
+    let showsBorder: Bool
     
     init(
         url: URL?,
         placeholder: @escaping (AvatarPlaceholderState) -> Placeholder,
         size: CGFloat,
-        border: Bool
+        showsBorder: Bool
     ) {
         self.url = {
             guard let url else { return nil }
@@ -233,7 +239,7 @@ struct Avatar<Placeholder>: View where Placeholder: View {
         }()
         self.placeholder = placeholder
         self.size = size
-        self.border = border
+        self.showsBorder = showsBorder
     }
     
     var body: some View {
@@ -244,7 +250,7 @@ struct Avatar<Placeholder>: View where Placeholder: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .overlay(
-                        border ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
+                        showsBorder ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
                     )
             case .loading:
                 placeholder(.loading)
@@ -356,8 +362,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: channelURL,
-                        size: size,
-                        border: true
+                        size: size
                     )
                 }
             }
@@ -365,8 +370,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: nil,
-                        size: size,
-                        border: true
+                        size: size
                     )
                 }
             }
@@ -378,8 +382,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         url: avatarURL,
                         initials: "PA",
                         size: size,
-                        indicator: .online,
-                        border: true
+                        indicator: .online
                     )
                 }
             }
@@ -389,8 +392,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         url: nil,
                         initials: "PA",
                         size: size,
-                        indicator: .online,
-                        border: true
+                        indicator: .online
                     )
                 }
             }
@@ -400,8 +402,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         url: nil,
                         initials: "",
                         size: size,
-                        indicator: .offline,
-                        border: true
+                        indicator: .offline
                     )
                 }
             }

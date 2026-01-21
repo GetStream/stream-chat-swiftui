@@ -77,8 +77,7 @@ extension ViewFactory {
     ) -> some View {
         ChannelAvatar(
             channel: options.channel,
-            size: options.size,
-            border: true
+            size: options.size
         )
     }
     
@@ -205,8 +204,7 @@ extension ViewFactory {
         UserAvatar(
             user: options.userDisplayInfo,
             size: options.size,
-            indicator: options.indicator,
-            border: true
+            showsIndicator: options.indicator
         )
     }
         

@@ -201,7 +201,7 @@ struct ProfileURLModifier: ViewModifier {
                 }, content: {
                     if let user = mentionsHandler.selectedUser {
                         VStack {
-                            UserAvatar(user: user, size: AvatarSize.medium, indicator: false)
+                            UserAvatar(user: user, size: AvatarSize.medium)
                             Text(user.name ?? user.id)
                         }
                     }

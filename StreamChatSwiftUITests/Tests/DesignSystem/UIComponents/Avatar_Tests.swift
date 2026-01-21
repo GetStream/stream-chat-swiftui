@@ -18,8 +18,7 @@ final class AvatarTests: StreamChatTestCase {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: TestImages.yoda.url,
-                        size: size,
-                        border: true
+                        size: size
                     )
                 }
             }
@@ -27,8 +26,7 @@ final class AvatarTests: StreamChatTestCase {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
                     GroupAvatar(
                         url: TestImages.yoda.url,
-                        size: size,
-                        border: true
+                        size: size
                     )
                 }
             }
@@ -48,8 +46,7 @@ final class AvatarTests: StreamChatTestCase {
                         url: nil,
                         initials: "EC",
                         size: size,
-                        indicator: .online,
-                        border: false
+                        indicator: .online
                     )
                 }
             }
@@ -59,8 +56,7 @@ final class AvatarTests: StreamChatTestCase {
                         url: nil,
                         initials: "",
                         size: size,
-                        indicator: .offline,
-                        border: true
+                        indicator: .offline
                     )
                 }
             }
