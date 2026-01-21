@@ -44,7 +44,7 @@ class MessageListPage {
 
     enum NavigationBar {
         static var chatAvatar: XCUIElement {
-            app.images["ChannelAvatarView"]
+            app.images["ChannelAvatar"]
         }
 
         static var chatName: XCUIElement {
@@ -119,7 +119,7 @@ class MessageListPage {
         }
 
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
-            app.buttons.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView' or identifier LIKE 'MessageAvatarViewPlaceholder'")).firstMatch
+            app.buttons.matching(NSPredicate(format: "identifier LIKE 'UserAvatar' or identifier LIKE 'UserAvatarPlaceholder'")).firstMatch
         }
 
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
@@ -377,7 +377,7 @@ class MessageListPage {
 
     enum ComposerMentions {
         static var cells: XCUIElementQuery {
-            app.scrollViews["CommandsContainerView"].images.matching(NSPredicate(format: "identifier LIKE 'MessageAvatarView'"))
+            app.scrollViews["CommandsContainerView"].images.matching(NSPredicate(format: "identifier LIKE 'UserAvatar'"))
         }
     }
 }

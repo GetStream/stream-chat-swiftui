@@ -81,7 +81,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
                 }
                 .accessibilityHidden(true)
             }
-            .accessibilityIdentifier("ChannelAvatarView")
+            .accessibilityIdentifier("ChannelAvatar")
         }
     }
 }

@@ -175,6 +175,7 @@ public struct UserAvatar: View {
                         .font(font)
                         .foregroundColor(colors.avatarTextDefault.toColor)
                     )
+                    .accessibilityIdentifier("UserAvatarPlaceholder")
             },
             size: size,
             showsBorder: showsBorder
