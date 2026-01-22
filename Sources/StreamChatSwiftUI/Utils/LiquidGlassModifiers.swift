@@ -18,16 +18,20 @@ public struct LiquidGlassInputViewModifier: ViewModifier {
         content
             .background(Color(colors.composerBg))
             .overlay(
-                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(Color(colors.buttonSecondaryBorder))
             )
             .clipShape(
-                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius)
             )
             .modifier(LiquidGlassModifier(
-                shape: .roundedRect(DesignSystemTokens.radius3xl),
+                shape: .roundedRect(cornerRadius),
                 isInteractive: true
             ))
+    }
+
+    private var cornerRadius: CGFloat {
+        DesignSystemTokens.radius3xl
     }
 }
 
