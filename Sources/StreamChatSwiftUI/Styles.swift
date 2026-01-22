@@ -90,11 +90,11 @@ public class LiquidGlassStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: CustomRoundedShape())
+        LiquidGlassModifier(shape: CustomRoundedShape(), isInteractive: true)
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: .circle)
+        LiquidGlassModifier(shape: .circle, isInteractive: true)
     }
 }
 
@@ -109,6 +109,10 @@ public class RegularStyles: Styles {
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
         BorderModifier(shape: .circle)
+    }
+
+    public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
+        ComposerBackgroundRegularViewModifier()
     }
 }
 
@@ -126,15 +130,11 @@ public struct StandardInputViewModifier: ViewModifier {
             .background(Color(colors.composerBg))
             .overlay(
                 RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-                    .stroke(Color(colors.borderCoreImage))
+                    .stroke(Color(colors.buttonSecondaryBorder))
             )
             .clipShape(
                 RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
             )
-    }
-    
-    private var highlightedBorder: UIColor {
-        return colors.borderCorePrimary
     }
 }
 
@@ -148,4 +148,13 @@ public class ComposerInputModifierOptions {
 
 public class ComposerButtonModifierOptions {
     public init() {}
+}
+
+struct ComposerBackgroundRegularViewModifier: ViewModifier {
+    @Injected(\.colors) var colors
+
+    func body(content: Content) -> some View {
+        content
+            .background(Color(colors.composerBg))
+    }
 }

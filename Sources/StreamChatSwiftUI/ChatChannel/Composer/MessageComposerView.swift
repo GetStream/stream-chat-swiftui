@@ -217,7 +217,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 popupSize = height - bottomSafeArea
             }
         }
-        .background(Color(colors.composerBg))
         .overlay(
             viewModel.showCommandsOverlay ?
                 factory.makeCommandsContainerView(

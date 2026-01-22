@@ -13,7 +13,7 @@ struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
         content
             .background(
                 shape
-                    .stroke(Color(colors.borderCoreImage), lineWidth: 0.5)
+                    .stroke(Color(colors.buttonSecondaryBorder), lineWidth: 0.5)
                     .shadow(
                         color: .black.opacity(0.2),
                         radius: 12,
@@ -25,9 +25,14 @@ struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
 
 public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     var shape: BackgroundShape
-    
-    public init(shape: BackgroundShape) {
+    var isInteractive: Bool
+
+    public init(
+        shape: BackgroundShape,
+        isInteractive: Bool = false
+    ) {
         self.shape = shape
+        self.isInteractive = isInteractive
     }
     
     public func body(content: Content) -> some View {
@@ -35,7 +40,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
         if #available(iOS 26.0, *) {
             content
                 .modifier(BorderModifier(shape: shape))
-                .glassEffect(.regular, in: shape)
+                .glassEffect(.regular.interactive(isInteractive), in: shape)
         } else {
             content
         }
