@@ -311,7 +311,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var startRecording: () -> Void
     var stopRecording: () -> Void
 
-    @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
+    @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
 
     public init(
@@ -465,7 +465,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                     .accessibilityIdentifier("ComposerTextInputView")
                     .accessibilityElement(children: .contain)
-                    .frame(height: textFieldHeight)
                     .overlay(
                         command?.displayInfo?.isInstant == true ?
                             HStack {
@@ -482,6 +481,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 }
                 .frame(height: textFieldHeight)
+                .padding(.vertical, 4)
 
                 factory.makeComposerInputTrailingView(
                     options: .init(
@@ -497,7 +497,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .padding(.bottom, 8)
             }
         }
-        .padding(.vertical, 2)
         .padding(.vertical, shouldAddVerticalPadding ? inputPaddingsConfig.vertical : 0)
         .padding(.leading, inputPaddingsConfig.leading)
         .padding(.trailing, inputPaddingsConfig.trailing)
