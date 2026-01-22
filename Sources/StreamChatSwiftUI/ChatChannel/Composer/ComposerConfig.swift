@@ -20,7 +20,7 @@ public struct ComposerConfig {
 
     public init(
         isVoiceRecordingEnabled: Bool = false,
-        inputViewMinHeight: CGFloat = 38,
+        inputViewMinHeight: CGFloat = 48,
         inputViewMaxHeight: CGFloat = 120,
         inputViewCornerRadius: CGFloat = 20,
         inputFont: UIFont = UIFont.preferredFont(forTextStyle: .body),

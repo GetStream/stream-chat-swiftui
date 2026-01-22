@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChatCommonUI
 import SwiftUI
 
 struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
@@ -51,7 +52,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
 }
 
 struct CustomRoundedShape: Shape {
-    var radius: CGFloat = 16
+    var radius: CGFloat = DesignSystemTokens.radius3xl
     var corners: UIRectCorner = .allCorners
 
     func path(in rect: CGRect) -> Path {
