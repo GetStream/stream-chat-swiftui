@@ -105,7 +105,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     Divider()
-                        .opacity(composerPlacement == .docked ? 1 : 0)
+                        .opacity(0)
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
                             view.modifier(factory.makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions(shouldShow: false)))
@@ -126,6 +126,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
                     if composerPlacement == .docked {
                         composerView
+                            .padding(.top, 8)
+                            .overlay(
+                                Rectangle()
+                                    .frame(width: nil, height: 1, alignment: .top)
+                                    .foregroundColor(Color(colors.borderCoreImage)), alignment: .top
+                            )
+
                             .opacity((
                                 utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
                                     .reactionsShown && viewModel.channel?.isFrozen == false
