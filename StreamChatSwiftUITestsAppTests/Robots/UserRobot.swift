@@ -131,8 +131,14 @@ extension UserRobot {
     @discardableResult
     func clearComposer() -> Self {
         if !composer.textView.text.isEmpty {
-            composer.inputField.tap()
-            composer.selectAllButton.wait().safeTap()
+            let selectAllButton = composer.selectAllButton
+            for i in 0..<5 {
+                composer.inputField.tap()
+                if selectAllButton.exists {
+                    selectAllButton.safeTap()
+                    break
+                }
+            }
             composer.inputField.typeText(XCUIKeyboardKey.delete.rawValue)
         }
         return self
