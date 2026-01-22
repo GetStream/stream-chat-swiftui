@@ -9,6 +9,7 @@ import SwiftUI
 public struct UserAvatar: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
+    @Injected(\.images) var images
     
     let url: URL?
     let initials: String
@@ -53,7 +54,7 @@ public struct UserAvatar: View {
                     .overlay(
                         VStack {
                             if initials.isEmpty {
-                                Image(systemName: "person")
+                                Image(uiImage: images.userAvatarPlaceholder)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: iconSize.width, height: iconSize.height)

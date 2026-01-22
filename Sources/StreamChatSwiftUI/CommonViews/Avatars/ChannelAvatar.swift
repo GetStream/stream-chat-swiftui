@@ -55,6 +55,7 @@ public struct ChannelAvatar: View {
 
 struct GroupAvatar: View {
     @Injected(\.colors) var colors
+    @Injected(\.images) var images
     let url: URL?
     let size: CGFloat
     let showsBorder: Bool
@@ -71,7 +72,7 @@ struct GroupAvatar: View {
             placeholder: { _ in
                 colors.avatarBgDefault.toColor
                     .overlay(
-                        Image(systemName: "person.3")
+                        Image(uiImage: images.channelAvatarPlaceholder)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: iconSize.width, height: iconSize.height)
