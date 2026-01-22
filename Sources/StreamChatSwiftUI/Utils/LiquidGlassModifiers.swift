@@ -40,12 +40,7 @@ struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
         content
             .background(
                 shape
-                    .stroke(Color(colors.buttonSecondaryBorder), lineWidth: 0.5)
-                    .shadow(
-                        color: .black.opacity(0.2),
-                        radius: 12,
-                        y: 6
-                    )
+                    .stroke(Color(colors.buttonSecondaryBorder), lineWidth: 1)
             )
     }
 }
