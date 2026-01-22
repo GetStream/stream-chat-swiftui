@@ -96,7 +96,7 @@ struct GroupAvatar: View {
     }
 }
 
-@available(iOS 26)
+@available(iOS 26, *)
 #Preview(traits: .fixedLayout(width: 200, height: 200)) {
     @Previewable let channelURL = URL(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/960px-Aerial_view_of_the_Amazon_Rainforest.jpg")!
     @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))

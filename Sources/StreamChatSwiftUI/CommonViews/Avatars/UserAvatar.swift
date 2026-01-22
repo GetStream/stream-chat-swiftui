@@ -107,7 +107,7 @@ extension UserAvatar {
     }
 }
 
-@available(iOS 26)
+@available(iOS 26, *)
 #Preview(traits: .fixedLayout(width: 200, height: 200)) {
     @Previewable let avatarURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/b/b2/Padmegreenscrshot.jpg")!
     @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
