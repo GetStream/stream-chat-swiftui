@@ -91,7 +91,7 @@ public class LiquidGlassStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        LiquidGlassInputViewModifier(keyboardShown: options.keyboardShown)
+        LiquidGlassInputViewModifier()
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
@@ -105,7 +105,7 @@ public class RegularStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        StandardInputViewModifier(keyboardShown: options.keyboardShown)
+        StandardInputViewModifier()
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
@@ -119,23 +119,17 @@ public class RegularStyles: Styles {
 
 public struct StandardInputViewModifier: ViewModifier {
     @Injected(\.colors) var colors
-    
-    var keyboardShown: Bool
-    
-    public init(keyboardShown: Bool) {
-        self.keyboardShown = keyboardShown
-    }
-    
+
+    public init() {}
+
     public func body(content: Content) -> some View {
         content
             .background(Color(colors.composerBg))
-            .overlay(
-                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-                    .stroke(Color(colors.buttonSecondaryBorder))
-            )
-            .clipShape(
-                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-            )
+            .modifier(BorderModifier(shape: .roundedRect(cornerRadius)))
+    }
+
+    private var cornerRadius: CGFloat {
+        DesignSystemTokens.radius3xl
     }
 }
 
