@@ -123,9 +123,10 @@ public struct StandardInputViewModifier: ViewModifier {
     
     public func body(content: Content) -> some View {
         content
+            .background(Color(colors.composerBg))
             .overlay(
                 RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-                    .stroke(Color(keyboardShown ? highlightedBorder : colors.innerBorder))
+                    .stroke(Color(colors.borderCoreImage))
             )
             .clipShape(
                 RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
@@ -133,7 +134,7 @@ public struct StandardInputViewModifier: ViewModifier {
     }
     
     private var highlightedBorder: UIColor {
-        return colors.composerInputHighlightedBorder
+        return colors.borderCorePrimary
     }
 }
 

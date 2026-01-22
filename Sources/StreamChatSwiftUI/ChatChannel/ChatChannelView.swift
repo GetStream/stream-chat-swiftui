@@ -211,12 +211,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             messageDisplayInfo = nil
         }
         .background(
-            Color(colors.background).background(
+            Color(colors.composerBg).background(
                 TabBarAccessor { _ in
                     tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
                 }
             )
-            .ignoresSafeArea(.keyboard)
+            .ignoresSafeArea(.all)
             .allowsHitTesting(false)
         )
         .padding(.bottom, keyboardShown || !tabBarAvailable || generatingSnapshot ? 0 : bottomPadding)

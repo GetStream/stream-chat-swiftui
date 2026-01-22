@@ -60,7 +60,7 @@ public struct VoiceRecordingButton: View {
     public var body: some View {
         Image(systemName: "mic")
             .frame(width: 32, height: 32)
-            .foregroundColor(Color(colors.textLowEmphasis))
+            .foregroundColor(Color(colors.textSecondary))
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in

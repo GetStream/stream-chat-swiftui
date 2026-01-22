@@ -13,7 +13,7 @@ struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
         content
             .background(
                 shape
-                    .stroke(Color(colors.innerBorder), lineWidth: 0.5)
+                    .stroke(Color(colors.borderCoreImage), lineWidth: 0.5)
                     .shadow(
                         color: .black.opacity(0.2),
                         radius: 12,
@@ -23,7 +23,6 @@ struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
     }
 }
 
-// TODO: fallback
 public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     var shape: BackgroundShape
     

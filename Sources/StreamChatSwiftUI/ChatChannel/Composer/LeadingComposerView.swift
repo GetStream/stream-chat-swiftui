@@ -16,39 +16,23 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
     
     var body: some View {
         HStack {
-            if #available(iOS 26.0, *) {
-                Button {
-                    withAnimation {
-                        if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
-                            pickerTypeState = .expanded(.media)
-                        } else {
-                            pickerTypeState = .expanded(.none)
-                        }
+            Button {
+                withAnimation {
+                    if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
+                        pickerTypeState = .expanded(.media)
+                    } else {
+                        pickerTypeState = .expanded(.none)
                     }
-                } label: {
-                    Image(uiImage: images.composerAdd)
                 }
-                .padding(.all, 12)
-                .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
-                .foregroundStyle(.primary)
-                .contentShape(.rect)
-            } else {
-                Button {
-                    withAnimation {
-                        if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
-                            pickerTypeState = .expanded(.media)
-                        } else {
-                            pickerTypeState = .expanded(.none)
-                        }
-                    }
-                } label: {
-                    Image(uiImage: images.composerAdd)
-                }
-                .padding(.all, 12)
-                .background(Color(UIColor.secondarySystemBackground))
-                .clipShape(.circle)
-                .contentShape(.rect)
+            } label: {
+                Image(uiImage: images.composerAdd)
+                    .renderingMode(.template)
             }
+            .padding(.all, 12)
+            .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
+            .foregroundColor(Color(colors.textSecondary))
+            .background(Color(colors.composerBg))
+            .clipShape(.capsule)
         }
         .padding(.leading, 8)
     }

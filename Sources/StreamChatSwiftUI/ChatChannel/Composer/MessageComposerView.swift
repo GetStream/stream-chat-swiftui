@@ -217,6 +217,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 popupSize = height - bottomSafeArea
             }
         }
+        .background(Color(colors.composerBg))
         .overlay(
             viewModel.showCommandsOverlay ?
                 factory.makeCommandsContainerView(
@@ -525,10 +526,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var composerInputBackground: Color {
         return Color(colors.composerInputBackground)
-    }
-    
-    private var highlightedBorder: UIColor {
-        return colors.composerInputHighlightedBorder
     }
 
     private var shouldAddVerticalPadding: Bool {
