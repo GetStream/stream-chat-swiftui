@@ -27,14 +27,19 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
             } label: {
                 Image(uiImage: images.composerAdd)
                     .renderingMode(.template)
+                    .font(.system(size: DesignSystemTokens.iconSizeMd))
             }
-            .padding(.all, 12)
+            .frame(width: buttonSize, height: buttonSize)
             .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
             .foregroundColor(Color(colors.textSecondary))
             .background(Color(colors.composerBg))
             .clipShape(.capsule)
         }
         .padding(.leading, 8)
+    }
+
+    private var buttonSize: CGFloat {
+        DesignSystemTokens.buttonVisualHeightLg
     }
 }
 
@@ -48,6 +53,7 @@ extension Appearance.Images {
         UIImage(
             systemName: "plus",
             withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: DesignSystemTokens.iconSizeMd,
                 weight: .light
             )
         )!
