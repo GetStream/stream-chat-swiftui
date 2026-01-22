@@ -5,6 +5,32 @@
 import StreamChatCommonUI
 import SwiftUI
 
+public struct LiquidGlassInputViewModifier: ViewModifier {
+    @Injected(\.colors) var colors
+
+    var keyboardShown: Bool
+
+    public init(keyboardShown: Bool) {
+        self.keyboardShown = keyboardShown
+    }
+
+    public func body(content: Content) -> some View {
+        content
+            .background(Color(colors.composerBg))
+            .overlay(
+                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
+                    .stroke(Color(colors.buttonSecondaryBorder))
+            )
+            .clipShape(
+                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
+            )
+            .modifier(LiquidGlassModifier(
+                shape: .roundedRect(DesignSystemTokens.radius3xl),
+                isInteractive: true
+            ))
+    }
+}
+
 struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
     @Injected(\.colors) var colors
     
@@ -40,8 +66,8 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
         #if swift(>=6.2)
         if #available(iOS 26.0, *) {
             content
-                .modifier(BorderModifier(shape: shape))
                 .glassEffect(.regular.interactive(isInteractive), in: shape)
+                .modifier(BorderModifier(shape: shape))
         } else {
             content
         }

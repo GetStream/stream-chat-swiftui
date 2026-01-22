@@ -522,10 +522,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         return .regular(sendButtonEnabled)
     }
 
-    private var composerInputBackground: Color {
-        return Color(colors.composerInputBackground)
-    }
-
     private var shouldAddVerticalPadding: Bool {
         !addedFileURLs.isEmpty || !addedAssets.isEmpty
     }

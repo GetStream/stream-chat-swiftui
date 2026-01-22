@@ -91,7 +91,7 @@ public class LiquidGlassStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: .roundedRect(DesignSystemTokens.radius3xl), isInteractive: true)
+        LiquidGlassInputViewModifier(keyboardShown: options.keyboardShown)
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {

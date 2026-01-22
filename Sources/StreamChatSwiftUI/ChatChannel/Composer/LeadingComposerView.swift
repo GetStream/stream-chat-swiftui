@@ -30,10 +30,10 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                     .font(.system(size: DesignSystemTokens.iconSizeMd))
             }
             .frame(width: buttonSize, height: buttonSize)
-            .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
             .foregroundColor(Color(colors.textSecondary))
             .background(Color(colors.composerBg))
             .clipShape(.capsule)
+            .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
         }
         .padding(.leading, 8)
     }
