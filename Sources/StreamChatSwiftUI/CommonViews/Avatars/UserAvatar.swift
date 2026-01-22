@@ -65,6 +65,7 @@ public struct UserAvatar: View {
                         }
                         .font(font)
                         .foregroundColor(colors.avatarTextDefault.toColor)
+                        .environment(\.sizeCategory, .large) // no font scaling for initials
                     )
                     .accessibilityIdentifier("UserAvatarPlaceholder")
             },

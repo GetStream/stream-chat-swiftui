@@ -13,6 +13,7 @@ import XCTest
 final class AvatarTests: StreamChatTestCase {
     func test_groupAvatar_placeholders() async throws {
         // Given
+        let size = CGSize(width: 130, height: 130)
         let view = HStack(spacing: 2) {
             VStack(spacing: 2) {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
@@ -31,14 +32,15 @@ final class AvatarTests: StreamChatTestCase {
                 }
             }
         }
-        .frame(width: 130, height: 130)
+        .frame(width: size.width, height: size.height)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: size)
     }
     
     func test_userAvatar_placeholders() async throws {
         // Given
+        let size = CGSize(width: 130, height: 130)
         let view = HStack(spacing: 2) {
             VStack(spacing: 2) {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
@@ -61,9 +63,9 @@ final class AvatarTests: StreamChatTestCase {
                 }
             }
         }
-        .frame(width: 130, height: 130)
+        .frame(width: size.width, height: size.height)
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: size)
     }
 }

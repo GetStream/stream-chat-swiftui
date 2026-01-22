@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		402C54482B6AAC0100672BFB /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		402C54492B6AAC0100672BFB /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4F00DF2F2F2223030054BDDC /* Avatar_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F00DF2D2F2223030054BDDC /* Avatar_Tests.swift */; };
 		4F077EF82C85E05700F06D83 /* DelayedRenderingViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */; };
 		4F0AC7F82DCA2CCE00ACB1AC /* ImageProcessors+Anonymous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0AC7D62DCA2CCE00ACB1AC /* ImageProcessors+Anonymous.swift */; };
 		4F0AC7F92DCA2CCE00ACB1AC /* ImageViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0AC7EC2DCA2CCE00ACB1AC /* ImageViewExtensions.swift */; };
@@ -592,6 +593,7 @@
 
 /* Begin PBXFileReference section */
 		4A65451E274BA170003C5FA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4F00DF2D2F2223030054BDDC /* Avatar_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar_Tests.swift; sourceTree = "<group>"; };
 		4F077EF72C85E05700F06D83 /* DelayedRenderingViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedRenderingViewModifier.swift; sourceTree = "<group>"; };
 		4F0AC7AA2DCA2CCE00ACB1AC /* DataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
 		4F0AC7AB2DCA2CCE00ACB1AC /* DataCaching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCaching.swift; sourceTree = "<group>"; };
@@ -1103,7 +1105,6 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4F15F9A42F210CC0005734FE /* Avatars */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Avatars; sourceTree = "<group>"; };
-		4FF655892F1A6FF3000FE4C9 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		84EB88092E8A747D0076DC17 /* ViewFactory */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewFactory; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -1350,6 +1351,7 @@
 			children = (
 				4F6D83532C1094220098C298 /* AlertBannerViewModifier_Tests.swift */,
 				4F0B67C82E7025B6003DA844 /* GalleryHeaderView_Tests.swift */,
+				4F00DF2D2F2223030054BDDC /* Avatar_Tests.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -2051,7 +2053,6 @@
 		84C94D4027579EAF007FE2B9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				4FF655892F1A6FF3000FE4C9 /* DesignSystem */,
 				842E979C275E0AD000A52E7B /* StreamChatSwiftUI.xctestplan */,
 				84E6EC24279AEE9F0017207B /* StreamChatTestCase.swift */,
 				84C94C7D27567CC2007FE2B9 /* ChatChannelList */,
@@ -2360,9 +2361,6 @@
 			);
 			dependencies = (
 				8465FBC02746873A00AF091E /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				4FF655892F1A6FF3000FE4C9 /* DesignSystem */,
 			);
 			name = StreamChatSwiftUITests;
 			packageProductDependencies = (
@@ -2930,6 +2928,7 @@
 				84782785284A4DB500D2EE11 /* ChatClient_Mock.swift in Sources */,
 				84C94D0D27578BF2007FE2B9 /* AssertResult.swift in Sources */,
 				84E0478B284A444E00BAFA17 /* VirtualTimer.swift in Sources */,
+				4F00DF2F2F2223030054BDDC /* Avatar_Tests.swift in Sources */,
 				84E6EC25279AEE9F0017207B /* StreamChatTestCase.swift in Sources */,
 				842F0BB8276B3518002C400C /* QuotedMessageView_Tests.swift in Sources */,
 				84B2B5CE281961E200479CEE /* ChannelInfoMockUtils.swift in Sources */,
