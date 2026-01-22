@@ -62,8 +62,26 @@ struct StartPage: View {
 
         let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .debug
-
-        streamChat = StreamChat(chatClient: chatClient)
+        
+        let utils = Utils(
+            channelListConfig: ChannelListConfig(
+                messageRelativeDateFormatEnabled: true,
+                channelItemMutedStyle: .afterChannelName
+            ),
+            messageListConfig: MessageListConfig(
+                messageDisplayOptions: .init(showOriginalTranslatedButton: true),
+                dateIndicatorPlacement: .messageList,
+                userBlockingEnabled: true,
+                bouncedMessagesAlertActionsEnabled: true,
+                skipEditedMessageLabel: { message in
+                    message.extraData["ai_generated"]?.boolValue == true
+                },
+                draftMessagesEnabled: true,
+                downloadFileAttachmentsEnabled: true
+            ),
+            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
         chatClient.connectUser(
             userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
