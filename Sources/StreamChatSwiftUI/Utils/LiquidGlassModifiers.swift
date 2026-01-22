@@ -12,7 +12,6 @@ public struct LiquidGlassInputViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerBg))
             .modifier(LiquidGlassModifier(
                 shape: .roundedRect(cornerRadius),
                 isInteractive: true

@@ -31,8 +31,6 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
             }
             .frame(width: buttonSize, height: buttonSize)
             .foregroundColor(Color(colors.textSecondary))
-            .background(Color(colors.composerBg))
-            .clipShape(.capsule)
             .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
         }
         .padding(.leading, 8)

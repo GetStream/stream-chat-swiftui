@@ -105,11 +105,11 @@ public class RegularStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        StandardInputViewModifier()
+        RegularInputViewModifier()
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
-        BorderModifier(shape: .circle)
+        RegularButtonViewModifier()
     }
 
     public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
@@ -117,7 +117,7 @@ public class RegularStyles: Styles {
     }
 }
 
-public struct StandardInputViewModifier: ViewModifier {
+public struct RegularInputViewModifier: ViewModifier {
     @Injected(\.colors) var colors
 
     public init() {}
@@ -130,6 +130,18 @@ public struct StandardInputViewModifier: ViewModifier {
 
     private var cornerRadius: CGFloat {
         DesignSystemTokens.radius3xl
+    }
+}
+
+public struct RegularButtonViewModifier: ViewModifier {
+    @Injected(\.colors) var colors
+    
+    public init() {}
+    
+    public func body(content: Content) -> some View {
+        content
+            .background(Color(colors.composerBg))
+            .modifier(BorderModifier(shape: .circle))
     }
 }
 

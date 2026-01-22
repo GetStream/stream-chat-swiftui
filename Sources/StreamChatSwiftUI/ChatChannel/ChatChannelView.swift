@@ -224,7 +224,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
                     }
                 )
-                .ignoresSafeArea(factory.styles.composerPlacement == .docked ? .all : .keyboard)
+                .ignoresSafeArea(.all)
                 .allowsHitTesting(false)
         )
         .padding(.bottom, keyboardShown || !tabBarAvailable || generatingSnapshot ? 0 : bottomPadding)
