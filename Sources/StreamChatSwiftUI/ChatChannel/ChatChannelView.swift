@@ -218,13 +218,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             messageDisplayInfo = nil
         }
         .background(
-            Color(colors.composerBg).background(
-                TabBarAccessor { _ in
-                    tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
-                }
-            )
-            .ignoresSafeArea(.all)
-            .allowsHitTesting(false)
+            Color(factory.styles.composerPlacement == .docked ? colors.composerBg : .clear)
+                .background(
+                    TabBarAccessor { _ in
+                        tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
+                    }
+                )
+                .ignoresSafeArea(factory.styles.composerPlacement == .docked ? .all : .keyboard)
+                .allowsHitTesting(false)
         )
         .padding(.bottom, keyboardShown || !tabBarAvailable || generatingSnapshot ? 0 : bottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
