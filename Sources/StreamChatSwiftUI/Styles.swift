@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChatCommonUI
 import SwiftUI
 
 @MainActor
@@ -90,7 +91,7 @@ public class LiquidGlassStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: CustomRoundedShape(), isInteractive: true)
+        LiquidGlassModifier(shape: .roundedRect(DesignSystemTokens.radius3xl), isInteractive: true)
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {

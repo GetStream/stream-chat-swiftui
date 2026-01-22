@@ -51,16 +51,8 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     }
 }
 
-struct CustomRoundedShape: Shape {
-    var radius: CGFloat = DesignSystemTokens.radius3xl
-    var corners: UIRectCorner = .allCorners
-
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: corners,
-            cornerRadii: CGSize(width: radius, height: radius)
-        )
-        return Path(path.cgPath)
+extension Shape where Self == RoundedRectangle {
+    static func roundedRect(_ radius: CGFloat) -> Self {
+        RoundedRectangle(cornerRadius: radius)
     }
 }

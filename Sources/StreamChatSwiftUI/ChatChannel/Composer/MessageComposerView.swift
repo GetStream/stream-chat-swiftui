@@ -494,7 +494,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
                 .padding(.trailing, 8)
-                .padding(.bottom, 3)
+                .padding(.bottom, 8)
             }
         }
         .padding(.vertical, 2)
