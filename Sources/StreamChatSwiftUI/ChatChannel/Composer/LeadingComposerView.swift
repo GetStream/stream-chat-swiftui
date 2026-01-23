@@ -26,8 +26,7 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                 }
             } label: {
                 Image(uiImage: images.composerAdd)
-                    .renderingMode(.template)
-                    .font(.system(size: DesignSystemTokens.iconSizeMd))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
             }
             .frame(width: buttonSize, height: buttonSize)
             .foregroundColor(Color(colors.buttonSecondaryText))
