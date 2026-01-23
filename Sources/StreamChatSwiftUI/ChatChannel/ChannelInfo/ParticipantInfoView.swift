@@ -48,7 +48,7 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                     options: .init(
                         user: participant.chatUser,
                         size: 64,
-                        showsIndicator: true
+                        showsIndicator: false
                     )
                 )
                 .padding()

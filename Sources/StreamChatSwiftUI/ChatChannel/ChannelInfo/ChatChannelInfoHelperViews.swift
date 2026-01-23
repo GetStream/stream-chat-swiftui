@@ -263,7 +263,7 @@ public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
                     options: UserAvatarViewOptions(
                         user: user,
                         size: 64,
-                        showsIndicator: true
+                        showsIndicator: false
                     )
                 )
             }
