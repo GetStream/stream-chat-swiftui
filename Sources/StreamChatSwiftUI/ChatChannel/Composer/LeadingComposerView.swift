@@ -30,7 +30,7 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                     .font(.system(size: DesignSystemTokens.iconSizeMd))
             }
             .frame(width: buttonSize, height: buttonSize)
-            .foregroundColor(Color(colors.textSecondary))
+            .foregroundColor(Color(colors.buttonSecondaryText))
             .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
         }
     }
@@ -60,6 +60,16 @@ extension Appearance.Images {
         UIImage(
             systemName: "paperplane",
             withConfiguration: UIImage.SymbolConfiguration(
+                weight: .regular
+            )
+        )!
+    }
+
+    var composerMic: UIImage {
+        UIImage(
+            systemName: "mic",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: DesignSystemTokens.iconSizeSm,
                 weight: .regular
             )
         )!

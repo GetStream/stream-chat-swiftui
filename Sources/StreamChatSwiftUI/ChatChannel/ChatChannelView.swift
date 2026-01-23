@@ -130,7 +130,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             .overlay(
                                 Rectangle()
                                     .frame(width: nil, height: 1, alignment: .top)
-                                    .foregroundColor(Color(colors.borderCoreImage)), alignment: .top
+                                    .foregroundColor(Color(colors.borderCoreDefault)), alignment: .top
                             )
 
                             .opacity((
