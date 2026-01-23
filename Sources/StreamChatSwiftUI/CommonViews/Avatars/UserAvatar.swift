@@ -104,6 +104,7 @@ extension UserAvatar {
                     VStack {
                         if initials.isEmpty {
                             Image(uiImage: images.userAvatarPlaceholder)
+                                .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: iconSize.width, height: iconSize.height)

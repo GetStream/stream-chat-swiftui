@@ -105,6 +105,7 @@ extension ChannelAvatar {
             colors.avatarBgDefault.toColor
                 .overlay(
                     Image(uiImage: images.channelAvatarPlaceholder)
+                        .renderingMode(.template)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: iconSize.width, height: iconSize.height)
