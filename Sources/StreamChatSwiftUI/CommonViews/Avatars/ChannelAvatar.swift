@@ -34,7 +34,7 @@ public struct ChannelAvatar: View {
         self.init(
             urls: channel.avatarURLs,
             size: size,
-            indicator: channel.avatarIndicator,
+            indicator: showsIndicator ? channel.avatarIndicator : .none,
             showsBorder: showsBorder
         )
     }
