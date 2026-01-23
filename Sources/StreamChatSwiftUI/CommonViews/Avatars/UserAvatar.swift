@@ -8,10 +8,8 @@ import SwiftUI
 
 public struct UserAvatar: View {
     @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
-    @Injected(\.images) var images
     
-    let url: URL?
+    let urls: [URL]
     let initials: String
     let size: CGFloat
     let indicator: AvatarIndicator
@@ -39,7 +37,7 @@ public struct UserAvatar: View {
         indicator: AvatarIndicator,
         showsBorder: Bool = true
     ) {
-        self.url = url
+        self.urls = [url].compactMap { $0 }
         self.initials = String(initials.prefix(size >= AvatarSize.medium ? 2 : 1))
         self.size = size
         self.indicator = indicator
@@ -47,50 +45,76 @@ public struct UserAvatar: View {
     }
     
     public var body: some View {
-        Avatar(
-            url: url,
-            placeholder: { _ in
-                colors.avatarBgDefault.toColor
-                    .overlay(
-                        VStack {
-                            if initials.isEmpty {
-                                Image(uiImage: images.userAvatarPlaceholder)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: iconSize.width, height: iconSize.height)
-                                    .font(.system(size: iconSize.height, weight: .semibold))
-                            } else {
-                                Text(verbatim: initials)
-                            }
-                        }
-                        .font(font)
-                        .foregroundColor(colors.avatarTextDefault.toColor)
-                        .environment(\.sizeCategory, .large) // no font scaling for initials
-                    )
-                    .accessibilityIdentifier("UserAvatarPlaceholder")
-            },
+        StreamAsyncImage(
+            urls: urls,
             size: size,
-            showsBorder: showsBorder
+            content: { phase in
+                Group {
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .overlay(
+                                showsBorder ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
+                            )
+                    case .loading, .empty:
+                        PlaceholderView(initials: initials, size: size)
+                    }
+                }
+            }
         )
         .cornerRadius(DesignSystemTokens.radiusMax)
         .avatarIndicator(indicator, size: size)
         .accessibilityIdentifier("UserAvatar")
     }
-    
-    var iconSize: CGSize {
-        switch size {
-        case AvatarSize.largeSizeClass: CGSize(width: 16, height: 16)
-        case AvatarSize.mediumSizeClass: CGSize(width: 14, height: 14)
-        case AvatarSize.smallSizeClass: CGSize(width: 10, height: 10)
-        default: CGSize(width: 9, height: 9)
+}
+
+extension UserAvatar {
+    struct PlaceholderView: View {
+        @Injected(\.colors) var colors
+        @Injected(\.images) var images
+        @Injected(\.fonts) var fonts
+
+        let initials: String
+        let size: CGFloat
+        
+        var body: some View {
+            colors.avatarBgDefault.toColor
+                .overlay(
+                    VStack {
+                        if initials.isEmpty {
+                            Image(uiImage: images.userAvatarPlaceholder)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: iconSize.width, height: iconSize.height)
+                                .font(.system(size: iconSize.height, weight: .semibold))
+                        } else {
+                            Text(verbatim: initials)
+                        }
+                    }
+                    .font(font)
+                    .foregroundColor(colors.avatarTextDefault.toColor)
+                    .environment(\.sizeCategory, .large) // no font scaling for initials
+                )
+                .accessibilityIdentifier("UserAvatarPlaceholder")
         }
-    }
-    
-    var font: Font {
-        switch size {
-        case AvatarSize.largeSizeClass: fonts.subheadline.weight(.semibold)
-        case AvatarSize.mediumSizeClass: fonts.footnote.weight(.semibold)
-        default: fonts.caption1.weight(.semibold)
+        
+        var iconSize: CGSize {
+            switch size {
+            case AvatarSize.largeSizeClass: CGSize(width: 16, height: 16)
+            case AvatarSize.mediumSizeClass: CGSize(width: 14, height: 14)
+            case AvatarSize.smallSizeClass: CGSize(width: 10, height: 10)
+            default: CGSize(width: 9, height: 9)
+            }
+        }
+        
+        var font: Font {
+            switch size {
+            case AvatarSize.largeSizeClass: fonts.subheadline.weight(.semibold)
+            case AvatarSize.mediumSizeClass: fonts.footnote.weight(.semibold)
+            default: fonts.caption1.weight(.semibold)
+            }
         }
     }
 }

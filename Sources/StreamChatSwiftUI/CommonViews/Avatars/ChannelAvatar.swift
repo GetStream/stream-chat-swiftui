@@ -8,13 +8,12 @@ import SwiftUI
 
 public struct ChannelAvatar: View {
     @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
+    @Injected(\.utils) var utils
     
-    let url: URL?
+    let urls: [URL]
+    let indicator: AvatarIndicator
     let size: CGFloat
-    let showsIndicator: Bool
     let showsBorder: Bool
-    let directMessageUser: ChatUser?
     
     public init(
         channel: ChatChannel,
@@ -22,78 +21,105 @@ public struct ChannelAvatar: View {
         showsIndicator: Bool = false,
         showsBorder: Bool = true
     ) {
-        url = channel.imageURL
+        self.init(
+            urls: channel.avatarURLs,
+            size: size,
+            indicator: channel.avatarIndicator,
+            showsBorder: showsBorder
+        )
+    }
+    
+    public init(
+        urls: [URL],
+        size: CGFloat,
+        indicator: AvatarIndicator = .none,
+        showsBorder: Bool = true
+    ) {
+        self.indicator = indicator
         self.size = size
+        self.urls = urls
         self.showsBorder = showsBorder
-        self.showsIndicator = showsIndicator
-        directMessageUser = {
-            guard channel.isDirectMessageChannel, channel.memberCount == 2 else { return nil }
-            let currentUserId = InjectedValues[\.chatClient].currentUserId
-            return channel.lastActiveMembers.first(where: { $0.id != currentUserId })
-        }()
     }
     
     public var body: some View {
-        if let directMessageUser {
-            UserAvatar(
-                user: directMessageUser,
-                size: size,
-                showsIndicator: showsIndicator,
-                showsBorder: showsBorder
-            )
-            .accessibilityIdentifier("ChannelAvatar")
-        } else {
-            GroupAvatar(
-                url: url,
-                size: size,
-                showsBorder: showsBorder
-            )
-            .accessibilityIdentifier("ChannelAvatar")
+        StreamAsyncImage(urls: urls, size: size) { phase in
+            Group {
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .overlay(
+                            showsBorder ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
+                        )
+                case .empty, .loading:
+                    PlaceholderView(size: size)
+                }
+            }
+        } imageMerger: { images in
+            let options = ChannelAvatarsMergerOptions()
+            let merger = utils.channelAvatarsMerger
+            return await withTaskGroup(of: UIImage?.self, returning: UIImage?.self) { [options] group in
+                group.addTask {
+                    merger.createMergedAvatar(from: images, options: options)
+                }
+                if let image = await group.next() {
+                    return image
+                }
+                return nil
+            }
+        }
+        .cornerRadius(DesignSystemTokens.radiusMax)
+        .avatarIndicator(indicator, size: size)
+        .accessibilityIdentifier("ChannelAvatar")
+    }
+}
+ 
+extension ChannelAvatar {
+    struct PlaceholderView: View {
+        @Injected(\.colors) var colors
+        @Injected(\.images) var images
+        
+        let size: CGFloat
+        
+        var body: some View {
+            colors.avatarBgDefault.toColor
+                .overlay(
+                    Image(uiImage: images.channelAvatarPlaceholder)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: iconSize.width, height: iconSize.height)
+                        .font(.system(size: iconSize.height, weight: .semibold))
+                        .foregroundColor(colors.avatarTextDefault.toColor)
+                )
+        }
+        
+        var iconSize: CGSize {
+            // Width is fine-tuned based on the icon symbol
+            switch size {
+            case AvatarSize.largeSizeClass: CGSize(width: 22, height: 20)
+            case AvatarSize.mediumSizeClass: CGSize(width: 18, height: 16)
+            case AvatarSize.smallSizeClass: CGSize(width: 14, height: 12)
+            default: CGSize(width: 12, height: 10)
+            }
         }
     }
 }
 
-struct GroupAvatar: View {
-    @Injected(\.colors) var colors
-    @Injected(\.images) var images
-    let url: URL?
-    let size: CGFloat
-    let showsBorder: Bool
-    
-    init(url: URL?, size: CGFloat, showsBorder: Bool = true) {
-        self.url = url
-        self.size = size
-        self.showsBorder = showsBorder
-    }
-    
-    var body: some View {
-        Avatar(
-            url: url,
-            placeholder: { _ in
-                colors.avatarBgDefault.toColor
-                    .overlay(
-                        Image(uiImage: images.channelAvatarPlaceholder)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: iconSize.width, height: iconSize.height)
-                            .font(.system(size: iconSize.height, weight: .semibold))
-                            .foregroundColor(colors.avatarTextDefault.toColor)
-                    )
-            },
-            size: size,
-            showsBorder: showsBorder
-        )
-        .cornerRadius(DesignSystemTokens.radiusMax)
-    }
-    
-    var iconSize: CGSize {
-        // Width is fine-tuned based on the icon symbol
-        switch size {
-        case AvatarSize.largeSizeClass: CGSize(width: 22, height: 20)
-        case AvatarSize.mediumSizeClass: CGSize(width: 18, height: 16)
-        case AvatarSize.smallSizeClass: CGSize(width: 14, height: 12)
-        default: CGSize(width: 12, height: 10)
+private extension ChatChannel {
+    @MainActor var avatarURLs: [URL] {
+        if let imageURL {
+            return [imageURL]
         }
+        let currentUserId = InjectedValues[\.chatClient].currentUserId
+        return Array(lastActiveMembers.filter({ $0.id != currentUserId }).sorted(by: { $0.memberCreatedAt < $1.memberCreatedAt }).compactMap(\.imageURL).prefix(4))
+    }
+    
+    @MainActor var avatarIndicator: AvatarIndicator {
+        guard isDirectMessageChannel, memberCount == 2 else { return .none }
+        let currentUserId = InjectedValues[\.chatClient].currentUserId
+        guard let otherMember = lastActiveMembers.first(where: { $0.id != currentUserId }) else { return .none }
+        return otherMember.isOnline ? .online : .offline
     }
 }
 
@@ -104,16 +130,16 @@ struct GroupAvatar: View {
     HStack(spacing: 12) {
         VStack(spacing: 12) {
             ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                GroupAvatar(
-                    url: channelURL,
+                ChannelAvatar(
+                    urls: [channelURL],
                     size: size
                 )
             }
         }
         VStack(spacing: 12) {
             ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                GroupAvatar(
-                    url: nil,
+                ChannelAvatar(
+                    urls: [],
                     size: size
                 )
             }

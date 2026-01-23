@@ -27,6 +27,7 @@ import StreamChatCommonUI
     public var fileCDN: FileCDN
     public var channelNameFormatter: ChannelNameFormatter
     public var chatUserNamer: ChatUserNamer
+    public var channelAvatarsMerger: ChannelAvatarsMerging
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
     public var messagePreviewFormatter: MessagePreviewFormatter
@@ -88,6 +89,7 @@ import StreamChatCommonUI
         imageProcessor: ImageProcessor = NukeImageProcessor(),
         imageMerger: ImageMerging = DefaultImageMerger(),
         fileCDN: FileCDN = DefaultFileCDN(),
+        channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
         messagePreviewFormatter: MessagePreviewFormatter = MessagePreviewFormatter(),
@@ -118,6 +120,7 @@ import StreamChatCommonUI
         self.fileCDN = fileCDN
         self.channelNameFormatter = channelNameFormatter
         self.chatUserNamer = chatUserNamer
+        self.channelAvatarsMerger = channelAvatarsMerger
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
         self.messagePreviewFormatter = messagePreviewFormatter

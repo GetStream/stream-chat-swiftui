@@ -6,6 +6,10 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
+public enum AvatarIndicator: CaseIterable {
+    case online, offline, none
+}
+
 extension View {
     public func avatarIndicator(_ indicator: AvatarIndicator, size: CGFloat) -> some View {
         modifier(AvatarIndicatorViewModifier(indicator: indicator, size: size))
