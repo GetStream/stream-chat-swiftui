@@ -26,16 +26,13 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
                 }
             } label: {
                 Image(uiImage: images.composerAdd)
+                    .renderingMode(.template)
                     .foregroundColor(Color(colors.buttonSecondaryText))
             }
-            .frame(width: buttonSize, height: buttonSize)
+            .padding(DesignSystemTokens.buttonPaddingYLg)
             .foregroundColor(Color(colors.buttonSecondaryText))
             .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
         }
-    }
-
-    private var buttonSize: CGFloat {
-        DesignSystemTokens.buttonVisualHeightLg
     }
 }
 

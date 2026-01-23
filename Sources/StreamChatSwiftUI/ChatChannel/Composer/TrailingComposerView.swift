@@ -61,7 +61,7 @@ public struct VoiceRecordingButton: View {
 
     public var body: some View {
         Image(uiImage: images.composerMic)
-            .frame(width: buttonSize, height: buttonSize)
+            .renderingMode(.template)
             .padding(DesignSystemTokens.buttonPaddingYSm)
             .foregroundColor(Color(colors.buttonSecondaryText))
             .gesture(
@@ -101,9 +101,5 @@ public struct VoiceRecordingButton: View {
                 recordingState = .recording(.zero)
                 startRecording()
             }
-    }
-
-    private var buttonSize: CGFloat {
-        DesignSystemTokens.iconSizeMd
     }
 }
