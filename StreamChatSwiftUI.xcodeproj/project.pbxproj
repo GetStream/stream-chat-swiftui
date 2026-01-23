@@ -3867,7 +3867,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-avatar-images";
+				branch = v5;
 				kind = branch;
 			};
 		};
