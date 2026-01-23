@@ -8,7 +8,7 @@ import SwiftUI
 
 /// Standard sizes for avatar views.
 public enum AvatarSize {
-    /// The large avatar size (64 points).
+    /// The extra large avatar size (64 points).
     @MainActor public static var extraLarge: CGFloat = 64
     /// The large avatar size (40 points).
     @MainActor public static var large: CGFloat = 40
