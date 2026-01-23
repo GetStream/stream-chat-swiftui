@@ -35,6 +35,17 @@ final class UserAvatar_Tests: StreamChatTestCase {
                     )
                 }
             }
+            VStack(spacing: 2) {
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
+                    UserAvatar(
+                        url: nil,
+                        initials: "",
+                        size: size,
+                        indicator: .offline
+                    )
+                    .redacted(reason: .placeholder)
+                }
+            }
         }
         .frame(width: size.width, height: size.height)
         

@@ -91,6 +91,7 @@ public struct UserAvatar: View {
 
 extension UserAvatar {
     struct PlaceholderView: View {
+        @Environment(\.redactionReasons) var redactionReasons
         @Injected(\.colors) var colors
         @Injected(\.images) var images
         @Injected(\.fonts) var fonts
@@ -109,6 +110,7 @@ extension UserAvatar {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: iconSize.width, height: iconSize.height)
                                 .font(.system(size: iconSize.height, weight: .semibold))
+                                .opacity(redactionReasons.contains(.placeholder) ? 0 : 1)
                         } else {
                             Text(verbatim: initials)
                         }
@@ -151,43 +153,4 @@ extension UserAvatar {
         guard let components = initialsFormatter.personNameComponents(from: name) else { return "" }
         return initialsFormatter.string(from: components)
     }
-}
-
-@available(iOS 26, *)
-#Preview(traits: .fixedLayout(width: 200, height: 200)) {
-    @Previewable let avatarURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/b/b2/Padmegreenscrshot.jpg")!
-    @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
-    HStack(spacing: 12) {
-        VStack(spacing: 12) {
-            ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                UserAvatar(
-                    url: avatarURL,
-                    initials: "PA",
-                    size: size,
-                    indicator: .online
-                )
-            }
-        }
-        VStack(spacing: 12) {
-            ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                UserAvatar(
-                    url: nil,
-                    initials: "PA",
-                    size: size,
-                    indicator: .online
-                )
-            }
-        }
-        VStack(spacing: 12) {
-            ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                UserAvatar(
-                    url: nil,
-                    initials: "",
-                    size: size,
-                    indicator: .offline
-                )
-            }
-        }
-    }
-    .padding()
 }

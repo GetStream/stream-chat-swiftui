@@ -96,6 +96,7 @@ public struct ChannelAvatar: View {
  
 extension ChannelAvatar {
     struct PlaceholderView: View {
+        @Environment(\.redactionReasons) var redactionReasons
         @Injected(\.colors) var colors
         @Injected(\.images) var images
         
@@ -111,7 +112,9 @@ extension ChannelAvatar {
                         .frame(width: iconSize.width, height: iconSize.height)
                         .font(.system(size: iconSize.height, weight: .semibold))
                         .foregroundColor(colors.avatarTextDefault.toColor)
+                        .opacity(redactionReasons.contains(.placeholder) ? 0 : 1)
                 )
+                .accessibilityIdentifier("ChannelAvatarPlaceholder")
         }
         
         var iconSize: CGSize {
@@ -141,29 +144,4 @@ private extension ChatChannel {
         guard let otherMember = lastActiveMembers.first(where: { $0.id != currentUserId }) else { return .none }
         return otherMember.isOnline ? .online : .offline
     }
-}
-
-@available(iOS 26, *)
-#Preview(traits: .fixedLayout(width: 200, height: 200)) {
-    @Previewable let channelURL = URL(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/960px-Aerial_view_of_the_Amazon_Rainforest.jpg")!
-    @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
-    HStack(spacing: 12) {
-        VStack(spacing: 12) {
-            ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                ChannelAvatar(
-                    urls: [channelURL],
-                    size: size
-                )
-            }
-        }
-        VStack(spacing: 12) {
-            ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                ChannelAvatar(
-                    urls: [],
-                    size: size
-                )
-            }
-        }
-    }
-    .padding()
 }

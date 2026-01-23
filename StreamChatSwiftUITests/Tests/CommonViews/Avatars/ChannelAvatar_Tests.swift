@@ -40,6 +40,16 @@ final class ChannelAvatar_Tests: StreamChatTestCase {
                     )
                 }
             }
+            VStack(spacing: 2) {
+                ForEach(AvatarSize.standardSizes, id: \.self) { size in
+                    ChannelAvatar(
+                        urls: [],
+                        size: size,
+                        indicator: .online
+                    )
+                    .redacted(reason: .placeholder)
+                }
+            }
         }
         .frame(width: size.width, height: size.height)
         
