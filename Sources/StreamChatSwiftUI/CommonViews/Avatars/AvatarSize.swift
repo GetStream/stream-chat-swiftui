@@ -17,10 +17,10 @@ public enum AvatarSize {
     /// The extra small avatar size (20 points).
     @MainActor public static var extraSmall: CGFloat = 20
     
-    @MainActor static var largeSizeClass: PartialRangeFrom<CGFloat> { AvatarSize.large... }
-    @MainActor static var mediumSizeClass: Range<CGFloat> { AvatarSize.medium..<AvatarSize.large }
-    @MainActor static var smallSizeClass: Range<CGFloat> { AvatarSize.small..<AvatarSize.medium }
-    @MainActor static var extraSmallSizeClass: PartialRangeUpTo<CGFloat> { ..<AvatarSize.small }
+    @MainActor static var sizeClassLarge: PartialRangeFrom<CGFloat> { AvatarSize.large... }
+    @MainActor static var sizeClassMedium: Range<CGFloat> { AvatarSize.medium..<AvatarSize.large }
+    @MainActor static var sizeClassSmall: Range<CGFloat> { AvatarSize.small..<AvatarSize.medium }
+    @MainActor static var sizeClassExtraSmall: PartialRangeUpTo<CGFloat> { ..<AvatarSize.small }
     
     @MainActor static var standardSizes: [CGFloat] { [AvatarSize.large, AvatarSize.medium, AvatarSize.small, AvatarSize.extraSmall] }
 }

@@ -116,9 +116,9 @@ extension ChannelAvatar {
         var iconSize: CGSize {
             // Width is fine-tuned based on the icon symbol
             switch size {
-            case AvatarSize.largeSizeClass: CGSize(width: 22, height: 20)
-            case AvatarSize.mediumSizeClass: CGSize(width: 18, height: 16)
-            case AvatarSize.smallSizeClass: CGSize(width: 14, height: 12)
+            case AvatarSize.sizeClassLarge: CGSize(width: 22, height: 20)
+            case AvatarSize.sizeClassMedium: CGSize(width: 18, height: 16)
+            case AvatarSize.sizeClassSmall: CGSize(width: 14, height: 12)
             default: CGSize(width: 12, height: 10)
             }
         }

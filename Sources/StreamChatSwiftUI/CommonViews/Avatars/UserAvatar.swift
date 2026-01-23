@@ -121,17 +121,17 @@ extension UserAvatar {
         
         var iconSize: CGSize {
             switch size {
-            case AvatarSize.largeSizeClass: CGSize(width: 16, height: 16)
-            case AvatarSize.mediumSizeClass: CGSize(width: 14, height: 14)
-            case AvatarSize.smallSizeClass: CGSize(width: 10, height: 10)
+            case AvatarSize.sizeClassLarge: CGSize(width: 16, height: 16)
+            case AvatarSize.sizeClassMedium: CGSize(width: 14, height: 14)
+            case AvatarSize.sizeClassSmall: CGSize(width: 10, height: 10)
             default: CGSize(width: 9, height: 9)
             }
         }
         
         var font: Font {
             switch size {
-            case AvatarSize.largeSizeClass: fonts.subheadline.weight(.semibold)
-            case AvatarSize.mediumSizeClass: fonts.footnote.weight(.semibold)
+            case AvatarSize.sizeClassLarge: fonts.subheadline.weight(.semibold)
+            case AvatarSize.sizeClassMedium: fonts.footnote.weight(.semibold)
             default: fonts.caption1.weight(.semibold)
             }
         }

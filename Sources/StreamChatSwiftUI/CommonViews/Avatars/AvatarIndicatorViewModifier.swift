@@ -63,8 +63,8 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         
         var diameter: CGFloat {
             switch size {
-            case AvatarSize.largeSizeClass: 14
-            case AvatarSize.mediumSizeClass: 12
+            case AvatarSize.sizeClassLarge: 14
+            case AvatarSize.sizeClassMedium: 12
             default: 8
             }
         }
