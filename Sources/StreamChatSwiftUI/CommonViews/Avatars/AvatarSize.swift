@@ -6,10 +6,15 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
+/// Standard sizes for avatar views.
 public enum AvatarSize {
+    /// The large avatar size (40 points).
     @MainActor public static var large: CGFloat = 40
+    /// The medium avatar size (32 points).
     @MainActor public static var medium: CGFloat = 32
+    /// The small avatar size (24 points).
     @MainActor public static var small: CGFloat = 24
+    /// The extra small avatar size (20 points).
     @MainActor public static var extraSmall: CGFloat = 20
     
     @MainActor static var largeSizeClass: PartialRangeFrom<CGFloat> { AvatarSize.large... }

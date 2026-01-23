@@ -6,6 +6,7 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
+/// A view that renders a user avatar with optional presence indicator.
 public struct UserAvatar: View {
     @Injected(\.colors) var colors
     
@@ -15,6 +16,15 @@ public struct UserAvatar: View {
     let indicator: AvatarIndicator
     let showsBorder: Bool
     
+    /// Creates a user avatar from a chat user.
+    ///
+    /// - Parameters:
+    ///   - user: The user whose avatar to display.
+    ///   - size: The width and height of the avatar.
+    ///   - showsIndicator: A Boolean value that indicates whether to show the
+    ///     user's online status. Defaults to `false`.
+    ///   - showsBorder: A Boolean value that indicates whether to show a circular
+    ///     border around the avatar. Defaults to `true`.
     public init(
         user: ChatUser,
         size: CGFloat,
@@ -30,6 +40,15 @@ public struct UserAvatar: View {
         )
     }
     
+    /// Creates a user avatar from a URL and initials.
+    ///
+    /// - Parameters:
+    ///   - url: The URL of the avatar image to display.
+    ///   - initials: The text to display when the image is unavailable.
+    ///   - size: The width and height of the avatar.
+    ///   - indicator: The presence indicator to display.
+    ///   - showsBorder: A Boolean value that indicates whether to show a circular
+    ///     border around the avatar. Defaults to `true`.
     public init(
         url: URL?,
         initials: String,

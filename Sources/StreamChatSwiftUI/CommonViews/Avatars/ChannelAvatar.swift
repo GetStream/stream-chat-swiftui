@@ -6,6 +6,7 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
+/// A view that renders a channel avatar, merging multiple member images when needed.
 public struct ChannelAvatar: View {
     @Injected(\.colors) var colors
     @Injected(\.utils) var utils
@@ -15,6 +16,15 @@ public struct ChannelAvatar: View {
     let size: CGFloat
     let showsBorder: Bool
     
+    /// Creates a channel avatar from a chat channel.
+    ///
+    /// - Parameters:
+    ///   - channel: The channel whose avatar to display.
+    ///   - size: The width and height of the avatar.
+    ///   - showsIndicator: A Boolean value that indicates whether to show the
+    ///     online status for direct message channels. Defaults to `false`.
+    ///   - showsBorder: A Boolean value that indicates whether to show a circular
+    ///     border around the avatar. Defaults to `true`.
     public init(
         channel: ChatChannel,
         size: CGFloat,
@@ -29,6 +39,15 @@ public struct ChannelAvatar: View {
         )
     }
     
+    /// Creates a channel avatar from image URLs.
+    ///
+    /// - Parameters:
+    ///   - urls: The URLs of the images to display. When multiple URLs are
+    ///     provided, they are merged into a single avatar.
+    ///   - size: The width and height of the avatar.
+    ///   - indicator: The presence indicator to display. Defaults to no indicator.
+    ///   - showsBorder: A Boolean value that indicates whether to show a circular
+    ///     border around the avatar. Defaults to `true`.
     public init(
         urls: [URL],
         size: CGFloat,

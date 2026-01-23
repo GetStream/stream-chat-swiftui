@@ -6,6 +6,8 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
+/// A view that loads one or more images asynchronously and renders
+/// content based on the current loading phase.
 public struct StreamAsyncImage<ImageContent: View>: View {
     @Injected(\.utils) var utils
     
@@ -17,6 +19,16 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     private let taskId: String
     @State private var phase = StreamAsyncImagePhase.loading
     
+    /// Loads one or more images from the specified URLs and builds views based on
+    /// the loading state.
+    ///
+    /// - Parameters:
+    ///   - urls: The URLs of the images to display.
+    ///   - size: The width and height of the view.
+    ///   - content: A closure that takes the loading phase as input, and returns
+    ///     the view to display for the current phase.
+    ///   - imageMerger: A closure that combines multiple loaded images into a
+    ///     single image. Defaults to returning the first image.
     public init(
         urls: [URL],
         size: CGFloat,
@@ -56,8 +68,23 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     var imageCDN: ImageCDN { utils.imageCDN }
 }
 
+/// The current loading state for ``StreamAsyncImage``.
 public enum StreamAsyncImagePhase: Sendable, Equatable {
+    /// A successfully loaded image.
+    ///
+    /// The associated `Image` value represents the loaded image that can be displayed.
+    /// For multi-URL scenarios with a merger, this contains the merged result.
     case success(Image)
+    
+    /// The image is currently loading.
+    ///
+    /// This phase occurs while the image loader is fetching images from the provided URLs.
+    /// Use this state to display a loading placeholder or progress indicator.
     case loading
+    
+    /// No image is available.
+    ///
+    /// This phase occurs when all provided URLs fail to load or when the URL array is empty.
+    /// Use this state to display a placeholder or fallback content.
     case empty
 }

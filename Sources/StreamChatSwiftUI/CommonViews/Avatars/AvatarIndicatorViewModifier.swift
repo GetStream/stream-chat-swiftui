@@ -6,11 +6,23 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
+/// A type that represents the presence indicator on an avatar.
 public enum AvatarIndicator: CaseIterable {
-    case online, offline, none
+    /// An indicator that shows the user is online.
+    case online
+    /// An indicator that shows the user is offline.
+    case offline
+    /// No presence indicator.
+    case none
 }
 
 extension View {
+    /// Adds a presence indicator to an avatar view.
+    ///
+    /// - Parameters:
+    ///   - indicator: The presence indicator to display.
+    ///   - size: The width and height of the avatar.
+    /// - Returns: A view with a presence indicator overlay.
     public func avatarIndicator(_ indicator: AvatarIndicator, size: CGFloat) -> some View {
         modifier(AvatarIndicatorViewModifier(indicator: indicator, size: size))
     }
