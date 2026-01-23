@@ -54,7 +54,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
                         .inset(by: borderWidth)
                         .fill(fillColor)
                 )
-                .offset(x: borderWidth, y: -borderWidth)
+                .offset(x: offset.x, y: offset.y)
         }
         
         var borderWidth: CGFloat {
@@ -63,6 +63,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         
         var diameter: CGFloat {
             switch size {
+            case AvatarSize.sizeClassExtraLarge: 16
             case AvatarSize.sizeClassLarge: 14
             case AvatarSize.sizeClassMedium: 12
             default: 8
@@ -71,6 +72,13 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         
         var fillColor: Color {
             online ? colors.presenceBgOnline.toColor : colors.presenceBgOffline.toColor
+        }
+        
+        var offset: CGPoint {
+            switch size {
+            case AvatarSize.sizeClassExtraLarge: .zero
+            default: CGPoint(x: borderWidth, y: -borderWidth)
+            }
         }
     }
 }

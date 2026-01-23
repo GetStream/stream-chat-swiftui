@@ -13,7 +13,7 @@ import XCTest
 final class ChannelAvatar_Tests: StreamChatTestCase {
     func test_channelAvatar_placeholders() async throws {
         // Given
-        let size = CGSize(width: 190, height: 130)
+        let size = CGSize(width: 320, height: 320)
         let view = HStack(spacing: 2) {
             VStack(spacing: 2) {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in

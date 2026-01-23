@@ -75,7 +75,7 @@ public struct UserAvatar: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .overlay(
-                                showsBorder ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
+                                showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
                             )
                     case .loading, .empty:
                         PlaceholderView(initials: initials, size: size)
@@ -124,6 +124,7 @@ extension UserAvatar {
         
         var iconSize: CGSize {
             switch size {
+            case AvatarSize.sizeClassExtraLarge: CGSize(width: 22, height: 22)
             case AvatarSize.sizeClassLarge: CGSize(width: 16, height: 16)
             case AvatarSize.sizeClassMedium: CGSize(width: 14, height: 14)
             case AvatarSize.sizeClassSmall: CGSize(width: 10, height: 10)
@@ -133,6 +134,7 @@ extension UserAvatar {
         
         var font: Font {
             switch size {
+            case AvatarSize.sizeClassExtraLarge: fonts.title2.weight(.semibold)
             case AvatarSize.sizeClassLarge: fonts.subheadline.weight(.semibold)
             case AvatarSize.sizeClassMedium: fonts.footnote.weight(.semibold)
             default: fonts.caption1.weight(.semibold)

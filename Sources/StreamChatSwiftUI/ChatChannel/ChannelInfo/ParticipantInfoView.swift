@@ -47,8 +47,8 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                 factory.makeUserAvatarView(
                     options: .init(
                         user: participant.chatUser,
-                        size: 64,
-                        showsIndicator: false
+                        size: AvatarSize.extraLarge,
+                        showsIndicator: true
                     )
                 )
                 .padding()

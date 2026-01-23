@@ -69,7 +69,7 @@ public struct ChannelAvatar: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .overlay(
-                            showsBorder ? Circle().strokeBorder(colors.borderCoreImage.toColor, lineWidth: 1) : nil
+                            showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
                         )
                 case .empty, .loading:
                     PlaceholderView(size: size)
@@ -120,6 +120,7 @@ extension ChannelAvatar {
         var iconSize: CGSize {
             // Width is fine-tuned based on the icon symbol
             switch size {
+            case AvatarSize.sizeClassExtraLarge: CGSize(width: 36, height: 32)
             case AvatarSize.sizeClassLarge: CGSize(width: 22, height: 20)
             case AvatarSize.sizeClassMedium: CGSize(width: 18, height: 16)
             case AvatarSize.sizeClassSmall: CGSize(width: 14, height: 12)
