@@ -119,7 +119,7 @@ class MessageListPage {
         }
 
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
-            app.buttons.matching(NSPredicate(format: "identifier LIKE 'UserAvatar' or identifier LIKE 'UserAvatarPlaceholder'")).firstMatch
+            messageCell.otherElements["MessageRepliesView"]
         }
 
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
