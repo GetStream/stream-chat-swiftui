@@ -23,7 +23,7 @@ public struct SendMessageButton: View {
             Image(uiImage: images.composerSend)
                 .renderingMode(.template)
         }
-        .buttonStyle(RoundButtonStyle())
+        .buttonStyle(PrimaryRoundButtonStyle())
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")

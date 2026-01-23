@@ -11,7 +11,7 @@ public enum ButtonSize {
     @MainActor public static var extraSmall: CGFloat = 20
 }
 
-public struct RoundButtonStyle: ButtonStyle {
+public struct PrimaryRoundButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
     @Injected(\.colors) private var colors
 
