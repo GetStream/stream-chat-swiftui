@@ -83,7 +83,7 @@ public struct UserAvatar: View {
                 }
             }
         )
-        .cornerRadius(DesignSystemTokens.radiusMax)
+        .clipShape(Circle())
         .avatarIndicator(indicator, size: size)
         .accessibilityIdentifier("UserAvatar")
     }

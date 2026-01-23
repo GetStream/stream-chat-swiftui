@@ -88,7 +88,7 @@ public struct ChannelAvatar: View {
                 return nil
             }
         }
-        .cornerRadius(DesignSystemTokens.radiusMax)
+        .clipShape(Circle())
         .avatarIndicator(indicator, size: size)
         .accessibilityIdentifier("ChannelAvatar")
     }
