@@ -33,7 +33,6 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
             .foregroundColor(Color(colors.textSecondary))
             .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
         }
-        .padding(.leading, 8)
     }
 
     private var buttonSize: CGFloat {

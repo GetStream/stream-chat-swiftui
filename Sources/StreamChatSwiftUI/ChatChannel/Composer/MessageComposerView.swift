@@ -69,7 +69,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .transition(.identity)
             }
 
-            HStack(alignment: .bottom) {
+            HStack(alignment: .bottom, spacing: 8) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
                         state: $viewModel.pickerTypeState,
@@ -124,7 +124,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     Alert.defaultErrorAlert
                 }
             }
-            .padding(.all, 8)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
