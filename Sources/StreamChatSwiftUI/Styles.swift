@@ -91,7 +91,10 @@ public class LiquidGlassStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        LiquidGlassInputViewModifier()
+        LiquidGlassModifier(
+            shape: .roundedRect(DesignSystemTokens.radius3xl),
+            isInteractive: true
+        )
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
@@ -163,5 +166,20 @@ struct ComposerBackgroundRegularViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .background(Color(colors.composerBg))
+    }
+}
+
+struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
+    @Injected(\.colors) var colors
+
+    var shape: BackgroundShape
+
+    func body(content: Content) -> some View {
+        content
+            .clipShape(shape)
+            .overlay(
+                shape
+                    .stroke(Color(colors.buttonSecondaryBorder), lineWidth: 1)
+            )
     }
 }
