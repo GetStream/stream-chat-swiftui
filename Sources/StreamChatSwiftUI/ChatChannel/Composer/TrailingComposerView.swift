@@ -62,7 +62,7 @@ public struct VoiceRecordingButton: View {
     public var body: some View {
         Image(uiImage: images.composerMic)
             .frame(width: buttonSize, height: buttonSize)
-            .padding(DesignSystemTokens.spacingXs)
+            .padding(DesignSystemTokens.buttonPaddingYSm)
             .foregroundColor(Color(colors.buttonSecondaryText))
             .gesture(
                 DragGesture(minimumDistance: 0)
