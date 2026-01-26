@@ -6,7 +6,7 @@ import StreamChatCommonUI
 import SwiftUI
 
 /// The button for opening and closing the attachment picker in the message composer.
-public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
+public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
 
@@ -24,7 +24,6 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
 
     public var body: some View {
         Button {
-            triggerHapticFeedback(style: .soft)
             withAnimation(.easeInOut(duration: 0.25)) {
                 if pickerTypeState == .expanded(.none) {
                     pickerTypeState = .expanded(.media)
@@ -41,6 +40,14 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
         .padding(DesignSystemTokens.buttonPaddingYLg)
         .foregroundColor(Color(colors.buttonSecondaryText))
         .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
+        .onChange(of: pickerTypeState) { newValue in
+            triggerHapticFeedback(style: .soft)
+        }
+        .onReceive(keyboardWillChangePublisher) { shown in
+            if shown {
+                triggerHapticFeedback(style: .soft)
+            }
+        }
     }
 
     private var isExpanded: Bool {
