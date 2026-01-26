@@ -238,7 +238,6 @@
 		8465FD832746A95700AF091E /* LinkAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */; };
 		8465FD852746A95700AF091E /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD0E2746A95600AF091E /* MessageView.swift */; };
 		8465FD862746A95700AF091E /* MessageComposerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD102746A95600AF091E /* MessageComposerViewModel.swift */; };
-		8465FD872746A95700AF091E /* AttachmentPickerTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */; };
 		8465FD882746A95700AF091E /* SendMessageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD122746A95600AF091E /* SendMessageButton.swift */; };
 		8465FD892746A95700AF091E /* ComposerTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD132746A95600AF091E /* ComposerTextInputView.swift */; };
 		8465FD8A2746A95700AF091E /* DiscardAttachmentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465FD142746A95600AF091E /* DiscardAttachmentButton.swift */; };
@@ -828,7 +827,6 @@
 		8465FD0C2746A95600AF091E /* LinkAttachmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkAttachmentView.swift; sourceTree = "<group>"; };
 		8465FD0E2746A95600AF091E /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		8465FD102746A95600AF091E /* MessageComposerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposerViewModel.swift; sourceTree = "<group>"; };
-		8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentPickerTypeView.swift; sourceTree = "<group>"; };
 		8465FD122746A95600AF091E /* SendMessageButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMessageButton.swift; sourceTree = "<group>"; };
 		8465FD132746A95600AF091E /* ComposerTextInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposerTextInputView.swift; sourceTree = "<group>"; };
 		8465FD142746A95600AF091E /* DiscardAttachmentButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardAttachmentButton.swift; sourceTree = "<group>"; };
@@ -1780,7 +1778,6 @@
 				84EADEB32B2893420046B50C /* VoiceRecording */,
 				8465FD1E2746A95600AF091E /* AddedFileAttachmentsView.swift */,
 				8465FD172746A95600AF091E /* AddedImageAttachmentsView.swift */,
-				8465FD112746A95600AF091E /* AttachmentPickerTypeView.swift */,
 				8465FD1C2746A95600AF091E /* AttachmentPickerView.swift */,
 				844CC60D2811378D0006548D /* ComposerConfig.swift */,
 				8465FD1A2746A95600AF091E /* ComposerHelperViews.swift */,
@@ -2719,7 +2716,6 @@
 				84E7F9952EF981DC00BA56A3 /* MoreReactionsView.swift in Sources */,
 				8465FD7D2746A95700AF091E /* MessageBubble.swift in Sources */,
 				84DEC8E82760EABC00172876 /* ChatChannelDataSource.swift in Sources */,
-				8465FD872746A95700AF091E /* AttachmentPickerTypeView.swift in Sources */,
 				AD3AB65E2CB731360014D4D7 /* ChatThreadListLoadingView.swift in Sources */,
 				AD2DDA5D2CB033460040B8D4 /* ChatThreadList.swift in Sources */,
 				AD3AB65A2CB59A660014D4D7 /* MessagePreviewFormatter.swift in Sources */,

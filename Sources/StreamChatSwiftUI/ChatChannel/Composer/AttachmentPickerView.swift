@@ -6,6 +6,24 @@ import Photos
 import StreamChat
 import SwiftUI
 
+/// Enum for the picker type state.
+public enum PickerTypeState: Equatable, Sendable {
+    /// Picker is expanded, with a selected `AttachmentPickerType`.
+    case expanded(AttachmentPickerType)
+}
+
+/// Attachment picker type.
+public enum AttachmentPickerType: Sendable {
+    /// None is selected.
+    case none
+    /// Media (images, files, videos) is selected.
+    case media
+    /// Instant commands are selected.
+    case instantCommands
+    /// Custom attachment picker type.
+    case custom
+}
+
 /// View for the attachment picker.
 public struct AttachmentPickerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
