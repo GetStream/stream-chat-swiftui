@@ -66,7 +66,7 @@ public struct UserAvatar: View {
     public var body: some View {
         StreamAsyncImage(
             urls: urls,
-            size: size,
+            thumbnailSize: .avatarThumbnailSize,
             content: { phase in
                 Group {
                     switch phase {
@@ -83,6 +83,7 @@ public struct UserAvatar: View {
                 }
             }
         )
+        .frame(width: size, height: size)
         .clipShape(Circle())
         .avatarIndicator(indicator, size: size)
         .accessibilityIdentifier("UserAvatar")

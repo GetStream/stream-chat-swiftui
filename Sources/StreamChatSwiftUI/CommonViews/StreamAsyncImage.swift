@@ -11,7 +11,7 @@ import SwiftUI
 public struct StreamAsyncImage<ImageContent: View>: View {
     @Injected(\.utils) var utils
     
-    let size: CGFloat
+    let thumbnailSize: CGSize
     let urls: [URL]
     @ViewBuilder let content: (StreamAsyncImagePhase) -> ImageContent
     let imageMerger: @MainActor ([UIImage]) async -> UIImage?
@@ -24,19 +24,19 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     ///
     /// - Parameters:
     ///   - urls: The URLs of the images to display.
-    ///   - size: The width and height of the view.
+    ///   - thumbnailSize: The width and height of the thumbnail.
     ///   - content: A closure that takes the loading phase as input, and returns
     ///     the view to display for the current phase.
     ///   - imageMerger: A closure that combines multiple loaded images into a
     ///     single image. Defaults to returning the first image.
     public init(
         urls: [URL],
-        size: CGFloat,
+        thumbnailSize: CGSize,
         content: @escaping (StreamAsyncImagePhase) -> ImageContent,
         imageMerger: @escaping @MainActor ([UIImage]) async -> UIImage? = { $0.first }
     ) {
         self.urls = urls
-        self.size = size
+        self.thumbnailSize = thumbnailSize
         self.content = content
         self.imageMerger = imageMerger
         taskId = urls.map(\.absoluteString).joined()
@@ -44,14 +44,13 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     
     public var body: some View {
         content(phase)
-            .frame(width: size, height: size)
             .clipped()
             .compatibility.task(id: taskId) { @MainActor [imageCDN, imageLoader, imageMerger, urls] in
                 let images = await imageLoader.loadImages(
                     from: urls,
                     placeholders: [],
                     loadThumbnails: true,
-                    thumbnailSize: .avatarThumbnailSize,
+                    thumbnailSize: thumbnailSize,
                     imageCDN: imageCDN
                 )
                 if images.count > 1, let image = await imageMerger(images) {

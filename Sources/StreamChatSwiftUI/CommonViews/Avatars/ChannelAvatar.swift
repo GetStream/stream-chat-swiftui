@@ -61,7 +61,10 @@ public struct ChannelAvatar: View {
     }
     
     public var body: some View {
-        StreamAsyncImage(urls: urls, size: size) { phase in
+        StreamAsyncImage(
+            urls: urls,
+            thumbnailSize: .avatarThumbnailSize
+        ) { phase in
             Group {
                 switch phase {
                 case .success(let image):
@@ -88,6 +91,7 @@ public struct ChannelAvatar: View {
                 return nil
             }
         }
+        .frame(width: size, height: size)
         .clipShape(Circle())
         .avatarIndicator(indicator, size: size)
         .accessibilityIdentifier("ChannelAvatar")

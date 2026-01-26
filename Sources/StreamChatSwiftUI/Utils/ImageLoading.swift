@@ -45,24 +45,6 @@ public extension ImageLoading {
         placeholders: [UIImage],
         loadThumbnails: Bool = true,
         thumbnailSize: CGSize = .avatarThumbnailSize,
-        imageCDN: ImageCDN,
-        completion: @escaping @MainActor ([UIImage]) -> Void
-    ) {
-        loadImages(
-            from: urls,
-            placeholders: placeholders,
-            loadThumbnails: loadThumbnails,
-            thumbnailSize: thumbnailSize,
-            imageCDN: imageCDN,
-            completion: completion
-        )
-    }
-    
-    func loadImages(
-        from urls: [URL],
-        placeholders: [UIImage],
-        loadThumbnails: Bool = true,
-        thumbnailSize: CGSize = .avatarThumbnailSize,
         imageCDN: ImageCDN
     ) async -> [UIImage] {
         await withCheckedContinuation { continuation in
