@@ -123,6 +123,8 @@ import SwiftUI
         didSet {
             if overlayShown == true {
                 resignFirstResponder()
+            } else if oldValue == true {
+                becomeFirstResponder()
             }
         }
     }
