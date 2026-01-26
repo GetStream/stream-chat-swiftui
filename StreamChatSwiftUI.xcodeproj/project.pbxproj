@@ -502,6 +502,7 @@
 		AD3DB8342E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */; };
 		AD51D9182DB9543A0068D0B0 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */; };
 		AD5C0A5F2D6FDD9700E1E500 /* BouncedMessageActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */; };
+		AD5C4B842F27046400464902 /* ComposerAttachmentPickerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5C4B832F27045800464902 /* ComposerAttachmentPickerButton.swift */; };
 		AD6B7E052D356E8800ADEF39 /* ReactionsUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */; };
 		AD723F002EEB6653007C3718 /* PollOptionAllVotesViewModel_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD723EFF2EEB6653007C3718 /* PollOptionAllVotesViewModel_Tests.swift */; };
 		AD9138AC2E707F9100581EB0 /* AttachmentDownloadingStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */; };
@@ -1095,6 +1096,7 @@
 		AD3DB8332E7C7BD50023D377 /* MessageAttachmentsConverter_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentsConverter_Tests.swift; sourceTree = "<group>"; };
 		AD51D9172DB9543A0068D0B0 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
 		AD5C0A5E2D6FDD8600E1E500 /* BouncedMessageActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BouncedMessageActionsModifier.swift; sourceTree = "<group>"; };
+		AD5C4B832F27045800464902 /* ComposerAttachmentPickerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerAttachmentPickerButton.swift; sourceTree = "<group>"; };
 		AD6B7E042D356E8800ADEF39 /* ReactionsUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsUsersViewModel.swift; sourceTree = "<group>"; };
 		AD723EFF2EEB6653007C3718 /* PollOptionAllVotesViewModel_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollOptionAllVotesViewModel_Tests.swift; sourceTree = "<group>"; };
 		AD9138AB2E707F9100581EB0 /* AttachmentDownloadingStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentDownloadingStateView.swift; sourceTree = "<group>"; };
@@ -1780,7 +1782,6 @@
 				8465FD1A2746A95600AF091E /* ComposerHelperViews.swift */,
 				841B64C327744DB60016FF3B /* ComposerModels.swift */,
 				8465FD132746A95600AF091E /* ComposerTextInputView.swift */,
-				8465FD142746A95600AF091E /* DiscardAttachmentButton.swift */,
 				8465FD152746A95600AF091E /* FilePickerView.swift */,
 				8465FD162746A95600AF091E /* ImagePickerView.swift */,
 				8465FD1B2746A95600AF091E /* MessageComposerView.swift */,
@@ -1789,6 +1790,8 @@
 				8465FD182746A95600AF091E /* PhotoAssetsUtils.swift */,
 				8465FD1D2746A95600AF091E /* PhotoAttachmentPickerView.swift */,
 				84DEC8EB27611CAE00172876 /* SendInChannelView.swift */,
+				8465FD142746A95600AF091E /* DiscardAttachmentButton.swift */,
+				AD5C4B832F27045800464902 /* ComposerAttachmentPickerButton.swift */,
 				8465FD122746A95600AF091E /* SendMessageButton.swift */,
 				8492975127B156D000A8EEB0 /* SlowModeView.swift */,
 				84EADEB12B2883C60046B50C /* TrailingComposerView.swift */,
@@ -2703,6 +2706,7 @@
 				841B64CC2775C6300016FF3B /* CommandsConfig.swift in Sources */,
 				8465FDBA2746A95700AF091E /* BundleExtensions.swift in Sources */,
 				84AD8425274E2C380098C3C4 /* ChatChannelScreen.swift in Sources */,
+				AD5C4B842F27046400464902 /* ComposerAttachmentPickerButton.swift in Sources */,
 				8465FD812746A95700AF091E /* SystemMessageView.swift in Sources */,
 				84E7F9952EF981DC00BA56A3 /* MoreReactionsView.swift in Sources */,
 				8465FD7D2746A95700AF091E /* MessageBubble.swift in Sources */,

@@ -169,7 +169,7 @@ public struct AttachmentSourcePickerView: View {
 
     public var body: some View {
         HStack(alignment: .center, spacing: 24) {
-            AttachmentPickerButton(
+            AttachmentTypePickerButton(
                 icon: images.attachmentPickerPhotos,
                 pickerType: .photos,
                 isSelected: selected == .photos,
@@ -177,7 +177,7 @@ public struct AttachmentSourcePickerView: View {
             )
             .accessibilityIdentifier("attachmentPickerPhotos")
 
-            AttachmentPickerButton(
+            AttachmentTypePickerButton(
                 icon: images.attachmentPickerFolder,
                 pickerType: .files,
                 isSelected: selected == .files,
@@ -186,7 +186,7 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityLabel(L10n.Composer.Picker.file)
             .accessibilityIdentifier("attachmentPickerFiles")
 
-            AttachmentPickerButton(
+            AttachmentTypePickerButton(
                 icon: images.attachmentPickerCamera,
                 pickerType: .camera,
                 isSelected: selected == .camera,
@@ -195,7 +195,7 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityIdentifier("attachmentPickerCamera")
             
             if canSendPoll {
-                AttachmentPickerButton(
+                AttachmentTypePickerButton(
                     icon: images.attachmentPickerPolls,
                     pickerType: .polls,
                     isSelected: selected == .polls,
@@ -216,7 +216,7 @@ public struct AttachmentSourcePickerView: View {
 }
 
 /// Button used for picking of attachment types.
-public struct AttachmentPickerButton: View {
+public struct AttachmentTypePickerButton: View {
     @Injected(\.colors) private var colors
 
     var icon: UIImage

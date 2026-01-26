@@ -16,22 +16,10 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
     
     var body: some View {
         HStack {
-            Button {
-                withAnimation {
-                    if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
-                        pickerTypeState = .expanded(.media)
-                    } else {
-                        pickerTypeState = .expanded(.none)
-                    }
-                }
-            } label: {
-                Image(uiImage: images.composerAdd)
-                    .renderingMode(.template)
-                    .foregroundColor(Color(colors.buttonSecondaryText))
-            }
-            .padding(DesignSystemTokens.buttonPaddingYLg)
-            .foregroundColor(Color(colors.buttonSecondaryText))
-            .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
+            ComposerAttachmentPickerButton(
+                factory: factory,
+                pickerTypeState: $pickerTypeState
+            )
         }
     }
 }
@@ -45,6 +33,16 @@ extension Appearance.Images {
     var composerAdd: UIImage {
         UIImage(
             systemName: "plus",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: DesignSystemTokens.iconSizeMd,
+                weight: .light
+            )
+        )!
+    }
+
+    var composerClose: UIImage {
+        UIImage(
+            systemName: "xmark",
             withConfiguration: UIImage.SymbolConfiguration(
                 pointSize: DesignSystemTokens.iconSizeMd,
                 weight: .light
