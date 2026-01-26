@@ -71,7 +71,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         }
         
         var fillColor: Color {
-            online ? colors.presenceBgOnline.toColor : colors.presenceBgOffline.toColor
+            online ? colors.presenceBackgroundOnline.toColor : colors.presenceBackgroundOffline.toColor
         }
         
         var offset: CGPoint {

@@ -56,4 +56,14 @@ extension InjectedValues {
             streamChat.appearance.fontsSwiftUI = newValue
         }
     }
+    
+    /// Provides access to the `Fonts` instance.
+    @MainActor public var designTokens: Appearance.DesignSystemTokens {
+        get {
+            streamChat.appearance.designTokens
+        }
+        set {
+            streamChat.appearance.designTokens = newValue
+        }
+    }
 }

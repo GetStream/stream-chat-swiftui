@@ -3867,7 +3867,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = v5;
+				branch = "v5-design-tokens-sync";
 				kind = branch;
 			};
 		};
