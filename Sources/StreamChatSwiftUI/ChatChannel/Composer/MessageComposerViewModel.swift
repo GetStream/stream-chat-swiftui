@@ -39,8 +39,6 @@ import SwiftUI
     @Published public private(set) var imageAssets: PHFetchResult<PHAsset>?
     @Published public private(set) var addedAssets = [AddedAsset]() {
         didSet {
-            checkPickerSelectionState()
-
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
             }
@@ -51,15 +49,6 @@ import SwiftUI
         didSet {
             if text != "" {
                 checkTypingSuggestions()
-                if pickerTypeState != .collapsed {
-                    if composerCommand == nil && (abs(text.count - oldValue.count) < 10) {
-                        withAnimation {
-                            pickerTypeState = .collapsed
-                        }
-                    } else {
-                        pickerTypeState = .collapsed
-                    }
-                }
                 channelController.sendKeystrokeEvent()
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
@@ -86,7 +75,6 @@ import SwiftUI
                 || !checkAttachmentSize(with: addedFileURLs.last) {
                 addedFileURLs.removeLast()
             }
-            checkPickerSelectionState()
 
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
@@ -96,7 +84,6 @@ import SwiftUI
     
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
-            checkPickerSelectionState()
 
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
@@ -106,7 +93,6 @@ import SwiftUI
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
-            checkPickerSelectionState()
 
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
@@ -129,8 +115,6 @@ import SwiftUI
                 } else {
                     composerCommand = nil
                 }
-            case .collapsed:
-                log.debug("Collapsed state shown, no changes to overlay.")
             }
         }
     }
@@ -754,12 +738,6 @@ import SwiftUI
         composerCommand = nil
         mentionedUsers = Set<ChatUser>()
         clearText()
-    }
-    
-    private func checkPickerSelectionState() {
-        if !addedAssets.isEmpty || !addedFileURLs.isEmpty {
-            pickerTypeState = .collapsed
-        }
     }
     
     private func checkTypingSuggestions() {

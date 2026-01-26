@@ -26,7 +26,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
         Button {
             triggerHapticFeedback(style: .soft)
             withAnimation(.easeInOut(duration: 0.25)) {
-                if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
+                if pickerTypeState == .expanded(.none) {
                     pickerTypeState = .expanded(.media)
                 } else {
                     pickerTypeState = .expanded(.none)
@@ -45,7 +45,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
 
     private var isExpanded: Bool {
         switch pickerTypeState {
-        case .collapsed, .expanded(.none):
+        case .expanded(.none):
             return false
         case .expanded:
             return true

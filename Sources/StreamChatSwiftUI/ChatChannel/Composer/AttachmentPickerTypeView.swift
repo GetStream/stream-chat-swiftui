@@ -9,8 +9,6 @@ import SwiftUI
 public enum PickerTypeState: Equatable, Sendable {
     /// Picker is expanded, with a selected `AttachmentPickerType`.
     case expanded(AttachmentPickerType)
-    /// Picker is collapsed.
-    case collapsed
 }
 
 /// Attachment picker type.
@@ -74,20 +72,7 @@ public struct AttachmentPickerTypeView: View {
                     )
                     .accessibilityLabel(Text(L10n.Composer.Suggestions.Commands.header))
                     .accessibilityIdentifier("PickerTypeButtonCommands")
-                }
-            case .collapsed:
-                if isSendMessageEnabled {
-                    Button {
-                        withAnimation {
-                            pickerTypeState = .expanded(.none)
-                        }
-                    } label: {
-                        Image(uiImage: images.shrinkInputArrow)
-                            .renderingMode(.template)
-                            .foregroundColor(Color(colors.highlightedAccentBackground))
                     }
-                    .accessibilityIdentifier("PickerTypeButtonCollapsed")
-                }
             }
         }
         .accessibilityElement(children: .contain)
