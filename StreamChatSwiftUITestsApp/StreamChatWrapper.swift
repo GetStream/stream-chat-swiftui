@@ -12,6 +12,7 @@ import StreamChat
 import StreamChatSwiftUI
 import UIKit
 
+@MainActor
 final class StreamChatWrapper {
     @Injected(\.chatClient) var client
 
