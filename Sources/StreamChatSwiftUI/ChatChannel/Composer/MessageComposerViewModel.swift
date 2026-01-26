@@ -125,6 +125,8 @@ import SwiftUI
                         resignFirstResponder()
                     }
                 }
+            } else if oldValue == true {
+                becomeFirstResponder()
             }
         }
     }
