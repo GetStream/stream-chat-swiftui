@@ -24,6 +24,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
             channelNameText: viewModel.channelNameText,
             parentMessageText: viewModel.parentMessageText,
             unreadRepliesCount: viewModel.unreadRepliesCount,
+            replyAuthor: viewModel.latestReplyAuthor,
             replyAuthorId: viewModel.latestReplyAuthorId,
             replyAuthorName: viewModel.latestReplyAuthorNameText,
             replyAuthorUrl: viewModel.latestReplyAuthorImageURL,
@@ -127,7 +128,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
         ) ?? ""
     }
 
-    private var latestReplyAuthor: ChatUser? {
+    var latestReplyAuthor: ChatUser? {
         thread.latestReplies.last?.author
     }
 }
@@ -150,6 +151,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
     var replyAuthorIsOnline: Bool
     var replyMessageText: String
     var replyTimestampText: String
+    let replyAuthor: ChatUser?
     var draftText: String?
 
     init(
@@ -157,6 +159,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
         channelNameText: String,
         parentMessageText: String,
         unreadRepliesCount: Int,
+        replyAuthor: ChatUser?,
         replyAuthorId: String,
         replyAuthorName: String,
         replyAuthorUrl: URL?,
@@ -169,6 +172,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
         self.channelNameText = channelNameText
         self.parentMessageText = parentMessageText
         self.unreadRepliesCount = unreadRepliesCount
+        self.replyAuthor = replyAuthor
         self.replyAuthorId = replyAuthorId
         self.replyAuthorName = replyAuthorName
         self.replyAuthorUrl = replyAuthorUrl
@@ -215,13 +219,18 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
 
     var replyContainerView: some View {
         HStack(spacing: 8) {
-            let displayInfo = UserDisplayInfo(
-                id: replyAuthorId,
-                name: replyAuthorName,
-                imageURL: replyAuthorUrl,
-                size: .init(width: 40, height: 40)
-            )
-            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
+            if let replyAuthor {
+                factory.makeUserAvatarView(
+                    options: .init(
+                        user: replyAuthor,
+                        size: AvatarSize.large,
+                        showsIndicator: true
+                    )
+                )
+            } else {
+                // Empty avatar view for shimmer animation
+                UserAvatar(url: nil, initials: "", size: AvatarSize.large, indicator: .none)
+            }
             VStack(alignment: .leading) {
                 Text(replyAuthorName)
                     .lineLimit(1)

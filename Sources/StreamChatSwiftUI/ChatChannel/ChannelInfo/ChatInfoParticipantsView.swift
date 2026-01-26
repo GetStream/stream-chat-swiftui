@@ -33,13 +33,13 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
         LazyVStack {
             ForEach(participants) { participant in
                 HStack {
-                    let displayInfo = UserDisplayInfo(
-                        id: participant.chatUser.id,
-                        name: participant.chatUser.name ?? "",
-                        imageURL: participant.chatUser.imageURL,
-                        extraData: participant.chatUser.extraData
+                    factory.makeUserAvatarView(
+                        options: UserAvatarViewOptions(
+                            user: participant.chatUser,
+                            size: AvatarSize.medium,
+                            showsIndicator: true
+                        )
                     )
-                    factory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: displayInfo))
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(participant.displayName)

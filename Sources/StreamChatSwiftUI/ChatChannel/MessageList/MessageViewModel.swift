@@ -79,10 +79,10 @@ import StreamChat
         message.isRightAligned
     }
 
-    public var userDisplayInfo: UserDisplayInfo? {
+    public var messageAuthor: ChatUser? {
         guard let channel else { return nil }
         guard messageListConfig.messageDisplayOptions.showAvatars(for: channel) else { return nil }
-        return message.authorDisplayInfo
+        return message.author
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {

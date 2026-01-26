@@ -236,14 +236,6 @@ import UIKit
         }
     }
 
-    /// Determines whether an online indicator is shown.
-    ///
-    /// - Parameter channel: the provided channel.
-    /// - Returns: Boolean whether the indicator is shown.
-    public func onlineIndicatorShown(for channel: ChatChannel) -> Bool {
-        channel.shouldShowOnlineIndicator
-    }
-
     public func onDeleteTapped(channel: ChatChannel) {
         setChannelAlertType(.deleteChannel(channel))
     }

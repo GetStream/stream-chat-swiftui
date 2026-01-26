@@ -18,11 +18,6 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
 
-        let circleImage = UIImage.circleImage
-        streamChat?.utils.channelHeaderLoader.placeholder1 = circleImage
-        streamChat?.utils.channelHeaderLoader.placeholder2 = circleImage
-        streamChat?.utils.channelHeaderLoader.placeholder3 = circleImage
-        streamChat?.utils.channelHeaderLoader.placeholder4 = circleImage
         streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: true)
 
         currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId, name: "Vader", imageURL: nil)

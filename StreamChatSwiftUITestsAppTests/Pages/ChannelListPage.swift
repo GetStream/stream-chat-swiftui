@@ -43,7 +43,7 @@ enum ChannelListPage {
         }
 
         static func avatar(in cell: XCUIElement) -> XCUIElement {
-            cell.images["ChannelAvatarView"].firstMatch
+            cell.images["ChannelAvatar"].firstMatch
         }
 
         static func readCount(in cell: XCUIElement) -> XCUIElement {

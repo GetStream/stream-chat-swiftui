@@ -47,8 +47,6 @@ class DemoAppFactory: ViewFactory {
     ) -> some View {
         let channel = options.channel
         let channelName = options.channelName
-        let avatar = options.avatar
-        let onlineIndicatorShown = options.onlineIndicatorShown
         let disabled = options.disabled
         let selectedChannel = options.selectedChannel
         let swipedChannelId = options.swipedChannelId
@@ -60,8 +58,6 @@ class DemoAppFactory: ViewFactory {
         let listItem = DemoAppChatChannelNavigatableListItem(
             channel: channel,
             channelName: channelName,
-            avatar: avatar,
-            onlineIndicatorShown: onlineIndicatorShown,
             disabled: disabled,
             selectedChannel: selectedChannel,
             channelDestination: channelDestination,
@@ -205,7 +201,7 @@ struct ProfileURLModifier: ViewModifier {
                 }, content: {
                     if let user = mentionsHandler.selectedUser {
                         VStack {
-                            MessageAvatarView(avatarURL: user.imageURL)
+                            UserAvatar(user: user, size: AvatarSize.medium)
                             Text(user.name ?? user.id)
                         }
                     }

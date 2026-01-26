@@ -17,8 +17,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
-    var avatar: UIImage
-    var onlineIndicatorShown: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
 
@@ -27,8 +25,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         channel: ChatChannel,
         channelName: String,
         injectedChannelInfo: InjectedChannelInfo? = nil,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
         disabled: Bool = false,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
@@ -36,8 +32,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         self.channel = channel
         self.channelName = channelName
         self.injectedChannelInfo = injectedChannelInfo
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.disabled = disabled
         self.onItemTap = onItemTap
     }
@@ -48,9 +42,9 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    options: ChannelAvatarViewFactoryOptions(
+                    options: ChannelAvatarViewOptions(
                         channel: channel,
-                        options: .init(showOnlineIndicator: onlineIndicatorShown)
+                        size: AvatarSize.large
                     )
                 )
 
@@ -178,111 +172,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 }
 
-/// Options for setting up the channel avatar view.
-public struct ChannelAvatarViewOptions: Sendable {
-    /// Whether the online indicator should be shown.
-    public var showOnlineIndicator: Bool
-    /// Size of the avatar.
-    public var size: CGSize
-    /// Optional avatar image. If not provided, it will be loaded by the channel header loader.
-    public var avatar: UIImage?
-
-    public init(showOnlineIndicator: Bool, size: CGSize = .defaultAvatarSize, avatar: UIImage? = nil) {
-        self.showOnlineIndicator = showOnlineIndicator
-        self.size = size
-        self.avatar = avatar
-    }
-}
-
-/// View for the avatar used in channels (includes online indicator overlay).
-public struct ChannelAvatarView: View {
-    @Injected(\.utils) private var utils
-    let avatar: UIImage?
-    let showOnlineIndicator: Bool
-    let size: CGSize
-
-    @State private var channelAvatar = UIImage()
-    let channel: ChatChannel?
-
-    public init(
-        avatar: UIImage,
-        showOnlineIndicator: Bool,
-        size: CGSize = .defaultAvatarSize
-    ) {
-        self.avatar = avatar
-        channel = nil
-        self.showOnlineIndicator = showOnlineIndicator
-        self.size = size
-    }
-    
-    public init(
-        channel: ChatChannel,
-        showOnlineIndicator: Bool,
-        avatar: UIImage? = nil,
-        size: CGSize = .defaultAvatarSize
-    ) {
-        self.avatar = avatar
-        self.channel = channel
-        self.showOnlineIndicator = showOnlineIndicator
-        self.size = size
-    }
-
-    public var body: some View {
-        LazyView(
-            AvatarView(avatar: image, size: size)
-                .overlay(
-                    showOnlineIndicator ?
-                        TopRightView {
-                            OnlineIndicatorView(indicatorSize: size.width * 0.3)
-                        }
-                        .offset(x: 3, y: -1)
-                        : nil
-                )
-                .onLoad {
-                    reloadAvatar()
-                }
-                .onReceive(channelHeaderLoader.channelAvatarChanged(channel?.cid)) { _ in
-                    reloadAvatar()
-                }
-        )
-        .accessibilityIdentifier("ChannelAvatarView")
-    }
-    
-    private var channelHeaderLoader: ChannelHeaderLoader { utils.channelHeaderLoader }
-    
-    private var image: UIImage {
-        avatar ?? channelAvatar
-    }
-    
-    private func reloadAvatar() {
-        guard let channel, avatar == nil else { return }
-        channelAvatar = utils.channelHeaderLoader.image(for: channel)
-    }
-}
-
-/// View used for the online indicator.
-public struct OnlineIndicatorView: View {
-    @Injected(\.colors) private var colors
-
-    var indicatorSize: CGFloat
-
-    public var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color(colors.textInverted))
-                .frame(width: indicatorSize, height: indicatorSize)
-
-            Circle()
-                .fill(Color(colors.alternativeActiveTint))
-                .frame(width: innerCircleSize, height: innerCircleSize)
-        }
-    }
-
-    private var innerCircleSize: CGFloat {
-        2 * indicatorSize / 3
-    }
-}
-
 /// View displaying the user's unread messages in the channel list item.
 public struct UnreadIndicatorView: View {
     @Injected(\.fonts) private var fonts
@@ -352,13 +241,6 @@ extension ChatChannel {
         !currentlyTypingUsersFiltered(
             currentUserId: InjectedValues[\.chatClient].currentUserId
         ).isEmpty && config.typingEventsEnabled
-    }
-    
-    @MainActor public var shouldShowOnlineIndicator: Bool {
-        !lastActiveMembers.filter { member in
-            member.isOnline && member.id != InjectedValues[\.chatClient].currentUserId
-        }
-        .isEmpty
     }
 
     @MainActor public var subtitleText: String {

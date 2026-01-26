@@ -258,14 +258,15 @@ public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack {
-            let displayInfo = UserDisplayInfo(
-                id: participant?.chatUser.id ?? "",
-                name: participant?.chatUser.name ?? "",
-                imageURL: participant?.chatUser.imageURL,
-                size: .init(width: 64, height: 64),
-                extraData: participant?.chatUser.extraData ?? [:]
-            )
-            factory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: displayInfo))
+            if let user = participant?.chatUser {
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: user,
+                        size: AvatarSize.extraLarge,
+                        showsIndicator: true
+                    )
+                )
+            }
             
             Text(participant?.onlineInfoText ?? "")
                 .font(fonts.footnote)

@@ -38,20 +38,20 @@ struct ReactionUserView<Factory: ViewFactory>: View {
 
     var body: some View {
         VStack {
-            let displayInfo = UserDisplayInfo(
-                id: reaction.author.id,
-                name: reaction.author.name ?? reaction.author.id,
-                imageURL: reaction.author.imageURL,
-                size: CGSize(width: imageSize, height: imageSize)
-            )
-            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
-                .overlay(
-                    VStack {
-                        Spacer()
-                        SingleReactionView(reaction: reaction)
-                            .frame(height: imageSize / 2)
-                    }
+            factory.makeUserAvatarView(
+                options: .init(
+                    user: reaction.author,
+                    size: imageSize,
+                    showsIndicator: false
                 )
+            )
+            .overlay(
+                VStack {
+                    Spacer()
+                    SingleReactionView(reaction: reaction)
+                        .frame(height: imageSize / 2)
+                }
+            )
 
             Text(authorName)
                 .multilineTextAlignment(.center)

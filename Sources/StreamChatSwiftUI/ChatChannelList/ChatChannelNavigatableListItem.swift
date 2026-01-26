@@ -11,9 +11,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
     private var factory: Factory
     private var channel: ChatChannel
     private var channelName: String
-    private var avatar: UIImage
     private var disabled: Bool
-    private var onlineIndicatorShown: Bool
     private var handleTabBarVisibility: Bool
     @Binding private var selectedChannel: ChannelSelectionInfo?
     private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
@@ -23,8 +21,6 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
         disabled: Bool = false,
         handleTabBarVisibility: Bool = true,
         selectedChannel: Binding<ChannelSelectionInfo?>,
@@ -36,8 +32,6 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
         self.channelName = channelName
         self.channelDestination = channelDestination
         self.onItemTap = onItemTap
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.disabled = disabled
         _selectedChannel = selectedChannel
         self.handleTabBarVisibility = true
@@ -50,8 +44,6 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
                 channel: channel,
                 channelName: channelName,
                 injectedChannelInfo: injectedChannelInfo,
-                avatar: avatar,
-                onlineIndicatorShown: onlineIndicatorShown,
                 disabled: disabled,
                 onItemTap: onItemTap
             )

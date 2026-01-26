@@ -36,10 +36,11 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
     public var body: some View {
         HStack(alignment: .bottom) {
             if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
-                factory.makeQuotedMessageAvatarView(
-                    options: QuotedMessageAvatarViewOptions(
-                        userDisplayInfo: quotedMessage.authorDisplayInfo,
-                        size: quotedAuthorAvatarSize
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: quotedMessage.author,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
                     )
                 )
 
@@ -59,10 +60,11 @@ public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
                     attachmentSize: attachmentSize
                 )
 
-                factory.makeQuotedMessageAvatarView(
-                    options: QuotedMessageAvatarViewOptions(
-                        userDisplayInfo: quotedMessage.authorDisplayInfo,
-                        size: quotedAuthorAvatarSize
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: quotedMessage.author,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
                     )
                 )
             }

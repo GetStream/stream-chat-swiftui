@@ -76,12 +76,13 @@ public struct MentionUserView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack {
-            let displayInfo = UserDisplayInfo(
-                id: user.id,
-                name: user.name ?? user.id,
-                imageURL: user.imageURL
+            factory.makeUserAvatarView(
+                options: .init(
+                    user: user,
+                    size: AvatarSize.medium,
+                    showsIndicator: false
+                )
             )
-            factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.bodyBold)

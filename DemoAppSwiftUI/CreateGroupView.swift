@@ -84,11 +84,7 @@ struct SelectedUserGroupView: View {
 
     var body: some View {
         VStack {
-            MessageAvatarView(
-                avatarURL: user.imageURL,
-                size: CGSize(width: avatarSize, height: avatarSize)
-            )
-
+            UserAvatar(user: user, size: avatarSize)
             Text(user.name ?? user.id)
                 .lineLimit(1)
                 .font(fonts.footnote)

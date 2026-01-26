@@ -17,8 +17,6 @@ struct WhatsAppChannelHeaderModifier: ChatChannelHeaderViewModifier {
 }
 
 struct WhatsAppChannelHeader: ToolbarContent {
-    @ObservedObject private var channelHeaderLoader = InjectedValues[\.utils].channelHeaderLoader
-    
     @Injected(\.chatClient) var chatClient
     @Injected(\.utils) var utils
     @Injected(\.fonts) var fonts
@@ -44,11 +42,7 @@ struct WhatsAppChannelHeader: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             HStack {
-                ChannelAvatarView(
-                    channel: channel,
-                    showOnlineIndicator: false,
-                    size: CGSize(width: 36, height: 36)
-                )
+                ChannelAvatar(channel: channel, size: 36)
                 VStack(alignment: .leading) {
                     Text(name(for: channel))
                         .font(fonts.bodyBold)

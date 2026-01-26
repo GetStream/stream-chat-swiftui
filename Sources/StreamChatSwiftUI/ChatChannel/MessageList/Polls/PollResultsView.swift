@@ -100,16 +100,12 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
             
             ForEach(votes, id: \.displayId) { vote in
                 HStack {
-                    if poll.votingVisibility != .anonymous {
-                        factory.makeMessageAvatarView(
-                            options: MessageAvatarViewOptions(
-                                userDisplayInfo: UserDisplayInfo(
-                                    id: vote.user?.id ?? "",
-                                    name: vote.user?.name ?? "",
-                                    imageURL: vote.user?.imageURL,
-                                    size: .init(width: 20, height: 20),
-                                    extraData: vote.user?.extraData ?? [:]
-                                )
+                    if poll.votingVisibility != .anonymous, let user = vote.user {
+                        factory.makeUserAvatarView(
+                            options: UserAvatarViewOptions(
+                                user: user,
+                                size: AvatarSize.extraSmall,
+                                showsIndicator: false
                             )
                         )
                     }

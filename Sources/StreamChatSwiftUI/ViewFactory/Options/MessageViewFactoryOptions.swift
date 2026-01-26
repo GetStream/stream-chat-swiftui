@@ -28,28 +28,25 @@ public final class MessageListBackgroundOptions: Sendable {
     }
 }
 
-// MARK: - Message Avatar Options
+// MARK: - User Avatar Options
 
 /// Options for creating the message avatar view.
-public final class MessageAvatarViewOptions: Sendable {
+public final class UserAvatarViewOptions: Sendable {
     /// Information about the user to display.
-    public let userDisplayInfo: UserDisplayInfo
-    
-    public init(userDisplayInfo: UserDisplayInfo) {
-        self.userDisplayInfo = userDisplayInfo
-    }
-}
-
-/// Options for creating the quoted message avatar view.
-public final class QuotedMessageAvatarViewOptions: Sendable {
-    /// Information about the user to display.
-    public let userDisplayInfo: UserDisplayInfo
+    public let user: ChatUser
     /// The size of the avatar.
-    public let size: CGSize
+    public let size: CGFloat
+    /// True, if the presence indicator should be shown with online and offline states.
+    public let showsIndicator: Bool
     
-    public init(userDisplayInfo: UserDisplayInfo, size: CGSize) {
-        self.userDisplayInfo = userDisplayInfo
+    public init(
+        user: ChatUser,
+        size: CGFloat,
+        showsIndicator: Bool
+    ) {
         self.size = size
+        self.showsIndicator = showsIndicator
+        self.user = user
     }
 }
 

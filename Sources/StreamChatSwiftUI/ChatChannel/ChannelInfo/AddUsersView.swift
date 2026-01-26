@@ -60,14 +60,13 @@ public struct AddUsersView<Factory: ViewFactory>: View {
                         } label: {
                             VStack {
                                 let itemSize: CGFloat = 64
-                                let userDisplayInfo = UserDisplayInfo(
-                                    id: user.id,
-                                    name: user.name ?? "",
-                                    imageURL: user.imageURL,
-                                    size: CGSize(width: itemSize, height: itemSize),
-                                    extraData: user.extraData
+                                factory.makeUserAvatarView(
+                                    options: UserAvatarViewOptions(
+                                        user: user,
+                                        size: itemSize,
+                                        showsIndicator: false
+                                    )
                                 )
-                                factory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: userDisplayInfo))
 
                                 Text(user.name ?? user.id)
                                     .multilineTextAlignment(.center)

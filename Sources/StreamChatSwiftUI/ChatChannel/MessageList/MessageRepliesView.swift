@@ -92,7 +92,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                         lineJoin: .round
                     )
                 )
-                .offset(y: -24)
+                .offset(y: -22)
                 .rotation3DEffect(
                     .degrees(isRightAligned ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
@@ -118,25 +118,17 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         }
     }
 
-    private var messageAvatarView: some View {
-        // This is just a fallback for backwards compatibility
-        // In practice thread participants will never be empty.
-        // So, the factory method will always run.
-        Group {
-            if let participant = message.threadParticipants.first {
-                let displayInfo = UserDisplayInfo(
-                    id: participant.id,
-                    name: participant.name ?? participant.id,
-                    imageURL: participant.imageURL,
-                    size: .init(width: 16, height: 16)
+    @ViewBuilder private var messageAvatarView: some View {
+        if let participant = message.threadParticipants.first {
+            factory.makeUserAvatarView(
+                options: .init(
+                    user: participant,
+                    size: AvatarSize.extraSmall,
+                    showsIndicator: false
                 )
-                factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
-            } else {
-                MessageAvatarView(
-                    avatarURL: message.threadParticipants.first?.imageURL,
-                    size: .init(width: 16, height: 16)
-                )
-            }
+            )
+        } else {
+            UserAvatar(url: nil, initials: "", size: AvatarSize.extraSmall, indicator: .none)
         }
     }
 }

@@ -32,6 +32,7 @@ extension ViewFactory {
         options: MoreChannelActionsViewOptions
     ) -> some View {
         MoreChannelActionsView(
+            factory: self,
             channel: options.channel,
             channelActions: InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
                 SupportedMoreChannelActionsOptions(
@@ -53,8 +54,6 @@ extension ViewFactory {
             factory: self,
             channel: options.channel,
             channelName: options.channelName,
-            avatar: options.avatar,
-            onlineIndicatorShown: options.onlineIndicatorShown,
             disabled: options.disabled,
             handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
             selectedChannel: options.selectedChannel,
@@ -74,13 +73,11 @@ extension ViewFactory {
     }
     
     public func makeChannelAvatarView(
-        options: ChannelAvatarViewFactoryOptions
+        options: ChannelAvatarViewOptions
     ) -> some View {
-        ChannelAvatarView(
+        ChannelAvatar(
             channel: options.channel,
-            showOnlineIndicator: options.options.showOnlineIndicator,
-            avatar: options.options.avatar,
-            size: options.options.size
+            size: options.size
         )
     }
     
@@ -144,9 +141,7 @@ extension ViewFactory {
             selectedChannel: options.selectedChannel,
             searchResults: options.searchResults,
             loadingSearchResults: options.loadingSearchResults,
-            onlineIndicatorShown: options.onlineIndicatorShown,
             channelNaming: options.channelNaming,
-            imageLoader: options.imageLoader,
             onSearchResultTap: options.onSearchResultTap,
             onItemAppear: options.onItemAppear
         )
@@ -158,9 +153,7 @@ extension ViewFactory {
         SearchResultItem(
             factory: self,
             searchResult: options.searchResult,
-            onlineIndicatorShown: options.onlineIndicatorShown,
             channelName: options.channelName,
-            avatar: options.avatar,
             onSearchResultTap: options.onSearchResultTap,
             channelDestination: options.channelDestination
         )
@@ -207,16 +200,14 @@ extension ViewFactory {
             .accessibilityIdentifier("EmptyMessagesView")
     }
     
-    public func makeMessageAvatarView(options: MessageAvatarViewOptions) -> some View {
-        MessageAvatarView(avatarURL: options.userDisplayInfo.imageURL, size: options.userDisplayInfo.size ?? .messageAvatarSize)
+    public func makeUserAvatarView(options: UserAvatarViewOptions) -> some View {
+        UserAvatar(
+            user: options.user,
+            size: options.size,
+            showsIndicator: options.showsIndicator
+        )
     }
-    
-    public func makeQuotedMessageAvatarView(
-        options: QuotedMessageAvatarViewOptions
-    ) -> some View {
-        MessageAvatarView(avatarURL: options.userDisplayInfo.imageURL, size: options.size)
-    }
-    
+        
     public func makeChannelHeaderViewModifier(
         options: ChannelHeaderViewModifierOptions
     ) -> some ChatChannelHeaderViewModifier {

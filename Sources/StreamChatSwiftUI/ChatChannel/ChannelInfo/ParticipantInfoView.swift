@@ -44,14 +44,14 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
                 
-                let displayInfo = UserDisplayInfo(
-                    id: participant.chatUser.id,
-                    name: participant.chatUser.name ?? participant.chatUser.id,
-                    imageURL: participant.chatUser.imageURL,
-                    size: CGSize(width: 64, height: 64)
+                factory.makeUserAvatarView(
+                    options: .init(
+                        user: participant.chatUser,
+                        size: AvatarSize.extraLarge,
+                        showsIndicator: true
+                    )
                 )
-                factory.makeMessageAvatarView(options: .init(userDisplayInfo: displayInfo))
-                    .padding()
+                .padding()
 
                 VStack {
                     ForEach(actions) { action in

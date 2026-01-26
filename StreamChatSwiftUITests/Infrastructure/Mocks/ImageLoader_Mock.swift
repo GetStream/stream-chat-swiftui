@@ -68,12 +68,14 @@ class TestImagesLoader_Mock: ImageLoading {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping (([UIImage]) -> Void)
+        completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         loadImagesCalled = true
 
         let images = urls.map { imageForURL($0) }
-        completion(images)
+        StreamConcurrency.onMain {
+            completion(images)
+        }
     }
 
     private func imageForURL(_ url: URL?) -> UIImage {
