@@ -5,7 +5,7 @@
 import StreamChatCommonUI
 import SwiftUI
 
-/// The button for sending messages.
+/// The button for opening and closing the attachment picker in the message composer.
 public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
