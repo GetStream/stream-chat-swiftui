@@ -11,11 +11,6 @@ final class UserRobot: Robot {
     let composer = MessageListPage.Composer.self
     let contextMenu = MessageListPage.ContextMenu.self
     let debugAlert = MessageListPage.Alert.Debug.self
-    private var server: StreamMockServer
-
-    init(_ server: StreamMockServer) {
-        self.server = server
-    }
 
     @discardableResult
     func login() -> Self {
@@ -136,8 +131,14 @@ extension UserRobot {
     @discardableResult
     func clearComposer() -> Self {
         if !composer.textView.text.isEmpty {
-            composer.inputField.tap()
-            composer.selectAllButton.wait().safeTap()
+            let selectAllButton = composer.selectAllButton
+            for i in 0..<5 {
+                composer.inputField.tap()
+                if selectAllButton.exists {
+                    selectAllButton.safeTap()
+                    break
+                }
+            }
             composer.inputField.typeText(XCUIKeyboardKey.delete.rawValue)
         }
         return self
@@ -354,7 +355,7 @@ extension UserRobot {
     @discardableResult
     func swipeMessage(at index: Int = 0) -> Self {
         let cell = messageCell(withIndex: index).waitForHitPoint()
-        cell.staticTexts.firstMatch.swipeRight()
+        MessageListPage.messageView(for: cell).staticTexts.firstMatch.swipeRight()
         return self
     }
 

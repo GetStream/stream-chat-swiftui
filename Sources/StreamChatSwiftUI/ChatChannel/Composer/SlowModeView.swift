@@ -13,6 +13,10 @@ public struct SlowModeView: View {
     private let size: CGFloat = 32
 
     var cooldownDuration: Int
+    
+    public init(cooldownDuration: Int) {
+        self.cooldownDuration = cooldownDuration
+    }
 
     public var body: some View {
         Text("\(cooldownDuration)")
