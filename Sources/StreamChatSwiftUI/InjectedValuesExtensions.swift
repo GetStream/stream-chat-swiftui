@@ -58,12 +58,12 @@ extension InjectedValues {
     }
     
     /// Provides access to the `Fonts` instance.
-    @MainActor public var designTokens: Appearance.DesignSystemTokens {
+    @MainActor public var tokens: Appearance.DesignSystemTokens {
         get {
-            streamChat.appearance.designTokens
+            streamChat.appearance.tokens
         }
         set {
-            streamChat.appearance.designTokens = newValue
+            streamChat.appearance.tokens = newValue
         }
     }
 }
