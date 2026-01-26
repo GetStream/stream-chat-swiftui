@@ -84,7 +84,6 @@ import SwiftUI
     
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
-
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
             }
@@ -93,7 +92,6 @@ import SwiftUI
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
         didSet {
-
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
             }
