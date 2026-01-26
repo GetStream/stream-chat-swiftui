@@ -629,8 +629,6 @@ extension ViewFactory {
             messageController: options.messageController,
             canSendPoll: options.canSendPoll
         )
-        .offset(y: options.isDisplayed ? 0 : options.popupHeight)
-        .animation(.spring())
     }
     
     public func makeVoiceRecordingView(

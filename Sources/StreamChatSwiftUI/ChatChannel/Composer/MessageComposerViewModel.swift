@@ -120,7 +120,11 @@ import SwiftUI
     @Published public private(set) var overlayShown = false {
         didSet {
             if overlayShown == true {
-                resignFirstResponder()
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        resignFirstResponder()
+                    }
+                }
             }
         }
     }

@@ -185,6 +185,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
             )
             .environmentObject(viewModel)
+            .offset(y: viewModel.overlayShown ? 0 : popupSize)
+            .opacity(viewModel.overlayShown ? 1 : 0)
+            .animation(.easeInOut(duration: 0.25))
         }
         .background(
             GeometryReader { proxy in
@@ -201,8 +204,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .onReceive(keyboardWillChangePublisher) { visible in
             if visible && !keyboardShown {
                 if viewModel.composerCommand == nil && !editedMessageWillShow {
-                    withAnimation(.easeInOut(duration: 0.02)) {
-                        viewModel.pickerTypeState = .expanded(.none)
+                    DispatchQueue.main.async {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            viewModel.pickerTypeState = .expanded(.none)
+                        }
                     }
                 } else if editedMessageWillShow {
                     // When editing a message, the keyboard will show.
