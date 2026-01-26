@@ -24,7 +24,8 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
 
     public var body: some View {
         Button {
-            withAnimation {
+            triggerHapticFeedback(style: .soft)
+            withAnimation(.easeInOut(duration: 0.25)) {
                 if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
                     pickerTypeState = .expanded(.media)
                 } else {
@@ -32,21 +33,22 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View {
                 }
             }
         } label: {
-            Image(uiImage: image)
+            Image(uiImage: images.composerAdd)
                 .renderingMode(.template)
                 .foregroundColor(Color(colors.buttonSecondaryText))
+                .rotationEffect(.degrees(isExpanded ? 45 : 0))
         }
         .padding(DesignSystemTokens.buttonPaddingYLg)
         .foregroundColor(Color(colors.buttonSecondaryText))
         .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
     }
 
-    var image: UIImage {
+    private var isExpanded: Bool {
         switch pickerTypeState {
         case .collapsed, .expanded(.none):
-            return images.composerAdd
+            return false
         case .expanded:
-            return images.composerClose
+            return true
         }
     }
 }

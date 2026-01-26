@@ -39,17 +39,7 @@ extension Appearance.Images {
             )
         )!
     }
-
-    var composerClose: UIImage {
-        UIImage(
-            systemName: "xmark",
-            withConfiguration: UIImage.SymbolConfiguration(
-                pointSize: DesignSystemTokens.iconSizeMd,
-                weight: .light
-            )
-        )!
-    }
-
+    
     var composerSend: UIImage {
         UIImage(
             systemName: "paperplane",
