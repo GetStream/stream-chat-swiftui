@@ -65,7 +65,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is MoreChannelActionsView)
+        XCTAssert(view is MoreChannelActionsView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeSearchResultsView() {
@@ -78,9 +78,7 @@ import XCTest
                 selectedChannel: .constant(nil),
                 searchResults: [],
                 loadingSearchResults: false,
-                onlineIndicatorShown: { _ in true },
                 channelNaming: { _ in "Test" },
-                imageLoader: { _ in UIImage(systemName: "person")! },
                 onSearchResultTap: { _ in },
                 onItemAppear: { _ in }
             )
@@ -90,43 +88,16 @@ import XCTest
         XCTAssert(view is SearchResultsView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeMessageAvatarView() {
+    func test_viewFactory_makeUserAvatarView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        let userInfo = UserDisplayInfo(
-            id: .unique,
-            name: .unique,
-            imageURL: URL(string: "https://example.com"),
-            role: .user
-        )
+        let user = ChatUser.mock(id: .unique)
 
         // When
-        let view = viewFactory.makeMessageAvatarView(options: MessageAvatarViewOptions(userDisplayInfo: userInfo))
+        let view = viewFactory.makeUserAvatarView(options: UserAvatarViewOptions(user: user, size: AvatarSize.medium, showsIndicator: true))
 
         // Then
-        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
-    }
-
-    func test_viewFactory_makeQuotedMessageAvatarView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let userInfo = UserDisplayInfo(
-            id: .unique,
-            name: .unique,
-            imageURL: URL(string: "https://example.com"),
-            role: .user
-        )
-
-        // When
-        let view = viewFactory.makeQuotedMessageAvatarView(
-            options: QuotedMessageAvatarViewOptions(
-                userDisplayInfo: userInfo,
-                size: CGSize(width: 16, height: 16)
-            )
-        )
-
-        // Then
-        XCTAssert(view is MessageAvatarView<MessageAvatarDefaultPlaceholderView>)
+        XCTAssert(view is UserAvatar)
     }
 
     func test_viewFactory_makeChannelHeaderViewModifier() {
@@ -990,14 +961,14 @@ import XCTest
         
         // When
         let view = viewFactory.makeChannelAvatarView(
-            options: ChannelAvatarViewFactoryOptions(
+            options: ChannelAvatarViewOptions(
                 channel: .mockNonDMChannel(),
-                options: .init(showOnlineIndicator: false)
+                size: AvatarSize.medium
             )
         )
         
         // Then
-        XCTAssert(view is ChannelAvatarView)
+        XCTAssert(view is ChannelAvatar)
     }
     
     func test_viewFactory_makeGalleryView() {

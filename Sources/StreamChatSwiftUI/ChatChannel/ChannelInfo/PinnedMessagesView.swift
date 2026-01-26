@@ -109,7 +109,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
-    private let avatarSize = CGSize(width: 56, height: 56)
+    private let avatarSize: CGFloat = AvatarSize.large
 
     var factory: Factory
     var message: ChatMessage
@@ -117,14 +117,12 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
 
     var body: some View {
         HStack {
-            factory.makeMessageAvatarView(
-                options: .init(userDisplayInfo: UserDisplayInfo(
-                    id: message.author.id,
-                    name: message.author.name ?? "",
-                    imageURL: message.author.imageURL,
+            factory.makeUserAvatarView(
+                options: .init(
+                    user: message.author,
                     size: avatarSize,
-                    extraData: message.author.extraData
-                ))
+                    showsIndicator: false
+                )
             )
 
             VStack(alignment: .leading, spacing: 4) {

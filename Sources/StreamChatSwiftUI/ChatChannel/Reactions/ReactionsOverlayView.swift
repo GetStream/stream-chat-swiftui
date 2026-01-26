@@ -104,8 +104,12 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
             if !messageDisplayInfo.message.isRightAligned &&
                 utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
-                factory.makeMessageAvatarView(
-                    options: .init(userDisplayInfo: messageDisplayInfo.message.authorDisplayInfo)
+                factory.makeUserAvatarView(
+                    options: .init(
+                        user: messageDisplayInfo.message.author,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
+                    )
                 )
                 .offset(
                     x: paddingValue / 2,
@@ -373,7 +377,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         if messageDisplayInfo.message.isRightAligned {
             availableWidth - messageActionsWidth - paddingValue / 2
         } else {
-            CGSize.messageAvatarSize.width + paddingValue
+            AvatarSize.medium + paddingValue
         }
     }
 

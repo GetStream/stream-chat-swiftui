@@ -40,7 +40,6 @@ import StreamChatCommonUI
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
     public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
-    public var channelHeaderLoader: ChannelHeaderLoader
     public var videoDurationFormatter: VideoDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
@@ -103,7 +102,6 @@ import StreamChatCommonUI
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
-        channelHeaderLoader: ChannelHeaderLoader = ChannelHeaderLoader(),
         videoDurationFormatter: VideoDurationFormatter = DefaultVideoDurationFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
@@ -134,7 +132,6 @@ import StreamChatCommonUI
         self.messageIdBuilder = messageIdBuilder
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         self.sortReactions = sortReactions
-        self.channelHeaderLoader = channelHeaderLoader
         self.videoDurationFormatter = videoDurationFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.pollsConfig = pollsConfig

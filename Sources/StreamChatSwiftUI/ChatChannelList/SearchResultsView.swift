@@ -13,9 +13,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResults: [ChannelSelectionInfo]
     var loadingSearchResults: Bool
-    var onlineIndicatorShown: @MainActor (ChatChannel) -> Bool
     var channelNaming: @MainActor (ChatChannel) -> String
-    var imageLoader: @MainActor (ChatChannel) -> UIImage
     var onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     var onItemAppear: @MainActor (Int) -> Void
     
@@ -24,9 +22,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
         selectedChannel: Binding<ChannelSelectionInfo?>,
         searchResults: [ChannelSelectionInfo],
         loadingSearchResults: Bool,
-        onlineIndicatorShown: @escaping @MainActor (ChatChannel) -> Bool,
         channelNaming: @escaping @MainActor (ChatChannel) -> String,
-        imageLoader: @escaping @MainActor (ChatChannel) -> UIImage,
         onSearchResultTap: @escaping @MainActor (ChannelSelectionInfo) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void
     ) {
@@ -34,9 +30,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
         _selectedChannel = selectedChannel
         self.searchResults = searchResults
         self.loadingSearchResults = loadingSearchResults
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.channelNaming = channelNaming
-        self.imageLoader = imageLoader
         self.onSearchResultTap = onSearchResultTap
         self.onItemAppear = onItemAppear
     }
@@ -57,9 +51,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
                             factory: factory,
                             selectedChannel: $selectedChannel,
                             searchResult: searchResult,
-                            onlineIndicatorShown: onlineIndicatorShown(searchResult.channel),
                             channelName: channelNaming(searchResult.channel),
-                            avatar: imageLoader(searchResult.channel),
                             onSearchResultTap: onSearchResultTap,
                             channelDestination: factory.makeChannelDestination(options: ChannelDestinationOptions())
                         )
@@ -86,9 +78,7 @@ struct SearchResultView<Factory: ViewFactory>: View {
     var factory: Factory
     @Binding var selectedChannel: ChannelSelectionInfo?
     var searchResult: ChannelSelectionInfo
-    var onlineIndicatorShown: Bool
     var channelName: String
-    var avatar: UIImage
     var onSearchResultTap: @MainActor (ChannelSelectionInfo) -> Void
     var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
 
@@ -97,9 +87,7 @@ struct SearchResultView<Factory: ViewFactory>: View {
             factory.makeChannelListSearchResultItem(
                 options: ChannelListSearchResultItemOptions(
                     searchResult: searchResult,
-                    onlineIndicatorShown: onlineIndicatorShown,
                     channelName: channelName,
-                    avatar: avatar,
                     onSearchResultTap: onSearchResultTap,
                     channelDestination: channelDestination
                 )
@@ -124,9 +112,7 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
 
     var factory: Factory
     var searchResult: ChannelSelectionInfo
-    var onlineIndicatorShown: Bool
     var channelName: String
-    var avatar: UIImage
     var onSearchResultTap: (ChannelSelectionInfo) -> Void
     var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
 
@@ -136,9 +122,9 @@ struct SearchResultItem<Factory: ViewFactory, ChannelDestination: View>: View {
         } label: {
             HStack {
                 factory.makeChannelAvatarView(
-                    options: ChannelAvatarViewFactoryOptions(
+                    options: ChannelAvatarViewOptions(
                         channel: searchResult.channel,
-                        options: .init(showOnlineIndicator: onlineIndicatorShown, avatar: avatar)
+                        size: AvatarSize.large
                     )
                 )
 

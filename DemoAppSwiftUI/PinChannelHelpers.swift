@@ -16,8 +16,6 @@ struct DemoAppChatChannelListItem: View {
     var channel: ChatChannel
     var channelName: String
     var injectedChannelInfo: InjectedChannelInfo?
-    var avatar: UIImage
-    var onlineIndicatorShown: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
 
@@ -26,9 +24,9 @@ struct DemoAppChatChannelListItem: View {
             onItemTap(channel)
         } label: {
             HStack {
-                ChannelAvatarView(
+                ChannelAvatar(
                     channel: channel,
-                    showOnlineIndicator: onlineIndicatorShown
+                    size: AvatarSize.medium
                 )
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -121,9 +119,7 @@ struct DemoAppChatChannelListItem: View {
 struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
     private var channel: ChatChannel
     private var channelName: String
-    private var avatar: UIImage
     private var disabled: Bool
-    private var onlineIndicatorShown: Bool
     @Binding private var selectedChannel: ChannelSelectionInfo?
     private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
     private var onItemTap: (ChatChannel) -> Void
@@ -131,8 +127,6 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
     init(
         channel: ChatChannel,
         channelName: String,
-        avatar: UIImage,
-        onlineIndicatorShown: Bool,
         disabled: Bool = false,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
@@ -142,8 +136,6 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
         self.channelName = channelName
         self.channelDestination = channelDestination
         self.onItemTap = onItemTap
-        self.avatar = avatar
-        self.onlineIndicatorShown = onlineIndicatorShown
         self.disabled = disabled
         _selectedChannel = selectedChannel
     }
@@ -155,8 +147,6 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                     channel: channel,
                     channelName: channelName,
                     injectedChannelInfo: injectedChannelInfo,
-                    avatar: avatar,
-                    onlineIndicatorShown: onlineIndicatorShown,
                     disabled: disabled,
                     onItemTap: onItemTap
                 )
@@ -165,8 +155,6 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                     channel: channel,
                     channelName: channelName,
                     injectedChannelInfo: injectedChannelInfo,
-                    avatar: avatar,
-                    onlineIndicatorShown: onlineIndicatorShown,
                     disabled: disabled,
                     onItemTap: onItemTap
                 )

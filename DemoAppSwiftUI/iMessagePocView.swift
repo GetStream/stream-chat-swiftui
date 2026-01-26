@@ -10,7 +10,6 @@ struct iMessagePocView: View {
     @Injected(\.colors) var colors
 
     @StateObject var viewModel: iMessageChatChannelListViewModel
-    @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
 
     private var factory = iMessageViewFactory.shared
 
@@ -31,9 +30,9 @@ struct iMessagePocView: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(viewModel.pinnedChannels) { channel in
-                                ChannelAvatarView(
+                                ChannelAvatar(
                                     channel: channel,
-                                    showOnlineIndicator: false
+                                    size: 48
                                 )
                                 .padding()
                             }
@@ -46,8 +45,6 @@ struct iMessagePocView: View {
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,
                     swipedChannelId: $viewModel.swipedChannelId,
-                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                    imageLoader: channelHeaderLoader.image(for:),
                     onItemTap: { channel in
                         viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
                     },

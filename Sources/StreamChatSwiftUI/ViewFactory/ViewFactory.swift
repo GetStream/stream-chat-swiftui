@@ -38,7 +38,7 @@ import SwiftUI
     /// Creates the channel avatar view shown in the channel list, search results and the channel header.
     /// - Parameter options: the options for creating the channel avatar view.
     /// - Returns: view displayed in the channel avatar slot.
-    func makeChannelAvatarView(options: ChannelAvatarViewFactoryOptions) -> ChannelAvatarViewType
+    func makeChannelAvatarView(options: ChannelAvatarViewOptions) -> ChannelAvatarViewType
 
     associatedtype ChannelListBackground: View
     /// Creates the background for the channel list.
@@ -117,15 +117,10 @@ import SwiftUI
     /// - Returns: View shown in the empty messages slot.
     func makeEmptyMessagesView(options: EmptyMessagesViewOptions) -> EmptyMessagesViewType
 
-    associatedtype UserAvatar: View
-    /// Creates the message avatar view.
+    associatedtype UserAvatarViewType: View
+    /// Creates an avatar view for user.
     /// - Parameter options: the options for creating the message avatar view.
-    func makeMessageAvatarView(options: MessageAvatarViewOptions) -> UserAvatar
-
-    associatedtype QuotedUserAvatar: View
-    /// Creates the user avatar shown in quoted messages.
-    /// - Parameter options: the options for creating the quoted message avatar view.
-    func makeQuotedMessageAvatarView(options: QuotedMessageAvatarViewOptions) -> QuotedUserAvatar
+    func makeUserAvatarView(options: UserAvatarViewOptions) -> UserAvatarViewType
 
     associatedtype ChatHeaderViewModifier: ChatChannelHeaderViewModifier
     /// Creates the channel header view modifier.

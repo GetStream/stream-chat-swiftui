@@ -127,9 +127,9 @@ struct SelectedUserView: View {
 
     var body: some View {
         HStack {
-            MessageAvatarView(
-                avatarURL: user.imageURL,
-                size: CGSize(width: 20, height: 20)
+            UserAvatar(
+                user: user,
+                size: AvatarSize.extraSmall
             )
 
             Text(user.name ?? user.id)
@@ -211,7 +211,7 @@ struct ChatUserView: View {
     var body: some View {
         HStack {
             LazyView(
-                MessageAvatarView(avatarURL: user.imageURL)
+                UserAvatar(user: user, size: AvatarSize.medium)
             )
 
             VStack(alignment: .leading, spacing: 4) {

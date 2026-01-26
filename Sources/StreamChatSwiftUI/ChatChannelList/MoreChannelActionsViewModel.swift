@@ -30,7 +30,6 @@ import UIKit
         }
     }
 
-    @Published var memberAvatars = [String: UIImage]()
     @Published var members = [ChatChannelMember]()
 
     /// Computed vars.
@@ -55,33 +54,6 @@ import UIKit
         self.channelActions = channelActions
         self.channel = channel
         members = channel.lastActiveMembers
-    }
-
-    /// Returns an image for a member.
-    ///
-    /// - Parameter member: the chat channel member.
-    /// - Returns: downloaded image or a placeholder.
-    public func image(for member: ChatChannelMember) -> UIImage {
-        if let image = memberAvatars[member.id] {
-            return image
-        }
-
-        imageLoader.loadImage(
-            url: member.imageURL,
-            imageCDN: imageCDN,
-            resize: true,
-            preferredSize: .avatarThumbnailSize
-        ) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case let .success(image):
-                memberAvatars[member.id] = image
-            case let .failure(error):
-                log.error("error loading image: \(error.localizedDescription)")
-            }
-        }
-
-        return placeholder2
     }
 
     // MARK: - private

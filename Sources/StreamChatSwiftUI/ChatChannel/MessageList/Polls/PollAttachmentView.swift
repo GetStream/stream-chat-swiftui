@@ -217,17 +217,13 @@ struct PollOptionView<Factory: ViewFactory>: View {
                     if !alternativeStyle, viewModel.showVoterAvatars {
                         HStack(spacing: -4) {
                             ForEach(
-                                option.latestVotes.prefix(2)
-                            ) { vote in
-                                factory.makeMessageAvatarView(
-                                    options: MessageAvatarViewOptions(
-                                        userDisplayInfo: UserDisplayInfo(
-                                            id: vote.user?.id ?? "",
-                                            name: vote.user?.name ?? "",
-                                            imageURL: vote.user?.imageURL,
-                                            size: .init(width: 20, height: 20),
-                                            extraData: vote.user?.extraData ?? [:]
-                                        )
+                                option.latestVotes.compactMap(\.user).prefix(2)
+                            ) { user in
+                                factory.makeUserAvatarView(
+                                    options: UserAvatarViewOptions(
+                                        user: user,
+                                        size: AvatarSize.extraSmall,
+                                        showsIndicator: false
                                     )
                                 )
                             }
