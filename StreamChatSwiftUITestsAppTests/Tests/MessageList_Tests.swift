@@ -426,7 +426,9 @@ extension MessageList_Tests {
             userRobot.scrollMessageListUpSlow()
         }
         AND("participant sends some messages") {
-            participantRobot.sendMultipleMessages("Some message", count: 16)
+            participantRobot
+                .sendMultipleMessages("Some message", count: 16)
+                .sleep(1)
         }
         WHEN("user scrolls to the bottom") {
             userRobot.tapOnScrollToBottomButton()

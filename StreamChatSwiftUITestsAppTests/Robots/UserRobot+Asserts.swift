@@ -62,8 +62,7 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let cell = channelCell(withIndex: cellIndex, file: file, line: line)
-        let message = channelAttributes.lastMessage(in: cell)
-        let actualText = message.waitForText(text, mustBeEqual: false).text
+        let actualText = channelAttributes.lastMessageText(in: cell)
         XCTAssertTrue(
             actualText.contains(text),
             "'\(actualText)' does not contain '\(text)'",
@@ -668,6 +667,22 @@ extension UserRobot {
 
         let firstThreadReply = MessageListPage.cells.allElementsBoundByIndex[MessageListPage.cells.count - 2]
         XCTAssertEqual(attributes.text(in: firstThreadReply).text, "1", file: file, line: line)
+        return self
+    }
+    
+    @discardableResult
+    func assertComposerText(
+        _ text: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let composerTextView = MessageListPage.Composer.textView.wait()
+        XCTAssertEqual(
+            composerTextView.text,
+            text,
+            file: file,
+            line: line
+        )
         return self
     }
 
