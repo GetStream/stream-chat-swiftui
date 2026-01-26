@@ -128,7 +128,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 )
             )
         } else {
-            EmptyView()
+            UserAvatar(url: nil, initials: "", size: AvatarSize.extraSmall, indicator: .none)
         }
     }
 }
