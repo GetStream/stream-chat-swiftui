@@ -234,7 +234,6 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
     var isFirst: Bool
 
     @Injected(\.fonts) private var fonts
-    @Injected(\.tokens) var tokens
 
     public var body: some View {
         ZStack {
@@ -263,16 +262,6 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             } else {
                 Text(message.adjustedText)
                     .font(fonts.emoji)
-                    .padding(.horizontal, tokens.spacingSm)
-                    .padding(.vertical, tokens.spacingXxs)
-                    .modifier(
-                        factory.styles.makeMessageViewModifier(
-                            for: MessageModifierInfo(
-                                message: message,
-                                isFirst: isFirst
-                            )
-                        )
-                    )
             }
         }
         .accessibilityIdentifier("MessageTextView")
