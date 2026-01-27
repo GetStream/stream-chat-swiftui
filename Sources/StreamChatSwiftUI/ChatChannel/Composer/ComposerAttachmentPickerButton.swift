@@ -40,7 +40,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
         .padding(DesignSystemTokens.buttonPaddingYLg)
         .foregroundColor(Color(colors.buttonSecondaryText))
         .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
-        .onChange(of: pickerTypeState) { newValue in
+        .onChange(of: pickerTypeState) { _ in
             triggerHapticFeedback(style: .soft)
         }
         .onReceive(keyboardWillChangePublisher) { shown in
