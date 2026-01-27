@@ -85,7 +85,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     )
                 }
                 .stroke(
-                    Color(colors.innerBorder),
+                    Color(message.isSentByCurrentUser ? colors.chatThreadConnectorOutgoing : colors.chatThreadConnectorIncoming),
                     style: StrokeStyle(
                         lineWidth: 1.0,
                         lineCap: .round,
@@ -98,7 +98,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     axis: (x: 0, y: 1, z: 0)
                 )
             )
-            .foregroundColor(Color(colors.accentPrimary))
+            .foregroundColor(colors.textPrimary.toColor)
         }
     }
     

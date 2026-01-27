@@ -49,7 +49,7 @@ public struct MessageAuthorView: View {
         Text(authorName)
             .lineLimit(1)
             .font(fonts.footnoteBold)
-            .foregroundColor(Color(colors.textLowEmphasis))
+            .foregroundColor(colors.chatTextUsername.toColor)
     }
 }
 
@@ -85,7 +85,7 @@ struct MessageDateView: View {
     var body: some View {
         Text(text)
             .font(fonts.footnote)
-            .foregroundColor(Color(colors.textLowEmphasis))
+            .foregroundColor(colors.chatTextTimestamp.toColor)
             .animation(nil)
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityIdentifier("MessageDateView")
@@ -120,14 +120,14 @@ public struct MessageReadIndicatorView: View {
             if showReadCount && shouldShowReads {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
-                    .foregroundColor(Color(colors.accentPrimary))
+                    .foregroundColor(colors.textPrimary.toColor)
                     .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: image
             )
             .customizable()
-            .foregroundColor(shouldShowReads ? Color(colors.accentPrimary) : Color(colors.textLowEmphasis))
+            .foregroundColor(shouldShowReads ? Color(colors.accentPrimary) : colors.chatTextTimestamp.toColor)
             .frame(height: 16)
             .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(
@@ -188,7 +188,7 @@ public struct MessagePinDetailsView: View {
             Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
                 .font(fonts.footnote)
         }
-        .foregroundColor(Color(colors.textLowEmphasis))
+        .foregroundColor(Color(colors.chatTextTimestamp))
         .frame(height: 16)
         .padding(.bottom, reactionsShown ? 16 : 0)
         .padding(.top, 4)
@@ -222,14 +222,14 @@ extension View {
             return Color(colors.textLowEmphasis)
         }
         if message.isSentByCurrentUser {
-            return Color(colors.messageCurrentUserTextColor)
+            return Color(colors.chatTextMessage)
         } else {
-            return Color(colors.messageOtherUserTextColor)
+            return Color(colors.chatTextMessage)
         }
     }
     
     func textColor(currentUser: Bool) -> Color {
         @Injected(\.colors) var colors
-        return currentUser ? Color(colors.messageCurrentUserTextColor) : Color(colors.messageOtherUserTextColor)
+        return currentUser ? Color(colors.chatTextMessage) : Color(colors.chatTextMessage)
     }
 }

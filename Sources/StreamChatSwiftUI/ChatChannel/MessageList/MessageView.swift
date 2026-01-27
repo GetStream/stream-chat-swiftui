@@ -157,10 +157,29 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         factory: Factory,
         message: ChatMessage,
         isFirst: Bool,
-        leadingPadding: CGFloat = 16,
-        trailingPadding: CGFloat = 16,
-        topPadding: CGFloat = 8,
-        bottomPadding: CGFloat = 8,
+        scrolledId: Binding<String?>
+    ) {
+        @Injected(\.tokens) var tokens
+        self.init(
+            factory: factory,
+            message: message,
+            isFirst: isFirst,
+            leadingPadding: tokens.spacingSm,
+            trailingPadding: tokens.spacingSm,
+            topPadding: tokens.spacingXs,
+            bottomPadding: tokens.spacingXs,
+            scrolledId: scrolledId
+        )
+    }
+    
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        isFirst: Bool,
+        leadingPadding: CGFloat,
+        trailingPadding: CGFloat,
+        topPadding: CGFloat,
+        bottomPadding: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
@@ -215,6 +234,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
     var isFirst: Bool
 
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) var tokens
 
     public var body: some View {
         ZStack {
@@ -243,6 +263,16 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             } else {
                 Text(message.adjustedText)
                     .font(fonts.emoji)
+                    .padding(.horizontal, tokens.spacingSm)
+                    .padding(.vertical, tokens.spacingXxs)
+                    .modifier(
+                        factory.styles.makeMessageViewModifier(
+                            for: MessageModifierInfo(
+                                message: message,
+                                isFirst: isFirst
+                            )
+                        )
+                    )
             }
         }
         .accessibilityIdentifier("MessageTextView")

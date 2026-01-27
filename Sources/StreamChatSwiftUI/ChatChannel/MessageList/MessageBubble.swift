@@ -11,14 +11,14 @@ public struct MessageModifierInfo {
     public var message: ChatMessage
     public var isFirst: Bool
     public var injectedBackgroundColor: UIColor?
-    public var cornerRadius: CGFloat = 18
+    public var cornerRadius: CGFloat?
     public var forceLeftToRight = false
 
     public init(
         message: ChatMessage,
         isFirst: Bool,
         injectedBackgroundColor: UIColor? = nil,
-        cornerRadius: CGFloat = 18,
+        cornerRadius: CGFloat? = nil,
         forceLeftToRight: Bool = false
     ) {
         self.message = message
@@ -32,12 +32,13 @@ public struct MessageModifierInfo {
 /// Modifier that enables message bubble container.
 public struct MessageBubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
     public var message: ChatMessage
     public var isFirst: Bool
     public var injectedBackgroundColor: UIColor?
-    public var cornerRadius: CGFloat = 18
+    public var cornerRadius: CGFloat?
     public var forceLeftToRight = false
     public var topPadding: CGFloat = 0
     public var bottomPadding: CGFloat = 0
@@ -46,7 +47,7 @@ public struct MessageBubbleModifier: ViewModifier {
         message: ChatMessage,
         isFirst: Bool,
         injectedBackgroundColor: UIColor? = nil,
-        cornerRadius: CGFloat = 18,
+        cornerRadius: CGFloat?,
         forceLeftToRight: Bool = false,
         topPadding: CGFloat = 0,
         bottomPadding: CGFloat = 0
@@ -76,7 +77,8 @@ public struct MessageBubbleModifier: ViewModifier {
                         colors: colors,
                         injectedBackgroundColor: injectedBackgroundColor
                     ),
-                    cornerRadius: cornerRadius
+                    borderColor: message.bubbleBorder(colors: colors),
+                    cornerRadius: cornerRadius ?? tokens.messageBubbleRadiusGroupBottom
                 )
             )
             .padding(.top, topPadding)
@@ -142,13 +144,64 @@ public struct BubbleBackgroundShape: Shape {
     var corners: UIRectCorner
 
     public func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: corners,
-            cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
-        )
+        let radius = min(cornerRadius, min(rect.width, rect.height) / 2)
+        let topLeftRadius = corners.contains(.topLeft) ? radius : 0
+        let topRightRadius = corners.contains(.topRight) ? radius : 0
+        let bottomRightRadius = corners.contains(.bottomRight) ? radius : 0
+        let bottomLeftRadius = corners.contains(.bottomLeft) ? radius : 0
 
-        return Path(path.cgPath)
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX + topLeftRadius, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX - topRightRadius, y: rect.minY))
+        if topRightRadius > 0 {
+            path.addArc(
+                center: CGPoint(x: rect.maxX - topRightRadius, y: rect.minY + topRightRadius),
+                radius: topRightRadius,
+                startAngle: .degrees(-90),
+                endAngle: .degrees(0),
+                clockwise: false
+            )
+        } else {
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        }
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - bottomRightRadius))
+        if bottomRightRadius > 0 {
+            path.addArc(
+                center: CGPoint(x: rect.maxX - bottomRightRadius, y: rect.maxY - bottomRightRadius),
+                radius: bottomRightRadius,
+                startAngle: .degrees(0),
+                endAngle: .degrees(90),
+                clockwise: false
+            )
+        } else {
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        }
+        path.addLine(to: CGPoint(x: rect.minX + bottomLeftRadius, y: rect.maxY))
+        if bottomLeftRadius > 0 {
+            path.addArc(
+                center: CGPoint(x: rect.minX + bottomLeftRadius, y: rect.maxY - bottomLeftRadius),
+                radius: bottomLeftRadius,
+                startAngle: .degrees(90),
+                endAngle: .degrees(180),
+                clockwise: false
+            )
+        } else {
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        }
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + topLeftRadius))
+        if topLeftRadius > 0 {
+            path.addArc(
+                center: CGPoint(x: rect.minX + topLeftRadius, y: rect.minY + topLeftRadius),
+                radius: topLeftRadius,
+                startAngle: .degrees(180),
+                endAngle: .degrees(270),
+                clockwise: false
+            )
+        } else {
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
+        }
+        path.closeSubpath()
+        return path
     }
 }
 
@@ -213,6 +266,10 @@ extension ChatMessage {
             return [.topLeft, .topRight, .bottomRight]
         }
     }
+    
+    func bubbleBorder(colors: Appearance.ColorPalette) -> Color {
+        isSentByCurrentUser ? colors.chatBorderOutgoing.toColor : colors.chatBorderIncoming.toColor
+    }
 
     /// Returns the bubble background(s) for a given message.
     /// - Parameters:
@@ -227,10 +284,10 @@ extension ChatMessage {
             if type == .ephemeral {
                 return colors.messageCurrentUserEmphemeralBackground.map { Color($0) }
             } else {
-                return colors.messageCurrentUserBackground.map { Color($0) }
+                return [colors.chatBackgroundOutgoing.toColor]
             }
         } else {
-            return colors.messageOtherUserBackground.map { Color($0) }
+            return [colors.chatBackgroundIncoming.toColor]
         }
     }
 }
