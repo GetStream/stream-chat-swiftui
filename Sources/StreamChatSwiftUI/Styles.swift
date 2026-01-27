@@ -127,7 +127,7 @@ public struct RegularInputViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerBg))
+            .background(Color(colors.composerBackground))
             .modifier(BorderModifier(shape: .roundedRect(cornerRadius)))
     }
 
@@ -143,7 +143,7 @@ public struct RegularButtonViewModifier: ViewModifier {
     
     public func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerBg))
+            .background(Color(colors.composerBackground))
             .modifier(BorderModifier(shape: .circle))
     }
 }
@@ -165,7 +165,7 @@ struct ComposerBackgroundRegularViewModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerBg))
+            .background(Color(colors.composerBackground))
     }
 }
 

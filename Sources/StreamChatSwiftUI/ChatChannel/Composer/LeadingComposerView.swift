@@ -23,39 +23,3 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
         }
     }
 }
-
-// TODO: Move to Common Module
-
-import StreamChatCommonUI
-import UIKit
-
-extension Appearance.Images {
-    var composerAdd: UIImage {
-        UIImage(
-            systemName: "plus",
-            withConfiguration: UIImage.SymbolConfiguration(
-                pointSize: DesignSystemTokens.iconSizeMd,
-                weight: .light
-            )
-        )!
-    }
-    
-    var composerSend: UIImage {
-        UIImage(
-            systemName: "paperplane",
-            withConfiguration: UIImage.SymbolConfiguration(
-                weight: .regular
-            )
-        )!
-    }
-
-    var composerMic: UIImage {
-        UIImage(
-            systemName: "mic",
-            withConfiguration: UIImage.SymbolConfiguration(
-                pointSize: DesignSystemTokens.iconSizeSm,
-                weight: .regular
-            )
-        )!
-    }
-}
