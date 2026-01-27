@@ -86,13 +86,15 @@ extension Styles {
 }
 
 public class LiquidGlassStyles: Styles {
+    @Injected(\.tokens) var tokens
+
     public var composerPlacement: ComposerPlacement = .floating
     
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
         LiquidGlassModifier(
-            shape: .roundedRect(DesignSystemTokens.radius3xl),
+            shape: .roundedRect(tokens.radius3xl),
             isInteractive: true
         )
     }
@@ -122,6 +124,7 @@ public class RegularStyles: Styles {
 
 public struct RegularInputViewModifier: ViewModifier {
     @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
 
     public init() {}
 
@@ -132,7 +135,7 @@ public struct RegularInputViewModifier: ViewModifier {
     }
 
     private var cornerRadius: CGFloat {
-        DesignSystemTokens.radius3xl
+        tokens.radius3xl
     }
 }
 

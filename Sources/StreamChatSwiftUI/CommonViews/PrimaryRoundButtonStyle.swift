@@ -36,6 +36,6 @@ public struct PrimaryRoundButtonStyle: ButtonStyle {
     }
 
     private var backgroundColor: UIColor {
-        isEnabled ? colors.buttonPrimaryBg : colors.backgroundCoreDisabled
+        isEnabled ? colors.buttonPrimaryBackground : colors.backgroundCoreDisabled
     }
 }

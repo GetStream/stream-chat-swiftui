@@ -9,6 +9,7 @@ import SwiftUI
 public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) var tokens
 
     var factory: Factory
 
@@ -37,7 +38,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
                 .foregroundColor(Color(colors.buttonSecondaryText))
                 .rotationEffect(.degrees(isExpanded ? 45 : 0))
         }
-        .padding(DesignSystemTokens.buttonPaddingYLg)
+        .padding(tokens.buttonPaddingYLg)
         .foregroundColor(Color(colors.buttonSecondaryText))
         .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
         .onChange(of: pickerTypeState) { _ in

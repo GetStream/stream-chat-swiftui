@@ -49,6 +49,7 @@ public struct TrailingComposerView: View {
 /// The button responsible to start voice recording.
 public struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
     @Injected(\.images) var images
 
@@ -62,7 +63,7 @@ public struct VoiceRecordingButton: View {
     public var body: some View {
         Image(uiImage: images.composerMic)
             .renderingMode(.template)
-            .padding(DesignSystemTokens.buttonPaddingYSm)
+            .padding(tokens.buttonPaddingYSm)
             .foregroundColor(Color(colors.buttonSecondaryText))
             .gesture(
                 DragGesture(minimumDistance: 0)
