@@ -6,6 +6,7 @@ import SwiftUI
 
 /// View shown when other users are typing.
 public struct TypingIndicatorView: View {
+    @Injected(\.tokens) var tokens
     @State private var isTyping = false
 
     private let animationDuration: CGFloat = 0.75
@@ -17,7 +18,7 @@ public struct TypingIndicatorView: View {
     }
 
     public var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: tokens.spacingXxs) {
             TypingIndicatorCircle(isTyping: isTyping)
                 .animation(
                     .easeOut(duration: animationDuration)
@@ -47,8 +48,8 @@ public struct TypingIndicatorView: View {
 private struct TypingIndicatorCircle: View {
     @Injected(\.colors) var colors
     
-    private let circleWidth: CGFloat = 4
-    private let circleHeight: CGFloat = 4
+    private let circleWidth: CGFloat = 5
+    private let circleHeight: CGFloat = 5
     private let yOffset: CGFloat = 1.5
     private let minOpacity: CGFloat = 0.1
     private let maxOpacity: CGFloat = 1.0
@@ -57,7 +58,7 @@ private struct TypingIndicatorCircle: View {
 
     var body: some View {
         Circle()
-            .foregroundColor(Color(colors.text))
+            .foregroundColor(colors.chatBackgroundTypingIndicator.toColor)
             .frame(width: circleWidth, height: circleHeight)
             .opacity(isTyping ? maxOpacity : minOpacity)
             .offset(y: isTyping ? yOffset : -yOffset)
