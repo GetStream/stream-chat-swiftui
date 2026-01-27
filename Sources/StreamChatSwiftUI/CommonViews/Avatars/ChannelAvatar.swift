@@ -107,7 +107,7 @@ extension ChannelAvatar {
         let size: CGFloat
         
         var body: some View {
-            colors.avatarBgDefault.toColor
+            colors.avatarBackgroundDefault.toColor
                 .overlay(
                     Image(uiImage: images.channelAvatarPlaceholder)
                         .renderingMode(.template)

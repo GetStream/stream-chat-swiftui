@@ -101,7 +101,7 @@ extension UserAvatar {
         let size: CGFloat
         
         var body: some View {
-            colors.avatarBgDefault.toColor
+            colors.avatarBackgroundDefault.toColor
                 .overlay(
                     VStack {
                         if initials.isEmpty {
