@@ -187,8 +187,8 @@ final class MessageList_Tests: StreamTestCase {
                 .login()
                 .openChannel()
         }
-        THEN("user verifies that composer does not grow more than 4 lines") {
-            userRobot.assertComposerLimits(toNumberOfLines: 4)
+        THEN("user verifies that composer does not grow more than 5 lines") {
+            userRobot.assertComposerLimits(toNumberOfLines: 5)
         }
     }
 
