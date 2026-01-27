@@ -120,7 +120,7 @@
 
 "composer.title.edit" = "Edit Message";
 "composer.title.reply" = "Reply to Message";
-"composer.placeholder.message" = "Send a message";
+"composer.placeholder.message" = "Message";
 "composer.placeholder.messageDisabled" = "You can't send messages in this channel";
 "composer.placeholder.slow-mode" = "Slow mode ON";
 "composer.placeholder.giphy" = "Search GIFs";

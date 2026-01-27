@@ -640,7 +640,7 @@ import XCTest
         let modifier = viewFactory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions())
 
         // Then
-        XCTAssert(modifier is EmptyViewModifier)
+        XCTAssert(modifier is ComposerBackgroundRegularViewModifier)
     }
 
     func test_viewFactory_makeMessageDateView() {
@@ -810,7 +810,7 @@ import XCTest
                 text: .constant("test"),
                 height: .constant(40),
                 selectedRangeLocation: .constant(0),
-                placeholder: "Send a message",
+                placeholder: "Message",
                 editable: true,
                 maxMessageLength: nil,
                 currentHeight: 40,

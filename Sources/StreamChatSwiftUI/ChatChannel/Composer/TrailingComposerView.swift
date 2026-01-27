@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 public struct TrailingComposerView: View {
@@ -48,8 +49,10 @@ public struct TrailingComposerView: View {
 /// The button responsible to start voice recording.
 public struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
-        
+    @Injected(\.images) var images
+
     @State private var longPressed = false
     @State private var longPressStarted: Date?
     
@@ -58,8 +61,10 @@ public struct VoiceRecordingButton: View {
     var stopRecording: () -> Void
 
     public var body: some View {
-        Image(systemName: "mic")
-            .foregroundColor(Color(colors.textLowEmphasis))
+        Image(uiImage: images.composerMic)
+            .renderingMode(.template)
+            .padding(tokens.buttonPaddingYSm)
+            .foregroundColor(Color(colors.buttonSecondaryText))
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in

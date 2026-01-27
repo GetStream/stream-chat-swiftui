@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChatCommonUI
 import SwiftUI
 
 @MainActor
@@ -85,16 +86,21 @@ extension Styles {
 }
 
 public class LiquidGlassStyles: Styles {
+    @Injected(\.tokens) var tokens
+
     public var composerPlacement: ComposerPlacement = .floating
     
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: CustomRoundedShape())
+        LiquidGlassModifier(
+            shape: .roundedRect(tokens.radius3xl),
+            isInteractive: true
+        )
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: .circle)
+        LiquidGlassModifier(shape: .circle, isInteractive: true)
     }
 }
 
@@ -104,36 +110,44 @@ public class RegularStyles: Styles {
     public init() {}
     
     public func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
-        StandardInputViewModifier(keyboardShown: options.keyboardShown)
+        RegularInputViewModifier()
     }
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
-        BorderModifier(shape: .circle)
+        RegularButtonViewModifier()
+    }
+
+    public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
+        ComposerBackgroundRegularViewModifier()
     }
 }
 
-public struct StandardInputViewModifier: ViewModifier {
+public struct RegularInputViewModifier: ViewModifier {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        content
+            .background(Color(colors.composerBackground))
+            .modifier(BorderModifier(shape: .roundedRect(cornerRadius)))
+    }
+
+    private var cornerRadius: CGFloat {
+        tokens.radius3xl
+    }
+}
+
+public struct RegularButtonViewModifier: ViewModifier {
     @Injected(\.colors) var colors
     
-    var keyboardShown: Bool
-    
-    public init(keyboardShown: Bool) {
-        self.keyboardShown = keyboardShown
-    }
+    public init() {}
     
     public func body(content: Content) -> some View {
         content
-            .overlay(
-                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-                    .stroke(Color(keyboardShown ? highlightedBorder : colors.innerBorder))
-            )
-            .clipShape(
-                RoundedRectangle(cornerRadius: TextSizeConstants.cornerRadius)
-            )
-    }
-    
-    private var highlightedBorder: UIColor {
-        return colors.composerInputHighlightedBorder
+            .background(Color(colors.composerBackground))
+            .modifier(BorderModifier(shape: .circle))
     }
 }
 
@@ -147,4 +161,28 @@ public class ComposerInputModifierOptions {
 
 public class ComposerButtonModifierOptions {
     public init() {}
+}
+
+struct ComposerBackgroundRegularViewModifier: ViewModifier {
+    @Injected(\.colors) var colors
+
+    func body(content: Content) -> some View {
+        content
+            .background(Color(colors.composerBackground))
+    }
+}
+
+struct BorderModifier<BackgroundShape: Shape>: ViewModifier {
+    @Injected(\.colors) var colors
+
+    var shape: BackgroundShape
+
+    func body(content: Content) -> some View {
+        content
+            .clipShape(shape)
+            .overlay(
+                shape
+                    .stroke(Color(colors.buttonSecondaryBorder), lineWidth: 1)
+            )
+    }
 }

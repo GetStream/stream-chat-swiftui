@@ -583,6 +583,8 @@ extension ViewFactory {
         options: TrailingComposerViewOptions
     ) -> some View {
         EmptyView()
+            .opacity(0)
+            .hidden()
     }
     
     public func makeComposerRecordingView(
@@ -627,8 +629,6 @@ extension ViewFactory {
             messageController: options.messageController,
             canSendPoll: options.canSendPoll
         )
-        .offset(y: options.isDisplayed ? 0 : options.popupHeight)
-        .animation(.spring())
     }
     
     public func makeVoiceRecordingView(

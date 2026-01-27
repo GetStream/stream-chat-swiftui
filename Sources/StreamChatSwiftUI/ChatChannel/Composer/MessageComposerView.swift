@@ -69,7 +69,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .transition(.identity)
             }
 
-            HStack(alignment: .bottom) {
+            HStack(alignment: .bottom, spacing: 8) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
                         state: $viewModel.pickerTypeState,
@@ -124,7 +124,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     Alert.defaultErrorAlert
                 }
             }
-            .padding(.all, 8)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
@@ -184,6 +185,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
             )
             .environmentObject(viewModel)
+            .offset(y: viewModel.overlayShown ? 0 : popupSize)
+            .opacity(viewModel.overlayShown ? 1 : 0)
+            .animation(.easeInOut(duration: 0.25))
         }
         .background(
             GeometryReader { proxy in
@@ -200,8 +204,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .onReceive(keyboardWillChangePublisher) { visible in
             if visible && !keyboardShown {
                 if viewModel.composerCommand == nil && !editedMessageWillShow {
-                    withAnimation(.easeInOut(duration: 0.02)) {
-                        viewModel.pickerTypeState = .expanded(.none)
+                    DispatchQueue.main.async {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            viewModel.pickerTypeState = .expanded(.none)
+                        }
                     }
                 } else if editedMessageWillShow {
                     // When editing a message, the keyboard will show.
@@ -311,7 +317,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var startRecording: () -> Void
     var stopRecording: () -> Void
 
-    @State var textHeight: CGFloat = TextSizeConstants.minimumHeight
+    @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
 
     public init(
@@ -432,54 +438,57 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
             }
 
-            HStack {
-                if let command,
-                   let displayInfo = command.displayInfo,
-                   displayInfo.isInstant == true {
-                    HStack(spacing: 0) {
-                        Image(uiImage: images.smallBolt)
-                            .renderingMode(.template)
-                            .foregroundColor(Color(colors.staticColorText))
-                        Text(displayInfo.displayName.uppercased())
-                    }
-                    .padding(.horizontal, 8)
-                    .font(fonts.footnoteBold)
-                    .frame(height: 24)
-                    .background(Color(colors.accentPrimary))
-                    .foregroundColor(Color(colors.staticColorText))
-                    .cornerRadius(16)
-                }
-
-                factory.makeComposerTextInputView(
-                    options: ComposerTextInputViewOptions(
-                        text: $text,
-                        height: $textHeight,
-                        selectedRangeLocation: $selectedRangeLocation,
-                        placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
-                        editable: !isInputDisabled,
-                        maxMessageLength: maxMessageLength,
-                        currentHeight: textFieldHeight,
-                        onImagePasted: onImagePasted
-                    )
-                )
-                .accessibilityIdentifier("ComposerTextInputView")
-                .accessibilityElement(children: .contain)
-                .frame(height: textFieldHeight)
-                .overlay(
-                    command?.displayInfo?.isInstant == true ?
-                        HStack {
-                            Spacer()
-                            Button {
-                                command = nil
-                            } label: {
-                                DiscardButtonView(
-                                    color: Color(colors.background7)
-                                )
-                            }
+            HStack(alignment: .bottom) {
+                HStack {
+                    if let command,
+                       let displayInfo = command.displayInfo,
+                       displayInfo.isInstant == true {
+                        HStack(spacing: 0) {
+                            Image(uiImage: images.smallBolt)
+                                .renderingMode(.template)
+                                .foregroundColor(Color(colors.staticColorText))
+                            Text(displayInfo.displayName.uppercased())
                         }
-                        : nil
-                )
-                
+                        .padding(.horizontal, 8)
+                        .font(fonts.footnoteBold)
+                        .frame(height: 24)
+                        .background(Color(colors.accentPrimary))
+                        .foregroundColor(Color(colors.staticColorText))
+                        .cornerRadius(16)
+                    }
+
+                    factory.makeComposerTextInputView(
+                        options: ComposerTextInputViewOptions(
+                            text: $text,
+                            height: $textHeight,
+                            selectedRangeLocation: $selectedRangeLocation,
+                            placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
+                            editable: !isInputDisabled,
+                            maxMessageLength: maxMessageLength,
+                            currentHeight: textFieldHeight,
+                            onImagePasted: onImagePasted
+                        )
+                    )
+                    .accessibilityIdentifier("ComposerTextInputView")
+                    .accessibilityElement(children: .contain)
+                    .overlay(
+                        command?.displayInfo?.isInstant == true ?
+                            HStack {
+                                Spacer()
+                                Button {
+                                    command = nil
+                                } label: {
+                                    DiscardButtonView(
+                                        color: Color(colors.background7)
+                                    )
+                                }
+                            }
+                            : nil
+                    )
+                }
+                .frame(height: textFieldHeight)
+                .padding(.vertical, 4)
+
                 factory.makeComposerInputTrailingView(
                     options: .init(
                         text: $text,
@@ -491,10 +500,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
                 .padding(.trailing, 8)
+                .padding(.bottom, 8)
             }
-            .frame(height: textFieldHeight)
         }
-        .padding(.vertical, 2)
         .padding(.vertical, shouldAddVerticalPadding ? inputPaddingsConfig.vertical : 0)
         .padding(.leading, inputPaddingsConfig.leading)
         .padding(.trailing, inputPaddingsConfig.trailing)
@@ -517,15 +525,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .audio
         }
 
-        return .regular(isSendMessageEnabled)
-    }
-
-    private var composerInputBackground: Color {
-        return Color(colors.composerInputBackground)
-    }
-    
-    private var highlightedBorder: UIColor {
-        return colors.composerInputHighlightedBorder
+        return .regular(sendButtonEnabled)
     }
 
     private var shouldAddVerticalPadding: Bool {

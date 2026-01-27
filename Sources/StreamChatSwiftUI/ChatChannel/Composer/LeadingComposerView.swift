@@ -7,7 +7,8 @@ import SwiftUI
 
 struct LeadingComposerView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
-    
+    @Injected(\.images) var images
+
     var factory: Factory
     
     @Binding var pickerTypeState: PickerTypeState
@@ -15,41 +16,10 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
     
     var body: some View {
         HStack {
-            if #available(iOS 26.0, *) {
-                Button {
-                    withAnimation {
-                        if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
-                            pickerTypeState = .expanded(.media)
-                        } else {
-                            pickerTypeState = .expanded(.none)
-                        }
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                        .fontWeight(.semibold)
-                }
-                .padding(.all, 12)
-                .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
-                .foregroundStyle(.primary)
-                .contentShape(.rect)
-            } else {
-                Button {
-                    withAnimation {
-                        if pickerTypeState == .collapsed || pickerTypeState == .expanded(.none) {
-                            pickerTypeState = .expanded(.media)
-                        } else {
-                            pickerTypeState = .expanded(.none)
-                        }
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .padding(.all, 12)
-                .background(Color(UIColor.secondarySystemBackground))
-                .clipShape(.circle)
-                .contentShape(.rect)
-            }
+            ComposerAttachmentPickerButton(
+                factory: factory,
+                pickerTypeState: $pickerTypeState
+            )
         }
-        .padding(.leading, 8)
     }
 }
