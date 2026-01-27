@@ -191,11 +191,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             guard composerPlacement == .floating, value > 0 else { return }
             let defaultHeight = Self.defaultFloatingComposerHeight()
             let newHeight = max(value, defaultHeight)
-            if abs(newHeight - floatingComposerHeight) > 0.5 {
-                withAnimation {
-                    floatingComposerHeight = newHeight
-                }
-            }
+            floatingComposerHeight = newHeight
         }
         .navigationBarTitleDisplayMode(utils.messageListConfig.navigationBarDisplayMode)
         .onReceive(keyboardWillChangePublisher, perform: { visible in
@@ -286,8 +282,8 @@ private extension ChatChannelView {
     static func defaultFloatingComposerHeight() -> CGFloat {
         let utils = InjectedValues[\.utils]
         let baseHeight = utils.composerConfig.inputViewMinHeight
-        let outerPadding: CGFloat = 16 // HStack padding (.all, 8)
-        return baseHeight + outerPadding + 10
+        let spacing: CGFloat = 60
+        return baseHeight + spacing
     }
 }
 
