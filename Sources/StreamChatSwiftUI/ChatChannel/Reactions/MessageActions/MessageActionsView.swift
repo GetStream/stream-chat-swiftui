@@ -9,12 +9,17 @@ public struct MessageActionsView: View {
     @Injected(\.colors) private var colors
 
     @StateObject var viewModel: MessageActionsViewModel
+    var bundle: Bundle?
 
-    public init(messageActions: [MessageAction]) {
+    public init(
+        messageActions: [MessageAction],
+        bundle: Bundle? = nil
+    ) {
         _viewModel = StateObject(
             wrappedValue: ViewModelsFactory
                 .makeMessageActionsViewModel(messageActions: messageActions)
         )
+        self.bundle = bundle
     }
 
     public var body: some View {
@@ -29,7 +34,8 @@ public struct MessageActionsView: View {
                                 title: action.title,
                                 iconName: action.iconName,
                                 isDestructive: action.isDestructive,
-                                boldTitle: false
+                                boldTitle: false,
+                                bundle: bundle
                             )
                         }
                     } else {
@@ -44,7 +50,8 @@ public struct MessageActionsView: View {
                                 title: action.title,
                                 iconName: action.iconName,
                                 isDestructive: action.isDestructive,
-                                boldTitle: false
+                                boldTitle: false,
+                                bundle: bundle
                             )
                         }
                     }
