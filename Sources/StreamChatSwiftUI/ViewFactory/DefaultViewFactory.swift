@@ -799,7 +799,6 @@ extension ViewFactory {
             factory: self,
             quotedMessage: options.quotedMessage,
             fillAvailableSpace: options.fillAvailableSpace,
-            forceLeftToRight: options.isInComposer,
             scrolledId: options.scrolledId
         )
     }
