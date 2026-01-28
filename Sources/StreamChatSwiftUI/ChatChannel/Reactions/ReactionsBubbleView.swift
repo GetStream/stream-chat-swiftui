@@ -24,7 +24,7 @@ public struct ReactionsBubbleModifier: ViewModifier {
                     cornerRadius: cornerRadius, corners: corners
                 )
                 .stroke(
-                    borderColor ?? Color(colors.innerBorder),
+                    borderColor ?? Color(colors.reactionBorder),
                     lineWidth: 1.0
                 )
             )
@@ -45,11 +45,7 @@ public struct ReactionsBubbleModifier: ViewModifier {
             return injectedBackground
         }
 
-        if message.isSentByCurrentUser {
-            return colors.background8
-        } else {
-            return colors.background6
-        }
+        return colors.reactionBackground
     }
 }
 

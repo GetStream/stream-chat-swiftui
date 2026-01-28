@@ -8,20 +8,24 @@ import SwiftUI
 struct ReactionsContainer: View {
     @Injected(\.utils) var utils
     let message: ChatMessage
+    let reactionsStyle: ReactionsStyle
+    let topPlacement: Bool
     var useLargeIcons = false
     var onTapGesture: () -> Void
     var onLongPressGesture: () -> Void
 
     var body: some View {
         VStack {
-            ReactionsHStack(message: message) {
+            HStack(spacing: 0) {
+                if !isLeadingAligned {
+                    Spacer(minLength: 0)
+                }
                 ReactionsView(
                     message: message,
+                    reactionsStyle: reactionsStyle,
                     useLargeIcons: useLargeIcons,
                     reactions: reactions
-                ) { _ in
-                    log.debug("tapped on reaction")
-                }
+                )
                 .onTapGesture {
                     onTapGesture()
                 }
@@ -31,16 +35,26 @@ struct ReactionsContainer: View {
                 .accessibilityAction {
                     onTapGesture()
                 }
+                if isLeadingAligned {
+                    Spacer(minLength: 0)
+                }
             }
-
             Spacer()
         }
         .offset(
             x: offsetX,
-            y: -20
+            y: topPlacement ? -19 : 0
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsContainer")
+    }
+    
+    var isLeadingAligned: Bool {
+        if topPlacement {
+            return message.isRightAligned
+        } else {
+            return !message.isRightAligned
+        }
     }
 
     private var reactions: [MessageReactionType] {
@@ -56,51 +70,102 @@ struct ReactionsContainer: View {
     }
 
     private var offsetX: CGFloat {
-        var offset = reactionsSize / 3
-        if message.reactionScores.count == 1 {
-            offset = 16
+        if message.shouldRenderAsJumbomoji, topPlacement {
+            return message.isRightAligned ? -16 : 16
         }
-        return message.isRightAligned ? -offset : offset
+        return 0
     }
 }
 
-struct ReactionsView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
+extension ReactionsContainer {
+    struct ReactionsView: View {
+        @Injected(\.colors) private var colors
+        @Injected(\.fonts) private var fonts
+        @Injected(\.tokens) private var tokens
 
-    let message: ChatMessage
-    var useLargeIcons = false
-    var reactions: [MessageReactionType]
-    var onReactionTap: (MessageReactionType) -> Void
-
-    var body: some View {
-        HStack {
-            ForEach(reactions) { reaction in
-                if let image = ReactionsIconProvider.icon(for: reaction, useLargeIcons: useLargeIcons) {
-                    ReactionIcon(
-                        icon: image,
-                        color: ReactionsIconProvider.color(
-                            for: reaction,
-                            userReactionIDs: userReactionIDs
-                        )
-                    )
-                    .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
-                    .gesture(
-                        useLargeIcons ?
-                            TapGesture().onEnded {
-                                onReactionTap(reaction)
-                            } : nil
-                    )
-                    .accessibilityIdentifier("reaction-\(reaction.id)")
+        let message: ChatMessage
+        let reactionsStyle: ReactionsStyle
+        var useLargeIcons = false
+        var reactions: [MessageReactionType]
+        
+        var body: some View {
+            HStack(spacing: tokens.spacingXxs) {
+                switch reactionsStyle {
+                case .clustered:
+                    clusteredContent
+                case .segmented:
+                    segmentedContent
                 }
             }
         }
-        .padding(.all, 6)
-        .reactionsBubble(for: message)
-    }
 
-    private var userReactionIDs: Set<MessageReactionType> {
-        Set(message.currentUserReactions.map(\.type))
+        private var clusteredContent: some View {
+            HStack(spacing: tokens.spacingXxs) {
+                ForEach(reactions) { reaction in
+                    if let image = reactionIconImage(for: reaction) {
+                        reactionIcon(image: image, reaction: reaction)
+                            .accessibilityIdentifier("reaction-\(reaction.id)")
+                    }
+                }
+                if message.totalReactionsCount > 1 {
+                    reactionCountText(message.totalReactionsCount)
+                }
+            }
+            .padding(.horizontal, tokens.spacingXs)
+            .padding(.vertical, tokens.spacingXxs)
+            .reactionsBubble(for: message)
+        }
+
+        private var segmentedContent: some View {
+            HStack(spacing: tokens.spacingXxs) {
+                ForEach(reactions) { reaction in
+                    if let image = reactionIconImage(for: reaction) {
+                        HStack {
+                            reactionIcon(image: image, reaction: reaction)
+                            let count = reactionCount(for: reaction)
+                            if count > 1 {
+                                reactionCountText(count)
+                            }
+                        }
+                        .padding(.horizontal, tokens.spacingXs)
+                        .padding(.vertical, tokens.spacingXxs)
+                        .reactionsBubble(for: message)
+                        .accessibilityIdentifier("reaction-\(reaction.id)")
+                    }
+                }
+            }
+        }
+        
+        private func reactionIconImage(for reaction: MessageReactionType) -> UIImage? {
+            ReactionsIconProvider.icon(for: reaction, useLargeIcons: useLargeIcons)
+        }
+
+        private func reactionIcon(image: UIImage, reaction: MessageReactionType) -> some View {
+            ReactionIcon(
+                icon: image,
+                color: ReactionsIconProvider.color(
+                    for: reaction,
+                    userReactionIDs: userReactionIDs
+                )
+            )
+            .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
+        }
+
+        private func reactionCountText(_ count: Int) -> some View {
+            Text(verbatim: "\(count)")
+                .font(fonts.footnoteBold)
+                .foregroundColor(colors.reactionText.toColor)
+                .fixedSize(horizontal: true, vertical: false)
+                .layoutPriority(1)
+        }
+
+        private func reactionCount(for reaction: MessageReactionType) -> Int {
+            message.reactionCounts[reaction] ?? 0
+        }
+
+        private var userReactionIDs: Set<MessageReactionType> {
+            Set(message.currentUserReactions.map(\.type))
+        }
     }
 }
 

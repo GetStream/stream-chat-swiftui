@@ -919,11 +919,10 @@ extension ViewFactory {
         onTap: @escaping @MainActor () -> Void,
         onLongPress: @escaping @MainActor () -> Void
     ) -> some View {
-        BottomReactionsView(
+        ReactionsContainer(
             message: message,
-            showsAllInfo: showsAllInfo,
-            onTap: onTap,
-            onLongPress: onLongPress
+            onTapGesture: onTap,
+            onLongPressGesture: onLongPress
         )
         .id(message.reactionScoresId)
     }

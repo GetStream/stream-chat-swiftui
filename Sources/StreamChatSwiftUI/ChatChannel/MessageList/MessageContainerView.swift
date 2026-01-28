@@ -112,21 +112,22 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                     .overlay(
-                        ZStack {
-                            topReactionsShown ?
-                                factory.makeMessageReactionView(
-                                    options: MessageReactionViewOptions(
-                                        message: message,
-                                        onTapGesture: {
-                                            handleGestureForMessage(showsMessageActions: false)
-                                        },
-                                        onLongPressGesture: {
-                                            handleGestureForMessage(showsMessageActions: false)
-                                        }
-                                    )
-                                ) : nil
-                            messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
-                        }
+                        topReactionsShown ?
+                            factory.makeMessageReactionView(
+                                options: MessageReactionViewOptions(
+                                    message: message,
+                                    onTapGesture: {
+                                        handleGestureForMessage(showsMessageActions: false)
+                                    },
+                                    onLongPressGesture: {
+                                        handleGestureForMessage(showsMessageActions: false)
+                                    }
+                                )
+                            ) : nil,
+                        alignment: messageViewModel.isRightAligned ? .trailing : .leading
+                    )
+                    .overlay(
+                        messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
                     )
                     .background(
                         GeometryReader { proxy in
@@ -224,7 +225,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
                     
-                    if bottomReactionsShown {
+                    if !bottomReactionsShown {
                         factory.makeBottomReactionsView(
                             options: ReactionsBottomViewOptions(
                                 message: message,
