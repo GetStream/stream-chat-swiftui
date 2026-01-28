@@ -14,6 +14,7 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
     @StateObject var viewModel: MoreChannelActionsViewModel
     @Binding var swipedChannelId: String?
     @State private var isPresented = false
+    var bundle: Bundle?
     var onDismiss: () -> Void
 
     @State private var presentedView: AnyView? {
@@ -29,6 +30,7 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
         channel: ChatChannel,
         channelActions: [ChannelAction],
         swipedChannelId: Binding<String?>,
+        bundle: Bundle? = nil,
         onDismiss: @escaping () -> Void
     ) {
         _viewModel = StateObject(
@@ -40,6 +42,7 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
         self.factory = factory
         self.onDismiss = onDismiss
         _swipedChannelId = swipedChannelId
+        self.bundle = bundle
     }
 
     public var body: some View {
@@ -67,7 +70,8 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                                 ActionItemView(
                                     title: action.title,
                                     iconName: action.iconName,
-                                    isDestructive: action.isDestructive
+                                    isDestructive: action.isDestructive,
+                                    bundle: bundle
                                 )
                             }
                         } else {
@@ -81,7 +85,8 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                                 ActionItemView(
                                     title: action.title,
                                     iconName: action.iconName,
-                                    isDestructive: action.isDestructive
+                                    isDestructive: action.isDestructive,
+                                    bundle: bundle
                                 )
                             }
                         }
