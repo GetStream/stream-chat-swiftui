@@ -8,7 +8,6 @@ import SwiftUI
 struct ReactionsContainer: View {
     @Injected(\.utils) var utils
     let message: ChatMessage
-    let reactionsStyle: ReactionsStyle
     let topPlacement: Bool
     var useLargeIcons = false
     var onTapGesture: () -> Void
@@ -74,6 +73,10 @@ struct ReactionsContainer: View {
             return message.isRightAligned ? -16 : 16
         }
         return 0
+    }
+
+    private var reactionsStyle: ReactionsStyle {
+        utils.messageListConfig.messageDisplayOptions.reactionsStyle
     }
 }
 

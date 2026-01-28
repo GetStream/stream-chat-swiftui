@@ -739,7 +739,6 @@ extension ViewFactory {
     ) -> some View {
         ReactionsContainer(
             message: options.message,
-            reactionsStyle: .segmented, // TODO: testing
             topPlacement: false,
             onTapGesture: options.onTap,
             onLongPressGesture: options.onLongPress
@@ -752,12 +751,11 @@ extension ViewFactory {
     ) -> some View {
         ReactionsContainer(
             message: options.message,
-            reactionsStyle: .segmented,
             topPlacement: true,
-            // TODO: testing
             onTapGesture: options.onTapGesture,
             onLongPressGesture: options.onLongPressGesture
         )
+        .id(options.message.reactionScoresId)
     }
     
     public func makeReactionsOverlayView(

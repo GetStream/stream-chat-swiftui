@@ -225,7 +225,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         }
                     }
                     
-                    if !bottomReactionsShown {
+                    if bottomReactionsShown {
                         factory.makeBottomReactionsView(
                             options: ReactionsBottomViewOptions(
                                 message: message,
