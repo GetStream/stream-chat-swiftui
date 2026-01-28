@@ -37,22 +37,6 @@ class ReactionsIconProvider {
         let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
         return Color(color)
     }
-
-    @MainActor static func image(from emoji: String, useLargeIcons: Bool) -> UIImage? {
-        let fontSize: CGFloat = useLargeIcons ? 28 : 22
-        let font = UIFont.systemFont(ofSize: fontSize)
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        let text = emoji as NSString
-        var size = text.size(withAttributes: attributes)
-        size.width = ceil(size.width)
-        size.height = ceil(size.height)
-
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { _ in
-            UIColor.clear.set()
-            text.draw(at: .zero, withAttributes: attributes)
-        }
-    }
 }
 
 private extension ReactionsIconProvider {
@@ -72,5 +56,21 @@ private extension ReactionsIconProvider {
         }
 
         return String(scalars)
+    }
+    
+    @MainActor static func image(from emoji: String, useLargeIcons: Bool) -> UIImage? {
+        let fontSize: CGFloat = useLargeIcons ? 28 : 22
+        let font = UIFont.systemFont(ofSize: fontSize)
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let text = emoji as NSString
+        var size = text.size(withAttributes: attributes)
+        size.width = ceil(size.width)
+        size.height = ceil(size.height)
+
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            UIColor.clear.set()
+            text.draw(at: .zero, withAttributes: attributes)
+        }
     }
 }

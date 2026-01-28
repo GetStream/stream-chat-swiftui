@@ -179,7 +179,7 @@ public struct ReactionAnimatableView: View {
     }
 
     public var body: some View {
-        if let image = iconProvider(for: reaction) {
+        if let image = ReactionsIconProvider.icon(for: reaction, useLargeIcons: useLargeIcons) {
             Button {
                 onReactionTap(reaction)
             } label: {
@@ -221,11 +221,6 @@ public struct ReactionAnimatableView: View {
         })
 
         return index
-    }
-
-    private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
-        guard let emoji = images.availableMessagesReactionEmojis[reaction] else { return nil }
-        return ReactionsIconProvider.image(from: emoji, useLargeIcons: useLargeIcons)
     }
 
     private var userReactionIDs: Set<MessageReactionType> {
