@@ -14,8 +14,6 @@ import StreamChatCommonUI
     public var dateFormatter: DateFormatter
     
     /// Date formatter where the format depends on the time passed.
-    ///
-    /// - SeeAlso: ``ChannelListConfig/messageRelativeDateFormatEnabled``.
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
