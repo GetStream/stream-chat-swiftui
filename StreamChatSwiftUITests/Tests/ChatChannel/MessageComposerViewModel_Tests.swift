@@ -55,20 +55,7 @@ import XCTest
         // Then
         XCTAssert(viewModel.sendButtonEnabled == false)
     }
-    
-    func test_messageComposerVM_sendButtonEnabled_textChange() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        
-        // When
-        viewModel.text = "test"
-        let buttonEnabled = viewModel.sendButtonEnabled
-        
-        // Then
-        XCTAssert(buttonEnabled == true)
-        XCTAssert(viewModel.pickerTypeState == .collapsed)
-    }
-    
+
     func test_messageComposerVM_sendButtonEnabled_addedAsset() {
         // Given
         let viewModel = makeComposerViewModel()

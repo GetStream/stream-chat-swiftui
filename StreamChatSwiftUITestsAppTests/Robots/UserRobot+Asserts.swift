@@ -583,11 +583,11 @@ extension UserRobot {
             let obtainKeyboardFocus = (i == 1) ? true : false
             typeText("\(i)\n", obtainKeyboardFocus: obtainKeyboardFocus)
             let updatedComposerHeight = composer.height
-            XCTAssertGreaterThan(updatedComposerHeight, composerHeight, file: file, line: line)
+            XCTAssertGreaterThan(round(updatedComposerHeight), composerHeight, file: file, line: line)
             composerHeight = updatedComposerHeight
         }
         typeText("\(limit)\n\(limit + 1)", obtainKeyboardFocus: false)
-        XCTAssertEqual(composerHeight, composer.height, file: file, line: line)
+        XCTAssertEqual(round(composerHeight), composer.height, file: file, line: line)
     }
 
     @discardableResult

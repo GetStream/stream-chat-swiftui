@@ -105,7 +105,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     Divider()
-                        .opacity(composerPlacement == .docked ? 1 : 0)
+                        .opacity(0)
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
                             view.modifier(factory.makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions(shouldShow: false)))
@@ -126,6 +126,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
                     if composerPlacement == .docked {
                         composerView
+                            .padding(.top, 8)
+                            .overlay(
+                                Rectangle()
+                                    .frame(width: nil, height: 1, alignment: .top)
+                                    .foregroundColor(Color(colors.borderCoreDefault)), alignment: .top
+                            )
+
                             .opacity((
                                 utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
                                     .reactionsShown && viewModel.channel?.isFrozen == false
@@ -184,11 +191,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             guard composerPlacement == .floating, value > 0 else { return }
             let defaultHeight = Self.defaultFloatingComposerHeight()
             let newHeight = max(value, defaultHeight)
-            if abs(newHeight - floatingComposerHeight) > 0.5 {
-                withAnimation {
-                    floatingComposerHeight = newHeight
-                }
-            }
+            floatingComposerHeight = newHeight
         }
         .navigationBarTitleDisplayMode(utils.messageListConfig.navigationBarDisplayMode)
         .onReceive(keyboardWillChangePublisher, perform: { visible in
@@ -211,13 +214,14 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             messageDisplayInfo = nil
         }
         .background(
-            Color(colors.background).background(
-                TabBarAccessor { _ in
-                    tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
-                }
-            )
-            .ignoresSafeArea(.keyboard)
-            .allowsHitTesting(false)
+            Color(factory.styles.composerPlacement == .docked ? colors.composerBackground : .clear)
+                .background(
+                    TabBarAccessor { _ in
+                        tabBarAvailable = utils.messageListConfig.handleTabBarVisibility
+                    }
+                )
+                .ignoresSafeArea(.all)
+                .allowsHitTesting(false)
         )
         .padding(.bottom, keyboardShown || !tabBarAvailable || generatingSnapshot ? 0 : bottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
@@ -278,8 +282,8 @@ private extension ChatChannelView {
     static func defaultFloatingComposerHeight() -> CGFloat {
         let utils = InjectedValues[\.utils]
         let baseHeight = utils.composerConfig.inputViewMinHeight
-        let outerPadding: CGFloat = 16 // HStack padding (.all, 8)
-        return baseHeight + outerPadding + 10
+        let spacing: CGFloat = 60
+        return baseHeight + spacing
     }
 }
 

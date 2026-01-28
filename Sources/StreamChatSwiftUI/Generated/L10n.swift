@@ -255,7 +255,7 @@ internal enum L10n {
     internal enum Placeholder {
       /// Search GIFs
       internal static var giphy: String { L10n.tr("Localizable", "composer.placeholder.giphy") }
-      /// Send a message
+      /// Message
       internal static var message: String { L10n.tr("Localizable", "composer.placeholder.message") }
       /// You can't send messages in this channel
       internal static var messageDisabled: String { L10n.tr("Localizable", "composer.placeholder.messageDisabled") }

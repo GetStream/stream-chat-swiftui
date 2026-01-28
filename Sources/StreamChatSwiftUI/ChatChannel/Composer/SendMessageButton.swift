@@ -4,10 +4,9 @@
 
 import SwiftUI
 
-/// View for the button for sending messages.
+/// The button for sending messages.
 public struct SendMessageButton: View {
     @Injected(\.images) private var images
-    @Injected(\.colors) private var colors
 
     var enabled: Bool
     var onTap: () -> Void
@@ -21,21 +20,50 @@ public struct SendMessageButton: View {
         Button {
             onTap()
         } label: {
-            Image(uiImage: images.sendArrow)
+            Image(uiImage: images.composerSend)
                 .renderingMode(.template)
-                .rotationEffect(enabled ? Angle(degrees: -90) : .zero)
-                .foregroundColor(
-                    Color(
-                        enabled ? enabledBackground : colors.disabledColorForColor(enabledBackground)
-                    )
-                )
         }
+        .buttonStyle(PrimaryRoundButtonStyle())
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")
     }
+}
 
-    private var enabledBackground: UIColor {
-        colors.highlightedAccentBackground
+@available(iOS 15, *)
+#Preview {
+    HStack(spacing: 16) {
+        VStack {
+            Section("Light") {
+                SendMessageButton(
+                    enabled: true,
+                    onTap: {}
+                )
+
+                SendMessageButton(
+                    enabled: false,
+                    onTap: {}
+                )
+            }
+        }
+        .padding()
+        .frame(width: 120)
+
+        VStack {
+            Text("Dark")
+            SendMessageButton(
+                enabled: true,
+                onTap: {}
+            )
+
+            SendMessageButton(
+                enabled: false,
+                onTap: {}
+            )
+        }
+        .padding()
+        .frame(width: 120)
+        .colorScheme(.dark)
+        .background(Color.black)
     }
 }
