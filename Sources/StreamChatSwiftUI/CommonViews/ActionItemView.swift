@@ -14,6 +14,7 @@ public struct ActionItemView: View {
     var iconName: String
     var isDestructive: Bool
     var boldTitle: Bool = true
+    var bundle: Bundle?
 
     public var body: some View {
         HStack(spacing: 16) {
@@ -36,6 +37,11 @@ public struct ActionItemView: View {
     }
 
     private var image: UIImage {
+        // Check if it's in a custom bundle.
+        if let bundle, let image = UIImage(named: iconName, in: bundle) {
+            return image
+        }
+        
         // Check if it's in the app bundle.
         if let image = UIImage(named: iconName) {
             return image

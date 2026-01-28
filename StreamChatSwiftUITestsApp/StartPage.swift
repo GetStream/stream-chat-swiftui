@@ -63,6 +63,7 @@ struct StartPage: View {
         
         let utils = Utils(
             channelListConfig: ChannelListConfig(
+                messageRelativeDateFormatEnabled: true,
                 channelItemMutedStyle: .afterChannelName
             ),
             messageListConfig: MessageListConfig(
@@ -80,15 +81,13 @@ struct StartPage: View {
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
-        chatClient.logout {
-            chatClient.connectUser(
-                userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
-                token: token
-            ) { error in
-                if let error = error {
-                    log.error("connecting the user failed \(error)")
-                    return
-                }
+        chatClient.connectUser(
+            userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
+            token: token
+        ) { error in
+            if let error = error {
+                log.error("connecting the user failed \(error)")
+                return
             }
         }
     }
