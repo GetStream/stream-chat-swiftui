@@ -88,9 +88,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             )
         }
         .id(quotedMessage.messageId)
-        .padding(
-            hasVoiceAttachments ? [.leading, .top, .bottom] : .all, utils.messageListConfig.messagePaddings.quotedViewPadding
-        )
+        .padding(.all, utils.messageListConfig.messagePaddings.quotedViewPadding)
         .accessibilityElement(children: .contain)
     }
 
@@ -102,10 +100,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         let color = quotedMessage.isSentByCurrentUser ?
             colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
         return color
-    }
-    
-    private var hasVoiceAttachments: Bool {
-        !quotedMessage.voiceRecordingAttachments.isEmpty
     }
 }
 
@@ -284,5 +278,226 @@ struct VoiceRecordingPreview: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 36)
         }
+    }
+}
+
+struct ChatQuotedMessageView: View {
+    @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
+    @Injected(\.images) var images
+    @Injected(\.tokens) var tokens
+
+    let title: String
+    let subtitle: String
+    let subtitleIcon: UIImage?
+    let isSentByCurrentUser: Bool
+
+    init(
+        title: String,
+        subtitle: String,
+        subtitleIcon: UIImage? = nil,
+        isSentByCurrentUser: Bool
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.subtitleIcon = subtitleIcon
+        self.isSentByCurrentUser = isSentByCurrentUser
+    }
+
+    var body: some View {
+        HStack(spacing: tokens.spacingXs) {
+            QuoteIndicatorView(
+                tintColor: isSentByCurrentUser
+                    ? colors.chatReplyIndicatorOutgoing
+                    : colors.chatReplyIndicatorIncoming
+            )
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(fonts.subheadlineBold)
+                    .foregroundColor(Color(colors.chatTextMessage))
+                    .lineLimit(1)
+
+                HStack(spacing: tokens.spacingXxs) {
+                    if let subtitleIcon {
+                        Image(uiImage: subtitleIcon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(
+                                width: tokens.iconSizeXs,
+                                height: tokens.iconSizeXs
+                            )
+                    }
+
+                    Text(subtitle)
+                        .font(fonts.footnote)
+                        .foregroundColor(Color(colors.chatTextMessage))
+                        .lineLimit(1)
+                }
+            }
+        }
+        .modifier(QuotedMessageViewBackgroundModifier(
+            isSentByCurrentUser: isSentByCurrentUser
+        ))
+    }
+}
+
+struct QuotedMessageViewBackgroundModifier: ViewModifier {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
+
+    let isSentByCurrentUser: Bool
+    let horizontalPadding: CGFloat?
+    let verticalPadding: CGFloat?
+
+    init(
+        isSentByCurrentUser: Bool,
+        horizontalPadding: CGFloat? = nil,
+        verticalPadding: CGFloat? = nil
+    ) {
+        self.isSentByCurrentUser = isSentByCurrentUser
+        self.horizontalPadding = horizontalPadding
+        self.verticalPadding = verticalPadding
+    }
+
+    public func body(content: Content) -> some View {
+        content
+            .padding(.horizontal, horizontalPadding ?? tokens.spacingXs)
+            .padding(.vertical, verticalPadding ?? tokens.spacingXs)
+            .background(
+                RoundedRectangle(
+                    cornerRadius: tokens.messageBubbleRadiusAttachment,
+                    style: .continuous
+                )
+                .fill(Color(
+                    isSentByCurrentUser
+                        ? colors.chatBackgroundOutgoing
+                        : colors.chatBackgroundIncoming
+                ))
+            )
+    }
+}
+
+struct QuoteIndicatorView: View {
+    let tintColor: UIColor
+
+    var body: some View {
+        Rectangle()
+            .fill(Color(tintColor))
+            .frame(width: 2)
+            .clipShape(RoundedRectangle(cornerRadius: 2))
+            .accessibilityIdentifier("QuoteIndicatorView")
+    }
+}
+
+#Preview {
+    ScrollView {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Outgoing").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I think this one could work. Took a short clip…",
+                isSentByCurrentUser: true
+            )
+            .frame(maxHeight: 56)
+
+            Text("Incoming").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I think this one could work. Took a short clip…",
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
+
+            Text("Link").font(.title3).bold()
+
+            Text("Image - Single").font(.title3).bold()
+
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I think this one could work. Took a short clip…",
+                subtitleIcon: Appearance().images.attachmentImageIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
+
+            Text("Image - Single - No Caption").font(.title3).bold()
+
+            Text("Image - Multiple").font(.title3).bold()
+
+            Text("Image - Multiple - No Caption").font(.title3).bold()
+
+            Text("Video - Single").font(.title3).bold()
+
+            Text("Video - Single - No Caption").font(.title3).bold()
+
+            Text("Video - Multiple").font(.title3).bold()
+
+            Text("Video - Multiple - No Caption").font(.title3).bold()
+
+            Text("Mixed").font(.title3).bold()
+
+            Text("Mixed - No Caption").font(.title3).bold()
+
+            Text("Voice Recording").font(.title3).bold()
+
+            Text("Voice Recording - No Caption").font(.title3).bold()
+
+            Text("File").font(.title3).bold()
+
+            Text("File - No Caption").font(.title3).bold()
+
+            Text("Poll").font(.title3).bold()
+
+            Spacer()
+        }
+    }
+}
+
+// TODO: Move to common module
+
+import StreamChatCommonUI
+
+extension Appearance.Images {
+    var attachmentImageIcon: UIImage {
+        UIImage(
+            systemName: "camera",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
+    }
+
+    var attachmentLinkIcon: UIImage {
+        UIImage(
+            systemName: "link",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
+    }
+
+    var attachmentVideoIcon: UIImage {
+        UIImage(
+            systemName: "video.fill",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
+    }
+
+    var attachmentDocIcon: UIImage {
+        UIImage(
+            systemName: "document",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
+    }
+
+    var attachmentVoiceIcon: UIImage {
+        UIImage(
+            systemName: "microphone",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
+    }
+
+    var attachmentPollIcon: UIImage {
+        UIImage(
+            systemName: "chart.bar",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
     }
 }
