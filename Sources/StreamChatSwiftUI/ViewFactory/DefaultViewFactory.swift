@@ -792,12 +792,6 @@ extension ViewFactory {
         MoreReactionsView(onEmojiTap: options.onEmojiTap)
     }
     
-    public func makeQuotedMessageHeaderView(
-        options: QuotedMessageHeaderViewOptions
-    ) -> some View {
-        QuotedMessageHeaderView(quotedMessage: options.quotedMessage)
-    }
-    
     public func makeQuotedMessageView(
         options: QuotedMessageViewOptions
     ) -> some View {
@@ -821,12 +815,6 @@ extension ViewFactory {
     
     public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
         EmptyView()
-    }
-    
-    public func makeEditedMessageHeaderView(
-        options: EditedMessageHeaderViewOptions
-    ) -> some View {
-        EditMessageHeaderView(editedMessage: options.editedMessage)
     }
     
     public func makeCommandsContainerView(

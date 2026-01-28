@@ -53,22 +53,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     public var body: some View {
         VStack(spacing: 0) {
-            if quotedMessage != nil {
-                factory.makeQuotedMessageHeaderView(
-                    options: QuotedMessageHeaderViewOptions(
-                        quotedMessage: $quotedMessage
-                    )
-                )
-                .transition(.identity)
-            } else if editedMessage != nil {
-                factory.makeEditedMessageHeaderView(
-                    options: EditedMessageHeaderViewOptions(
-                        editedMessage: $editedMessage
-                    )
-                )
-                .transition(.identity)
-            }
-
             HStack(alignment: .bottom, spacing: 8) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(

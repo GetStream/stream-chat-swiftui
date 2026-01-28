@@ -427,21 +427,6 @@ import XCTest
         XCTAssert(view is SendInChannelView)
     }
 
-    func test_viewFactory_makeQuotedMessageHeaderView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeQuotedMessageHeaderView(
-            options: QuotedMessageHeaderViewOptions(
-                quotedMessage: .constant(message)
-            )
-        )
-
-        // Then
-        XCTAssert(view is QuotedMessageHeaderView)
-    }
-
     func test_viewFactory_makeQuotedMessageComposerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -458,21 +443,6 @@ import XCTest
 
         // Then
         XCTAssert(view is QuotedMessageViewContainer<DefaultViewFactory>)
-    }
-
-    func test_viewFactory_makeEditedMessageHeaderView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeEditedMessageHeaderView(
-            options: EditedMessageHeaderViewOptions(
-                editedMessage: .constant(message)
-            )
-        )
-
-        // Then
-        XCTAssert(view is EditMessageHeaderView)
     }
 
     func test_viewFactory_makeCommandsContainerView() {
