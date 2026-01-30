@@ -335,6 +335,8 @@ struct ChatQuotedMessageView: View {
                         .lineLimit(1)
                 }
             }
+
+            Spacer()
         }
         .modifier(QuotedMessageViewBackgroundModifier(
             isSentByCurrentUser: isSentByCurrentUser
@@ -410,6 +412,13 @@ struct QuoteIndicatorView: View {
             .frame(maxHeight: 56)
 
             Text("Link").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Looks cozy, right? https://bloomh...",
+                subtitleIcon: Appearance().images.attachmentLinkIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Image - Single").font(.title3).bold()
 
@@ -422,35 +431,134 @@ struct QuoteIndicatorView: View {
             .frame(maxHeight: 56)
 
             Text("Image - Single - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Photo",
+                subtitleIcon: Appearance().images.attachmentImageIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Image - Multiple").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I love these mountains",
+                subtitleIcon: Appearance().images.attachmentImageIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Image - Multiple - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "6 photos",
+                subtitleIcon: Appearance().images.attachmentImageIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Video - Single").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I took a short clip earlier",
+                subtitleIcon: Appearance().images.attachmentVideoIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Video - Single - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Video",
+                subtitleIcon: Appearance().images.attachmentVideoIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Video - Multiple").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I took some videos today",
+                subtitleIcon: Appearance().images.attachmentVideoIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Video - Multiple - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "6 videos",
+                subtitleIcon: Appearance().images.attachmentVideoIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Mixed").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I'm sending you some photos and files",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Mixed - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "6 files",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Voice Recording").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I took a short voice message",
+                subtitleIcon: Appearance().images.attachmentVoiceIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Voice Recording - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Voice message (0:12)",
+                subtitleIcon: Appearance().images.attachmentVoiceIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("File").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Here is the Q4 report",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("File - No Caption").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "bloom-and-harbor-cafe-menu-su...",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Text("Poll").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Where should we host the next team offsite...",
+                subtitleIcon: Appearance().images.attachmentPollIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
 
             Spacer()
         }
+        .padding()
     }
 }
 
@@ -475,7 +583,7 @@ extension Appearance.Images {
 
     var attachmentVideoIcon: UIImage {
         UIImage(
-            systemName: "video.fill",
+            systemName: "video",
             withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
         )!
     }
