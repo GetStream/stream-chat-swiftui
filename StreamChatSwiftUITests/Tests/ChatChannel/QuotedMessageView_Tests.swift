@@ -36,7 +36,8 @@ import XCTest
         let view = QuotedMessageView(
             factory: DefaultViewFactory.shared,
             quotedMessage: testMessage,
-            fillAvailableSpace: true
+            fillAvailableSpace: true,
+            forceLeftToRight: true
         )
         .applyDefaultSize()
 
@@ -51,7 +52,8 @@ import XCTest
         let view = QuotedMessageView(
             factory: DefaultViewFactory.shared,
             quotedMessage: message,
-            fillAvailableSpace: true
+            fillAvailableSpace: true,
+            forceLeftToRight: true
         )
         .applySize(viewSize)
         
@@ -103,7 +105,8 @@ import XCTest
         let view = QuotedMessageView(
             factory: DefaultViewFactory.shared,
             quotedMessage: message,
-            fillAvailableSpace: true
+            fillAvailableSpace: true,
+            forceLeftToRight: true
         )
         .applySize(viewSize)
         
@@ -175,6 +178,7 @@ import XCTest
             factory: DefaultViewFactory.shared,
             quotedMessage: message,
             fillAvailableSpace: true,
+            forceLeftToRight: true,
             attachmentSize: customAttachmentSize
         )
         .applyDefaultSize()
@@ -201,7 +205,8 @@ import XCTest
         let view = QuotedMessageView(
             factory: DefaultViewFactory.shared,
             quotedMessage: testMessage,
-            fillAvailableSpace: true
+            fillAvailableSpace: true,
+            forceLeftToRight: true
         )
         
         // Then - Default attachment size should be applied
