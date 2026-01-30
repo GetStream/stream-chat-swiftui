@@ -32,6 +32,7 @@ public struct ChatQuotedMessageView: View {
         referenceMessageView
             .padding(.horizontal, tokens.spacingSm)
             .padding(.vertical, tokens.spacingXs)
+            .frame(height: 56)
             .modifier(ReferenceMessageViewBackgroundModifier(
                 isSentByCurrentUser: viewModel.isSentByCurrentUser
             ))
