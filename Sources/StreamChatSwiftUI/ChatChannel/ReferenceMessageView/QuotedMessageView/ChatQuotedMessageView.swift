@@ -75,7 +75,7 @@ public struct ChatQuotedMessageView: View {
     private func imagePreview(url: URL) -> some View {
         StreamAsyncImage(
             urls: [url],
-            thumbnailSize: CGSize(width: tokens.spacing3xl, height: tokens.spacing3xl)
+            thumbnailSize: CGSize(width: 40, height: 40)
         ) { phase in
             Group {
                 switch phase {
@@ -94,7 +94,7 @@ public struct ChatQuotedMessageView: View {
     private func videoPreview(url: URL) -> some View {
         StreamAsyncImage(
             urls: [url],
-            thumbnailSize: CGSize(width: tokens.spacing3xl, height: tokens.spacing3xl)
+            thumbnailSize: CGSize(width: 40, height: 40)
         ) { phase in
             Group {
                 switch phase {

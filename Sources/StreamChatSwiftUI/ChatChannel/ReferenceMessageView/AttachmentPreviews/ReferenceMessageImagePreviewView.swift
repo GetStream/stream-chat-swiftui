@@ -18,11 +18,7 @@ public struct ReferenceMessageImagePreviewView: View {
         image
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(width: previewSize, height: previewSize)
+            .frame(width: 40, height: 40)
             .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMd, style: .continuous))
-    }
-
-    private var previewSize: CGFloat {
-        tokens.spacing3xl // 40pt
     }
 }
