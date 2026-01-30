@@ -281,7 +281,7 @@ struct VoiceRecordingPreview: View {
     }
 }
 
-struct ChatQuotedMessageView: View {
+struct ChatQuotedMessageView<AttachmentPreview: View>: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
@@ -291,17 +291,20 @@ struct ChatQuotedMessageView: View {
     let subtitle: String
     let subtitleIcon: UIImage?
     let isSentByCurrentUser: Bool
+    let attachmentPreview: AttachmentPreview?
 
     init(
         title: String,
         subtitle: String,
         subtitleIcon: UIImage? = nil,
-        isSentByCurrentUser: Bool
+        isSentByCurrentUser: Bool,
+        @ViewBuilder attachmentPreview: () -> AttachmentPreview
     ) {
         self.title = title
         self.subtitle = subtitle
         self.subtitleIcon = subtitleIcon
         self.isSentByCurrentUser = isSentByCurrentUser
+        self.attachmentPreview = attachmentPreview()
     }
 
     var body: some View {
@@ -337,10 +340,93 @@ struct ChatQuotedMessageView: View {
             }
 
             Spacer()
+
+            if let attachmentPreview {
+                attachmentPreview
+            }
         }
         .modifier(QuotedMessageViewBackgroundModifier(
             isSentByCurrentUser: isSentByCurrentUser
         ))
+    }
+}
+
+extension ChatQuotedMessageView where AttachmentPreview == EmptyView {
+    init(
+        title: String,
+        subtitle: String,
+        subtitleIcon: UIImage? = nil,
+        isSentByCurrentUser: Bool
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.subtitleIcon = subtitleIcon
+        self.isSentByCurrentUser = isSentByCurrentUser
+        self.attachmentPreview = nil
+    }
+}
+
+// MARK: - Attachment Preview
+
+/// Image attachment preview for quoted messages (photo attachments).
+public struct QuotedMessageAttachmentPreviewImage: View {
+    @Injected(\.tokens) private var tokens
+
+    let image: Image
+
+    public init(image: Image) {
+        self.image = image
+    }
+
+    public var body: some View {
+        image
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: previewSize, height: previewSize)
+            .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMd, style: .continuous))
+    }
+
+    private var previewSize: CGFloat {
+        40
+    }
+}
+
+/// Video attachment preview for quoted messages (video attachments with play button overlay).
+public struct QuotedMessageAttachmentPreviewVideo: View {
+    let thumbnailImage: Image
+
+    public init(thumbnailImage: Image) {
+        self.thumbnailImage = thumbnailImage
+    }
+
+    public var body: some View {
+        QuotedMessageAttachmentPreviewImage(image: thumbnailImage)
+            .overlay(VideoPlayButtonOverlay())
+    }
+}
+
+/// Play button overlay for video attachment previews.
+public struct VideoPlayButtonOverlay: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+    @Injected(\.images) private var images
+
+    public init() {}
+
+    public var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color(colors.controlPlayControlBackground))
+                .frame(width: playButtonSize, height: playButtonSize)
+
+            Image(uiImage: images.attachmentPlayOverlayIcon)
+                .renderingMode(.template)
+                .foregroundColor(Color(colors.controlPlayControlIcon))
+        }
+    }
+
+    private var playButtonSize: CGFloat {
+        tokens.iconSizeMd
     }
 }
 
@@ -466,6 +552,34 @@ extension View {
                 subtitleIcon: Appearance().images.attachmentVideoIcon,
                 isSentByCurrentUser: false
             )
+            .frame(maxHeight: 56)
+            .dismissButtonOverlayModifier(onDismiss: {})
+
+            Text("Photo with attachment preview").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Photo",
+                subtitleIcon: Appearance().images.attachmentImageIcon,
+                isSentByCurrentUser: false
+            ) {
+                QuotedMessageAttachmentPreviewImage(
+                    image: Image(systemName: "photo.fill")
+                )
+            }
+            .frame(maxHeight: 56)
+            .dismissButtonOverlayModifier(onDismiss: {})
+
+            Text("Video with attachment preview").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Video",
+                subtitleIcon: Appearance().images.attachmentVideoIcon,
+                isSentByCurrentUser: false
+            ) {
+                QuotedMessageAttachmentPreviewVideo(
+                    thumbnailImage: Image(systemName: "photo.fill")
+                )
+            }
             .frame(maxHeight: 56)
             .dismissButtonOverlayModifier(onDismiss: {})
 
@@ -633,6 +747,16 @@ extension View {
 import StreamChatCommonUI
 
 extension Appearance.Images {
+    var attachmentPlayOverlayIcon: UIImage {
+        UIImage(
+            systemName: "play.fill",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: 12,
+                weight: .regular
+            )
+        )!
+    }
+
     var overlayDismissIcon: UIImage {
         UIImage(
             systemName: "xmark",
