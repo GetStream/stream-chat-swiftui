@@ -791,7 +791,16 @@ extension ViewFactory {
     public func makeMoreReactionsView(options: MoreReactionsViewOptions) -> some View {
         MoreReactionsView(onEmojiTap: options.onEmojiTap)
     }
-    
+
+    public func makeComposerQuotedMessageView(
+        options: ComposerQuotedMessageViewOptions
+    ) -> some View {
+        ComposerQuotedMessageView(
+            viewModel: QuotedMessageViewModel(message: options.quotedMessage),
+            onDismiss: options.onDismiss
+        )
+    }
+
     public func makeQuotedMessageView(
         options: QuotedMessageViewOptions
     ) -> some View {

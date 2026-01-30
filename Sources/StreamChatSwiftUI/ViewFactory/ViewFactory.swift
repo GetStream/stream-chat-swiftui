@@ -462,6 +462,11 @@ import SwiftUI
     /// - Parameter options: The options for creating the more reactions view.
     func makeMoreReactionsView(options: MoreReactionsViewOptions) -> MoreReactionsViewType
 
+    associatedtype ComposerQuotedMessageViewType: View
+    /// Creates the quoted message view shown in the composer.
+    /// - Parameter options: the options for creating the quoted message view.
+    func makeComposerQuotedMessageView(options: ComposerQuotedMessageViewOptions) -> ComposerQuotedMessageViewType
+
     associatedtype QuotedMessageViewType: View
     /// Creates the quoted message view, shown in the message list and the composer.
     /// - Parameter options: the options for creating the quoted message view.

@@ -372,13 +372,15 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     public var body: some View {
         VStack {
             if let quotedMessage = quotedMessage.wrappedValue {
-                ComposerQuotedMessageView(
-                    message: quotedMessage,
-                    onDismiss: {
-                        withAnimation {
-                            self.quotedMessage.wrappedValue = nil
+                factory.makeComposerQuotedMessageView(
+                    options: .init(
+                        quotedMessage: quotedMessage,
+                        onDismiss: {
+                            withAnimation {
+                                self.quotedMessage.wrappedValue = nil
+                            }
                         }
-                    }
+                    )
                 )
                 .padding(.top, 12)
                 .padding(.trailing, 12)
