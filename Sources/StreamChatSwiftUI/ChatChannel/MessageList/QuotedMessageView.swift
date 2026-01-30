@@ -392,6 +392,62 @@ struct QuoteIndicatorView: View {
     }
 }
 
+// MARK: - Dismiss button overlay
+
+/// Overlays a close button on the top‑trailing corner of the view.
+struct DismissButtonOverlayModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+    @Injected(\.images) private var images
+
+    let onDismiss: () -> Void
+
+    init(onDismiss: @escaping () -> Void) {
+        self.onDismiss = onDismiss
+    }
+
+    func body(content: Content) -> some View {
+        content.overlay(
+            dismissButton,
+            alignment: .topTrailing
+        )
+    }
+
+    private var dismissButton: some View {
+        Button(action: onDismiss) {
+            Image(uiImage: images.overlayDismissIcon)
+                .renderingMode(.template)
+                .foregroundColor(Color(colors.controlRemoveControlIcon))
+                .frame(
+                    width: tokens.iconSizeMd,
+                    height: tokens.iconSizeMd
+                )
+                .background(Color(colors.controlRemoveControlBackground))
+                .clipShape(Circle())
+                .contentShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color(colors.controlRemoveControlBorder), lineWidth: 2)
+                )
+        }
+        .buttonStyle(PlainButtonStyle())
+        .offset(x: dismissButtonOverlap, y: -dismissButtonOverlap)
+        .accessibilityLabel(L10n.Composer.Quoted.dismiss)
+        .accessibilityIdentifier("DismissButtonOverlay")
+    }
+
+    private var dismissButtonOverlap: CGFloat {
+        tokens.spacingXxs
+    }
+}
+
+extension View {
+    /// Overlays a close button on the top‑trailing corner of the view.
+    func dismissButtonOverlayModifier(onDismiss: @escaping () -> Void) -> some View {
+        modifier(DismissButtonOverlayModifier(onDismiss: onDismiss))
+    }
+}
+
 #Preview {
     ScrollView {
         VStack(alignment: .leading, spacing: 16) {
@@ -402,6 +458,16 @@ struct QuoteIndicatorView: View {
                 isSentByCurrentUser: true
             )
             .frame(maxHeight: 56)
+
+            Text("In composer (with close button)").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "I took a short clip earlier",
+                subtitleIcon: Appearance().images.attachmentVideoIcon,
+                isSentByCurrentUser: false
+            )
+            .frame(maxHeight: 56)
+            .dismissButtonOverlayModifier(onDismiss: {})
 
             Text("Incoming").font(.title3).bold()
             ChatQuotedMessageView(
@@ -567,6 +633,16 @@ struct QuoteIndicatorView: View {
 import StreamChatCommonUI
 
 extension Appearance.Images {
+    var overlayDismissIcon: UIImage {
+        UIImage(
+            systemName: "xmark",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: 10,
+                weight: .heavy
+            )
+        )!
+    }
+
     var attachmentImageIcon: UIImage {
         UIImage(
             systemName: "camera",

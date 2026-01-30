@@ -291,6 +291,8 @@ internal enum L10n {
       internal static var typeNumberMinMaxRange: String { L10n.tr("Localizable", "composer.polls.type-number-min-max-range") }
     }
     internal enum Quoted {
+      /// Dismiss quote
+      internal static var dismiss: String { L10n.tr("Localizable", "composer.quoted.dismiss") }
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "composer.quoted.giphy") }
       /// Photo
