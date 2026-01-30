@@ -78,7 +78,7 @@ open class QuotedMessageViewModel {
     
     /// The URL for the video thumbnail preview, if available.
     public var videoThumbnailURL: URL? {
-        message.videoAttachments.first?.videoURL
+        message.videoAttachments.first?.thumbnailURL
     }
     
     /// The file extension for file previews, if available.
