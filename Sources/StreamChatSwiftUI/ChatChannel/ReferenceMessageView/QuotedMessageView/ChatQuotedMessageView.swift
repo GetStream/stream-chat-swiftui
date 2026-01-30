@@ -7,12 +7,10 @@ import StreamChatCommonUI
 import SwiftUI
 
 /// A quoted message view used to display a reference to another message within a chat.
-///
-/// This view can be initialized either with a `QuotedMessageViewModel` (recommended)
-/// or with a `ChatMessage` directly.
 public struct ChatQuotedMessageView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.images) private var images
+    @Injected(\.colors) private var colors
 
     private let viewModel: QuotedMessageViewModel
     
