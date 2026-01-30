@@ -148,8 +148,7 @@ import XCTest
             factory: DefaultViewFactory.shared,
             quotedMessage: testMessage,
             fillAvailableSpace: true,
-            scrolledId: .constant(nil),
-            quotedAuthorAvatarSize: customAvatarSize
+            scrolledId: .constant(nil)
         )
         .applyDefaultSize()
 
@@ -195,7 +194,6 @@ import XCTest
         
         // Then - Default sizes should be applied
         XCTAssertEqual(container.attachmentSize, CGSize(width: 36, height: 36))
-        XCTAssertEqual(container.quotedAuthorAvatarSize, CGSize(width: 24, height: 24))
     }
     
     func test_quotedMessageView_defaultAttachmentSize() {

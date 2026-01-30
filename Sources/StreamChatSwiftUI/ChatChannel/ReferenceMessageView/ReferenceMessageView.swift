@@ -84,7 +84,9 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
                 HStack(spacing: tokens.spacingXxs) {
                     if let subtitleIcon {
                         Image(uiImage: subtitleIcon)
+                            .renderingMode(.template)
                             .resizable()
+                            .foregroundColor(Color(colors.chatTextMessage))
                             .aspectRatio(contentMode: .fit)
                             .frame(
                                 width: tokens.iconSizeXs,

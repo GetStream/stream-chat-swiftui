@@ -291,14 +291,42 @@ internal enum L10n {
       internal static var typeNumberMinMaxRange: String { L10n.tr("Localizable", "composer.polls.type-number-min-max-range") }
     }
     internal enum Quoted {
+      /// Audio
+      internal static var audio: String { L10n.tr("Localizable", "composer.quoted.audio") }
       /// Dismiss quote
       internal static var dismiss: String { L10n.tr("Localizable", "composer.quoted.dismiss") }
+      /// File
+      internal static var file: String { L10n.tr("Localizable", "composer.quoted.file") }
+      /// %d files
+      internal static func files(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.quoted.files", p1)
+      }
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "composer.quoted.giphy") }
+      /// Link
+      internal static var link: String { L10n.tr("Localizable", "composer.quoted.link") }
       /// Photo
       internal static var photo: String { L10n.tr("Localizable", "composer.quoted.photo") }
+      /// %d photos
+      internal static func photos(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.quoted.photos", p1)
+      }
+      /// Reply to %@
+      internal static func replyTo(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "composer.quoted.replyTo", String(describing: p1))
+      }
       /// Video
       internal static var video: String { L10n.tr("Localizable", "composer.quoted.video") }
+      /// %d videos
+      internal static func videos(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.quoted.videos", p1)
+      }
+      /// Voice message
+      internal static var voiceMessage: String { L10n.tr("Localizable", "composer.quoted.voiceMessage") }
+      /// Voice message (%@)
+      internal static func voiceMessageWithDuration(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "composer.quoted.voiceMessageWithDuration", String(describing: p1))
+      }
     }
     internal enum Recording {
       /// Slide to cancel
