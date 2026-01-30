@@ -11,14 +11,6 @@ import SwiftUI
 /// This is a convenience wrapper around `ChatQuotedMessageView` that adds a dismiss button
 /// in the top-trailing corner. Use this in the composer to display quoted messages with
 /// the ability to dismiss/cancel the quote.
-///
-/// Example usage:
-/// ```swift
-/// ComposerQuotedMessageView(
-///     message: quotedMessage,
-///     onDismiss: { quotedMessage = nil }
-/// )
-/// ```
 public struct ComposerQuotedMessageView: View {
     private let viewModel: QuotedMessageViewModel
     private let onDismiss: (() -> Void)?

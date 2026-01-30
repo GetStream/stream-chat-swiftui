@@ -11,24 +11,6 @@ import SwiftUI
 ///
 /// This component is designed to be used in various contexts where a message reference needs to be shown,
 /// such as quoted messages in the composer or edited message references.
-///
-/// The view displays:
-/// - A vertical indicator bar (quote indicator)
-/// - A title (typically "Reply to [Author]")
-/// - A subtitle with optional icon (message preview or attachment type)
-/// - An optional attachment preview on the trailing edge
-///
-/// Example usage:
-/// ```swift
-/// ReferenceMessageView(
-///     title: "Reply to John",
-///     subtitle: "Check out this photo!",
-///     subtitleIcon: images.attachmentImageIcon,
-///     isSentByCurrentUser: true
-/// ) {
-///     QuotedMessageAttachmentPreviewImage(image: someImage)
-/// }
-/// ```
 public struct ReferenceMessageView<AttachmentPreview: View>: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
