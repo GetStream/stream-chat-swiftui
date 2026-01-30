@@ -6,21 +6,7 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-/// A quoted message view with a dismiss button overlay.
-///
-/// This is a convenience wrapper around `ReferenceMessageView` that adds a dismiss button
-/// in the top-trailing corner. Use this in the composer to display quoted messages with
-/// the ability to dismiss/cancel the quote.
-///
-/// Example usage:
-/// ```swift
-/// ChatQuotedMessageView(
-///     title: "Reply to John",
-///     subtitle: "Check out this photo!",
-///     isSentByCurrentUser: true,
-///     onDismiss: { quotedMessage = nil }
-/// )
-/// ```
+/// A quoted message view used to display a reference to another message within a chat.
 public struct ChatQuotedMessageView<AttachmentPreview: View>: View {
     @Injected(\.tokens) private var tokens
 
@@ -34,8 +20,6 @@ public struct ChatQuotedMessageView<AttachmentPreview: View>: View {
     public let isSentByCurrentUser: Bool
     /// An optional attachment preview displayed on the trailing edge.
     public let attachmentPreview: AttachmentPreview?
-    /// Action called when the dismiss button is tapped. If nil, no dismiss button is shown.
-    public let onDismiss: (() -> Void)?
 
     /// Creates a quoted message view with an attachment preview and optional dismiss button.
     /// - Parameters:
@@ -43,33 +27,29 @@ public struct ChatQuotedMessageView<AttachmentPreview: View>: View {
     ///   - subtitle: The subtitle text (e.g., message preview).
     ///   - subtitleIcon: An optional icon displayed before the subtitle.
     ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
-    ///   - onDismiss: Action called when the dismiss button is tapped. Pass nil to hide the button.
     ///   - attachmentPreview: A view builder for the attachment preview.
     public init(
         title: String,
         subtitle: String,
         subtitleIcon: UIImage? = nil,
         isSentByCurrentUser: Bool,
-        onDismiss: (() -> Void)? = nil,
         @ViewBuilder attachmentPreview: () -> AttachmentPreview
     ) {
         self.title = title
         self.subtitle = subtitle
         self.subtitleIcon = subtitleIcon
         self.isSentByCurrentUser = isSentByCurrentUser
-        self.onDismiss = onDismiss
         self.attachmentPreview = attachmentPreview()
     }
 
     @ViewBuilder
     public var body: some View {
         referenceMessageView
-            .padding(.horizontal, tokens.spacingXs)
+            .padding(.horizontal, tokens.spacingSm)
             .padding(.vertical, tokens.spacingXs)
             .modifier(ReferenceMessageViewBackgroundModifier(
                 isSentByCurrentUser: isSentByCurrentUser
             ))
-            .dismissButtonOverlayModifier(onDismiss: onDismiss)
     }
 
     @ViewBuilder
@@ -101,19 +81,16 @@ extension ChatQuotedMessageView where AttachmentPreview == EmptyView {
     ///   - subtitle: The subtitle text (e.g., message preview).
     ///   - subtitleIcon: An optional icon displayed before the subtitle.
     ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
-    ///   - onDismiss: Action called when the dismiss button is tapped. Pass nil to hide the button.
     public init(
         title: String,
         subtitle: String,
         subtitleIcon: UIImage? = nil,
-        isSentByCurrentUser: Bool,
-        onDismiss: (() -> Void)? = nil
+        isSentByCurrentUser: Bool
     ) {
         self.title = title
         self.subtitle = subtitle
         self.subtitleIcon = subtitleIcon
         self.isSentByCurrentUser = isSentByCurrentUser
-        self.onDismiss = onDismiss
         self.attachmentPreview = nil
     }
 }
