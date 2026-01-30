@@ -405,6 +405,42 @@ public struct QuotedMessageAttachmentPreviewVideo: View {
     }
 }
 
+/// File attachment preview for quoted messages.
+/// Displays a file type icon based on the file extension.
+public struct QuotedMessageAttachmentPreviewFile: View {
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
+
+    let fileExtension: String
+
+    /// Creates a file attachment preview with the given file extension.
+    /// - Parameter fileExtension: The file extension (e.g., "pdf", "doc", "zip").
+    public init(fileExtension: String) {
+        self.fileExtension = fileExtension.lowercased()
+    }
+
+    /// Creates a file attachment preview from a file URL.
+    /// - Parameter fileURL: The URL of the file to preview.
+    public init(fileURL: URL) {
+        self.fileExtension = fileURL.pathExtension.lowercased()
+    }
+
+    public var body: some View {
+        Image(uiImage: fileIcon)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: previewSize, height: previewSize)
+    }
+
+    private var fileIcon: UIImage {
+        images.documentPreviews[fileExtension] ?? images.fileFallback
+    }
+
+    private var previewSize: CGFloat {
+        40
+    }
+}
+
 /// Play button overlay for video attachment previews.
 public struct VideoPlayButtonOverlay: View {
     @Injected(\.colors) private var colors
@@ -726,6 +762,42 @@ extension View {
                 isSentByCurrentUser: false
             )
             .frame(maxHeight: 56)
+
+            Text("File with attachment preview (PDF)").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Q4_Report.pdf",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            ) {
+                QuotedMessageAttachmentPreviewFile(fileExtension: "pdf")
+            }
+            .frame(maxHeight: 56)
+            .dismissButtonOverlayModifier(onDismiss: {})
+
+            Text("File with attachment preview (DOC)").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "Meeting_Notes.doc",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            ) {
+                QuotedMessageAttachmentPreviewFile(fileExtension: "doc")
+            }
+            .frame(maxHeight: 56)
+            .dismissButtonOverlayModifier(onDismiss: {})
+
+            Text("File with attachment preview (ZIP)").font(.title3).bold()
+            ChatQuotedMessageView(
+                title: "Reply to Emma Chen",
+                subtitle: "project_files.zip",
+                subtitleIcon: Appearance().images.attachmentDocIcon,
+                isSentByCurrentUser: false
+            ) {
+                QuotedMessageAttachmentPreviewFile(fileExtension: "zip")
+            }
+            .frame(maxHeight: 56)
+            .dismissButtonOverlayModifier(onDismiss: {})
 
             Text("Poll").font(.title3).bold()
             ChatQuotedMessageView(
