@@ -71,7 +71,8 @@ extension Styles {
             message: messageModifierInfo.message,
             isFirst: messageModifierInfo.isFirst,
             injectedBackgroundColor: messageModifierInfo.injectedBackgroundColor,
-            cornerRadius: messageModifierInfo.cornerRadius
+            cornerRadius: messageModifierInfo.cornerRadius,
+            forceLeftToRight: messageModifierInfo.forceLeftToRight
         )
     }
     

@@ -5,36 +5,69 @@
 import StreamChat
 import SwiftUI
 
-/// Container showing the quoted message view.
+/// Container showing the quoted message view with the user avatar.
 public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
     public var factory: Factory
     public var quotedMessage: ChatMessage
     public var fillAvailableSpace: Bool
+    public var forceLeftToRight: Bool
     @Binding public var scrolledId: String?
     public let attachmentSize: CGSize
+    public let quotedAuthorAvatarSize: CGSize
 
     public init(
         factory: Factory,
         quotedMessage: ChatMessage,
         fillAvailableSpace: Bool,
+        forceLeftToRight: Bool = false,
         scrolledId: Binding<String?>,
-        attachmentSize: CGSize = CGSize(width: 36, height: 36)
+        attachmentSize: CGSize = CGSize(width: 36, height: 36),
+        quotedAuthorAvatarSize: CGSize = CGSize(width: 24, height: 24)
     ) {
         self.factory = factory
         self.quotedMessage = quotedMessage
         self.fillAvailableSpace = fillAvailableSpace
+        self.forceLeftToRight = forceLeftToRight
         _scrolledId = scrolledId
         self.attachmentSize = attachmentSize
+        self.quotedAuthorAvatarSize = quotedAuthorAvatarSize
     }
 
     public var body: some View {
         HStack(alignment: .bottom) {
-            QuotedMessageView(
-                factory: factory,
-                quotedMessage: quotedMessage,
-                fillAvailableSpace: fillAvailableSpace,
-                attachmentSize: attachmentSize
-            )
+            if !quotedMessage.isSentByCurrentUser || forceLeftToRight {
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: quotedMessage.author,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
+                    )
+                )
+
+                QuotedMessageView(
+                    factory: factory,
+                    quotedMessage: quotedMessage,
+                    fillAvailableSpace: fillAvailableSpace,
+                    forceLeftToRight: forceLeftToRight,
+                    attachmentSize: attachmentSize
+                )
+            } else {
+                QuotedMessageView(
+                    factory: factory,
+                    quotedMessage: quotedMessage,
+                    fillAvailableSpace: fillAvailableSpace,
+                    forceLeftToRight: forceLeftToRight,
+                    attachmentSize: attachmentSize
+                )
+
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: quotedMessage.author,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
+                    )
+                )
+            }
         }
         .padding(.all, 8)
         .onTapGesture(perform: {
@@ -59,6 +92,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     public var factory: Factory
     public var quotedMessage: ChatMessage
     public var fillAvailableSpace: Bool
+    public var forceLeftToRight: Bool
     public let attachmentSize: CGSize
 
     private var messageTypeResolver: MessageTypeResolving {
@@ -69,11 +103,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         factory: Factory,
         quotedMessage: ChatMessage,
         fillAvailableSpace: Bool,
+        forceLeftToRight: Bool,
         attachmentSize: CGSize = CGSize(width: 36, height: 36)
     ) {
         self.factory = factory
         self.quotedMessage = quotedMessage
         self.fillAvailableSpace = fillAvailableSpace
+        self.forceLeftToRight = forceLeftToRight
         self.attachmentSize = attachmentSize
     }
 
@@ -88,7 +124,20 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             )
         }
         .id(quotedMessage.messageId)
-        .padding(.all, utils.messageListConfig.messagePaddings.quotedViewPadding)
+        .padding(
+            hasVoiceAttachments ? [.leading, .top, .bottom] : .all, utils.messageListConfig.messagePaddings.quotedViewPadding
+        )
+        .modifier(
+            factory.styles.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: quotedMessage,
+                    isFirst: true,
+                    injectedBackgroundColor: bubbleBackground,
+                    cornerRadius: 12,
+                    forceLeftToRight: forceLeftToRight
+                )
+            )
+        )
         .accessibilityElement(children: .contain)
     }
 
@@ -100,6 +149,10 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         let color = quotedMessage.isSentByCurrentUser ?
             colors.quotedMessageBackgroundCurrentUser : colors.quotedMessageBackgroundOtherUser
         return color
+    }
+
+    private var hasVoiceAttachments: Bool {
+        !quotedMessage.voiceRecordingAttachments.isEmpty
     }
 }
 
