@@ -28,15 +28,11 @@ public struct ReferenceMessageFilePreviewView: View {
         Image(uiImage: fileIcon)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: previewSize, height: previewSize)
+            .frame(width: 40, height: 40)
     }
 
     private var fileIcon: UIImage {
         fileTypePreviews[fileExtension] ?? fileTypePreviewFallback
-    }
-
-    private var previewSize: CGFloat {
-        tokens.spacing3xl // 40pt
     }
 
     // MARK: - File Type Preview Icons
