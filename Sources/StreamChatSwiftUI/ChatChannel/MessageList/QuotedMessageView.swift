@@ -651,44 +651,6 @@ extension View {
             )
             .frame(maxHeight: 56)
 
-            Text("In composer (with close button)").font(.title3).bold()
-            ChatQuotedMessageView(
-                title: "Reply to Emma Chen",
-                subtitle: "I took a short clip earlier",
-                subtitleIcon: Appearance().images.attachmentVideoIcon,
-                isSentByCurrentUser: false
-            )
-            .frame(maxHeight: 56)
-            .dismissButtonOverlayModifier(onDismiss: {})
-
-            Text("Photo with attachment preview").font(.title3).bold()
-            ChatQuotedMessageView(
-                title: "Reply to Emma Chen",
-                subtitle: "Photo",
-                subtitleIcon: Appearance().images.attachmentImageIcon,
-                isSentByCurrentUser: false
-            ) {
-                QuotedMessageAttachmentPreviewImage(
-                    image: Image(systemName: "photo.fill")
-                )
-            }
-            .frame(maxHeight: 56)
-            .dismissButtonOverlayModifier(onDismiss: {})
-
-            Text("Video with attachment preview").font(.title3).bold()
-            ChatQuotedMessageView(
-                title: "Reply to Emma Chen",
-                subtitle: "Video",
-                subtitleIcon: Appearance().images.attachmentVideoIcon,
-                isSentByCurrentUser: false
-            ) {
-                QuotedMessageAttachmentPreviewVideo(
-                    thumbnailImage: Image(systemName: "photo.fill")
-                )
-            }
-            .frame(maxHeight: 56)
-            .dismissButtonOverlayModifier(onDismiss: {})
-
             Text("Incoming").font(.title3).bold()
             ChatQuotedMessageView(
                 title: "Reply to Emma Chen",
@@ -707,7 +669,6 @@ extension View {
             .frame(maxHeight: 56)
 
             Text("Image - Single").font(.title3).bold()
-
             ChatQuotedMessageView(
                 title: "Reply to Emma Chen",
                 subtitle: "I think this one could work. Took a short clip…",
@@ -832,42 +793,6 @@ extension View {
                 isSentByCurrentUser: false
             )
             .frame(maxHeight: 56)
-
-            Text("File with attachment preview (PDF)").font(.title3).bold()
-            ChatQuotedMessageView(
-                title: "Reply to Emma Chen",
-                subtitle: "Q4_Report.pdf",
-                subtitleIcon: Appearance().images.attachmentDocIcon,
-                isSentByCurrentUser: false
-            ) {
-                QuotedMessageAttachmentPreviewFile(fileExtension: "pdf")
-            }
-            .frame(maxHeight: 56)
-            .dismissButtonOverlayModifier(onDismiss: {})
-
-            Text("File with attachment preview (DOC)").font(.title3).bold()
-            ChatQuotedMessageView(
-                title: "Reply to Emma Chen",
-                subtitle: "Meeting_Notes.doc",
-                subtitleIcon: Appearance().images.attachmentDocIcon,
-                isSentByCurrentUser: false
-            ) {
-                QuotedMessageAttachmentPreviewFile(fileExtension: "doc")
-            }
-            .frame(maxHeight: 56)
-            .dismissButtonOverlayModifier(onDismiss: {})
-
-            Text("File with attachment preview (ZIP)").font(.title3).bold()
-            ChatQuotedMessageView(
-                title: "Reply to Emma Chen",
-                subtitle: "project_files.zip",
-                subtitleIcon: Appearance().images.attachmentDocIcon,
-                isSentByCurrentUser: false
-            ) {
-                QuotedMessageAttachmentPreviewFile(fileExtension: "zip")
-            }
-            .frame(maxHeight: 56)
-            .dismissButtonOverlayModifier(onDismiss: {})
 
             Text("Poll").font(.title3).bold()
             ChatQuotedMessageView(
