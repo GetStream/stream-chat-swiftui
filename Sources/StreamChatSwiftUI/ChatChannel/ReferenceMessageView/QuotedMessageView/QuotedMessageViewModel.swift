@@ -6,7 +6,10 @@ import Foundation
 import StreamChat
 
 /// A view model that provides display data for a quoted message.
+@MainActor
 open class QuotedMessageViewModel {
+    @Injected(\.utils) private var utils
+
     // MARK: - Properties
     
     /// The quoted message.
@@ -202,9 +205,7 @@ open class QuotedMessageViewModel {
     }
     
     private func formattedDuration(_ duration: TimeInterval) -> String {
-        let minutes = Int(duration) / 60
-        let seconds = Int(duration) % 60
-        return String(format: "%d:%02d", minutes, seconds)
+        return utils.videoDurationFormatter.format(duration) ?? ""
     }
     
     private func truncateFileName(_ fileName: String, maxLength: Int = 30) -> String {
