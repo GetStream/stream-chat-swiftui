@@ -14,6 +14,5 @@ public struct ReferenceMessageVideoPreviewView: View {
 
     public var body: some View {
         ReferenceMessageImagePreviewView(image: thumbnailImage)
-            .overlay(PlayButtonOverlay())
     }
 }
