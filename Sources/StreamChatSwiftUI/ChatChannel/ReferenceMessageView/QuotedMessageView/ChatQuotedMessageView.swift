@@ -107,6 +107,7 @@ public struct ChatQuotedMessageView: View {
                 }
             }
         }
+        .overlay(PlayButtonOverlay())
     }
     
     private var previewPlaceholder: some View {
