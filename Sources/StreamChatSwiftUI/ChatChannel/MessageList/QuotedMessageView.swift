@@ -281,19 +281,55 @@ struct VoiceRecordingPreview: View {
     }
 }
 
-struct ChatQuotedMessageView<AttachmentPreview: View>: View {
+// MARK: - MessageReferenceView
+
+/// A reusable view for displaying a reference to another message.
+///
+/// This component is designed to be used in various contexts where a message reference needs to be shown,
+/// such as quoted messages in the composer or edited message references.
+///
+/// The view displays:
+/// - A vertical indicator bar (quote indicator)
+/// - A title (typically "Reply to [Author]")
+/// - A subtitle with optional icon (message preview or attachment type)
+/// - An optional attachment preview on the trailing edge
+///
+/// Example usage:
+/// ```swift
+/// MessageReferenceView(
+///     title: "Reply to John",
+///     subtitle: "Check out this photo!",
+///     subtitleIcon: images.attachmentImageIcon,
+///     isSentByCurrentUser: true
+/// ) {
+///     QuotedMessageAttachmentPreviewImage(image: someImage)
+/// }
+/// ```
+public struct MessageReferenceView<AttachmentPreview: View>: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     @Injected(\.images) var images
     @Injected(\.tokens) var tokens
 
-    let title: String
-    let subtitle: String
-    let subtitleIcon: UIImage?
-    let isSentByCurrentUser: Bool
-    let attachmentPreview: AttachmentPreview?
+    /// The title text displayed at the top, usually the author.
+    public let title: String
+    /// The subtitle text displayed below the title (e.g., message preview or attachment description).
+    public let subtitle: String
+    /// An optional icon displayed before the subtitle (e.g., attachment type icon).
+    public let subtitleIcon: UIImage?
+    /// Whether the referenced message was sent by the current user. Affects the indicator color.
+    public let isSentByCurrentUser: Bool
+    /// An optional attachment preview displayed on the trailing edge.
+    public let attachmentPreview: AttachmentPreview?
 
-    init(
+    /// Creates a message reference view with an attachment preview.
+    /// - Parameters:
+    ///   - title: The title text (e.g., "Reply to [Author]").
+    ///   - subtitle: The subtitle text (e.g., message preview).
+    ///   - subtitleIcon: An optional icon displayed before the subtitle.
+    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
+    ///   - attachmentPreview: A view builder for the attachment preview.
+    public init(
         title: String,
         subtitle: String,
         subtitleIcon: UIImage? = nil,
@@ -307,7 +343,7 @@ struct ChatQuotedMessageView<AttachmentPreview: View>: View {
         self.attachmentPreview = attachmentPreview()
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: tokens.spacingXs) {
             QuoteIndicatorView(
                 tintColor: isSentByCurrentUser
@@ -345,14 +381,17 @@ struct ChatQuotedMessageView<AttachmentPreview: View>: View {
                 attachmentPreview
             }
         }
-        .modifier(QuotedMessageViewBackgroundModifier(
-            isSentByCurrentUser: isSentByCurrentUser
-        ))
     }
 }
 
-extension ChatQuotedMessageView where AttachmentPreview == EmptyView {
-    init(
+extension MessageReferenceView where AttachmentPreview == EmptyView {
+    /// Creates a message reference view without an attachment preview.
+    /// - Parameters:
+    ///   - title: The title text (e.g., "Reply to [Author]").
+    ///   - subtitle: The subtitle text (e.g., message preview).
+    ///   - subtitleIcon: An optional icon displayed before the subtitle.
+    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
+    public init(
         title: String,
         subtitle: String,
         subtitleIcon: UIImage? = nil,
@@ -362,6 +401,120 @@ extension ChatQuotedMessageView where AttachmentPreview == EmptyView {
         self.subtitle = subtitle
         self.subtitleIcon = subtitleIcon
         self.isSentByCurrentUser = isSentByCurrentUser
+        self.attachmentPreview = nil
+    }
+}
+
+// MARK: - ChatQuotedMessageView
+
+/// A quoted message view with a dismiss button overlay.
+///
+/// This is a convenience wrapper around `MessageReferenceView` that adds a dismiss button
+/// in the top-trailing corner. Use this in the composer to display quoted messages with
+/// the ability to dismiss/cancel the quote.
+///
+/// Example usage:
+/// ```swift
+/// ChatQuotedMessageView(
+///     title: "Reply to John",
+///     subtitle: "Check out this photo!",
+///     isSentByCurrentUser: true,
+///     onDismiss: { quotedMessage = nil }
+/// )
+/// ```
+public struct ChatQuotedMessageView<AttachmentPreview: View>: View {
+    @Injected(\.tokens) private var tokens
+
+    /// The title text displayed at the top (e.g., "Reply to Emma Chen").
+    public let title: String
+    /// The subtitle text displayed below the title (e.g., message preview or attachment description).
+    public let subtitle: String
+    /// An optional icon displayed before the subtitle (e.g., attachment type icon).
+    public let subtitleIcon: UIImage?
+    /// Whether the referenced message was sent by the current user. Affects the indicator color.
+    public let isSentByCurrentUser: Bool
+    /// An optional attachment preview displayed on the trailing edge.
+    public let attachmentPreview: AttachmentPreview?
+    /// Action called when the dismiss button is tapped. If nil, no dismiss button is shown.
+    public let onDismiss: (() -> Void)?
+
+    /// Creates a quoted message view with an attachment preview and optional dismiss button.
+    /// - Parameters:
+    ///   - title: The title text (e.g., "Reply to [Author]").
+    ///   - subtitle: The subtitle text (e.g., message preview).
+    ///   - subtitleIcon: An optional icon displayed before the subtitle.
+    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
+    ///   - onDismiss: Action called when the dismiss button is tapped. Pass nil to hide the button.
+    ///   - attachmentPreview: A view builder for the attachment preview.
+    public init(
+        title: String,
+        subtitle: String,
+        subtitleIcon: UIImage? = nil,
+        isSentByCurrentUser: Bool,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder attachmentPreview: () -> AttachmentPreview
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.subtitleIcon = subtitleIcon
+        self.isSentByCurrentUser = isSentByCurrentUser
+        self.onDismiss = onDismiss
+        self.attachmentPreview = attachmentPreview()
+    }
+
+    @ViewBuilder
+    public var body: some View {
+        messageReferenceView
+            .padding(.horizontal, tokens.spacingXs)
+            .padding(.vertical, tokens.spacingXs)
+            .modifier(MessageReferenceViewBackgroundModifier(
+                isSentByCurrentUser: isSentByCurrentUser
+            ))
+            .dismissButtonOverlayModifier(onDismiss: onDismiss)
+    }
+
+    @ViewBuilder
+    private var messageReferenceView: some View {
+        if let attachmentPreview {
+            MessageReferenceView(
+                title: title,
+                subtitle: subtitle,
+                subtitleIcon: subtitleIcon,
+                isSentByCurrentUser: isSentByCurrentUser
+            ) {
+                attachmentPreview
+            }
+        } else {
+            MessageReferenceView(
+                title: title,
+                subtitle: subtitle,
+                subtitleIcon: subtitleIcon,
+                isSentByCurrentUser: isSentByCurrentUser
+            )
+        }
+    }
+}
+
+extension ChatQuotedMessageView where AttachmentPreview == EmptyView {
+    /// Creates a quoted message view without an attachment preview.
+    /// - Parameters:
+    ///   - title: The title text (e.g., "Reply to [Author]").
+    ///   - subtitle: The subtitle text (e.g., message preview).
+    ///   - subtitleIcon: An optional icon displayed before the subtitle.
+    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
+    ///   - onDismiss: Action called when the dismiss button is tapped. Pass nil to hide the button.
+    public init(
+        title: String,
+        subtitle: String,
+        subtitleIcon: UIImage? = nil,
+        isSentByCurrentUser: Bool,
+        onDismiss: (() -> Void)? = nil
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.subtitleIcon = subtitleIcon
+        self.isSentByCurrentUser = isSentByCurrentUser
+        self.onDismiss = onDismiss
         self.attachmentPreview = nil
     }
 }
@@ -536,28 +689,18 @@ public struct VideoPlayButtonOverlay: View {
     }
 }
 
-struct QuotedMessageViewBackgroundModifier: ViewModifier {
+struct MessageReferenceViewBackgroundModifier: ViewModifier {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
     let isSentByCurrentUser: Bool
-    let horizontalPadding: CGFloat?
-    let verticalPadding: CGFloat?
 
-    init(
-        isSentByCurrentUser: Bool,
-        horizontalPadding: CGFloat? = nil,
-        verticalPadding: CGFloat? = nil
-    ) {
+    init(isSentByCurrentUser: Bool) {
         self.isSentByCurrentUser = isSentByCurrentUser
-        self.horizontalPadding = horizontalPadding
-        self.verticalPadding = verticalPadding
     }
 
     public func body(content: Content) -> some View {
         content
-            .padding(.horizontal, horizontalPadding ?? tokens.spacingXs)
-            .padding(.vertical, verticalPadding ?? tokens.spacingXs)
             .background(
                 RoundedRectangle(
                     cornerRadius: tokens.messageBubbleRadiusAttachment,
@@ -592,9 +735,9 @@ struct DismissButtonOverlayModifier: ViewModifier {
     @Injected(\.tokens) private var tokens
     @Injected(\.images) private var images
 
-    let onDismiss: () -> Void
+    let onDismiss: (() -> Void)?
 
-    init(onDismiss: @escaping () -> Void) {
+    init(onDismiss: (() -> Void)?) {
         self.onDismiss = onDismiss
     }
 
@@ -606,7 +749,7 @@ struct DismissButtonOverlayModifier: ViewModifier {
     }
 
     private var dismissButton: some View {
-        Button(action: onDismiss) {
+        Button(action: { onDismiss?() }) {
             Image(uiImage: images.overlayDismissIcon)
                 .renderingMode(.template)
                 .foregroundColor(Color(colors.controlRemoveControlIcon))
@@ -635,7 +778,7 @@ struct DismissButtonOverlayModifier: ViewModifier {
 
 extension View {
     /// Overlays a close button on the top‑trailing corner of the view.
-    func dismissButtonOverlayModifier(onDismiss: @escaping () -> Void) -> some View {
+    func dismissButtonOverlayModifier(onDismiss: (() -> Void)?) -> some View {
         modifier(DismissButtonOverlayModifier(onDismiss: onDismiss))
     }
 }
