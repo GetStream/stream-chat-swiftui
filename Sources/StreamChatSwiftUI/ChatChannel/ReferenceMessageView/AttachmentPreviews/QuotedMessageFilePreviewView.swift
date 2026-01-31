@@ -84,22 +84,22 @@ public struct QuotedMessageFilePreviewView: View {
         ]
     }
 
+    // MARK: - v5 File Type Images (TODO: Move to Common Module)
+
+    private var filePdf: UIImage { loadImage("file-pdf") ?? fileTypePreviewFallback }
+    private var fileDoc: UIImage { loadImage("file-doc") ?? fileTypePreviewFallback }
+    private var filePpt: UIImage { loadImage("file-ppt") ?? fileTypePreviewFallback }
+    private var fileXls: UIImage { loadImage("file-xls") ?? fileTypePreviewFallback }
+    private var fileMp3: UIImage { loadImage("file-mp3") ?? fileTypePreviewFallback }
+    private var fileMp4: UIImage { loadImage("file-mp4") ?? fileTypePreviewFallback }
+    private var fileHtml: UIImage { loadImage("file-html") ?? fileTypePreviewFallback }
+    private var fileZip: UIImage { loadImage("file-zip") ?? fileTypePreviewFallback }
+
     private var fileTypePreviewFallback: UIImage {
-        loadV5Image("file-other") ?? images.fileFallback
+        loadImage("file-other") ?? images.fileFallback
     }
 
-    // MARK: - v5 File Type Images
-
-    private var filePdf: UIImage { loadV5Image("file-pdf") ?? images.fileFallback }
-    private var fileDoc: UIImage { loadV5Image("file-doc") ?? images.fileFallback }
-    private var filePpt: UIImage { loadV5Image("file-ppt") ?? images.fileFallback }
-    private var fileXls: UIImage { loadV5Image("file-xls") ?? images.fileFallback }
-    private var fileMp3: UIImage { loadV5Image("file-mp3") ?? images.fileFallback }
-    private var fileMp4: UIImage { loadV5Image("file-mp4") ?? images.fileFallback }
-    private var fileHtml: UIImage { loadV5Image("file-html") ?? images.fileFallback }
-    private var fileZip: UIImage { loadV5Image("file-zip") ?? images.fileFallback }
-
-    private func loadV5Image(_ name: String) -> UIImage? {
+    private func loadImage(_ name: String) -> UIImage? {
         UIImage(named: name, in: .streamChatUI, compatibleWith: nil)
     }
 }
