@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Video attachment preview for message references (video attachments with play button overlay).
-public struct ReferenceMessageVideoPreviewView: View {
+public struct QuotedMessageVideoPreviewView: View {
     @Injected(\.tokens) private var tokens
 
     private let thumbnailURL: URL
@@ -21,7 +21,7 @@ public struct ReferenceMessageVideoPreviewView: View {
     }
 
     public var body: some View {
-        ReferenceMessageImagePreviewView(url: thumbnailURL, size: size)
+        QuotedMessageImagePreviewView(url: thumbnailURL, size: size)
             .overlay(PlayButtonOverlay())
     }
 }
