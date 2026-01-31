@@ -10,27 +10,47 @@ public struct ChatQuotedMessageView: View {
     @Injected(\.tokens) private var tokens
 
     private let viewModel: QuotedMessageViewModel
-    
+    private let padding: EdgeInsets?
+
     /// Creates a quoted message view from a view model.
     /// - Parameter viewModel: The view model containing the quoted message data.
-    public init(viewModel: QuotedMessageViewModel) {
+    /// - Parameter padding: The padding to apply around the quoted message view.
+    public init(
+        viewModel: QuotedMessageViewModel,
+        padding: EdgeInsets? = nil
+    ) {
         self.viewModel = viewModel
+        self.padding = padding
     }
     
     /// Creates a quoted message view from a `ChatMessage`.
     /// - Parameter message: The quoted message to display.
-    public init(message: ChatMessage) {
+    /// - Parameter padding: The padding to apply around the quoted message view.
+    public init(
+        message: ChatMessage,
+        padding: EdgeInsets? = nil
+    ) {
         self.viewModel = QuotedMessageViewModel(message: message)
+        self.padding = padding
     }
 
     public var body: some View {
         referenceMessageView
-            .padding(.horizontal, tokens.spacingSm)
-            .padding(.vertical, tokens.spacingXs)
-            .frame(height: 56)
+            .padding(padding ?? defaultPadding)
             .modifier(ReferenceMessageViewBackgroundModifier(
                 isSentByCurrentUser: viewModel.isSentByCurrentUser
             ))
+            .frame(height: 56)
+    }
+
+    /// The default padding applied to the quoted message view when used in the message list (chat).
+    private var defaultPadding: EdgeInsets {
+        .init(
+            top: tokens.spacingXs,
+            leading: tokens.spacingSm,
+            bottom: tokens.spacingXs,
+            trailing: tokens.spacingSm
+        )
     }
 
     @ViewBuilder

@@ -42,46 +42,15 @@ public struct ComposerQuotedMessageView: View {
     }
 
     public var body: some View {
-        referenceMessageView
-            .padding(.horizontal, tokens.spacingXs)
-            .padding(.vertical, tokens.spacingXs)
-            .frame(height: 56)
-            .modifier(ReferenceMessageViewBackgroundModifier(
-                isSentByCurrentUser: viewModel.isSentByCurrentUser
-            ))
-            .dismissButtonOverlayModifier(onDismiss: onDismiss)
-    }
-
-    @ViewBuilder
-    private var referenceMessageView: some View {
-        ReferenceMessageView(
-            title: viewModel.title,
-            subtitle: viewModel.subtitle,
-            subtitleIcon: subtitleIcon,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser
-        ) {
-            attachmentPreview
-        }
-    }
-
-    private var subtitleIcon: UIImage? {
-        guard let iconName = viewModel.subtitleIconName else {
-            return nil
-        }
-        return UIImage(
-            systemName: iconName,
-            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        ChatQuotedMessageView(
+            viewModel: viewModel,
+            padding: .init(
+                top: tokens.spacingXs,
+                leading: tokens.spacingXs,
+                bottom: tokens.spacingXs,
+                trailing: tokens.spacingXs
+            )
         )
-    }
-
-    @ViewBuilder
-    private var attachmentPreview: some View {
-        if let url = viewModel.imagePreviewURL {
-            QuotedMessageImagePreviewView(url: url)
-        } else if let url = viewModel.videoThumbnailURL {
-            QuotedMessageVideoPreviewView(thumbnailURL: url)
-        } else if let fileExtension = viewModel.fileExtension {
-            QuotedMessageFilePreviewView(fileExtension: fileExtension)
-        }
+        .dismissButtonOverlayModifier(onDismiss: onDismiss)
     }
 }
