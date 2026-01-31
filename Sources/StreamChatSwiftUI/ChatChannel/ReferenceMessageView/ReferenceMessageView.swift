@@ -66,6 +66,8 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
                 attachmentPreview
             }
         }
+    }
+
     var titleView: some View {
         Text(title)
             .font(fonts.subheadlineBold)
