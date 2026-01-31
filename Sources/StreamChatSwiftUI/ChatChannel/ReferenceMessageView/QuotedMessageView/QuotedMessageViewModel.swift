@@ -76,6 +76,9 @@ open class QuotedMessageViewModel {
         if let giphyAttachment = message.giphyAttachments.first {
             return giphyAttachment.previewURL
         }
+        if let linkAttachment = message.linkAttachments.first {
+            return linkAttachment.previewURL
+        }
         return nil
     }
     
@@ -142,21 +145,13 @@ open class QuotedMessageViewModel {
         if fileCount > 0 {
             if fileCount == 1 {
                 if let fileName = message.fileAttachments.first?.payload.title {
-                    return truncateFileName(fileName)
+                    return fileName
                 }
                 return L10n.Composer.Quoted.file
             }
             return L10n.Composer.Quoted.files(fileCount)
         }
-        
-        // Links
-        if !message.linkAttachments.isEmpty {
-            if let url = message.linkAttachments.first?.originalURL.absoluteString {
-                return truncateURL(url)
-            }
-            return L10n.Composer.Quoted.link
-        }
-        
+
         // Audio
         if !message.audioAttachments.isEmpty {
             return L10n.Composer.Quoted.audio
@@ -206,35 +201,5 @@ open class QuotedMessageViewModel {
     
     private func formattedDuration(_ duration: TimeInterval) -> String {
         return utils.videoDurationFormatter.format(duration) ?? ""
-    }
-    
-    private func truncateFileName(_ fileName: String, maxLength: Int = 30) -> String {
-        if fileName.count <= maxLength {
-            return fileName
-        }
-        let start = fileName.prefix(maxLength - 3)
-        return "\(start)..."
-    }
-    
-    private func truncateURL(_ url: String, maxLength: Int = 35) -> String {
-        // Remove protocol
-        var cleanURL = url
-        if cleanURL.hasPrefix("https://") {
-            cleanURL = String(cleanURL.dropFirst(8))
-        } else if cleanURL.hasPrefix("http://") {
-            cleanURL = String(cleanURL.dropFirst(7))
-        }
-        
-        // Remove www.
-        if cleanURL.hasPrefix("www.") {
-            cleanURL = String(cleanURL.dropFirst(4))
-        }
-        
-        if cleanURL.count <= maxLength {
-            return cleanURL
-        }
-        
-        let start = cleanURL.prefix(maxLength - 3)
-        return "\(start)..."
     }
 }
