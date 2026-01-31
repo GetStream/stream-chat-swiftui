@@ -5,8 +5,6 @@
 import StreamChat
 import SwiftUI
 
-// MARK: - ReferenceMessageView
-
 /// A reusable view for displaying a reference to another message.
 ///
 /// This component is designed to be used in various contexts where a message reference needs to be shown,
@@ -58,29 +56,8 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
             )
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(fonts.subheadlineBold)
-                    .foregroundColor(Color(colors.chatTextMessage))
-                    .lineLimit(1)
-
-                HStack(spacing: tokens.spacingXxs) {
-                    if let subtitleIcon {
-                        Image(uiImage: subtitleIcon)
-                            .renderingMode(.template)
-                            .resizable()
-                            .foregroundColor(Color(colors.chatTextMessage))
-                            .aspectRatio(contentMode: .fit)
-                            .frame(
-                                width: tokens.iconSizeXs,
-                                height: tokens.iconSizeXs
-                            )
-                    }
-
-                    Text(subtitle)
-                        .font(fonts.footnote)
-                        .foregroundColor(Color(colors.chatTextMessage))
-                        .lineLimit(1)
-                }
+                titleView
+                subtitleView
             }
 
             Spacer()
@@ -88,6 +65,32 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
             if let attachmentPreview {
                 attachmentPreview
             }
+        }
+    var titleView: some View {
+        Text(title)
+            .font(fonts.subheadlineBold)
+            .foregroundColor(Color(colors.chatTextMessage))
+            .lineLimit(1)
+    }
+
+    var subtitleView: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            if let subtitleIcon {
+                Image(uiImage: subtitleIcon)
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(Color(colors.chatTextMessage))
+                    .aspectRatio(contentMode: .fit)
+                    .frame(
+                        width: tokens.iconSizeXs,
+                        height: tokens.iconSizeXs
+                    )
+            }
+
+            Text(subtitle)
+                .font(fonts.footnote)
+                .foregroundColor(Color(colors.chatTextMessage))
+                .lineLimit(1)
         }
     }
 }

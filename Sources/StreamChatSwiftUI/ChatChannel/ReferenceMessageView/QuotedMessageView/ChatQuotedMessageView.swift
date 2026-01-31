@@ -41,7 +41,7 @@ public struct ChatQuotedMessageView: View {
             subtitleIcon: subtitleIcon,
             isSentByCurrentUser: viewModel.isSentByCurrentUser
         ) {
-            attachmentPreview
+            QuotedMessageAttachmentPreviewView(viewModel: viewModel)
         }
     }
     
@@ -53,16 +53,5 @@ public struct ChatQuotedMessageView: View {
             systemName: iconName,
             withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
         )
-    }
-    
-    @ViewBuilder
-    private var attachmentPreview: some View {
-        if let url = viewModel.imagePreviewURL {
-            QuotedMessageImagePreviewView(url: url)
-        } else if let url = viewModel.videoThumbnailURL {
-            QuotedMessageVideoPreviewView(thumbnailURL: url)
-        } else if let fileExtension = viewModel.fileExtension {
-            QuotedMessageFilePreviewView(fileExtension: fileExtension)
-        }
     }
 }
