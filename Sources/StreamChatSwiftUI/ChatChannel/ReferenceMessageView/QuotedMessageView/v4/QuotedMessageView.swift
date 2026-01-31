@@ -5,6 +5,8 @@
 import StreamChat
 import SwiftUI
 
+// TODO: Delete once v5 quoted message is implemented in Message List.
+
 /// Container showing the quoted message view with the user avatar.
 public struct QuotedMessageViewContainer<Factory: ViewFactory>: View {
     public var factory: Factory
