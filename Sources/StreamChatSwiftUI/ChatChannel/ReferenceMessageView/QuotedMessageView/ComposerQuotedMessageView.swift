@@ -42,35 +42,15 @@ public struct ComposerQuotedMessageView: View {
     }
 
     public var body: some View {
-        referenceMessageView
-            .padding(.horizontal, tokens.spacingXs)
-            .padding(.vertical, tokens.spacingXs)
-            .frame(height: 56)
-            .modifier(ReferenceMessageViewBackgroundModifier(
-                isSentByCurrentUser: viewModel.isSentByCurrentUser
-            ))
-            .dismissButtonOverlayModifier(onDismiss: onDismiss)
-    }
-
-    @ViewBuilder
-    private var referenceMessageView: some View {
-        ReferenceMessageView(
-            title: viewModel.title,
-            subtitle: viewModel.subtitle,
-            subtitleIcon: subtitleIcon,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser
-        ) {
-            QuotedMessageAttachmentPreviewView(viewModel: viewModel)
-        }
-    }
-
-    private var subtitleIcon: UIImage? {
-        guard let iconName = viewModel.subtitleIconName else {
-            return nil
-        }
-        return UIImage(
-            systemName: iconName,
-            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        ChatQuotedMessageView(
+            viewModel: viewModel,
+            padding: .init(
+                top: tokens.spacingXs,
+                leading: tokens.spacingXs,
+                bottom: tokens.spacingXs,
+                trailing: tokens.spacingXs
+            )
         )
+        .dismissButtonOverlayModifier(onDismiss: onDismiss)
     }
 }
