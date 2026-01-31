@@ -6,13 +6,22 @@ import SwiftUI
 
 /// Video attachment preview for message references (video attachments with play button overlay).
 public struct ReferenceMessageVideoPreviewView: View {
-    let thumbnailImage: Image
+    @Injected(\.tokens) private var tokens
 
-    public init(thumbnailImage: Image) {
-        self.thumbnailImage = thumbnailImage
+    private let thumbnailURL: URL
+    private let size: CGFloat
+
+    /// Creates a video attachment preview with the given thumbnail URL.
+    /// - Parameters:
+    ///   - thumbnailURL: The URL of the video thumbnail to preview.
+    ///   - size: The size of the preview (width and height). Defaults to 40.
+    public init(thumbnailURL: URL, size: CGFloat = 40) {
+        self.thumbnailURL = thumbnailURL
+        self.size = size
     }
 
     public var body: some View {
-        ReferenceMessageImagePreviewView(image: thumbnailImage)
+        ReferenceMessageImagePreviewView(url: thumbnailURL, size: size)
+            .overlay(PlayButtonOverlay())
     }
 }
