@@ -303,8 +303,6 @@ internal enum L10n {
       }
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "composer.quoted.giphy") }
-      /// Link
-      internal static var link: String { L10n.tr("Localizable", "composer.quoted.link") }
       /// Photo
       internal static var photo: String { L10n.tr("Localizable", "composer.quoted.photo") }
       /// %d photos

@@ -146,7 +146,6 @@
 "composer.quoted.file" = "File";
 "composer.quoted.files" = "%d files";
 "composer.quoted.audio" = "Audio";
-"composer.quoted.link" = "Link";
 "composer.polls.action-sheet-discard-title" = "Are you sure you want to discard your poll?";
 "composer.polls.add-comment" = "Add a comment";
 "composer.polls.add-option" = "Add an option";

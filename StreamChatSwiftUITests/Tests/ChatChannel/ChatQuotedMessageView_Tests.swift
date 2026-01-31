@@ -89,7 +89,7 @@ import XCTest
                 author: nil,
                 titleLink: nil,
                 assetURL: nil,
-                previewURL: nil
+                previewURL: URL(string: "https://bloomharbor.com/cafe-menu")!
             ),
             downloadingState: nil,
             uploadingState: nil
