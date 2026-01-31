@@ -770,7 +770,7 @@ import XCTest
         let viewModel = QuotedMessageViewModel(message: message)
         
         // Then
-        XCTAssertEqual(viewModel.subtitle, "Voice message (1:12)")
+        XCTAssertEqual(viewModel.subtitle, "Voice message (01:12)")
         XCTAssertEqual(viewModel.subtitleIconName, "mic")
     }
     
