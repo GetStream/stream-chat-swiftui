@@ -58,11 +58,11 @@ public struct ChatQuotedMessageView: View {
     @ViewBuilder
     private var attachmentPreview: some View {
         if let url = viewModel.imagePreviewURL {
-            ReferenceMessageImagePreviewView(url: url)
+            QuotedMessageImagePreviewView(url: url)
         } else if let url = viewModel.videoThumbnailURL {
-            ReferenceMessageVideoPreviewView(thumbnailURL: url)
+            QuotedMessageVideoPreviewView(thumbnailURL: url)
         } else if let fileExtension = viewModel.fileExtension {
-            ReferenceMessageFilePreviewView(fileExtension: fileExtension)
+            QuotedMessageFilePreviewView(fileExtension: fileExtension)
         }
     }
 }

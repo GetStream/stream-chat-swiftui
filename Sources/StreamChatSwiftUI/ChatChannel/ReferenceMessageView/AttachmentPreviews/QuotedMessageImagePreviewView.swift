@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Image attachment preview for message references (photo attachments).
-public struct ReferenceMessageImagePreviewView: View {
+public struct QuotedMessageImagePreviewView: View {
     @Injected(\.tokens) private var tokens
 
     private let url: URL
