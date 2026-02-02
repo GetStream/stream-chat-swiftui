@@ -189,14 +189,20 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             if visible && !keyboardShown {
                 if viewModel.composerCommand == nil && !editedMessageWillShow {
                     DispatchQueue.main.async {
-                        withAnimation(.easeInOut(duration: 0.25)) {
+                        var transaction = Transaction()
+                        transaction.disablesAnimations = true
+                        withTransaction(transaction) {
                             viewModel.pickerTypeState = .expanded(.none)
                         }
                     }
                 } else if editedMessageWillShow {
                     // When editing a message, the keyboard will show.
                     // If the attachment picker is open, we should dismiss it.
-                    viewModel.pickerTypeState = .expanded(.none)
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) {
+                        viewModel.pickerTypeState = .expanded(.none)
+                    }
                 }
             }
             keyboardShown = visible
