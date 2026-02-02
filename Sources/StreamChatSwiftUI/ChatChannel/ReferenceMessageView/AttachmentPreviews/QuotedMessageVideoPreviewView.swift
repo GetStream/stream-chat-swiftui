@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-/// Video attachment preview for message references (video attachments with play button overlay).
+/// Video attachment preview for quoted references.
 public struct QuotedMessageVideoPreviewView: View {
     @Injected(\.tokens) private var tokens
 
