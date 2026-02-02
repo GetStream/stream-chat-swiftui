@@ -7,6 +7,7 @@ import SwiftUI
 /// Image attachment preview for quoted messages.
 public struct QuotedMessageImagePreviewView: View {
     @Injected(\.tokens) private var tokens
+    @Injected(\.colors) private var colors
 
     private let url: URL
     private let size: CGFloat
@@ -42,7 +43,7 @@ public struct QuotedMessageImagePreviewView: View {
     
     private var placeholder: some View {
         RoundedRectangle(cornerRadius: tokens.radiusMd, style: .continuous)
-            .fill(Color.gray.opacity(0.2))
+            .fill(Color(colors.borderCoreOpacity10))
             .frame(width: size, height: size)
     }
 }
