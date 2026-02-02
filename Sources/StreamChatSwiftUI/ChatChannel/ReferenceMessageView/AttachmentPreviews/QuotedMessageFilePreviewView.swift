@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-/// File attachment preview for message references.
+/// File attachment preview for quoted messages.
 public struct QuotedMessageFilePreviewView: View {
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens

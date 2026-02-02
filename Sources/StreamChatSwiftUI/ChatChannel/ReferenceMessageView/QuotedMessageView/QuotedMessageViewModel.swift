@@ -9,11 +9,16 @@ import StreamChat
 @MainActor
 open class QuotedMessageViewModel {
     @Injected(\.utils) private var utils
-
+    
     // MARK: - Properties
     
     /// The quoted message.
     private let message: ChatMessage
+
+    /// The resolved attachment content (lazily computed once).
+    private lazy var attachmentContent: QuotedMessageAttachmentContent = {
+        QuotedMessageAttachmentContent.resolve(from: message)
+    }()
 
     // MARK: - Initialization
     
@@ -42,28 +47,71 @@ open class QuotedMessageViewModel {
     
     /// The subtitle text to display (message preview or attachment description).
     public var subtitle: String {
-        // If there's text content, use it
+        // If there's text content, use it.
         if !messageText.isEmpty {
             return messageText
         }
         
-        // Otherwise, describe the attachments
-        return attachmentDescription
+        // Otherwise, describe the attachments.
+        switch attachmentContent.kind {
+        case .mixed(let typeCount):
+            return L10n.Composer.Quoted.files(typeCount)
+
+        case .poll(let name):
+            return name
+
+        case .voiceRecording(let duration):
+            if let duration, let formatted = formattedDuration(duration) {
+                return L10n.Composer.Quoted.voiceMessageWithDuration(formatted)
+            }
+            return L10n.Composer.Quoted.voiceMessage
+
+        case .photo(let count):
+            return count == 1 ? L10n.Composer.Quoted.photo : L10n.Composer.Quoted.photos(count)
+
+        case .video(let count):
+            return count == 1 ? L10n.Composer.Quoted.video : L10n.Composer.Quoted.videos(count)
+
+        case .file(let count, let fileName):
+            if count == 1 {
+                return fileName ?? L10n.Composer.Quoted.file
+            }
+            return L10n.Composer.Quoted.files(count)
+
+        case .link:
+            return L10n.Composer.Quoted.file
+
+        case .audio:
+            return L10n.Composer.Quoted.audio
+
+        case .none:
+            return ""
+        }
     }
     
-    /// The system icon name for the subtitle, if applicable.
+    /// The icon for the subtitle, if applicable.
     /// Returns nil if no icon should be shown.
-    public var subtitleIconName: String? {
-        // Only show icon when there's no text or we're describing attachments
-        if !messageText.isEmpty && hasAttachments {
-            return attachmentIconName
+    public var subtitleIcon: QuotedMessageAttachmentPreviewIcon? {
+        switch attachmentContent.kind {
+        case .mixed:
+            return .mixed
+        case .poll:
+            return .poll
+        case .voiceRecording:
+            return .voiceRecording
+        case .photo:
+            return .photo
+        case .video:
+            return .video
+        case .file:
+            return .document
+        case .link:
+            return .link
+        case .audio:
+            return .audio
+        case .none:
+            return nil
         }
-        
-        if messageText.isEmpty {
-            return attachmentIconName
-        }
-        
-        return nil
     }
     
     // MARK: - Attachment Preview
@@ -97,109 +145,8 @@ open class QuotedMessageViewModel {
     private var messageText: String {
         message.text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    
-    private var hasAttachments: Bool {
-        !message.attachmentCounts.isEmpty
-    }
-    
-    private var attachmentDescription: String {
-        // Mixed content
-        let totalTypeCount = message.attachmentCounts.count
-        if totalTypeCount > 1 {
-            return L10n.Composer.Quoted.files(totalTypeCount)
-        }
 
-        // Poll
-        if let poll = message.poll {
-            return poll.name
-        }
-        
-        // Voice recording
-        if !message.voiceRecordingAttachments.isEmpty {
-            if let duration = message.voiceRecordingAttachments.first?.payload.duration {
-                return L10n.Composer.Quoted.voiceMessageWithDuration(formattedDuration(duration))
-            }
-            return L10n.Composer.Quoted.voiceMessage
-        }
-        
-        // Images
-        let imageCount = message.imageAttachments.count + message.giphyAttachments.count
-        if imageCount > 0 {
-            if imageCount == 1 {
-                return L10n.Composer.Quoted.photo
-            }
-            return L10n.Composer.Quoted.photos(imageCount)
-        }
-        
-        // Videos
-        let videoCount = message.videoAttachments.count
-        if videoCount > 0 {
-            if videoCount == 1 {
-                return L10n.Composer.Quoted.video
-            }
-            return L10n.Composer.Quoted.videos(videoCount)
-        }
-        
-        // Files
-        let fileCount = message.fileAttachments.count
-        if fileCount > 0 {
-            if fileCount == 1 {
-                if let fileName = message.fileAttachments.first?.payload.title {
-                    return fileName
-                }
-                return L10n.Composer.Quoted.file
-            }
-            return L10n.Composer.Quoted.files(fileCount)
-        }
-
-        // Audio
-        if !message.audioAttachments.isEmpty {
-            return L10n.Composer.Quoted.audio
-        }
-        
-        return ""
-    }
-    
-    private var attachmentIconName: String? {
-        // Poll
-        if message.poll != nil {
-            return "chart.bar"
-        }
-        
-        // Voice recording
-        if !message.voiceRecordingAttachments.isEmpty {
-            return "mic"
-        }
-        
-        // Images
-        if !message.imageAttachments.isEmpty || !message.giphyAttachments.isEmpty {
-            return "photo"
-        }
-        
-        // Videos
-        if !message.videoAttachments.isEmpty {
-            return "video"
-        }
-        
-        // Files
-        if !message.fileAttachments.isEmpty {
-            return "doc"
-        }
-        
-        // Links
-        if !message.linkAttachments.isEmpty {
-            return "link"
-        }
-        
-        // Audio
-        if !message.audioAttachments.isEmpty {
-            return "waveform"
-        }
-        
-        return nil
-    }
-    
-    private func formattedDuration(_ duration: TimeInterval) -> String {
-        return utils.videoDurationFormatter.format(duration) ?? ""
+    private func formattedDuration(_ duration: TimeInterval) -> String? {
+        utils.videoDurationFormatter.format(duration)
     }
 }
