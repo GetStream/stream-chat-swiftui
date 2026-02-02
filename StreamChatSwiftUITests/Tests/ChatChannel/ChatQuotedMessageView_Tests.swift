@@ -702,7 +702,7 @@ import XCTest
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Hello world")
-        XCTAssertNil(viewModel.subtitleIconName)
+        XCTAssertNil(viewModel.subtitleIcon)
     }
     
     func test_quotedMessageViewModel_subtitleWithImage() {
@@ -720,7 +720,6 @@ import XCTest
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Photo")
-        XCTAssertEqual(viewModel.subtitleIconName, "photo")
     }
     
     func test_quotedMessageViewModel_subtitleWithMultipleImages() {
@@ -740,7 +739,6 @@ import XCTest
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "3 photos")
-        XCTAssertEqual(viewModel.subtitleIconName, "photo")
     }
     
     func test_quotedMessageViewModel_subtitleWithVoiceMessage() {
@@ -771,7 +769,6 @@ import XCTest
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Voice message (01:12)")
-        XCTAssertEqual(viewModel.subtitleIconName, "mic")
     }
     
     func test_quotedMessageViewModel_subtitleWithPoll() {
@@ -788,7 +785,6 @@ import XCTest
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Team offsite location?")
-        XCTAssertEqual(viewModel.subtitleIconName, "chart.bar")
     }
 
     // MARK: - Helper

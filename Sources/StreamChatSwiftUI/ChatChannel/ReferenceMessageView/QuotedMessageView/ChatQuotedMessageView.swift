@@ -58,20 +58,10 @@ public struct ChatQuotedMessageView: View {
         ReferenceMessageView(
             title: viewModel.title,
             subtitle: viewModel.subtitle,
-            subtitleIcon: subtitleIcon,
+            subtitleIcon: viewModel.subtitleIcon?.image,
             isSentByCurrentUser: viewModel.isSentByCurrentUser
         ) {
             QuotedMessageAttachmentPreviewView(viewModel: viewModel)
         }
-    }
-    
-    private var subtitleIcon: UIImage? {
-        guard let iconName = viewModel.subtitleIconName else {
-            return nil
-        }
-        return UIImage(
-            systemName: iconName,
-            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
-        )
     }
 }

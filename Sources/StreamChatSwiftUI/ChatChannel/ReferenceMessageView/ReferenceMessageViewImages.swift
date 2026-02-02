@@ -69,4 +69,11 @@ extension Appearance.Images {
             withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
         )!
     }
+
+    var attachmentPhotoIcon: UIImage {
+        UIImage(
+            systemName: "photo",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .regular)
+        )!
+    }
 }
