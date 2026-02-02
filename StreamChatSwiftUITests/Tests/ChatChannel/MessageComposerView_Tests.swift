@@ -739,6 +739,7 @@ import XCTest
             quotedMessage: .constant(
                 .mock(
                     text: "Hello",
+                    author: .mock(id: .unique, name: "John Wick"),
                     translations: [.spanish: "Hola"]
                 )
             ),
