@@ -39,22 +39,22 @@ open class QuotedMessageViewModel {
     // MARK: - Display Properties
     
     /// The title text displayed at the top (e.g., "Reply to Emma Chen").
-    public var title: String {
+    open var title: String {
         L10n.Composer.Quoted.replyTo(authorName)
     }
     
     /// The author's display name.
-    public var authorName: String {
+    open var authorName: String {
         message.author.name ?? message.author.id
     }
     
     /// Whether the message was sent by the current user.
-    public var isSentByCurrentUser: Bool {
+    open var isSentByCurrentUser: Bool {
         message.isSentByCurrentUser
     }
     
     /// The subtitle text to display (message preview or attachment description).
-    public var subtitle: String {
+    open var subtitle: String {
         // If there's text content, use it.
         if !messageText.isEmpty {
             return messageText
@@ -99,7 +99,7 @@ open class QuotedMessageViewModel {
     
     /// The icon for the subtitle, if applicable.
     /// Returns nil if no icon should be shown.
-    public var subtitleIcon: QuotedMessageAttachmentPreviewIcon? {
+    open var subtitleIcon: QuotedMessageAttachmentPreviewIcon? {
         switch attachmentContent.kind {
         case .mixed:
             return .mixed
@@ -125,7 +125,7 @@ open class QuotedMessageViewModel {
     // MARK: - Attachment Preview
     
     /// The URL for the image attachment preview, if available.
-    public var imagePreviewURL: URL? {
+    open var imagePreviewURL: URL? {
         if let imageAttachment = message.imageAttachments.first {
             return imageAttachment.imageURL
         }
@@ -139,12 +139,12 @@ open class QuotedMessageViewModel {
     }
     
     /// The URL for the video thumbnail preview, if available.
-    public var videoThumbnailURL: URL? {
+    open var videoThumbnailURL: URL? {
         message.videoAttachments.first?.thumbnailURL
     }
     
     /// The file extension for file previews, if available.
-    public var fileExtension: String? {
+    open var fileExtension: String? {
         message.fileAttachments.first?.assetURL.pathExtension.lowercased()
     }
     
