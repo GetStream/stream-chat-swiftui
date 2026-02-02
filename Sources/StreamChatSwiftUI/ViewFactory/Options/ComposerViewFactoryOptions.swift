@@ -273,12 +273,12 @@ public final class ComposerQuotedMessageViewOptions: Sendable {
     /// The channel where the quoted message belongs.
     public let channel: ChatChannel?
     /// The callback when the quoted message view is dismissed.
-    public let onDismiss: (@MainActor () -> Void)?
+    public let onDismiss: @MainActor () -> Void
 
     public init(
         quotedMessage: ChatMessage,
         channel: ChatChannel?,
-        onDismiss: (@MainActor () -> Void)?
+        onDismiss: @escaping @MainActor () -> Void
     ) {
         self.quotedMessage = quotedMessage
         self.channel = channel

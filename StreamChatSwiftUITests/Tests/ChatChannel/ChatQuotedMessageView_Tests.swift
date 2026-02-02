@@ -642,7 +642,8 @@ import XCTest
         // When
         let view = containerView {
             ComposerQuotedMessageView(
-                viewModel: QuotedMessageViewModel(message: message)
+                viewModel: QuotedMessageViewModel(message: message),
+                onDismiss: {}
             )
         }
 
@@ -669,7 +670,8 @@ import XCTest
         // When
         let view = containerView {
             ComposerQuotedMessageView(
-                viewModel: QuotedMessageViewModel(message: message)
+                viewModel: QuotedMessageViewModel(message: message),
+                onDismiss: {}
             )
         }
         

@@ -15,15 +15,15 @@ public struct ComposerQuotedMessageView: View {
     @Injected(\.tokens) private var tokens
 
     private let viewModel: QuotedMessageViewModel
-    private let onDismiss: (() -> Void)?
+    private let onDismiss: () -> Void
     
     /// Creates a composer quoted message view from a view model.
     /// - Parameters:
     ///   - viewModel: The view model containing the quoted message data.
-    ///   - onDismiss: Action called when the dismiss button is tapped. Pass nil to hide the button.
+    ///   - onDismiss: Action called when the dismiss button is tapped.
     public init(
         viewModel: QuotedMessageViewModel,
-        onDismiss: (() -> Void)? = nil
+        onDismiss: @escaping () -> Void
     ) {
         self.viewModel = viewModel
         self.onDismiss = onDismiss

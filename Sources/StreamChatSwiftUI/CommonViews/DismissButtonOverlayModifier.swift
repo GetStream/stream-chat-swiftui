@@ -10,9 +10,9 @@ struct DismissButtonOverlayModifier: ViewModifier {
     @Injected(\.tokens) private var tokens
     @Injected(\.images) private var images
 
-    let onDismiss: (() -> Void)?
+    let onDismiss: (() -> Void)
 
-    init(onDismiss: (() -> Void)?) {
+    init(onDismiss: @escaping (() -> Void)) {
         self.onDismiss = onDismiss
     }
 
@@ -25,28 +25,26 @@ struct DismissButtonOverlayModifier: ViewModifier {
 
     @ViewBuilder
     private var dismissButton: some View {
-        if let onDismiss {
-            Button(action: onDismiss) {
-                Image(uiImage: images.overlayDismissIcon)
-                    .renderingMode(.template)
-                    .foregroundColor(Color(colors.controlRemoveControlIcon))
-                    .frame(
-                        width: tokens.iconSizeMd,
-                        height: tokens.iconSizeMd
-                    )
-                    .background(Color(colors.controlRemoveControlBackground))
-                    .clipShape(Circle())
-                    .contentShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Color(colors.controlRemoveControlBorder), lineWidth: 2)
-                    )
-            }
-            .buttonStyle(PlainButtonStyle())
-            .offset(x: dismissButtonOverlap, y: -dismissButtonOverlap)
-            .accessibilityLabel(L10n.Composer.Quoted.dismiss)
-            .accessibilityIdentifier("DismissButtonOverlay")
+        Button(action: onDismiss) {
+            Image(uiImage: images.overlayDismissIcon)
+                .renderingMode(.template)
+                .foregroundColor(Color(colors.controlRemoveControlIcon))
+                .frame(
+                    width: tokens.iconSizeMd,
+                    height: tokens.iconSizeMd
+                )
+                .background(Color(colors.controlRemoveControlBackground))
+                .clipShape(Circle())
+                .contentShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color(colors.controlRemoveControlBorder), lineWidth: 2)
+                )
         }
+        .buttonStyle(PlainButtonStyle())
+        .offset(x: dismissButtonOverlap, y: -dismissButtonOverlap)
+        .accessibilityLabel(L10n.Composer.Quoted.dismiss)
+        .accessibilityIdentifier("DismissButtonOverlay")
     }
 
     private var dismissButtonOverlap: CGFloat {
@@ -56,7 +54,7 @@ struct DismissButtonOverlayModifier: ViewModifier {
 
 extension View {
     /// Overlays a close button on the top-trailing corner of the view.
-    func dismissButtonOverlayModifier(onDismiss: (() -> Void)?) -> some View {
+    func dismissButtonOverlayModifier(onDismiss: @escaping (() -> Void)) -> some View {
         modifier(DismissButtonOverlayModifier(onDismiss: onDismiss))
     }
 }
