@@ -22,17 +22,6 @@ public struct ChatQuotedMessageView: View {
         self.viewModel = viewModel
         self.padding = padding
     }
-    
-    /// Creates a quoted message view from a `ChatMessage`.
-    /// - Parameter message: The quoted message to display.
-    /// - Parameter padding: The padding to apply around the quoted message view.
-    public init(
-        message: ChatMessage,
-        padding: EdgeInsets? = nil
-    ) {
-        self.viewModel = QuotedMessageViewModel(message: message)
-        self.padding = padding
-    }
 
     public var body: some View {
         referenceMessageView

@@ -28,18 +28,6 @@ public struct ComposerQuotedMessageView: View {
         self.viewModel = viewModel
         self.onDismiss = onDismiss
     }
-    
-    /// Creates a composer quoted message view from a `ChatMessage`.
-    /// - Parameters:
-    ///   - message: The quoted message to display.
-    ///   - onDismiss: Action called when the dismiss button is tapped. Pass nil to hide the button.
-    public init(
-        message: ChatMessage,
-        onDismiss: (() -> Void)? = nil
-    ) {
-        self.viewModel = QuotedMessageViewModel(message: message)
-        self.onDismiss = onDismiss
-    }
 
     public var body: some View {
         ChatQuotedMessageView(

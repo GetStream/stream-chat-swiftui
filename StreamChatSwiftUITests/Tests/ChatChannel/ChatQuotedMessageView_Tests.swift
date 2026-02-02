@@ -641,9 +641,11 @@ import XCTest
         
         // When
         let view = containerView {
-            ComposerQuotedMessageView(message: message, onDismiss: {})
+            ComposerQuotedMessageView(
+                viewModel: QuotedMessageViewModel(message: message)
+            )
         }
-        
+
         // Then
         AssertSnapshot(view, size: containerSize)
     }
@@ -666,7 +668,9 @@ import XCTest
         
         // When
         let view = containerView {
-            ComposerQuotedMessageView(message: message, onDismiss: {})
+            ComposerQuotedMessageView(
+                viewModel: QuotedMessageViewModel(message: message)
+            )
         }
         
         // Then
@@ -797,5 +801,24 @@ import XCTest
                 .frame(width: quotedViewSize.width, height: quotedViewSize.height)
         }
         .frame(width: containerSize.width, height: containerSize.height)
+    }
+}
+
+// MARK: - Factory Helpers
+
+extension ChatQuotedMessageView {
+    init(message: ChatMessage) {
+        self.init(
+            viewModel: QuotedMessageViewModel(
+                message: message,
+                channel: nil
+            )
+        )
+    }
+}
+
+extension QuotedMessageViewModel {
+    convenience init(message: ChatMessage) {
+        self.init(message: message, channel: nil)
     }
 }

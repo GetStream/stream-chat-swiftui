@@ -796,7 +796,10 @@ extension ViewFactory {
         options: ComposerQuotedMessageViewOptions
     ) -> some View {
         ComposerQuotedMessageView(
-            viewModel: QuotedMessageViewModel(message: options.quotedMessage),
+            viewModel: QuotedMessageViewModel(
+                message: options.quotedMessage,
+                channel: options.channel
+            ),
             onDismiss: options.onDismiss
         )
     }

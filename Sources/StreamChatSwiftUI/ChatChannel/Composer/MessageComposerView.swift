@@ -375,6 +375,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 factory.makeComposerQuotedMessageView(
                     options: .init(
                         quotedMessage: quotedMessage,
+                        channel: channelController.channel,
                         onDismiss: {
                             withAnimation {
                                 self.quotedMessage.wrappedValue = nil
@@ -385,7 +386,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .padding(.top, 12)
                 .padding(.trailing, 12)
                 .padding(.leading, 6)
-                .environment(\.channelTranslationLanguage, channelController.channel?.membership?.language)
             }
 
             if !addedAssets.isEmpty {

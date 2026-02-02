@@ -15,17 +15,25 @@ open class QuotedMessageViewModel {
     /// The quoted message.
     private let message: ChatMessage
 
+    /// The channel which contains the quoted message.
+    private let channel: ChatChannel?
+
     /// The resolved attachment content (lazily computed once).
     private lazy var attachmentContent: QuotedMessageAttachmentContent = {
         QuotedMessageAttachmentContent.resolve(from: message)
     }()
 
-    // MARK: - Initialization
+    // MARK: - Init
     
     /// Creates a new quoted message view model.
     /// - Parameter message: The quoted message to display.
-    public init(message: ChatMessage) {
+    /// - Parameter channel: The channel which contains the quoted message.
+    public init(
+        message: ChatMessage,
+        channel: ChatChannel?
+    ) {
         self.message = message
+        self.channel = channel
     }
     
     // MARK: - Display Properties
@@ -143,7 +151,12 @@ open class QuotedMessageViewModel {
     // MARK: - Private Helpers
     
     private var messageText: String {
-        message.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let language = channel?.membership?.language,
+           let translatedText = message.translatedText(for: language) {
+            return translatedText
+        }
+
+        return message.text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func formattedDuration(_ duration: TimeInterval) -> String? {
