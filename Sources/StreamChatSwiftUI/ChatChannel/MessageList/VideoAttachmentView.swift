@@ -9,6 +9,7 @@ import SwiftUI
 public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     var factory: Factory
     let message: ChatMessage
+    let channel: ChatChannel?
     let width: CGFloat
     @Binding var scrolledId: String?
 
@@ -19,8 +20,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                     factory.makeQuotedMessageView(
                         options: .init(
                             quotedMessage: quotedMessage,
-                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                            isInComposer: false,
+                            channel: channel,
                             scrolledId: $scrolledId
                         )
                     )

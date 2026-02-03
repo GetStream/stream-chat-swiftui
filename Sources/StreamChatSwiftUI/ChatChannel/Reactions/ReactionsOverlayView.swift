@@ -260,6 +260,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         MessageView(
             factory: factory,
             message: messageDisplayInfo.message,
+            channel: channel,
             contentWidth: messageDisplayInfo.contentWidth,
             isFirst: messageDisplayInfo.isFirst,
             scrolledId: .constant(nil)

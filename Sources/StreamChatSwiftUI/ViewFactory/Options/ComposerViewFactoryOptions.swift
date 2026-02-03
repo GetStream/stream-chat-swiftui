@@ -290,22 +290,18 @@ public final class ComposerQuotedMessageViewOptions: Sendable {
 public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
-    /// Whether to fill the available space.
-    public let fillAvailableSpace: Bool
-    /// Whether the view is in the composer.
-    public let isInComposer: Bool
+    /// The channel where the quoted message belongs.
+    public let channel: ChatChannel?
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
     public init(
         quotedMessage: ChatMessage,
-        fillAvailableSpace: Bool,
-        isInComposer: Bool,
+        channel: ChatChannel?,
         scrolledId: Binding<String?>
     ) {
         self.quotedMessage = quotedMessage
-        self.fillAvailableSpace = fillAvailableSpace
-        self.isInComposer = isInComposer
+        self.channel = channel
         self.scrolledId = scrolledId
     }
 }

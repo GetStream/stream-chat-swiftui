@@ -13,6 +13,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     
     let factory: Factory
     let message: ChatMessage
+    let channel: ChatChannel?
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
@@ -27,12 +28,14 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
+        channel: ChatChannel?,
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.message = message
+        self.channel = channel
         self.width = width
         self.isFirst = isFirst
         _scrolledId = scrolledId
@@ -45,8 +48,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     factory.makeQuotedMessageView(
                         options: QuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
-                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                            isInComposer: false,
+                            channel: channel,
                             scrolledId: $scrolledId
                         )
                     )

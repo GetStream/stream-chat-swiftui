@@ -14,13 +14,22 @@ public struct MessageView<Factory: ViewFactory>: View {
 
     public var factory: Factory
     public var message: ChatMessage
+    public var channel: ChatChannel?
     public var contentWidth: CGFloat
     public var isFirst: Bool
     @Binding public var scrolledId: String?
 
-    public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        channel: ChatChannel?,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) {
         self.factory = factory
         self.message = message
+        self.channel = channel
         self.contentWidth = contentWidth
         self.isFirst = isFirst
         _scrolledId = scrolledId
@@ -53,6 +62,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeLinkAttachmentView(
                         options: LinkAttachmentViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -64,6 +74,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeFileAttachmentView(
                         options: FileAttachmentViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -75,6 +86,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeImageAttachmentView(
                         options: ImageAttachmentViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -86,6 +98,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeGiphyAttachmentView(
                         options: GiphyAttachmentViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -98,6 +111,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeVideoAttachmentView(
                         options: VideoAttachmentViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -109,6 +123,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeVoiceRecordingView(
                         options: VoiceRecordingViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -120,6 +135,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeEmojiTextView(
                         options: EmojiTextViewOptions(
                             message: message,
+                            channel: channel,
                             scrolledId: $scrolledId,
                             isFirst: isFirst
                         )
@@ -128,6 +144,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeMessageTextView(
                         options: MessageTextViewOptions(
                             message: message,
+                            channel: channel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -146,6 +163,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
 
     private let factory: Factory
     private let message: ChatMessage
+    private let channel: ChatChannel?
     private let isFirst: Bool
     private let leadingPadding: CGFloat
     private let trailingPadding: CGFloat
@@ -156,6 +174,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
+        channel: ChatChannel?,
         isFirst: Bool,
         leadingPadding: CGFloat = 16,
         trailingPadding: CGFloat = 16,
@@ -165,6 +184,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     ) {
         self.factory = factory
         self.message = message
+        self.channel = channel
         self.isFirst = isFirst
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
@@ -182,8 +202,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 factory.makeQuotedMessageView(
                     options: QuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
+                        channel: channel,
                         scrolledId: $scrolledId
                     )
                 )
@@ -211,6 +230,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
 public struct EmojiTextView<Factory: ViewFactory>: View {
     var factory: Factory
     var message: ChatMessage
+    var channel: ChatChannel?
     @Binding var scrolledId: String?
     var isFirst: Bool
 
@@ -223,8 +243,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                     factory.makeQuotedMessageView(
                         options: QuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
-                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                            isInComposer: false,
+                            channel: channel,
                             scrolledId: $scrolledId
                         )
                     )
