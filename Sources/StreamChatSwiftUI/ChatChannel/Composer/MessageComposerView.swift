@@ -374,7 +374,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: tokens.spacingXs) {
             if let quotedMessage = quotedMessage.wrappedValue {
                 factory.makeComposerQuotedMessageView(
                     options: .init(
@@ -389,44 +389,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
             }
 
-            if !addedAssets.isEmpty {
-                AddedImageAttachmentsView(
-                    images: addedAssets,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .transition(.scale)
-                .animation(.default)
-            }
-
-            if !addedFileURLs.isEmpty {
-                if !addedAssets.isEmpty {
-                    Divider()
-                }
-
-                AddedFileAttachmentsView(
-                    addedFileURLs: addedFileURLs,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
-            }
-            
-            if !addedVoiceRecordings.isEmpty {
-                AddedVoiceRecordingsView(
-                    addedVoiceRecordings: addedVoiceRecordings,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
-                .padding(.top, 8)
-            }
-
-            if !addedCustomAttachments.isEmpty {
-                factory.makeCustomAttachmentPreviewView(
-                    options: CustomAttachmentPreviewViewOptions(
-                        addedCustomAttachments: addedCustomAttachments,
-                        onCustomAttachmentTap: onCustomAttachmentTap
-                    )
-                )
-            }
+            attachmentsTray
+                .padding(.leading, tokens.spacingSm)
 
             HStack(alignment: .bottom) {
                 HStack {
@@ -504,6 +468,49 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
+    private var attachmentsTray: some View {
+        Group {
+            if !addedAssets.isEmpty {
+                AddedImageAttachmentsView(
+                    images: addedAssets,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .transition(.scale)
+                .animation(.default)
+            }
+
+            if !addedFileURLs.isEmpty {
+                if !addedAssets.isEmpty {
+                    Divider()
+                }
+
+                AddedFileAttachmentsView(
+                    addedFileURLs: addedFileURLs,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+            }
+
+            if !addedVoiceRecordings.isEmpty {
+                AddedVoiceRecordingsView(
+                    addedVoiceRecordings: addedVoiceRecordings,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+                .padding(.top, 8)
+            }
+
+            if !addedCustomAttachments.isEmpty {
+                factory.makeCustomAttachmentPreviewView(
+                    options: CustomAttachmentPreviewViewOptions(
+                        addedCustomAttachments: addedCustomAttachments,
+                        onCustomAttachmentTap: onCustomAttachmentTap
+                    )
+                )
+            }
+        }
+    }
+
     private var sendMessageButtonState: SendMessageButtonState {
         if isInCooldown {
             return .slowMode(cooldownDuration)
@@ -514,10 +521,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
 
         return .regular(sendButtonEnabled)
-    }
-
-    private var shouldAddVerticalPadding: Bool {
-        !addedFileURLs.isEmpty || !addedAssets.isEmpty
     }
 
     private var isInCooldown: Bool {

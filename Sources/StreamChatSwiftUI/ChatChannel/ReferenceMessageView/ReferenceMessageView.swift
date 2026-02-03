@@ -55,7 +55,7 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
                     : colors.chatReplyIndicatorIncoming
             )
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
                 titleView
                 subtitleView
             }
