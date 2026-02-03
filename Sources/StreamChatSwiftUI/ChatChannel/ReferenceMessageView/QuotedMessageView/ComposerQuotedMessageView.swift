@@ -40,5 +40,9 @@ public struct ComposerQuotedMessageView: View {
             )
         )
         .dismissButtonOverlayModifier(onDismiss: onDismiss)
+        .padding(.top, tokens.spacingSm)
+        .padding(.trailing, tokens.spacingSm)
+        .padding(.leading, tokens.spacingSm)
+        .padding(.bottom, tokens.spacingXxs)
     }
 }
