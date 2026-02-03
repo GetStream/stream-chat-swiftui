@@ -23,6 +23,7 @@ public struct PlayButtonOverlay: View {
                 .renderingMode(.template)
                 .foregroundColor(Color(colors.controlPlayControlIconInverse))
         }
+        .accessibilityHidden(true)
     }
 
     private var playButtonSize: CGFloat {

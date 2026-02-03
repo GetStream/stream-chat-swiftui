@@ -86,13 +86,10 @@ open class QuotedMessageViewModel {
             }
             return L10n.Composer.Quoted.files(count)
 
-        case .link:
-            return L10n.Composer.Quoted.file
-
         case .audio:
             return L10n.Composer.Quoted.audio
 
-        case .none:
+        case .none, .link:
             return ""
         }
     }

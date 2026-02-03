@@ -87,6 +87,7 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
                         width: tokens.iconSizeXs,
                         height: tokens.iconSizeXs
                     )
+                    .accessibilityHidden(true)
             }
 
             Text(subtitle)
@@ -130,5 +131,6 @@ struct ReferenceIndicatorView: View {
             .frame(width: 2)
             .clipShape(RoundedRectangle(cornerRadius: 2))
             .accessibilityIdentifier("QuoteIndicatorView")
+            .accessibilityHidden(true)
     }
 }

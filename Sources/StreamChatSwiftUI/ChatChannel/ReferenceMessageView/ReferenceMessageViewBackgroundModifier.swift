@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Background modifier for message reference views.
-struct ReferenceMessageViewBackgroundModifier: ViewModifier {
+public struct ReferenceMessageViewBackgroundModifier: ViewModifier {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
