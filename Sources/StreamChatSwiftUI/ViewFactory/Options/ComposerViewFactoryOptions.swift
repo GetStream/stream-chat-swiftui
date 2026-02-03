@@ -326,6 +326,16 @@ public final class ChatQuotedMessageViewOptions: Sendable {
     }
 }
 
+/// Options for creating the quoted message attachment preview view.
+public final class QuotedMessageAttachmentPreviewViewOptions: Sendable {
+    /// The view model containing the quoted message data.
+    public let viewModel: QuotedMessageViewModel
+    
+    public init(viewModel: QuotedMessageViewModel) {
+        self.viewModel = viewModel
+    }
+}
+
 /// Options for creating the custom attachment quoted view.
 public final class CustomAttachmentQuotedViewOptions: Sendable {
     /// The message containing the custom attachment.

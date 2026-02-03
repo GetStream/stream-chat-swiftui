@@ -826,12 +826,19 @@ extension ViewFactory {
         options: QuotedMessageViewOptions
     ) -> some View {
         QuotedMessageView(
+            factory: self,
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
                 channel: options.channel
             ),
             padding: options.padding
         )
+    }
+
+    public func makeQuotedMessageAttachmentPreviewView(
+        options: QuotedMessageAttachmentPreviewViewOptions
+    ) -> some View {
+        QuotedMessageAttachmentPreviewView(viewModel: options.viewModel)
     }
     
     public func makeCommandsContainerView(

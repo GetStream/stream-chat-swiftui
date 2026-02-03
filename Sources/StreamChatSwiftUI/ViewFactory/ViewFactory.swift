@@ -477,6 +477,16 @@ import SwiftUI
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
 
+    associatedtype QuotedMessageAttachmentPreviewViewType: View
+    /// Creates the attachment preview view for a quoted message.
+    ///
+    /// This slot can be used to show custom attachment previews inside quoted messages.
+    /// If the custom attachment preview is just an image, consider overriding
+    /// the `QuotedMessageViewModel.imagePreviewURL` only instead.
+    ///
+    /// - Parameter options: the options for creating the attachment preview view.
+    func makeQuotedMessageAttachmentPreviewView(options: QuotedMessageAttachmentPreviewViewOptions) -> QuotedMessageAttachmentPreviewViewType
+
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.
     /// - Parameter options: the options for creating the commands container view.

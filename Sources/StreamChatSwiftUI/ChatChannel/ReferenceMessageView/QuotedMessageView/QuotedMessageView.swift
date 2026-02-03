@@ -6,19 +6,24 @@ import StreamChat
 import SwiftUI
 
 /// A quoted message view used to display a reference to another message.
-public struct QuotedMessageView: View {
+public struct QuotedMessageView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
 
+    private let factory: Factory
     private let viewModel: QuotedMessageViewModel
     private let padding: EdgeInsets?
 
     /// Creates a quoted message view from a view model.
-    /// - Parameter viewModel: The view model containing the quoted message data.
-    /// - Parameter padding: The padding to apply around the quoted message view.
+    /// - Parameters:
+    ///   - factory: The view factory to create customizable subviews.
+    ///   - viewModel: The view model containing the quoted message data.
+    ///   - padding: The padding to apply around the quoted message view.
     public init(
+        factory: Factory,
         viewModel: QuotedMessageViewModel,
         padding: EdgeInsets? = nil
     ) {
+        self.factory = factory
         self.viewModel = viewModel
         self.padding = padding
     }
@@ -50,7 +55,11 @@ public struct QuotedMessageView: View {
             subtitleIcon: viewModel.subtitleIcon?.image,
             isSentByCurrentUser: viewModel.isSentByCurrentUser
         ) {
-            QuotedMessageAttachmentPreviewView(viewModel: viewModel)
+            factory.makeQuotedMessageAttachmentPreviewView(
+                options: QuotedMessageAttachmentPreviewViewOptions(
+                    viewModel: viewModel
+                )
+            )
         }
     }
 }
