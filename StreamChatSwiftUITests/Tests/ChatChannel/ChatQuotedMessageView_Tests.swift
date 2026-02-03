@@ -28,7 +28,6 @@ import XCTest
             ChatQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 scrolledId: .constant(nil)
             )
         }
@@ -52,7 +51,6 @@ import XCTest
             ChatQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 scrolledId: .constant(nil)
             )
         }
@@ -82,7 +80,6 @@ import XCTest
             ChatQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 scrolledId: .constant(nil)
             )
         }

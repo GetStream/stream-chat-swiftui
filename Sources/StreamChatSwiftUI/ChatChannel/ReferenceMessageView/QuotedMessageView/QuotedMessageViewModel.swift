@@ -9,14 +9,14 @@ import StreamChat
 @MainActor
 open class QuotedMessageViewModel {
     @Injected(\.utils) private var utils
-    
+
     // MARK: - Properties
     
     /// The quoted message.
     private let message: ChatMessage
 
-    /// The channel which contains the quoted message.
-    private let channel: ChatChannel?
+    /// The current logged-in user.
+    private let currentUser: CurrentChatUser?
 
     /// The resolved attachment content (lazily computed once).
     private lazy var attachmentContent: QuotedMessageAttachmentContent = {
@@ -27,13 +27,13 @@ open class QuotedMessageViewModel {
     
     /// Creates a new quoted message view model.
     /// - Parameter message: The quoted message to display.
-    /// - Parameter channel: The channel which contains the quoted message.
+    ///
     public init(
         message: ChatMessage,
-        channel: ChatChannel?
+        currentUser: CurrentChatUser?
     ) {
         self.message = message
-        self.channel = channel
+        self.currentUser = currentUser
     }
     
     // MARK: - Display Properties
@@ -64,7 +64,7 @@ open class QuotedMessageViewModel {
         if !messageText.isEmpty {
             return messageText
         }
-        
+
         // Otherwise, describe the attachments.
         switch attachmentContent.kind {
         case .mixed(let typeCount):
@@ -153,7 +153,7 @@ open class QuotedMessageViewModel {
     // MARK: - Private Helpers
     
     private var messageText: String {
-        if let language = channel?.membership?.language,
+        if let language = currentUser?.language,
            let translatedText = message.translatedText(for: language) {
             return translatedText
         }

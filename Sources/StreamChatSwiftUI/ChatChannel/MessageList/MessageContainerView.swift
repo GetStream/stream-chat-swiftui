@@ -107,7 +107,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     MessageView(
                         factory: factory,
                         message: message,
-                        channel: channel,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId

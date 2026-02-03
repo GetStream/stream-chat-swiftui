@@ -255,7 +255,6 @@ extension ViewFactory {
         MessageTextView(
             factory: self,
             message: options.message,
-            channel: options.channel,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -287,7 +286,6 @@ extension ViewFactory {
         ImageAttachmentContainer(
             factory: self,
             message: options.message,
-            channel: options.channel,
             width: options.availableWidth,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -300,7 +298,6 @@ extension ViewFactory {
         GiphyAttachmentView(
             factory: self,
             message: options.message,
-            channel: options.channel,
             width: options.availableWidth,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -313,7 +310,6 @@ extension ViewFactory {
         LinkAttachmentContainer(
             factory: self,
             message: options.message,
-            channel: options.channel,
             width: options.availableWidth,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -326,7 +322,6 @@ extension ViewFactory {
         FileAttachmentsContainer(
             factory: self,
             message: options.message,
-            channel: options.channel,
             width: options.availableWidth,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -339,7 +334,6 @@ extension ViewFactory {
         VideoAttachmentsContainer(
             factory: self,
             message: options.message,
-            channel: options.channel,
             width: options.availableWidth,
             scrolledId: options.scrolledId
         )
@@ -411,7 +405,6 @@ extension ViewFactory {
         EmojiTextView(
             factory: self,
             message: options.message,
-            channel: options.channel,
             scrolledId: options.scrolledId,
             isFirst: options.isFirst
         )
@@ -644,7 +637,6 @@ extension ViewFactory {
         VoiceRecordingContainerView(
             factory: self,
             message: options.message,
-            channel: options.channel,
             width: options.availableWidth,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -806,7 +798,6 @@ extension ViewFactory {
         ComposerQuotedMessageView(
             factory: self,
             quotedMessage: options.quotedMessage,
-            channel: options.channel,
             onDismiss: options.onDismiss
         )
     }
@@ -817,7 +808,6 @@ extension ViewFactory {
         ChatQuotedMessageView(
             factory: self,
             quotedMessage: options.quotedMessage,
-            channel: options.channel,
             scrolledId: options.scrolledId
         )
     }
@@ -829,7 +819,7 @@ extension ViewFactory {
             factory: self,
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
-                channel: options.channel
+                currentUser: chatClient.currentUserController().currentUser
             ),
             padding: options.padding
         )

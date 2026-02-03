@@ -28,7 +28,6 @@ import XCTest
             ComposerQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         }
@@ -58,7 +57,6 @@ import XCTest
             ComposerQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         }
@@ -82,7 +80,6 @@ import XCTest
             ComposerQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         }
@@ -106,7 +103,6 @@ import XCTest
             ComposerQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         }
@@ -144,7 +140,6 @@ import XCTest
             ComposerQuotedMessageView(
                 factory: DefaultViewFactory.shared,
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         }

@@ -24,7 +24,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -49,7 +48,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -74,7 +72,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -99,7 +96,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: imageMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -127,7 +123,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: imageMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -156,7 +151,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: imageMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -186,7 +180,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: imageMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -218,7 +211,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: imageMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -243,7 +235,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: giphyMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -268,7 +259,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: videoMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -293,7 +283,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: fileMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -319,7 +308,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -349,7 +337,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -379,7 +366,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -409,7 +395,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -439,7 +424,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -469,7 +453,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -508,7 +491,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: voiceMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -538,7 +520,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: fileMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -562,7 +543,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: emojiMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -586,7 +566,6 @@ import XCTest
         let view = LinkAttachmentContainer(
             factory: DefaultViewFactory.shared,
             message: message,
-            channel: nil,
             width: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -599,7 +578,7 @@ import XCTest
     
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
-        var colorPalette = Appearance.ColorPalette()
+        let colorPalette = Appearance.ColorPalette()
         colorPalette.messageLinkAttachmentAuthorColor = .orange
         colorPalette.messageLinkAttachmentTitleColor = .blue
         colorPalette.messageLinkAttachmentTextColor = .red
@@ -648,7 +627,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: messageWithLinkAndImages,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -689,7 +667,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: message,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -811,7 +788,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -845,7 +821,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -878,7 +853,6 @@ import XCTest
         let view = MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1207,7 +1181,6 @@ import XCTest
         return MessageView(
             factory: DefaultViewFactory.shared,
             message: textMessage,
-            channel: nil,
             contentWidth: size.width,
             isFirst: true,
             scrolledId: .constant(nil)

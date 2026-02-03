@@ -8,7 +8,6 @@ import SwiftUI
 public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     var factory: Factory
     var message: ChatMessage
-    var channel: ChatChannel?
     var width: CGFloat
     var isFirst: Bool
     @Binding var scrolledId: String?
@@ -16,14 +15,12 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
-        channel: ChatChannel?,
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.message = message
-        self.channel = channel
         self.width = width
         self.isFirst = isFirst
         _scrolledId = scrolledId
@@ -35,7 +32,6 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                 factory.makeChatQuotedMessageView(
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        channel: channel,
                         scrolledId: $scrolledId
                     )
                 )

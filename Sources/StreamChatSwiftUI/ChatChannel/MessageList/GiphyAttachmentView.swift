@@ -13,7 +13,6 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
 
     let factory: Factory
     let message: ChatMessage
-    let channel: ChatChannel?
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
@@ -27,7 +26,6 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 factory.makeChatQuotedMessageView(
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        channel: channel,
                         scrolledId: $scrolledId
                     )
                 )

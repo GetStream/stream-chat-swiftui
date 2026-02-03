@@ -12,7 +12,6 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
 
     var factory: Factory
     var message: ChatMessage
-    var channel: ChatChannel?
     var width: CGFloat
     var isFirst: Bool
     var onImageTap: ((ChatMessageLinkAttachment) -> Void)?
@@ -23,7 +22,6 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
-        channel: ChatChannel?,
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>,
@@ -31,7 +29,6 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     ) {
         self.factory = factory
         self.message = message
-        self.channel = channel
         self.width = width
         self.isFirst = isFirst
         self.onImageTap = onImageTap
@@ -47,7 +44,6 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 factory.makeChatQuotedMessageView(
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        channel: channel,
                         scrolledId: $scrolledId
                     )
                 )

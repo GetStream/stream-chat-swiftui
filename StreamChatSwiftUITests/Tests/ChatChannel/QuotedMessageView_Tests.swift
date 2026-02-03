@@ -637,7 +637,7 @@ import XCTest
             text: "Test message",
             author: author
         )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
         
         // Then
         XCTAssertEqual(viewModel.title, "Reply to Emma Chen")
@@ -652,7 +652,7 @@ import XCTest
             text: "Hello world",
             author: author
         )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Hello world")
@@ -670,7 +670,7 @@ import XCTest
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
             ]
         )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Photo")
@@ -689,7 +689,7 @@ import XCTest
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
             ]
         )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "3 photos")
@@ -719,7 +719,7 @@ import XCTest
             author: author,
             attachments: [voiceAttachment.asAnyAttachment]
         )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Voice message (01:12)")
@@ -734,10 +734,43 @@ import XCTest
             text: "Test message",
             author: author
         )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
         
         // Then
         XCTAssertEqual(viewModel.messageId, messageId)
+    }
+    
+    func test_quotedMessageViewModel_subtitleWithTranslatedText() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: author,
+            translations: [.spanish: "Hola"]
+        )
+        let currentUser = CurrentChatUser.mock(currentUserId: .unique, language: .spanish)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: currentUser)
+        
+        // Then
+        XCTAssertEqual(viewModel.subtitle, "Hola")
+    }
+    
+    func test_quotedMessageViewModel_subtitleWithoutTranslation() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: author,
+            translations: [.spanish: "Hola"]
+        )
+        // User language is French but translation is only available in Spanish
+        let currentUser = CurrentChatUser.mock(currentUserId: .unique, language: .french)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: currentUser)
+        
+        // Then - should fall back to original text
+        XCTAssertEqual(viewModel.subtitle, "Hello")
     }
 
     // MARK: - Helper
@@ -761,7 +794,7 @@ extension QuotedMessageView where Factory == DefaultViewFactory {
             factory: DefaultViewFactory.shared,
             viewModel: QuotedMessageViewModel(
                 message: message,
-                channel: nil
+                currentUser: nil
             )
         )
     }

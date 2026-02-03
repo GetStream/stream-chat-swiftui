@@ -13,8 +13,6 @@ import SwiftUI
 public final class ImageAttachmentViewOptions: Sendable {
     /// The message containing the image attachment.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachment.
@@ -24,13 +22,11 @@ public final class ImageAttachmentViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
@@ -43,8 +39,6 @@ public final class ImageAttachmentViewOptions: Sendable {
 public final class GiphyAttachmentViewOptions: Sendable {
     /// The message containing the giphy attachment.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachment.
@@ -54,13 +48,11 @@ public final class GiphyAttachmentViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
@@ -86,8 +78,6 @@ public final class GiphyBadgeViewTypeOptions: Sendable {
 public final class LinkAttachmentViewOptions: Sendable {
     /// The message containing the link attachment.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachment.
@@ -97,13 +87,11 @@ public final class LinkAttachmentViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
@@ -116,8 +104,6 @@ public final class LinkAttachmentViewOptions: Sendable {
 public final class FileAttachmentViewOptions: Sendable {
     /// The message containing the file attachment.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachment.
@@ -127,13 +113,11 @@ public final class FileAttachmentViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
@@ -146,8 +130,6 @@ public final class FileAttachmentViewOptions: Sendable {
 public final class VideoAttachmentViewOptions: Sendable {
     /// The message containing the video attachment.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachment.
@@ -157,13 +139,11 @@ public final class VideoAttachmentViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
@@ -176,8 +156,6 @@ public final class VideoAttachmentViewOptions: Sendable {
 public final class VoiceRecordingViewOptions: Sendable {
     /// The message containing the voice recording.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachment.
@@ -187,13 +165,11 @@ public final class VoiceRecordingViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId

@@ -119,7 +119,6 @@ import XCTest
         let view = viewFactory.makeMessageTextView(
             options: MessageTextViewOptions(
                 message: message,
-                channel: nil,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -138,7 +137,6 @@ import XCTest
         let view = viewFactory.makeImageAttachmentView(
             options: ImageAttachmentViewOptions(
                 message: message,
-                channel: nil,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -157,7 +155,6 @@ import XCTest
         let view = viewFactory.makeGiphyAttachmentView(
             options: GiphyAttachmentViewOptions(
                 message: message,
-                channel: nil,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -176,7 +173,6 @@ import XCTest
         let view = viewFactory.makeLinkAttachmentView(
             options: LinkAttachmentViewOptions(
                 message: message,
-                channel: nil,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -195,7 +191,6 @@ import XCTest
         let view = viewFactory.makeFileAttachmentView(
             options: FileAttachmentViewOptions(
                 message: message,
-                channel: nil,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -214,7 +209,6 @@ import XCTest
         let view = viewFactory.makeVideoAttachmentView(
             options: VideoAttachmentViewOptions(
                 message: message,
-                channel: nil,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -440,8 +434,7 @@ import XCTest
         // When
         let view = viewFactory.makeQuotedMessageView(
             options: .init(
-                quotedMessage: message,
-                channel: nil
+                quotedMessage: message
             )
         )
 
@@ -457,7 +450,6 @@ import XCTest
         let view = viewFactory.makeChatQuotedMessageView(
             options: ChatQuotedMessageViewOptions(
                 quotedMessage: message,
-                channel: nil,
                 scrolledId: .constant(nil)
             )
         )
@@ -474,7 +466,6 @@ import XCTest
         let view = viewFactory.makeComposerQuotedMessageView(
             options: .init(
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         )
@@ -714,7 +705,6 @@ import XCTest
         let view = viewFactory.makeEmojiTextView(
             options: EmojiTextViewOptions(
                 message: message,
-                channel: nil,
                 scrolledId: .constant(nil),
                 isFirst: true
             )

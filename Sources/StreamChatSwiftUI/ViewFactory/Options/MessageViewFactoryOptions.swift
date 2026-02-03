@@ -109,8 +109,6 @@ public final class MessageContainerViewOptions: Sendable {
 public final class MessageTextViewOptions: Sendable {
     /// The message to display.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the message.
@@ -120,13 +118,11 @@ public final class MessageTextViewOptions: Sendable {
     
     public init(
         message: ChatMessage,
-        channel: ChatChannel?,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.message = message
-        self.channel = channel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
@@ -207,16 +203,13 @@ public final class SystemMessageViewOptions: Sendable {
 public final class EmojiTextViewOptions: Sendable {
     /// The message containing emojis.
     public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel?
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     
-    public init(message: ChatMessage, channel: ChatChannel?, scrolledId: Binding<String?>, isFirst: Bool) {
+    public init(message: ChatMessage, scrolledId: Binding<String?>, isFirst: Bool) {
         self.message = message
-        self.channel = channel
         self.scrolledId = scrolledId
         self.isFirst = isFirst
     }

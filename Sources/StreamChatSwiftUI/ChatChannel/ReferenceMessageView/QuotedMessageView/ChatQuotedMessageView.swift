@@ -12,32 +12,27 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
     
     private let factory: Factory
     private let quotedMessage: ChatMessage
-    private let channel: ChatChannel?
     @Binding private var scrolledId: String?
 
     /// Creates a chat quoted message view.
     /// - Parameters:
     ///   - factory: The view factory to create the quoted message view.
     ///   - quotedMessage: The quoted message to display.
-    ///   - channel: The channel where the quoted message belongs.
     ///   - scrolledId: A binding to the scrolled message ID for navigation to the quoted message.
     public init(
         factory: Factory,
         quotedMessage: ChatMessage,
-        channel: ChatChannel?,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.quotedMessage = quotedMessage
-        self.channel = channel
         self._scrolledId = scrolledId
     }
 
     public var body: some View {
         factory.makeQuotedMessageView(
             options: QuotedMessageViewOptions(
-                quotedMessage: quotedMessage,
-                channel: channel
+                quotedMessage: quotedMessage
             )
         )
         .padding(tokens.spacingXs)

@@ -379,7 +379,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 factory.makeComposerQuotedMessageView(
                     options: .init(
                         quotedMessage: quotedMessage,
-                        channel: channelController.channel,
                         onDismiss: {
                             withAnimation {
                                 self.quotedMessage.wrappedValue = nil
