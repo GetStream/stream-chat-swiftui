@@ -45,8 +45,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         VStack(spacing: 0) {
             VStack {
                 if let quotedMessage = message.quotedMessage {
-                    factory.makeQuotedMessageView(
-                        options: QuotedMessageViewOptions(
+                    factory.makeChatQuotedMessageView(
+                        options: ChatQuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
                             channel: channel,
                             scrolledId: $scrolledId

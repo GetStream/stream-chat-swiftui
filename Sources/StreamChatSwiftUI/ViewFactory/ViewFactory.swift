@@ -464,11 +464,16 @@ import SwiftUI
 
     associatedtype ComposerQuotedMessageViewType: View
     /// Creates the quoted message view shown in the composer.
-    /// - Parameter options: the options for creating the quoted message view.
+    /// - Parameter options: the options for creating the composer quoted message view.
     func makeComposerQuotedMessageView(options: ComposerQuotedMessageViewOptions) -> ComposerQuotedMessageViewType
 
+    associatedtype ChatQuotedMessageViewType: View
+    /// Creates the quoted message view shown in the message list.
+    /// - Parameter options: the options for creating the chat quoted message view.
+    func makeChatQuotedMessageView(options: ChatQuotedMessageViewOptions) -> ChatQuotedMessageViewType
+
     associatedtype QuotedMessageViewType: View
-    /// Creates the quoted message view, shown in the message list and the composer.
+    /// Creates the base quoted message view used by both composer and message list containers.
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
 

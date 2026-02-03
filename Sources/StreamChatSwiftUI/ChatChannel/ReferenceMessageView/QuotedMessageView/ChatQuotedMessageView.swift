@@ -7,33 +7,46 @@ import SwiftUI
 
 /// A container view for displaying quoted messages in the message list.
 /// This view handles the tap gesture to scroll to the original message.
-public struct ChatQuotedMessageView: View {
+public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
     
-    private let viewModel: QuotedMessageViewModel
+    private let factory: Factory
+    private let quotedMessage: ChatMessage
+    private let channel: ChatChannel?
     @Binding private var scrolledId: String?
 
     /// Creates a chat quoted message view.
     /// - Parameters:
-    ///   - viewModel: The view model containing the quoted message data.
+    ///   - factory: The view factory to create the quoted message view.
+    ///   - quotedMessage: The quoted message to display.
+    ///   - channel: The channel where the quoted message belongs.
     ///   - scrolledId: A binding to the scrolled message ID for navigation to the quoted message.
     public init(
-        viewModel: QuotedMessageViewModel,
+        factory: Factory,
+        quotedMessage: ChatMessage,
+        channel: ChatChannel?,
         scrolledId: Binding<String?>
     ) {
-        self.viewModel = viewModel
+        self.factory = factory
+        self.quotedMessage = quotedMessage
+        self.channel = channel
         self._scrolledId = scrolledId
     }
 
     public var body: some View {
-        QuotedMessageView(viewModel: viewModel)
-            .padding(tokens.spacingXs)
-            .onTapGesture {
-                scrolledId = viewModel.messageId
-            }
-            .accessibilityAction {
-                scrolledId = viewModel.messageId
-            }
-            .accessibilityIdentifier("ChatQuotedMessageView")
+        factory.makeQuotedMessageView(
+            options: QuotedMessageViewOptions(
+                quotedMessage: quotedMessage,
+                channel: channel
+            )
+        )
+        .padding(tokens.spacingXs)
+        .onTapGesture {
+            scrolledId = quotedMessage.messageId
+        }
+        .accessibilityAction {
+            scrolledId = quotedMessage.messageId
+        }
+        .accessibilityIdentifier("ChatQuotedMessageView")
     }
 }

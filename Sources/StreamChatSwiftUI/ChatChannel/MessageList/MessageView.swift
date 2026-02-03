@@ -199,8 +199,8 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             if let quotedMessage = message.quotedMessage {
-                factory.makeQuotedMessageView(
-                    options: QuotedMessageViewOptions(
+                factory.makeChatQuotedMessageView(
+                    options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
                         channel: channel,
                         scrolledId: $scrolledId
@@ -240,8 +240,8 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
         ZStack {
             if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
-                    factory.makeQuotedMessageView(
-                        options: QuotedMessageViewOptions(
+                    factory.makeChatQuotedMessageView(
+                        options: ChatQuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
                             channel: channel,
                             scrolledId: $scrolledId

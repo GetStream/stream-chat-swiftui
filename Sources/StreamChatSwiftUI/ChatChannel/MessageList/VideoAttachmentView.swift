@@ -17,8 +17,8 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
         VStack(spacing: 0) {
             if let quotedMessage = message.quotedMessage {
                 VStack {
-                    factory.makeQuotedMessageView(
-                        options: .init(
+                    factory.makeChatQuotedMessageView(
+                        options: ChatQuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
                             channel: channel,
                             scrolledId: $scrolledId

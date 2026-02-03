@@ -804,23 +804,33 @@ extension ViewFactory {
         options: ComposerQuotedMessageViewOptions
     ) -> some View {
         ComposerQuotedMessageView(
-            viewModel: QuotedMessageViewModel(
-                message: options.quotedMessage,
-                channel: options.channel
-            ),
+            factory: self,
+            quotedMessage: options.quotedMessage,
+            channel: options.channel,
             onDismiss: options.onDismiss
+        )
+    }
+
+    public func makeChatQuotedMessageView(
+        options: ChatQuotedMessageViewOptions
+    ) -> some View {
+        ChatQuotedMessageView(
+            factory: self,
+            quotedMessage: options.quotedMessage,
+            channel: options.channel,
+            scrolledId: options.scrolledId
         )
     }
 
     public func makeQuotedMessageView(
         options: QuotedMessageViewOptions
     ) -> some View {
-        ChatQuotedMessageView(
+        QuotedMessageView(
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
                 channel: options.channel
             ),
-            scrolledId: options.scrolledId
+            padding: options.padding
         )
     }
     

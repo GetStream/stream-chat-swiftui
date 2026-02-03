@@ -286,8 +286,28 @@ public final class ComposerQuotedMessageViewOptions: Sendable {
     }
 }
 
-/// Options for creating the quoted message view.
+/// Options for creating the base quoted message view.
 public final class QuotedMessageViewOptions: Sendable {
+    /// The quoted message to display.
+    public let quotedMessage: ChatMessage
+    /// The channel where the quoted message belongs.
+    public let channel: ChatChannel?
+    /// The padding to apply around the quoted message view.
+    public let padding: EdgeInsets?
+    
+    public init(
+        quotedMessage: ChatMessage,
+        channel: ChatChannel?,
+        padding: EdgeInsets? = nil
+    ) {
+        self.quotedMessage = quotedMessage
+        self.channel = channel
+        self.padding = padding
+    }
+}
+
+/// Options for creating the chat quoted message view (message list container).
+public final class ChatQuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
     /// The channel where the quoted message belongs.

@@ -441,13 +441,29 @@ import XCTest
         let view = viewFactory.makeQuotedMessageView(
             options: .init(
                 quotedMessage: message,
+                channel: nil
+            )
+        )
+
+        // Then
+        XCTAssert(view is QuotedMessageView)
+    }
+    
+    func test_viewFactory_makeChatQuotedMessageView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeChatQuotedMessageView(
+            options: ChatQuotedMessageViewOptions(
+                quotedMessage: message,
                 channel: nil,
                 scrolledId: .constant(nil)
             )
         )
 
         // Then
-        XCTAssert(view is ChatQuotedMessageView)
+        XCTAssert(view is ChatQuotedMessageView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeComposerQuotedMessageView() {
@@ -464,7 +480,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is ComposerQuotedMessageView)
+        XCTAssert(view is ComposerQuotedMessageView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeCommandsContainerView() {

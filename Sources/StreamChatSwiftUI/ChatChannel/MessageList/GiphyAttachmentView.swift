@@ -24,8 +24,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             if let quotedMessage = message.quotedMessage {
-                factory.makeQuotedMessageView(
-                    options: QuotedMessageViewOptions(
+                factory.makeChatQuotedMessageView(
+                    options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
                         channel: channel,
                         scrolledId: $scrolledId
