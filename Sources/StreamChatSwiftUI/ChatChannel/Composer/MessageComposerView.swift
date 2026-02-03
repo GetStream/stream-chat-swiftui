@@ -109,7 +109,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     Alert.defaultErrorAlert
                 }
             }
-            .padding(.vertical, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingSm)
             .padding(.horizontal, tokens.spacingSm)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
