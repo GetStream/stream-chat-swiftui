@@ -471,12 +471,6 @@ import SwiftUI
     /// Creates the quoted message view, shown in the message list and the composer.
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
-    
-    associatedtype CustomAttachmentQuotedViewType: View
-    /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
-    /// - Parameter options: the options for creating the custom attachment quoted view.
-    /// - Returns: view shown in quoted messages with custom attachments.
-    func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> CustomAttachmentQuotedViewType
 
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.

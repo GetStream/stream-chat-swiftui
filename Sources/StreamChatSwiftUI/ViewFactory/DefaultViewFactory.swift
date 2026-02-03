@@ -830,10 +830,6 @@ extension ViewFactory {
         .accessibilityIdentifier("QuotedMessageViewContainer")
     }
     
-    public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
-        EmptyView()
-    }
-    
     public func makeCommandsContainerView(
         options: CommandsContainerViewOptions
     ) -> some View {
