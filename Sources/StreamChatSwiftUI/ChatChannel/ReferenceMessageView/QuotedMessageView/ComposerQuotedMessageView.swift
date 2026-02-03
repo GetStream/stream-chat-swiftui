@@ -30,7 +30,7 @@ public struct ComposerQuotedMessageView: View {
     }
 
     public var body: some View {
-        ChatQuotedMessageView(
+        QuotedMessageView(
             viewModel: viewModel,
             padding: .init(
                 top: tokens.spacingXs,

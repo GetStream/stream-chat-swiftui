@@ -53,6 +53,11 @@ open class QuotedMessageViewModel {
         message.isSentByCurrentUser
     }
     
+    /// The message ID for scroll navigation.
+    open var messageId: String {
+        message.messageId
+    }
+    
     /// The subtitle text to display (message preview or attachment description).
     open var subtitle: String {
         // If there's text content, use it.

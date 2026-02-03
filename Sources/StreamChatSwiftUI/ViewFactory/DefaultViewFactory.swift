@@ -819,15 +819,9 @@ extension ViewFactory {
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
                 channel: options.channel
-            )
+            ),
+            scrolledId: options.scrolledId
         )
-        .onTapGesture {
-            options.scrolledId.wrappedValue = options.quotedMessage.messageId
-        }
-        .accessibilityAction {
-            options.scrolledId.wrappedValue = options.quotedMessage.messageId
-        }
-        .accessibilityIdentifier("QuotedMessageViewContainer")
     }
     
     public func makeCommandsContainerView(
