@@ -233,6 +233,7 @@ import XCTest
         let view = VideoAttachmentsContainer(
             factory: DefaultViewFactory.shared,
             message: message,
+            channel: nil,
             width: 2 * defaultScreenSize.width / 3,
             scrolledId: .constant(nil)
         )
@@ -257,6 +258,7 @@ import XCTest
         let view = ImageAttachmentContainer(
             factory: DefaultViewFactory.shared,
             message: message,
+            channel: nil,
             width: 200,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -283,6 +285,7 @@ import XCTest
         let view = ImageAttachmentContainer(
             factory: DefaultViewFactory.shared,
             message: message,
+            channel: nil,
             width: 200,
             isFirst: true,
             scrolledId: .constant(nil)

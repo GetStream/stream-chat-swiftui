@@ -446,7 +446,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is QuotedMessageView)
+        XCTAssert(view is QuotedMessageView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeChatQuotedMessageView() {

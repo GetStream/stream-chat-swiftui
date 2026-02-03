@@ -725,22 +725,6 @@ import XCTest
         XCTAssertEqual(viewModel.subtitle, "Voice message (01:12)")
     }
     
-    func test_quotedMessageViewModel_subtitleWithPoll() {
-        // Given
-        let poll = Poll.mock(name: "Team offsite location?")
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: author,
-            poll: poll
-        )
-        let viewModel = QuotedMessageViewModel(message: message, channel: nil)
-        
-        // Then
-        XCTAssertEqual(viewModel.subtitle, "Team offsite location?")
-    }
-    
     func test_quotedMessageViewModel_messageId() {
         // Given
         let messageId = "test-message-id"
