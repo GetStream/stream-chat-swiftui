@@ -432,24 +432,7 @@ import XCTest
         XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
         XCTAssert(coordinator.textInput.text == "New text")
     }
-
-    func test_quotedMessageHeaderView_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Quoted message",
-            author: .mock(id: .unique)
-        )
-
-        // When
-        let view = QuotedMessageHeaderView(quotedMessage: .constant(message), showContent: true)
-            .frame(width: defaultScreenSize.width, height: 36)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
+    
     func test_composerInputView_snapshot() {
         // Given
         let inputView = InputTextView()
@@ -756,6 +739,7 @@ import XCTest
             quotedMessage: .constant(
                 .mock(
                     text: "Hello",
+                    author: .mock(id: .unique, name: "John Wick"),
                     translations: [.spanish: "Hola"]
                 )
             ),

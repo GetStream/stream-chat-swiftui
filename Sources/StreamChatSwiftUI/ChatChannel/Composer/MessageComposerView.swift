@@ -53,22 +53,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     public var body: some View {
         VStack(spacing: 0) {
-            if quotedMessage != nil {
-                factory.makeQuotedMessageHeaderView(
-                    options: QuotedMessageHeaderViewOptions(
-                        quotedMessage: $quotedMessage
-                    )
-                )
-                .transition(.identity)
-            } else if editedMessage != nil {
-                factory.makeEditedMessageHeaderView(
-                    options: EditedMessageHeaderViewOptions(
-                        editedMessage: $editedMessage
-                    )
-                )
-                .transition(.identity)
-            }
-
             HStack(alignment: .bottom, spacing: 8) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
@@ -394,15 +378,20 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     public var body: some View {
         VStack {
             if let quotedMessage = quotedMessage.wrappedValue {
-                factory.makeQuotedMessageView(
-                    options: QuotedMessageViewOptions(
+                factory.makeComposerQuotedMessageView(
+                    options: .init(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: true,
-                        isInComposer: true,
-                        scrolledId: .constant(nil)
+                        channel: channelController.channel,
+                        onDismiss: {
+                            withAnimation {
+                                self.quotedMessage.wrappedValue = nil
+                            }
+                        }
                     )
                 )
-                .environment(\.channelTranslationLanguage, channelController.channel?.membership?.language)
+                .padding(.top, 12)
+                .padding(.trailing, 12)
+                .padding(.leading, 6)
             }
 
             if !addedAssets.isEmpty {

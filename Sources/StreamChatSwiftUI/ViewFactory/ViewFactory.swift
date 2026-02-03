@@ -462,11 +462,10 @@ import SwiftUI
     /// - Parameter options: The options for creating the more reactions view.
     func makeMoreReactionsView(options: MoreReactionsViewOptions) -> MoreReactionsViewType
 
-    associatedtype QuotedMessageHeaderViewType: View
-    /// Creates the quoted message header view in the composer.
-    /// - Parameter options: the options for creating the quoted message header view.
-    /// - Returns: view displayed in the slot for quoted message in the composer.
-    func makeQuotedMessageHeaderView(options: QuotedMessageHeaderViewOptions) -> QuotedMessageHeaderViewType
+    associatedtype ComposerQuotedMessageViewType: View
+    /// Creates the quoted message view shown in the composer.
+    /// - Parameter options: the options for creating the quoted message view.
+    func makeComposerQuotedMessageView(options: ComposerQuotedMessageViewOptions) -> ComposerQuotedMessageViewType
 
     associatedtype QuotedMessageViewType: View
     /// Creates the quoted message view, shown in the message list and the composer.
@@ -490,12 +489,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the custom attachment quoted view.
     /// - Returns: view shown in quoted messages with custom attachments.
     func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> CustomAttachmentQuotedViewType
-
-    associatedtype EditedMessageHeaderViewType: View
-    /// Creates the edited message header view in the composer.
-    /// - Parameter options: the options for creating the edited message header view.
-    /// - Returns: view displayed in the slot for edited message in the composer.
-    func makeEditedMessageHeaderView(options: EditedMessageHeaderViewOptions) -> EditedMessageHeaderViewType
 
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.

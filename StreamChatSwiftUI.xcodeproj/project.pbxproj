@@ -187,7 +187,6 @@
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_messageComposerView_recordingTip.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_messageComposerView_snapshot.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_photosPickerView_snapshot.1.png,
-				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_quotedMessageHeaderView_snapshot.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_trailingComposerView_frozenChannel.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_trailingComposerView_slowMode.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_trailingComposerView_snapshot.1.png,

@@ -266,13 +266,23 @@ public final class CommandsContainerViewOptions: @unchecked Sendable {
 
 // MARK: - Quoted Message Options
 
-/// Options for creating the quoted message header view.
-public final class QuotedMessageHeaderViewOptions: Sendable {
-    /// Binding to the quoted message.
-    public let quotedMessage: Binding<ChatMessage?>
-    
-    public init(quotedMessage: Binding<ChatMessage?>) {
+/// Options for creating the quoted message view.
+public final class ComposerQuotedMessageViewOptions: Sendable {
+    /// The quoted message to display.
+    public let quotedMessage: ChatMessage
+    /// The channel where the quoted message belongs.
+    public let channel: ChatChannel?
+    /// The callback when the quoted message view is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        quotedMessage: ChatMessage,
+        channel: ChatChannel?,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
         self.quotedMessage = quotedMessage
+        self.channel = channel
+        self.onDismiss = onDismiss
     }
 }
 
