@@ -145,6 +145,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                         messageController: messageController
                     )
                 )
+            } else if selectedPickerState == .commands {
+                AttachmentCommandsPickerView()
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
                     options: CustomComposerAttachmentViewOptions(
@@ -186,7 +188,9 @@ public struct AttachmentSourcePickerView: View {
     }
 
     public var body: some View {
-        HStack(alignment: .center, spacing: 24) {
+        let commandsIcon = UIImage(systemName: "command") ?? images.attachmentPickerFolder
+
+        return HStack(alignment: .center, spacing: 24) {
             AttachmentTypePickerButton(
                 icon: images.attachmentPickerPhotos,
                 pickerType: .photos,
@@ -222,6 +226,15 @@ public struct AttachmentSourcePickerView: View {
                 .accessibilityLabel(L10n.Composer.Polls.createPoll)
                 .accessibilityIdentifier("attachmentPickerPolls")
             }
+
+            AttachmentTypePickerButton(
+                icon: commandsIcon,
+                pickerType: .commands,
+                isSelected: selected == .commands,
+                onTap: onTap
+            )
+            .accessibilityLabel(L10n.Composer.Suggestions.Commands.header)
+            .accessibilityIdentifier("attachmentPickerCommands")
 
             Spacer()
         }
