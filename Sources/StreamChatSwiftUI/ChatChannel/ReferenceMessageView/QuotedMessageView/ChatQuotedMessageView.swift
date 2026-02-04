@@ -5,52 +5,43 @@
 import StreamChat
 import SwiftUI
 
-/// A quoted message view used to display a reference to another message within a chat.
-public struct ChatQuotedMessageView: View {
+/// A container view for displaying quoted messages in the message list.
+/// This view handles the tap gesture to scroll to the original message.
+public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
+    
+    private let factory: Factory
+    private let quotedMessage: ChatMessage
+    @Binding private var scrolledId: String?
 
-    private let viewModel: QuotedMessageViewModel
-    private let padding: EdgeInsets?
-
-    /// Creates a quoted message view from a view model.
-    /// - Parameter viewModel: The view model containing the quoted message data.
-    /// - Parameter padding: The padding to apply around the quoted message view.
+    /// Creates a chat quoted message view.
+    /// - Parameters:
+    ///   - factory: The view factory to create the quoted message view.
+    ///   - quotedMessage: The quoted message to display.
+    ///   - scrolledId: A binding to the scrolled message ID for navigation to the quoted message.
     public init(
-        viewModel: QuotedMessageViewModel,
-        padding: EdgeInsets? = nil
+        factory: Factory,
+        quotedMessage: ChatMessage,
+        scrolledId: Binding<String?>
     ) {
-        self.viewModel = viewModel
-        self.padding = padding
+        self.factory = factory
+        self.quotedMessage = quotedMessage
+        self._scrolledId = scrolledId
     }
 
     public var body: some View {
-        referenceMessageView
-            .padding(padding ?? defaultPadding)
-            .modifier(ReferenceMessageViewBackgroundModifier(
-                isSentByCurrentUser: viewModel.isSentByCurrentUser
-            ))
-            .frame(height: 56)
-    }
-
-    /// The default padding applied to the quoted message view when used in the message list (chat).
-    private var defaultPadding: EdgeInsets {
-        .init(
-            top: tokens.spacingXs,
-            leading: tokens.spacingSm,
-            bottom: tokens.spacingXs,
-            trailing: tokens.spacingSm
+        factory.makeQuotedMessageView(
+            options: QuotedMessageViewOptions(
+                quotedMessage: quotedMessage
+            )
         )
-    }
-
-    @ViewBuilder
-    private var referenceMessageView: some View {
-        ReferenceMessageView(
-            title: viewModel.title,
-            subtitle: viewModel.subtitle,
-            subtitleIcon: viewModel.subtitleIcon?.image,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser
-        ) {
-            QuotedMessageAttachmentPreviewView(viewModel: viewModel)
+        .padding(tokens.spacingXs)
+        .onTapGesture {
+            scrolledId = quotedMessage.messageId
         }
+        .accessibilityAction {
+            scrolledId = quotedMessage.messageId
+        }
+        .accessibilityIdentifier("ChatQuotedMessageView")
     }
 }

@@ -10,6 +10,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
@@ -53,7 +54,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     public var body: some View {
         VStack(spacing: 0) {
-            HStack(alignment: .bottom, spacing: 8) {
+            HStack(alignment: .bottom, spacing: tokens.spacingXs) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
                         state: $viewModel.pickerTypeState,
@@ -108,8 +109,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     Alert.defaultErrorAlert
                 }
             }
-            .padding(.vertical, 8)
-            .padding(.horizontal, 16)
+            .padding(.vertical, tokens.spacingMd)
+            .padding(.horizontal, tokens.spacingMd)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
@@ -284,6 +285,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channelController: ChatChannelController
@@ -370,18 +372,13 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
         return textHeight
     }
-    
-    var inputPaddingsConfig: PaddingsConfig {
-        utils.composerConfig.inputPaddingsConfig
-    }
 
     public var body: some View {
-        VStack {
+        VStack(spacing: tokens.spacingXs) {
             if let quotedMessage = quotedMessage.wrappedValue {
                 factory.makeComposerQuotedMessageView(
                     options: .init(
                         quotedMessage: quotedMessage,
-                        channel: channelController.channel,
                         onDismiss: {
                             withAnimation {
                                 self.quotedMessage.wrappedValue = nil
@@ -389,49 +386,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     )
                 )
-                .padding(.top, 12)
-                .padding(.trailing, 12)
-                .padding(.leading, 6)
             }
 
-            if !addedAssets.isEmpty {
-                AddedImageAttachmentsView(
-                    images: addedAssets,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .transition(.scale)
-                .animation(.default)
-            }
-
-            if !addedFileURLs.isEmpty {
-                if !addedAssets.isEmpty {
-                    Divider()
-                }
-
-                AddedFileAttachmentsView(
-                    addedFileURLs: addedFileURLs,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
-            }
-            
-            if !addedVoiceRecordings.isEmpty {
-                AddedVoiceRecordingsView(
-                    addedVoiceRecordings: addedVoiceRecordings,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
-                .padding(.top, 8)
-            }
-
-            if !addedCustomAttachments.isEmpty {
-                factory.makeCustomAttachmentPreviewView(
-                    options: CustomAttachmentPreviewViewOptions(
-                        addedCustomAttachments: addedCustomAttachments,
-                        onCustomAttachmentTap: onCustomAttachmentTap
-                    )
-                )
-            }
+            attachmentsTray
+                .padding(.leading, tokens.spacingSm)
 
             HStack(alignment: .bottom) {
                 HStack {
@@ -494,13 +452,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         sendMessage: sendMessage
                     )
                 )
-                .padding(.trailing, 8)
-                .padding(.bottom, 8)
+                .padding(.trailing, tokens.spacingXs)
+                .padding(.bottom, tokens.spacingXs)
             }
+            .padding(.leading, tokens.spacingXs)
         }
-        .padding(.vertical, shouldAddVerticalPadding ? inputPaddingsConfig.vertical : 0)
-        .padding(.leading, inputPaddingsConfig.leading)
-        .padding(.trailing, inputPaddingsConfig.trailing)
         .modifier(
             factory.styles.makeComposerInputViewModifier(
                 options: .init(keyboardShown: keyboardShown)
@@ -508,6 +464,49 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         )
         .onReceive(keyboardWillChangePublisher) { visible in
             keyboardShown = visible
+        }
+    }
+
+    private var attachmentsTray: some View {
+        Group {
+            if !addedAssets.isEmpty {
+                AddedImageAttachmentsView(
+                    images: addedAssets,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .transition(.scale)
+                .animation(.default)
+            }
+
+            if !addedFileURLs.isEmpty {
+                if !addedAssets.isEmpty {
+                    Divider()
+                }
+
+                AddedFileAttachmentsView(
+                    addedFileURLs: addedFileURLs,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+            }
+
+            if !addedVoiceRecordings.isEmpty {
+                AddedVoiceRecordingsView(
+                    addedVoiceRecordings: addedVoiceRecordings,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+                .padding(.top, 8)
+            }
+
+            if !addedCustomAttachments.isEmpty {
+                factory.makeCustomAttachmentPreviewView(
+                    options: CustomAttachmentPreviewViewOptions(
+                        addedCustomAttachments: addedCustomAttachments,
+                        onCustomAttachmentTap: onCustomAttachmentTap
+                    )
+                )
+            }
         }
     }
 
@@ -521,10 +520,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
 
         return .regular(sendButtonEnabled)
-    }
-
-    private var shouldAddVerticalPadding: Bool {
-        !addedFileURLs.isEmpty || !addedAssets.isEmpty
     }
 
     private var isInCooldown: Bool {

@@ -433,16 +433,29 @@ import XCTest
 
         // When
         let view = viewFactory.makeQuotedMessageView(
-            options: QuotedMessageViewOptions(
+            options: .init(
+                quotedMessage: message
+            )
+        )
+
+        // Then
+        XCTAssert(view is QuotedMessageView<DefaultViewFactory>)
+    }
+    
+    func test_viewFactory_makeChatQuotedMessageView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeChatQuotedMessageView(
+            options: ChatQuotedMessageViewOptions(
                 quotedMessage: message,
-                fillAvailableSpace: true,
-                isInComposer: false,
                 scrolledId: .constant(nil)
             )
         )
 
         // Then
-        XCTAssert(view is QuotedMessageViewContainer<DefaultViewFactory>)
+        XCTAssert(view is ChatQuotedMessageView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeComposerQuotedMessageView() {
@@ -453,13 +466,12 @@ import XCTest
         let view = viewFactory.makeComposerQuotedMessageView(
             options: .init(
                 quotedMessage: message,
-                channel: nil,
                 onDismiss: {}
             )
         )
 
         // Then
-        XCTAssert(view is ComposerQuotedMessageView)
+        XCTAssert(view is ComposerQuotedMessageView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeCommandsContainerView() {
@@ -837,17 +849,6 @@ import XCTest
 
         // Then
         XCTAssert(name.contains("BottomReactionsView"))
-    }
-    
-    func test_viewFactory_makeCustomAttachmentQuotedView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        
-        // When
-        let view = viewFactory.makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions(message: .mock()))
-        
-        // Then
-        XCTAssert(view is EmptyView)
     }
     
     func test_viewFactory_makeComposerRecordingView() {

@@ -713,53 +713,6 @@ import XCTest
         )
     }
     
-    func test_composerQuotedMessage_translated() {
-        let factory = DefaultViewFactory.shared
-        let size = CGSize(width: defaultScreenSize.width, height: 100)
-
-        let channelController = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient,
-            chatChannel: .mock(
-                cid: .unique,
-                membership: .mock(id: .unique, language: .spanish)
-            )
-        )
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        let view = ComposerInputView(
-            factory: factory,
-            channelController: channelController,
-            text: .constant("Hello"),
-            selectedRangeLocation: .constant(0),
-            command: .constant(nil),
-            recordingState: .constant(.initial),
-            addedAssets: [],
-            addedFileURLs: [],
-            addedCustomAttachments: [],
-            addedVoiceRecordings: [],
-            quotedMessage: .constant(
-                .mock(
-                    text: "Hello",
-                    author: .mock(id: .unique, name: "John Wick"),
-                    translations: [.spanish: "Hola"]
-                )
-            ),
-            cooldownDuration: 0,
-            sendButtonEnabled: true,
-            isSendMessageEnabled: true,
-            onCustomAttachmentTap: { _ in
-            },
-            removeAttachmentWithId: { _ in },
-            sendMessage: {},
-            onImagePasted: { _ in },
-            startRecording: {},
-            stopRecording: {}
-        )
-        .environmentObject(viewModel)
-        .frame(width: size.width, height: size.height)
-
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
-    }
-
     // MARK: - Editing
 
     func test_composerView_editingMessageWithText() {
