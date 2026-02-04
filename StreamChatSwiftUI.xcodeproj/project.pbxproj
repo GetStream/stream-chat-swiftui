@@ -164,8 +164,6 @@
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerInputView_inputTextView.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerInputView_slowMode.1.png,
 				Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerInputView_snapshot.1.png,
-				"Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerQuotedMessage_translated.default-dark.png",
-				"Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerQuotedMessage_translated.default-light.png",
 				"Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerView_draftWithCommand.default-light.png",
 				"Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerView_draftWithFileAttachment.default-light.png",
 				"Tests/ChatChannel/__Snapshots__/MessageComposerView_Tests/test_composerView_draftWithImageAttachment.default-light.png",
