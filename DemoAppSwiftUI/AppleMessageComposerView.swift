@@ -131,17 +131,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     canSendPoll: viewModel.canSendPoll,
                     onCommandSelected: { command in
                         viewModel.pickerTypeState = .expanded(.none)
-                        viewModel.composerCommand = ComposerCommand(
-                            id: "instantCommands",
-                            typingSuggestion: TypingSuggestion(
-                                text: "",
-                                locationRange: NSRange(
-                                    location: 0,
-                                    length: 0
-                                )
-                            ),
-                            displayInfo: nil
-                        )
+                        viewModel.composerCommand = command
                         viewModel.handleCommand(
                             for: $viewModel.text,
                             selectedRangeLocation: $viewModel.selectedRangeLocation,

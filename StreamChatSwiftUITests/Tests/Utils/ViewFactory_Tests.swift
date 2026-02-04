@@ -820,6 +820,21 @@ import XCTest
         // Then
         XCTAssert(view is ComposerTextInputView)
     }
+
+    func test_viewFactory_makeAttachmentCommandsPickerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeAttachmentCommandsPickerView(
+            options: AttachmentCommandsPickerViewOptions(
+                onCommandSelected: { _ in }
+            )
+        )
+
+        // Then
+        XCTAssert(view is AttachmentCommandsPickerView)
+    }
     
     func test_viewFactory_makeMessageListContainerModifier() {
         // Given
