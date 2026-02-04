@@ -133,20 +133,18 @@ private struct AttachmentCommandRow: View {
         .padding(.vertical, tokens.spacingSm)
     }
 
+    @ViewBuilder
     private var iconView: some View {
         let image = Image(uiImage: item.displayInfo.icon)
         if item.usesTintedIcon {
-            return AnyView(
-                image
-                    .customizable()
-                    .foregroundColor(Color(colors.textSecondary))
-            )
-        }
-        return AnyView(
+            image
+                .customizable()
+                .foregroundColor(Color(colors.textSecondary))
+        } else {
             image
                 .resizable()
                 .scaledToFit()
-        )
+        }
     }
 }
 

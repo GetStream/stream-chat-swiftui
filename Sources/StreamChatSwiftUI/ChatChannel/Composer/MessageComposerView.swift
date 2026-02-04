@@ -169,21 +169,14 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     canSendPoll: viewModel.canSendPoll,
                     onCommandSelected: { command in
                         viewModel.pickerTypeState = .expanded(.none)
-                        viewModel.composerCommand = ComposerCommand(
-                            id: "instantCommands",
-                            typingSuggestion: TypingSuggestion.empty,
-                            displayInfo: nil
-                        )
+                        viewModel.composerCommand = command
                         viewModel.handleCommand(
                             for: $viewModel.text,
                             selectedRangeLocation: $viewModel.selectedRangeLocation,
                             command: $viewModel.composerCommand,
                             extraData: ["instantCommand": command]
                         )
-                        NotificationCenter.default.post(
-                            name: NSNotification.Name(getStreamFirstResponderNotification),
-                            object: nil
-                        )
+                        becomeFirstResponder()
                     }
                 )
             )
