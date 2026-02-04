@@ -196,7 +196,7 @@ import XCTest
             id: .unique,
             cid: .unique,
             text: "This is a quoted message",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique, name: "John Wick")
         )
         let imageMessage = ChatMessage.mock(
             id: .unique,
