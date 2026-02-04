@@ -130,7 +130,6 @@
 				Infrastructure/Mocks/TestRequest.swift,
 				Infrastructure/Mocks/VideoPreviewLoader_Mock.swift,
 				Infrastructure/Mocks/VirtualTimer.swift,
-				Infrastructure/Mocks/WebSocketClient_Mock.swift,
 				Infrastructure/Mocks/WebSocketEngineMock.swift,
 				Infrastructure/Mocks/WebSocketPingControllerMock.swift,
 				Infrastructure/Shared/ChannelId.swift,
