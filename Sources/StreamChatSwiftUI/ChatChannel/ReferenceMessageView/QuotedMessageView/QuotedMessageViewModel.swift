@@ -153,6 +153,10 @@ open class QuotedMessageViewModel {
     // MARK: - Private Helpers
     
     private var messageText: String {
+        if message.isDeleted {
+            return L10n.Message.deletedMessagePlaceholder
+        }
+
         if let language = currentUser?.language,
            let translatedText = message.translatedText(for: language) {
             return translatedText

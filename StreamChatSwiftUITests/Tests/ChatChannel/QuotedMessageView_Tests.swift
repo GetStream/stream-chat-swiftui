@@ -627,6 +627,28 @@ import XCTest
         AssertSnapshot(view, size: containerSize)
     }
     
+    // MARK: - Reply - Deleted Message
+    
+    func test_quotedMessageView_deletedMessage() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This message was deleted",
+            author: author,
+            deletedAt: Date(),
+            isSentByCurrentUser: false
+        )
+        
+        // When
+        let view = containerView {
+            QuotedMessageView(message: message)
+        }
+        
+        // Then
+        AssertSnapshot(view, size: containerSize)
+    }
+    
     // MARK: - ViewModel Tests
     
     func test_quotedMessageViewModel_title() {
