@@ -66,6 +66,7 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
                 attachmentPreview
             }
         }
+        .accessibilityElement(children: .contain)
     }
 
     var titleView: some View {
@@ -94,6 +95,7 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
                 .font(fonts.footnote)
                 .foregroundColor(Color(colors.chatTextMessage))
                 .lineLimit(1)
+                .accessibilityIdentifier("referenceMessageSubtitle")
         }
     }
 }

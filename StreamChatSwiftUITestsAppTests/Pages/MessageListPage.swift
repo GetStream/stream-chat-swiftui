@@ -147,7 +147,7 @@ class MessageListPage {
         }
 
         static func quotedText(_ text: String, in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["quotedMessageText"]
+            messageCell.staticTexts["referenceMessageSubtitle"]
         }
 
         static func deletedText(in messageCell: XCUIElement) -> XCUIElement {
