@@ -11,13 +11,19 @@ public struct AttachmentCommandsPickerView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
-    @EnvironmentObject private var viewModel: MessageComposerViewModel
+    @Injected(\.utils) private var utils
 
-    public init() {}
+    var onCommandSelected: @MainActor (ComposerCommand) -> Void
+
+    public init(
+        onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
+    ) {
+        self.onCommandSelected = onCommandSelected
+    }
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: tokens.spacingSm) {
+            VStack(alignment: .leading, spacing: tokens.spacingXs) {
                 headerView
 
                 VStack(spacing: tokens.spacingXs) {
@@ -34,8 +40,8 @@ public struct AttachmentCommandsPickerView: View {
                     }
                 }
             }
-            .padding(.horizontal, tokens.spacingXl)
-            .padding(.vertical, tokens.spacingSm)
+            .padding(.horizontal, tokens.spacingSm)
+            .padding(.vertical, tokens.spacingXs)
         }
         .background(Color(colors.background))
         .accessibilityElement(children: .contain)
@@ -46,14 +52,24 @@ public struct AttachmentCommandsPickerView: View {
         Text(L10n.Composer.Suggestions.Commands.header)
             .font(fonts.bodyBold)
             .foregroundColor(Color(colors.text))
-            .padding(.top, tokens.spacingSm)
-            .padding(.bottom, tokens.spacingXs)
+            .padding(.top, tokens.spacingXs)
+            .padding(.bottom, tokens.spacingXxs)
             .accessibilityIdentifier("AttachmentCommandsHeader")
     }
 
     private var commandItems: [CommandItem] {
-        let commandSymbol = viewModel.utils.commandsConfig.instantCommandsSymbol
+        let commandSymbol = utils.commandsConfig.instantCommandsSymbol
         return [
+            CommandItem(
+                id: "\(commandSymbol)giphy",
+                displayInfo: CommandDisplayInfo(
+                    displayName: L10n.Composer.Commands.giphy,
+                    icon: images.commandGiphy,
+                    format: "\(commandSymbol)giphy [\(L10n.Composer.Commands.Format.text)]",
+                    isInstant: true
+                ),
+                replacesMessageSent: false
+            ),
             CommandItem(
                 id: "\(commandSymbol)mute",
                 displayInfo: CommandDisplayInfo(
@@ -73,43 +89,18 @@ public struct AttachmentCommandsPickerView: View {
                     isInstant: true
                 ),
                 replacesMessageSent: true
-            ),
-            CommandItem(
-                id: "\(commandSymbol)giphy",
-                displayInfo: CommandDisplayInfo(
-                    displayName: L10n.Composer.Commands.giphy,
-                    icon: images.commandGiphy,
-                    format: "\(commandSymbol)giphy [\(L10n.Composer.Commands.Format.text)]",
-                    isInstant: true
-                ),
-                replacesMessageSent: false
             )
         ]
     }
 
     private func handleSelection(_ item: CommandItem) {
-        viewModel.pickerTypeState = .expanded(.none)
-        viewModel.composerCommand = ComposerCommand(
-            id: "instantCommands",
-            typingSuggestion: TypingSuggestion.empty,
-            displayInfo: nil
-        )
         let command = ComposerCommand(
             id: item.id,
             typingSuggestion: TypingSuggestion.empty,
             displayInfo: item.displayInfo,
             replacesMessageSent: item.replacesMessageSent
         )
-        viewModel.handleCommand(
-            for: $viewModel.text,
-            selectedRangeLocation: $viewModel.selectedRangeLocation,
-            command: $viewModel.composerCommand,
-            extraData: ["instantCommand": command]
-        )
-        NotificationCenter.default.post(
-            name: NSNotification.Name(getStreamFirstResponderNotification),
-            object: nil
-        )
+        onCommandSelected(command)
     }
 }
 

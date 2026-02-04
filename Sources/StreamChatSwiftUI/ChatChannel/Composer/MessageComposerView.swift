@@ -166,10 +166,27 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     selectedAssetIds: viewModel.addedAssets.map(\.id),
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
-                    canSendPoll: viewModel.canSendPoll
+                    canSendPoll: viewModel.canSendPoll,
+                    onCommandSelected: { command in
+                        viewModel.pickerTypeState = .expanded(.none)
+                        viewModel.composerCommand = ComposerCommand(
+                            id: "instantCommands",
+                            typingSuggestion: TypingSuggestion.empty,
+                            displayInfo: nil
+                        )
+                        viewModel.handleCommand(
+                            for: $viewModel.text,
+                            selectedRangeLocation: $viewModel.selectedRangeLocation,
+                            command: $viewModel.composerCommand,
+                            extraData: ["instantCommand": command]
+                        )
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name(getStreamFirstResponderNotification),
+                            object: nil
+                        )
+                    }
                 )
             )
-            .environmentObject(viewModel)
             .offset(y: viewModel.overlayShown ? 0 : popupSize)
             .opacity(viewModel.overlayShown ? 1 : 0)
             .animation(.easeInOut(duration: 0.25))

@@ -50,6 +50,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     var channelController: ChatChannelController
     var messageController: ChatMessageController?
     var canSendPoll: Bool
+    var onCommandSelected: @MainActor (ComposerCommand) -> Void
     
     public init(
         viewFactory: Factory,
@@ -70,7 +71,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         selectedAssetIds: [String]? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
-        canSendPoll: Bool
+        canSendPoll: Bool,
+        onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
     ) {
         self.viewFactory = viewFactory
         _selectedPickerState = selectedPickerState
@@ -91,6 +93,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         self.channelController = channelController
         self.messageController = messageController
         self.canSendPoll = canSendPoll
+        self.onCommandSelected = onCommandSelected
     }
 
     public var body: some View {
@@ -146,7 +149,11 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     )
                 )
             } else if selectedPickerState == .commands {
-                AttachmentCommandsPickerView()
+                viewFactory.makeAttachmentCommandsPickerView(
+                    options: AttachmentCommandsPickerViewOptions(
+                        onCommandSelected: onCommandSelected
+                    )
+                )
             } else if selectedPickerState == .custom {
                 viewFactory.makeCustomAttachmentView(
                     options: CustomComposerAttachmentViewOptions(
@@ -188,9 +195,7 @@ public struct AttachmentSourcePickerView: View {
     }
 
     public var body: some View {
-        let commandsIcon = UIImage(systemName: "command") ?? images.attachmentPickerFolder
-
-        return HStack(alignment: .center, spacing: 24) {
+        HStack(alignment: .center, spacing: 24) {
             AttachmentTypePickerButton(
                 icon: images.attachmentPickerPhotos,
                 pickerType: .photos,
@@ -228,7 +233,7 @@ public struct AttachmentSourcePickerView: View {
             }
 
             AttachmentTypePickerButton(
-                icon: commandsIcon,
+                icon: images.commands,
                 pickerType: .commands,
                 isSelected: selected == .commands,
                 onTap: onTap
@@ -273,7 +278,7 @@ public struct AttachmentTypePickerButton: View {
         } label: {
             Image(uiImage: icon)
                 .customizable()
-                .frame(width: 22)
+                .frame(maxWidth: 20, maxHeight: 20)
                 .foregroundColor(
                     isSelected ? Color(colors.highlightedAccentBackground)
                         : Color(colors.textLowEmphasis)

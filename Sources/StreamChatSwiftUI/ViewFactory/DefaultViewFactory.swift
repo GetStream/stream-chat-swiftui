@@ -627,7 +627,16 @@ extension ViewFactory {
             selectedAssetIds: options.selectedAssetIds,
             channelController: options.channelController,
             messageController: options.messageController,
-            canSendPoll: options.canSendPoll
+            canSendPoll: options.canSendPoll,
+            onCommandSelected: options.onCommandSelected
+        )
+    }
+
+    public func makeAttachmentCommandsPickerView(
+        options: AttachmentCommandsPickerViewOptions
+    ) -> some View {
+        AttachmentCommandsPickerView(
+            onCommandSelected: options.onCommandSelected
         )
     }
     

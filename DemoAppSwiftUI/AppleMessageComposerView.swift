@@ -128,7 +128,31 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     selectedAssetIds: viewModel.addedAssets.map(\.id),
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
-                    canSendPoll: viewModel.canSendPoll
+                    canSendPoll: viewModel.canSendPoll,
+                    onCommandSelected: { command in
+                        viewModel.pickerTypeState = .expanded(.none)
+                        viewModel.composerCommand = ComposerCommand(
+                            id: "instantCommands",
+                            typingSuggestion: TypingSuggestion(
+                                text: "",
+                                locationRange: NSRange(
+                                    location: 0,
+                                    length: 0
+                                )
+                            ),
+                            displayInfo: nil
+                        )
+                        viewModel.handleCommand(
+                            for: $viewModel.text,
+                            selectedRangeLocation: $viewModel.selectedRangeLocation,
+                            command: $viewModel.composerCommand,
+                            extraData: ["instantCommand": command]
+                        )
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name(getStreamFirstResponderNotification),
+                            object: nil
+                        )
+                    }
                 )
             )
         }

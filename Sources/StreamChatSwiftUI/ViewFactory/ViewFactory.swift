@@ -373,6 +373,12 @@ import SwiftUI
     /// - Returns: view displayed in the attachment picker slot.
     func makeAttachmentPickerView(options: AttachmentPickerViewOptions) -> AttachmentPickerViewType
 
+    associatedtype AttachmentCommandsPickerViewType: View
+    /// Creates the attachment commands picker view.
+    /// - Parameter options: the options for creating the attachment commands picker view.
+    /// - Returns: view displayed in the attachment commands picker slot.
+    func makeAttachmentCommandsPickerView(options: AttachmentCommandsPickerViewOptions) -> AttachmentCommandsPickerViewType
+
     associatedtype AttachmentSourcePickerViewType: View
     /// Creates the attachment source picker view.
     /// - Parameter options: the options for creating the attachment source picker view.
