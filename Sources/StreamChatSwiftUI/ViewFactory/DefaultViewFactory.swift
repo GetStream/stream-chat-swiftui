@@ -796,37 +796,39 @@ extension ViewFactory {
         options: ComposerQuotedMessageViewOptions
     ) -> some View {
         ComposerQuotedMessageView(
-            viewModel: QuotedMessageViewModel(
-                message: options.quotedMessage,
-                channel: options.channel
-            ),
+            factory: self,
+            quotedMessage: options.quotedMessage,
             onDismiss: options.onDismiss
+        )
+    }
+
+    public func makeChatQuotedMessageView(
+        options: ChatQuotedMessageViewOptions
+    ) -> some View {
+        ChatQuotedMessageView(
+            factory: self,
+            quotedMessage: options.quotedMessage,
+            scrolledId: options.scrolledId
         )
     }
 
     public func makeQuotedMessageView(
         options: QuotedMessageViewOptions
     ) -> some View {
-        QuotedMessageViewContainer(
+        QuotedMessageView(
             factory: self,
-            quotedMessage: options.quotedMessage,
-            fillAvailableSpace: options.fillAvailableSpace,
-            forceLeftToRight: options.isInComposer,
-            scrolledId: options.scrolledId
+            viewModel: QuotedMessageViewModel(
+                message: options.quotedMessage,
+                currentUser: chatClient.currentUserController().currentUser
+            ),
+            padding: options.padding
         )
     }
-    
-    public func makeQuotedMessageContentView(
-        options: QuotedMessageContentViewOptions
+
+    public func makeQuotedMessageAttachmentPreviewView(
+        options: QuotedMessageAttachmentPreviewViewOptions
     ) -> some View {
-        QuotedMessageContentView(
-            factory: self,
-            options: options
-        )
-    }
-    
-    public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
-        EmptyView()
+        QuotedMessageAttachmentPreviewView(viewModel: options.viewModel)
     }
     
     public func makeCommandsContainerView(

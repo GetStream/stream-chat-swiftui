@@ -23,11 +23,9 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             if let quotedMessage = message.quotedMessage {
-                factory.makeQuotedMessageView(
-                    options: .init(
+                factory.makeChatQuotedMessageView(
+                    options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
                         scrolledId: $scrolledId
                     )
                 )

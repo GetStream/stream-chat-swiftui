@@ -18,7 +18,13 @@ public struct MessageView<Factory: ViewFactory>: View {
     public var isFirst: Bool
     @Binding public var scrolledId: String?
 
-    public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        contentWidth: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) {
         self.factory = factory
         self.message = message
         self.contentWidth = contentWidth
@@ -179,11 +185,9 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             if let quotedMessage = message.quotedMessage {
-                factory.makeQuotedMessageView(
-                    options: QuotedMessageViewOptions(
+                factory.makeChatQuotedMessageView(
+                    options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
                         scrolledId: $scrolledId
                     )
                 )
@@ -220,11 +224,9 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
         ZStack {
             if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
-                    factory.makeQuotedMessageView(
-                        options: QuotedMessageViewOptions(
+                    factory.makeChatQuotedMessageView(
+                        options: ChatQuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
-                            fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                            isInComposer: false,
                             scrolledId: $scrolledId
                         )
                     )

@@ -464,31 +464,28 @@ import SwiftUI
 
     associatedtype ComposerQuotedMessageViewType: View
     /// Creates the quoted message view shown in the composer.
-    /// - Parameter options: the options for creating the quoted message view.
+    /// - Parameter options: the options for creating the composer quoted message view.
     func makeComposerQuotedMessageView(options: ComposerQuotedMessageViewOptions) -> ComposerQuotedMessageViewType
 
+    associatedtype ChatQuotedMessageViewType: View
+    /// Creates the quoted message view shown in the message list.
+    /// - Parameter options: the options for creating the chat quoted message view.
+    func makeChatQuotedMessageView(options: ChatQuotedMessageViewOptions) -> ChatQuotedMessageViewType
+
     associatedtype QuotedMessageViewType: View
-    /// Creates the quoted message view, shown in the message list and the composer.
+    /// Creates the base quoted message view used by both composer and message list containers.
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
-    
-    associatedtype QuotedMessageContentViewType: View
-    /// Creates the quoted message content view.
+
+    associatedtype QuotedMessageAttachmentPreviewViewType: View
+    /// Creates the attachment preview view for a quoted message.
     ///
-    /// It is the view that is embedded in quoted message bubble view.
+    /// This slot can be used to show custom attachment previews inside quoted messages.
+    /// If the custom attachment preview is just an image, consider overriding
+    /// the `QuotedMessageViewModel.imagePreviewURL` only instead.
     ///
-    /// - Parameters:
-    ///  - options: configuration options for the quoted message content view.
-    /// - Returns: view displayed in the quoted message content slot.
-    func makeQuotedMessageContentView(
-        options: QuotedMessageContentViewOptions
-    ) -> QuotedMessageContentViewType
-    
-    associatedtype CustomAttachmentQuotedViewType: View
-    /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
-    /// - Parameter options: the options for creating the custom attachment quoted view.
-    /// - Returns: view shown in quoted messages with custom attachments.
-    func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> CustomAttachmentQuotedViewType
+    /// - Parameter options: the options for creating the attachment preview view.
+    func makeQuotedMessageAttachmentPreviewView(options: QuotedMessageAttachmentPreviewViewOptions) -> QuotedMessageAttachmentPreviewViewType
 
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.

@@ -126,7 +126,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
                     if composerPlacement == .docked {
                         composerView
-                            .padding(.top, 8)
                             .overlay(
                                 Rectangle()
                                     .frame(width: nil, height: 1, alignment: .top)

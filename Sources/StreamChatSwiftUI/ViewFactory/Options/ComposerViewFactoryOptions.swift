@@ -270,43 +270,57 @@ public final class CommandsContainerViewOptions: @unchecked Sendable {
 public final class ComposerQuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
-    /// The channel where the quoted message belongs.
-    public let channel: ChatChannel?
     /// The callback when the quoted message view is dismissed.
     public let onDismiss: @MainActor () -> Void
 
     public init(
         quotedMessage: ChatMessage,
-        channel: ChatChannel?,
         onDismiss: @escaping @MainActor () -> Void
     ) {
         self.quotedMessage = quotedMessage
-        self.channel = channel
         self.onDismiss = onDismiss
     }
 }
 
-/// Options for creating the quoted message view.
+/// Options for creating the base quoted message view.
 public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
-    /// Whether to fill the available space.
-    public let fillAvailableSpace: Bool
-    /// Whether the view is in the composer.
-    public let isInComposer: Bool
+    /// The padding to apply around the quoted message view.
+    public let padding: EdgeInsets?
+    
+    public init(
+        quotedMessage: ChatMessage,
+        padding: EdgeInsets? = nil
+    ) {
+        self.quotedMessage = quotedMessage
+        self.padding = padding
+    }
+}
+
+/// Options for creating the chat quoted message view (message list container).
+public final class ChatQuotedMessageViewOptions: Sendable {
+    /// The quoted message to display.
+    public let quotedMessage: ChatMessage
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
     public init(
         quotedMessage: ChatMessage,
-        fillAvailableSpace: Bool,
-        isInComposer: Bool,
         scrolledId: Binding<String?>
     ) {
         self.quotedMessage = quotedMessage
-        self.fillAvailableSpace = fillAvailableSpace
-        self.isInComposer = isInComposer
         self.scrolledId = scrolledId
+    }
+}
+
+/// Options for creating the quoted message attachment preview view.
+public final class QuotedMessageAttachmentPreviewViewOptions: Sendable {
+    /// The view model containing the quoted message data.
+    public let viewModel: QuotedMessageViewModel
+    
+    public init(viewModel: QuotedMessageViewModel) {
+        self.viewModel = viewModel
     }
 }
 

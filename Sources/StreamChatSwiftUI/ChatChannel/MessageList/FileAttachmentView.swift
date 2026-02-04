@@ -29,11 +29,9 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(alignment: message.alignmentInBubble) {
             if let quotedMessage = message.quotedMessage {
-                factory.makeQuotedMessageView(
-                    options: QuotedMessageViewOptions(
+                factory.makeChatQuotedMessageView(
+                    options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
                         scrolledId: $scrolledId
                     )
                 )

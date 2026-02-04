@@ -14,7 +14,6 @@ public struct ComposerConfig {
     public var inputFont: UIFont
     public var gallerySupportedTypes: GallerySupportedTypes
     public var maxGalleryAssetsCount: Int?
-    public var inputPaddingsConfig: PaddingsConfig
     public var adjustMessageOnSend: (String) -> (String)
     public var adjustMessageOnRead: (String) -> (String)
 
@@ -26,7 +25,6 @@ public struct ComposerConfig {
         inputFont: UIFont = UIFont.preferredFont(forTextStyle: .body),
         gallerySupportedTypes: GallerySupportedTypes = .imagesAndVideo,
         maxGalleryAssetsCount: Int? = nil,
-        inputPaddingsConfig: PaddingsConfig = .composerInput,
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
         adjustMessageOnRead: @escaping (String) -> (String) = { $0 }
     ) {
@@ -38,7 +36,6 @@ public struct ComposerConfig {
         self.adjustMessageOnRead = adjustMessageOnRead
         self.gallerySupportedTypes = gallerySupportedTypes
         self.maxGalleryAssetsCount = maxGalleryAssetsCount
-        self.inputPaddingsConfig = inputPaddingsConfig
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
     }
 }
@@ -47,35 +44,4 @@ public enum GallerySupportedTypes {
     case imagesAndVideo
     case images
     case videos
-}
-
-public struct PaddingsConfig: Sendable {
-    public let top: CGFloat
-    public let bottom: CGFloat
-    public let leading: CGFloat
-    public let trailing: CGFloat
-    
-    public var horizontal: CGFloat {
-        leading + trailing
-    }
-    
-    public var vertical: CGFloat {
-        top + bottom
-    }
-    
-    public init(top: CGFloat, bottom: CGFloat, leading: CGFloat, trailing: CGFloat) {
-        self.top = top
-        self.bottom = bottom
-        self.leading = leading
-        self.trailing = trailing
-    }
-}
-
-extension PaddingsConfig {
-    public static let composerInput = PaddingsConfig(
-        top: 4,
-        bottom: 4,
-        leading: 8,
-        trailing: 0
-    )
 }
