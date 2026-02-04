@@ -8,31 +8,47 @@ import SwiftUI
 /// View for the commands picker.
 public struct AttachmentCommandsPickerView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
     @EnvironmentObject private var viewModel: MessageComposerViewModel
 
     public init() {}
 
     public var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                ForEach(commandItems) { item in
-                    InstantCommandView(displayInfo: item.displayInfo)
-                        .standardPadding()
-                        .contentShape(Rectangle())
-                        .highPriorityGesture(
-                            TapGesture().onEnded {
-                                handleSelection(item)
-                            }
-                        )
-                        .accessibilityElement(children: .contain)
-                        .accessibilityIdentifier("AttachmentCommandView_\(item.id)")
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: tokens.spacingSm) {
+                headerView
+
+                VStack(spacing: tokens.spacingXs) {
+                    ForEach(commandItems) { item in
+                        AttachmentCommandRow(item: item)
+                            .contentShape(Rectangle())
+                            .highPriorityGesture(
+                                TapGesture().onEnded {
+                                    handleSelection(item)
+                                }
+                            )
+                            .accessibilityElement(children: .contain)
+                            .accessibilityIdentifier("AttachmentCommandView_\(item.id)")
+                    }
                 }
             }
+            .padding(.horizontal, tokens.spacingXl)
+            .padding(.vertical, tokens.spacingSm)
         }
-        .background(Color(colors.background1))
+        .background(Color(colors.background))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentCommandsPickerView")
+    }
+
+    private var headerView: some View {
+        Text(L10n.Composer.Suggestions.Commands.header)
+            .font(fonts.bodyBold)
+            .foregroundColor(Color(colors.text))
+            .padding(.top, tokens.spacingSm)
+            .padding(.bottom, tokens.spacingXs)
+            .accessibilityIdentifier("AttachmentCommandsHeader")
     }
 
     private var commandItems: [CommandItem] {
@@ -94,6 +110,35 @@ public struct AttachmentCommandsPickerView: View {
             name: NSNotification.Name(getStreamFirstResponderNotification),
             object: nil
         )
+    }
+}
+
+private struct AttachmentCommandRow: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    let item: CommandItem
+
+    var body: some View {
+        HStack(spacing: tokens.spacingSm) {
+            Image(uiImage: item.displayInfo.icon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                .accessibilityIdentifier("AttachmentCommandIcon_\(item.id)")
+
+            Text(item.displayInfo.displayName)
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.text))
+
+            Text(item.displayInfo.format)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textLowEmphasis))
+
+            Spacer()
+        }
+        .padding(.vertical, tokens.spacingSm)
     }
 }
 
