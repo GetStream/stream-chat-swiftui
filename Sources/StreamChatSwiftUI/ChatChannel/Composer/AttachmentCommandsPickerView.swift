@@ -68,27 +68,30 @@ public struct AttachmentCommandsPickerView: View {
                     format: "\(commandSymbol)giphy [\(L10n.Composer.Commands.Format.text)]",
                     isInstant: true
                 ),
-                replacesMessageSent: false
+                replacesMessageSent: false,
+                usesTintedIcon: false
             ),
             CommandItem(
                 id: "\(commandSymbol)mute",
                 displayInfo: CommandDisplayInfo(
                     displayName: L10n.Composer.Commands.mute,
-                    icon: images.commandMute,
+                    icon: UIImage(systemName: "speaker.slash") ?? images.commandMute,
                     format: "\(commandSymbol)mute [\(L10n.Composer.Commands.Format.username)]",
                     isInstant: true
                 ),
-                replacesMessageSent: true
+                replacesMessageSent: true,
+                usesTintedIcon: true
             ),
             CommandItem(
                 id: "\(commandSymbol)unmute",
                 displayInfo: CommandDisplayInfo(
                     displayName: L10n.Composer.Commands.unmute,
-                    icon: images.commandUnmute,
+                    icon: UIImage(systemName: "speaker.wave.1") ?? images.commandUnmute,
                     format: "\(commandSymbol)unmute [\(L10n.Composer.Commands.Format.username)]",
                     isInstant: true
                 ),
-                replacesMessageSent: true
+                replacesMessageSent: true,
+                usesTintedIcon: true
             )
         ]
     }
@@ -113,23 +116,37 @@ private struct AttachmentCommandRow: View {
 
     var body: some View {
         HStack(spacing: tokens.spacingSm) {
-            Image(uiImage: item.displayInfo.icon)
-                .resizable()
-                .scaledToFit()
+            iconView
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .accessibilityIdentifier("AttachmentCommandIcon_\(item.id)")
 
             Text(item.displayInfo.displayName)
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.text))
+                .foregroundColor(Color(colors.textPrimary))
 
             Text(item.displayInfo.format)
                 .font(fonts.body)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
 
             Spacer()
         }
         .padding(.vertical, tokens.spacingSm)
+    }
+
+    private var iconView: some View {
+        let image = Image(uiImage: item.displayInfo.icon)
+        if item.usesTintedIcon {
+            return AnyView(
+                image
+                    .customizable()
+                    .foregroundColor(Color(colors.textSecondary))
+            )
+        }
+        return AnyView(
+            image
+                .resizable()
+                .scaledToFit()
+        )
     }
 }
 
@@ -137,4 +154,5 @@ private struct CommandItem: Identifiable {
     let id: String
     let displayInfo: CommandDisplayInfo
     let replacesMessageSent: Bool
+    let usesTintedIcon: Bool
 }
