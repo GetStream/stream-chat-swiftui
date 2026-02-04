@@ -238,4 +238,55 @@ import XCTest
         XCTAssertNotNil(viewModel.currentSnapshot)
         XCTAssertTrue(viewModel.reactionsShown)
     }
+    
+    // MARK: - LiquidGlass Style Tests
+    
+    func test_chatChannelView_liquidGlassStyle_composer_snapshot() {
+        // Given
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        var messages = [ChatMessage]()
+        for i in 0..<5 {
+            messages.append(
+                ChatMessage.mock(
+                    id: .unique,
+                    cid: mockChannel.cid,
+                    text: "Test \(i)",
+                    author: .mock(id: .unique, name: "Martin")
+                )
+            )
+        }
+        controller.simulateInitial(channel: mockChannel, messages: messages, state: .remoteDataFetched)
+
+        // When
+        let viewFactory = LiquidGlassViewFactory()
+        let view = NavigationView {
+            ScrollView {
+                ChatChannelView(
+                    viewFactory: viewFactory,
+                    channelController: controller
+                )
+                .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+}
+
+// MARK: - LiquidGlass Test ViewFactory
+
+class LiquidGlassViewFactory: ViewFactory {
+    @Injected(\.chatClient) public var chatClient
+    
+    public var styles = LiquidGlassStyles()
+    
+    init() {}
 }
