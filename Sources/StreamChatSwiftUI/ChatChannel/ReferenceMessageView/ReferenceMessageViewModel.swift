@@ -20,14 +20,8 @@ public protocol ReferenceMessageViewModel: AnyObject {
     /// The icon for the subtitle, if applicable.
     var subtitleIcon: MessageAttachmentPreviewIcon? { get }
     
-    /// The URL for the image attachment preview, if available.
-    var imagePreviewURL: URL? { get }
-    
-    /// The URL for the video attachment preview, if available.
-    var videoPreviewURL: URL? { get }
-    
-    /// The URL for the file attachment preview, if available.
-    var filePreviewURL: URL? { get }
+    /// The thumbnail for the attachment preview, if available.
+    var thumbnail: MessageAttachmentPreviewThumbnail? { get }
     
     /// Whether the referenced message was sent by the current user.
     var isSentByCurrentUser: Bool { get }

@@ -59,30 +59,11 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
         attachmentPreviewResolver.previewIcon
     }
     
-    // MARK: - Attachment Preview URLs
+    // MARK: - Attachment Preview
     
-    /// The URL for the image attachment preview (includes images, giphys, and link previews).
-    open var imagePreviewURL: URL? {
-        if let imageAttachment = message.imageAttachments.first {
-            return imageAttachment.imageURL
-        }
-        if let giphyAttachment = message.giphyAttachments.first {
-            return giphyAttachment.previewURL
-        }
-        if let linkAttachment = message.linkAttachments.first {
-            return linkAttachment.previewURL
-        }
-        return nil
-    }
-    
-    /// The URL for the video attachment preview (thumbnail).
-    open var videoPreviewURL: URL? {
-        message.videoAttachments.first?.thumbnailURL
-    }
-    
-    /// The URL for the file attachment preview.
-    open var filePreviewURL: URL? {
-        message.fileAttachments.first?.assetURL
+    /// The thumbnail for the attachment preview, if available.
+    open var thumbnail: MessageAttachmentPreviewThumbnail? {
+        attachmentPreviewResolver.thumbnail
     }
 
     // MARK: - Private Helpers

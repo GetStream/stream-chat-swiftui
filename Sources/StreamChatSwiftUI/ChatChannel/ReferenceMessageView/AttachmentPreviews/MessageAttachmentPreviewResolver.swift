@@ -13,17 +13,12 @@ import StreamChat
 public struct MessageAttachmentPreviewResolver {
     @Injected(\.utils) private var utils
     
-    /// The kind of attachment content.
+    /// The kind of attachment.
     public let kind: MessageAttachmentPreviewKind
     
-    /// The URL for the image attachment preview (includes images, giphys, and link previews).
-    public let imagePreviewURL: URL?
-    
-    /// The URL for the video attachment preview (thumbnail).
-    public let videoPreviewURL: URL?
-    
-    /// The URL for the file attachment preview.
-    public let filePreviewURL: URL?
+    /// The thumbnail for the attachment preview, if available.
+    /// Returns nil for mixed attachments or when no preview is available.
+    public let thumbnail: MessageAttachmentPreviewThumbnail?
     
     // MARK: - Initialization
     
@@ -31,9 +26,7 @@ public struct MessageAttachmentPreviewResolver {
     /// - Parameter message: The message to analyze for attachments.
     public init(message: ChatMessage) {
         self.kind = Self.resolveKind(from: message)
-        self.imagePreviewURL = Self.resolveImagePreviewURL(from: message)
-        self.videoPreviewURL = message.videoAttachments.first?.thumbnailURL
-        self.filePreviewURL = message.fileAttachments.first?.assetURL
+        self.thumbnail = Self.resolveThumbnail(from: message, kind: self.kind)
     }
     
     // MARK: - Preview Description
@@ -154,16 +147,38 @@ public struct MessageAttachmentPreviewResolver {
         return .none
     }
     
-    private static func resolveImagePreviewURL(from message: ChatMessage) -> URL? {
+    private static func resolveThumbnail(
+        from message: ChatMessage,
+        kind: MessageAttachmentPreviewKind
+    ) -> MessageAttachmentPreviewThumbnail? {
+        // No thumbnail for mixed attachments
+        if case .mixed = kind {
+            return nil
+        }
+        
+        // Image attachments (includes images, giphys, and link previews)
         if let imageAttachment = message.imageAttachments.first {
-            return imageAttachment.imageURL
+            return .image(url: imageAttachment.imageURL)
         }
         if let giphyAttachment = message.giphyAttachments.first {
-            return giphyAttachment.previewURL
+            return .image(url: giphyAttachment.previewURL)
         }
-        if let linkAttachment = message.linkAttachments.first {
-            return linkAttachment.previewURL
+        if let linkAttachment = message.linkAttachments.first,
+           let previewURL = linkAttachment.previewURL {
+            return .image(url: previewURL)
         }
+        
+        // Video attachments
+        if let videoAttachment = message.videoAttachments.first,
+           let thumbnailURL = videoAttachment.thumbnailURL {
+            return .video(url: thumbnailURL)
+        }
+        
+        // File attachments
+        if let fileAttachment = message.fileAttachments.first {
+            return .file(url: fileAttachment.assetURL)
+        }
+        
         return nil
     }
     
