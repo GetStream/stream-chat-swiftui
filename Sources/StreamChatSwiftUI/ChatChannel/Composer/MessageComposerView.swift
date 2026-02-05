@@ -535,7 +535,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .edit(sendButtonEnabled)
         }
 
-        if text.isEmpty && utils.composerConfig.isVoiceRecordingEnabled {
+        if utils.composerConfig.isVoiceRecordingEnabled && !sendButtonEnabled {
             return .audio
         }
 
