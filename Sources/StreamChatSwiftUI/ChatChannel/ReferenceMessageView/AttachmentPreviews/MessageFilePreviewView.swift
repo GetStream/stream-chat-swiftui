@@ -34,9 +34,3 @@ public struct MessageFilePreviewView: View {
         images.fileIconPreviews[fileExtension] ?? images.iconOther
     }
 }
-
-// MARK: - Deprecated Typealiases
-
-/// Deprecated: Use `MessageFilePreviewView` instead.
-@available(*, deprecated, renamed: "MessageFilePreviewView")
-public typealias QuotedMessageFilePreviewView = MessageFilePreviewView

@@ -19,8 +19,8 @@ open class EditedMessageViewModel {
     private let message: ChatMessage
 
     /// The resolved attachment content (lazily computed once).
-    public lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
-        MessageAttachmentPreviewContent.resolve(from: message)
+    private lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
+        MessageAttachmentPreviewContent(message: message)
     }()
 
     // MARK: - Init
@@ -48,40 +48,21 @@ open class EditedMessageViewModel {
             return messageText
         }
 
-        // Otherwise, use the attachment content subtitle.
-        return attachmentPreviewContent.subtitle
+        // Otherwise, use the attachment content description.
+        return attachmentPreviewContent.previewDescription
     }
     
     /// The icon for the subtitle, if applicable.
     /// Returns nil if no icon should be shown.
     open var subtitleIcon: MessageAttachmentPreviewIcon? {
-        attachmentPreviewContent.subtitleIcon
+        attachmentPreviewContent.previewIcon
     }
     
     // MARK: - Attachment Preview
     
-    /// The URL for the image attachment preview, if available.
-    open var imagePreviewURL: URL? {
-        if let imageAttachment = message.imageAttachments.first {
-            return imageAttachment.imageURL
-        }
-        if let giphyAttachment = message.giphyAttachments.first {
-            return giphyAttachment.previewURL
-        }
-        if let linkAttachment = message.linkAttachments.first {
-            return linkAttachment.previewURL
-        }
-        return nil
-    }
-    
-    /// The URL for the video thumbnail preview, if available.
-    open var videoThumbnailURL: URL? {
-        message.videoAttachments.first?.thumbnailURL
-    }
-    
-    /// The file extension for file previews, if available.
-    open var fileExtension: String? {
-        message.fileAttachments.first?.assetURL.pathExtension.lowercased()
+    /// The URL for the attachment preview (image, video thumbnail, link, or file).
+    open var previewURL: URL? {
+        attachmentPreviewContent.previewURL
     }
 
     // MARK: - Private Helpers

@@ -12,6 +12,9 @@ public struct MessageAttachmentPreviewContent {
 
     /// The kind of attachment content.
     public let kind: Kind
+    
+    /// The URL for the attachment preview (image, video thumbnail, link preview, or file).
+    public let previewURL: URL?
 
     /// The different kinds of attachment content that can be displayed.
     public enum Kind: Equatable {
@@ -37,23 +40,18 @@ public struct MessageAttachmentPreviewContent {
 
     // MARK: - Initialization
 
-    private init(kind: Kind) {
-        self.kind = kind
+    /// Creates an attachment preview content from a message.
+    /// - Parameter message: The message to analyze for attachments.
+    public init(message: ChatMessage) {
+        self.kind = Self.resolveKind(from: message)
+        self.previewURL = Self.resolvePreviewURL(from: message)
     }
 
-    /// Resolves the attachment content from a message.
-    /// - Parameter message: The message to analyze.
-    /// - Returns: The resolved attachment content.
-    public static func resolve(from message: ChatMessage) -> MessageAttachmentPreviewContent {
-        let kind = resolveKind(from: message)
-        return MessageAttachmentPreviewContent(kind: kind)
-    }
+    // MARK: - Preview Description
 
-    // MARK: - Subtitle
-
-    /// Returns the subtitle text for the attachment content.
+    /// Returns the description text for the attachment preview.
     /// - Returns: A localized string describing the attachment, or empty string if none.
-    public var subtitle: String {
+    public var previewDescription: String {
         switch kind {
         case .mixed(let typeCount):
             return L10n.Composer.Quoted.files(typeCount)
@@ -87,11 +85,11 @@ public struct MessageAttachmentPreviewContent {
         }
     }
 
-    // MARK: - Subtitle Icon
+    // MARK: - Preview Icon
 
-    /// Returns the icon for the attachment content.
+    /// Returns the icon for the attachment preview.
     /// - Returns: The appropriate icon, or nil if no icon should be shown.
-    public var subtitleIcon: MessageAttachmentPreviewIcon? {
+    public var previewIcon: MessageAttachmentPreviewIcon? {
         switch kind {
         case .mixed:
             return .mixed
@@ -165,6 +163,30 @@ public struct MessageAttachmentPreviewContent {
         }
 
         return .none
+    }
+    
+    private static func resolvePreviewURL(from message: ChatMessage) -> URL? {
+        if let imageAttachment = message.imageAttachments.first {
+            return imageAttachment.imageURL
+        }
+
+        if let giphyAttachment = message.giphyAttachments.first {
+            return giphyAttachment.previewURL
+        }
+
+        if let videoAttachment = message.videoAttachments.first {
+            return videoAttachment.thumbnailURL
+        }
+
+        if let linkAttachment = message.linkAttachments.first {
+            return linkAttachment.previewURL
+        }
+
+        if let fileAttachment = message.fileAttachments.first {
+            return fileAttachment.assetURL
+        }
+
+        return nil
     }
 
     private func formattedDuration(_ duration: TimeInterval) -> String? {

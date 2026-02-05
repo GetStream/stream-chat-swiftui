@@ -25,9 +25,3 @@ public struct MessageVideoPreviewView: View {
             .overlay(PlayButtonOverlay())
     }
 }
-
-// MARK: - Deprecated Typealiases
-
-/// Deprecated: Use `MessageVideoPreviewView` instead.
-@available(*, deprecated, renamed: "MessageVideoPreviewView")
-public typealias QuotedMessageVideoPreviewView = MessageVideoPreviewView
