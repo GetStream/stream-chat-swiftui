@@ -16,9 +16,9 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
     /// The edited message.
     public let message: ChatMessage
 
-    /// The resolved attachment content (lazily computed once).
-    public lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
-        MessageAttachmentPreviewContent(message: message)
+    /// The resolved attachment preview data (lazily computed once).
+    public lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
+        MessageAttachmentPreviewResolver(message: message)
     }()
 
     // MARK: - Init
@@ -49,14 +49,14 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
             return messageText
         }
 
-        // Otherwise, use the attachment content description.
-        return attachmentPreviewContent.previewDescription ?? messageText
+        // Otherwise, use the attachment preview description.
+        return attachmentPreviewResolver.previewDescription ?? ""
     }
     
     /// The icon for the subtitle, if applicable.
     /// Returns nil if no icon should be shown.
     open var subtitleIcon: MessageAttachmentPreviewIcon? {
-        attachmentPreviewContent.previewIcon
+        attachmentPreviewResolver.previewIcon
     }
     
     // MARK: - Attachment Preview URLs
