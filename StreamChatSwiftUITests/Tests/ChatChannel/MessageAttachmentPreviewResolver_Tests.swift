@@ -76,9 +76,7 @@ import XCTest
         // Then
         XCTAssertEqual(resolver.previewDescription, "3 photos")
         XCTAssertEqual(resolver.previewIcon, .photo)
-        XCTAssertNotNil(resolver.previewThumbnail)
-        XCTAssertEqual(resolver.previewThumbnail?.url, .localYodaImage)
-        XCTAssertEqual(resolver.previewThumbnail?.isImage, true)
+        XCTAssertNil(resolver.previewThumbnail) // Multiple attachments have no thumbnail
     }
 
     // MARK: - Video
@@ -121,7 +119,6 @@ import XCTest
 
     func test_resolver_multipleVideos() {
         // Given
-        let thumbnailURL = URL(string: "https://example.com/thumb.jpg")!
         let videoAttachment = { () -> AnyChatMessageAttachment in
             ChatMessageVideoAttachment(
                 id: .unique,
@@ -129,7 +126,7 @@ import XCTest
                 payload: VideoAttachmentPayload(
                     title: "video.mp4",
                     videoRemoteURL: URL(string: "https://example.com/video.mp4")!,
-                    thumbnailURL: thumbnailURL,
+                    thumbnailURL: URL(string: "https://example.com/thumb.jpg")!,
                     file: .init(type: .mp4, size: 1024, mimeType: "video/mp4"),
                     extraData: nil
                 ),
@@ -152,9 +149,7 @@ import XCTest
         // Then
         XCTAssertEqual(resolver.previewDescription, "2 videos")
         XCTAssertEqual(resolver.previewIcon, .video)
-        XCTAssertNotNil(resolver.previewThumbnail)
-        XCTAssertEqual(resolver.previewThumbnail?.url, thumbnailURL)
-        XCTAssertEqual(resolver.previewThumbnail?.isVideo, true)
+        XCTAssertNil(resolver.previewThumbnail) // Multiple attachments have no thumbnail
     }
 
     // MARK: - File
@@ -231,14 +226,13 @@ import XCTest
 
     func test_resolver_multipleFiles() {
         // Given
-        let assetURL = URL(string: "https://example.com/document.pdf")!
         let fileAttachment = { () -> AnyChatMessageAttachment in
             ChatMessageFileAttachment(
                 id: .unique,
                 type: .file,
                 payload: FileAttachmentPayload(
                     title: "document.pdf",
-                    assetRemoteURL: assetURL,
+                    assetRemoteURL: URL(string: "https://example.com/document.pdf")!,
                     file: .init(type: .pdf, size: 1024, mimeType: "application/pdf"),
                     extraData: nil
                 ),
@@ -261,9 +255,7 @@ import XCTest
         // Then
         XCTAssertEqual(resolver.previewDescription, "3 files")
         XCTAssertEqual(resolver.previewIcon, .document)
-        XCTAssertNotNil(resolver.previewThumbnail)
-        XCTAssertEqual(resolver.previewThumbnail?.url, assetURL)
-        XCTAssertEqual(resolver.previewThumbnail?.isFile, true)
+        XCTAssertNil(resolver.previewThumbnail) // Multiple attachments have no thumbnail
     }
 
     // MARK: - Voice Recording

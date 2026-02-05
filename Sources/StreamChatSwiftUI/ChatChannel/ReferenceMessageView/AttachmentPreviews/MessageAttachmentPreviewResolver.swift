@@ -98,42 +98,34 @@ public struct MessageAttachmentPreviewResolver {
     /// The thumbnail for the attachment preview, if available.
     /// Returns nil for mixed attachments or when no preview is available.
     public var previewThumbnail: MessageAttachmentPreviewThumbnail? {
-        switch kind {
-        case .mixed:
-            return nil
-            
-        case .photo:
-            if let imageAttachment = message.imageAttachments.first {
-                return .image(url: imageAttachment.imageURL)
-            }
-            if let giphyAttachment = message.giphyAttachments.first {
-                return .image(url: giphyAttachment.previewURL)
-            }
-            return nil
-            
-        case .video:
-            if let videoAttachment = message.videoAttachments.first,
-               let thumbnailURL = videoAttachment.thumbnailURL {
-                return .video(url: thumbnailURL)
-            }
-            return nil
-            
-        case .file:
-            if let fileAttachment = message.fileAttachments.first {
-                return .file(url: fileAttachment.assetURL)
-            }
-            return nil
-            
-        case .link:
-            if let linkAttachment = message.linkAttachments.first,
-               let previewURL = linkAttachment.previewURL {
-                return .image(url: previewURL)
-            }
-            return nil
-            
-        case .poll, .voiceRecording, .audio, .none:
+        let allAttachmentCount = message.attachmentCounts.values.reduce(0, +)
+        if allAttachmentCount > 1 {
             return nil
         }
+
+        if let imageAttachment = message.imageAttachments.first {
+            return .image(url: imageAttachment.imageURL)
+        }
+
+        if let giphyAttachment = message.giphyAttachments.first {
+            return .image(url: giphyAttachment.previewURL)
+        }
+
+        if let linkAttachment = message.linkAttachments.first,
+           let previewURL = linkAttachment.previewURL {
+            return .image(url: previewURL)
+        }
+
+        if let videoAttachment = message.videoAttachments.first,
+           let thumbnailURL = videoAttachment.thumbnailURL {
+            return .video(url: thumbnailURL)
+        }
+
+        if let fileAttachment = message.fileAttachments.first {
+            return .file(url: fileAttachment.assetURL)
+        }
+
+        return nil
     }
     
     // MARK: - Helpers
