@@ -61,7 +61,7 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
     
     /// The thumbnail for the attachment preview, if available.
     open var thumbnail: MessageAttachmentPreviewThumbnail? {
-        attachmentPreviewResolver.thumbnail
+        attachmentPreviewResolver.previewThumbnail
     }
 
     // MARK: - Private Helpers

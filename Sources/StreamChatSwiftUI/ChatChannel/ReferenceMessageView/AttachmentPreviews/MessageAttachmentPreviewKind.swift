@@ -5,7 +5,7 @@
 import Foundation
 
 /// Represents the kind of attachment content that can be displayed in a message preview.
-public enum MessageAttachmentPreviewKind: Equatable {
+enum MessageAttachmentPreviewKind: Equatable {
     /// Multiple different attachment types.
     case mixed(attachmentsCount: Int)
     /// A poll attachment.
