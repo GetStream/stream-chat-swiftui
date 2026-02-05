@@ -45,12 +45,24 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var referenceMessageView: some View {
-        ReferenceMessageView(viewModel: viewModel) {
-            factory.makeEditedMessageAttachmentPreviewView(
-                options: EditedMessageAttachmentPreviewViewOptions(
-                    viewModel: viewModel
+        ReferenceMessageView(
+            title: viewModel.title,
+            subtitle: viewModel.subtitle,
+            isSentByCurrentUser: viewModel.isSentByCurrentUser,
+            iconPreview: {
+                if let icon = viewModel.subtitleIcon {
+                    factory.makeMessageAttachmentPreviewIconView(
+                        options: MessageAttachmentPreviewIconViewOptions(icon: icon)
+                    )
+                }
+            },
+            attachmentPreview: {
+                factory.makeEditedMessageAttachmentPreviewView(
+                    options: EditedMessageAttachmentPreviewViewOptions(
+                        viewModel: viewModel
+                    )
                 )
-            )
-        }
+            }
+        )
     }
 }

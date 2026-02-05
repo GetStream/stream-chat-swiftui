@@ -850,6 +850,15 @@ extension ViewFactory {
     ) -> some View {
         ReferenceMessageAttachmentPreviewView(viewModel: options.viewModel)
     }
+
+    public func makeMessageAttachmentPreviewIconView(
+        options: MessageAttachmentPreviewIconViewOptions
+    ) -> some View {
+        let provider = DefaultMessageAttachmentPreviewIconProvider()
+        return MessageAttachmentPreviewIconView(
+            iconImage: provider.image(for: options.icon)
+        )
+    }
     
     public func makeCommandsContainerView(
         options: CommandsContainerViewOptions

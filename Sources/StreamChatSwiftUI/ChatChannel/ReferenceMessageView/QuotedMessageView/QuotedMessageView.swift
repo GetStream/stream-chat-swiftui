@@ -49,12 +49,24 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var referenceMessageView: some View {
-        ReferenceMessageView(viewModel: viewModel) {
-            factory.makeQuotedMessageAttachmentPreviewView(
-                options: QuotedMessageAttachmentPreviewViewOptions(
-                    viewModel: viewModel
+        ReferenceMessageView(
+            title: viewModel.title,
+            subtitle: viewModel.subtitle,
+            isSentByCurrentUser: viewModel.isSentByCurrentUser,
+            iconPreview: {
+                if let icon = viewModel.subtitleIcon {
+                    factory.makeMessageAttachmentPreviewIconView(
+                        options: MessageAttachmentPreviewIconViewOptions(icon: icon)
+                    )
+                }
+            },
+            attachmentPreview: {
+                factory.makeQuotedMessageAttachmentPreviewView(
+                    options: QuotedMessageAttachmentPreviewViewOptions(
+                        viewModel: viewModel
+                    )
                 )
-            )
-        }
+            }
+        )
     }
 }

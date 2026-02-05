@@ -374,6 +374,18 @@ public final class EditedMessageAttachmentPreviewViewOptions: Sendable {
     }
 }
 
+/// Options for creating the message attachment preview icon view.
+public final class MessageAttachmentPreviewIconViewOptions: Sendable {
+    /// The icon type to display.
+    public let icon: MessageAttachmentPreviewIcon
+
+    public init(
+        icon: MessageAttachmentPreviewIcon
+    ) {
+        self.icon = icon
+    }
+}
+
 // MARK: - Poll Options
 
 /// Options for creating the composer poll view.

@@ -10,7 +10,7 @@ import StreamChat
 /// Both `QuotedMessageViewModel` and `EditedMessageViewModel` conform to this protocol,
 /// allowing them to be used interchangeably in views that display message references.
 @MainActor
-public protocol ReferenceMessageViewModel: AnyObject {
+public protocol ReferenceMessageViewModel {
     /// The title text displayed at the top.
     var title: String { get }
     
