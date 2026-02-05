@@ -844,6 +844,12 @@ extension ViewFactory {
             onDismiss: options.onDismiss
         )
     }
+
+    public func makeEditedMessageAttachmentPreviewView(
+        options: EditedMessageAttachmentPreviewViewOptions
+    ) -> some View {
+        EditedMessageAttachmentPreviewView(viewModel: options.viewModel)
+    }
     
     public func makeCommandsContainerView(
         options: CommandsContainerViewOptions

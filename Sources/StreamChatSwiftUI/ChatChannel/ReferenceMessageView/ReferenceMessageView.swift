@@ -124,10 +124,10 @@ extension ReferenceMessageView where AttachmentPreview == EmptyView {
 // MARK: - ReferenceIndicatorView
 
 /// A vertical indicator bar used in message references.
-struct ReferenceIndicatorView: View {
+public struct ReferenceIndicatorView: View {
     let tintColor: UIColor
 
-    var body: some View {
+    public var body: some View {
         Rectangle()
             .fill(Color(tintColor))
             .frame(width: 2)

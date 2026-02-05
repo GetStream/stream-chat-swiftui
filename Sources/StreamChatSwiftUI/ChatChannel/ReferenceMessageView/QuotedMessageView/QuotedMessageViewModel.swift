@@ -19,8 +19,8 @@ open class QuotedMessageViewModel {
     private let currentUser: CurrentChatUser?
 
     /// The resolved attachment content (lazily computed once).
-    private lazy var attachmentContent: QuotedMessageAttachmentContent = {
-        QuotedMessageAttachmentContent.resolve(from: message)
+    public lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
+        MessageAttachmentPreviewContent.resolve(from: message)
     }()
 
     // MARK: - Init
@@ -65,63 +65,14 @@ open class QuotedMessageViewModel {
             return messageText
         }
 
-        // Otherwise, describe the attachments.
-        switch attachmentContent.kind {
-        case .mixed(let typeCount):
-            return L10n.Composer.Quoted.files(typeCount)
-
-        case .poll(let name):
-            return name
-
-        case .voiceRecording(let duration):
-            if let duration, let formatted = formattedDuration(duration) {
-                return L10n.Composer.Quoted.voiceMessageWithDuration(formatted)
-            }
-            return L10n.Composer.Quoted.voiceMessage
-
-        case .photo(let count):
-            return count == 1 ? L10n.Composer.Quoted.photo : L10n.Composer.Quoted.photos(count)
-
-        case .video(let count):
-            return count == 1 ? L10n.Composer.Quoted.video : L10n.Composer.Quoted.videos(count)
-
-        case .file(let count, let fileName):
-            if count == 1 {
-                return fileName ?? L10n.Composer.Quoted.file
-            }
-            return L10n.Composer.Quoted.files(count)
-
-        case .audio:
-            return L10n.Composer.Quoted.audio
-
-        case .none, .link:
-            return ""
-        }
+        // Otherwise, use the attachment content subtitle.
+        return attachmentPreviewContent.subtitle
     }
     
     /// The icon for the subtitle, if applicable.
     /// Returns nil if no icon should be shown.
-    open var subtitleIcon: QuotedMessageAttachmentPreviewIcon? {
-        switch attachmentContent.kind {
-        case .mixed:
-            return .mixed
-        case .poll:
-            return .poll
-        case .voiceRecording:
-            return .voiceRecording
-        case .photo:
-            return .photo
-        case .video:
-            return .video
-        case .file:
-            return .document
-        case .link:
-            return .link
-        case .audio:
-            return .audio
-        case .none:
-            return nil
-        }
+    open var subtitleIcon: MessageAttachmentPreviewIcon? {
+        attachmentPreviewContent.subtitleIcon
     }
     
     // MARK: - Attachment Preview
@@ -163,9 +114,5 @@ open class QuotedMessageViewModel {
         }
 
         return message.text.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func formattedDuration(_ duration: TimeInterval) -> String? {
-        utils.videoDurationFormatter.format(duration)
     }
 }

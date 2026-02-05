@@ -4,8 +4,8 @@
 
 import SwiftUI
 
-/// Image attachment preview for quoted messages.
-public struct QuotedMessageImagePreviewView: View {
+/// Image attachment preview for messages.
+public struct MessageImagePreviewView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.colors) private var colors
 
@@ -47,3 +47,9 @@ public struct QuotedMessageImagePreviewView: View {
             .frame(width: size, height: size)
     }
 }
+
+// MARK: - Deprecated Typealiases
+
+/// Deprecated: Use `MessageImagePreviewView` instead.
+@available(*, deprecated, renamed: "MessageImagePreviewView")
+public typealias QuotedMessageImagePreviewView = MessageImagePreviewView

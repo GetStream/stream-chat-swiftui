@@ -492,6 +492,16 @@ import SwiftUI
     /// - Parameter options: the options for creating the composer edited message view.
     func makeComposerEditedMessageView(options: ComposerEditedMessageViewOptions) -> ComposerEditedMessageViewType
 
+    associatedtype EditedMessageAttachmentPreviewViewType: View
+    /// Creates the attachment preview view for an edited message.
+    ///
+    /// This slot can be used to show custom attachment previews inside edited messages.
+    /// If the custom attachment preview is just an image, consider overriding
+    /// the `EditedMessageViewModel.imagePreviewURL` only instead.
+    ///
+    /// - Parameter options: the options for creating the attachment preview view.
+    func makeEditedMessageAttachmentPreviewView(options: EditedMessageAttachmentPreviewViewOptions) -> EditedMessageAttachmentPreviewViewType
+
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.
     /// - Parameter options: the options for creating the commands container view.

@@ -364,6 +364,16 @@ public final class ComposerEditedMessageViewOptions: Sendable {
     }
 }
 
+/// Options for creating the edited message attachment preview view.
+public final class EditedMessageAttachmentPreviewViewOptions: Sendable {
+    /// The view model containing the edited message data.
+    public let viewModel: EditedMessageViewModel
+    
+    public init(viewModel: EditedMessageViewModel) {
+        self.viewModel = viewModel
+    }
+}
+
 // MARK: - Poll Options
 
 /// Options for creating the composer poll view.

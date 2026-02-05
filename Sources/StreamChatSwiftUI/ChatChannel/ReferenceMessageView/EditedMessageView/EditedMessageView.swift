@@ -54,6 +54,12 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
             subtitle: viewModel.subtitle,
             subtitleIcon: viewModel.subtitleIcon?.image,
             isSentByCurrentUser: true
-        )
+        ) {
+            factory.makeEditedMessageAttachmentPreviewView(
+                options: EditedMessageAttachmentPreviewViewOptions(
+                    viewModel: viewModel
+                )
+            )
+        }
     }
 }

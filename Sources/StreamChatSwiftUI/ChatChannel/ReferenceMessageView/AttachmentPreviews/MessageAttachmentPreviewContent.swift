@@ -5,17 +5,16 @@
 import Foundation
 import StreamChat
 
-/// Represents the resolved attachment content for a quoted message.
-/// This provides a single source of truth for determining both the description and icon.
+/// Represents the resolved attachment content for a message preview.
 @MainActor
-struct QuotedMessageAttachmentContent {
+public struct MessageAttachmentPreviewContent {
     @Injected(\.utils) private var utils
 
     /// The kind of attachment content.
-    let kind: Kind
+    public let kind: Kind
 
     /// The different kinds of attachment content that can be displayed.
-    enum Kind: Equatable {
+    public enum Kind: Equatable {
         /// Multiple different attachment types.
         case mixed(typeCount: Int)
         /// A poll attachment.
@@ -45,10 +44,77 @@ struct QuotedMessageAttachmentContent {
     /// Resolves the attachment content from a message.
     /// - Parameter message: The message to analyze.
     /// - Returns: The resolved attachment content.
-    static func resolve(from message: ChatMessage) -> QuotedMessageAttachmentContent {
+    public static func resolve(from message: ChatMessage) -> MessageAttachmentPreviewContent {
         let kind = resolveKind(from: message)
-        return QuotedMessageAttachmentContent(kind: kind)
+        return MessageAttachmentPreviewContent(kind: kind)
     }
+
+    // MARK: - Subtitle
+
+    /// Returns the subtitle text for the attachment content.
+    /// - Returns: A localized string describing the attachment, or empty string if none.
+    public var subtitle: String {
+        switch kind {
+        case .mixed(let typeCount):
+            return L10n.Composer.Quoted.files(typeCount)
+
+        case .poll(let name):
+            return name
+
+        case .voiceRecording(let duration):
+            if let duration, let formatted = formattedDuration(duration) {
+                return L10n.Composer.Quoted.voiceMessageWithDuration(formatted)
+            }
+            return L10n.Composer.Quoted.voiceMessage
+
+        case .photo(let count):
+            return count == 1 ? L10n.Composer.Quoted.photo : L10n.Composer.Quoted.photos(count)
+
+        case .video(let count):
+            return count == 1 ? L10n.Composer.Quoted.video : L10n.Composer.Quoted.videos(count)
+
+        case .file(let count, let fileName):
+            if count == 1 {
+                return fileName ?? L10n.Composer.Quoted.file
+            }
+            return L10n.Composer.Quoted.files(count)
+
+        case .audio:
+            return L10n.Composer.Quoted.audio
+
+        case .none, .link:
+            return ""
+        }
+    }
+
+    // MARK: - Subtitle Icon
+
+    /// Returns the icon for the attachment content.
+    /// - Returns: The appropriate icon, or nil if no icon should be shown.
+    public var subtitleIcon: MessageAttachmentPreviewIcon? {
+        switch kind {
+        case .mixed:
+            return .mixed
+        case .poll:
+            return .poll
+        case .voiceRecording:
+            return .voiceRecording
+        case .photo:
+            return .photo
+        case .video:
+            return .video
+        case .file:
+            return .document
+        case .link:
+            return .link
+        case .audio:
+            return .audio
+        case .none:
+            return nil
+        }
+    }
+
+    // MARK: - Private Helpers
 
     private static func resolveKind(from message: ChatMessage) -> Kind {
         // Mixed content (multiple attachment types)
@@ -99,5 +165,9 @@ struct QuotedMessageAttachmentContent {
         }
 
         return .none
+    }
+
+    private func formattedDuration(_ duration: TimeInterval) -> String? {
+        utils.videoDurationFormatter.format(duration)
     }
 }

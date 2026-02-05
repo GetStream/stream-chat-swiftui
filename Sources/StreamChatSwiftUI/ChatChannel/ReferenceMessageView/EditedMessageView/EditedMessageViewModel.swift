@@ -7,8 +7,8 @@ import StreamChat
 
 /// A view model that provides display data for an edited message.
 ///
-/// This view model is simpler than `QuotedMessageViewModel` since the title
-/// is always "Edit Message" and doesn't depend on the message author.
+/// This view model shares the same subtitle and icon logic as `QuotedMessageViewModel`,
+/// but the title is always "Edit Message" instead of "Reply to [Author]".
 @MainActor
 open class EditedMessageViewModel {
     @Injected(\.utils) private var utils
@@ -17,6 +17,11 @@ open class EditedMessageViewModel {
     
     /// The edited message.
     private let message: ChatMessage
+
+    /// The resolved attachment content (lazily computed once).
+    public lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
+        MessageAttachmentPreviewContent.resolve(from: message)
+    }()
 
     // MARK: - Init
     
@@ -31,44 +36,57 @@ open class EditedMessageViewModel {
     
     // MARK: - Display Properties
     
-    /// The title text displayed at the top.
+    /// The title text displayed at the top (always "Edit Message").
     open var title: String {
         L10n.Composer.Title.edit
     }
     
-    /// The subtitle text to display, by default it is the original message text.
+    /// The subtitle text to display (message preview or attachment description).
     open var subtitle: String {
         // If there's text content, use it.
         if !messageText.isEmpty {
             return messageText
         }
 
-        if !message.attachmentCounts.isEmpty {
-            let totalAttachmentCount = message.attachmentCounts.values.reduce(0, +)
-            return L10n.Composer.Quoted.files(totalAttachmentCount)
-        }
-
-        return ""
+        // Otherwise, use the attachment content subtitle.
+        return attachmentPreviewContent.subtitle
     }
     
-    /// The icon for the subtitle, if it has any attachment.
-    open var subtitleIcon: EditedMessageAttachmentPreviewIcon? {
-        // If message has a link, return link icon
-        if !message.linkAttachments.isEmpty {
-            return .link
+    /// The icon for the subtitle, if applicable.
+    /// Returns nil if no icon should be shown.
+    open var subtitleIcon: MessageAttachmentPreviewIcon? {
+        attachmentPreviewContent.subtitleIcon
+    }
+    
+    // MARK: - Attachment Preview
+    
+    /// The URL for the image attachment preview, if available.
+    open var imagePreviewURL: URL? {
+        if let imageAttachment = message.imageAttachments.first {
+            return imageAttachment.imageURL
         }
-        
-        // If message has any attachment, return file icon
-        if !message.attachmentCounts.isEmpty {
-            return .file
+        if let giphyAttachment = message.giphyAttachments.first {
+            return giphyAttachment.previewURL
         }
-        
+        if let linkAttachment = message.linkAttachments.first {
+            return linkAttachment.previewURL
+        }
         return nil
+    }
+    
+    /// The URL for the video thumbnail preview, if available.
+    open var videoThumbnailURL: URL? {
+        message.videoAttachments.first?.thumbnailURL
+    }
+    
+    /// The file extension for file previews, if available.
+    open var fileExtension: String? {
+        message.fileAttachments.first?.assetURL.pathExtension.lowercased()
     }
 
     // MARK: - Private Helpers
     
     private var messageText: String {
-        return message.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        message.text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

@@ -5,9 +5,10 @@
 import StreamChatCommonUI
 import UIKit
 
-/// Represents the icon to display in a quoted message subtitle.
+/// Represents the icon to display in a reference message subtitle.
+/// Used by both quoted messages and edited messages.
 @MainActor
-public struct QuotedMessageAttachmentPreviewIcon {
+public struct MessageAttachmentPreviewIcon {
     @Injected(\.images) private var images
 
     /// The name identifying the icon type.

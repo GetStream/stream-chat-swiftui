@@ -5,8 +5,8 @@
 import StreamChat
 import SwiftUI
 
-/// File attachment preview for quoted messages.
-public struct QuotedMessageFilePreviewView: View {
+/// File attachment preview for messages.
+public struct MessageFilePreviewView: View {
     @Injected(\.images) private var images
 
     let fileExtension: String
@@ -34,3 +34,9 @@ public struct QuotedMessageFilePreviewView: View {
         images.fileIconPreviews[fileExtension] ?? images.iconOther
     }
 }
+
+// MARK: - Deprecated Typealiases
+
+/// Deprecated: Use `MessageFilePreviewView` instead.
+@available(*, deprecated, renamed: "MessageFilePreviewView")
+public typealias QuotedMessageFilePreviewView = MessageFilePreviewView
