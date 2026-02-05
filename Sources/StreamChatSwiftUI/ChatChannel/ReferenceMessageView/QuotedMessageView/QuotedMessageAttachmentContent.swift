@@ -53,8 +53,9 @@ struct QuotedMessageAttachmentContent {
     private static func resolveKind(from message: ChatMessage) -> Kind {
         // Mixed content (multiple attachment types)
         let totalTypeCount = message.attachmentCounts.count
+        let totalAttachmentCount = message.attachmentCounts.values.reduce(0, +)
         if totalTypeCount > 1 {
-            return .mixed(typeCount: totalTypeCount)
+            return .mixed(typeCount: totalAttachmentCount)
         }
 
         // Poll
