@@ -15,7 +15,6 @@
 		8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */; };
 		8205B4182AD4267200265B84 /* StreamSwiftTestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 8205B4172AD4267200265B84 /* StreamSwiftTestHelpers */; };
 		829EF8772A9362C00045D166 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 829EF8762A9362C00045D166 /* PrivacyInfo.xcprivacy */; };
-		82E2F7BA2F34A8FB00FBC1BE /* StreamChatCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 82E2F7B92F34A8FB00FBC1BE /* StreamChatCommonUI */; };
 		82EFEA8C2F2BA8F000B41819 /* StreamChatTestMockServer in Frameworks */ = {isa = PBXBuildFile; productRef = 84E7F9E52EFAF9BF00BA56A3 /* StreamChatTestMockServer */; };
 		8400A34C282C081E0067D3A0 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 8400A34B282C081E0067D3A0 /* OHHTTPStubs */; };
 		8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
@@ -385,7 +384,6 @@
 				84E7F9E82EFAF9BF00BA56A3 /* StreamChatTestTools in Frameworks */,
 				8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */,
 				8205B4142AD41CC700265B84 /* StreamSwiftTestHelpers in Frameworks */,
-				82E2F7BA2F34A8FB00FBC1BE /* StreamChatCommonUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,7 +552,6 @@
 				8205B4132AD41CC700265B84 /* StreamSwiftTestHelpers */,
 				84E7F9E52EFAF9BF00BA56A3 /* StreamChatTestMockServer */,
 				84E7F9E72EFAF9BF00BA56A3 /* StreamChatTestTools */,
-				82E2F7B92F34A8FB00FBC1BE /* StreamChatCommonUI */,
 			);
 			productName = StreamChatSwiftUITests;
 			productReference = 8465FBBD2746873A00AF091E /* StreamChatSwiftUITests.xctest */;
@@ -1561,11 +1558,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */;
 			productName = StreamSwiftTestHelpers;
-		};
-		82E2F7B92F34A8FB00FBC1BE /* StreamChatCommonUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
-			productName = StreamChatCommonUI;
 		};
 		8400A34B282C081E0067D3A0 /* OHHTTPStubs */ = {
 			isa = XCSwiftPackageProductDependency;
