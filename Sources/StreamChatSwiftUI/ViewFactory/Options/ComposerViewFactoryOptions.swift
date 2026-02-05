@@ -73,6 +73,8 @@ public final class ComposerInputViewOptions: Sendable {
     public let addedVoiceRecordings: [AddedVoiceRecording]
     /// Binding to the quoted message.
     public let quotedMessage: Binding<ChatMessage?>
+    /// Binding to the edited message.
+    public let editedMessage: Binding<ChatMessage?>
     /// The maximum message length.
     public let maxMessageLength: Int?
     /// The cooldown duration in seconds.
@@ -107,6 +109,7 @@ public final class ComposerInputViewOptions: Sendable {
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
         sendButtonEnabled: Bool,
@@ -129,6 +132,7 @@ public final class ComposerInputViewOptions: Sendable {
         self.addedCustomAttachments = addedCustomAttachments
         self.addedVoiceRecordings = addedVoiceRecordings
         self.quotedMessage = quotedMessage
+        self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
         self.sendButtonEnabled = sendButtonEnabled
@@ -341,6 +345,22 @@ public final class EditedMessageHeaderViewOptions: Sendable {
     
     public init(editedMessage: Binding<ChatMessage?>) {
         self.editedMessage = editedMessage
+    }
+}
+
+/// Options for creating the composer edited message view.
+public final class ComposerEditedMessageViewOptions: Sendable {
+    /// The edited message to display.
+    public let editedMessage: ChatMessage
+    /// The callback when the edited message view is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        editedMessage: ChatMessage,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
+        self.editedMessage = editedMessage
+        self.onDismiss = onDismiss
     }
 }
 

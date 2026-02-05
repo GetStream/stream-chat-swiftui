@@ -487,6 +487,11 @@ import SwiftUI
     /// - Parameter options: the options for creating the attachment preview view.
     func makeQuotedMessageAttachmentPreviewView(options: QuotedMessageAttachmentPreviewViewOptions) -> QuotedMessageAttachmentPreviewViewType
 
+    associatedtype ComposerEditedMessageViewType: View
+    /// Creates the edited message view shown in the composer when editing a message.
+    /// - Parameter options: the options for creating the composer edited message view.
+    func makeComposerEditedMessageView(options: ComposerEditedMessageViewOptions) -> ComposerEditedMessageViewType
+
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.
     /// - Parameter options: the options for creating the commands container view.

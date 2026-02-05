@@ -75,6 +75,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
+                        editedMessage: $editedMessage,
                         maxMessageLength: channelConfig?.maxMessageLength,
                         cooldownDuration: viewModel.cooldownDuration,
                         sendButtonEnabled: viewModel.sendButtonEnabled,
@@ -298,6 +299,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
     var quotedMessage: Binding<ChatMessage?>
+    var editedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
     var sendButtonEnabled: Bool
@@ -324,6 +326,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
         sendButtonEnabled: Bool,
@@ -348,6 +351,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.isSendMessageEnabled = isSendMessageEnabled
         self.sendButtonEnabled = sendButtonEnabled
         self.quotedMessage = quotedMessage
+        self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
         self.onCustomAttachmentTap = onCustomAttachmentTap

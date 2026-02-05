@@ -511,6 +511,7 @@ extension ViewFactory {
                     addedCustomAttachments: options.addedCustomAttachments,
                     addedVoiceRecordings: options.addedVoiceRecordings,
                     quotedMessage: options.quotedMessage,
+                    editedMessage: options.editedMessage,
                     maxMessageLength: options.maxMessageLength,
                     cooldownDuration: options.cooldownDuration,
                     sendButtonEnabled: options.sendButtonEnabled,
@@ -537,6 +538,7 @@ extension ViewFactory {
                 addedCustomAttachments: options.addedCustomAttachments,
                 addedVoiceRecordings: options.addedVoiceRecordings,
                 quotedMessage: options.quotedMessage,
+                editedMessage: options.editedMessage,
                 maxMessageLength: options.maxMessageLength,
                 cooldownDuration: options.cooldownDuration,
                 sendButtonEnabled: options.sendButtonEnabled,
@@ -829,6 +831,18 @@ extension ViewFactory {
         options: QuotedMessageAttachmentPreviewViewOptions
     ) -> some View {
         QuotedMessageAttachmentPreviewView(viewModel: options.viewModel)
+    }
+
+    public func makeComposerEditedMessageView(
+        options: ComposerEditedMessageViewOptions
+    ) -> some View {
+        EditedMessageView(
+            factory: self,
+            viewModel: EditedMessageViewModel(
+                message: options.editedMessage
+            ),
+            onDismiss: options.onDismiss
+        )
     }
     
     public func makeCommandsContainerView(
