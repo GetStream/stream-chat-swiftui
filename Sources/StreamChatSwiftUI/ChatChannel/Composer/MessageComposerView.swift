@@ -375,7 +375,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public var body: some View {
         VStack(spacing: tokens.spacingXs) {
-            if let quotedMessage = quotedMessage.wrappedValue {
+            if let editedMessage = editedMessage.wrappedValue {
+                factory.makeComposerEditedMessageView(
+                    options: .init(
+                        editedMessage: editedMessage,
+                        onDismiss: {
+                            withAnimation {
+                                self.editedMessage.wrappedValue = nil
+                            }
+                        }
+                    )
+                )
+            } else if let quotedMessage = quotedMessage.wrappedValue {
                 factory.makeComposerQuotedMessageView(
                     options: .init(
                         quotedMessage: quotedMessage,
@@ -513,6 +524,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     private var sendMessageButtonState: SendMessageButtonState {
         if isInCooldown {
             return .slowMode(cooldownDuration)
+        }
+
+        // When editing, show checkmark button
+        if editedMessage.wrappedValue != nil {
+            return .edit(sendButtonEnabled)
         }
 
         if text.isEmpty && utils.composerConfig.isVoiceRecordingEnabled {
