@@ -42,14 +42,7 @@ public struct MessageAttachmentPreviewThumbnail {
     }
     
     // MARK: - Computed Properties
-    
-    /// The file extension for file thumbnails.
-    /// Returns nil for non-file types.
-    public var fileExtension: String? {
-        guard type == "file", let url else { return nil }
-        return url.pathExtension.lowercased()
-    }
-    
+
     /// Whether this is an image thumbnail.
     public var isImage: Bool {
         type == "image"

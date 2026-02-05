@@ -830,7 +830,7 @@ extension ViewFactory {
     public func makeQuotedMessageAttachmentPreviewView(
         options: QuotedMessageAttachmentPreviewViewOptions
     ) -> some View {
-        QuotedMessageAttachmentPreviewView(viewModel: options.viewModel)
+        ReferenceMessageAttachmentPreviewView(viewModel: options.viewModel)
     }
 
     public func makeComposerEditedMessageView(
@@ -848,7 +848,7 @@ extension ViewFactory {
     public func makeEditedMessageAttachmentPreviewView(
         options: EditedMessageAttachmentPreviewViewOptions
     ) -> some View {
-        EditedMessageAttachmentPreviewView(viewModel: options.viewModel)
+        ReferenceMessageAttachmentPreviewView(viewModel: options.viewModel)
     }
     
     public func makeCommandsContainerView(
