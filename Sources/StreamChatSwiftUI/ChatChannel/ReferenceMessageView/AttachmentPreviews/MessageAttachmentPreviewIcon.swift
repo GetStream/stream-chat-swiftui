@@ -8,7 +8,7 @@ import UIKit
 /// Represents the icon to display in a reference message subtitle.
 /// Used by both quoted messages and edited messages.
 @MainActor
-public struct MessageAttachmentPreviewIcon {
+public struct MessageAttachmentPreviewIcon: @MainActor Equatable {
     @Injected(\.images) private var images
 
     /// The name identifying the icon type.
@@ -45,21 +45,26 @@ public struct MessageAttachmentPreviewIcon {
     // MARK: - Image Resolution
 
     public var image: UIImage {
-        switch name {
-        case "poll":
+        switch self {
+        case .poll:
             return images.attachmentPollIcon
-        case "voiceRecording":
+        case .voiceRecording:
             return images.attachmentVoiceIcon
-        case "photo":
+        case .photo:
             return images.attachmentPhotoIcon
-        case "video":
+        case .video:
             return images.attachmentVideoIcon
-        case "link":
+        case .link:
             return images.attachmentLinkIcon
-        case "document", "audio", "mixed":
+        case .document, .audio, .mixed:
             return images.attachmentDocIcon
         default:
             return images.attachmentDocIcon
         }
+    }
+
+    @MainActor
+    public static func == (lhs: MessageAttachmentPreviewIcon, rhs: MessageAttachmentPreviewIcon) -> Bool {
+        lhs.name == rhs.name
     }
 }
