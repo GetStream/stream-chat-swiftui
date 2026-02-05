@@ -11,24 +11,20 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
 
     private let factory: Factory
     private let viewModel: EditedMessageViewModel
-    private let padding: EdgeInsets?
     private let onDismiss: () -> Void
 
     /// Creates an edited message view from a view model.
     /// - Parameters:
     ///   - factory: The view factory to create customizable subviews.
     ///   - viewModel: The view model containing the edited message data.
-    ///   - padding: The padding to apply around the edited message view.
     ///   - onDismiss: The action to perform when the dismiss button is tapped.
     public init(
         factory: Factory,
         viewModel: EditedMessageViewModel,
-        padding: EdgeInsets? = nil,
         onDismiss: @escaping () -> Void
     ) {
         self.factory = factory
         self.viewModel = viewModel
-        self.padding = padding
         self.onDismiss = onDismiss
     }
 

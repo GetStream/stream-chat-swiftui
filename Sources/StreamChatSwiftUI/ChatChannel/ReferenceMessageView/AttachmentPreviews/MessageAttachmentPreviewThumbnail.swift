@@ -5,19 +5,25 @@
 import Foundation
 
 /// Represents a thumbnail for an attachment preview in a message reference.
+///
+/// This struct can be extended with custom thumbnail types by creating new static initializers.
 public struct MessageAttachmentPreviewThumbnail {
-    /// The type of thumbnail.
+    /// The type identifier for the thumbnail.
     public let type: String
     
-    /// The URL for the thumbnail (used for image and video types).
-    public let url: URL?
+    /// The URL associated with the thumbnail.
+    public let url: URL
     
-    private init(type: String, url: URL?) {
+    /// Creates a thumbnail with the given type and URL.
+    /// - Parameters:
+    ///   - type: The type identifier for the thumbnail.
+    ///   - url: The URL associated with the thumbnail.
+    public init(type: String, url: URL) {
         self.type = type
         self.url = url
     }
     
-    // MARK: - Static Initializers
+    // MARK: - Built-in Types
     
     /// Creates an image thumbnail with the given URL.
     /// - Parameter url: The URL of the image.
@@ -41,8 +47,8 @@ public struct MessageAttachmentPreviewThumbnail {
         .init(type: "file", url: url)
     }
     
-    // MARK: - Computed Properties
-
+    // MARK: - Type Checking
+    
     /// Whether this is an image thumbnail.
     public var isImage: Bool {
         type == "image"

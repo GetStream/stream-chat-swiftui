@@ -11,13 +11,13 @@ open class QuotedMessageViewModel: ReferenceMessageViewModel {
     // MARK: - Properties
     
     /// The quoted message.
-    public let message: ChatMessage
+    private let message: ChatMessage
 
     /// The current logged-in user.
     private let currentUser: CurrentChatUser?
 
     /// The resolved attachment preview data (lazily computed once).
-    public lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
+    private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
         MessageAttachmentPreviewResolver(message: message)
     }()
 
@@ -80,8 +80,6 @@ open class QuotedMessageViewModel: ReferenceMessageViewModel {
     open var subtitleIcon: MessageAttachmentPreviewIcon? {
         attachmentPreviewResolver.previewIcon
     }
-    
-    // MARK: - Attachment Preview
     
     /// The thumbnail for the attachment preview, if available.
     open var thumbnail: MessageAttachmentPreviewThumbnail? {

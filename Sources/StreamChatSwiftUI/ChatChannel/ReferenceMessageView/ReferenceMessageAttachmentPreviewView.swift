@@ -31,12 +31,12 @@ public struct ReferenceMessageAttachmentPreviewView: View {
     
     @ViewBuilder
     private func thumbnailView(for thumbnail: MessageAttachmentPreviewThumbnail) -> some View {
-        if thumbnail.isImage, let url = thumbnail.url {
-            MessageImagePreviewView(url: url)
-        } else if thumbnail.isVideo, let url = thumbnail.url {
-            MessageVideoPreviewView(thumbnailURL: url)
-        } else if thumbnail.isFile, let url = thumbnail.url {
-            MessageFilePreviewView(fileURL: url)
+        if thumbnail.isImage {
+            MessageImagePreviewView(url: thumbnail.url)
+        } else if thumbnail.isVideo {
+            MessageVideoPreviewView(thumbnailURL: thumbnail.url)
+        } else if thumbnail.isFile {
+            MessageFilePreviewView(fileURL: thumbnail.url)
         }
     }
 }

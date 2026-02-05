@@ -14,10 +14,10 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
     // MARK: - Properties
     
     /// The edited message.
-    public let message: ChatMessage
+    private let message: ChatMessage
 
     /// The resolved attachment preview data (lazily computed once).
-    public lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
+    private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
         MessageAttachmentPreviewResolver(message: message)
     }()
 
@@ -31,7 +31,7 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
     
     // MARK: - Display Properties
     
-    /// The title text displayed at the top (always "Edit Message").
+    /// The title text displayed at the top.
     open var title: String {
         L10n.Composer.Title.edit
     }
@@ -50,7 +50,7 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
         }
 
         // Otherwise, use the attachment preview description.
-        return attachmentPreviewResolver.previewDescription ?? ""
+        return attachmentPreviewResolver.previewDescription ?? messageText
     }
     
     /// The icon for the subtitle, if applicable.
@@ -58,8 +58,6 @@ open class EditedMessageViewModel: ReferenceMessageViewModel {
     open var subtitleIcon: MessageAttachmentPreviewIcon? {
         attachmentPreviewResolver.previewIcon
     }
-    
-    // MARK: - Attachment Preview
     
     /// The thumbnail for the attachment preview, if available.
     open var thumbnail: MessageAttachmentPreviewThumbnail? {
