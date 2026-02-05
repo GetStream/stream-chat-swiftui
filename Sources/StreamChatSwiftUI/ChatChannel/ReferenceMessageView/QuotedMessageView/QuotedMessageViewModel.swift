@@ -7,13 +7,11 @@ import StreamChat
 
 /// A view model that provides display data for a quoted message.
 @MainActor
-open class QuotedMessageViewModel {
-    @Injected(\.utils) private var utils
-
+open class QuotedMessageViewModel: ReferenceMessageViewModel {
     // MARK: - Properties
     
     /// The quoted message.
-    private let message: ChatMessage
+    public let message: ChatMessage
 
     /// The current logged-in user.
     private let currentUser: CurrentChatUser?
@@ -27,7 +25,15 @@ open class QuotedMessageViewModel {
     
     /// Creates a new quoted message view model.
     /// - Parameter message: The quoted message to display.
-    ///
+    public init(message: ChatMessage) {
+        self.message = message
+        self.currentUser = InjectedValues[\.chatClient].currentUserController().currentUser
+    }
+    
+    /// Creates a new quoted message view model.
+    /// - Parameters:
+    ///   - message: The quoted message to display.
+    ///   - currentUser: The current logged-in user (used for translations).
     public init(
         message: ChatMessage,
         currentUser: CurrentChatUser?
@@ -66,7 +72,7 @@ open class QuotedMessageViewModel {
         }
 
         // Otherwise, use the attachment content description.
-        return attachmentPreviewContent.previewDescription
+        return attachmentPreviewContent.previewDescription ?? ""
     }
     
     /// The icon for the subtitle, if applicable.
@@ -75,11 +81,30 @@ open class QuotedMessageViewModel {
         attachmentPreviewContent.previewIcon
     }
     
-    // MARK: - Attachment Preview
+    // MARK: - Attachment Preview URLs
     
-    /// The URL for the attachment preview (image, video thumbnail, link, or file).
-    open var previewURL: URL? {
-        attachmentPreviewContent.previewURL
+    /// The URL for the image attachment preview (includes images, giphys, and link previews).
+    open var imagePreviewURL: URL? {
+        if let imageAttachment = message.imageAttachments.first {
+            return imageAttachment.imageURL
+        }
+        if let giphyAttachment = message.giphyAttachments.first {
+            return giphyAttachment.previewURL
+        }
+        if let linkAttachment = message.linkAttachments.first {
+            return linkAttachment.previewURL
+        }
+        return nil
+    }
+    
+    /// The URL for the video attachment preview (thumbnail).
+    open var videoPreviewURL: URL? {
+        message.videoAttachments.first?.thumbnailURL
+    }
+    
+    /// The URL for the file attachment preview.
+    open var filePreviewURL: URL? {
+        message.fileAttachments.first?.assetURL
     }
     
     // MARK: - Private Helpers

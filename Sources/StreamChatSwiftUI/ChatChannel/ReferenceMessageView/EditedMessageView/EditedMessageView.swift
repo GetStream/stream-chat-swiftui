@@ -36,7 +36,7 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
         referenceMessageView
             .padding(tokens.spacingXs)
             .modifier(ReferenceMessageViewBackgroundModifier(
-                isSentByCurrentUser: true
+                isSentByCurrentUser: viewModel.isSentByCurrentUser
             ))
             .modifier(DismissButtonOverlayModifier(onDismiss: onDismiss))
             .frame(height: 56)
@@ -49,12 +49,7 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var referenceMessageView: some View {
-        ReferenceMessageView(
-            title: viewModel.title,
-            subtitle: viewModel.subtitle,
-            subtitleIcon: viewModel.subtitleIcon?.image,
-            isSentByCurrentUser: true
-        ) {
+        ReferenceMessageView(viewModel: viewModel) {
             factory.makeEditedMessageAttachmentPreviewView(
                 options: EditedMessageAttachmentPreviewViewOptions(
                     viewModel: viewModel

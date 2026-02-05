@@ -46,6 +46,21 @@ public struct ReferenceMessageView<AttachmentPreview: View>: View {
         self.isSentByCurrentUser = isSentByCurrentUser
         self.attachmentPreview = attachmentPreview()
     }
+    
+    /// Creates a message reference view from a view model with an attachment preview.
+    /// - Parameters:
+    ///   - viewModel: The view model containing the reference message data.
+    ///   - attachmentPreview: A view builder for the attachment preview.
+    public init(
+        viewModel: some ReferenceMessageViewModel,
+        @ViewBuilder attachmentPreview: () -> AttachmentPreview
+    ) {
+        self.title = viewModel.title
+        self.subtitle = viewModel.subtitle
+        self.subtitleIcon = viewModel.subtitleIcon?.image
+        self.isSentByCurrentUser = viewModel.isSentByCurrentUser
+        self.attachmentPreview = attachmentPreview()
+    }
 
     public var body: some View {
         HStack(spacing: tokens.spacingXs) {
@@ -117,6 +132,16 @@ extension ReferenceMessageView where AttachmentPreview == EmptyView {
         self.subtitle = subtitle
         self.subtitleIcon = subtitleIcon
         self.isSentByCurrentUser = isSentByCurrentUser
+        self.attachmentPreview = nil
+    }
+    
+    /// Creates a message reference view from a view model without an attachment preview.
+    /// - Parameter viewModel: The view model containing the reference message data.
+    public init(viewModel: some ReferenceMessageViewModel) {
+        self.title = viewModel.title
+        self.subtitle = viewModel.subtitle
+        self.subtitleIcon = viewModel.subtitleIcon?.image
+        self.isSentByCurrentUser = viewModel.isSentByCurrentUser
         self.attachmentPreview = nil
     }
 }

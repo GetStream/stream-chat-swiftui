@@ -18,29 +18,12 @@ public struct QuotedMessageAttachmentPreviewView: View {
     }
 
     public var body: some View {
-        let content = viewModel.attachmentPreviewContent
-        
-        switch content.kind {
-        case .photo, .link:
-            if let url = content.previewURL {
-                MessageImagePreviewView(url: url)
-            }
-        case .video:
-            if let url = content.previewURL {
-                MessageVideoPreviewView(thumbnailURL: url)
-            }
-        case .file:
-            if let url = content.previewURL {
-                MessageFilePreviewView(fileURL: url)
-            }
-        default:
-            EmptyView()
+        if let url = viewModel.imagePreviewURL {
+            MessageImagePreviewView(url: url)
+        } else if let url = viewModel.videoPreviewURL {
+            MessageVideoPreviewView(thumbnailURL: url)
+        } else if let url = viewModel.filePreviewURL {
+            MessageFilePreviewView(fileURL: url)
         }
     }
 }
-
-// MARK: - Deprecated Typealiases
-
-/// Deprecated: Use `MessageAttachmentPreviewView` instead.
-@available(*, deprecated, renamed: "MessageAttachmentPreviewView")
-public typealias QuotedMessageAttachmentPreviewView = QuotedMessageAttachmentPreviewView

@@ -49,12 +49,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var referenceMessageView: some View {
-        ReferenceMessageView(
-            title: viewModel.title,
-            subtitle: viewModel.subtitle,
-            subtitleIcon: viewModel.subtitleIcon?.image,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser
-        ) {
+        ReferenceMessageView(viewModel: viewModel) {
             factory.makeQuotedMessageAttachmentPreviewView(
                 options: QuotedMessageAttachmentPreviewViewOptions(
                     viewModel: viewModel

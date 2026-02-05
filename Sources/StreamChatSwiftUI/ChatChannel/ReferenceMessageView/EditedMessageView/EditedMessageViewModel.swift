@@ -7,30 +7,25 @@ import StreamChat
 
 /// A view model that provides display data for an edited message.
 ///
-/// This view model shares the same subtitle and icon logic as `QuotedMessageViewModel`,
-/// but the title is always "Edit Message" instead of "Reply to [Author]".
+/// This view model conforms to `ReferenceMessageViewModel` with a fixed title
+/// of "Edit Message" and always indicates the message is from the current user.
 @MainActor
-open class EditedMessageViewModel {
-    @Injected(\.utils) private var utils
-
+open class EditedMessageViewModel: ReferenceMessageViewModel {
     // MARK: - Properties
     
     /// The edited message.
-    private let message: ChatMessage
+    public let message: ChatMessage
 
     /// The resolved attachment content (lazily computed once).
-    private lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
+    public lazy var attachmentPreviewContent: MessageAttachmentPreviewContent = {
         MessageAttachmentPreviewContent(message: message)
     }()
 
     // MARK: - Init
     
     /// Creates a new edited message view model.
-    /// - Parameters:
-    ///   - message: The message being edited.
-    public init(
-        message: ChatMessage
-    ) {
+    /// - Parameter message: The message being edited.
+    public init(message: ChatMessage) {
         self.message = message
     }
     
@@ -41,6 +36,12 @@ open class EditedMessageViewModel {
         L10n.Composer.Title.edit
     }
     
+    /// Whether the referenced message was sent by the current user.
+    /// Always returns `true` for edited messages since you can only edit your own messages.
+    open var isSentByCurrentUser: Bool {
+        true
+    }
+    
     /// The subtitle text to display (message preview or attachment description).
     open var subtitle: String {
         // If there's text content, use it.
@@ -49,7 +50,7 @@ open class EditedMessageViewModel {
         }
 
         // Otherwise, use the attachment content description.
-        return attachmentPreviewContent.previewDescription
+        return attachmentPreviewContent.previewDescription ?? messageText
     }
     
     /// The icon for the subtitle, if applicable.
@@ -58,11 +59,30 @@ open class EditedMessageViewModel {
         attachmentPreviewContent.previewIcon
     }
     
-    // MARK: - Attachment Preview
+    // MARK: - Attachment Preview URLs
     
-    /// The URL for the attachment preview (image, video thumbnail, link, or file).
-    open var previewURL: URL? {
-        attachmentPreviewContent.previewURL
+    /// The URL for the image attachment preview (includes images, giphys, and link previews).
+    open var imagePreviewURL: URL? {
+        if let imageAttachment = message.imageAttachments.first {
+            return imageAttachment.imageURL
+        }
+        if let giphyAttachment = message.giphyAttachments.first {
+            return giphyAttachment.previewURL
+        }
+        if let linkAttachment = message.linkAttachments.first {
+            return linkAttachment.previewURL
+        }
+        return nil
+    }
+    
+    /// The URL for the video attachment preview (thumbnail).
+    open var videoPreviewURL: URL? {
+        message.videoAttachments.first?.thumbnailURL
+    }
+    
+    /// The URL for the file attachment preview.
+    open var filePreviewURL: URL? {
+        message.fileAttachments.first?.assetURL
     }
 
     // MARK: - Private Helpers

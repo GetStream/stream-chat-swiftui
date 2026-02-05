@@ -50,8 +50,8 @@ public struct MessageAttachmentPreviewContent {
     // MARK: - Preview Description
 
     /// Returns the description text for the attachment preview.
-    /// - Returns: A localized string describing the attachment, or empty string if none.
-    public var previewDescription: String {
+    /// - Returns: A localized string describing the attachment.
+    public var previewDescription: String? {
         switch kind {
         case .mixed(let typeCount):
             return L10n.Composer.Quoted.files(typeCount)
@@ -81,14 +81,14 @@ public struct MessageAttachmentPreviewContent {
             return L10n.Composer.Quoted.audio
 
         case .none, .link:
-            return ""
+            return nil
         }
     }
 
     // MARK: - Preview Icon
 
     /// Returns the icon for the attachment preview.
-    /// - Returns: The appropriate icon, or nil if no icon should be shown.
+    /// - Returns: The appropriate icon.
     public var previewIcon: MessageAttachmentPreviewIcon? {
         switch kind {
         case .mixed:
