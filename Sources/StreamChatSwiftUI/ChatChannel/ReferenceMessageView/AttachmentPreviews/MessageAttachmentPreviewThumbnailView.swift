@@ -8,7 +8,7 @@ import SwiftUI
 ///
 /// This view examines the thumbnail data and renders the corresponding
 /// preview view (image, video thumbnail, or file icon).
-public struct ReferenceMessageAttachmentPreviewView: View {
+public struct MessageAttachmentPreviewThumbnailView: View {
     private let thumbnail: MessageAttachmentPreviewThumbnail?
     
     /// Creates an attachment preview from a thumbnail.

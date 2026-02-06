@@ -47,9 +47,3 @@ public struct MessageImagePreviewView: View {
             .frame(width: size, height: size)
     }
 }
-
-// MARK: - Deprecated Typealiases
-
-/// Deprecated: Use `MessageImagePreviewView` instead.
-@available(*, deprecated, renamed: "MessageImagePreviewView")
-public typealias QuotedMessageImagePreviewView = MessageImagePreviewView

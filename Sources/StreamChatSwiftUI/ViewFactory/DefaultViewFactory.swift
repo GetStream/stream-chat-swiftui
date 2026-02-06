@@ -830,7 +830,7 @@ extension ViewFactory {
     public func makeMessageAttachmentPreviewView(
         options: MessageAttachmentPreviewViewOptions
     ) -> some View {
-        ReferenceMessageAttachmentPreviewView(thumbnail: options.thumbnail)
+        MessageAttachmentPreviewThumbnailView(thumbnail: options.thumbnail)
     }
 
     public func makeComposerEditedMessageView(
