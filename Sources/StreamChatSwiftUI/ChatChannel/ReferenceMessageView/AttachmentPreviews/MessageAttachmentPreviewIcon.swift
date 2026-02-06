@@ -5,8 +5,7 @@
 import StreamChatCommonUI
 import UIKit
 
-/// Represents the icon to display in a reference message subtitle.
-/// Used by both quoted messages and edited messages.
+/// Represents the attachment icon to display in a message.
 public struct MessageAttachmentPreviewIcon: Equatable, Sendable {
     /// The name identifying the icon type.
     public let name: String

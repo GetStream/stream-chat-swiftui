@@ -491,12 +491,9 @@ import SwiftUI
     ) -> MessageAttachmentPreviewViewType
 
     associatedtype MessageAttachmentPreviewIconViewType: View
-    /// Creates the view for displaying an attachment preview icon in a reference message.
+    /// Creates the view for displaying an attachment preview icon.
     ///
-    /// This view is used to show icons like photo, video, document, etc. in the
-    /// subtitle area of quoted messages or edited message previews.
-    ///
-    /// The options include an icon type. The view is responsible for resolving the icon to an image.
+    /// This view is used to show icons like photo, video, document, etc.
     ///
     /// - Parameter options: The options for creating the attachment preview icon view.
     func makeMessageAttachmentPreviewIconView(options: MessageAttachmentPreviewIconViewOptions) -> MessageAttachmentPreviewIconViewType

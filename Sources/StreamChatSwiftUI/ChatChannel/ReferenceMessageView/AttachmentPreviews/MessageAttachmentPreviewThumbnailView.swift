@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-/// A view that creates the appropriate attachment preview for a reference message.
+/// A view that creates the appropriate attachment preview for a message.
 ///
 /// This view examines the thumbnail data and renders the corresponding
 /// preview view (image, video thumbnail, or file icon).

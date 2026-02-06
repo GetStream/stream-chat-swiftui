@@ -6,9 +6,6 @@ import Foundation
 import StreamChat
 
 /// Resolves attachment preview data from a message.
-///
-/// This struct analyzes a message's attachments and provides the necessary data
-/// for displaying attachment previews in reference message views.
 @MainActor
 public struct MessageAttachmentPreviewResolver {
     @Injected(\.utils) private var utils
