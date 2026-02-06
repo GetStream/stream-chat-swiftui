@@ -827,12 +827,6 @@ extension ViewFactory {
         )
     }
 
-    public func makeMessageAttachmentPreviewView(
-        options: MessageAttachmentPreviewViewOptions
-    ) -> some View {
-        MessageAttachmentPreviewThumbnailView(thumbnail: options.thumbnail)
-    }
-
     public func makeComposerEditedMessageView(
         options: ComposerEditedMessageViewOptions
     ) -> some View {
@@ -843,6 +837,12 @@ extension ViewFactory {
             ),
             onDismiss: options.onDismiss
         )
+    }
+
+    public func makeMessageAttachmentPreviewThumbnailView(
+        options: MessageAttachmentPreviewViewOptions
+    ) -> some View {
+        MessageAttachmentPreviewThumbnailView(thumbnail: options.thumbnail)
     }
 
     public func makeMessageAttachmentPreviewIconView(

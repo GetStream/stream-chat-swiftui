@@ -486,7 +486,7 @@ import SwiftUI
     /// Creates the attachment preview view for a message.
     ///
     /// - Parameter options: The options containing the thumbnail to display.
-    func makeMessageAttachmentPreviewView(
+    func makeMessageAttachmentPreviewThumbnailView(
         options: MessageAttachmentPreviewViewOptions
     ) -> MessageAttachmentPreviewViewType
 

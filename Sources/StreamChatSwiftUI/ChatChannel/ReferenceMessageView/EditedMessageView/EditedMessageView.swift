@@ -57,7 +57,7 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
                 }
             },
             attachmentPreview: {
-                factory.makeMessageAttachmentPreviewView(
+                factory.makeMessageAttachmentPreviewThumbnailView(
                     options: MessageAttachmentPreviewViewOptions(
                         thumbnail: viewModel.thumbnail
                     )
