@@ -6,16 +6,10 @@ import SwiftUI
 
 /// A view that creates the appropriate attachment preview for a reference message.
 ///
-/// This view examines the view model's thumbnail data and renders the corresponding
+/// This view examines the thumbnail data and renders the corresponding
 /// preview view (image, video thumbnail, or file icon).
 public struct ReferenceMessageAttachmentPreviewView: View {
     private let thumbnail: MessageAttachmentPreviewThumbnail?
-    
-    /// Creates an attachment preview from a reference message view model.
-    /// - Parameter viewModel: The view model containing the attachment data.
-    public init(viewModel: ReferenceMessageViewModel) {
-        self.thumbnail = viewModel.thumbnail
-    }
     
     /// Creates an attachment preview from a thumbnail.
     /// - Parameter thumbnail: The thumbnail to display.

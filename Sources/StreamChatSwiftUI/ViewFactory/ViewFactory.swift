@@ -477,30 +477,29 @@ import SwiftUI
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
 
-    associatedtype QuotedMessageAttachmentPreviewViewType: View
-    /// Creates the attachment preview view for a quoted message.
-    ///
-    /// This slot can be used to show custom attachment previews inside quoted messages.
-    /// If the custom attachment preview is just an image, consider overriding
-    /// the `QuotedMessageViewModel.imagePreviewURL` only instead.
-    ///
-    /// - Parameter options: the options for creating the attachment preview view.
-    func makeQuotedMessageAttachmentPreviewView(options: QuotedMessageAttachmentPreviewViewOptions) -> QuotedMessageAttachmentPreviewViewType
-
     associatedtype ComposerEditedMessageViewType: View
     /// Creates the edited message view shown in the composer when editing a message.
     /// - Parameter options: the options for creating the composer edited message view.
     func makeComposerEditedMessageView(options: ComposerEditedMessageViewOptions) -> ComposerEditedMessageViewType
 
-    associatedtype EditedMessageAttachmentPreviewViewType: View
-    /// Creates the attachment preview view for an edited message.
+    associatedtype MessageAttachmentPreviewViewType: View
+    /// Creates the attachment preview view for a message.
     ///
-    /// This slot can be used to show custom attachment previews inside edited messages.
-    /// If the custom attachment preview is just an image, consider overriding
-    /// the `EditedMessageViewModel.imagePreviewURL` only instead.
+    /// - Parameter options: The options containing the thumbnail to display.
+    func makeMessageAttachmentPreviewView(
+        options: MessageAttachmentPreviewViewOptions
+    ) -> MessageAttachmentPreviewViewType
+
+    associatedtype MessageAttachmentPreviewIconViewType: View
+    /// Creates the view for displaying an attachment preview icon in a reference message.
     ///
-    /// - Parameter options: the options for creating the attachment preview view.
-    func makeEditedMessageAttachmentPreviewView(options: EditedMessageAttachmentPreviewViewOptions) -> EditedMessageAttachmentPreviewViewType
+    /// This view is used to show icons like photo, video, document, etc. in the
+    /// subtitle area of quoted messages or edited message previews.
+    ///
+    /// The options include an icon type. The view is responsible for resolving the icon to an image.
+    ///
+    /// - Parameter options: The options for creating the attachment preview icon view.
+    func makeMessageAttachmentPreviewIconView(options: MessageAttachmentPreviewIconViewOptions) -> MessageAttachmentPreviewIconViewType
 
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.

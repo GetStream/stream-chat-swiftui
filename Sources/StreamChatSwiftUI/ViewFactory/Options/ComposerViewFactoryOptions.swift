@@ -318,13 +318,15 @@ public final class ChatQuotedMessageViewOptions: Sendable {
     }
 }
 
-/// Options for creating the quoted message attachment preview view.
-public final class QuotedMessageAttachmentPreviewViewOptions: Sendable {
-    /// The view model containing the quoted message data.
-    public let viewModel: QuotedMessageViewModel
-    
-    public init(viewModel: QuotedMessageViewModel) {
-        self.viewModel = viewModel
+/// Options for creating the message attachment preview view.
+public final class MessageAttachmentPreviewViewOptions: Sendable {
+    /// The thumbnail to display in the attachment preview.
+    public let thumbnail: MessageAttachmentPreviewThumbnail?
+
+    /// Creates new options for the message attachment preview view.
+    /// - Parameter thumbnail: The thumbnail to display.
+    public init(thumbnail: MessageAttachmentPreviewThumbnail?) {
+        self.thumbnail = thumbnail
     }
 }
 
@@ -361,16 +363,6 @@ public final class ComposerEditedMessageViewOptions: Sendable {
     ) {
         self.editedMessage = editedMessage
         self.onDismiss = onDismiss
-    }
-}
-
-/// Options for creating the edited message attachment preview view.
-public final class EditedMessageAttachmentPreviewViewOptions: Sendable {
-    /// The view model containing the edited message data.
-    public let viewModel: EditedMessageViewModel
-    
-    public init(viewModel: EditedMessageViewModel) {
-        self.viewModel = viewModel
     }
 }
 

@@ -7,10 +7,10 @@ import StreamChat
 
 /// A view model that provides display data for an edited message.
 ///
-/// This view model conforms to `ReferenceMessageViewModel` with a fixed title
-/// of "Edit Message" and always indicates the message is from the current user.
+/// This view model has a fixed title of "Edit Message" and always indicates
+/// the message is from the current user.
 @MainActor
-open class EditedMessageViewModel: ReferenceMessageViewModel {
+open class EditedMessageViewModel {
     // MARK: - Properties
     
     /// The edited message.

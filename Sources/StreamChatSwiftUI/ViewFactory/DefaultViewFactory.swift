@@ -827,10 +827,10 @@ extension ViewFactory {
         )
     }
 
-    public func makeQuotedMessageAttachmentPreviewView(
-        options: QuotedMessageAttachmentPreviewViewOptions
+    public func makeMessageAttachmentPreviewView(
+        options: MessageAttachmentPreviewViewOptions
     ) -> some View {
-        ReferenceMessageAttachmentPreviewView(viewModel: options.viewModel)
+        ReferenceMessageAttachmentPreviewView(thumbnail: options.thumbnail)
     }
 
     public func makeComposerEditedMessageView(
@@ -843,12 +843,6 @@ extension ViewFactory {
             ),
             onDismiss: options.onDismiss
         )
-    }
-
-    public func makeEditedMessageAttachmentPreviewView(
-        options: EditedMessageAttachmentPreviewViewOptions
-    ) -> some View {
-        ReferenceMessageAttachmentPreviewView(viewModel: options.viewModel)
     }
 
     public func makeMessageAttachmentPreviewIconView(

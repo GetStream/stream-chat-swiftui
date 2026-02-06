@@ -61,9 +61,9 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
                 }
             },
             attachmentPreview: {
-                factory.makeQuotedMessageAttachmentPreviewView(
-                    options: QuotedMessageAttachmentPreviewViewOptions(
-                        viewModel: viewModel
+                factory.makeMessageAttachmentPreviewView(
+                    options: MessageAttachmentPreviewViewOptions(
+                        thumbnail: viewModel.thumbnail
                     )
                 )
             }

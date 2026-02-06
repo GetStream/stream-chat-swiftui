@@ -7,7 +7,7 @@ import StreamChat
 
 /// A view model that provides display data for a quoted message.
 @MainActor
-open class QuotedMessageViewModel: ReferenceMessageViewModel {
+open class QuotedMessageViewModel {
     // MARK: - Properties
     
     /// The quoted message.
