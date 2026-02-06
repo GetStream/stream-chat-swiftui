@@ -16,24 +16,17 @@ open class QuotedMessageViewModel {
     /// The current logged-in user.
     private let currentUser: CurrentChatUser?
 
-    /// The resolved attachment preview data (lazily computed once).
+    /// The resolved attachment preview data.
     private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
         MessageAttachmentPreviewResolver(message: message)
     }()
 
     // MARK: - Init
-    
-    /// Creates a new quoted message view model.
-    /// - Parameter message: The quoted message to display.
-    public init(message: ChatMessage) {
-        self.message = message
-        self.currentUser = InjectedValues[\.chatClient].currentUserController().currentUser
-    }
-    
+
     /// Creates a new quoted message view model.
     /// - Parameters:
     ///   - message: The quoted message to display.
-    ///   - currentUser: The current logged-in user (used for translations).
+    ///   - currentUser: The current logged-in user.
     public init(
         message: ChatMessage,
         currentUser: CurrentChatUser?

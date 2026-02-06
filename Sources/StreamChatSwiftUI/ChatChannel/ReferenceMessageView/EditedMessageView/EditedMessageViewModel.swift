@@ -6,9 +6,6 @@ import Foundation
 import StreamChat
 
 /// A view model that provides display data for an edited message.
-///
-/// This view model has a fixed title of "Edit Message" and always indicates
-/// the message is from the current user.
 @MainActor
 open class EditedMessageViewModel {
     // MARK: - Properties
@@ -16,7 +13,7 @@ open class EditedMessageViewModel {
     /// The edited message.
     private let message: ChatMessage
 
-    /// The resolved attachment preview data (lazily computed once).
+    /// The resolved attachment preview data.
     private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
         MessageAttachmentPreviewResolver(message: message)
     }()
