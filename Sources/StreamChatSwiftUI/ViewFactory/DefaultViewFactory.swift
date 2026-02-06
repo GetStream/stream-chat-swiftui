@@ -628,6 +628,7 @@ extension ViewFactory {
             channelController: options.channelController,
             messageController: options.messageController,
             canSendPoll: options.canSendPoll,
+            instantCommands: options.instantCommands,
             onCommandSelected: options.onCommandSelected
         )
     }
@@ -636,6 +637,7 @@ extension ViewFactory {
         options: AttachmentCommandsPickerViewOptions
     ) -> some View {
         AttachmentCommandsPickerView(
+            instantCommands: options.instantCommands,
             onCommandSelected: options.onCommandSelected
         )
     }

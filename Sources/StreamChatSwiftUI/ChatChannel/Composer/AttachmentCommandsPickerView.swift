@@ -9,15 +9,16 @@ import SwiftUI
 public struct AttachmentCommandsPickerView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
-    @Injected(\.utils) private var utils
 
+    var instantCommands: [CommandHandler]
     var onCommandSelected: @MainActor (ComposerCommand) -> Void
 
     public init(
+        instantCommands: [CommandHandler] = [],
         onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
     ) {
+        self.instantCommands = instantCommands
         self.onCommandSelected = onCommandSelected
     }
 
@@ -58,42 +59,21 @@ public struct AttachmentCommandsPickerView: View {
     }
 
     private var commandItems: [CommandItem] {
-        let commandSymbol = utils.commandsConfig.instantCommandsSymbol
-        return [
-            CommandItem(
-                id: "\(commandSymbol)giphy",
-                displayInfo: CommandDisplayInfo(
-                    displayName: L10n.Composer.Commands.giphy,
-                    icon: images.commandGiphy,
-                    format: "\(commandSymbol)giphy [\(L10n.Composer.Commands.Format.text)]",
-                    isInstant: true
-                ),
-                replacesMessageSent: false,
-                usesTintedIcon: false
-            ),
-            CommandItem(
-                id: "\(commandSymbol)mute",
-                displayInfo: CommandDisplayInfo(
-                    displayName: L10n.Composer.Commands.mute,
-                    icon: UIImage(systemName: "speaker.slash") ?? images.commandMute,
-                    format: "\(commandSymbol)mute [\(L10n.Composer.Commands.Format.username)]",
-                    isInstant: true
-                ),
-                replacesMessageSent: true,
-                usesTintedIcon: true
-            ),
-            CommandItem(
-                id: "\(commandSymbol)unmute",
-                displayInfo: CommandDisplayInfo(
-                    displayName: L10n.Composer.Commands.unmute,
-                    icon: UIImage(systemName: "speaker.wave.1") ?? images.commandUnmute,
-                    format: "\(commandSymbol)unmute [\(L10n.Composer.Commands.Format.username)]",
-                    isInstant: true
-                ),
-                replacesMessageSent: true,
-                usesTintedIcon: true
+        instantCommands.compactMap { handler in
+            guard let displayInfo = handler.displayInfo else {
+                return nil
+            }
+            return CommandItem(
+                id: handler.id,
+                displayInfo: displayInfo,
+                replacesMessageSent: handler.replacesMessageSent,
+                usesTintedIcon: shouldUseTintedIcon(displayInfo.icon)
             )
-        ]
+        }
+    }
+
+    private func shouldUseTintedIcon(_ image: UIImage) -> Bool {
+        image.renderingMode == .alwaysTemplate || image.isSymbolImage
     }
 
     private func handleSelection(_ item: CommandItem) {
@@ -148,7 +128,7 @@ private struct AttachmentCommandRow: View {
     }
 }
 
-private struct CommandItem: Identifiable {
+struct CommandItem: Identifiable {
     let id: String
     let displayInfo: CommandDisplayInfo
     let replacesMessageSent: Bool

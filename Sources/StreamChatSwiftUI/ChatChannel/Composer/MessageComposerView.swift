@@ -167,6 +167,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
                     canSendPoll: viewModel.canSendPoll,
+                    instantCommands: viewModel.instantCommands,
                     onCommandSelected: { command in
                         viewModel.pickerTypeState = .expanded(.none)
                         viewModel.composerCommand = command

@@ -210,6 +210,13 @@ import SwiftUI
         .makeCommandsHandler(
             with: channelController
         )
+
+    public var instantCommands: [CommandHandler] {
+        commandsHandler.commands
+            .compactMap { $0 as? InstantCommandsHandler }
+            .first?
+            .commands ?? []
+    }
     
     public var mentionedUsers = Set<ChatUser>()
     

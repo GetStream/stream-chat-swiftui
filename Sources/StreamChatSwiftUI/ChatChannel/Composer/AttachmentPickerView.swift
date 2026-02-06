@@ -50,6 +50,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     var channelController: ChatChannelController
     var messageController: ChatMessageController?
     var canSendPoll: Bool
+    var instantCommands: [CommandHandler]
     var onCommandSelected: @MainActor (ComposerCommand) -> Void
     
     public init(
@@ -72,6 +73,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         canSendPoll: Bool,
+        instantCommands: [CommandHandler],
         onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
     ) {
         self.viewFactory = viewFactory
@@ -93,6 +95,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         self.channelController = channelController
         self.messageController = messageController
         self.canSendPoll = canSendPoll
+        self.instantCommands = instantCommands
         self.onCommandSelected = onCommandSelected
     }
 
@@ -151,6 +154,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             } else if selectedPickerState == .commands {
                 viewFactory.makeAttachmentCommandsPickerView(
                     options: AttachmentCommandsPickerViewOptions(
+                        instantCommands: instantCommands,
                         onCommandSelected: onCommandSelected
                     )
                 )
