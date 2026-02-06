@@ -32,7 +32,7 @@ public final class TypingSuggestionOptions {
     }
 }
 
-/// A structure that contains the information of the typing suggestion.
+/// Contains the information of the typing suggestion.
 public final class TypingSuggestion {
     /// A String representing the currently typing text.
     public let text: String

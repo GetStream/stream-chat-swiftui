@@ -14,7 +14,7 @@ open class WaveformView: UIView {
     open var onSliderChanged: ((TimeInterval) -> Void)?
     open var onSliderTapped: (() -> Void)?
     
-    public final class Content: Equatable {
+    public struct Content: Equatable {
         /// When set to `true` the waveform will be updating with the data live (scrolling to the trailing side
         /// as new data arrive).
         public var isRecording: Bool
@@ -28,14 +28,12 @@ open class WaveformView: UIView {
         /// The waveform's data that will be used to render the visualisation.
         public var waveform: [Float]
 
-        public static var initial: Content {
-            Content(
-                isRecording: false,
-                duration: 0,
-                currentTime: 0,
-                waveform: []
-            )
-        }
+        public static let initial = Content(
+            isRecording: false,
+            duration: 0,
+            currentTime: 0,
+            waveform: []
+        )
 
         public init(
             isRecording: Bool,
@@ -47,13 +45,6 @@ open class WaveformView: UIView {
             self.duration = duration
             self.currentTime = currentTime
             self.waveform = waveform
-        }
-
-        public static func == (lhs: Content, rhs: Content) -> Bool {
-            lhs.isRecording == rhs.isRecording
-                && lhs.duration == rhs.duration
-                && lhs.currentTime == rhs.currentTime
-                && lhs.waveform == rhs.waveform
         }
     }
 

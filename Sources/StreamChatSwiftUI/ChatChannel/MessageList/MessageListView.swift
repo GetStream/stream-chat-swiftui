@@ -654,11 +654,11 @@ private class MessageRenderingUtil {
     }
 }
 
-private final class ChannelTranslationLanguageKey: EnvironmentKey {
+private struct ChannelTranslationLanguageKey: EnvironmentKey {
     static let defaultValue: TranslationLanguage? = nil
 }
 
-private final class MessageViewModelKey: EnvironmentKey {
+private struct MessageViewModelKey: EnvironmentKey {
     static let defaultValue: MessageViewModel? = nil
 }
 

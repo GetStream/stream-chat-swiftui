@@ -652,8 +652,8 @@ public final class ChannelListSearchType: Equatable {
         self.type = type
     }
 
-    public static var channels = ChannelListSearchType(type: "channels")
-    public static var messages = ChannelListSearchType(type: "messages")
+    public static let channels = ChannelListSearchType(type: "channels")
+    public static let messages = ChannelListSearchType(type: "messages")
 
     public static func == (lhs: ChannelListSearchType, rhs: ChannelListSearchType) -> Bool {
         lhs.type == rhs.type

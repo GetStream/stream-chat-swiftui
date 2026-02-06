@@ -410,7 +410,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 }
 
 // Environment plumbing colocated to avoid adding new files to the package list.
-private final class HighlightedMessageIdKey: EnvironmentKey {
+private struct HighlightedMessageIdKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
