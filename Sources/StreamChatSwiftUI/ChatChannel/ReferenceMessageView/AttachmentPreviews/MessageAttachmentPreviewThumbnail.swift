@@ -4,9 +4,7 @@
 
 import Foundation
 
-/// Represents a thumbnail for an attachment preview in a message reference.
-///
-/// This struct can be extended with custom thumbnail types by creating new static initializers.
+/// Represents a thumbnail for an attachment preview.
 public struct MessageAttachmentPreviewThumbnail: Equatable, Sendable {
     /// The type identifier for the thumbnail.
     public let type: String

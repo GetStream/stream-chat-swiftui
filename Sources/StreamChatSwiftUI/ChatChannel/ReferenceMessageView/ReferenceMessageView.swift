@@ -7,8 +7,8 @@ import SwiftUI
 
 /// A reusable view for displaying a reference to another message.
 ///
-/// This component is designed to be used in various contexts where a message reference needs to be shown,
-/// such as quoted messages in the composer or edited message references.
+/// This component is designed to be used in various contexts where a message reference
+/// needs to be shown, such as quoted messages in the composer or edited message references.
 public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -92,48 +92,6 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
 }
 
 // MARK: - Convenience Initializers
-
-extension ReferenceMessageView where IconPreview == EmptyView {
-    /// Creates a message reference view with an attachment preview but no icon preview.
-    /// - Parameters:
-    ///   - title: The title text (e.g., "Reply to [Author]").
-    ///   - subtitle: The subtitle text (e.g., message preview).
-    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
-    ///   - attachmentPreview: A view builder for the attachment preview.
-    public init(
-        title: String,
-        subtitle: String,
-        isSentByCurrentUser: Bool,
-        @ViewBuilder attachmentPreview: () -> AttachmentPreview
-    ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.isSentByCurrentUser = isSentByCurrentUser
-        self.iconPreview = nil
-        self.attachmentPreview = attachmentPreview()
-    }
-}
-
-extension ReferenceMessageView where AttachmentPreview == EmptyView {
-    /// Creates a message reference view with an icon preview but no attachment preview.
-    /// - Parameters:
-    ///   - title: The title text (e.g., "Reply to [Author]").
-    ///   - subtitle: The subtitle text (e.g., message preview).
-    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
-    ///   - iconPreview: A view builder for the icon preview displayed before the subtitle.
-    public init(
-        title: String,
-        subtitle: String,
-        isSentByCurrentUser: Bool,
-        @ViewBuilder iconPreview: () -> IconPreview
-    ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.isSentByCurrentUser = isSentByCurrentUser
-        self.iconPreview = iconPreview()
-        self.attachmentPreview = nil
-    }
-}
 
 extension ReferenceMessageView where IconPreview == EmptyView, AttachmentPreview == EmptyView {
     /// Creates a message reference view without icon or attachment previews.
