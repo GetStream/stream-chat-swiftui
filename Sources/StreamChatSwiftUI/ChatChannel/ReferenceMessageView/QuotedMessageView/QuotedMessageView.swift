@@ -52,14 +52,21 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         ReferenceMessageView(
             title: viewModel.title,
             subtitle: viewModel.subtitle,
-            subtitleIcon: viewModel.subtitleIcon?.image,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser
-        ) {
-            factory.makeQuotedMessageAttachmentPreviewView(
-                options: QuotedMessageAttachmentPreviewViewOptions(
-                    viewModel: viewModel
+            isSentByCurrentUser: viewModel.isSentByCurrentUser,
+            iconPreview: {
+                if let icon = viewModel.subtitleIcon {
+                    factory.makeMessageAttachmentPreviewIconView(
+                        options: MessageAttachmentPreviewIconViewOptions(icon: icon)
+                    )
+                }
+            },
+            attachmentPreview: {
+                factory.makeMessageAttachmentPreviewThumbnailView(
+                    options: MessageAttachmentPreviewViewOptions(
+                        thumbnail: viewModel.thumbnail
+                    )
                 )
-            )
-        }
+            }
+        )
     }
 }

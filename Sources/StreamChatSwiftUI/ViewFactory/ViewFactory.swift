@@ -477,15 +477,26 @@ import SwiftUI
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
 
-    associatedtype QuotedMessageAttachmentPreviewViewType: View
-    /// Creates the attachment preview view for a quoted message.
+    associatedtype ComposerEditedMessageViewType: View
+    /// Creates the edited message view shown in the composer when editing a message.
+    /// - Parameter options: the options for creating the composer edited message view.
+    func makeComposerEditedMessageView(options: ComposerEditedMessageViewOptions) -> ComposerEditedMessageViewType
+
+    associatedtype MessageAttachmentPreviewViewType: View
+    /// Creates the attachment preview view for a message.
     ///
-    /// This slot can be used to show custom attachment previews inside quoted messages.
-    /// If the custom attachment preview is just an image, consider overriding
-    /// the `QuotedMessageViewModel.imagePreviewURL` only instead.
+    /// - Parameter options: The options containing the thumbnail to display.
+    func makeMessageAttachmentPreviewThumbnailView(
+        options: MessageAttachmentPreviewViewOptions
+    ) -> MessageAttachmentPreviewViewType
+
+    associatedtype MessageAttachmentPreviewIconViewType: View
+    /// Creates the view for displaying an attachment preview icon.
     ///
-    /// - Parameter options: the options for creating the attachment preview view.
-    func makeQuotedMessageAttachmentPreviewView(options: QuotedMessageAttachmentPreviewViewOptions) -> QuotedMessageAttachmentPreviewViewType
+    /// This view is used to show icons like photo, video, document, etc.
+    ///
+    /// - Parameter options: The options for creating the attachment preview icon view.
+    func makeMessageAttachmentPreviewIconView(options: MessageAttachmentPreviewIconViewOptions) -> MessageAttachmentPreviewIconViewType
 
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.

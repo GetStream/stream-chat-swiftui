@@ -26,6 +26,7 @@
 		84E7F9E82EFAF9BF00BA56A3 /* StreamChatTestTools in Frameworks */ = {isa = PBXBuildFile; productRef = 84E7F9E72EFAF9BF00BA56A3 /* StreamChatTestTools */; };
 		A35D803B283E89F50084FE25 /* StreamChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; };
 		A35D803C283E89F50084FE25 /* StreamChatSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8465FBB52746873A00AF091E /* StreamChatSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AD421E5D2F36492D0047CB9E /* StreamChatTestMockServer in Frameworks */ = {isa = PBXBuildFile; productRef = 84E7F9E52EFAF9BF00BA56A3 /* StreamChatTestMockServer */; };
 		ADCE871A2F0C290B00F6A7C3 /* StreamChat in Frameworks */ = {isa = PBXBuildFile; productRef = ADCE87192F0C290B00F6A7C3 /* StreamChat */; };
 		ADCE871C2F0C291600F6A7C3 /* StreamChatCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = ADCE871B2F0C291600F6A7C3 /* StreamChatCommonUI */; };
 		ADCE879D2F0D5CF500F6A7C3 /* StreamChatTestMockServer in Frameworks */ = {isa = PBXBuildFile; productRef = ADCE879C2F0D5CF500F6A7C3 /* StreamChatTestMockServer */; };
@@ -182,12 +183,14 @@
 				Tests/ChatChannel/ComposerQuotedMessageView_Tests.swift,
 				Tests/ChatChannel/CreatePollView_Tests.swift,
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
+				Tests/ChatChannel/EditedMessageView_Tests.swift,
 				Tests/ChatChannel/FileAttachmentView_Tests.swift,
 				Tests/ChatChannel/FilePickerView_Tests.swift,
 				Tests/ChatChannel/GalleryView_Tests.swift,
 				Tests/ChatChannel/LazyImageExtensions_Tests.swift,
 				Tests/ChatChannel/MessageActions_Tests.swift,
 				Tests/ChatChannel/MessageActionsViewModel_Tests.swift,
+				Tests/ChatChannel/MessageAttachmentPreviewResolver_Tests.swift,
 				Tests/ChatChannel/MessageAttachmentsConverter_Tests.swift,
 				Tests/ChatChannel/MessageCachingUtils_Tests.swift,
 				Tests/ChatChannel/MessageComposerView_Tests.swift,
@@ -381,6 +384,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD421E5D2F36492D0047CB9E /* StreamChatTestMockServer in Frameworks */,
 				84E7F9E82EFAF9BF00BA56A3 /* StreamChatTestTools in Frameworks */,
 				82E2C8852F34C19F00FBC1BE /* StreamChat in Frameworks */,
 				8465FBBE2746873A00AF091E /* StreamChatSwiftUI.framework in Frameworks */,

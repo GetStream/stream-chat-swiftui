@@ -75,6 +75,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
+                        editedMessage: $editedMessage,
                         maxMessageLength: channelConfig?.maxMessageLength,
                         cooldownDuration: viewModel.cooldownDuration,
                         sendButtonEnabled: viewModel.sendButtonEnabled,
@@ -298,6 +299,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
     var quotedMessage: Binding<ChatMessage?>
+    var editedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
     var sendButtonEnabled: Bool
@@ -324,6 +326,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
         sendButtonEnabled: Bool,
@@ -348,6 +351,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.isSendMessageEnabled = isSendMessageEnabled
         self.sendButtonEnabled = sendButtonEnabled
         self.quotedMessage = quotedMessage
+        self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
         self.onCustomAttachmentTap = onCustomAttachmentTap
@@ -375,7 +379,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public var body: some View {
         VStack(spacing: tokens.spacingXs) {
-            if let quotedMessage = quotedMessage.wrappedValue {
+            if let editedMessage = editedMessage.wrappedValue {
+                factory.makeComposerEditedMessageView(
+                    options: .init(
+                        editedMessage: editedMessage,
+                        onDismiss: {
+                            withAnimation {
+                                self.editedMessage.wrappedValue = nil
+                            }
+                        }
+                    )
+                )
+            } else if let quotedMessage = quotedMessage.wrappedValue {
                 factory.makeComposerQuotedMessageView(
                     options: .init(
                         quotedMessage: quotedMessage,
@@ -515,7 +530,12 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .slowMode(cooldownDuration)
         }
 
-        if text.isEmpty && utils.composerConfig.isVoiceRecordingEnabled {
+        // When editing, show checkmark button
+        if editedMessage.wrappedValue != nil {
+            return .edit(sendButtonEnabled)
+        }
+
+        if utils.composerConfig.isVoiceRecordingEnabled && !sendButtonEnabled {
             return .audio
         }
 

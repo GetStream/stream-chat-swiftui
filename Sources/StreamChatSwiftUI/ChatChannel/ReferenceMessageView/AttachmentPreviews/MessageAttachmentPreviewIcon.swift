@@ -5,11 +5,8 @@
 import StreamChatCommonUI
 import UIKit
 
-/// Represents the icon to display in a quoted message subtitle.
-@MainActor
-public struct QuotedMessageAttachmentPreviewIcon {
-    @Injected(\.images) private var images
-
+/// Represents the attachment icon to display in a message.
+public struct MessageAttachmentPreviewIcon: Equatable, Sendable {
     /// The name identifying the icon type.
     public let name: String
 
@@ -40,25 +37,4 @@ public struct QuotedMessageAttachmentPreviewIcon {
 
     /// Icon for mixed attachments.
     public static var mixed: Self { .init(name: "mixed") }
-
-    // MARK: - Image Resolution
-
-    public var image: UIImage {
-        switch name {
-        case "poll":
-            return images.attachmentPollIcon
-        case "voiceRecording":
-            return images.attachmentVoiceIcon
-        case "photo":
-            return images.attachmentPhotoIcon
-        case "video":
-            return images.attachmentVideoIcon
-        case "link":
-            return images.attachmentLinkIcon
-        case "document", "audio", "mixed":
-            return images.attachmentDocIcon
-        default:
-            return images.attachmentDocIcon
-        }
-    }
 }

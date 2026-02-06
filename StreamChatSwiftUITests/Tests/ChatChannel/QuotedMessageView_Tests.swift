@@ -381,7 +381,12 @@ import XCTest
             id: .unique,
             imageURL: .localYodaImage
         ).asAnyAttachment
-        
+
+        let imageAttachment2 = ChatMessageImageAttachment.mock(
+            id: .unique,
+            imageURL: .localYodaImage
+        ).asAnyAttachment
+
         let fileAttachment = ChatMessageFileAttachment(
             id: .unique,
             type: .file,
@@ -400,7 +405,7 @@ import XCTest
             cid: .unique,
             text: "I'm sending you some photos and files",
             author: author,
-            attachments: [imageAttachment, fileAttachment],
+            attachments: [imageAttachment, imageAttachment2, fileAttachment],
             isSentByCurrentUser: false
         )
         
@@ -421,7 +426,12 @@ import XCTest
             id: .unique,
             imageURL: .localYodaImage
         ).asAnyAttachment
-        
+
+        let imageAttachment2 = ChatMessageImageAttachment.mock(
+            id: .unique,
+            imageURL: .localYodaImage
+        ).asAnyAttachment
+
         let fileAttachment = { () -> AnyChatMessageAttachment in
             ChatMessageFileAttachment(
                 id: .unique,
@@ -443,7 +453,7 @@ import XCTest
             text: "",
             author: author,
             attachments: [
-                imageAttachment,
+                imageAttachment, imageAttachment2,
                 fileAttachment(), fileAttachment(), fileAttachment(),
                 fileAttachment(), fileAttachment()
             ],
