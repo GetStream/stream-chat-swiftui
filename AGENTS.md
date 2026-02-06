@@ -23,6 +23,9 @@ Tests/
 
 When editing near other packages (e.g., StreamChat or StreamChatUI), prefer extending the SwiftUI layer rather than duplicating logic from dependencies.
 
+### New files & target membership
+  • When creating new source or resource files, add them to the correct Xcode target(s). Update the project (e.g. project.pbxproj) so each new file is included in the appropriate target's "Compile Sources" (or "Copy Bundle Resources" for assets). Match the target(s) used by sibling files in the same directory (e.g. Sources/StreamChatSwiftUI/ → StreamChatSwiftUI; Tests/StreamChatSwiftUITests/ → StreamChatSwiftUITests). Omitting target membership will cause build failures or unused files.
+
 ### Local setup (SPM)
   1.  Open the repository in Xcode (root contains Package.swift).
   2.  Resolve packages.
