@@ -172,7 +172,33 @@ import XCTest
         // Then
         AssertSnapshot(view, variants: [.defaultLight], size: containerSize)
     }
-    
+
+    // MARK: - Edit - Photo (Multiple, Caption)
+
+    func test_editedMessageView_photoMultipleCaption() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Multiple Images",
+            author: author,
+            attachments: [
+                ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment,
+                ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment,
+                ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
+            ],
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = containerView {
+            EditedMessageView(message: message)
+        }
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight], size: containerSize)
+    }
+
     // MARK: - Edit - Video (Single, No Caption)
     
     func test_editedMessageView_videoSingleNoCaption() {
