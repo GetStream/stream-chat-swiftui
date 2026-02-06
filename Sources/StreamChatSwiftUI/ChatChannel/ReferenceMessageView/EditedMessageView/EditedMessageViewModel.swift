@@ -32,13 +32,7 @@ open class EditedMessageViewModel {
     open var title: String {
         L10n.Composer.Title.edit
     }
-    
-    /// Whether the referenced message was sent by the current user.
-    /// Always returns `true` for edited messages since you can only edit your own messages.
-    open var isSentByCurrentUser: Bool {
-        true
-    }
-    
+
     /// The subtitle text to display (message preview or attachment description).
     open var subtitle: String {
         // If there's text content, use it.
