@@ -177,7 +177,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 }
 
 /// Options for setting up the channel avatar view.
-public struct ChannelAvatarViewOptions {
+public final class ChannelAvatarViewOptions {
     /// Whether the online indicator should be shown.
     public var showOnlineIndicator: Bool
     /// Size of the avatar.
@@ -311,7 +311,7 @@ public struct UnreadIndicatorView: View {
     }
 }
 
-public struct InjectedChannelInfo {
+public final class InjectedChannelInfo {
     public var subtitle: String?
     public var unreadCount: Int
     public var timestamp: String?
@@ -391,7 +391,7 @@ extension ChatChannel {
 }
 
 /// The style for the muted icon in the channel list item.
-public struct ChannelItemMutedLayoutStyle: Hashable {
+public final class ChannelItemMutedLayoutStyle: Hashable {
     let identifier: String
 
     init(_ identifier: String) {
@@ -408,4 +408,12 @@ public struct ChannelItemMutedLayoutStyle: Hashable {
     /// This style shows the muted icon after the channel name.
     /// The subtitle text shows the last message preview text.
     public static var afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
+
+    public static func == (lhs: ChannelItemMutedLayoutStyle, rhs: ChannelItemMutedLayoutStyle) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
 }

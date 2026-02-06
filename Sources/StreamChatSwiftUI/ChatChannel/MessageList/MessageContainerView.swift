@@ -410,7 +410,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
 }
 
 // Environment plumbing colocated to avoid adding new files to the package list.
-private struct HighlightedMessageIdKey: EnvironmentKey {
+private final class HighlightedMessageIdKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
@@ -438,7 +438,7 @@ struct SendFailureIndicator: View {
     }
 }
 
-public struct MessageDisplayInfo {
+public final class MessageDisplayInfo {
     public let message: ChatMessage
     public let frame: CGRect
     public let contentWidth: CGFloat

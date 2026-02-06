@@ -33,7 +33,7 @@ public extension Appearance {
 }
 
 /// Provides the default value of the `Appearance` class.
-public struct AppearanceKey: EnvironmentKey {
+public final class AppearanceKey: EnvironmentKey {
     public static let defaultValue: Appearance = Appearance()
 }
 

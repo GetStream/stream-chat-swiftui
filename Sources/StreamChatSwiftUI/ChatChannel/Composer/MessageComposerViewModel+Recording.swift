@@ -5,20 +5,31 @@
 import StreamChat
 import SwiftUI
 
-public struct AudioRecordingInfo: Equatable {
+public final class AudioRecordingInfo: Equatable {
     /// The waveform of the recording.
     public var waveform: [Float]
     /// The duration of the recording.
     public var duration: TimeInterval
-    
-    mutating func update(with entry: Float, duration: TimeInterval) {
+
+    public init(waveform: [Float], duration: TimeInterval) {
+        self.waveform = waveform
+        self.duration = duration
+    }
+
+    func update(with entry: Float, duration: TimeInterval) {
         waveform.append(entry)
         self.duration = duration
+    }
+
+    public static func == (lhs: AudioRecordingInfo, rhs: AudioRecordingInfo) -> Bool {
+        lhs.waveform == rhs.waveform && lhs.duration == rhs.duration
     }
 }
 
 extension AudioRecordingInfo {
-    static let initial = AudioRecordingInfo(waveform: [], duration: 0)
+    static var initial: AudioRecordingInfo {
+        AudioRecordingInfo(waveform: [], duration: 0)
+    }
 }
 
 extension MessageComposerViewModel: AudioRecordingDelegate {

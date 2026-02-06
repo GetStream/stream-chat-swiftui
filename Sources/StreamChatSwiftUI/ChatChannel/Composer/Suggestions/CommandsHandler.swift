@@ -86,7 +86,7 @@ extension CommandHandler {
 }
 
 /// Model for the composer's commands.
-public struct ComposerCommand {
+public final class ComposerCommand {
     /// Identifier of the command.
     public let id: String
     /// Typing suggestion that invokes the command.
@@ -110,7 +110,7 @@ public struct ComposerCommand {
 }
 
 /// Provides information about the suggestion.
-public struct SuggestionInfo {
+public final class SuggestionInfo {
     /// Identifies the suggestion.
     public let key: String
     /// Any value that can be passed to the suggestion.
@@ -123,7 +123,7 @@ public struct SuggestionInfo {
 }
 
 /// Display information about a command.
-public struct CommandDisplayInfo {
+public final class CommandDisplayInfo {
     public let displayName: String
     public let icon: UIImage
     public let format: String
