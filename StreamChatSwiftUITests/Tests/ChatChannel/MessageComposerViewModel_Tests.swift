@@ -790,6 +790,75 @@ import XCTest
         XCTAssertTrue(viewModel.showCommandsOverlay)
     }
 
+    func test_messageComposerVM_checkChannelCooldown_whenNoLastMessageFromCurrentUser_keepsCooldownDisabled() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: nil
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.checkChannelCooldown()
+
+        // Then
+        XCTAssertEqual(viewModel.cooldownDuration, 0)
+    }
+
+    func test_messageComposerVM_checkChannelCooldown_usesCurrentRemainingCooldown() {
+        // Given
+        let channelController = makeChannelController()
+        let lastMessage = ChatMessage.mock(
+            cid: channelController.cid ?? .unique,
+            createdAt: Date().addingTimeInterval(-2),
+            isSentByCurrentUser: true
+        )
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: lastMessage
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.checkChannelCooldown()
+
+        // Then
+        XCTAssertLessThanOrEqual(viewModel.cooldownDuration, 13)
+        XCTAssertGreaterThan(viewModel.cooldownDuration, 0)
+    }
+
+    func test_messageComposerVM_checkChannelCooldown_whenUserCanSkipSlowMode_keepsCooldownDisabled() {
+        // Given
+        let channelController = makeChannelController()
+        let lastMessage = ChatMessage.mock(
+            cid: channelController.cid ?? .unique,
+            createdAt: Date().addingTimeInterval(-1),
+            isSentByCurrentUser: true
+        )
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: lastMessage,
+            ownCapabilities: [.sendMessage, .skipSlowMode]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.checkChannelCooldown()
+
+        // Then
+        XCTAssertEqual(viewModel.cooldownDuration, 0)
+    }
+
     func test_addedAsset_extraData() {
         // Given
         let image = UIImage(systemName: "person")!
@@ -1260,6 +1329,36 @@ import XCTest
         MessageComposerTestUtils.makeChannelController(
             chatClient: chatClient,
             messages: messages
+        )
+    }
+
+    private func makeChannelForCooldown(
+        cooldownDuration: Int,
+        lastMessageFromCurrentUser: ChatMessage?,
+        ownCapabilities: Set<ChannelCapability> = [.sendMessage, .uploadFile]
+    ) -> ChatChannel {
+        ChatChannel(
+            cid: .unique,
+            name: nil,
+            imageURL: nil,
+            isHidden: false,
+            config: .mock(),
+            ownCapabilities: ownCapabilities,
+            lastActiveMembers: [],
+            currentlyTypingUsers: [],
+            lastActiveWatchers: [],
+            unreadCount: .noUnread,
+            cooldownDuration: cooldownDuration,
+            extraData: [:],
+            latestMessages: lastMessageFromCurrentUser.map { [$0] } ?? [],
+            lastMessageFromCurrentUser: lastMessageFromCurrentUser,
+            pinnedMessages: [],
+            pendingMessages: [],
+            muteDetails: nil,
+            previewMessage: nil,
+            draftMessage: nil,
+            activeLiveLocations: [],
+            pushPreference: nil
         )
     }
     
