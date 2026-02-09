@@ -541,7 +541,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .slowMode(cooldownDuration)
         }
 
-        // When editing, show checkmark button
         if editedMessage.wrappedValue != nil {
             return .edit(sendButtonEnabled)
         }

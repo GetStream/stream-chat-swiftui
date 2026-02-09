@@ -4,13 +4,6 @@
 
 import SwiftUI
 
-public enum SendMessageButtonState {
-    case regular(Bool)
-    case edit(Bool)
-    case audio
-    case slowMode(Int)
-}
-
 struct TrailingInputComposerView: View {
     @Binding var text: String
     @Binding var recordingState: RecordingState
@@ -39,4 +32,11 @@ struct TrailingInputComposerView: View {
             SlowModeView(cooldownDuration: cooldown)
         }
     }
+}
+
+public enum SendMessageButtonState {
+    case regular(Bool)
+    case edit(Bool)
+    case audio
+    case slowMode(Int)
 }
