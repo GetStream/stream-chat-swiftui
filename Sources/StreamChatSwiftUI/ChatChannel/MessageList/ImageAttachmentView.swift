@@ -16,6 +16,20 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
+    
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        width: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) {
+        self.factory = factory
+        self.message = message
+        self.width = width
+        self.isFirst = isFirst
+        self._scrolledId = scrolledId
+    }
 
     public var body: some View {
         VStack(
