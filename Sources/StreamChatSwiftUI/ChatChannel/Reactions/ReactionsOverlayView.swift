@@ -252,7 +252,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     }
                 }
             }))
-            .modifier(PresentationDetentsModifier(height: screenHeight / 3))
+            .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
         }
     }
 
@@ -418,14 +418,29 @@ extension View {
 }
 
 struct PresentationDetentsModifier: ViewModifier {
-    var height: CGFloat
+    var sheetSizes: [SheetSize]
     
     func body(content: Content) -> some View {
         if #available(iOS 16.0, *) {
             content
-                .presentationDetents([.height(height)])
+                .presentationDetents(Set(sheetSizes.map(\.toPresentationDetent)))
         } else {
             content
+        }
+    }
+}
+
+enum SheetSize {
+    case medium
+    case large
+    
+    @available(iOS 16.0, *)
+    var toPresentationDetent: PresentationDetent {
+        switch self {
+        case .medium:
+            return .medium
+        case .large:
+            return .large
         }
     }
 }
