@@ -8,8 +8,6 @@ import StreamChat
 /// A view model that provides display data for a quoted message.
 @MainActor
 open class QuotedMessageViewModel {
-    @Injected(\.utils) private var utils
-
     // MARK: - Properties
     
     /// The quoted message.
@@ -18,16 +16,17 @@ open class QuotedMessageViewModel {
     /// The current logged-in user.
     private let currentUser: CurrentChatUser?
 
-    /// The resolved attachment content (lazily computed once).
-    private lazy var attachmentContent: QuotedMessageAttachmentContent = {
-        QuotedMessageAttachmentContent.resolve(from: message)
+    /// The resolved attachment preview data.
+    private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
+        MessageAttachmentPreviewResolver(message: message)
     }()
 
     // MARK: - Init
-    
+
     /// Creates a new quoted message view model.
-    /// - Parameter message: The quoted message to display.
-    ///
+    /// - Parameters:
+    ///   - message: The quoted message to display.
+    ///   - currentUser: The current logged-in user.
     public init(
         message: ChatMessage,
         currentUser: CurrentChatUser?
@@ -65,89 +64,19 @@ open class QuotedMessageViewModel {
             return messageText
         }
 
-        // Otherwise, describe the attachments.
-        switch attachmentContent.kind {
-        case .mixed(let typeCount):
-            return L10n.Composer.Quoted.files(typeCount)
-
-        case .poll(let name):
-            return name
-
-        case .voiceRecording(let duration):
-            if let duration, let formatted = formattedDuration(duration) {
-                return L10n.Composer.Quoted.voiceMessageWithDuration(formatted)
-            }
-            return L10n.Composer.Quoted.voiceMessage
-
-        case .photo(let count):
-            return count == 1 ? L10n.Composer.Quoted.photo : L10n.Composer.Quoted.photos(count)
-
-        case .video(let count):
-            return count == 1 ? L10n.Composer.Quoted.video : L10n.Composer.Quoted.videos(count)
-
-        case .file(let count, let fileName):
-            if count == 1 {
-                return fileName ?? L10n.Composer.Quoted.file
-            }
-            return L10n.Composer.Quoted.files(count)
-
-        case .audio:
-            return L10n.Composer.Quoted.audio
-
-        case .none, .link:
-            return ""
-        }
+        // Otherwise, use the attachment preview description.
+        return attachmentPreviewResolver.previewDescription ?? ""
     }
     
     /// The icon for the subtitle, if applicable.
     /// Returns nil if no icon should be shown.
-    open var subtitleIcon: QuotedMessageAttachmentPreviewIcon? {
-        switch attachmentContent.kind {
-        case .mixed:
-            return .mixed
-        case .poll:
-            return .poll
-        case .voiceRecording:
-            return .voiceRecording
-        case .photo:
-            return .photo
-        case .video:
-            return .video
-        case .file:
-            return .document
-        case .link:
-            return .link
-        case .audio:
-            return .audio
-        case .none:
-            return nil
-        }
+    open var subtitleIcon: MessageAttachmentPreviewIcon? {
+        attachmentPreviewResolver.previewIcon
     }
     
-    // MARK: - Attachment Preview
-    
-    /// The URL for the image attachment preview, if available.
-    open var imagePreviewURL: URL? {
-        if let imageAttachment = message.imageAttachments.first {
-            return imageAttachment.imageURL
-        }
-        if let giphyAttachment = message.giphyAttachments.first {
-            return giphyAttachment.previewURL
-        }
-        if let linkAttachment = message.linkAttachments.first {
-            return linkAttachment.previewURL
-        }
-        return nil
-    }
-    
-    /// The URL for the video thumbnail preview, if available.
-    open var videoThumbnailURL: URL? {
-        message.videoAttachments.first?.thumbnailURL
-    }
-    
-    /// The file extension for file previews, if available.
-    open var fileExtension: String? {
-        message.fileAttachments.first?.assetURL.pathExtension.lowercased()
+    /// The thumbnail for the attachment preview, if available.
+    open var thumbnail: MessageAttachmentPreviewThumbnail? {
+        attachmentPreviewResolver.previewThumbnail
     }
     
     // MARK: - Private Helpers
@@ -163,9 +92,5 @@ open class QuotedMessageViewModel {
         }
 
         return message.text.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func formattedDuration(_ duration: TimeInterval) -> String? {
-        utils.videoDurationFormatter.format(duration)
     }
 }

@@ -90,7 +90,7 @@ class MessageListPage {
         static var textView: XCUIElement { inputField }
         static var inputField: XCUIElement { app.textViews["ComposerTextInputView"] }
         static var sendButton: XCUIElement { app.buttons["SendMessageButton"] }
-        static var confirmButton: XCUIElement { sendButton }
+        static var confirmButton: XCUIElement { app.buttons["ConfirmEditButton"] }
         static var attachmentButton: XCUIElement { app.buttons["PickerTypeButtonMedia"] }
         static var commandButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
         static var collapsedComposerButton: XCUIElement { app.buttons["PickerTypeButtonCollapsed"] }

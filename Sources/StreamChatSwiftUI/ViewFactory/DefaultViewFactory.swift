@@ -511,6 +511,7 @@ extension ViewFactory {
                     addedCustomAttachments: options.addedCustomAttachments,
                     addedVoiceRecordings: options.addedVoiceRecordings,
                     quotedMessage: options.quotedMessage,
+                    editedMessage: options.editedMessage,
                     maxMessageLength: options.maxMessageLength,
                     cooldownDuration: options.cooldownDuration,
                     sendButtonEnabled: options.sendButtonEnabled,
@@ -537,6 +538,7 @@ extension ViewFactory {
                 addedCustomAttachments: options.addedCustomAttachments,
                 addedVoiceRecordings: options.addedVoiceRecordings,
                 quotedMessage: options.quotedMessage,
+                editedMessage: options.editedMessage,
                 maxMessageLength: options.maxMessageLength,
                 cooldownDuration: options.cooldownDuration,
                 sendButtonEnabled: options.sendButtonEnabled,
@@ -836,10 +838,31 @@ extension ViewFactory {
         )
     }
 
-    public func makeQuotedMessageAttachmentPreviewView(
-        options: QuotedMessageAttachmentPreviewViewOptions
+    public func makeComposerEditedMessageView(
+        options: ComposerEditedMessageViewOptions
     ) -> some View {
-        QuotedMessageAttachmentPreviewView(viewModel: options.viewModel)
+        EditedMessageView(
+            factory: self,
+            viewModel: EditedMessageViewModel(
+                message: options.editedMessage
+            ),
+            onDismiss: options.onDismiss
+        )
+    }
+
+    public func makeMessageAttachmentPreviewThumbnailView(
+        options: MessageAttachmentPreviewViewOptions
+    ) -> some View {
+        MessageAttachmentPreviewThumbnailView(thumbnail: options.thumbnail)
+    }
+
+    public func makeMessageAttachmentPreviewIconView(
+        options: MessageAttachmentPreviewIconViewOptions
+    ) -> some View {
+        let provider = DefaultMessageAttachmentPreviewIconProvider()
+        return MessageAttachmentPreviewIconView(
+            iconImage: provider.image(for: options.icon)
+        )
     }
     
     public func makeCommandsContainerView(

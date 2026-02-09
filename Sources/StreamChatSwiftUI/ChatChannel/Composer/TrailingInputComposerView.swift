@@ -6,6 +6,7 @@ import SwiftUI
 
 public enum SendMessageButtonState {
     case regular(Bool)
+    case edit(Bool)
     case audio
     case slowMode(Int)
 }
@@ -22,6 +23,10 @@ struct TrailingInputComposerView: View {
         switch sendMessageButtonState {
         case .regular(let isEnabled):
             SendMessageButton(enabled: isEnabled) {
+                sendMessage()
+            }
+        case .edit(let isEnabled):
+            ConfirmEditButton(enabled: isEnabled) {
                 sendMessage()
             }
         case .audio:

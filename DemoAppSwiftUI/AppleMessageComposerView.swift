@@ -91,6 +91,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     addedVoiceRecordings: viewModel.addedVoiceRecordings,
                     quotedMessage: $quotedMessage,
+                    editedMessage: $editedMessage,
                     maxMessageLength: channelConfig?.maxMessageLength,
                     cooldownDuration: viewModel.cooldownDuration,
                     sendButtonEnabled: viewModel.sendButtonEnabled,
