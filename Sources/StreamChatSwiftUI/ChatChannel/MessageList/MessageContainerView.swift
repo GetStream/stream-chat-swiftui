@@ -438,7 +438,7 @@ struct SendFailureIndicator: View {
     }
 }
 
-public struct MessageDisplayInfo {
+public final class MessageDisplayInfo {
     public let message: ChatMessage
     public let frame: CGRect
     public let contentWidth: CGFloat

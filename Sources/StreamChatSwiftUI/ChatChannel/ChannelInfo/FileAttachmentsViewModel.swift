@@ -132,11 +132,16 @@ class FileAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDel
     }
 }
 
-struct MonthlyFileAttachments: Identifiable {
+final class MonthlyFileAttachments: Identifiable {
     var id: String {
         monthAndYear
     }
 
     let monthAndYear: String
     let attachments: [ChatMessageFileAttachment]
+
+    init(monthAndYear: String, attachments: [ChatMessageFileAttachment]) {
+        self.monthAndYear = monthAndYear
+        self.attachments = attachments
+    }
 }

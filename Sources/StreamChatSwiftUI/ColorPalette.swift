@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 
 /// Provides the colors used throughout the SDK.
-public struct ColorPalette {
+public final class ColorPalette {
     public init() {
         navigationBarGlyph = .white
         navigationBarTitle = text

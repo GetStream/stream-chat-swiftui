@@ -645,13 +645,17 @@ public enum ChannelPopupType {
 }
 
 /// The type of data the channel list should perform a search.
-public struct ChannelListSearchType: Equatable {
+public final class ChannelListSearchType: Equatable {
     let type: String
 
     private init(type: String) {
         self.type = type
     }
 
-    public static var channels = Self(type: "channels")
-    public static var messages = Self(type: "messages")
+    public static let channels = ChannelListSearchType(type: "channels")
+    public static let messages = ChannelListSearchType(type: "messages")
+
+    public static func == (lhs: ChannelListSearchType, rhs: ChannelListSearchType) -> Bool {
+        lhs.type == rhs.type
+    }
 }

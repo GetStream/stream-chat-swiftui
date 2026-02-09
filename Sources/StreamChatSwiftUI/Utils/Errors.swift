@@ -5,7 +5,7 @@
 import Combine
 import Foundation
 
-public struct StreamChatError: Error {
+public final class StreamChatError: Error {
     /// The specific error code.
     public let errorCode: StreamChatErrorCode
 
@@ -14,6 +14,16 @@ public struct StreamChatError: Error {
 
     /// The additional information dictionary.
     public let additionalInfo: [String: Any]?
+
+    public init(
+        errorCode: StreamChatErrorCode,
+        description: String?,
+        additionalInfo: [String: Any]?
+    ) {
+        self.errorCode = errorCode
+        self.description = description
+        self.additionalInfo = additionalInfo
+    }
 
     public static let unknown = StreamChatError(
         errorCode: StreamChatErrorCode.unknown,

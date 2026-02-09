@@ -5,7 +5,7 @@
 import Foundation
 
 /// A configuration for channel lists.
-public struct ChannelListConfig {
+public final class ChannelListConfig {
     public init(
         messageRelativeDateFormatEnabled: Bool = false,
         showChannelListDividerOnLastItem: Bool = true,

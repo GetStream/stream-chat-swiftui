@@ -438,7 +438,7 @@ extension ChatMessage {
     }
 }
 
-public struct MediaAttachment: Identifiable, Equatable {
+public final class MediaAttachment: Identifiable, Equatable {
     @Injected(\.utils) var utils
 
     public let url: URL
@@ -484,7 +484,7 @@ public struct MediaAttachment: Identifiable, Equatable {
 }
 
 extension MediaAttachment {
-    init(from attachment: ChatMessageImageAttachment) {
+    convenience init(from attachment: ChatMessageImageAttachment) {
         let url: URL
         if let state = attachment.uploadingState {
             url = state.localFileURL
@@ -499,18 +499,18 @@ extension MediaAttachment {
     }
 }
 
-public struct MediaAttachmentType: RawRepresentable {
+public final class MediaAttachmentType: RawRepresentable {
     public let rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
     }
 
-    public static let image = Self(rawValue: "image")
-    public static let video = Self(rawValue: "video")
+    public static let image = MediaAttachmentType(rawValue: "image")
+    public static let video = MediaAttachmentType(rawValue: "video")
 }
 
 /// Options for the gallery view.
-public struct MediaViewsOptions {
+public final class MediaViewsOptions {
     /// The index of the selected media item.
     public let selectedIndex: Int
 

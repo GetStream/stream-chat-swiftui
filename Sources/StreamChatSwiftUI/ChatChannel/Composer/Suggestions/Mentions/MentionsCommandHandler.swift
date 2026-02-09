@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// Handles the mention command and provides suggestions.
-public struct MentionsCommandHandler: CommandHandler {
+public final class MentionsCommandHandler: CommandHandler {
     public let id: String
     public var displayInfo: CommandDisplayInfo?
 
@@ -150,15 +150,16 @@ public struct MentionsCommandHandler: CommandHandler {
     }
 
     private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
-        Future { promise in
+        Future { [weak self] promise in
+            guard let self else { return }
             let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
             userSearchController.search(query: query) { error in
                 if let error = error {
                     promise(.failure(error))
                     return
                 }
-                let users = userSearchController.userArray
-                let suggestionInfo = SuggestionInfo(key: id, value: users)
+                let users = self.userSearchController.userArray
+                let suggestionInfo = SuggestionInfo(key: self.id, value: users)
                 promise(.success(suggestionInfo))
             }
         }

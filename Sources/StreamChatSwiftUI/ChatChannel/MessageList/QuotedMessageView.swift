@@ -152,7 +152,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
 }
 
 /// Options for configuring the quoted message content view.
-public struct QuotedMessageContentViewOptions {
+public final class QuotedMessageContentViewOptions {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
     /// Whether the quoted container should take all the available space.
