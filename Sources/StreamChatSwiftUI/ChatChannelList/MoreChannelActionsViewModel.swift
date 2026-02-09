@@ -91,7 +91,7 @@ open class MoreChannelActionsViewModel: ObservableObject {
 }
 
 /// Model describing a channel action.
-public struct ChannelAction: Identifiable {
+public final class ChannelAction: Identifiable {
     public var id: String {
         "\(title)-\(iconName)"
     }
@@ -119,7 +119,7 @@ public struct ChannelAction: Identifiable {
 }
 
 /// Model describing confirmation popup data.
-public struct ConfirmationPopup {
+public final class ConfirmationPopup {
     public init(title: String, message: String?, buttonTitle: String) {
         self.title = title
         self.message = message

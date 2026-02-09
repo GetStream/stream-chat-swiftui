@@ -919,7 +919,7 @@ extension MessageComposerViewModel: EventsControllerDelegate {
 }
 
 // The assets added to the composer.
-struct ComposerAssets {
+final class ComposerAssets {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
@@ -928,13 +928,30 @@ struct ComposerAssets {
     var voiceAssets: [AddedVoiceRecording] = []
     // Custom Assets.
     var customAssets: [CustomAttachment] = []
+    
+    init(
+        mediaAssets: [AddedAsset] = [],
+        fileAssets: [FileAddedAsset] = [],
+        voiceAssets: [AddedVoiceRecording] = [],
+        customAssets: [CustomAttachment] = []
+    ) {
+        self.mediaAssets = mediaAssets
+        self.fileAssets = fileAssets
+        self.voiceAssets = voiceAssets
+        self.customAssets = customAssets
+    }
 }
 
 // A asset containing file information.
 // If it has a payload, it means that the file is already uploaded to the server.
-struct FileAddedAsset {
+final class FileAddedAsset {
     var url: URL
     var payload: FileAttachmentPayload?
+
+    init(url: URL, payload: FileAttachmentPayload? = nil) {
+        self.url = url
+        self.payload = payload
+    }
 }
 
 // The converter responsible to map attachments to assets and vice versa.

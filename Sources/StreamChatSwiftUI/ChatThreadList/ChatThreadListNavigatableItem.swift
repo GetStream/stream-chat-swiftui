@@ -50,7 +50,7 @@ public struct ChatThreadListNavigatableItem<ThreadListItem: View, ThreadDestinat
     }
 }
 
-public struct ThreadSelectionInfo: Identifiable {
+public final class ThreadSelectionInfo: Identifiable {
     public let id: String
     public let thread: ChatThread
 

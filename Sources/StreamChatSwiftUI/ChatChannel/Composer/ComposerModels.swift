@@ -16,7 +16,7 @@ public enum AttachmentPickerState {
 }
 
 /// Struct representing an asset added to the composer.
-public struct AddedAsset: Identifiable, Equatable {
+public final class AddedAsset: Identifiable, Equatable {
     public static func == (lhs: AddedAsset, rhs: AddedAsset) -> Bool {
         lhs.id == rhs.id
     }
@@ -85,7 +85,7 @@ public enum AssetType {
     case video
 }
 
-public struct CustomAttachment: Identifiable, Equatable {
+public final class CustomAttachment: Identifiable, Equatable {
     public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
         lhs.id == rhs.id
     }
@@ -100,7 +100,7 @@ public struct CustomAttachment: Identifiable, Equatable {
 }
 
 /// Represents an added voice recording.
-public struct AddedVoiceRecording: Identifiable, Equatable {
+public final class AddedVoiceRecording: Identifiable, Equatable {
     public var id: String {
         url.absoluteString
     }
@@ -116,6 +116,12 @@ public struct AddedVoiceRecording: Identifiable, Equatable {
         self.url = url
         self.duration = duration
         self.waveform = waveform
+    }
+
+    public static func == (lhs: AddedVoiceRecording, rhs: AddedVoiceRecording) -> Bool {
+        lhs.url == rhs.url
+            && lhs.duration == rhs.duration
+            && lhs.waveform == rhs.waveform
     }
 }
 
