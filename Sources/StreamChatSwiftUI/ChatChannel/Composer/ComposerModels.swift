@@ -12,6 +12,7 @@ public enum AttachmentPickerState: Sendable {
     case photos
     case camera
     case polls
+    case commands
     case custom
 }
 
