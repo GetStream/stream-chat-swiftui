@@ -113,7 +113,7 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
 }
 
 /// Model describing a participant action.
-public struct ParticipantAction: Identifiable {
+public final class ParticipantAction: Identifiable {
     public var id: String {
         "\(title)-\(iconName)"
     }

@@ -106,7 +106,7 @@ class MediaAttachmentsViewModel: ObservableObject, ChatMessageSearchControllerDe
     }
 }
 
-public struct MediaItem: Identifiable {
+public final class MediaItem: Identifiable {
     public let id: String
     public let isVideo: Bool
     public let message: ChatMessage
