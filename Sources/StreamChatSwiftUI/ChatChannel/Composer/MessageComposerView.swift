@@ -441,7 +441,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                             text: $text,
                             height: $textHeight,
                             selectedRangeLocation: $selectedRangeLocation,
-                            placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
+                            placeholder: placeholderText,
                             editable: !isInputDisabled,
                             maxMessageLength: maxMessageLength,
                             currentHeight: textFieldHeight,
@@ -555,6 +555,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var isInCooldown: Bool {
         cooldownDuration > 0
+    }
+
+    private var placeholderText: String {
+        if isInCooldown {
+            return L10n.Composer.Placeholder.slowMode(cooldownDuration)
+        }
+
+        if isChannelFrozen {
+            return L10n.Composer.Placeholder.messageDisabled
+        }
+
+        return L10n.Composer.Placeholder.message
     }
 
     private var isChannelFrozen: Bool {

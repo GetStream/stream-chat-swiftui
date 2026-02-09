@@ -259,8 +259,10 @@ internal enum L10n {
       internal static var message: String { L10n.tr("Localizable", "composer.placeholder.message") }
       /// You can't send messages in this channel
       internal static var messageDisabled: String { L10n.tr("Localizable", "composer.placeholder.messageDisabled") }
-      /// Slow mode ON
-      internal static var slowMode: String { L10n.tr("Localizable", "composer.placeholder.slow-mode") }
+      /// Slow mode, wait %ds...
+      internal static func slowMode(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.placeholder.slow-mode", p1)
+      }
     }
     internal enum Polls {
       /// Are you sure you want to discard your poll?
