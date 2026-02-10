@@ -77,7 +77,7 @@ swiftlint --strict
 Public API & SemVer
   • Follow semantic versioning for the SwiftUI package.
   • Any public API change must include updated docs and migration notes.
-  • Avoid source-breaking changes. If unavoidable, add deprecations first with a transition path.
+  • Avoid source-breaking changes. If unavoidable, add deprecations first with a transition path. (Exception: When working in a branch related to v5, we can make source-breaking changes without adding deprecations.)
 
 Accessibility & UI quality
   • Ensure components have accessibility labels, traits, and dynamic type support.

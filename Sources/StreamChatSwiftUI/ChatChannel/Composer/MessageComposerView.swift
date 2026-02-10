@@ -78,8 +78,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         editedMessage: $editedMessage,
                         maxMessageLength: channelConfig?.maxMessageLength,
                         cooldownDuration: viewModel.cooldownDuration,
-                        sendButtonEnabled: viewModel.sendButtonEnabled,
-                        isSendMessageEnabled: viewModel.isSendMessageEnabled,
+                        hasContent: viewModel.hasContent,
+                        canSendMessage: viewModel.canSendMessage,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                         shouldScroll: viewModel.inputComposerShouldScroll,
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
@@ -100,7 +100,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
                 factory.makeTrailingComposerView(
                     options: TrailingComposerViewOptions(
-                        enabled: viewModel.sendButtonEnabled,
+                        enabled: viewModel.hasContent,
                         cooldownDuration: viewModel.cooldownDuration,
                         onTap: sendMessage
                     )
@@ -313,8 +313,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var editedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
-    var sendButtonEnabled: Bool
-    var isSendMessageEnabled: Bool
+    var hasContent: Bool
+    var canSendMessage: Bool
     var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     var sendMessage: @MainActor () -> Void
@@ -340,8 +340,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
-        sendButtonEnabled: Bool,
-        isSendMessageEnabled: Bool,
+        hasContent: Bool,
+        canSendMessage: Bool,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
@@ -359,8 +359,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.addedAssets = addedAssets
         self.addedFileURLs = addedFileURLs
         self.addedCustomAttachments = addedCustomAttachments
-        self.isSendMessageEnabled = isSendMessageEnabled
-        self.sendButtonEnabled = sendButtonEnabled
+        self.canSendMessage = canSendMessage
+        self.hasContent = hasContent
         self.quotedMessage = quotedMessage
         self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
@@ -441,7 +441,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                             text: $text,
                             height: $textHeight,
                             selectedRangeLocation: $selectedRangeLocation,
-                            placeholder: isInCooldown ? L10n.Composer.Placeholder.slowMode : (isChannelFrozen ? L10n.Composer.Placeholder.messageDisabled : L10n.Composer.Placeholder.message),
+                            placeholder: placeholderText,
                             editable: !isInputDisabled,
                             maxMessageLength: maxMessageLength,
                             currentHeight: textFieldHeight,
@@ -472,7 +472,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     options: .init(
                         text: $text,
                         recordingState: $recordingState,
-                        sendMessageButtonState: sendMessageButtonState,
+                        composerInputState: composerInputState,
                         startRecording: startRecording,
                         stopRecording: stopRecording,
                         sendMessage: sendMessage
@@ -536,29 +536,40 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
-    private var sendMessageButtonState: SendMessageButtonState {
+    private var composerInputState: MessageComposerInputState {
         if isInCooldown {
-            return .slowMode(cooldownDuration)
+            return .slowMode(cooldownDuration: cooldownDuration)
         }
 
-        // When editing, show checkmark button
         if editedMessage.wrappedValue != nil {
-            return .edit(sendButtonEnabled)
+            return .editing(hasContent: hasContent)
         }
 
-        if utils.composerConfig.isVoiceRecordingEnabled && !sendButtonEnabled {
-            return .audio
+        if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
+            return .allowAudioRecording
         }
 
-        return .regular(sendButtonEnabled)
+        return .creating(hasContent: hasContent)
     }
 
     private var isInCooldown: Bool {
         cooldownDuration > 0
     }
 
+    private var placeholderText: String {
+        if isInCooldown {
+            return L10n.Composer.Placeholder.slowMode(cooldownDuration)
+        }
+
+        if isChannelFrozen {
+            return L10n.Composer.Placeholder.messageDisabled
+        }
+
+        return L10n.Composer.Placeholder.message
+    }
+
     private var isChannelFrozen: Bool {
-        !isSendMessageEnabled
+        !canSendMessage
     }
 
     private var isInputDisabled: Bool {
