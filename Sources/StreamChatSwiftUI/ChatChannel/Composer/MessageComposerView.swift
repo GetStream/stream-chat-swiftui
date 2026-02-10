@@ -536,20 +536,20 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
-    private var sendMessageButtonState: SendMessageButtonState {
+    private var sendMessageButtonState: MessageComposerInputState {
         if isInCooldown {
-            return .slowMode(cooldownDuration)
+            return .slowMode(cooldownDuration: cooldownDuration)
         }
 
         if editedMessage.wrappedValue != nil {
-            return .edit(hasContent)
+            return .editing(hasContent: hasContent)
         }
 
         if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
-            return .audio
+            return .allowAudioRecording
         }
 
-        return .regular(hasContent)
+        return .creating(hasContent: hasContent)
     }
 
     private var isInCooldown: Bool {
