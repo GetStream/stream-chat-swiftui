@@ -22,7 +22,7 @@ import SwiftUI
 }
 
 /// Model describing a message action.
-public struct MessageAction: Identifiable, Equatable {
+public final class MessageAction: Identifiable, Equatable {
     public var id: String
 
     public let title: String

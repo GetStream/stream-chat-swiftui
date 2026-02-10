@@ -62,7 +62,7 @@ extension View {
     /// - Parameters:
     ///   - enabled: If true, tapping on the view dismisses the view, otherwise keyboard stays visible.
     ///   - onTapped: A closure which is triggered when keyboard is dismissed after tapping the view.
-    func dismissKeyboardOnTap(enabled: Bool, onKeyboardDismissed: (() -> Void)? = nil) -> some View {
+    public func dismissKeyboardOnTap(enabled: Bool, onKeyboardDismissed: (() -> Void)? = nil) -> some View {
         modifier(HideKeyboardOnTapGesture(shouldAdd: enabled, onTapped: onKeyboardDismissed))
     }
 }
@@ -100,7 +100,7 @@ public struct HideKeyboardOnTapGesture: ViewModifier {
 
 public let getStreamFirstResponderNotification = "io.getstream.inputView.becomeFirstResponder"
 
-func becomeFirstResponder() {
+public func becomeFirstResponder() {
     NotificationCenter.default.post(
         name: NSNotification.Name(getStreamFirstResponderNotification),
         object: nil

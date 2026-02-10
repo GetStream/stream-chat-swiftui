@@ -242,7 +242,7 @@ struct ListRowModifier: ViewModifier {
 }
 
 private extension VerticalAlignment {
-    private struct TextFieldToggleAlignment: AlignmentID {
+    private final class TextFieldToggleAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> CGFloat {
             context[VerticalAlignment.center]
         }

@@ -7,7 +7,7 @@ import StreamChatCommonUI
 import SwiftUI
 
 /// Contains info needed for a modifier to be applied to the message view.
-public struct MessageModifierInfo {
+public final class MessageModifierInfo {
     public var message: ChatMessage
     public var isFirst: Bool
     public var injectedBackgroundColor: UIColor?

@@ -62,7 +62,7 @@ extension ImageProcessors {
     /// Scales an image to a specified size.
     /// The getting of the size is offloaded via closure after the image is loaded.
     /// The View has time to layout and provide non-zero size.
-    public struct LateResize: ImageProcessing {
+    public final class LateResize: ImageProcessing {
         private var size: CGSize {
             var size: CGSize = .zero
             DispatchQueue.main.sync { size = sizeProvider() }

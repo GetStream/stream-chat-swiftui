@@ -286,7 +286,7 @@ import SwiftUI
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
         var actions = [ParticipantAction]()
 
-        var directMessageAction = ParticipantAction(
+        let directMessageAction = ParticipantAction(
             title: L10n.Channel.Item.sendDirectMessage,
             iconName: "message.circle.fill",
             action: {},
