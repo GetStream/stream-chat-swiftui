@@ -768,7 +768,6 @@ extension ViewFactory {
             onTapGesture: options.onTapGesture,
             onLongPressGesture: options.onLongPressGesture
         )
-        .id(options.message.reactionScoresId)
     }
     
     public func makeReactionsOverlayView(
