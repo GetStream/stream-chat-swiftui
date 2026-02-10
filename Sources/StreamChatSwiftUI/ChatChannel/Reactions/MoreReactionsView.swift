@@ -7,9 +7,9 @@ import SwiftUI
 struct MoreReactionsView: View {
     @Injected(\.colors) private var colors
 
-    private let rows: [GridItem] = Array(
+    private let columns: [GridItem] = Array(
         repeating: GridItem(.fixed(56), spacing: 12, alignment: .center),
-        count: 4
+        count: 6
     )
 
     private let emojiSize: CGFloat = 52
@@ -22,8 +22,8 @@ struct MoreReactionsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: rows, spacing: 12) {
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(Self.orderedEmojiKeys, id: \.self) { key in
                         if let emoji = Self.emojiMap[key] {
                             Button {
@@ -44,6 +44,7 @@ struct MoreReactionsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .accessibilityIdentifier("MoreReactionsView")
+        .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
     }
 }
 
