@@ -187,12 +187,19 @@ public final class ComposerTextInputViewOptions: Sendable {
     }
 }
 
+/// Options for creating the composer input trailing view.
 public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
+    /// Binding to the text input.
     @Binding public var text: String
+    /// Binding to the recording state.
     @Binding public var recordingState: RecordingState
+    /// The current composer's input view state.
     public let composerInputState: MessageComposerInputState
+    /// The closure for starting a recording.
     public let startRecording: () -> Void
+    /// The closure for stopping a recording.
     public let stopRecording: () -> Void
+    /// The closure for sending a message.
     public let sendMessage: () -> Void
 
     public init(
