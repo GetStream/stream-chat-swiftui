@@ -26,7 +26,7 @@ public struct MessageAttachmentPreviewIconView: View {
         Image(uiImage: iconImage)
             .renderingMode(.template)
             .resizable()
-            .foregroundColor(Color(colors.chatTextMessage))
+            .foregroundColor(Color(colors.textPrimary))
             .aspectRatio(contentMode: .fit)
             .frame(
                 width: tokens.iconSizeXs,

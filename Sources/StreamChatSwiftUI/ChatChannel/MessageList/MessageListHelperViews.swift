@@ -222,14 +222,14 @@ extension View {
             return Color(colors.textLowEmphasis)
         }
         if message.isSentByCurrentUser {
-            return Color(colors.chatTextMessage)
+            return Color(colors.chatTextOutgoing)
         } else {
-            return Color(colors.chatTextMessage)
+            return Color(colors.chatTextIncoming)
         }
     }
     
     func textColor(currentUser: Bool) -> Color {
         @Injected(\.colors) var colors
-        return currentUser ? Color(colors.chatTextMessage) : Color(colors.chatTextMessage)
+        return currentUser ? Color(colors.chatTextOutgoing) : Color(colors.chatTextIncoming)
     }
 }
