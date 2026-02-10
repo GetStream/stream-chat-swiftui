@@ -228,6 +228,36 @@ public final class TrailingComposerViewOptions: Sendable {
     }
 }
 
+public final class SendMessageButtonOptions: Sendable {
+    /// Whether the send message button is enabled.
+    public let enabled: Bool
+    /// Callback when the button is tapped.
+    public let onTap: @MainActor @Sendable () -> Void
+
+    public init(
+        enabled: Bool,
+        onTap: @escaping @MainActor @Sendable () -> Void
+    ) {
+        self.enabled = enabled
+        self.onTap = onTap
+    }
+}
+
+public final class ConfirmEditButtonOptions: Sendable {
+    /// Whether the confirm edit button is enabled.
+    public let enabled: Bool
+    /// Callback when the button is tapped.
+    public let onTap: @MainActor @Sendable () -> Void
+
+    public init(
+        enabled: Bool,
+        onTap: @escaping @MainActor @Sendable () -> Void
+    ) {
+        self.enabled = enabled
+        self.onTap = onTap
+    }
+}
+
 // MARK: - Composer Recording Options
 
 /// Options for creating the composer recording view.

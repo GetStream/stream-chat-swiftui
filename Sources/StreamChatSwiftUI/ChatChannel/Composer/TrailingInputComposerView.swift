@@ -11,24 +11,32 @@ public enum SendMessageButtonState {
     case slowMode(Int)
 }
 
-struct TrailingInputComposerView: View {
+struct TrailingInputComposerView<Factory: ViewFactory>: View {
+    let factory: Factory
+
     @Binding var text: String
     @Binding var recordingState: RecordingState
     var sendMessageButtonState: SendMessageButtonState
-    var startRecording: () -> Void
-    var stopRecording: () -> Void
-    var sendMessage: () -> Void
+    var startRecording: @MainActor @Sendable () -> Void
+    var stopRecording: @MainActor @Sendable () -> Void
+    var sendMessage: @MainActor @Sendable () -> Void
     
     var body: some View {
         switch sendMessageButtonState {
         case .regular(let isEnabled):
-            SendMessageButton(enabled: isEnabled) {
-                sendMessage()
-            }
+            factory.makeSendMessageButton(
+                options: SendMessageButtonOptions(
+                    enabled: isEnabled,
+                    onTap: sendMessage
+                )
+            )
         case .edit(let isEnabled):
-            ConfirmEditButton(enabled: isEnabled) {
-                sendMessage()
-            }
+            factory.makeConfirmEditButton(
+                options: ConfirmEditButtonOptions(
+                    enabled: isEnabled,
+                    onTap: sendMessage
+                )
+            )
         case .audio:
             VoiceRecordingButton(
                 recordingState: $recordingState,

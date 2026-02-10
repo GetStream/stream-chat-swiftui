@@ -572,6 +572,7 @@ extension ViewFactory {
         options: ComposerInputTrailingViewOptions
     ) -> some View {
         TrailingInputComposerView(
+            factory: self,
             text: options.$text,
             recordingState: options.$recordingState,
             sendMessageButtonState: options.sendMessageButtonState,
@@ -587,6 +588,24 @@ extension ViewFactory {
         EmptyView()
             .opacity(0)
             .hidden()
+    }
+
+    public func makeSendMessageButton(
+        options: SendMessageButtonOptions
+    ) -> some View {
+        SendMessageButton(
+            enabled: options.enabled,
+            onTap: options.onTap
+        )
+    }
+
+    public func makeConfirmEditButton(
+        options: ConfirmEditButtonOptions
+    ) -> some View {
+        ConfirmEditButton(
+            enabled: options.enabled,
+            onTap: options.onTap
+        )
     }
     
     public func makeComposerRecordingView(

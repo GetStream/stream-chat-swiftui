@@ -17,13 +17,14 @@ public struct ConfirmEditButton: View {
     }
 
     public var body: some View {
-        Button {
-            onTap()
-        } label: {
-            Image(uiImage: images.whiteCheckmark)
-                .renderingMode(.template)
-        }
-        .buttonStyle(PrimaryRoundButtonStyle())
+        StreamButton(
+            icon: Image(uiImage: images.whiteCheckmark).renderingMode(.template),
+            text: nil,
+            role: .primary,
+            style: .solid,
+            size: .sm,
+            action: onTap
+        )
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Title.edit))
         .accessibilityIdentifier("ConfirmEditButton")
