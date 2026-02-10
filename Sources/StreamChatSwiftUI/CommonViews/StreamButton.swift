@@ -5,32 +5,6 @@
 import StreamChatCommonUI
 import SwiftUI
 
-public enum ButtonSize {
-    @MainActor public static var large: CGFloat = 40
-    @MainActor public static var medium: CGFloat = 32
-    @MainActor public static var small: CGFloat = 24
-    @MainActor public static var extraSmall: CGFloat = 20
-}
-
-enum StreamButtonRole: String, CaseIterable, Sendable {
-    case primary = "Primary"
-    case secondary = "Secondary"
-    case destructive = "Destructive"
-}
-
-enum StreamButtonVisualStyle: String, CaseIterable, Sendable {
-    case solid = "Solid"
-    case outline = "Outline"
-    case ghost = "Ghost"
-    case liquidGlass = "Liquid Glass"
-}
-
-enum StreamButtonSize: String, CaseIterable, Sendable {
-    case lg
-    case md
-    case sm
-}
-
 struct StreamButton: View {
     @Injected(\.tokens) private var tokens
 
@@ -298,4 +272,23 @@ private extension StreamButtonRole {
             return colors.buttonDestructiveTextOnAccent
         }
     }
+}
+
+enum StreamButtonRole: String, CaseIterable, Sendable {
+    case primary = "Primary"
+    case secondary = "Secondary"
+    case destructive = "Destructive"
+}
+
+enum StreamButtonVisualStyle: String, CaseIterable, Sendable {
+    case solid = "Solid"
+    case outline = "Outline"
+    case ghost = "Ghost"
+    case liquidGlass = "Liquid Glass"
+}
+
+enum StreamButtonSize: String, CaseIterable, Sendable {
+    case lg
+    case md
+    case sm
 }
