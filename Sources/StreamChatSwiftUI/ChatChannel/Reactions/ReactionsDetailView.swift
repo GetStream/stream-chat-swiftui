@@ -27,7 +27,7 @@ struct ReactionsDetailView: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    allReactionsChip
+                    addReactionChip
                     ForEach(viewModel.reactionTypes) { type in
                         reactionTypeChip(type: type)
                     }
@@ -60,14 +60,16 @@ struct ReactionsDetailView: View {
 
     // MARK: - Filter Chips
 
-    private var allReactionsChip: some View {
+    private var addReactionChip: some View {
         Button {
-            viewModel.moreReactionsPickerShown = true
+            withAnimation {
+                viewModel.moreReactionsPickerShown = true
+            }
         } label: {
             Image(systemName: "face.smiling")
                 .font(.system(size: 16))
                 .foregroundColor(Color(colors.text))
-                .padding(.horizontal, 12)
+                .padding(.horizontal, tokens.spacingSm)
                 .padding(.vertical, 8)
                 .background(
                     Capsule()
@@ -81,12 +83,13 @@ struct ReactionsDetailView: View {
     }
 
     private func reactionTypeChip(type: MessageReactionType) -> some View {
-        let isSelected = viewModel.selectedReactionType == type
-        return Button {
-            if isSelected {
-                viewModel.selectedReactionType = nil
-            } else {
-                viewModel.selectedReactionType = type
+        Button {
+            withAnimation {
+                if viewModel.selectedReactionType == type {
+                    viewModel.selectedReactionType = nil
+                } else {
+                    viewModel.selectedReactionType = type
+                }
             }
         } label: {
             HStack(spacing: 4) {
@@ -98,11 +101,11 @@ struct ReactionsDetailView: View {
                     .font(fonts.footnoteBold)
                     .foregroundColor(Color(colors.text))
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, tokens.spacingSm)
             .padding(.vertical, 8)
             .background(
                 Capsule()
-                    .fill(isSelected ? Color(colors.background1) : Color(colors.background))
+                    .fill(viewModel.selectedReactionType == type ? Color(colors.background1) : Color(colors.background))
             )
             .overlay(
                 Capsule()
@@ -123,20 +126,25 @@ struct ReactionsDetailView: View {
                 showsBorder: false
             )
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(viewModel.authorName(for: reaction))
-                    .lineLimit(1)
-                    .font(fonts.bodyBold)
-                    .foregroundColor(Color(colors.text))
+            Button {
+                withAnimation {
+                    viewModel.remove(reaction: reaction)
+                }
+            } label: {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(viewModel.authorName(for: reaction))
+                        .lineLimit(1)
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.text))
 
-                if isCurrentUser {
-                    Button {} label: {
+                    if isCurrentUser {
                         Text("Tap to remove")
                             .font(fonts.footnote)
                             .foregroundColor(Color(colors.textLowEmphasis))
                     }
                 }
             }
+            .disabled(!isCurrentUser)
 
             Spacer()
 
