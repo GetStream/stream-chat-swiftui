@@ -6,6 +6,7 @@ import StreamChat
 import SwiftUI
 
 struct ReactionsContainer: View {
+    @Injected(\.tokens) private var tokens
     @Injected(\.utils) var utils
     let message: ChatMessage
     let topPlacement: Bool
@@ -70,7 +71,7 @@ struct ReactionsContainer: View {
 
     private var offsetX: CGFloat {
         if message.shouldRenderAsJumbomoji, topPlacement {
-            return message.isRightAligned ? -16 : 16
+            return message.isRightAligned ? -tokens.spacingMd : tokens.spacingMd
         }
         return 0
     }

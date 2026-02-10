@@ -756,7 +756,6 @@ extension ViewFactory {
             onTapGesture: options.onTap,
             onLongPressGesture: options.onLongPress
         )
-        .id(options.message.reactionScoresId)
     }
     
     public func makeMessageReactionView(
