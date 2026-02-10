@@ -69,7 +69,7 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
     }
 }
 
-public struct ParticipantInfo: Identifiable {
+public final class ParticipantInfo: Identifiable {
     public var id: String {
         chatUser.id
     }

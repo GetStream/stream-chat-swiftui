@@ -373,6 +373,10 @@ public final class AttachmentPickerViewOptions: Sendable {
     public let messageController: ChatMessageController?
     /// Whether a poll can be sent.
     public let canSendPoll: Bool
+    /// The available instant commands.
+    public let instantCommands: [CommandHandler]
+    /// Callback when a command is selected.
+    public let onCommandSelected: @MainActor (ComposerCommand) -> Void
     
     public init(
         attachmentPickerState: Binding<AttachmentPickerState>,
@@ -393,7 +397,9 @@ public final class AttachmentPickerViewOptions: Sendable {
         selectedAssetIds: [String]? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
-        canSendPoll: Bool
+        canSendPoll: Bool,
+        instantCommands: [CommandHandler],
+        onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
     ) {
         self.attachmentPickerState = attachmentPickerState
         self.filePickerShown = filePickerShown
@@ -414,6 +420,24 @@ public final class AttachmentPickerViewOptions: Sendable {
         self.channelController = channelController
         self.messageController = messageController
         self.canSendPoll = canSendPoll
+        self.instantCommands = instantCommands
+        self.onCommandSelected = onCommandSelected
+    }
+}
+
+/// Options for creating the attachment commands picker view.
+public final class AttachmentCommandsPickerViewOptions: Sendable {
+    /// The available instant commands.
+    public let instantCommands: [CommandHandler]
+    /// Callback when a command is selected.
+    public let onCommandSelected: @MainActor (ComposerCommand) -> Void
+    
+    public init(
+        instantCommands: [CommandHandler] = [],
+        onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
+    ) {
+        self.instantCommands = instantCommands
+        self.onCommandSelected = onCommandSelected
     }
 }
 

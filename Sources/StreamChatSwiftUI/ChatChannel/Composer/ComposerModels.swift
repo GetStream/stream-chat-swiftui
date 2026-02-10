@@ -12,6 +12,7 @@ public enum AttachmentPickerState: Sendable {
     case photos
     case camera
     case polls
+    case commands
     case custom
 }
 
@@ -116,6 +117,12 @@ public struct AddedVoiceRecording: Identifiable, Equatable, Sendable {
         self.url = url
         self.duration = duration
         self.waveform = waveform
+    }
+
+    public static func == (lhs: AddedVoiceRecording, rhs: AddedVoiceRecording) -> Bool {
+        lhs.url == rhs.url
+            && lhs.duration == rhs.duration
+            && lhs.waveform == rhs.waveform
     }
 }
 

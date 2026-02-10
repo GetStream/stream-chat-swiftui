@@ -210,6 +210,13 @@ import SwiftUI
         .makeCommandsHandler(
             with: channelController
         )
+
+    public var instantCommands: [CommandHandler] {
+        commandsHandler.commands
+            .compactMap { $0 as? InstantCommandsHandler }
+            .first?
+            .commands ?? []
+    }
     
     public var mentionedUsers = Set<ChatUser>()
     
@@ -906,6 +913,18 @@ struct ComposerAssets: Sendable {
     var voiceAssets: [AddedVoiceRecording] = []
     // Custom Assets.
     var customAssets: [CustomAttachment] = []
+    
+    init(
+        mediaAssets: [AddedAsset] = [],
+        fileAssets: [FileAddedAsset] = [],
+        voiceAssets: [AddedVoiceRecording] = [],
+        customAssets: [CustomAttachment] = []
+    ) {
+        self.mediaAssets = mediaAssets
+        self.fileAssets = fileAssets
+        self.voiceAssets = voiceAssets
+        self.customAssets = customAssets
+    }
 }
 
 // A asset containing file information.
@@ -913,6 +932,11 @@ struct ComposerAssets: Sendable {
 struct FileAddedAsset: Sendable {
     var url: URL
     var payload: FileAttachmentPayload?
+
+    init(url: URL, payload: FileAttachmentPayload? = nil) {
+        self.url = url
+        self.payload = payload
+    }
 }
 
 // The converter responsible to map attachments to assets and vice versa.

@@ -145,7 +145,7 @@ public struct MessageListConfig {
 }
 
 /// Contains information about the message paddings.
-public struct MessagePaddings {
+public final class MessagePaddings {
     /// Horizontal padding for messages.
     public let horizontal: CGFloat
     public let quotedViewPadding: CGFloat
@@ -173,7 +173,7 @@ public enum DateIndicatorPlacement {
 }
 
 /// Used to show and hide different helper views around the message.
-public struct MessageDisplayOptions {
+public final class MessageDisplayOptions {
     public let showAvatars: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
