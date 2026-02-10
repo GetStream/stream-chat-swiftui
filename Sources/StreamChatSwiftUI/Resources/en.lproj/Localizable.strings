@@ -122,7 +122,7 @@
 "composer.title.reply" = "Reply to Message";
 "composer.placeholder.message" = "Message";
 "composer.placeholder.messageDisabled" = "You can't send messages in this channel";
-"composer.placeholder.slow-mode" = "Slow mode ON";
+"composer.placeholder.slow-mode" = "Slow mode, wait %ds...";
 "composer.placeholder.giphy" = "Search GIFs";
 "composer.checkmark.direct-message-reply" = "Also send as direct message";
 "composer.checkmark.channel-reply" = "Also send in channel";
