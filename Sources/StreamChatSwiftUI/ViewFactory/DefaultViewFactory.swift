@@ -574,7 +574,7 @@ extension ViewFactory {
         TrailingInputComposerView(
             text: options.$text,
             recordingState: options.$recordingState,
-            sendMessageButtonState: options.sendMessageButtonState,
+            composerInputState: options.composerInputState,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
             sendMessage: options.sendMessage

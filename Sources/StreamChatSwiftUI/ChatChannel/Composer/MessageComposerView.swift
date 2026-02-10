@@ -472,7 +472,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     options: .init(
                         text: $text,
                         recordingState: $recordingState,
-                        sendMessageButtonState: sendMessageButtonState,
+                        composerInputState: composerInputState,
                         startRecording: startRecording,
                         stopRecording: stopRecording,
                         sendMessage: sendMessage
@@ -536,7 +536,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
-    private var sendMessageButtonState: MessageComposerInputState {
+    private var composerInputState: MessageComposerInputState {
         if isInCooldown {
             return .slowMode(cooldownDuration: cooldownDuration)
         }

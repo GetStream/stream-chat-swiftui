@@ -7,13 +7,13 @@ import SwiftUI
 struct TrailingInputComposerView: View {
     @Binding var text: String
     @Binding var recordingState: RecordingState
-    var sendMessageButtonState: MessageComposerInputState
+    var composerInputState: MessageComposerInputState
     var startRecording: () -> Void
     var stopRecording: () -> Void
     var sendMessage: () -> Void
     
     var body: some View {
-        switch sendMessageButtonState {
+        switch composerInputState {
         case .creating(let hasContent):
             SendMessageButton(enabled: hasContent) {
                 sendMessage()
