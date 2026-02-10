@@ -2,14 +2,8 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChatCommonUI
 import SwiftUI
-
-public enum ButtonSize {
-    @MainActor public static var large: CGFloat = 40
-    @MainActor public static var medium: CGFloat = 32
-    @MainActor public static var small: CGFloat = 24
-    @MainActor public static var extraSmall: CGFloat = 20
-}
 
 public struct PrimaryRoundButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
