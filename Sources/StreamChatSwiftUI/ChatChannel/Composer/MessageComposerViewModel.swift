@@ -305,7 +305,7 @@ import SwiftUI
         isSilent: Bool = false,
         extraData: [String: RawJSON] = [:]
     ) {
-        guard utils.messageListConfig.draftMessagesEnabled && sendButtonEnabled else {
+        guard utils.messageListConfig.draftMessagesEnabled && hasContent else {
             return
         }
         let attachments = try? convertAddedAssetsToPayloads()
@@ -436,12 +436,13 @@ import SwiftUI
         }
     }
     
-    /// A Boolean value indicating whether sending message is enabled.
-    public var isSendMessageEnabled: Bool {
+    /// A Boolean value indicating whether the current user has capability to send messages.
+    public var canSendMessage: Bool {
         channelController.channel?.canSendMessage ?? true
     }
 
-    public var sendButtonEnabled: Bool {
+    /// A Boolean value indicating whether the composer has any type of content filled.
+    public var hasContent: Bool {
         if let composerCommand,
            let handler = commandsHandler.commandHandler(for: composerCommand) {
             return handler
@@ -667,7 +668,7 @@ import SwiftUI
 
     /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
     private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
-        !oldValue.isEmpty && !sendButtonEnabled
+        !oldValue.isEmpty && !hasContent
     }
 
     private func fetchAssets() {

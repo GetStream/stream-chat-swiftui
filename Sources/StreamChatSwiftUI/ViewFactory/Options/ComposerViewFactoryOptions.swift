@@ -79,10 +79,10 @@ public final class ComposerInputViewOptions: Sendable {
     public let maxMessageLength: Int?
     /// The cooldown duration in seconds.
     public let cooldownDuration: Int
-    /// Whether the send button is enabled.
-    public let sendButtonEnabled: Bool
+    /// Whether the composer has content.
+    public let hasContent: Bool
     /// Whether sending a message is enabled.
-    public let isSendMessageEnabled: Bool
+    public let canSendMessage: Bool
     /// Callback when a custom attachment is tapped.
     public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     /// Whether the input should scroll.
@@ -112,8 +112,8 @@ public final class ComposerInputViewOptions: Sendable {
         editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
-        sendButtonEnabled: Bool,
-        isSendMessageEnabled: Bool,
+        hasContent: Bool,
+        canSendMessage: Bool,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         shouldScroll: Bool,
         removeAttachmentWithId: @escaping @MainActor (String) -> Void,
@@ -135,8 +135,8 @@ public final class ComposerInputViewOptions: Sendable {
         self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
-        self.sendButtonEnabled = sendButtonEnabled
-        self.isSendMessageEnabled = isSendMessageEnabled
+        self.hasContent = hasContent
+        self.canSendMessage = canSendMessage
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.shouldScroll = shouldScroll
         self.removeAttachmentWithId = removeAttachmentWithId

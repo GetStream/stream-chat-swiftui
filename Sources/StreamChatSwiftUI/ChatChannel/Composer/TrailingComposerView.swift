@@ -22,10 +22,10 @@ public struct TrailingComposerView: View {
     
     public var body: some View {
         Group {
-            if viewModel.cooldownDuration == 0 && viewModel.isSendMessageEnabled {
+            if viewModel.cooldownDuration == 0 && viewModel.canSendMessage {
                 HStack(spacing: 16) {
                     SendMessageButton(
-                        enabled: viewModel.sendButtonEnabled,
+                        enabled: viewModel.hasContent,
                         onTap: onTap
                     )
                     if utils.composerConfig.isVoiceRecordingEnabled {

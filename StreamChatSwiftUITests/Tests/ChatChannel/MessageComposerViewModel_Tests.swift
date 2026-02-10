@@ -39,7 +39,7 @@ import XCTest
         let viewModel = makeComposerViewModel()
         
         // When
-        let buttonEnabled = viewModel.sendButtonEnabled
+        let buttonEnabled = viewModel.hasContent
         
         // Then
         XCTAssert(buttonEnabled == false)
@@ -53,7 +53,7 @@ import XCTest
         viewModel.text = "      "
         
         // Then
-        XCTAssert(viewModel.sendButtonEnabled == false)
+        XCTAssert(viewModel.hasContent == false)
     }
 
     func test_messageComposerVM_sendButtonEnabled_addedAsset() {
@@ -62,7 +62,7 @@ import XCTest
         
         // When
         viewModel.imageTapped(defaultAsset)
-        let buttonEnabled = viewModel.sendButtonEnabled
+        let buttonEnabled = viewModel.hasContent
         
         // Then
         XCTAssert(buttonEnabled == true)
@@ -75,7 +75,7 @@ import XCTest
         
         // When
         viewModel.addedFileURLs.append(mockURL)
-        let buttonEnabled = viewModel.sendButtonEnabled
+        let buttonEnabled = viewModel.hasContent
         
         // Then
         XCTAssert(buttonEnabled == true)
@@ -134,7 +134,7 @@ import XCTest
         
         // When
         viewModel.customAttachmentTapped(attachment)
-        let buttonEnabled = viewModel.sendButtonEnabled
+        let buttonEnabled = viewModel.hasContent
         
         // Then
         XCTAssert(buttonEnabled == true)
@@ -442,9 +442,9 @@ import XCTest
         
         // When
         viewModel.composerCommand = command
-        let initialSendButtonState = viewModel.sendButtonEnabled
+        let initialSendButtonState = viewModel.hasContent
         viewModel.text = "hey"
-        let finalSendButtonState = viewModel.sendButtonEnabled
+        let finalSendButtonState = viewModel.hasContent
         
         // Then
         XCTAssert(initialSendButtonState == false)
