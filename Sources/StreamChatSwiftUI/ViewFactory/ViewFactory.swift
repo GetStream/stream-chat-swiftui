@@ -373,6 +373,12 @@ import SwiftUI
     /// - Returns: view displayed in the attachment picker slot.
     func makeAttachmentPickerView(options: AttachmentPickerViewOptions) -> AttachmentPickerViewType
 
+    associatedtype AttachmentCommandsPickerViewType: View
+    /// Creates the attachment commands picker view.
+    /// - Parameter options: the options for creating the attachment commands picker view.
+    /// - Returns: view displayed in the attachment commands picker slot.
+    func makeAttachmentCommandsPickerView(options: AttachmentCommandsPickerViewOptions) -> AttachmentCommandsPickerViewType
+
     associatedtype AttachmentSourcePickerViewType: View
     /// Creates the attachment source picker view.
     /// - Parameter options: the options for creating the attachment source picker view.
@@ -462,40 +468,41 @@ import SwiftUI
     /// - Parameter options: The options for creating the more reactions view.
     func makeMoreReactionsView(options: MoreReactionsViewOptions) -> MoreReactionsViewType
 
-    associatedtype QuotedMessageHeaderViewType: View
-    /// Creates the quoted message header view in the composer.
-    /// - Parameter options: the options for creating the quoted message header view.
-    /// - Returns: view displayed in the slot for quoted message in the composer.
-    func makeQuotedMessageHeaderView(options: QuotedMessageHeaderViewOptions) -> QuotedMessageHeaderViewType
+    associatedtype ComposerQuotedMessageViewType: View
+    /// Creates the quoted message view shown in the composer.
+    /// - Parameter options: the options for creating the composer quoted message view.
+    func makeComposerQuotedMessageView(options: ComposerQuotedMessageViewOptions) -> ComposerQuotedMessageViewType
+
+    associatedtype ChatQuotedMessageViewType: View
+    /// Creates the quoted message view shown in the message list.
+    /// - Parameter options: the options for creating the chat quoted message view.
+    func makeChatQuotedMessageView(options: ChatQuotedMessageViewOptions) -> ChatQuotedMessageViewType
 
     associatedtype QuotedMessageViewType: View
-    /// Creates the quoted message view, shown in the message list and the composer.
+    /// Creates the base quoted message view used by both composer and message list containers.
     /// - Parameter options: the options for creating the quoted message view.
     func makeQuotedMessageView(options: QuotedMessageViewOptions) -> QuotedMessageViewType
-    
-    associatedtype QuotedMessageContentViewType: View
-    /// Creates the quoted message content view.
-    ///
-    /// It is the view that is embedded in quoted message bubble view.
-    ///
-    /// - Parameters:
-    ///  - options: configuration options for the quoted message content view.
-    /// - Returns: view displayed in the quoted message content slot.
-    func makeQuotedMessageContentView(
-        options: QuotedMessageContentViewOptions
-    ) -> QuotedMessageContentViewType
-    
-    associatedtype CustomAttachmentQuotedViewType: View
-    /// Creates a quoted view for custom attachments. Returns `EmptyView` by default.
-    /// - Parameter options: the options for creating the custom attachment quoted view.
-    /// - Returns: view shown in quoted messages with custom attachments.
-    func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> CustomAttachmentQuotedViewType
 
-    associatedtype EditedMessageHeaderViewType: View
-    /// Creates the edited message header view in the composer.
-    /// - Parameter options: the options for creating the edited message header view.
-    /// - Returns: view displayed in the slot for edited message in the composer.
-    func makeEditedMessageHeaderView(options: EditedMessageHeaderViewOptions) -> EditedMessageHeaderViewType
+    associatedtype ComposerEditedMessageViewType: View
+    /// Creates the edited message view shown in the composer when editing a message.
+    /// - Parameter options: the options for creating the composer edited message view.
+    func makeComposerEditedMessageView(options: ComposerEditedMessageViewOptions) -> ComposerEditedMessageViewType
+
+    associatedtype MessageAttachmentPreviewViewType: View
+    /// Creates the attachment preview view for a message.
+    ///
+    /// - Parameter options: The options containing the thumbnail to display.
+    func makeMessageAttachmentPreviewThumbnailView(
+        options: MessageAttachmentPreviewViewOptions
+    ) -> MessageAttachmentPreviewViewType
+
+    associatedtype MessageAttachmentPreviewIconViewType: View
+    /// Creates the view for displaying an attachment preview icon.
+    ///
+    /// This view is used to show icons like photo, video, document, etc.
+    ///
+    /// - Parameter options: The options for creating the attachment preview icon view.
+    func makeMessageAttachmentPreviewIconView(options: MessageAttachmentPreviewIconViewOptions) -> MessageAttachmentPreviewIconViewType
 
     associatedtype CommandsContainerViewType: View
     /// Creates the commands container view, above the composer.

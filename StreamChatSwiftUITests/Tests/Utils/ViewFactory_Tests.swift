@@ -427,52 +427,51 @@ import XCTest
         XCTAssert(view is SendInChannelView)
     }
 
-    func test_viewFactory_makeQuotedMessageHeaderView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeQuotedMessageHeaderView(
-            options: QuotedMessageHeaderViewOptions(
-                quotedMessage: .constant(message)
-            )
-        )
-
-        // Then
-        XCTAssert(view is QuotedMessageHeaderView)
-    }
-
-    func test_viewFactory_makeQuotedMessageComposerView() {
+    func test_viewFactory_makeQuotedMessageView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
         let view = viewFactory.makeQuotedMessageView(
-            options: QuotedMessageViewOptions(
+            options: .init(
+                quotedMessage: message
+            )
+        )
+
+        // Then
+        XCTAssert(view is QuotedMessageView<DefaultViewFactory>)
+    }
+    
+    func test_viewFactory_makeChatQuotedMessageView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeChatQuotedMessageView(
+            options: ChatQuotedMessageViewOptions(
                 quotedMessage: message,
-                fillAvailableSpace: true,
-                isInComposer: false,
                 scrolledId: .constant(nil)
             )
         )
 
         // Then
-        XCTAssert(view is QuotedMessageViewContainer<DefaultViewFactory>)
+        XCTAssert(view is ChatQuotedMessageView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeEditedMessageHeaderView() {
+    func test_viewFactory_makeComposerQuotedMessageView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeEditedMessageHeaderView(
-            options: EditedMessageHeaderViewOptions(
-                editedMessage: .constant(message)
+        let view = viewFactory.makeComposerQuotedMessageView(
+            options: .init(
+                quotedMessage: message,
+                onDismiss: {}
             )
         )
 
         // Then
-        XCTAssert(view is EditMessageHeaderView)
+        XCTAssert(view is ComposerQuotedMessageView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeCommandsContainerView() {
@@ -821,6 +820,21 @@ import XCTest
         // Then
         XCTAssert(view is ComposerTextInputView)
     }
+
+    func test_viewFactory_makeAttachmentCommandsPickerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeAttachmentCommandsPickerView(
+            options: AttachmentCommandsPickerViewOptions(
+                onCommandSelected: { _ in }
+            )
+        )
+
+        // Then
+        XCTAssert(view is AttachmentCommandsPickerView)
+    }
     
     func test_viewFactory_makeMessageListContainerModifier() {
         // Given
@@ -850,17 +864,6 @@ import XCTest
 
         // Then
         XCTAssert(name.contains("BottomReactionsView"))
-    }
-    
-    func test_viewFactory_makeCustomAttachmentQuotedView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        
-        // When
-        let view = viewFactory.makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions(message: .mock()))
-        
-        // Then
-        XCTAssert(view is EmptyView)
     }
     
     func test_viewFactory_makeComposerRecordingView() {

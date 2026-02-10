@@ -10,6 +10,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
@@ -53,23 +54,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     public var body: some View {
         VStack(spacing: 0) {
-            if quotedMessage != nil {
-                factory.makeQuotedMessageHeaderView(
-                    options: QuotedMessageHeaderViewOptions(
-                        quotedMessage: $quotedMessage
-                    )
-                )
-                .transition(.identity)
-            } else if editedMessage != nil {
-                factory.makeEditedMessageHeaderView(
-                    options: EditedMessageHeaderViewOptions(
-                        editedMessage: $editedMessage
-                    )
-                )
-                .transition(.identity)
-            }
-
-            HStack(alignment: .bottom, spacing: 8) {
+            HStack(alignment: .bottom, spacing: tokens.spacingXs) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
                         state: $viewModel.pickerTypeState,
@@ -90,6 +75,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
+                        editedMessage: $editedMessage,
                         maxMessageLength: channelConfig?.maxMessageLength,
                         cooldownDuration: viewModel.cooldownDuration,
                         sendButtonEnabled: viewModel.sendButtonEnabled,
@@ -124,8 +110,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     Alert.defaultErrorAlert
                 }
             }
-            .padding(.vertical, 8)
-            .padding(.horizontal, 16)
+            .padding(.vertical, tokens.spacingMd)
+            .padding(.horizontal, tokens.spacingMd)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
@@ -181,10 +167,21 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     selectedAssetIds: viewModel.addedAssets.map(\.id),
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
-                    canSendPoll: viewModel.canSendPoll
+                    canSendPoll: viewModel.canSendPoll,
+                    instantCommands: viewModel.instantCommands,
+                    onCommandSelected: { command in
+                        viewModel.pickerTypeState = .expanded(.none)
+                        viewModel.composerCommand = command
+                        viewModel.handleCommand(
+                            for: $viewModel.text,
+                            selectedRangeLocation: $viewModel.selectedRangeLocation,
+                            command: $viewModel.composerCommand,
+                            extraData: ["instantCommand": command]
+                        )
+                        becomeFirstResponder()
+                    }
                 )
             )
-            .environmentObject(viewModel)
             .offset(y: viewModel.overlayShown ? 0 : popupSize)
             .opacity(viewModel.overlayShown ? 1 : 0)
             .animation(.easeInOut(duration: 0.25))
@@ -205,14 +202,20 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             if visible && !keyboardShown {
                 if viewModel.composerCommand == nil && !editedMessageWillShow {
                     DispatchQueue.main.async {
-                        withAnimation(.easeInOut(duration: 0.25)) {
+                        var transaction = Transaction()
+                        transaction.disablesAnimations = true
+                        withTransaction(transaction) {
                             viewModel.pickerTypeState = .expanded(.none)
                         }
                     }
                 } else if editedMessageWillShow {
                     // When editing a message, the keyboard will show.
                     // If the attachment picker is open, we should dismiss it.
-                    viewModel.pickerTypeState = .expanded(.none)
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) {
+                        viewModel.pickerTypeState = .expanded(.none)
+                    }
                 }
             }
             keyboardShown = visible
@@ -294,6 +297,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channelController: ChatChannelController
@@ -306,6 +310,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
     var quotedMessage: Binding<ChatMessage?>
+    var editedMessage: Binding<ChatMessage?>
     var maxMessageLength: Int?
     var cooldownDuration: Int
     var sendButtonEnabled: Bool
@@ -332,6 +337,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int? = nil,
         cooldownDuration: Int,
         sendButtonEnabled: Bool,
@@ -356,6 +362,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.isSendMessageEnabled = isSendMessageEnabled
         self.sendButtonEnabled = sendButtonEnabled
         self.quotedMessage = quotedMessage
+        self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
         self.onCustomAttachmentTap = onCustomAttachmentTap
@@ -380,63 +387,35 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
         return textHeight
     }
-    
-    var inputPaddingsConfig: PaddingsConfig {
-        utils.composerConfig.inputPaddingsConfig
-    }
 
     public var body: some View {
-        VStack {
-            if let quotedMessage = quotedMessage.wrappedValue {
-                factory.makeQuotedMessageView(
-                    options: QuotedMessageViewOptions(
+        VStack(spacing: tokens.spacingXs) {
+            if let editedMessage = editedMessage.wrappedValue {
+                factory.makeComposerEditedMessageView(
+                    options: .init(
+                        editedMessage: editedMessage,
+                        onDismiss: {
+                            withAnimation {
+                                self.editedMessage.wrappedValue = nil
+                            }
+                        }
+                    )
+                )
+            } else if let quotedMessage = quotedMessage.wrappedValue {
+                factory.makeComposerQuotedMessageView(
+                    options: .init(
                         quotedMessage: quotedMessage,
-                        fillAvailableSpace: true,
-                        isInComposer: true,
-                        scrolledId: .constant(nil)
-                    )
-                )
-                .environment(\.channelTranslationLanguage, channelController.channel?.membership?.language)
-            }
-
-            if !addedAssets.isEmpty {
-                AddedImageAttachmentsView(
-                    images: addedAssets,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .transition(.scale)
-                .animation(.default)
-            }
-
-            if !addedFileURLs.isEmpty {
-                if !addedAssets.isEmpty {
-                    Divider()
-                }
-
-                AddedFileAttachmentsView(
-                    addedFileURLs: addedFileURLs,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
-            }
-            
-            if !addedVoiceRecordings.isEmpty {
-                AddedVoiceRecordingsView(
-                    addedVoiceRecordings: addedVoiceRecordings,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
-                .padding(.top, 8)
-            }
-
-            if !addedCustomAttachments.isEmpty {
-                factory.makeCustomAttachmentPreviewView(
-                    options: CustomAttachmentPreviewViewOptions(
-                        addedCustomAttachments: addedCustomAttachments,
-                        onCustomAttachmentTap: onCustomAttachmentTap
+                        onDismiss: {
+                            withAnimation {
+                                self.quotedMessage.wrappedValue = nil
+                            }
+                        }
                     )
                 )
             }
+
+            attachmentsTray
+                .padding(.leading, tokens.spacingSm)
 
             HStack(alignment: .bottom) {
                 HStack {
@@ -499,13 +478,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         sendMessage: sendMessage
                     )
                 )
-                .padding(.trailing, 8)
-                .padding(.bottom, 8)
+                .padding(.trailing, tokens.spacingXs)
+                .padding(.bottom, tokens.spacingXs)
             }
+            .padding(.leading, tokens.spacingXs)
         }
-        .padding(.vertical, shouldAddVerticalPadding ? inputPaddingsConfig.vertical : 0)
-        .padding(.leading, inputPaddingsConfig.leading)
-        .padding(.trailing, inputPaddingsConfig.trailing)
         .modifier(
             factory.styles.makeComposerInputViewModifier(
                 options: .init(keyboardShown: keyboardShown)
@@ -516,20 +493,64 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
+    private var attachmentsTray: some View {
+        Group {
+            if !addedAssets.isEmpty {
+                AddedImageAttachmentsView(
+                    images: addedAssets,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .transition(.scale)
+                .animation(.default)
+            }
+
+            if !addedFileURLs.isEmpty {
+                if !addedAssets.isEmpty {
+                    Divider()
+                }
+
+                AddedFileAttachmentsView(
+                    addedFileURLs: addedFileURLs,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+            }
+
+            if !addedVoiceRecordings.isEmpty {
+                AddedVoiceRecordingsView(
+                    addedVoiceRecordings: addedVoiceRecordings,
+                    onDiscardAttachment: removeAttachmentWithId
+                )
+                .padding(.trailing, 8)
+                .padding(.top, 8)
+            }
+
+            if !addedCustomAttachments.isEmpty {
+                factory.makeCustomAttachmentPreviewView(
+                    options: CustomAttachmentPreviewViewOptions(
+                        addedCustomAttachments: addedCustomAttachments,
+                        onCustomAttachmentTap: onCustomAttachmentTap
+                    )
+                )
+            }
+        }
+    }
+
     private var sendMessageButtonState: SendMessageButtonState {
         if isInCooldown {
             return .slowMode(cooldownDuration)
         }
 
-        if text.isEmpty && utils.composerConfig.isVoiceRecordingEnabled {
+        // When editing, show checkmark button
+        if editedMessage.wrappedValue != nil {
+            return .edit(sendButtonEnabled)
+        }
+
+        if utils.composerConfig.isVoiceRecordingEnabled && !sendButtonEnabled {
             return .audio
         }
 
         return .regular(sendButtonEnabled)
-    }
-
-    private var shouldAddVerticalPadding: Bool {
-        !addedFileURLs.isEmpty || !addedAssets.isEmpty
     }
 
     private var isInCooldown: Bool {

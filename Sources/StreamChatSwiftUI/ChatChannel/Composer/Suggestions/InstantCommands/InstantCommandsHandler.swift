@@ -12,7 +12,7 @@ public class InstantCommandsHandler: CommandHandler {
     public var displayInfo: CommandDisplayInfo?
 
     private let typingSuggester: TypingSuggester
-    private let commands: [CommandHandler]
+    public let commands: [CommandHandler]
 
     public init(
         commands: [CommandHandler],

@@ -50,6 +50,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     var channelController: ChatChannelController
     var messageController: ChatMessageController?
     var canSendPoll: Bool
+    var instantCommands: [CommandHandler]
+    var onCommandSelected: @MainActor (ComposerCommand) -> Void
     
     public init(
         viewFactory: Factory,
@@ -70,7 +72,9 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         selectedAssetIds: [String]? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
-        canSendPoll: Bool
+        canSendPoll: Bool,
+        instantCommands: [CommandHandler],
+        onCommandSelected: @escaping @MainActor (ComposerCommand) -> Void
     ) {
         self.viewFactory = viewFactory
         _selectedPickerState = selectedPickerState
@@ -91,6 +95,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         self.channelController = channelController
         self.messageController = messageController
         self.canSendPoll = canSendPoll
+        self.instantCommands = instantCommands
+        self.onCommandSelected = onCommandSelected
     }
 
     public var body: some View {
@@ -143,6 +149,13 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     options: ComposerPollViewOptions(
                         channelController: channelController,
                         messageController: messageController
+                    )
+                )
+            } else if selectedPickerState == .commands {
+                viewFactory.makeAttachmentCommandsPickerView(
+                    options: AttachmentCommandsPickerViewOptions(
+                        instantCommands: instantCommands,
+                        onCommandSelected: onCommandSelected
                     )
                 )
             } else if selectedPickerState == .custom {
@@ -223,6 +236,15 @@ public struct AttachmentSourcePickerView: View {
                 .accessibilityIdentifier("attachmentPickerPolls")
             }
 
+            AttachmentTypePickerButton(
+                icon: images.commands,
+                pickerType: .commands,
+                isSelected: selected == .commands,
+                onTap: onTap
+            )
+            .accessibilityLabel(L10n.Composer.Suggestions.Commands.header)
+            .accessibilityIdentifier("attachmentPickerCommands")
+
             Spacer()
         }
         .padding(.horizontal, 16)
@@ -260,7 +282,7 @@ public struct AttachmentTypePickerButton: View {
         } label: {
             Image(uiImage: icon)
                 .customizable()
-                .frame(width: 22)
+                .frame(maxWidth: 20, maxHeight: 20)
                 .foregroundColor(
                     isSelected ? Color(colors.highlightedAccentBackground)
                         : Color(colors.textLowEmphasis)

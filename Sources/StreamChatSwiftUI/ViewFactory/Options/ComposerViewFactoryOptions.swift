@@ -73,6 +73,8 @@ public final class ComposerInputViewOptions: Sendable {
     public let addedVoiceRecordings: [AddedVoiceRecording]
     /// Binding to the quoted message.
     public let quotedMessage: Binding<ChatMessage?>
+    /// Binding to the edited message.
+    public let editedMessage: Binding<ChatMessage?>
     /// The maximum message length.
     public let maxMessageLength: Int?
     /// The cooldown duration in seconds.
@@ -107,6 +109,7 @@ public final class ComposerInputViewOptions: Sendable {
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
+        editedMessage: Binding<ChatMessage?>,
         maxMessageLength: Int?,
         cooldownDuration: Int,
         sendButtonEnabled: Bool,
@@ -129,6 +132,7 @@ public final class ComposerInputViewOptions: Sendable {
         self.addedCustomAttachments = addedCustomAttachments
         self.addedVoiceRecordings = addedVoiceRecordings
         self.quotedMessage = quotedMessage
+        self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
         self.cooldownDuration = cooldownDuration
         self.sendButtonEnabled = sendButtonEnabled
@@ -266,37 +270,63 @@ public final class CommandsContainerViewOptions: @unchecked Sendable {
 
 // MARK: - Quoted Message Options
 
-/// Options for creating the quoted message header view.
-public final class QuotedMessageHeaderViewOptions: Sendable {
-    /// Binding to the quoted message.
-    public let quotedMessage: Binding<ChatMessage?>
-    
-    public init(quotedMessage: Binding<ChatMessage?>) {
+/// Options for creating the quoted message view.
+public final class ComposerQuotedMessageViewOptions: Sendable {
+    /// The quoted message to display.
+    public let quotedMessage: ChatMessage
+    /// The callback when the quoted message view is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        quotedMessage: ChatMessage,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
         self.quotedMessage = quotedMessage
+        self.onDismiss = onDismiss
     }
 }
 
-/// Options for creating the quoted message view.
+/// Options for creating the base quoted message view.
 public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
-    /// Whether to fill the available space.
-    public let fillAvailableSpace: Bool
-    /// Whether the view is in the composer.
-    public let isInComposer: Bool
+    /// The padding to apply around the quoted message view.
+    public let padding: EdgeInsets?
+    
+    public init(
+        quotedMessage: ChatMessage,
+        padding: EdgeInsets? = nil
+    ) {
+        self.quotedMessage = quotedMessage
+        self.padding = padding
+    }
+}
+
+/// Options for creating the chat quoted message view (message list container).
+public final class ChatQuotedMessageViewOptions: Sendable {
+    /// The quoted message to display.
+    public let quotedMessage: ChatMessage
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
     public init(
         quotedMessage: ChatMessage,
-        fillAvailableSpace: Bool,
-        isInComposer: Bool,
         scrolledId: Binding<String?>
     ) {
         self.quotedMessage = quotedMessage
-        self.fillAvailableSpace = fillAvailableSpace
-        self.isInComposer = isInComposer
         self.scrolledId = scrolledId
+    }
+}
+
+/// Options for creating the message attachment preview view.
+public final class MessageAttachmentPreviewViewOptions: Sendable {
+    /// The thumbnail to display in the attachment preview.
+    public let thumbnail: MessageAttachmentPreviewThumbnail?
+
+    /// Creates new options for the message attachment preview view.
+    /// - Parameter thumbnail: The thumbnail to display.
+    public init(thumbnail: MessageAttachmentPreviewThumbnail?) {
+        self.thumbnail = thumbnail
     }
 }
 
@@ -317,6 +347,34 @@ public final class EditedMessageHeaderViewOptions: Sendable {
     
     public init(editedMessage: Binding<ChatMessage?>) {
         self.editedMessage = editedMessage
+    }
+}
+
+/// Options for creating the composer edited message view.
+public final class ComposerEditedMessageViewOptions: Sendable {
+    /// The edited message to display.
+    public let editedMessage: ChatMessage
+    /// The callback when the edited message view is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        editedMessage: ChatMessage,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
+        self.editedMessage = editedMessage
+        self.onDismiss = onDismiss
+    }
+}
+
+/// Options for creating the message attachment preview icon view.
+public final class MessageAttachmentPreviewIconViewOptions: Sendable {
+    /// The icon type to display.
+    public let icon: MessageAttachmentPreviewIcon
+
+    public init(
+        icon: MessageAttachmentPreviewIcon
+    ) {
+        self.icon = icon
     }
 }
 

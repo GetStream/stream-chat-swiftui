@@ -511,6 +511,7 @@ extension ViewFactory {
                     addedCustomAttachments: options.addedCustomAttachments,
                     addedVoiceRecordings: options.addedVoiceRecordings,
                     quotedMessage: options.quotedMessage,
+                    editedMessage: options.editedMessage,
                     maxMessageLength: options.maxMessageLength,
                     cooldownDuration: options.cooldownDuration,
                     sendButtonEnabled: options.sendButtonEnabled,
@@ -537,6 +538,7 @@ extension ViewFactory {
                 addedCustomAttachments: options.addedCustomAttachments,
                 addedVoiceRecordings: options.addedVoiceRecordings,
                 quotedMessage: options.quotedMessage,
+                editedMessage: options.editedMessage,
                 maxMessageLength: options.maxMessageLength,
                 cooldownDuration: options.cooldownDuration,
                 sendButtonEnabled: options.sendButtonEnabled,
@@ -627,7 +629,18 @@ extension ViewFactory {
             selectedAssetIds: options.selectedAssetIds,
             channelController: options.channelController,
             messageController: options.messageController,
-            canSendPoll: options.canSendPoll
+            canSendPoll: options.canSendPoll,
+            instantCommands: options.instantCommands,
+            onCommandSelected: options.onCommandSelected
+        )
+    }
+
+    public func makeAttachmentCommandsPickerView(
+        options: AttachmentCommandsPickerViewOptions
+    ) -> some View {
+        AttachmentCommandsPickerView(
+            instantCommands: options.instantCommands,
+            onCommandSelected: options.onCommandSelected
         )
     }
     
@@ -793,42 +806,65 @@ extension ViewFactory {
     public func makeMoreReactionsView(options: MoreReactionsViewOptions) -> some View {
         MoreReactionsView(onEmojiTap: options.onEmojiTap)
     }
-    
-    public func makeQuotedMessageHeaderView(
-        options: QuotedMessageHeaderViewOptions
+
+    public func makeComposerQuotedMessageView(
+        options: ComposerQuotedMessageViewOptions
     ) -> some View {
-        QuotedMessageHeaderView(quotedMessage: options.quotedMessage)
-    }
-    
-    public func makeQuotedMessageView(
-        options: QuotedMessageViewOptions
-    ) -> some View {
-        QuotedMessageViewContainer(
+        ComposerQuotedMessageView(
             factory: self,
             quotedMessage: options.quotedMessage,
-            fillAvailableSpace: options.fillAvailableSpace,
-            forceLeftToRight: options.isInComposer,
+            onDismiss: options.onDismiss
+        )
+    }
+
+    public func makeChatQuotedMessageView(
+        options: ChatQuotedMessageViewOptions
+    ) -> some View {
+        ChatQuotedMessageView(
+            factory: self,
+            quotedMessage: options.quotedMessage,
             scrolledId: options.scrolledId
         )
     }
-    
-    public func makeQuotedMessageContentView(
-        options: QuotedMessageContentViewOptions
+
+    public func makeQuotedMessageView(
+        options: QuotedMessageViewOptions
     ) -> some View {
-        QuotedMessageContentView(
+        QuotedMessageView(
             factory: self,
-            options: options
+            viewModel: QuotedMessageViewModel(
+                message: options.quotedMessage,
+                currentUser: chatClient.currentUserController().currentUser
+            ),
+            padding: options.padding
         )
     }
-    
-    public func makeCustomAttachmentQuotedView(options: CustomAttachmentQuotedViewOptions) -> some View {
-        EmptyView()
-    }
-    
-    public func makeEditedMessageHeaderView(
-        options: EditedMessageHeaderViewOptions
+
+    public func makeComposerEditedMessageView(
+        options: ComposerEditedMessageViewOptions
     ) -> some View {
-        EditMessageHeaderView(editedMessage: options.editedMessage)
+        EditedMessageView(
+            factory: self,
+            viewModel: EditedMessageViewModel(
+                message: options.editedMessage
+            ),
+            onDismiss: options.onDismiss
+        )
+    }
+
+    public func makeMessageAttachmentPreviewThumbnailView(
+        options: MessageAttachmentPreviewViewOptions
+    ) -> some View {
+        MessageAttachmentPreviewThumbnailView(thumbnail: options.thumbnail)
+    }
+
+    public func makeMessageAttachmentPreviewIconView(
+        options: MessageAttachmentPreviewIconViewOptions
+    ) -> some View {
+        let provider = DefaultMessageAttachmentPreviewIconProvider()
+        return MessageAttachmentPreviewIconView(
+            iconImage: provider.image(for: options.icon)
+        )
     }
     
     public func makeCommandsContainerView(

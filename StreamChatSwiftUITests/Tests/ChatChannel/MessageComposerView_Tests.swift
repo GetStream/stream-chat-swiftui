@@ -158,6 +158,7 @@ import XCTest
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
             quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
             cooldownDuration: 15,
             sendButtonEnabled: true,
             isSendMessageEnabled: true,
@@ -295,6 +296,7 @@ import XCTest
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
             quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
             cooldownDuration: 0,
             sendButtonEnabled: true,
             isSendMessageEnabled: true,
@@ -432,24 +434,7 @@ import XCTest
         XCTAssert(coordinator.textInput.selectedRangeLocation == 3)
         XCTAssert(coordinator.textInput.text == "New text")
     }
-
-    func test_quotedMessageHeaderView_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Quoted message",
-            author: .mock(id: .unique)
-        )
-
-        // When
-        let view = QuotedMessageHeaderView(quotedMessage: .constant(message), showContent: true)
-            .frame(width: defaultScreenSize.width, height: 36)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
+    
     func test_composerInputView_snapshot() {
         // Given
         let inputView = InputTextView()
@@ -557,6 +542,7 @@ import XCTest
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
             quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
             cooldownDuration: 0,
             sendButtonEnabled: true,
             isSendMessageEnabled: true,
@@ -730,52 +716,6 @@ import XCTest
         )
     }
     
-    func test_composerQuotedMessage_translated() {
-        let factory = DefaultViewFactory.shared
-        let size = CGSize(width: defaultScreenSize.width, height: 100)
-
-        let channelController = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient,
-            chatChannel: .mock(
-                cid: .unique,
-                membership: .mock(id: .unique, language: .spanish)
-            )
-        )
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        let view = ComposerInputView(
-            factory: factory,
-            channelController: channelController,
-            text: .constant("Hello"),
-            selectedRangeLocation: .constant(0),
-            command: .constant(nil),
-            recordingState: .constant(.initial),
-            addedAssets: [],
-            addedFileURLs: [],
-            addedCustomAttachments: [],
-            addedVoiceRecordings: [],
-            quotedMessage: .constant(
-                .mock(
-                    text: "Hello",
-                    translations: [.spanish: "Hola"]
-                )
-            ),
-            cooldownDuration: 0,
-            sendButtonEnabled: true,
-            isSendMessageEnabled: true,
-            onCustomAttachmentTap: { _ in
-            },
-            removeAttachmentWithId: { _ in },
-            sendMessage: {},
-            onImagePasted: { _ in },
-            startRecording: {},
-            stopRecording: {}
-        )
-        .environmentObject(viewModel)
-        .frame(width: size.width, height: size.height)
-
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
-    }
-
     // MARK: - Editing
 
     func test_composerView_editingMessageWithText() {

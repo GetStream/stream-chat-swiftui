@@ -81,6 +81,51 @@ import XCTest
         XCTAssert(buttonEnabled == true)
         XCTAssertEqual(viewModel.addedFileURLs.count, 1)
     }
+
+    func test_messageComposerVM_onCommandSelected_setsInstantCommand() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let textBinding = Binding(
+            get: { viewModel.text },
+            set: { viewModel.text = $0 }
+        )
+        let rangeBinding = Binding(
+            get: { viewModel.selectedRangeLocation },
+            set: { viewModel.selectedRangeLocation = $0 }
+        )
+        let commandBinding = Binding(
+            get: { viewModel.composerCommand },
+            set: { viewModel.composerCommand = $0 }
+        )
+        let displayInfo = CommandDisplayInfo(
+            displayName: "Giphy",
+            icon: UIImage(systemName: "photo") ?? UIImage(),
+            format: "/giphy [text]",
+            isInstant: true
+        )
+        let command = ComposerCommand(
+            id: "/giphy",
+            typingSuggestion: TypingSuggestion.empty,
+            displayInfo: displayInfo
+        )
+
+        // When
+        viewModel.pickerTypeState = .expanded(.none)
+        viewModel.composerCommand = ComposerCommand(
+            id: "instantCommands",
+            typingSuggestion: TypingSuggestion.empty,
+            displayInfo: nil
+        )
+        viewModel.handleCommand(
+            for: textBinding,
+            selectedRangeLocation: rangeBinding,
+            command: commandBinding,
+            extraData: ["instantCommand": command]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.composerCommand?.id, "/giphy")
+    }
     
     func test_messageComposerVM_sendButtonEnabled_addedCustomAttachment() {
         // Given

@@ -58,7 +58,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             listId: viewModel.listId,
                             isMessageThread: viewModel.isMessageThread,
                             shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
-                            bottomInset: composerPlacement == .floating ? floatingComposerHeight : 0,
+                            bottomInset: composerPlacement == .floating ? floatingComposerHeight - (keyboardShown ? bottomPadding : 0) : 0,
                             scrollPosition: $viewModel.scrollPosition,
                             loadingNextMessages: viewModel.loadingNextMessages,
                             firstUnreadMessageId: $viewModel.firstUnreadMessageId,
@@ -126,7 +126,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
                     if composerPlacement == .docked {
                         composerView
-                            .padding(.top, 8)
                             .overlay(
                                 Rectangle()
                                     .frame(width: nil, height: 1, alignment: .top)
@@ -189,9 +188,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         .onPreferenceChange(FloatingComposerHeightPreferenceKey.self) { value in
             guard composerPlacement == .floating, value > 0 else { return }
-            let defaultHeight = Self.defaultFloatingComposerHeight()
-            let newHeight = max(value, defaultHeight)
-            floatingComposerHeight = newHeight
+            floatingComposerHeight = value + bottomPadding
         }
         .navigationBarTitleDisplayMode(utils.messageListConfig.navigationBarDisplayMode)
         .onReceive(keyboardWillChangePublisher, perform: { visible in

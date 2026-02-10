@@ -91,6 +91,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     addedVoiceRecordings: viewModel.addedVoiceRecordings,
                     quotedMessage: $quotedMessage,
+                    editedMessage: $editedMessage,
                     maxMessageLength: channelConfig?.maxMessageLength,
                     cooldownDuration: viewModel.cooldownDuration,
                     sendButtonEnabled: viewModel.sendButtonEnabled,
@@ -128,7 +129,22 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     selectedAssetIds: viewModel.addedAssets.map(\.id),
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
-                    canSendPoll: viewModel.canSendPoll
+                    canSendPoll: viewModel.canSendPoll,
+                    instantCommands: viewModel.instantCommands,
+                    onCommandSelected: { command in
+                        viewModel.pickerTypeState = .expanded(.none)
+                        viewModel.composerCommand = command
+                        viewModel.handleCommand(
+                            for: $viewModel.text,
+                            selectedRangeLocation: $viewModel.selectedRangeLocation,
+                            command: $viewModel.composerCommand,
+                            extraData: ["instantCommand": command]
+                        )
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name(getStreamFirstResponderNotification),
+                            object: nil
+                        )
+                    }
                 )
             )
         }

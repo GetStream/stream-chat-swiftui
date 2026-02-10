@@ -196,7 +196,7 @@ import XCTest
             id: .unique,
             cid: .unique,
             text: "This is a quoted message",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique, name: "John Wick")
         )
         let imageMessage = ChatMessage.mock(
             id: .unique,
@@ -578,7 +578,7 @@ import XCTest
     
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
-        var colorPalette = Appearance.ColorPalette()
+        let colorPalette = Appearance.ColorPalette()
         colorPalette.messageLinkAttachmentAuthorColor = .orange
         colorPalette.messageLinkAttachmentTitleColor = .blue
         colorPalette.messageLinkAttachmentTextColor = .red
