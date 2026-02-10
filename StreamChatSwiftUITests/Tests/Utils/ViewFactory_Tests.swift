@@ -821,6 +821,38 @@ import XCTest
         XCTAssert(view is ComposerTextInputView)
     }
 
+    func test_viewFactory_makeSendMessageButton() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeSendMessageButton(
+            options: SendMessageButtonOptions(
+                enabled: true,
+                onTap: {}
+            )
+        )
+
+        // Then
+        XCTAssert(view is SendMessageButton)
+    }
+
+    func test_viewFactory_makeConfirmEditButton() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeConfirmEditButton(
+            options: ConfirmEditButtonOptions(
+                enabled: true,
+                onTap: {}
+            )
+        )
+
+        // Then
+        XCTAssert(view is ConfirmEditButton)
+    }
+
     func test_viewFactory_makeAttachmentCommandsPickerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

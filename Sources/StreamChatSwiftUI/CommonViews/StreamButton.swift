@@ -66,6 +66,8 @@ struct StreamButtonStyle: ButtonStyle {
     @Injected(\.tokens) private var tokens
     @Injected(\.fonts) private var fonts
 
+    private let borderWidth: CGFloat = 1
+
     let role: StreamButtonRole
     let style: StreamButtonVisualStyle
     let size: StreamButtonSize
@@ -96,13 +98,12 @@ struct StreamButtonStyle: ButtonStyle {
     }
 
     private func baseContent(configuration: Configuration) -> some View {
-        let metrics = sizeMetrics
-        return configuration.label
+        configuration.label
             .font(fonts.bodyBold)
             .foregroundColor(Color(foregroundColor))
             .lineLimit(1)
-            .padding(.horizontal, isIconOnly ? metrics.horizontalPaddingIconOnly : metrics.horizontalPaddingWithLabel)
-            .padding(.vertical, metrics.verticalPadding)
+            .padding(.horizontal, isIconOnly ? sizeMetrics.horizontalPaddingIconOnly : sizeMetrics.horizontalPaddingWithLabel)
+            .padding(.vertical, sizeMetrics.verticalPadding)
             .background(Color(backgroundColor))
             .overlay(interactionOverlayView(isPressed: configuration.isPressed))
     }
@@ -163,10 +164,6 @@ struct StreamButtonStyle: ButtonStyle {
 
     private var hasBorder: Bool {
         style == .outline || style == .liquidGlass
-    }
-
-    private var borderWidth: CGFloat {
-        1
     }
 
     private func interactionOverlayColor(isPressed: Bool) -> UIColor? {
