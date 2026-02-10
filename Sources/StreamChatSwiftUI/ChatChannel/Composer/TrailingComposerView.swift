@@ -25,11 +25,11 @@ public struct TrailingComposerView<Factory: ViewFactory>: View {
     
     public var body: some View {
         Group {
-            if viewModel.cooldownDuration == 0 && viewModel.isSendMessageEnabled {
+            if viewModel.cooldownDuration == 0 && viewModel.canSendMessage {
                 HStack(spacing: 16) {
                     factory.makeSendMessageButton(
                         options: SendMessageButtonOptions(
-                            enabled: viewModel.sendButtonEnabled,
+                            enabled: viewModel.hasContent,
                             onTap: onTap
                         )
                     )
