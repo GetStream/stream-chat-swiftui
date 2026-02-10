@@ -134,4 +134,8 @@ public struct PHFetchResultCollection: RandomAccessCollection, Equatable, Sendab
     public subscript(position: Int) -> PHAsset {
         fetchResult.object(at: position)
     }
+
+    public static func == (lhs: PHFetchResultCollection, rhs: PHFetchResultCollection) -> Bool {
+        lhs.fetchResult == rhs.fetchResult
+    }
 }

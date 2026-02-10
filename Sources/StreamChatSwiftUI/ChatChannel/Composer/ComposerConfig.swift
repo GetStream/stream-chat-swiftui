@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// Config for customizing the composer.
-public struct ComposerConfig {
+public final class ComposerConfig {
     public var isVoiceRecordingEnabled: Bool
     public var inputViewMinHeight: CGFloat
     public var inputViewMaxHeight: CGFloat
