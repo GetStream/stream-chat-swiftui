@@ -2,6 +2,8 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Foundation
+
 /// The current composer's input view state.
 public enum MessageComposerInputState {
     case slowMode(cooldownDuration: Int)
