@@ -4,16 +4,16 @@
 
 import SwiftUI
 
-struct TrailingInputComposerView<Factory: ViewFactory>: View{
+struct TrailingInputComposerView<Factory: ViewFactory>: View {
     let factory: Factory
     
     @Binding var text: String
     @Binding var recordingState: RecordingState
     var composerInputState: MessageComposerInputState
-    var startRecording: () -> Void
-    var stopRecording: () -> Void
-    var sendMessage: () -> Void
-    
+    var startRecording: @MainActor () -> Void
+    var stopRecording: @MainActor () -> Void
+    var sendMessage: @MainActor () -> Void
+
     var body: some View {
         switch composerInputState {
         case .creating(let hasContent):
