@@ -118,6 +118,12 @@ public struct AddedVoiceRecording: Identifiable, Equatable, Sendable {
         self.duration = duration
         self.waveform = waveform
     }
+
+    public static func == (lhs: AddedVoiceRecording, rhs: AddedVoiceRecording) -> Bool {
+        lhs.url == rhs.url
+            && lhs.duration == rhs.duration
+            && lhs.waveform == rhs.waveform
+    }
 }
 
 extension AnyChatMessageAttachment {

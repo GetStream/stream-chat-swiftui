@@ -110,7 +110,7 @@ public struct ComposerCommand: Sendable {
 }
 
 /// Provides information about the suggestion.
-public struct SuggestionInfo {
+public final class SuggestionInfo {
     /// Identifies the suggestion.
     public let key: String
     /// Any value that can be passed to the suggestion.
