@@ -195,23 +195,24 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         .opacity(willPopOut ? 0 : 1)
                         .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
                         .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
-                    } else if messageDisplayInfo.showsBottomContainer {
-                        factory.makeReactionsUsersView(
-                            options: ReactionsUsersViewOptions(
-                                message: viewModel.message,
-                                maxHeight: userReactionsHeight
-                            )
-                        )
-                        .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
-                        .offset(
-                            x: userReactionsOriginX(availableWidth: reader.size.width)
-                        )
-                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
-                        .padding(.trailing, paddingValue)
-                        .scaleEffect(popIn ? 1 : 0)
-                        .opacity(willPopOut ? 0 : 1)
-                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     }
+//                    else if messageDisplayInfo.showsBottomContainer {
+//                        factory.makeReactionsUsersView(
+//                            options: ReactionsUsersViewOptions(
+//                                message: viewModel.message,
+//                                maxHeight: userReactionsHeight
+//                            )
+//                        )
+//                        .frame(maxWidth: maxUserReactionsWidth(availableWidth: reader.size.width))
+//                        .offset(
+//                            x: userReactionsOriginX(availableWidth: reader.size.width)
+//                        )
+//                        .padding(.top, messageDisplayInfo.message.isSentByCurrentUser ? paddingValue : 2 * paddingValue)
+//                        .padding(.trailing, paddingValue)
+//                        .scaleEffect(popIn ? 1 : 0)
+//                        .opacity(willPopOut ? 0 : 1)
+//                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+//                    }
                 }
                 .offset(y: !popIn ? (messageDisplayInfo.frame.origin.y - spacing) : originY)
                 .onAppear {
