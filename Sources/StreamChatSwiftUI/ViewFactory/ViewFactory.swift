@@ -349,6 +349,18 @@ import SwiftUI
     /// - Parameter options: the options for creating the trailing composer view.
     /// - Returns: view displayed in the trailing area of the message composer view.
     func makeTrailingComposerView(options: TrailingComposerViewOptions) -> TrailingComposerViewType
+
+    associatedtype SendMessageButtonType: View
+    /// Creates the send message button.
+    /// - Parameter options: the options for creating the send message button.
+    /// - Returns: view displayed in the send button slot.
+    func makeSendMessageButton(options: SendMessageButtonOptions) -> SendMessageButtonType
+
+    associatedtype ConfirmEditButtonType: View
+    /// Creates the confirm edit button.
+    /// - Parameter options: the options for creating the confirm edit button.
+    /// - Returns: view displayed in the confirm edit button slot.
+    func makeConfirmEditButton(options: ConfirmEditButtonOptions) -> ConfirmEditButtonType
     
     associatedtype ComposerRecordingViewType: View
     /// Creates a view shown when the composer is recording a voice message.

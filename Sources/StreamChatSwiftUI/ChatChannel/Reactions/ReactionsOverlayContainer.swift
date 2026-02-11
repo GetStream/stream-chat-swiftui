@@ -227,3 +227,10 @@ public struct ReactionAnimatableView: View {
         Set(message.currentUserReactions.map(\.type))
     }
 }
+
+private enum ButtonSize {
+    @MainActor static var large: CGFloat = 40
+    @MainActor static var medium: CGFloat = 32
+    @MainActor static var small: CGFloat = 24
+    @MainActor static var extraSmall: CGFloat = 20
+}
