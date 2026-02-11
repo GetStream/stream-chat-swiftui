@@ -62,6 +62,7 @@ struct ReactionsDetailView: View {
                     presentationMode.wrappedValue.dismiss()
                 }
             }
+            .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
         }
     }
 

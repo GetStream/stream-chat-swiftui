@@ -230,13 +230,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .modifier(factory.styles.makeBouncedMessageActionsModifier(viewModel: viewModel))
         .accentColor(Color(colors.accentPrimary))
         .sheet(item: $viewModel.reactionsDetailMessage) { message in
-            if #available(iOS 16.0, *) {
-                ReactionsDetailView(message: message)
-                    .presentationDetents([.medium, .large])
-            } else {
-                // Fallback on earlier versions
-                ReactionsDetailView(message: message)
-            }
+            ReactionsDetailView(message: message)
+                .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
         }
     }
     
