@@ -199,7 +199,6 @@ import SwiftUI
     )
     
     private var timer: Timer?
-    private var cooldownPeriod = 0
     private var isSlowModeDisabled: Bool {
         channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true
     }
@@ -306,7 +305,7 @@ import SwiftUI
         isSilent: Bool = false,
         extraData: [String: RawJSON] = [:]
     ) {
-        guard utils.messageListConfig.draftMessagesEnabled && sendButtonEnabled else {
+        guard utils.messageListConfig.draftMessagesEnabled && hasContent else {
             return
         }
         let attachments = try? convertAddedAssetsToPayloads()
@@ -437,12 +436,13 @@ import SwiftUI
         }
     }
     
-    /// A Boolean value indicating whether sending message is enabled.
-    public var isSendMessageEnabled: Bool {
+    /// A Boolean value indicating whether the current user has capability to send messages.
+    public var canSendMessage: Bool {
         channelController.channel?.canSendMessage ?? true
     }
 
-    public var sendButtonEnabled: Bool {
+    /// A Boolean value indicating whether the composer has any type of content filled.
+    public var hasContent: Bool {
         if let composerCommand,
            let handler = commandsHandler.commandHandler(for: composerCommand) {
             return handler
@@ -668,7 +668,7 @@ import SwiftUI
 
     /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
     private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
-        !oldValue.isEmpty && !sendButtonEnabled
+        !oldValue.isEmpty && !hasContent
     }
 
     private func fetchAssets() {
@@ -787,34 +787,43 @@ import SwiftUI
     private func listenToCooldownUpdates() {
         channelController.channelChangePublisher.sink { [weak self] _ in
             guard self?.isSlowModeDisabled == false else { return }
-            let cooldownDuration = self?.channelController.channel?.cooldownDuration ?? 0
-            if self?.cooldownPeriod == cooldownDuration {
-                return
-            }
-            self?.cooldownPeriod = cooldownDuration
             self?.checkChannelCooldown()
         }
         .store(in: &cancellables)
     }
 
     public func checkChannelCooldown() {
-        let duration = channelController.channel?.cooldownDuration ?? 0
-        if duration > 0 && timer == nil && !isSlowModeDisabled {
-            cooldownDuration = duration
+        guard !isSlowModeDisabled else {
+            cooldownDuration = 0
+            timer?.invalidate()
+            timer = nil
+            return
+        }
+
+        let duration = channelController.currentCooldownTime()
+        cooldownDuration = duration
+
+        guard duration > 0 else {
+            timer?.invalidate()
+            timer = nil
+            return
+        }
+
+        if timer == nil {
             timer = Timer.scheduledTimer(
                 withTimeInterval: 1,
                 repeats: true,
                 block: { [weak self] _ in
                     Task { @MainActor in
-                        self?.cooldownDuration -= 1
-                        if self?.cooldownDuration == 0 {
-                            self?.timer?.invalidate()
-                            self?.timer = nil
+                        guard let self else { return }
+                        self.cooldownDuration = self.channelController.currentCooldownTime()
+                        if self.cooldownDuration == 0 {
+                            self.timer?.invalidate()
+                            self.timer = nil
                         }
                     }
                 }
             )
-            timer?.fire()
         }
     }
     

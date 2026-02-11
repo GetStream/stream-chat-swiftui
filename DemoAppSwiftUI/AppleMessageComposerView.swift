@@ -94,8 +94,8 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     editedMessage: $editedMessage,
                     maxMessageLength: channelConfig?.maxMessageLength,
                     cooldownDuration: viewModel.cooldownDuration,
-                    sendButtonEnabled: viewModel.sendButtonEnabled,
-                    isSendMessageEnabled: viewModel.sendButtonEnabled,
+                    hasContent: viewModel.hasContent,
+                    canSendMessage: viewModel.canSendMessage,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     removeAttachmentWithId: viewModel.removeAttachment(with:),
                     sendMessage: {},
@@ -104,7 +104,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     stopRecording: viewModel.stopRecording
                 )
                 .overlay(
-                    viewModel.sendButtonEnabled ? sendButton : nil
+                    viewModel.hasContent ? sendButton : nil
                 )
             }
             .padding(.all, 8)
