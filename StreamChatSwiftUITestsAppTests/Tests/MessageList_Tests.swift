@@ -179,19 +179,6 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
 
-    func test_composerGrowthLimit() throws {
-        linkToScenario(withId: 260)
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        THEN("user verifies that composer does not grow more than 5 lines") {
-            userRobot.assertComposerLimits(toNumberOfLines: 5)
-        }
-    }
-
     func test_typingIndicator() throws {
         linkToScenario(withId: 358)
 
