@@ -1046,12 +1046,25 @@ import XCTest
     func test_viewFactory_makeAttachmentTextView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
         let view = viewFactory.makeAttachmentTextView(options: .init(mesage: message))
-        
+
         // Then
         XCTAssert(view is StreamTextView)
+    }
+
+    func test_viewFactory_makeReactionsDetailView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeReactionsDetailView(
+            options: ReactionsDetailViewOptions(message: message)
+        )
+
+        // Then
+        XCTAssert(view is ReactionsDetailView)
     }
 }
 
