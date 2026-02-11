@@ -415,7 +415,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             }
 
             attachmentsTray
-                .padding(.leading, tokens.spacingSm)
+                .padding(.top, tokens.spacingXxs)
+                .padding(.leading, tokens.spacingXs)
 
             HStack(alignment: .bottom) {
                 HStack {

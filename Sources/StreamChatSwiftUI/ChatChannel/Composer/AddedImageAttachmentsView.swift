@@ -8,12 +8,13 @@ import SwiftUI
 public struct AddedImageAttachmentsView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+    @Injected(\.tokens) private var tokens
+
     public var images: [AddedAsset]
     public var onDiscardAttachment: (String) -> Void
     
-    private var imageSize: CGFloat = 100
-    
+    private var imageSize: CGFloat = 72
+
     public init(
         images: [AddedAsset],
         onDiscardAttachment: @escaping (String) -> Void
@@ -25,35 +26,45 @@ public struct AddedImageAttachmentsView: View {
     public var body: some View {
         ScrollViewReader { reader in
             ScrollView(.horizontal) {
-                HStack {
+                HStack(spacing: tokens.spacingXs) {
                     ForEach(images) { attachment in
                         Image(uiImage: attachment.image)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: imageSize, height: imageSize)
                             .clipped()
-                            .cornerRadius(12)
-                            .id(attachment.id)
+                            .cornerRadius(tokens.messageBubbleRadiusAttachment)
                             .overlay(
-                                ZStack {
-                                    DiscardAttachmentButton(
-                                        attachmentIdentifier: attachment.id,
-                                        onDiscard: onDiscardAttachment
-                                    )
-                                    
-                                    if attachment.type == .video {
-                                        VideoIndicatorView()
-                                        
-                                        if let duration = attachment.extraData["duration"]?.stringValue {
-                                            VideoDurationIndicatorView(duration: duration)
-                                        }
-                                    }
-                                }
+                                RoundedRectangle(cornerRadius: tokens.messageBubbleRadiusAttachment)
+                                    .strokeBorder(Color(colors.borderCoreOpacity10), lineWidth: 1)
                             )
+                            .id(attachment.id)
+                            .dismissButtonOverlayModifier {
+                                onDiscardAttachment(attachment.id)
+                            }
+                            .padding(tokens.spacingXxs)
+//                            .overlay(
+//                                ZStack {
+//                                    DiscardAttachmentButton(
+//                                        attachmentIdentifier: attachment.id,
+//                                        onDiscard: onDiscardAttachment
+//                                    )
+//
+//                                    if attachment.type == .video {
+//                                        VideoIndicatorView()
+//
+//                                        if let duration = attachment.extraData["duration"]?.stringValue {
+//                                            VideoDurationIndicatorView(duration: duration)
+//                                        }
+//                                    }
+//                                }
+//                            )
                     }
                 }
+                .padding(.trailing, tokens.spacingXs)
             }
             .frame(height: imageSize)
+            .padding(.top, tokens.spacingXs)
             .onChange(of: images) { [images] newValue in
                 if #available(iOS 15, *), newValue.count > images.count {
                     let last = newValue.last
