@@ -32,7 +32,9 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quotedReplyInList_whenUserAddsQuotedReply() throws {
         linkToScenario(withId: 368)
 
+        let quotedText = "2"
         let messageCount = 20
+        var firstParticipantsMessageIndex = 0
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: messageCount)
@@ -41,7 +43,11 @@ final class QuotedReply_Tests: StreamTestCase {
         WHEN("user adds a quoted reply to participant message") {
             userRobot
                 .scrollMessageListUp(times: 2)
-                .quoteMessage(replyText, messageCellIndex: messageCount - 1)
+            
+            firstParticipantsMessageIndex = MessageListPage.cells.count - 2
+            
+            userRobot
+                .quoteMessage(replyText, messageCellIndex: firstParticipantsMessageIndex)
         }
         THEN("user observes the quote reply in message list") {
             userRobot
@@ -54,7 +60,7 @@ final class QuotedReply_Tests: StreamTestCase {
         THEN("user is scrolled up to the quoted message") {
             userRobot
                 .assertScrollToBottomButton(isVisible: true)
-                .assertMessageIsVisible(at: messageCount - 1)
+                .assertMessageIsVisible(at: firstParticipantsMessageIndex)
         }
     }
 
