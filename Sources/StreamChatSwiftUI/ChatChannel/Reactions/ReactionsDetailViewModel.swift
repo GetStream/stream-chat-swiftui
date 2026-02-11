@@ -100,7 +100,6 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
     // MARK: - private
     
     private func makeMessageController(for message: ChatMessage) {
-        let controllerFactory = InjectedValues[\.utils].channelControllerFactory
         if let channelId = message.cid {
             messageController = chatClient.messageController(
                 cid: channelId,
@@ -108,9 +107,6 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
             )
             messageController?.synchronize()
             messageController?.delegate = self
-//            if let message = messageController?.message {
-//                self.message = message
-//            }
         }
     }
     

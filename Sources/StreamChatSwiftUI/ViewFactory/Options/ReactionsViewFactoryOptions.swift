@@ -8,19 +8,6 @@ import SwiftUI
 
 // MARK: - Reactions Options
 
-/// Options for creating the reactions users view.
-public final class ReactionsUsersViewOptions: Sendable {
-    /// The message to show reactions for.
-    public let message: ChatMessage
-    /// The maximum height for the view.
-    public let maxHeight: CGFloat
-    
-    public init(message: ChatMessage, maxHeight: CGFloat) {
-        self.message = message
-        self.maxHeight = maxHeight
-    }
-}
-
 /// Options for creating the bottom reactions view.
 public final class ReactionsBottomViewOptions: Sendable {
     /// The message to show reactions for.

@@ -555,22 +555,6 @@ import XCTest
         XCTAssert(view is SystemMessageView)
     }
 
-    func test_viewFactory_makeReactionsUsersView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeReactionsUsersView(
-            options: ReactionsUsersViewOptions(
-                message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique)),
-                maxHeight: 280
-            )
-        )
-
-        // Then
-        XCTAssert(view is ReactionsUsersView<DefaultViewFactory>)
-    }
-
     func test_viewFactory_makeChannelListFooterView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

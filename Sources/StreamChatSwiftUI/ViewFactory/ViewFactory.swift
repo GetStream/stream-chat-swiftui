@@ -429,12 +429,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the message actions view.
     /// - Returns: view displayed in the message actions slot.
     func makeMessageActionsView(options: MessageActionsViewOptions) -> MessageActionsViewType
-
-    associatedtype ReactionsUsersViewType: View
-    /// Creates the view that displays users that reacted to a message.
-    /// - Parameter options: the options for creating the reactions users view.
-    /// - Returns: view displayed in the users reactions slot.
-    func makeReactionsUsersView(options: ReactionsUsersViewOptions) -> ReactionsUsersViewType
     
     associatedtype ReactionsBottomViewType: View
     /// Creates a reactions view displayed below the message.

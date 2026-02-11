@@ -738,15 +738,6 @@ extension ViewFactory {
         return MessageActionsView(messageActions: messageActions)
     }
     
-    public func makeReactionsUsersView(
-        options: ReactionsUsersViewOptions
-    ) -> some View {
-        ReactionsUsersView(
-            message: options.message,
-            maxHeight: options.maxHeight
-        )
-    }
-    
     public func makeBottomReactionsView(
         options: ReactionsBottomViewOptions
     ) -> some View {

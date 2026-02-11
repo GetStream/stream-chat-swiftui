@@ -68,6 +68,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 let isBouncedAlertEnabled = utils.messageListConfig.bouncedMessagesAlertActionsEnabled
                                 if isBouncedAlertEnabled && displayInfo.message.isBounced {
                                     viewModel.showBouncedActionsView(for: displayInfo.message)
+                                } else if displayInfo.showsMessageActions {
+                                    messageDisplayInfo = displayInfo
+                                    withAnimation {
+                                        viewModel.showReactionOverlay(for: AnyView(self))
+                                    }
                                 } else {
                                     viewModel.reactionsDetailMessage = displayInfo.message
                                 }
