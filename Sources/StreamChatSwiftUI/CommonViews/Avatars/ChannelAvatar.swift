@@ -166,18 +166,7 @@ private extension ChannelAvatar {
         let users: [(url: URL?, initials: String)]
         let size: CGFloat
         let memberCount: Int
-        
-        // MARK: - Layout Constants
-        
-        /// The size of each mini avatar circle including its border ring.
-        private var miniAvatarSize: CGFloat {
-            switch size {
-            case AvatarSize.sizeClassExtraExtraLarge: AvatarSize.large
-            case AvatarSize.sizeClassExtraLarge: AvatarSize.medium
-            default: AvatarSize.small
-            }
-        }
-        
+                
         /// The width of the white ring around each mini avatar.
         private var outerBorderWidth: CGFloat { 2 }
         
@@ -281,7 +270,13 @@ private extension ChannelAvatar {
             UserAvatar(
                 url: user.0,
                 initials: user.1,
-                size: miniAvatarSize,
+                size: {
+                    switch size {
+                    case AvatarSize.sizeClassExtraExtraLarge: AvatarSize.large
+                    case AvatarSize.sizeClassExtraLarge: AvatarSize.medium
+                    default: AvatarSize.small
+                    }
+                }(),
                 indicator: .none,
                 showsBorder: false
             )
@@ -365,14 +360,6 @@ private extension ChannelAvatar {
 }
 
 private extension ChatChannel {
-    @MainActor var avatarURLs: [URL] {
-        if let imageURL {
-            return [imageURL]
-        }
-        let currentUserId = InjectedValues[\.chatClient].currentUserId
-        return Array(lastActiveMembers.filter({ $0.id != currentUserId }).sorted(by: { $0.memberCreatedAt < $1.memberCreatedAt }).compactMap(\.imageURL).prefix(4))
-    }
-    
     @MainActor var avatarUsers: [ChatUser] {
         let currentUserId = InjectedValues[\.chatClient].currentUserId
         return Array(
