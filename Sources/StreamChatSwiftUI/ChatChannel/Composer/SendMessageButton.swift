@@ -22,7 +22,7 @@ public struct SendMessageButton: View {
             text: nil,
             role: .primary,
             style: .solid,
-            size: .sm,
+            size: .small,
             action: onTap
         )
         .disabled(!enabled)

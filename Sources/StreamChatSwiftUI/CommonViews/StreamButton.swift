@@ -20,7 +20,7 @@ struct StreamButton: View {
         text: String?,
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
-        size: StreamButtonSize = .md,
+        size: StreamButtonSize = .medium,
         action: @escaping () -> Void
     ) {
         self.role = role
@@ -76,7 +76,7 @@ struct StreamButtonStyle: ButtonStyle {
     init(
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
-        size: StreamButtonSize = .md,
+        size: StreamButtonSize = .medium,
         isIconOnly: Bool
     ) {
         self.role = role
@@ -174,11 +174,11 @@ struct StreamButtonStyle: ButtonStyle {
 
     private var sizeMetrics: SizeMetrics {
         switch size {
-        case .lg:
+        case .large:
             return .large(tokens: tokens)
-        case .sm:
+        case .small:
             return .small(tokens: tokens)
-        case .md:
+        case .medium:
             return .medium(tokens: tokens)
         }
     }
@@ -285,7 +285,7 @@ enum StreamButtonVisualStyle: String, CaseIterable, Sendable {
 }
 
 enum StreamButtonSize: String, CaseIterable, Sendable {
-    case lg
-    case md
-    case sm
+    case large
+    case medium
+    case small
 }
