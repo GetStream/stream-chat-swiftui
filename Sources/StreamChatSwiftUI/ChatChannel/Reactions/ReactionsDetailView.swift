@@ -9,9 +9,9 @@ struct ReactionsDetailView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
-    
+
     @StateObject var viewModel: ReactionsDetailViewModel
-    
+
     @Environment(\.presentationMode) var presentationMode
 
     init(message: ChatMessage) {
@@ -24,17 +24,17 @@ struct ReactionsDetailView: View {
                 .font(fonts.bodyBold)
                 .foregroundColor(Color(colors.text))
                 .padding(.vertical, tokens.spacingXl)
-            
+
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
+                HStack(spacing: tokens.spacingXs) {
                     addReactionChip
                     ForEach(viewModel.reactionTypes) { type in
                         reactionTypeChip(type: type)
                     }
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, tokens.spacingMd)
             }
-            .padding(.bottom, 12)
+            .padding(.bottom, tokens.spacingSm)
 
             ScrollView {
                 LazyVStack(spacing: 0) {
@@ -67,10 +67,10 @@ struct ReactionsDetailView: View {
             }
         } label: {
             Image(systemName: "face.smiling")
-                .font(.system(size: 16))
+                .font(fonts.body)
                 .foregroundColor(Color(colors.text))
                 .padding(.horizontal, tokens.spacingSm)
-                .padding(.vertical, 8)
+                .padding(.vertical, tokens.spacingXs)
                 .background(
                     Capsule()
                         .fill(viewModel.selectedReactionType == nil ? Color(colors.background1) : Color(colors.background))
@@ -92,7 +92,7 @@ struct ReactionsDetailView: View {
                 }
             }
         } label: {
-            HStack(spacing: 4) {
+            HStack(spacing: tokens.spacingXxs) {
                 if let image = ReactionsIconProvider.icon(for: type, useLargeIcons: false) {
                     ReactionIcon(icon: image, color: nil)
                         .frame(width: 20, height: 20)
@@ -102,7 +102,7 @@ struct ReactionsDetailView: View {
                     .foregroundColor(Color(colors.text))
             }
             .padding(.horizontal, tokens.spacingSm)
-            .padding(.vertical, 8)
+            .padding(.vertical, tokens.spacingXs)
             .background(
                 Capsule()
                     .fill(viewModel.selectedReactionType == type ? Color(colors.background1) : Color(colors.background))
@@ -118,7 +118,7 @@ struct ReactionsDetailView: View {
 
     private func reactionRow(reaction: ChatMessageReaction) -> some View {
         let isCurrentUser = viewModel.isCurrentUser(reaction)
-        return HStack(spacing: 12) {
+        return HStack(spacing: tokens.spacingSm) {
             UserAvatar(
                 user: reaction.author,
                 size: AvatarSize.large,
@@ -131,14 +131,14 @@ struct ReactionsDetailView: View {
                     viewModel.remove(reaction: reaction)
                 }
             } label: {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
                     Text(viewModel.authorName(for: reaction))
                         .lineLimit(1)
                         .font(fonts.bodyBold)
                         .foregroundColor(Color(colors.text))
 
                     if isCurrentUser {
-                        Text("Tap to remove")
+                        Text(L10n.Message.Reactions.tapToRemove)
                             .font(fonts.footnote)
                             .foregroundColor(Color(colors.textLowEmphasis))
                     }
@@ -153,7 +153,7 @@ struct ReactionsDetailView: View {
                     .frame(width: 28, height: 28)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingSm)
     }
 }

@@ -71,6 +71,7 @@
 "message.cell.edited" = "Edited";
 "message.cell.sent-at" = "Sent at %@";
 "message.reactions.currentUser" = "You";
+"message.reactions.tap-to-remove" = "Tap to remove";
 
 "message.polls.button.addComment" = "Add a Comment";
 "message.polls.button.updateComment" = "Update Your Comment";
