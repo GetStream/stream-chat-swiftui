@@ -16,12 +16,12 @@ public struct PlayButtonOverlay: View {
     public var body: some View {
         ZStack {
             Circle()
-                .fill(Color(colors.controlPlayControlBackgroundInverse))
+                .fill(Color(colors.controlPlayControlBackground))
                 .frame(width: playButtonSize, height: playButtonSize)
 
             Image(uiImage: images.attachmentPlayOverlayIcon)
                 .renderingMode(.template)
-                .foregroundColor(Color(colors.controlPlayControlIconInverse))
+                .foregroundColor(Color(colors.controlPlayControlIcon))
         }
         .accessibilityHidden(true)
     }

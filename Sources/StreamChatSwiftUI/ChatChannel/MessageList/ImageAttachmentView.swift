@@ -142,10 +142,10 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
             if message.type == .ephemeral {
                 return colors.background8
             } else {
-                return colors.messageCurrentUserBackground[0]
+                return colors.chatBackgroundOutgoing
             }
         } else {
-            return colors.messageOtherUserBackground[0]
+            return colors.chatBackgroundIncoming
         }
     }
 }

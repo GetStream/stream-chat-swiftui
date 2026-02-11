@@ -750,13 +750,12 @@ extension ViewFactory {
     public func makeBottomReactionsView(
         options: ReactionsBottomViewOptions
     ) -> some View {
-        BottomReactionsView(
+        ReactionsContainer(
             message: options.message,
-            showsAllInfo: options.showsAllInfo,
-            onTap: options.onTap,
-            onLongPress: options.onLongPress
+            topPlacement: false,
+            onTapGesture: options.onTap,
+            onLongPressGesture: options.onLongPress
         )
-        .id(options.message.reactionScoresId)
     }
     
     public func makeMessageReactionView(
@@ -764,6 +763,7 @@ extension ViewFactory {
     ) -> some View {
         ReactionsContainer(
             message: options.message,
+            topPlacement: true,
             onTapGesture: options.onTapGesture,
             onLongPressGesture: options.onLongPressGesture
         )

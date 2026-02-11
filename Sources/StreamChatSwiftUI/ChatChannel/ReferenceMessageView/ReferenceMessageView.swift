@@ -71,7 +71,7 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
     var titleView: some View {
         Text(title)
             .font(fonts.subheadlineBold)
-            .foregroundColor(Color(colors.chatTextMessage))
+            .foregroundColor(Color(isSentByCurrentUser ? colors.chatTextOutgoing : colors.chatTextIncoming))
             .lineLimit(1)
     }
 
@@ -84,7 +84,7 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
 
             Text(subtitle)
                 .font(fonts.footnote)
-                .foregroundColor(Color(colors.chatTextMessage))
+                .foregroundColor(Color(isSentByCurrentUser ? colors.chatTextOutgoing : colors.chatTextIncoming))
                 .lineLimit(1)
                 .accessibilityIdentifier("referenceMessageSubtitle")
         }

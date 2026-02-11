@@ -860,10 +860,9 @@ import XCTest
                 onLongPress: {}
             )
         )
-        let name = String(describing: type(of: view))
 
         // Then
-        XCTAssert(name.contains("BottomReactionsView"))
+        XCTAssert(view is ReactionsContainer)
     }
     
     func test_viewFactory_makeComposerRecordingView() {
