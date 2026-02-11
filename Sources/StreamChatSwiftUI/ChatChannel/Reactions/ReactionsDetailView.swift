@@ -18,6 +18,10 @@ struct ReactionsDetailView: View {
         _viewModel = StateObject(wrappedValue: .init(message: message))
     }
 
+    init(viewModel: ReactionsDetailViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             Text(L10n.Reaction.Authors.numberOfReactions(viewModel.totalReactionsCount))
@@ -41,6 +45,9 @@ struct ReactionsDetailView: View {
                     ForEach(viewModel.filteredReactions) { reaction in
                         VStack(spacing: 0) {
                             reactionRow(reaction: reaction)
+                        }
+                        .onAppear {
+                            viewModel.onReactionAppear(reaction)
                         }
                     }
                 }

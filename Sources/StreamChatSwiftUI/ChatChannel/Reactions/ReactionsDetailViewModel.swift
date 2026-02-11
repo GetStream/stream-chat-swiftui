@@ -17,8 +17,10 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
     @Published var reactions: [ChatMessageReaction] = []
     @Published var selectedReactionType: MessageReactionType?
     @Published var moreReactionsPickerShown = false
-    
+
+    private(set) var loadingReactions = false
     private var messageController: ChatMessageController?
+    private let loadMoreReactionsAction: (@escaping @MainActor (Error?) -> Void) -> Void
 
     var totalReactionsCount: Int {
         message.totalReactionsCount
@@ -52,18 +54,27 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
         return reaction.author.name ?? reaction.author.id
     }
 
-    init(message: ChatMessage) {
+    init(
+        message: ChatMessage,
+        reactionListController: ChatReactionListController? = nil,
+        loadMoreReactionsAction: ((@escaping @MainActor (Error?) -> Void) -> Void)? = nil
+    ) {
         self.message = message
-        reactionListController = InjectedValues[\.chatClient].reactionListController(for: message.id)
-        reactionListController.delegate = self
-        reactionListController.synchronize()
+        let controller = reactionListController
+            ?? InjectedValues[\.chatClient].reactionListController(for: message.id)
+        self.reactionListController = controller
+        self.loadMoreReactionsAction = loadMoreReactionsAction ?? { completion in
+            controller.loadMoreReactions(completion: completion)
+        }
+        self.reactionListController.delegate = self
+        self.reactionListController.synchronize()
         makeMessageController(for: message)
     }
-    
+
     func remove(reaction: ChatMessageReaction) {
         messageController?.deleteReaction(reaction.type)
     }
-    
+
     public func reactionTapped(_ reaction: MessageReactionType) {
         if userReactionIDs.contains(reaction) {
             // reaction should be removed
@@ -77,28 +88,50 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
         }
     }
 
+    func onReactionAppear(_ reaction: ChatMessageReaction) {
+        let items = filteredReactions
+        guard let index = items.firstIndex(where: { $0.id == reaction.id }) else {
+            return
+        }
+        guard index > items.count - 10, reactions.count >= 25 else {
+            return
+        }
+        loadMoreReactions()
+    }
+
     func controller(
         _ controller: ChatReactionListController,
         didChangeReactions changes: [ListChange<ChatMessageReaction>]
     ) {
         reactions = controller.reactions
     }
-    
+
     func messageController(_ controller: ChatMessageController, didChangeMessage change: EntityChange<ChatMessage>) {
         if let message = controller.message {
             self.message = message
         }
     }
-    
+
     func messageController(
         _ controller: ChatMessageController,
         didChangeReactions reactions: [ChatMessageReaction]
     ) {
         self.reactions = reactions
     }
-    
+
     // MARK: - private
-    
+
+    private func loadMoreReactions() {
+        if loadingReactions {
+            return
+        }
+        loadingReactions = true
+        loadMoreReactionsAction { [weak self] _ in
+            guard let self else { return }
+            self.loadingReactions = false
+        }
+    }
+
     private func makeMessageController(for message: ChatMessage) {
         if let channelId = message.cid {
             messageController = chatClient.messageController(
@@ -109,7 +142,7 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
             messageController?.delegate = self
         }
     }
-    
+
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
     }
