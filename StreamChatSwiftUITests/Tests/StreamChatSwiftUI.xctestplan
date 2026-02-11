@@ -4,7 +4,14 @@
       "id" : "8EC9ED67-3425-42F1-B34A-A5A9F2670614",
       "name" : "Configuration 1",
       "options" : {
-
+        "environmentVariableEntries" : [
+          {
+            "key" : "TZ",
+            "value" : "GMT"
+          }
+        ],
+        "language" : "en",
+        "region" : "US"
       }
     }
   ],
