@@ -28,37 +28,12 @@ public struct AddedImageAttachmentsView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: tokens.spacingXs) {
                     ForEach(images) { attachment in
-                        Image(uiImage: attachment.image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: imageSize, height: imageSize)
-                            .clipped()
-                            .cornerRadius(tokens.messageBubbleRadiusAttachment)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: tokens.messageBubbleRadiusAttachment)
-                                    .strokeBorder(Color(colors.borderCoreOpacity10), lineWidth: 1)
-                            )
-                            .id(attachment.id)
-                            .dismissButtonOverlayModifier {
-                                onDiscardAttachment(attachment.id)
-                            }
-                            .padding(tokens.spacingXxs)
-//                            .overlay(
-//                                ZStack {
-//                                    DiscardAttachmentButton(
-//                                        attachmentIdentifier: attachment.id,
-//                                        onDiscard: onDiscardAttachment
-//                                    )
-//
-//                                    if attachment.type == .video {
-//                                        VideoIndicatorView()
-//
-//                                        if let duration = attachment.extraData["duration"]?.stringValue {
-//                                            VideoDurationIndicatorView(duration: duration)
-//                                        }
-//                                    }
-//                                }
-//                            )
+                        ComposerImageAttachmentView(
+                            attachment: attachment,
+                            imageSize: imageSize,
+                            onDiscardAttachment: onDiscardAttachment
+                        )
+                        .padding(tokens.spacingXxs)
                     }
                 }
                 .padding(.trailing, tokens.spacingXs)
