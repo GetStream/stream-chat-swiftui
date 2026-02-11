@@ -9,6 +9,7 @@ struct ReactionsDetailView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
+    @Injected(\.images) private var images
 
     @StateObject var viewModel: ReactionsDetailViewModel
 
@@ -74,18 +75,19 @@ struct ReactionsDetailView: View {
                 viewModel.moreReactionsPickerShown = true
             }
         } label: {
-            Image(systemName: "face.smiling")
+            Image(uiImage: images.reactionDetailsShowPicker)
+                .renderingMode(.template)
                 .font(fonts.body)
-                .foregroundColor(Color(colors.text))
+                .foregroundColor(Color(colors.textPrimary))
                 .padding(.horizontal, tokens.spacingSm)
                 .padding(.vertical, tokens.spacingXs)
                 .background(
                     Capsule()
-                        .fill(viewModel.selectedReactionType == nil ? Color(colors.background1) : Color(colors.background))
+                        .fill(Color(colors.background))
                 )
                 .overlay(
                     Capsule()
-                        .strokeBorder(Color(colors.innerBorder), lineWidth: 1)
+                        .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
                 )
         }
     }
@@ -107,17 +109,17 @@ struct ReactionsDetailView: View {
                 }
                 Text("\(viewModel.reactionCount(for: type))")
                     .font(fonts.footnoteBold)
-                    .foregroundColor(Color(colors.text))
+                    .foregroundColor(Color(colors.chipText))
             }
             .padding(.horizontal, tokens.spacingSm)
             .padding(.vertical, tokens.spacingXs)
             .background(
                 Capsule()
-                    .fill(viewModel.selectedReactionType == type ? Color(colors.background1) : Color(colors.background))
+                    .fill(viewModel.selectedReactionType == type ? Color(colors.backgroundCoreSelected) : Color(colors.background))
             )
             .overlay(
                 Capsule()
-                    .strokeBorder(Color(colors.innerBorder), lineWidth: 1)
+                    .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
             )
         }
     }
@@ -143,12 +145,12 @@ struct ReactionsDetailView: View {
                     Text(viewModel.authorName(for: reaction))
                         .lineLimit(1)
                         .font(fonts.bodyBold)
-                        .foregroundColor(Color(colors.text))
+                        .foregroundColor(Color(colors.textPrimary))
 
                     if isCurrentUser {
                         Text(L10n.Message.Reactions.tapToRemove)
                             .font(fonts.footnote)
-                            .foregroundColor(Color(colors.textLowEmphasis))
+                            .foregroundColor(Color(colors.textTertiary))
                     }
                 }
             }

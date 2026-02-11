@@ -49,7 +49,7 @@ import XCTest
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_reactionsDetailView_multipleReactionTypes_snapshot() {
@@ -84,7 +84,7 @@ import XCTest
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_reactionsDetailView_withCurrentUser_snapshot() {
@@ -128,7 +128,7 @@ import XCTest
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_reactionsDetailView_filteredByType_snapshot() {
@@ -162,7 +162,7 @@ import XCTest
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_reactionsDetailView_empty_snapshot() {
@@ -184,7 +184,7 @@ import XCTest
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_reactionsDetailView_manyReactions_snapshot() {
@@ -226,7 +226,7 @@ import XCTest
             .frame(width: defaultScreenSize.width, height: defaultScreenSize.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     // MARK: - Helpers
