@@ -12,6 +12,10 @@ class ReactionsIconProvider {
     @MainActor static var images: Appearance.Images { InjectedValues[\.images] }
     
     @MainActor static func icon(for reaction: MessageReactionType, useLargeIcons: Bool) -> UIImage? {
+        if let emoji = images.availableMessagesReactionEmojis[reaction],
+           let emojiImage = image(from: emoji, useLargeIcons: useLargeIcons) {
+            return emojiImage
+        }
         var icon: UIImage?
         if useLargeIcons {
             icon = images.availableReactions[reaction]?.largeIcon
@@ -53,7 +57,7 @@ private extension ReactionsIconProvider {
 
         return String(scalars)
     }
-
+    
     @MainActor static func image(from emoji: String, useLargeIcons: Bool) -> UIImage? {
         let fontSize: CGFloat = useLargeIcons ? 28 : 22
         let font = UIFont.systemFont(ofSize: fontSize)

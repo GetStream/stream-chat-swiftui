@@ -79,8 +79,8 @@ import XCTest
     func test_messageContainerCurrentUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
-        var colors = Appearance.ColorPalette()
-        colors.messageCurrentUserTextColor = .red
+        let colors = Appearance.ColorPalette()
+        colors.chatTextOutgoing = .red
         var appearance = Appearance()
         appearance.colorPalette = colors
         streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
@@ -103,8 +103,8 @@ import XCTest
     func test_messageContainerOtherUserColor_snapshot() {
         // Given
         let utils = Utils(dateFormatter: EmptyDateFormatter())
-        var colors = Appearance.ColorPalette()
-        colors.messageOtherUserTextColor = .red
+        let colors = Appearance.ColorPalette()
+        colors.chatTextIncoming = .red
         var appearance = Appearance()
         appearance.colorPalette = colors
         streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
