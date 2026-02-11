@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Fix typing suggestions breaking when there are emoji in the composer (bounds guard now uses UTF-16 length to match `caretLocation`) [#1184](https://github.com/GetStream/stream-chat-swiftui/pull/1184)
+
 ### ✅ Added
 - Add public init for `ImageContainerView` [#1174](https://github.com/GetStream/stream-chat-swiftui/pull/1174)
 - Expose Keyboard Handling methods [#1175](https://github.com/GetStream/stream-chat-swiftui/pull/1175)
