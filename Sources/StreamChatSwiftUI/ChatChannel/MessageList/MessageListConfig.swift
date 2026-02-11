@@ -187,6 +187,7 @@ public final class MessageDisplayOptions {
     public let otherUserMessageTransition: AnyTransition
     public let shouldAnimateReactions: Bool
     public let reactionsPlacement: ReactionsPlacement
+    public let reactionsStyle: ReactionsStyle
     public let showOriginalTranslatedButton: Bool
     public let messageLinkDisplayResolver: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any]
     public let spacerWidth: (CGFloat) -> CGFloat
@@ -207,6 +208,7 @@ public final class MessageDisplayOptions {
         otherUserMessageTransition: AnyTransition = .identity,
         shouldAnimateReactions: Bool = true,
         reactionsPlacement: ReactionsPlacement = .top,
+        reactionsStyle: ReactionsStyle = .segmented,
         showOriginalTranslatedButton: Bool = false,
         messageLinkDisplayResolver: @escaping @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
@@ -231,6 +233,7 @@ public final class MessageDisplayOptions {
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
         self.dateSeparator = dateSeparator
         self.reactionsPlacement = reactionsPlacement
+        self.reactionsStyle = reactionsStyle
         self.showOriginalTranslatedButton = showOriginalTranslatedButton
     }
 
@@ -285,6 +288,11 @@ public enum MessageListType {
 public enum ReactionsPlacement {
     case top
     case bottom
+}
+
+public enum ReactionsStyle {
+    case clustered
+    case segmented
 }
 
 /// The alignment of the messages in the message list.

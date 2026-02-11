@@ -9,6 +9,7 @@ struct ReactionsOverlayContainer: View {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     let message: ChatMessage
     let contentRect: CGRect
@@ -51,14 +52,15 @@ struct ReactionsOverlayContainer: View {
     }
 
     private var reactions: [MessageReactionType] {
-        images.availableReactions.keys
+        images.availableMessagesReactionEmojis.keys
             .map(\.self)
             .sorted(by: utils.sortReactions)
     }
 
     private var reactionsSize: CGFloat {
-        let entrySize = 28
-        return CGFloat(reactions.count * entrySize)
+        let entrySize = ButtonSize.large
+        let spacing = tokens.spacingXxxs * CGFloat(max(0, reactions.count - 1))
+        return CGFloat(reactions.count + 1) * entrySize + spacing + tokens.spacingXxs
     }
 }
 
@@ -89,6 +91,7 @@ public extension ChatMessage {
 public struct ReactionsAnimatableView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     let message: ChatMessage
     var useLargeIcons = false
@@ -116,31 +119,33 @@ public struct ReactionsAnimatableView: View {
     }
 
     public var body: some View {
-        HStack {
-            ForEach(reactions) { reaction in
-                ReactionAnimatableView(
-                    message: message,
-                    reaction: reaction,
-                    useLargeIcons: useLargeIcons,
-                    reactions: reactions,
-                    animationStates: $animationStates,
-                    onReactionTap: onReactionTap
-                )
+        HStack(spacing: 0) {
+            HStack(spacing: tokens.spacingXxxs) {
+                ForEach(reactions) { reaction in
+                    ReactionAnimatableView(
+                        message: message,
+                        reaction: reaction,
+                        useLargeIcons: useLargeIcons,
+                        reactions: reactions,
+                        animationStates: $animationStates,
+                        onReactionTap: onReactionTap
+                    )
+                }
             }
-            
             Button {
                 onMoreReactionsTap()
             } label: {
                 Image(systemName: "plus")
                     .foregroundColor(.primary)
                     .padding(.all, 6)
-                    .overlay(
-                        Circle().stroke(Color(colors.innerBorder), lineWidth: 1)
-                    )
             }
+            .frame(width: ButtonSize.medium, height: ButtonSize.medium)
+            .overlay(
+                Circle().strokeBorder(Color(colors.buttonSecondaryBorder), lineWidth: 1)
+            )
+            .padding(tokens.spacingXs)
         }
-        .padding(.all, 6)
-        .padding(.horizontal, 4)
+        .padding(.leading, tokens.spacingXxs)
         .reactionsBubble(for: message, background: colors.background8)
     }
 }
@@ -148,6 +153,7 @@ public struct ReactionsAnimatableView: View {
 public struct ReactionAnimatableView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     let message: ChatMessage
     let reaction: MessageReactionType
@@ -173,17 +179,17 @@ public struct ReactionAnimatableView: View {
     }
 
     public var body: some View {
-        if let image = iconProvider(for: reaction) {
+        if let image = ReactionsIconProvider.icon(for: reaction, useLargeIcons: useLargeIcons) {
             Button {
                 onReactionTap(reaction)
             } label: {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .foregroundColor(color(for: reaction))
                     .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
             }
-            .background(reactionSelectedBackgroundColor(for: reaction).cornerRadius(8))
+            .frame(width: ButtonSize.large, height: ButtonSize.large)
+            .background(reactionSelectedBackgroundColor(for: reaction)?.clipShape(Circle()))
             .scaleEffect(index(for: reaction) != nil ? animationStates[index(for: reaction)!] : 1)
             .onAppear {
                 guard let index = index(for: reaction) else {
@@ -206,12 +212,7 @@ public struct ReactionAnimatableView: View {
     }
 
     private func reactionSelectedBackgroundColor(for reaction: MessageReactionType) -> Color? {
-        guard let color = colors.selectedReactionBackgroundColor else {
-            return nil
-        }
-
-        let backgroundColor: Color? = userReactionIDs.contains(reaction) ? Color(color) : nil
-        return backgroundColor
+        userReactionIDs.contains(reaction) ? Color(colors.backgroundCoreSelected) : nil
     }
 
     private func index(for reaction: MessageReactionType) -> Int? {
@@ -220,20 +221,6 @@ public struct ReactionAnimatableView: View {
         })
 
         return index
-    }
-
-    private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
-        if useLargeIcons {
-            images.availableReactions[reaction]?.largeIcon
-        } else {
-            images.availableReactions[reaction]?.smallIcon
-        }
-    }
-
-    private func color(for reaction: MessageReactionType) -> Color? {
-        let containsUserReaction = userReactionIDs.contains(reaction)
-        let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-        return Color(color)
     }
 
     private var userReactionIDs: Set<MessageReactionType> {

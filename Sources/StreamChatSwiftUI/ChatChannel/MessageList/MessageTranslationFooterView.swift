@@ -35,13 +35,13 @@ public struct MessageTranslationFooterView: View {
     private var translatedToView: some View {
         Text(messageViewModel.translatedLanguageText ?? "")
             .font(fonts.footnote)
-            .foregroundColor(Color(colors.subtitleText))
+            .foregroundColor(colors.chatTextTimestamp.toColor)
     }
 
     private var separatorView: some View {
         Text("•")
             .font(fonts.footnote)
-            .foregroundColor(Color(colors.subtitleText))
+            .foregroundColor(colors.chatTextTimestamp.toColor)
     }
 
     private var showOriginalButton: some View {
@@ -56,7 +56,7 @@ public struct MessageTranslationFooterView: View {
             label: {
                 Text(messageViewModel.originalTranslationButtonText)
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.subtitleText))
+                    .foregroundColor(colors.chatTextTimestamp.toColor)
             }
         )
     }

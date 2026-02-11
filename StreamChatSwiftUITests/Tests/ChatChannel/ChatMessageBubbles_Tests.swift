@@ -73,7 +73,7 @@ final class ChatMessageBubbles_Tests: StreamChatTestCase {
     func test_bubbleBackgrounds_currentUserRegular() {
         // Given
         let message = ChatMessage.mock(isSentByCurrentUser: true)
-        let expected = colors.messageCurrentUserBackground.map { Color($0) }
+        let expected = [colors.chatBackgroundOutgoing.toColor]
 
         // When
         let background = message.bubbleBackground(colors: colors)
@@ -97,7 +97,7 @@ final class ChatMessageBubbles_Tests: StreamChatTestCase {
     func test_bubbleBackgrounds_otherUser() {
         // Given
         let message = ChatMessage.mock(isSentByCurrentUser: false)
-        let expected = colors.messageOtherUserBackground.map { Color($0) }
+        let expected = [colors.chatBackgroundIncoming.toColor]
 
         // When
         let background = message.bubbleBackground(colors: colors)

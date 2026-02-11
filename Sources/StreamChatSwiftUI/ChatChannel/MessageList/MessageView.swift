@@ -163,10 +163,29 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         factory: Factory,
         message: ChatMessage,
         isFirst: Bool,
-        leadingPadding: CGFloat = 16,
-        trailingPadding: CGFloat = 16,
-        topPadding: CGFloat = 8,
-        bottomPadding: CGFloat = 8,
+        scrolledId: Binding<String?>
+    ) {
+        @Injected(\.tokens) var tokens
+        self.init(
+            factory: factory,
+            message: message,
+            isFirst: isFirst,
+            leadingPadding: tokens.spacingSm,
+            trailingPadding: tokens.spacingSm,
+            topPadding: tokens.spacingXs,
+            bottomPadding: tokens.spacingXs,
+            scrolledId: scrolledId
+        )
+    }
+    
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        isFirst: Bool,
+        leadingPadding: CGFloat,
+        trailingPadding: CGFloat,
+        topPadding: CGFloat,
+        bottomPadding: CGFloat,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory

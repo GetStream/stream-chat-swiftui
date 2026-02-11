@@ -66,7 +66,6 @@ struct ReactionUserView<Factory: ViewFactory>: View {
 
 /// Helper view displaying the reaction overlay.
 struct SingleReactionView: View {
-    @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
 
@@ -88,7 +87,7 @@ struct SingleReactionView: View {
                     Spacer()
                 }
 
-                if let image = images.availableReactions[reaction.type]?.largeIcon {
+                if let image = ReactionsIconProvider.icon(for: reaction.type, useLargeIcons: true) {
                     VStack(spacing: 0) {
                         ReactionImageView(
                             image: image,

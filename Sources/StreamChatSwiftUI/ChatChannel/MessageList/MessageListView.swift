@@ -577,6 +577,7 @@ struct UnreadButtonIndicator: View {
 public struct DateIndicatorView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
 
     var dateString: String
 
@@ -592,12 +593,12 @@ public struct DateIndicatorView: View {
         VStack {
             Text(dateString)
                 .font(fonts.footnote)
-                .padding(.vertical, 4)
-                .padding(.horizontal, 8)
-                .foregroundColor(.white)
-                .background(Color(colors.textLowEmphasis))
-                .cornerRadius(16)
-                .padding(.all, 8)
+                .padding(.vertical, tokens.spacingXs)
+                .padding(.horizontal, tokens.spacingSm)
+                .foregroundColor(colors.chatTextSystem.toColor)
+                .background(Color(colors.backgroundCoreSurfaceSubtle))
+                .cornerRadius(tokens.radiusMax)
+                .padding(.all, tokens.spacingXs)
             Spacer()
         }
         .accessibilityAddTraits(.isHeader)
