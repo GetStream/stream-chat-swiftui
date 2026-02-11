@@ -364,8 +364,12 @@ private extension ChatChannel {
         let currentUserId = InjectedValues[\.chatClient].currentUserId
         return Array(
             lastActiveMembers
-                .filter { $0.id != currentUserId }
-                .sorted { $0.memberCreatedAt < $1.memberCreatedAt }
+                .sorted {
+                    // Current user always last, others sorted by creation date
+                    if $0.id == currentUserId { return false }
+                    if $1.id == currentUserId { return true }
+                    return $0.memberCreatedAt < $1.memberCreatedAt
+                }
                 .prefix(4)
         )
     }
