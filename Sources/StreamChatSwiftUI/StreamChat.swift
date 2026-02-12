@@ -27,7 +27,7 @@ import StreamChatCommonUI
 }
 
 /// Returns the current value for the `StreamChat` instance.
-private struct StreamChatProviderKey: InjectionKey {
+private final class StreamChatProviderKey: InjectionKey {
     nonisolated(unsafe) static var currentValue: StreamChat?
 }
 

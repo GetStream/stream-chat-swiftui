@@ -5,7 +5,7 @@
 import Foundation
 
 /// Config for various poll settings.
-public struct PollsConfig: Sendable {
+public final class PollsConfig {
     /// Configuration for allowing multiple answers in a poll.
     public var multipleAnswers: PollsEntryConfig
     /// Configuration for enabling anonymous polls.
@@ -41,7 +41,7 @@ public struct PollsConfig: Sendable {
 }
 
 /// Config for individual poll entry.
-public struct PollsEntryConfig: Sendable {
+public final class PollsEntryConfig {
     /// Indicates whether the poll entry is configurable.
     public var configurable: Bool
     /// Indicates the default value of the poll entry.
@@ -55,5 +55,5 @@ public struct PollsEntryConfig: Sendable {
 
 extension PollsEntryConfig {
     /// The default configuration for a poll entry.
-    public static let `default` = PollsEntryConfig(configurable: true, defaultValue: false)
+    public static var `default`: PollsEntryConfig { PollsEntryConfig(configurable: true, defaultValue: false) }
 }

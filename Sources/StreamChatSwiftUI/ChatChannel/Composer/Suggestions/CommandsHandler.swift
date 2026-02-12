@@ -86,7 +86,7 @@ extension CommandHandler {
 }
 
 /// Model for the composer's commands.
-public struct ComposerCommand: Sendable {
+@MainActor public final class ComposerCommand {
     /// Identifier of the command.
     public let id: String
     /// Typing suggestion that invokes the command.
@@ -94,7 +94,7 @@ public struct ComposerCommand: Sendable {
     /// Display info for the command.
     public let displayInfo: CommandDisplayInfo?
     /// Whether execution of the command replaces sending of a message.
-    public var replacesMessageSent: Bool = false
+    public let replacesMessageSent: Bool
 
     public init(
         id: String,
@@ -123,7 +123,7 @@ public final class SuggestionInfo {
 }
 
 /// Display information about a command.
-public struct CommandDisplayInfo: Sendable {
+public final class CommandDisplayInfo: Sendable {
     public let displayName: String
     public let icon: UIImage
     public let format: String

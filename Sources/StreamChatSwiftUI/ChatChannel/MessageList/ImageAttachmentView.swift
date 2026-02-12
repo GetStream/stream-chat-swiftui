@@ -439,10 +439,10 @@ extension ChatMessage {
     }
 }
 
-public struct MediaAttachment: Identifiable, Equatable, Sendable {
+public final class MediaAttachment: Identifiable, Equatable, Sendable {
     public let url: URL
     public let type: MediaAttachmentType
-    public var uploadingState: AttachmentUploadingState?
+    public let uploadingState: AttachmentUploadingState?
 
     public init(url: URL, type: MediaAttachmentType, uploadingState: AttachmentUploadingState? = nil) {
         self.url = url
@@ -484,7 +484,7 @@ public struct MediaAttachment: Identifiable, Equatable, Sendable {
 }
 
 extension MediaAttachment {
-    init(from attachment: ChatMessageImageAttachment) {
+    convenience init(from attachment: ChatMessageImageAttachment) {
         let url: URL
         if let state = attachment.uploadingState {
             url = state.localFileURL
@@ -499,7 +499,7 @@ extension MediaAttachment {
     }
 }
 
-public struct MediaAttachmentType: RawRepresentable, Sendable {
+public final class MediaAttachmentType: RawRepresentable, Sendable {
     public let rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
@@ -510,7 +510,7 @@ public struct MediaAttachmentType: RawRepresentable, Sendable {
 }
 
 /// Options for the gallery view.
-public struct MediaViewsOptions: Sendable {
+public final class MediaViewsOptions: Sendable {
     /// The index of the selected media item.
     public let selectedIndex: Int
 
