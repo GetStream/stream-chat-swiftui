@@ -28,12 +28,8 @@ public struct AddedImageAttachmentsView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: tokens.spacingXs) {
                     ForEach(images) { attachment in
-                        ComposerImageAttachmentView(
-                            attachment: attachment,
-                            imageSize: imageSize,
-                            onDiscardAttachment: onDiscardAttachment
-                        )
-                        .padding(tokens.spacingXxs)
+                        attachmentView(for: attachment)
+                            .padding(tokens.spacingXxs)
                     }
                 }
                 .padding(.trailing, tokens.spacingXs)
@@ -48,6 +44,24 @@ public struct AddedImageAttachmentsView: View {
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func attachmentView(for attachment: AddedAsset) -> some View {
+        switch attachment.type {
+        case .video:
+            ComposerVideoAttachmentView(
+                attachment: attachment,
+                imageSize: imageSize,
+                onDiscardAttachment: onDiscardAttachment
+            )
+        case .image:
+            ComposerImageAttachmentView(
+                attachment: attachment,
+                imageSize: imageSize,
+                onDiscardAttachment: onDiscardAttachment
+            )
         }
     }
 }

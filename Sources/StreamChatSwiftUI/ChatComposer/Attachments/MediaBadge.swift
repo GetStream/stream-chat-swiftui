@@ -78,6 +78,42 @@ public struct MediaBadge: View {
     }
 }
 
+// MARK: - MediaBadgeOverlayModifier
+
+/// Modifier that overlays a badge on the bottom-left corner of a view.
+public struct MediaBadgeOverlayModifier<Badge: View>: ViewModifier {
+    @Injected(\.tokens) private var tokens
+
+    let badge: () -> Badge
+
+    public init(@ViewBuilder badge: @escaping () -> Badge) {
+        self.badge = badge
+    }
+
+    public func body(content: Content) -> some View {
+        content
+            .overlay(
+                VStack {
+                    Spacer()
+                    HStack {
+                        badge()
+                        Spacer()
+                    }
+                }
+                .padding(.leading, tokens.spacingXxs)
+                .padding(.bottom, tokens.spacingXxs),
+                alignment: .bottomLeading
+            )
+    }
+}
+
+extension View {
+    /// Overlays a badge on the bottom-left corner of the view.
+    public func mediaBadgeOverlay<Badge: View>(@ViewBuilder badge: @escaping () -> Badge) -> some View {
+        modifier(MediaBadgeOverlayModifier(badge: badge))
+    }
+}
+
 // TODO: Move to Common Module
 
 extension Appearance.Images {
@@ -98,7 +134,7 @@ extension Appearance.Images {
 
 // MARK: - Preview
 
-#Preview {
+#Preview("Badges") {
     VStack {
         HStack(spacing: 16) {
             VideoMediaBadge(duration: 8)
