@@ -867,7 +867,43 @@ import XCTest
             onMessageSent: {}
         )
     }
-    
+
+    // MARK: - Quoting
+
+    func test_composerView_quotingMessageWithImageAttachment() throws {
+        let size = CGSize(width: composerWidth, height: 300)
+        let mockQuotedMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Original message being replied to",
+            author: .mock(id: .unique, name: "John Smart")
+        )
+
+        let addedAsset = AddedAsset(
+            image: TestImages.yoda.image,
+            id: .unique,
+            url: TestImages.yoda.url,
+            type: .image
+        )
+
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.updateAddedAssets([addedAsset])
+
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(mockQuotedMessage),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
     // MARK: - Notification Tests
     
     func test_commandsOverlayHiddenNotification_hidesCommandsOverlay() {
