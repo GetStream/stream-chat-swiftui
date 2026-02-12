@@ -39,16 +39,7 @@ struct ReactionsOverlayContainer: View {
                     onMoreReactionsTap: onMoreReactionsTap
                 )
             }
-
-            Spacer()
         }
-        .offset(
-            x: message.reactionOffsetX(
-                for: contentRect,
-                reactionsSize: reactionsSize
-            ),
-            y: -20
-        )
     }
 
     private var reactions: [MessageReactionType] {

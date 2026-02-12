@@ -20,6 +20,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var orientationChanged = false
     @State private var initialOrigin: CGFloat?
     @State private var moreReactionsShown = false
+    @State private var reactionsContentHeight: CGFloat = 0
 
     var factory: Factory
     var channel: ChatChannel
@@ -113,7 +114,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 )
                 .offset(
                     x: paddingValue / 2,
-                    y: originY + messageContainerHeight - paddingValue + 2
+                    y: originY + reactionsContentHeight + messageContainerHeight - paddingValue + 2
                 )
                 .opacity(willPopOut ? 0 : 1)
             }
@@ -126,6 +127,39 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                 
                 VStack(alignment: .leading) {
+                    if channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced {
+                        factory.makeReactionsContentView(
+                            options: ReactionsContentViewOptions(
+                                message: viewModel.message,
+                                contentRect: messageDisplayInfo.frame,
+                                onReactionTap: { reaction in
+                                    dismissReactionsOverlay {
+                                        viewModel.reactionTapped(reaction)
+                                    }
+                                },
+                                onMoreReactionsTap: {
+                                    moreReactionsShown.toggle()
+                                }
+                            )
+                        )
+                        .scaleEffect(popIn ? 1 : 0)
+                        .opacity(willPopOut ? 0 : 1)
+                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+                        .offset(
+                            x: messageDisplayInfo.message.isRightAligned ? -paddingValue / 2 : messageOriginX(proxy: reader),
+                            y: popIn ? 0 : -messageContainerHeight / 2
+                        )
+                        .accessibilityElement(children: .contain)
+                        .background(
+                            GeometryReader { proxy in
+                                Color.clear.preference(
+                                    key: ReactionsContentHeightKey.self,
+                                    value: proxy.size.height
+                                )
+                            }
+                        )
+                    }
+                    
                     Group {
                         if messageDisplayInfo.frame.height > messageContainerHeight {
                             ScrollView {
@@ -141,32 +175,35 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .offset(
                         x: messageOriginX(proxy: reader)
                     )
-                    .overlay(
-                        (channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced) ?
-                            factory.makeReactionsContentView(
-                                options: ReactionsContentViewOptions(
-                                    message: viewModel.message,
-                                    contentRect: messageDisplayInfo.frame,
-                                    onReactionTap: { reaction in
-                                        dismissReactionsOverlay {
-                                            viewModel.reactionTapped(reaction)
-                                        }
-                                    },
-                                    onMoreReactionsTap: {
-                                        moreReactionsShown.toggle()
-                                    }
-                                )
-                            )
-                            .scaleEffect(popIn ? 1 : 0)
-                            .opacity(willPopOut ? 0 : 1)
-                            .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
-                            .offset(
-                                x: messageOriginX(proxy: reader),
-                                y: popIn ? -24 : -messageContainerHeight / 2
-                            )
-                            .accessibilityElement(children: .contain)
-                            : nil
-                    )
+                    /*
+                     .overlay(
+                         (channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced) ?
+                             factory.makeReactionsContentView(
+                                 options: ReactionsContentViewOptions(
+                                     message: viewModel.message,
+                                     contentRect: messageDisplayInfo.frame,
+                                     onReactionTap: { reaction in
+                                         dismissReactionsOverlay {
+                                             viewModel.reactionTapped(reaction)
+                                         }
+                                     },
+                                     onMoreReactionsTap: {
+                                         moreReactionsShown.toggle()
+                                     }
+                                 )
+                             )
+                             .scaleEffect(popIn ? 1 : 0)
+                             .opacity(willPopOut ? 0 : 1)
+                             .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+                             .offset(
+                                 x: messageOriginX(proxy: reader),
+                                 y: popIn ? -48 : -messageContainerHeight / 2
+                             )
+                             .accessibilityElement(children: .contain)
+                             : nil,
+                         alignment: messageViewModel.isRightAligned ? .trailing : .leading
+                     )
+                     */
                     .frame(
                         width: messageDisplayInfo.frame.width,
                         height: messageContainerHeight
@@ -213,6 +250,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 initialWidth = value
             }
             screenWidth = value
+        }
+        .onPreferenceChange(ReactionsContentHeightKey.self) { value in
+            reactionsContentHeight = value
         }
         .edgesIgnoringSafeArea(.all)
         .background(orientationChanged ? nil : Color(colors.background))
@@ -263,6 +303,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             completion()
         }
     }
+    
+    private func reactionsPickerOffsetX(reader: GeometryProxy) -> CGFloat {
+        let originX = userReactionsOriginX(availableWidth: reader.size.width)
+        if popIn {
+            return originX
+        } else if willPopOut {
+            return messageOriginX(proxy: reader)
+        } else {
+            return messageDisplayInfo.message.isRightAligned ? messageActionsWidth : 0
+        }
+    }
 
     private func messageActionsOffsetX(reader: GeometryProxy) -> CGFloat {
         let originX = messageActionsOriginX(availableWidth: reader.size.width)
@@ -308,7 +359,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         let bottomPopupOffset =
             messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
         var originY = messageDisplayInfo.frame.origin.y
-        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOriginY - bottomOffset
+        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - reactionsContentHeight - minOriginY - bottomOffset
         if originY < minOriginY {
             originY = minOriginY
         } else if originY > maxOrigin {
@@ -411,6 +462,13 @@ struct PresentationDetentsModifier: ViewModifier {
         } else {
             content
         }
+    }
+}
+
+private struct ReactionsContentHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 
