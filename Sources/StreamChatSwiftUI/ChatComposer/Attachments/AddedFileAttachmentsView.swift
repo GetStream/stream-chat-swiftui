@@ -5,9 +5,9 @@
 import StreamChat
 import SwiftUI
 
-/// View for an added file displayed in the composer input.
+/// View for added file attachments displayed in the composer input.
 public struct AddedFileAttachmentsView: View {
-    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var addedFileURLs: [URL]
     var onDiscardAttachment: (String) -> Void
@@ -18,27 +18,19 @@ public struct AddedFileAttachmentsView: View {
     }
 
     public var body: some View {
-        VStack {
-            ForEach(0..<addedFileURLs.count, id: \.self) { i in
-                let url = addedFileURLs[i]
-                FileAttachmentDisplayView(
-                    url: url,
-                    title: url.lastPathComponent,
-                    sizeString: url.sizeString
-                )
-                .padding(.all, 8)
-                .padding(.trailing, 8)
-                .background(Color(colors.background))
-                .roundWithBorder()
-                .id(url)
-                .overlay(
-                    DiscardAttachmentButton(
-                        attachmentIdentifier: url.absoluteString,
-                        onDiscard: onDiscardAttachment
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: tokens.spacingXs) {
+                ForEach(addedFileURLs, id: \.self) { url in
+                    ComposerFileAttachmentView(
+                        url: url,
+                        onDiscardAttachment: onDiscardAttachment
                     )
-                )
+                    .padding(tokens.spacingXxs)
+                }
             }
+            .padding(.trailing, tokens.spacingXs)
         }
+        .padding(.top, tokens.spacingXs)
     }
 }
 

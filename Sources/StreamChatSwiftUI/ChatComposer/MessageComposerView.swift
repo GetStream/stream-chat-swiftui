@@ -506,15 +506,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             }
 
             if !addedFileURLs.isEmpty {
-                if !addedAssets.isEmpty {
-                    Divider()
-                }
-
                 AddedFileAttachmentsView(
                     addedFileURLs: addedFileURLs,
                     onDiscardAttachment: removeAttachmentWithId
                 )
-                .padding(.trailing, 8)
             }
 
             if !addedVoiceRecordings.isEmpty {
