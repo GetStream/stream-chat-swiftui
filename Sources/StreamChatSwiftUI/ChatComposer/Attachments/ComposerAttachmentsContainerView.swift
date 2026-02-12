@@ -46,7 +46,6 @@ public struct ComposerAttachmentsContainerView: View {
                 }
                 .padding(.trailing, tokens.spacingXs)
             }
-            .padding(.top, tokens.spacingXs)
             .onChange(of: assets) { [assets] newValue in
                 if #available(iOS 15, *), newValue.count > assets.count, let last = newValue.last {
                     withAnimation {

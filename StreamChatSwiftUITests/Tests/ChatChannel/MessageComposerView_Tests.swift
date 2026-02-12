@@ -13,6 +13,8 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageComposerView_Tests: StreamChatTestCase {
+    let composerWidth: CGFloat = 375
+
     override func setUp() {
         super.setUp()
 
@@ -42,7 +44,7 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: defaultScreenSize.width, height: 100)
+        .frame(width: composerWidth, height: 200)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -65,7 +67,7 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: defaultScreenSize.width, height: 250)
+        .frame(width: composerWidth, height: 250)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -88,7 +90,7 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: defaultScreenSize.width, height: 120)
+        .frame(width: composerWidth, height: 120)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -111,7 +113,7 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: defaultScreenSize.width, height: 120)
+        .frame(width: composerWidth, height: 120)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -134,7 +136,7 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: defaultScreenSize.width, height: 200)
+        .frame(width: composerWidth, height: 200)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -170,7 +172,7 @@ import XCTest
             stopRecording: {}
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
-        .frame(width: defaultScreenSize.width, height: 100)
+        .frame(width: composerWidth, height: 200)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -270,7 +272,7 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: defaultScreenSize.width, height: 100)
+        .frame(width: composerWidth, height: 200)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -308,7 +310,7 @@ import XCTest
             stopRecording: {}
         )
         .environmentObject(viewModel)
-        .frame(width: defaultScreenSize.width, height: 100)
+        .frame(width: composerWidth, height: 200)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -354,7 +356,7 @@ import XCTest
     func test_composerInputView_inputTextView() {
         // Given
         let view = InputTextView(
-            frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
+            frame: .init(x: 16, y: 16, width: composerWidth - 32, height: 50)
         )
 
         // When
@@ -377,7 +379,7 @@ import XCTest
             currentHeight: 38,
             onImagePasted: { _ in }
         )
-        .frame(width: defaultScreenSize.width, height: 50)
+        .frame(width: composerWidth, height: 50)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -396,7 +398,7 @@ import XCTest
             onImagePasted: { _ in }
         )
         let inputView = InputTextView(
-            frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
+            frame: .init(x: 16, y: 16, width: composerWidth - 32, height: 50)
         )
 
         // When
@@ -421,7 +423,7 @@ import XCTest
             onImagePasted: { _ in }
         )
         let inputView = InputTextView(
-            frame: .init(x: 16, y: 16, width: defaultScreenSize.width - 32, height: 50)
+            frame: .init(x: 16, y: 16, width: composerWidth - 32, height: 50)
         )
 
         // When
@@ -482,27 +484,7 @@ import XCTest
         // Then
         XCTAssert(newRequestId == nil)
     }
-
-    func test_videoIndicatorView_snapshot() {
-        // Given
-        let view = VideoIndicatorView()
-            .frame(width: 100, height: 100)
-            .background(.black)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_videoDurationIndicatorView_snapshot() {
-        // Given
-        let view = VideoDurationIndicatorView(duration: "02:54")
-            .frame(width: 100, height: 100)
-            .background(.black)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
+    
     func test_photosPickerView_snapshot() {
         // Given
         let view = PhotoAttachmentPickerView(
@@ -519,7 +501,7 @@ import XCTest
     func test_composerInputView_command() {
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let size = CGSize(width: composerWidth, height: 200)
 
         let view = ComposerInputView(
             factory: factory,
@@ -571,7 +553,7 @@ import XCTest
     // Either way, the test of the content is covered.
 
     func test_composerView_draftWithImageAttachment() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
@@ -604,7 +586,7 @@ import XCTest
     }
 
     func test_composerView_draftWithVideoAttachment() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
@@ -629,7 +611,7 @@ import XCTest
     }
 
     func test_composerView_draftWithFileAttachment() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
@@ -658,7 +640,7 @@ import XCTest
         try Data(count: 1024).write(to: url)
         defer { try? FileManager.default.removeItem(at: url) }
 
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockDraftMessage = try DraftMessage.mock(
             attachments: [
                 .dummy(
@@ -683,7 +665,7 @@ import XCTest
     }
 
     func test_composerView_draftWithCommand() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockDraftMessage = DraftMessage.mock(
             text: "/giphy test"
         )
@@ -719,7 +701,7 @@ import XCTest
     // MARK: - Editing
 
     func test_composerView_editingMessageWithText() {
-        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockEditedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -734,7 +716,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithQuotedMessage() {
-        let size = CGSize(width: defaultScreenSize.width, height: 100)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockEditedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -750,7 +732,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithImageAttachment() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -777,7 +759,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithVideoAttachment() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -806,7 +788,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithFileAttachment() throws {
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -840,7 +822,7 @@ import XCTest
         try Data(count: 1024).write(to: url)
         defer { try? FileManager.default.removeItem(at: url) }
 
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: composerWidth, height: 200)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,

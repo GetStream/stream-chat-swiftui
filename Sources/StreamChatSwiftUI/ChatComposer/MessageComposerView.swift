@@ -392,7 +392,96 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     public var body: some View {
-        VStack(spacing: tokens.spacingXs) {
+        VStack(spacing: tokens.spacingXxs) {
+            referenceMessageView
+                .padding(.top, tokens.spacingXxs)
+
+            attachmentsTray
+                .padding(.top, tokens.spacingXxs)
+                .padding(.leading, tokens.spacingXs)
+
+            inputView
+                .padding(.leading, tokens.spacingXs)
+        }
+        .modifier(
+            factory.styles.makeComposerInputViewModifier(
+                options: .init(keyboardShown: keyboardShown)
+            )
+        )
+        .onReceive(keyboardWillChangePublisher) { visible in
+            keyboardShown = visible
+        }
+    }
+
+    private var inputView: some View {
+        HStack(alignment: .bottom) {
+            HStack {
+                if let command,
+                   let displayInfo = command.displayInfo,
+                   displayInfo.isInstant == true {
+                    HStack(spacing: 0) {
+                        Image(uiImage: images.smallBolt)
+                            .renderingMode(.template)
+                            .foregroundColor(Color(colors.staticColorText))
+                        Text(displayInfo.displayName.uppercased())
+                    }
+                    .padding(.horizontal, 8)
+                    .font(fonts.footnoteBold)
+                    .frame(height: 24)
+                    .background(Color(colors.accentPrimary))
+                    .foregroundColor(Color(colors.staticColorText))
+                    .cornerRadius(16)
+                }
+
+                factory.makeComposerTextInputView(
+                    options: ComposerTextInputViewOptions(
+                        text: $text,
+                        height: $textHeight,
+                        selectedRangeLocation: $selectedRangeLocation,
+                        placeholder: placeholderText,
+                        editable: !isInputDisabled,
+                        maxMessageLength: maxMessageLength,
+                        currentHeight: textFieldHeight,
+                        onImagePasted: onImagePasted
+                    )
+                )
+                .accessibilityIdentifier("ComposerTextInputView")
+                .accessibilityElement(children: .contain)
+                .overlay(
+                    command?.displayInfo?.isInstant == true ?
+                        HStack {
+                            Spacer()
+                            Button {
+                                command = nil
+                            } label: {
+                                DiscardButtonView(
+                                    color: Color(colors.background7)
+                                )
+                            }
+                        }
+                        : nil
+                )
+            }
+            .frame(height: textFieldHeight)
+            .padding(.vertical, 4)
+
+            factory.makeComposerInputTrailingView(
+                options: .init(
+                    text: $text,
+                    recordingState: $recordingState,
+                    composerInputState: composerInputState,
+                    startRecording: startRecording,
+                    stopRecording: stopRecording,
+                    sendMessage: sendMessage
+                )
+            )
+            .padding(.trailing, tokens.spacingXs)
+            .padding(.bottom, tokens.spacingXs)
+        }
+    }
+
+    private var referenceMessageView: some View {
+        Group {
             if let editedMessage = editedMessage.wrappedValue {
                 factory.makeComposerEditedMessageView(
                     options: .init(
@@ -416,84 +505,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
             }
-
-            attachmentsTray
-                .padding(.top, tokens.spacingXxs)
-                .padding(.leading, tokens.spacingXs)
-
-            HStack(alignment: .bottom) {
-                HStack {
-                    if let command,
-                       let displayInfo = command.displayInfo,
-                       displayInfo.isInstant == true {
-                        HStack(spacing: 0) {
-                            Image(uiImage: images.smallBolt)
-                                .renderingMode(.template)
-                                .foregroundColor(Color(colors.staticColorText))
-                            Text(displayInfo.displayName.uppercased())
-                        }
-                        .padding(.horizontal, 8)
-                        .font(fonts.footnoteBold)
-                        .frame(height: 24)
-                        .background(Color(colors.accentPrimary))
-                        .foregroundColor(Color(colors.staticColorText))
-                        .cornerRadius(16)
-                    }
-
-                    factory.makeComposerTextInputView(
-                        options: ComposerTextInputViewOptions(
-                            text: $text,
-                            height: $textHeight,
-                            selectedRangeLocation: $selectedRangeLocation,
-                            placeholder: placeholderText,
-                            editable: !isInputDisabled,
-                            maxMessageLength: maxMessageLength,
-                            currentHeight: textFieldHeight,
-                            onImagePasted: onImagePasted
-                        )
-                    )
-                    .accessibilityIdentifier("ComposerTextInputView")
-                    .accessibilityElement(children: .contain)
-                    .overlay(
-                        command?.displayInfo?.isInstant == true ?
-                            HStack {
-                                Spacer()
-                                Button {
-                                    command = nil
-                                } label: {
-                                    DiscardButtonView(
-                                        color: Color(colors.background7)
-                                    )
-                                }
-                            }
-                            : nil
-                    )
-                }
-                .frame(height: textFieldHeight)
-                .padding(.vertical, 4)
-
-                factory.makeComposerInputTrailingView(
-                    options: .init(
-                        text: $text,
-                        recordingState: $recordingState,
-                        composerInputState: composerInputState,
-                        startRecording: startRecording,
-                        stopRecording: stopRecording,
-                        sendMessage: sendMessage
-                    )
-                )
-                .padding(.trailing, tokens.spacingXs)
-                .padding(.bottom, tokens.spacingXs)
-            }
-            .padding(.leading, tokens.spacingXs)
-        }
-        .modifier(
-            factory.styles.makeComposerInputViewModifier(
-                options: .init(keyboardShown: keyboardShown)
-            )
-        )
-        .onReceive(keyboardWillChangePublisher) { visible in
-            keyboardShown = visible
         }
     }
 
