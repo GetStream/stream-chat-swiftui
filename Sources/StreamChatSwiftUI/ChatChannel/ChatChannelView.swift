@@ -68,11 +68,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 let isBouncedAlertEnabled = utils.messageListConfig.bouncedMessagesAlertActionsEnabled
                                 if isBouncedAlertEnabled && displayInfo.message.isBounced {
                                     viewModel.showBouncedActionsView(for: displayInfo.message)
-                                } else {
+                                } else if displayInfo.showsMessageActions {
                                     messageDisplayInfo = displayInfo
                                     withAnimation {
                                         viewModel.showReactionOverlay(for: AnyView(self))
                                     }
+                                } else {
+                                    viewModel.reactionsDetailMessage = displayInfo.message
                                 }
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
@@ -227,6 +229,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityIdentifier("ChatChannelView")
         .modifier(factory.styles.makeBouncedMessageActionsModifier(viewModel: viewModel))
         .accentColor(Color(colors.accentPrimary))
+        .sheet(item: $viewModel.reactionsDetailMessage) { message in
+            factory.makeReactionsDetailView(
+                options: ReactionsDetailViewOptions(message: message)
+            )
+            .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
+        }
     }
     
     private var composerView: some View {

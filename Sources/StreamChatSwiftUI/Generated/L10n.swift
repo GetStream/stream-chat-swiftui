@@ -559,6 +559,8 @@ internal enum L10n {
     internal enum Reactions {
       /// You
       internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
+      /// Tap to remove
+      internal static var tapToRemove: String { L10n.tr("Localizable", "message.reactions.tap-to-remove") }
     }
     internal enum ReadStatus {
       /// Seen by no one

@@ -395,7 +395,7 @@ import XCTest
             exp.fulfill()
         }
 
-        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
+        view.handleGestureForMessage(showsMessageActions: false)
 
         waitForExpectations(timeout: defaultTimeout) { error in
             XCTAssertNil(error, "Long press was not triggered")
@@ -429,7 +429,7 @@ import XCTest
             exp.fulfill()
         }
 
-        view.handleGestureForMessage(showsMessageActions: false, showsBottomContainer: false)
+        view.handleGestureForMessage(showsMessageActions: false)
 
         waitForExpectations(timeout: 1)
     }

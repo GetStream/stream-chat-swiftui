@@ -47,11 +47,11 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>zero</key>
-			<string>%d Message Reactions</string>
+			<string>%d Reactions</string>
 			<key>one</key>
-			<string>%d Message Reaction</string>
+			<string>%d Reaction</string>
 			<key>other</key>
-			<string>%d Message Reactions</string>
+			<string>%d Reactions</string>
 		</dict>
 	</dict>
 	<key>message.unread.count</key>

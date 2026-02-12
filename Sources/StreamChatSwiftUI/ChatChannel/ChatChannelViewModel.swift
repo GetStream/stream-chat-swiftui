@@ -131,6 +131,8 @@ import SwiftUI
         }
     }
 
+    @Published public var reactionsDetailMessage: ChatMessage?
+
     // A boolean value indicating if the user marked a message as unread
     // in the current session of the channel. If it is true,
     // it should not call markRead() in any scenario.
