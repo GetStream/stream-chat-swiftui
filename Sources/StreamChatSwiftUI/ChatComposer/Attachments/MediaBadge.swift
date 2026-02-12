@@ -10,17 +10,17 @@ import SwiftUI
 public struct VideoMediaBadge: View {
     @Injected(\.images) var images
 
-    /// The duration in seconds.
-    public let duration: Int
+    /// The duration text to display (e.g. "8s").
+    public let durationText: String
 
-    public init(duration: Int) {
-        self.duration = duration
+    public init(durationText: String) {
+        self.durationText = durationText
     }
 
     public var body: some View {
         MediaBadge(
             icon: Image(uiImage: images.videoMediaIcon).renderingMode(.template),
-            duration: duration
+            durationText: durationText
         )
     }
 }
@@ -29,17 +29,17 @@ public struct VideoMediaBadge: View {
 public struct AudioMediaBadge: View {
     @Injected(\.images) var images
 
-    /// The duration in seconds.
-    public let duration: Int
+    /// The duration text to display (e.g. "8s").
+    public let durationText: String
 
-    public init(duration: Int) {
-        self.duration = duration
+    public init(durationText: String) {
+        self.durationText = durationText
     }
 
     public var body: some View {
         MediaBadge(
             icon: Image(uiImage: images.audioMediaIcon).renderingMode(.template),
-            duration: duration
+            durationText: durationText
         )
     }
 }
@@ -51,19 +51,19 @@ public struct MediaBadge: View {
 
     /// The icon to display.
     public let icon: Image
-    /// The duration in seconds.
-    public let duration: Int
+    /// The duration text to display (e.g. "8s").
+    public let durationText: String
 
-    public init(icon: Image, duration: Int) {
+    public init(icon: Image, durationText: String) {
         self.icon = icon
-        self.duration = duration
+        self.durationText = durationText
     }
 
     public var body: some View {
         HStack(spacing: tokens.spacingXxs) {
             icon
                 .frame(height: tokens.iconSizeXs)
-            Text("\(duration)s")
+            Text(durationText)
                 .font(.system(size: 10, weight: .bold))
         }
         .foregroundColor(Color(colors.badgeTextInverse))
@@ -73,7 +73,7 @@ public struct MediaBadge: View {
         .background(Color(colors.badgeBackgroundInverse))
         .clipShape(Capsule())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(duration) seconds")
+        .accessibilityLabel(durationText)
         .accessibilityAddTraits(.isStaticText)
     }
 }
@@ -137,12 +137,12 @@ extension Appearance.Images {
 #Preview("Badges") {
     VStack {
         HStack(spacing: 16) {
-            VideoMediaBadge(duration: 8)
-            AudioMediaBadge(duration: 8)
+            VideoMediaBadge(durationText: "8s")
+            AudioMediaBadge(durationText: "8s")
         }
         HStack(spacing: 16) {
-            VideoMediaBadge(duration: 18)
-            AudioMediaBadge(duration: 18)
+            VideoMediaBadge(durationText: "18s")
+            AudioMediaBadge(durationText: "18s")
         }
     }
     .padding()

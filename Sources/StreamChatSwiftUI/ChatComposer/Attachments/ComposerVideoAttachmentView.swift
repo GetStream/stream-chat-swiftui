@@ -19,14 +19,15 @@ struct ComposerVideoAttachmentView: View {
             onDiscardAttachment: onDiscardAttachment
         )
         .mediaBadgeOverlay {
-            VideoMediaBadge(duration: videoDuration)
+            VideoMediaBadge(durationText: videoDurationText)
         }
     }
 
-    private var videoDuration: Int {
-        guard let raw = attachment.extraData["duration"] else { return 0 }
-        guard case let .string(durationString) = raw else { return 0 }
-        return parseDurationString(durationString)
+    private var videoDurationText: String {
+        guard let raw = attachment.extraData["duration"] else { return "0s" }
+        guard case let .string(durationString) = raw else { return "0s" }
+        let seconds = parseDurationString(durationString)
+        return "\(seconds)s"
     }
 
     private func parseDurationString(_ string: String) -> Int {
