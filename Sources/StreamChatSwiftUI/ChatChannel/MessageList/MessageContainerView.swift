@@ -459,14 +459,14 @@ struct SendFailureIndicator: View {
     }
 }
 
-public struct MessageDisplayInfo: Sendable {
+public final class MessageDisplayInfo: Sendable {
     public let message: ChatMessage
     public let frame: CGRect
     public let contentWidth: CGFloat
     public let isFirst: Bool
-    public var showsMessageActions: Bool = true
-    public var showsBottomContainer: Bool = true
-    public var keyboardWasShown: Bool = false
+    public let showsMessageActions: Bool
+    public let showsBottomContainer: Bool
+    public let keyboardWasShown: Bool
 
     public init(
         message: ChatMessage,

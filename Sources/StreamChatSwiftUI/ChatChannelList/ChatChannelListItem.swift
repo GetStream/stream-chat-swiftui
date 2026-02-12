@@ -267,7 +267,7 @@ extension ChatChannel {
 }
 
 /// The style for the muted icon in the channel list item.
-public struct ChannelItemMutedLayoutStyle: Hashable, Sendable {
+public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
     let identifier: String
 
     init(_ identifier: String) {
@@ -284,4 +284,12 @@ public struct ChannelItemMutedLayoutStyle: Hashable, Sendable {
     /// This style shows the muted icon after the channel name.
     /// The subtitle text shows the last message preview text.
     public static let afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
+    
+    public static func == (lhs: ChannelItemMutedLayoutStyle, rhs: ChannelItemMutedLayoutStyle) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
 }

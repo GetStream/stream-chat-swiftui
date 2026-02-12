@@ -67,7 +67,7 @@ import UIKit
 }
 
 /// Model describing a channel action.
-public struct ChannelAction: Identifiable, @unchecked Sendable {
+public final class ChannelAction: Identifiable, @unchecked Sendable {
     public var id: String {
         "\(title)-\(iconName)"
     }
@@ -95,7 +95,7 @@ public struct ChannelAction: Identifiable, @unchecked Sendable {
 }
 
 /// Model describing confirmation popup data.
-public struct ConfirmationPopup: Sendable {
+public final class ConfirmationPopup: Sendable {
     public init(title: String, message: String?, buttonTitle: String) {
         self.title = title
         self.message = message

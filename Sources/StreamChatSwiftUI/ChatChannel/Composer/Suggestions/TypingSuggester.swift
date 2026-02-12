@@ -33,7 +33,7 @@ public final class TypingSuggestionOptions {
 }
 
 /// A structure that contains the information of the typing suggestion.
-public struct TypingSuggestion: Sendable {
+public final class TypingSuggestion: Sendable {
     /// A String representing the currently typing text.
     public let text: String
     /// A NSRange that stores the location of the typing suggestion in relation with the whole input.
@@ -76,7 +76,7 @@ public final class TypingSuggester {
         in text: String,
         caretLocation: Int
     ) -> TypingSuggestion? {
-        if caretLocation > text.count {
+        if caretLocation > (text as NSString).length {
             return nil
         }
         let textString = text as NSString

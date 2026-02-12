@@ -39,7 +39,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
 /// The view model for the thread list item view.
 ///
 /// It contains the default presentation logic for the thread list item data.
-@MainActor public struct ChatThreadListItemViewModel {
+@MainActor public final class ChatThreadListItemViewModel {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 

@@ -913,7 +913,7 @@ extension MessageComposerViewModel: EventsControllerDelegate {
 }
 
 // The assets added to the composer.
-struct ComposerAssets: Sendable {
+final class ComposerAssets {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
@@ -938,7 +938,7 @@ struct ComposerAssets: Sendable {
 
 // A asset containing file information.
 // If it has a payload, it means that the file is already uploaded to the server.
-struct FileAddedAsset: Sendable {
+final class FileAddedAsset {
     var url: URL
     var payload: FileAttachmentPayload?
 
@@ -1004,7 +1004,7 @@ struct FileAddedAsset: Sendable {
         with group: DispatchGroup?,
         completion: @escaping @MainActor (ComposerAssets) -> Void
     ) {
-        nonisolated(unsafe) var addedAssets = ComposerAssets()
+        nonisolated(unsafe) let addedAssets = ComposerAssets()
 
         for attachment in attachments {
             group?.enter()

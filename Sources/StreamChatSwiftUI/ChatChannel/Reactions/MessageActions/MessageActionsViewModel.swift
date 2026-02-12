@@ -54,7 +54,7 @@ public final class MessageAction: Identifiable, Equatable {
 }
 
 /// Provides information about a performed `MessageAction`.
-public struct MessageActionInfo: Sendable {
+public final class MessageActionInfo: Sendable {
     public let message: ChatMessage
     public let identifier: String
 

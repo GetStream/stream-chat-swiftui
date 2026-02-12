@@ -93,7 +93,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
 }
 
 /// Options used in the add users view.
-public struct AddUsersOptions: Sendable {
+public final class AddUsersOptions: Sendable {
     public let loadedUsers: [ChatUser]
     
     public init(loadedUsers: [ChatUser]) {

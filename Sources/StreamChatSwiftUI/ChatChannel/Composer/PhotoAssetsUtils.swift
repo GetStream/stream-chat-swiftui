@@ -118,7 +118,7 @@ extension PHAsset: @retroactive Identifiable {
 }
 
 /// Helper collection that allows iteration over the fetched assets from the photo library.
-public struct PHFetchResultCollection: RandomAccessCollection, Equatable, Sendable {
+public final class PHFetchResultCollection: RandomAccessCollection, Equatable, Sendable {
     public typealias Element = PHAsset
     public typealias Index = Int
 
