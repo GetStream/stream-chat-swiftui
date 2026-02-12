@@ -28,8 +28,12 @@ struct ComposerFileAttachmentView: View {
                     .lineLimit(1)
                     .foregroundColor(Color(colors.textLowEmphasis))
             }
+            Spacer()
         }
-        .padding(tokens.spacingMd)
+        .padding(.top, tokens.spacingMd)
+        .padding(.leading, tokens.spacingMd)
+        .padding(.bottom, tokens.spacingMd)
+        .padding(.trailing, tokens.spacingSm)
         .background(Color(colors.background))
         .cornerRadius(tokens.radiusLg)
         .overlay(

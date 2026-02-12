@@ -36,8 +36,8 @@ public struct ComposerAttachmentsContainerView: View {
     
     public var body: some View {
         ScrollViewReader { reader in
-            ScrollView(.horizontal) {
-                HStack(spacing: tokens.spacingXxs) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: tokens.spacingXs) {
                     ForEach(assets) { asset in
                         assetView(for: asset)
                             .id(asset.id)
