@@ -555,22 +555,6 @@ import XCTest
         XCTAssert(view is SystemMessageView)
     }
 
-    func test_viewFactory_makeReactionsUsersView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeReactionsUsersView(
-            options: ReactionsUsersViewOptions(
-                message: .mock(id: .unique, cid: .unique, text: "Test", author: .mock(id: .unique)),
-                maxHeight: 280
-            )
-        )
-
-        // Then
-        XCTAssert(view is ReactionsUsersView<DefaultViewFactory>)
-    }
-
     func test_viewFactory_makeChannelListFooterView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -1094,12 +1078,25 @@ import XCTest
     func test_viewFactory_makeAttachmentTextView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
         let view = viewFactory.makeAttachmentTextView(options: .init(mesage: message))
-        
+
         // Then
         XCTAssert(view is StreamTextView)
+    }
+
+    func test_viewFactory_makeReactionsDetailView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeReactionsDetailView(
+            options: ReactionsDetailViewOptions(message: message)
+        )
+
+        // Then
+        XCTAssert(view is ReactionsDetailView)
     }
 }
 
