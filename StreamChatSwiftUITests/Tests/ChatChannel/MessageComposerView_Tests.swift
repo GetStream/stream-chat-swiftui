@@ -701,7 +701,7 @@ import XCTest
     // MARK: - Editing
 
     func test_composerView_editingMessageWithText() {
-        let size = CGSize(width: composerWidth, height: 200)
+        let size = CGSize(width: composerWidth, height: 300)
         let mockEditedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -716,7 +716,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithQuotedMessage() {
-        let size = CGSize(width: composerWidth, height: 200)
+        let size = CGSize(width: composerWidth, height: 300)
         let mockEditedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -732,7 +732,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithImageAttachment() throws {
-        let size = CGSize(width: composerWidth, height: 200)
+        let size = CGSize(width: composerWidth, height: 300)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -759,7 +759,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithVideoAttachment() throws {
-        let size = CGSize(width: composerWidth, height: 200)
+        let size = CGSize(width: composerWidth, height: 300)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -788,7 +788,7 @@ import XCTest
     }
 
     func test_composerView_editingMessageWithFileAttachment() throws {
-        let size = CGSize(width: composerWidth, height: 200)
+        let size = CGSize(width: composerWidth, height: 300)
         let mockEditedMessage = try ChatMessage.mock(
             id: .unique,
             cid: .unique,
