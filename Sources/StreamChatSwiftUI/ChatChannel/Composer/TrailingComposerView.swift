@@ -6,16 +6,19 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-public struct TrailingComposerView: View {
+public struct TrailingComposerView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
-        
+
+    var factory: Factory
     @ObservedObject var viewModel: MessageComposerViewModel
-    var onTap: () -> Void
+    var onTap: @MainActor @Sendable () -> Void
     
     public init(
+        factory: Factory,
         viewModel: MessageComposerViewModel,
-        onTap: @escaping () -> Void
+        onTap: @escaping @MainActor @Sendable () -> Void
     ) {
+        self.factory = factory
         self.onTap = onTap
         self.viewModel = viewModel
     }
@@ -24,9 +27,11 @@ public struct TrailingComposerView: View {
         Group {
             if viewModel.cooldownDuration == 0 && viewModel.canSendMessage {
                 HStack(spacing: 16) {
-                    SendMessageButton(
-                        enabled: viewModel.hasContent,
-                        onTap: onTap
+                    factory.makeSendMessageButton(
+                        options: SendMessageButtonOptions(
+                            enabled: viewModel.hasContent,
+                            onTap: onTap
+                        )
                     )
                     if utils.composerConfig.isVoiceRecordingEnabled {
                         VoiceRecordingButton(

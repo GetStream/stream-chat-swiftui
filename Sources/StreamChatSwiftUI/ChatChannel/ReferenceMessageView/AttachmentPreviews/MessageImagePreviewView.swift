@@ -23,7 +23,7 @@ public struct MessageImagePreviewView: View {
 
     public var body: some View {
         StreamAsyncImage(
-            urls: [url],
+            url: url,
             thumbnailSize: CGSize(width: size, height: size)
         ) { phase in
             Group {

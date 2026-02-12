@@ -239,6 +239,7 @@
 				Tests/CommonViews/Avatars/ChannelAvatar_Tests.swift,
 				Tests/CommonViews/Avatars/UserAvatar_Tests.swift,
 				Tests/CommonViews/GalleryHeaderView_Tests.swift,
+				Tests/CommonViews/StreamButton_Tests.swift,
 				Tests/StreamChatTestCase.swift,
 				Tests/Utils/ChatClientExtensions_Tests.swift,
 				Tests/Utils/ChatMessageExtensions_Tests.swift,

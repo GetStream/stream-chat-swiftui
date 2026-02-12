@@ -17,13 +17,14 @@ public struct SendMessageButton: View {
     }
 
     public var body: some View {
-        Button {
-            onTap()
-        } label: {
-            Image(uiImage: images.composerSend)
-                .renderingMode(.template)
-        }
-        .buttonStyle(PrimaryRoundButtonStyle())
+        StreamButton(
+            icon: Image(uiImage: images.composerSend).renderingMode(.template),
+            text: nil,
+            role: .primary,
+            style: .solid,
+            size: .small,
+            action: onTap
+        )
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")

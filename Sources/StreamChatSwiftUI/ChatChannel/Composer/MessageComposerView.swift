@@ -319,8 +319,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var removeAttachmentWithId: (String) -> Void
     var sendMessage: @MainActor () -> Void
     var onImagePasted: @MainActor (UIImage) -> Void
-    var startRecording: () -> Void
-    var stopRecording: () -> Void
+    var startRecording: @MainActor () -> Void
+    var stopRecording: @MainActor () -> Void
 
     @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
@@ -346,8 +346,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         removeAttachmentWithId: @escaping (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
-        startRecording: @escaping () -> Void,
-        stopRecording: @escaping () -> Void
+        startRecording: @escaping @MainActor () -> Void,
+        stopRecording: @escaping @MainActor () -> Void
     ) {
         self.factory = factory
         self.channelController = channelController

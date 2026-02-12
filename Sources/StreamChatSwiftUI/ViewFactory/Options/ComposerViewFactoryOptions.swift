@@ -196,19 +196,19 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     /// The current composer's input view state.
     public let composerInputState: MessageComposerInputState
     /// The closure for starting a recording.
-    public let startRecording: () -> Void
+    public let startRecording: @MainActor () -> Void
     /// The closure for stopping a recording.
-    public let stopRecording: () -> Void
+    public let stopRecording: @MainActor () -> Void
     /// The closure for sending a message.
-    public let sendMessage: () -> Void
+    public let sendMessage: @MainActor () -> Void
 
     public init(
         text: Binding<String>,
         recordingState: Binding<RecordingState>,
         composerInputState: MessageComposerInputState,
-        startRecording: @escaping () -> Void,
-        stopRecording: @escaping () -> Void,
-        sendMessage: @escaping () -> Void
+        startRecording: @escaping @MainActor () -> Void,
+        stopRecording: @escaping @MainActor () -> Void,
+        sendMessage: @escaping @MainActor () -> Void
     ) {
         _text = text
         _recordingState = recordingState
@@ -231,6 +231,36 @@ public final class TrailingComposerViewOptions: Sendable {
     public init(enabled: Bool, cooldownDuration: Int, onTap: @escaping @MainActor () -> Void) {
         self.enabled = enabled
         self.cooldownDuration = cooldownDuration
+        self.onTap = onTap
+    }
+}
+
+public final class SendMessageButtonOptions: Sendable {
+    /// Whether the send message button is enabled.
+    public let enabled: Bool
+    /// Callback when the button is tapped.
+    public let onTap: @MainActor @Sendable () -> Void
+
+    public init(
+        enabled: Bool,
+        onTap: @escaping @MainActor @Sendable () -> Void
+    ) {
+        self.enabled = enabled
+        self.onTap = onTap
+    }
+}
+
+public final class ConfirmEditButtonOptions: Sendable {
+    /// Whether the confirm edit button is enabled.
+    public let enabled: Bool
+    /// Callback when the button is tapped.
+    public let onTap: @MainActor @Sendable () -> Void
+
+    public init(
+        enabled: Bool,
+        onTap: @escaping @MainActor @Sendable () -> Void
+    ) {
+        self.enabled = enabled
         self.onTap = onTap
     }
 }
