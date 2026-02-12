@@ -4,8 +4,8 @@
 
 import SwiftUI
 
-/// View for an added image displayed in the composer input.
-public struct AddedImageAttachmentsView: View {
+/// The view responsible for displaying the attachments in the composer.
+public struct ComposerAttachmentsContainerView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens

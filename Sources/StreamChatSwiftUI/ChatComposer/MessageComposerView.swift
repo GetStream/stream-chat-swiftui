@@ -497,7 +497,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     private var attachmentsTray: some View {
         Group {
             if !addedAssets.isEmpty {
-                AddedImageAttachmentsView(
+                ComposerAttachmentsContainerView(
                     images: addedAssets,
                     onDiscardAttachment: removeAttachmentWithId
                 )
