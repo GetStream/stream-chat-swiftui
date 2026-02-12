@@ -373,6 +373,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.stopRecording = stopRecording
     }
 
+    private var composerAssets: [ComposerAsset] {
+        addedAssets.map { .addedAsset($0) } + addedFileURLs.map { .addedFile($0) }
+    }
+
     var textFieldHeight: CGFloat {
         let minHeight: CGFloat = TextSizeConstants.minimumHeight
         let maxHeight: CGFloat = TextSizeConstants.maximumHeight
@@ -496,20 +500,13 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var attachmentsTray: some View {
         Group {
-            if !addedAssets.isEmpty {
+            if !composerAssets.isEmpty {
                 ComposerAttachmentsContainerView(
-                    images: addedAssets,
+                    assets: composerAssets,
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .transition(.scale)
                 .animation(.default)
-            }
-
-            if !addedFileURLs.isEmpty {
-                AddedFileAttachmentsView(
-                    addedFileURLs: addedFileURLs,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
             }
 
             if !addedVoiceRecordings.isEmpty {
