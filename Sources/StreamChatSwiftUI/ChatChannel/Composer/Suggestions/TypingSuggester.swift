@@ -76,7 +76,7 @@ public final class TypingSuggester {
         in text: String,
         caretLocation: Int
     ) -> TypingSuggestion? {
-        if caretLocation > text.count {
+        if caretLocation > (text as NSString).length {
             return nil
         }
         let textString = text as NSString
