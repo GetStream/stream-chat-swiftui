@@ -86,7 +86,7 @@ extension CommandHandler {
 }
 
 /// Model for the composer's commands.
-@MainActor public final class ComposerCommand: Sendable {
+@MainActor public final class ComposerCommand {
     /// Identifier of the command.
     public let id: String
     /// Typing suggestion that invokes the command.
