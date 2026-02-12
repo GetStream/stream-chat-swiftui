@@ -8,8 +8,8 @@ struct ComposerImageAttachmentView: View {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
+    let imageSize: CGFloat = 72
     let attachment: AddedAsset
-    let imageSize: CGFloat
     let onDiscardAttachment: (String) -> Void
 
     var body: some View {
@@ -27,17 +27,5 @@ struct ComposerImageAttachmentView: View {
             .dismissButtonOverlayModifier {
                 onDiscardAttachment(attachment.id)
             }
-    }
-}
-
-extension URL {
-    var sizeString: String {
-        _ = startAccessingSecurityScopedResource()
-        if let file = try? AttachmentFile(url: self) {
-            stopAccessingSecurityScopedResource()
-            return file.sizeString
-        }
-
-        return ""
     }
 }

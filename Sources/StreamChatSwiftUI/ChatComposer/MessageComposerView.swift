@@ -81,7 +81,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         hasContent: viewModel.hasContent,
                         canSendMessage: viewModel.canSendMessage,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                        shouldScroll: viewModel.inputComposerShouldScroll,
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
                         sendMessage: sendMessage,
                         onImagePasted: viewModel.imagePasted,

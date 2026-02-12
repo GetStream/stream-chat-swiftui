@@ -9,13 +9,11 @@ import SwiftUI
 /// Uses the image attachment view with a video duration badge overlay.
 struct ComposerVideoAttachmentView: View {
     let attachment: AddedAsset
-    let imageSize: CGFloat
     let onDiscardAttachment: (String) -> Void
 
     var body: some View {
         ComposerImageAttachmentView(
             attachment: attachment,
-            imageSize: imageSize,
             onDiscardAttachment: onDiscardAttachment
         )
         .mediaBadgeOverlay {

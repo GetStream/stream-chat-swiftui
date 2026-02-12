@@ -152,49 +152,6 @@ import XCTest
         XCTAssert(viewModel.pickerState == .custom)
     }
     
-    func test_messageComposerVM_inputComposerNotScrollable() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        
-        // When
-        viewModel.imageTapped(defaultAsset)
-        let inputComposerScrollable = viewModel.inputComposerShouldScroll
-        
-        // Then
-        XCTAssert(inputComposerScrollable == false)
-    }
-    
-    func test_messageComposerVM_inputComposerScrollableAttachments() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        let attachments = [
-            CustomAttachment(id: .unique, content: .mockFile),
-            CustomAttachment(id: .unique, content: .mockImage),
-            CustomAttachment(id: .unique, content: .mockVideo),
-            CustomAttachment(id: .unique, content: .mockVideo)
-        ]
-        
-        // When
-        viewModel.addedCustomAttachments = attachments
-        let inputComposerScrollable = viewModel.inputComposerShouldScroll
-        
-        // Then
-        XCTAssert(inputComposerScrollable == true)
-    }
-    
-    func test_messageComposerVM_inputComposerScrollableFiles() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        let attachments: [URL] = [mockURL, mockURL, mockURL]
-        
-        // When
-        viewModel.addedFileURLs = attachments
-        let inputComposerScrollable = viewModel.inputComposerShouldScroll
-        
-        // Then
-        XCTAssert(inputComposerScrollable == true)
-    }
-    
     func test_messageComposerVM_imageRemovalByTappingTwice() {
         // Given
         let viewModel = makeComposerViewModel()

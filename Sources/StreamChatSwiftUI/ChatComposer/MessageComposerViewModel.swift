@@ -483,26 +483,6 @@ import SwiftUI
         }
     }
     
-    public var inputComposerShouldScroll: Bool {
-        if addedCustomAttachments.count > 3 {
-            return true
-        }
-        
-        if addedFileURLs.count > 2 {
-            return true
-        }
-        
-        if addedFileURLs.count == 2 && !addedAssets.isEmpty {
-            return true
-        }
-        
-        if addedVoiceRecordings.count > 2 {
-            return true
-        }
-        
-        return false
-    }
-    
     public func imageTapped(_ addedAsset: AddedAsset) {
         var images = [AddedAsset]()
         var imageRemoved = false

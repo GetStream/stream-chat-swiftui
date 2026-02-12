@@ -85,8 +85,6 @@ public final class ComposerInputViewOptions: Sendable {
     public let canSendMessage: Bool
     /// Callback when a custom attachment is tapped.
     public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
-    /// Whether the input should scroll.
-    public let shouldScroll: Bool
     /// Callback to remove an attachment by ID.
     public let removeAttachmentWithId: @MainActor (String) -> Void
     /// Sends a message.
@@ -115,7 +113,6 @@ public final class ComposerInputViewOptions: Sendable {
         hasContent: Bool,
         canSendMessage: Bool,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
-        shouldScroll: Bool,
         removeAttachmentWithId: @escaping @MainActor (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
@@ -138,7 +135,6 @@ public final class ComposerInputViewOptions: Sendable {
         self.hasContent = hasContent
         self.canSendMessage = canSendMessage
         self.onCustomAttachmentTap = onCustomAttachmentTap
-        self.shouldScroll = shouldScroll
         self.removeAttachmentWithId = removeAttachmentWithId
         self.sendMessage = sendMessage
         self.onImagePasted = onImagePasted

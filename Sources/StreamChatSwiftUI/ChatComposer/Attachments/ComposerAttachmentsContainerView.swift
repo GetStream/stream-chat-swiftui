@@ -25,8 +25,6 @@ public struct ComposerAttachmentsContainerView: View {
 
     public var assets: [ComposerAsset]
     public var onDiscardAttachment: (String) -> Void
-    
-    private var imageSize: CGFloat = 72
 
     public init(
         assets: [ComposerAsset],
@@ -48,7 +46,6 @@ public struct ComposerAttachmentsContainerView: View {
                 }
                 .padding(.trailing, tokens.spacingXs)
             }
-            .frame(minHeight: imageSize)
             .padding(.top, tokens.spacingXs)
             .onChange(of: assets) { [assets] newValue in
                 if #available(iOS 15, *), newValue.count > assets.count, let last = newValue.last {
@@ -79,13 +76,11 @@ public struct ComposerAttachmentsContainerView: View {
         case .video:
             ComposerVideoAttachmentView(
                 attachment: attachment,
-                imageSize: imageSize,
                 onDiscardAttachment: onDiscardAttachment
             )
         case .image:
             ComposerImageAttachmentView(
                 attachment: attachment,
-                imageSize: imageSize,
                 onDiscardAttachment: onDiscardAttachment
             )
         }
