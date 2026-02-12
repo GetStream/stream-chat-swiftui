@@ -63,6 +63,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         
         var diameter: CGFloat {
             switch size {
+            case AvatarSize.sizeClassExtraExtraLarge: 16
             case AvatarSize.sizeClassExtraLarge: 16
             case AvatarSize.sizeClassLarge: 14
             case AvatarSize.sizeClassMedium: 12
@@ -76,7 +77,7 @@ private struct AvatarIndicatorViewModifier: ViewModifier {
         
         var offset: CGPoint {
             switch size {
-            case AvatarSize.sizeClassExtraLarge: .zero
+            case AvatarSize.sizeClassExtraExtraLarge: .zero
             default: CGPoint(x: borderWidth, y: -borderWidth)
             }
         }

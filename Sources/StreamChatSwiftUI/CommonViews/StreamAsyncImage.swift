@@ -6,56 +6,52 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-/// A view that loads one or more images asynchronously and renders
-/// content based on the current loading phase.
+/// A view that loads an image asynchronously and renders content based
+/// on the current loading phase.
 public struct StreamAsyncImage<ImageContent: View>: View {
     @Injected(\.utils) var utils
     
     let thumbnailSize: CGSize
-    let urls: [URL]
+    let url: URL?
     @ViewBuilder let content: (StreamAsyncImagePhase) -> ImageContent
-    let imageMerger: @MainActor ([UIImage]) async -> UIImage?
-    
-    private let taskId: String
     @State private var phase = StreamAsyncImagePhase.loading
     
-    /// Loads one or more images from the specified URLs and builds views based on
-    /// the loading state.
+    /// Loads an image from the given URL and builds a view based on the
+    /// loading state.
+    ///
+    /// When `url` is `nil` the phase is set to ``StreamAsyncImagePhase/empty``
+    /// immediately without performing a network request.
     ///
     /// - Parameters:
-    ///   - urls: The URLs of the images to display.
-    ///   - thumbnailSize: The width and height of the thumbnail.
-    ///   - content: A closure that takes the loading phase as input, and returns
-    ///     the view to display for the current phase.
-    ///   - imageMerger: A closure that combines multiple loaded images into a
-    ///     single image. Defaults to returning the first image.
+    ///   - url: The URL of the image to load, or `nil` if no image is available.
+    ///   - thumbnailSize: The requested thumbnail dimensions used by the image CDN.
+    ///   - content: A closure that takes the current loading phase and returns
+    ///     the view to display.
     public init(
-        urls: [URL],
+        url: URL?,
         thumbnailSize: CGSize,
-        content: @escaping (StreamAsyncImagePhase) -> ImageContent,
-        imageMerger: @escaping @MainActor ([UIImage]) async -> UIImage? = { $0.first }
+        content: @escaping (StreamAsyncImagePhase) -> ImageContent
     ) {
-        self.urls = urls
+        self.url = url
         self.thumbnailSize = thumbnailSize
         self.content = content
-        self.imageMerger = imageMerger
-        taskId = urls.map(\.absoluteString).joined()
     }
     
     public var body: some View {
         content(phase)
-            .clipped()
-            .compatibility.task(id: taskId) { @MainActor [imageCDN, imageLoader, imageMerger, urls] in
+            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor [imageCDN, imageLoader, url] in
+                guard let url else {
+                    phase = .empty
+                    return
+                }
                 let images = await imageLoader.loadImages(
-                    from: urls,
+                    from: [url].compactMap { $0 },
                     placeholders: [],
                     loadThumbnails: true,
                     thumbnailSize: thumbnailSize,
                     imageCDN: imageCDN
                 )
-                if images.count > 1, let image = await imageMerger(images) {
-                    phase = .success(Image(uiImage: image))
-                } else if let image = images.first {
+                if let image = images.first {
                     phase = .success(Image(uiImage: image))
                 } else {
                     phase = .empty
@@ -71,19 +67,18 @@ public struct StreamAsyncImage<ImageContent: View>: View {
 public enum StreamAsyncImagePhase: Sendable, Equatable {
     /// A successfully loaded image.
     ///
-    /// The associated `Image` value represents the loaded image that can be displayed.
-    /// For multi-URL scenarios with a merger, this contains the merged result.
+    /// The associated `Image` value represents the loaded image ready for display.
     case success(Image)
     
     /// The image is currently loading.
     ///
-    /// This phase occurs while the image loader is fetching images from the provided URLs.
+    /// This is the initial phase while the image loader is fetching the image.
     /// Use this state to display a loading placeholder or progress indicator.
     case loading
     
     /// No image is available.
     ///
-    /// This phase occurs when all provided URLs fail to load or when the URL array is empty.
+    /// This phase occurs when the URL is `nil` or the image fails to load.
     /// Use this state to display a placeholder or fallback content.
     case empty
 }
