@@ -70,8 +70,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
                         command: $viewModel.composerCommand,
                         recordingState: $viewModel.recordingState,
-                        addedAssets: viewModel.addedAssets,
-                        addedFileURLs: viewModel.addedFileURLs,
+                        composerAssets: viewModel.composerAssets,
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
@@ -151,7 +150,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     attachmentPickerState: $viewModel.pickerState,
                     filePickerShown: $viewModel.filePickerShown,
                     cameraPickerShown: $viewModel.cameraPickerShown,
-                    addedFileURLs: $viewModel.addedFileURLs,
+                    addedFileURLs: viewModel.addedFileURLsBinding,
                     onPickerStateChange: viewModel.change(pickerState:),
                     photoLibraryAssets: viewModel.imageAssets,
                     onAssetTap: viewModel.imageTapped(_:),
@@ -163,7 +162,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
                     popupHeight: popupSize,
-                    selectedAssetIds: viewModel.addedAssets.map(\.id),
+                    selectedAssetIds: viewModel.composerAssets.compactMap { if case .addedAsset(let a) = $0 { return a.id }; return nil },
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
                     canSendPoll: viewModel.canSendPoll,
@@ -304,8 +303,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
     @Binding var recordingState: RecordingState
-    var addedAssets: [AddedAsset]
-    var addedFileURLs: [URL]
+    var composerAssets: [ComposerAsset]
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
     var quotedMessage: Binding<ChatMessage?>
@@ -331,8 +329,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         recordingState: Binding<RecordingState>,
-        addedAssets: [AddedAsset],
-        addedFileURLs: [URL],
+        composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
@@ -355,8 +352,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         _selectedRangeLocation = selectedRangeLocation
         _command = command
         _recordingState = recordingState
-        self.addedAssets = addedAssets
-        self.addedFileURLs = addedFileURLs
+        self.composerAssets = composerAssets
         self.addedCustomAttachments = addedCustomAttachments
         self.canSendMessage = canSendMessage
         self.hasContent = hasContent
@@ -370,10 +366,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
-    }
-
-    private var composerAssets: [ComposerAsset] {
-        addedAssets.map { .addedAsset($0) } + addedFileURLs.map { .addedFile($0) }
     }
 
     var textFieldHeight: CGFloat {

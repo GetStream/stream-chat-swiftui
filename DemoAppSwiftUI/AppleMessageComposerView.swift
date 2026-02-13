@@ -86,8 +86,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
                     command: $viewModel.composerCommand,
                     recordingState: $viewModel.recordingState,
-                    addedAssets: viewModel.addedAssets,
-                    addedFileURLs: viewModel.addedFileURLs,
+                    composerAssets: viewModel.composerAssets,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     addedVoiceRecordings: viewModel.addedVoiceRecordings,
                     quotedMessage: $quotedMessage,
@@ -114,7 +113,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     attachmentPickerState: $viewModel.pickerState,
                     filePickerShown: $viewModel.filePickerShown,
                     cameraPickerShown: $viewModel.cameraPickerShown,
-                    addedFileURLs: $viewModel.addedFileURLs,
+                    addedFileURLs: viewModel.addedFileURLsBinding,
                     onPickerStateChange: viewModel.change(pickerState:),
                     photoLibraryAssets: viewModel.imageAssets,
                     onAssetTap: viewModel.imageTapped(_:),
@@ -126,7 +125,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
                     popupHeight: popupSize,
-                    selectedAssetIds: viewModel.addedAssets.map(\.id),
+                    selectedAssetIds: viewModel.composerAssets.compactMap { if case .addedAsset(let a) = $0 { return a.id }; return nil },
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
                     canSendPoll: viewModel.canSendPoll,
@@ -227,7 +226,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     .foregroundColor(.blue)
             }
             .padding(.trailing, 4)
-            .padding(.bottom, !viewModel.addedAssets.isEmpty ? 16 : 8)
+            .padding(.bottom, !viewModel.composerAssets.isEmpty ? 16 : 8)
         }
     }
 }

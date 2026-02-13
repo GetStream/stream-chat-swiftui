@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Represents either a media asset (image/video) or a file URL in the composer.
-public enum ComposerAsset: Identifiable, Equatable {
+public enum ComposerAsset: Identifiable, Equatable, Sendable {
     case addedAsset(AddedAsset)
     case addedFile(URL)
 
@@ -35,24 +35,14 @@ public struct ComposerAttachmentsContainerView: View {
     }
     
     public var body: some View {
-        ScrollViewReader { reader in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: tokens.spacingXs) {
-                    ForEach(assets) { asset in
-                        assetView(for: asset)
-                            .id(asset.id)
-                            .padding(tokens.spacingXxs)
-                    }
-                }
-                .padding(.trailing, tokens.spacingXs)
-            }
-            .onChange(of: assets) { [assets] newValue in
-                if #available(iOS 15, *), newValue.count > assets.count, let last = newValue.last {
-                    withAnimation {
-                        reader.scrollTo(last.id, anchor: .trailing)
-                    }
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: tokens.spacingXs) {
+                ForEach(assets) { asset in
+                    assetView(for: asset)
+                        .padding(tokens.spacingXxs)
                 }
             }
+            .padding(.trailing, tokens.spacingXs)
         }
     }
 
