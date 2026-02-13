@@ -35,14 +35,27 @@ public struct ComposerAttachmentsContainerView: View {
     }
     
     public var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: tokens.spacingXs) {
-                ForEach(assets) { asset in
-                    assetView(for: asset)
-                        .padding(tokens.spacingXxs)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: tokens.spacingXs) {
+                    ForEach(assets) { asset in
+                        assetView(for: asset)
+                            .padding(tokens.spacingXxs)
+                            .id(asset.id)
+                    }
+                    tailAnchor
+                }
+                .padding(.trailing, tokens.spacingXs)
+            }
+            .onChange(of: assets.count) { [assets] newValue in
+                guard newValue > assets.count else { return }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    withAnimation {
+                        proxy.scrollTo(tailId, anchor: .trailing)
+                    }
                 }
             }
-            .padding(.trailing, tokens.spacingXs)
         }
     }
 
@@ -74,4 +87,13 @@ public struct ComposerAttachmentsContainerView: View {
             )
         }
     }
+
+    // Workaround to make scrolling to the end more precise.
+    private var tailAnchor: some View {
+        Color.clear
+            .frame(height: 0)
+            .id(tailId)
+    }
+
+    private let tailId = "tail"
 }

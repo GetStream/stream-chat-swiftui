@@ -40,9 +40,9 @@ import SwiftUI
                     return nil
                 }
                 let existingSet = Set(current)
-                for url in newURLs.reversed() where !existingSet.contains(url) {
+                for url in newURLs where !existingSet.contains(url) {
                     guard canAddAttachment(with: url) else { continue }
-                    self.composerAssets.insert(.addedFile(url), at: 0)
+                    self.composerAssets.append(.addedFile(url))
                     if self.totalAttachmentsCount > chatClient.config.maxAttachmentCountPerMessage {
                         self.composerAssets.removeLast()
                     }
@@ -509,7 +509,7 @@ import SwiftUI
             }
         }
         if !found && canAddAttachment(with: addedAsset.url) {
-            newAssets.insert(.addedAsset(addedAsset), at: 0)
+            newAssets.append(.addedAsset(addedAsset))
         }
         composerAssets = newAssets
     }
@@ -525,7 +525,7 @@ import SwiftUI
             url: imageURL,
             type: .image
         )
-        composerAssets.insert(.addedAsset(addedImage), at: 0)
+        composerAssets.append(.addedAsset(addedImage))
     }
     
     public func removeAttachment(with id: String) {
@@ -558,7 +558,7 @@ import SwiftUI
     
     public func cameraImageAdded(_ image: AddedAsset) {
         if canAddAttachment(with: image.url) {
-            composerAssets.insert(.addedAsset(image), at: 0)
+            composerAssets.append(.addedAsset(image))
         }
         pickerState = .photos
     }
