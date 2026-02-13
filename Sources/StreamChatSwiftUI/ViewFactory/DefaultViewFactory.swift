@@ -584,7 +584,7 @@ extension ViewFactory {
             selectedPickerState: options.attachmentPickerState,
             filePickerShown: options.filePickerShown,
             cameraPickerShown: options.cameraPickerShown,
-            addedFileURLs: options.addedFileURLs,
+            onFilesPicked: options.onFilesPicked,
             onPickerStateChange: options.onPickerStateChange,
             photoLibraryAssets: options.photoLibraryAssets,
             onAssetTap: options.onAssetTap,
@@ -665,7 +665,7 @@ extension ViewFactory {
     ) -> some View {
         FilePickerDisplayView(
             filePickerShown: options.filePickerShown,
-            addedFileURLs: options.addedFileURLs
+            onFilesPicked: options.onFilesPicked
         )
     }
     

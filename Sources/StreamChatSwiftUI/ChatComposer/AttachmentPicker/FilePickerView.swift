@@ -8,10 +8,10 @@ import UniformTypeIdentifiers
 /// SwiftUI wrapper for picking files from the device.
 public struct FilePickerView: UIViewControllerRepresentable {
     @Injected(\.chatClient) var client
-    @Binding var fileURLs: [URL]
+    var onFilesPicked: ([URL]) -> Void
     
-    public init(fileURLs: Binding<[URL]>) {
-        self._fileURLs = fileURLs
+    public init(onFilesPicked: @escaping ([URL]) -> Void) {
+        self.onFilesPicked = onFilesPicked
     }
 
     public func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
@@ -32,19 +32,19 @@ public struct FilePickerView: UIViewControllerRepresentable {
     }
 
     public func makeCoordinator() -> FilePickerView.Coordinator {
-        FilePickerView.Coordinator(fileURLs: $fileURLs)
+        FilePickerView.Coordinator(onFilesPicked: onFilesPicked)
     }
 
     public class Coordinator: NSObject, UIDocumentPickerDelegate {
-        var fileURLs: Binding<[URL]>
+        var onFilesPicked: ([URL]) -> Void
 
-        init(fileURLs: Binding<[URL]>) {
-            self.fileURLs = fileURLs
+        init(onFilesPicked: @escaping ([URL]) -> Void) {
+            self.onFilesPicked = onFilesPicked
         }
 
         public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
             withAnimation {
-                fileURLs.wrappedValue.append(contentsOf: urls)
+                onFilesPicked(urls)
             }
         }
     }

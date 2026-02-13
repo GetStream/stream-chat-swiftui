@@ -23,35 +23,12 @@ import SwiftUI
         }
     }
 
-    /// Binding for the file picker — appends selected files to composerAssets.
-    public var addedFileURLs: Binding<[URL]> {
-        Binding(
-            get: { [weak self] in
-                guard let self else { return [] }
-                return self.composerAssets.compactMap {
-                    if case .addedFile(let url) = $0 { return url }
-                    return nil
-                }
-            },
-            set: { [weak self] newURLs in
-                guard let self else { return }
-                let current = self.composerAssets.compactMap {
-                    if case .addedFile(let url) = $0 { return url }
-                    return nil
-                }
-                let existingSet = Set(current)
-                for url in newURLs where !existingSet.contains(url) {
-                    guard canAddAttachment(with: url) else { continue }
-                    self.composerAssets.append(.addedFile(url))
-                    if self.totalAttachmentsCount > chatClient.config.maxAttachmentCountPerMessage {
-                        self.composerAssets.removeLast()
-                    }
-                }
-                if shouldDeleteDraftMessage(oldValue: current) {
-                    deleteDraftMessage()
-                }
-            }
-        )
+    /// Appends the given file URLs directly to `composerAssets`.
+    public func addFileURLs(_ urls: [URL]) {
+        for url in urls {
+            guard canAddAttachment(with: url) else { continue }
+            composerAssets.append(.addedFile(url))
+        }
     }
 
     @Published public var pickerState: AttachmentPickerState = .photos {

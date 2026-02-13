@@ -33,7 +33,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     @Binding var selectedPickerState: AttachmentPickerState
     @Binding var filePickerShown: Bool
     @Binding var cameraPickerShown: Bool
-    @Binding var addedFileURLs: [URL]
+    var onFilesPicked: @MainActor ([URL]) -> Void
     var onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onAssetTap: @MainActor (AddedAsset) -> Void
@@ -58,7 +58,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         selectedPickerState: Binding<AttachmentPickerState>,
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
-        addedFileURLs: Binding<[URL]>,
+        onFilesPicked: @escaping @MainActor ([URL]) -> Void,
         onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>? = nil,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
@@ -80,7 +80,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         _selectedPickerState = selectedPickerState
         _filePickerShown = filePickerShown
         _cameraPickerShown = cameraPickerShown
-        _addedFileURLs = addedFileURLs
+        self.onFilesPicked = onFilesPicked
         self.onPickerStateChange = onPickerStateChange
         self.photoLibraryAssets = photoLibraryAssets
         self.onAssetTap = onAssetTap
@@ -133,7 +133,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 viewFactory.makeFilePickerView(
                     options: FilePickerViewOptions(
                         filePickerShown: $filePickerShown,
-                        addedFileURLs: $addedFileURLs
+                        onFilesPicked: onFilesPicked
                     )
                 )
             } else if selectedPickerState == .camera {

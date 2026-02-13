@@ -75,7 +75,7 @@ struct FilePickerDisplayView: View {
     @Injected(\.colors) private var colors
 
     @Binding var filePickerShown: Bool
-    @Binding var addedFileURLs: [URL]
+    var onFilesPicked: ([URL]) -> Void
 
     var body: some View {
         AttachmentTypeContainer {
@@ -90,7 +90,7 @@ struct FilePickerDisplayView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .foregroundColor(Color(colors.highlightedAccentBackground))
             .sheet(isPresented: $filePickerShown) {
-                FilePickerView(fileURLs: $addedFileURLs)
+                FilePickerView(onFilesPicked: onFilesPicked)
             }
         }
     }
