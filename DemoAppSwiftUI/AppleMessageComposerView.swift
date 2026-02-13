@@ -125,7 +125,10 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
                     popupHeight: popupSize,
-                    selectedAssetIds: viewModel.composerAssets.compactMap { if case .addedAsset(let a) = $0 { return a.id }; return nil },
+                    selectedAssetIds: viewModel.composerAssets.compactMap {
+                        if case .addedAsset(let asset) = $0 { return asset.id }
+                        return nil
+                    },
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
                     canSendPoll: viewModel.canSendPoll,

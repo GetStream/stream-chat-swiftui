@@ -496,16 +496,16 @@ import SwiftUI
     public func imageTapped(_ addedAsset: AddedAsset) {
         var found = false
         var newAssets = [ComposerAsset]()
-        for asset in composerAssets {
-            switch asset {
-            case .addedAsset(let a):
-                if a.id == addedAsset.id {
+        for composerAsset in composerAssets {
+            switch composerAsset {
+            case .addedAsset(let asset):
+                if asset.id == addedAsset.id {
                     found = true
                 } else {
-                    newAssets.append(asset)
+                    newAssets.append(composerAsset)
                 }
             case .addedFile:
-                newAssets.append(asset)
+                newAssets.append(composerAsset)
             }
         }
         if !found && canAddAttachment(with: addedAsset.url) {
@@ -550,7 +550,7 @@ import SwiftUI
             }
         } else {
             composerAssets.removeAll {
-                if case .addedAsset(let a) = $0 { return a.id == id }
+                if case .addedAsset(let asset) = $0 { return asset.id == id }
                 return false
             }
         }
@@ -565,7 +565,7 @@ import SwiftUI
 
     public func isImageSelected(with id: String) -> Bool {
         composerAssets.contains {
-            if case .addedAsset(let a) = $0 { return a.id == id }
+            if case .addedAsset(let asset) = $0 { return asset.id == id }
             return false
         }
     }
