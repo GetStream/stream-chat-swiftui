@@ -74,14 +74,14 @@ import XCTest
         let viewModel = makeComposerViewModel()
         
         // When
-        var urls = viewModel.addedFileURLsBinding.wrappedValue
+        var urls = viewModel.addedFileURLs.wrappedValue
         urls.append(mockURL)
-        viewModel.addedFileURLsBinding.wrappedValue = urls
+        viewModel.addedFileURLs.wrappedValue = urls
         let buttonEnabled = viewModel.hasContent
         
         // Then
         XCTAssert(buttonEnabled == true)
-        XCTAssertEqual(viewModel.addedFileURLsBinding.wrappedValue.count, 1)
+        XCTAssertEqual(viewModel.addedFileURLs.wrappedValue.count, 1)
     }
 
     func test_messageComposerVM_onCommandSelected_setsInstantCommand() {
@@ -176,7 +176,7 @@ import XCTest
         viewModel.removeAttachment(with: mockURL.absoluteString)
         
         // Then
-        XCTAssert(viewModel.addedFileURLsBinding.wrappedValue.isEmpty)
+        XCTAssert(viewModel.addedFileURLs.wrappedValue.isEmpty)
     }
     
     func test_messageComposerVM_removeImageAttachment() {
@@ -450,16 +450,16 @@ import XCTest
             let newURL = generateURL()
             writeMockData(for: newURL)
             urls.append(newURL)
-            var fileUrls = viewModel.addedFileURLsBinding.wrappedValue
+            var fileUrls = viewModel.addedFileURLs.wrappedValue
             fileUrls.append(newURL)
-            viewModel.addedFileURLsBinding.wrappedValue = fileUrls
+            viewModel.addedFileURLs.wrappedValue = fileUrls
         }
         let newAsset = defaultAsset
         viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
         let newURL = generateURL()
-        var fileUrls = viewModel.addedFileURLsBinding.wrappedValue
+        var fileUrls = viewModel.addedFileURLs.wrappedValue
         fileUrls.append(newURL)
-        viewModel.addedFileURLsBinding.wrappedValue = fileUrls
+        viewModel.addedFileURLs.wrappedValue = fileUrls
         
         // Then
         let total = viewModel.composerAssets.count

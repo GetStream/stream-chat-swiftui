@@ -24,7 +24,7 @@ import SwiftUI
     }
 
     /// Binding for the file picker — appends selected files to composerAssets.
-    public var addedFileURLsBinding: Binding<[URL]> {
+    public var addedFileURLs: Binding<[URL]> {
         Binding(
             get: { [weak self] in
                 guard let self else { return [] }
