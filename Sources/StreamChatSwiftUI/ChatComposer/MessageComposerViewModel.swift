@@ -14,20 +14,12 @@ import SwiftUI
 
     var attachmentsConverter = MessageAttachmentsConverter()
 
-    /// Assets added to the composer, in insertion order (images and files interleaved).
+    /// The attachments added to the composer input view.
     @Published public var composerAssets = [ComposerAsset]() {
         didSet {
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
             }
-        }
-    }
-
-    /// Appends the given file URLs directly to `composerAssets`.
-    public func addFileURLs(_ urls: [URL]) {
-        for url in urls {
-            guard canAddAttachment(with: url) else { continue }
-            composerAssets.append(.addedFile(url))
         }
     }
 
@@ -252,6 +244,14 @@ import SwiftUI
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+    }
+
+    /// Appends the file to the attachments in the composer input view.
+    public func addFileURLs(_ urls: [URL]) {
+        for url in urls {
+            guard canAddAttachment(with: url) else { continue }
+            composerAssets.append(.addedFile(url))
+        }
     }
 
     /// Populates the composer with the edited message.
@@ -508,12 +508,12 @@ import SwiftUI
     public func removeAttachment(with id: String) {
         if id.isURL, let url = URL(string: id) {
             let isFile = composerAssets.contains {
-                if case .addedFile(let u) = $0 { return u == url }
+                if case .addedFile(let fileUrl) = $0 { return fileUrl == url }
                 return false
             }
             if isFile {
                 composerAssets.removeAll {
-                    if case .addedFile(let u) = $0 { return u == url }
+                    if case .addedFile(let fileUrl) = $0 { return fileUrl == url }
                     return false
                 }
             } else {
