@@ -896,7 +896,7 @@ extension MessageComposerViewModel: EventsControllerDelegate {
 }
 
 // The total assets added to the composer.
-struct TotalAddedAssets: Sendable {
+final class TotalAddedAssets {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
