@@ -63,7 +63,8 @@ struct MessageDateView: View {
         utils.dateFormatter
     }
     
-    var message: ChatMessage
+    let message: ChatMessage
+    var textColor: Color?
     
     var text: String {
         var text = dateFormatter.string(from: message.createdAt)
@@ -85,7 +86,7 @@ struct MessageDateView: View {
     var body: some View {
         Text(text)
             .font(fonts.footnote)
-            .foregroundColor(colors.chatTextTimestamp.toColor)
+            .foregroundColor(textColor ?? colors.chatTextTimestamp.toColor)
             .animation(nil)
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityIdentifier("MessageDateView")

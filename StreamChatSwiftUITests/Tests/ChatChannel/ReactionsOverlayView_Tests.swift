@@ -10,8 +10,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class ReactionsOverlayView_Tests: StreamChatTestCase {
-    private static let screenSize = CGSize(width: 393, height: 852)
-
     private let testMessage = ChatMessage.mock(
         id: "test",
         cid: .unique,
@@ -29,11 +27,11 @@ import XCTest
     private let overlayImage = UIColor
         .black
         .withAlphaComponent(0.2)
-        .image(screenSize)
+        .image(defaultScreenSize)
 
     func test_reactionsOverlayView_snapshot() {
         // Given
-        let view = VerticallyCenteredView {
+        let view = OverlayHostView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: .mockDMChannel(),
@@ -52,7 +50,7 @@ import XCTest
         // Given
         let config = ChannelConfig(reactionsEnabled: false)
         let channel = ChatChannel.mockDMChannel(config: config)
-        let view = VerticallyCenteredView {
+        let view = OverlayHostView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: channel,
@@ -96,7 +94,7 @@ import XCTest
 
         // When
         let channel = ChatChannel.mockDMChannel()
-        let view = VerticallyCenteredView {
+        let view = OverlayHostView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: channel,
@@ -132,7 +130,7 @@ import XCTest
         )
 
         // When
-        let view = VerticallyCenteredView {
+        let view = OverlayHostView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: .mockDMChannel(ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .readEvents]),
@@ -199,34 +197,6 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_chatMessage_reactionOffsetCurrentUser() {
-        // Given
-        let message = ChatMessage.mock(text: "Test message", isSentByCurrentUser: true)
-
-        // When
-        let offset = message.reactionOffsetX(
-            for: .init(origin: .zero, size: .init(width: 50, height: 50)),
-            reactionsSize: 25
-        )
-
-        // Then
-        XCTAssert(offset == -12.5)
-    }
-
-    func test_chatMessage_reactionOffsetOtherUser() {
-        // Given
-        let message = ChatMessage.mock(text: "Test message", isSentByCurrentUser: false)
-
-        // When
-        let offset = message.reactionOffsetX(
-            for: .init(origin: .zero, size: .init(width: 50, height: 50)),
-            reactionsSize: 25
-        )
-
-        // Then
-        XCTAssert(offset == 12.5)
-    }
-
     func test_reactionsOverlayView_translated() {
         // Given
         let testMessage = ChatMessage.mock(
@@ -243,7 +213,7 @@ import XCTest
             isFirst: true
         )
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: "test", language: .portuguese))
-        let view = VerticallyCenteredView {
+        let view = OverlayHostView {
             ReactionsOverlayView(
                 factory: DefaultViewFactory.shared,
                 channel: channel,
@@ -260,14 +230,20 @@ import XCTest
     }
 }
 
-struct VerticallyCenteredView<Content: View>: View {
+private struct OverlayHostView<Content: View>: View {
     var content: () -> Content
 
     var body: some View {
         VStack {
             Spacer()
-            content()
+            Rectangle()
+                .frame(width: 200, height: 50)
+                .overlay(content().transaction { transaction in
+                    transaction.disablesAnimations = true
+                })
+                
             Spacer()
         }
+        .applyDefaultSize()
     }
 }

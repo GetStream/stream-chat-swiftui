@@ -39,7 +39,9 @@ struct ReactionsContainer: View {
                     Spacer(minLength: 0)
                 }
             }
-            Spacer()
+            if topPlacement {
+                Spacer()
+            }
         }
         .offset(
             x: offsetX,
