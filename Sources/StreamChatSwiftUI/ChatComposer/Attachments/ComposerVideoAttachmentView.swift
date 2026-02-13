@@ -8,6 +8,8 @@ import SwiftUI
 /// View for an added video displayed in the composer input.
 /// Uses the image attachment view with a video duration badge overlay.
 struct ComposerVideoAttachmentView: View {
+    @Injected(\.utils) private var utils
+
     let attachment: AddedAsset
     let onDiscardAttachment: (String) -> Void
 
@@ -22,19 +24,9 @@ struct ComposerVideoAttachmentView: View {
     }
 
     private var videoDurationText: String {
-        guard let raw = attachment.extraData["duration"] else { return "0s" }
-        guard case let .string(durationString) = raw else { return "0s" }
-        let seconds = parseDurationString(durationString)
-        return "\(seconds)s"
-    }
-
-    private func parseDurationString(_ string: String) -> Int {
-        let parts = string.split(separator: ":")
-        guard parts.count >= 2,
-              let minutes = Int(parts[0]),
-              let seconds = Int(parts[1]) else {
-            return 0
+        guard let duration = attachment.extraData["duration"]?.numberValue else {
+            return "0s"
         }
-        return minutes * 60 + seconds
+        return utils.videoDurationShortFormatter.format(duration) ?? "0s"
     }
 }

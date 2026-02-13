@@ -6,6 +6,30 @@ import Foundation
 import StreamChat
 import StreamChatCommonUI
 
+/// A formatter that converts a video duration to a short textual representation (e.g. "8s", "60s", "120s").
+public protocol VideoDurationShortFormatter {
+    func format(_ duration: TimeInterval) -> String?
+}
+
+/// The default short video duration formatter.
+///
+/// Uses `DateComponentsFormatter` with the `.abbreviated` units style
+/// restricted to seconds only (e.g. "8s", "60s", "120s").
+open class DefaultVideoDurationShortFormatter: VideoDurationShortFormatter {
+    public var dateComponentsFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.second]
+        return formatter
+    }()
+
+    public init() {}
+
+    open func format(_ duration: TimeInterval) -> String? {
+        dateComponentsFormatter.string(from: duration)
+    }
+}
+
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
 @MainActor public class Utils {
@@ -37,6 +61,7 @@ import StreamChatCommonUI
     public var messageIdBuilder: MessageIdBuilder
     public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
     public var videoDurationFormatter: VideoDurationFormatter
+    public var videoDurationShortFormatter: VideoDurationShortFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
@@ -97,6 +122,7 @@ import StreamChatCommonUI
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
         videoDurationFormatter: VideoDurationFormatter = DefaultVideoDurationFormatter(),
+        videoDurationShortFormatter: VideoDurationShortFormatter = DefaultVideoDurationShortFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
@@ -125,6 +151,7 @@ import StreamChatCommonUI
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         self.sortReactions = sortReactions
         self.videoDurationFormatter = videoDurationFormatter
+        self.videoDurationShortFormatter = videoDurationShortFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.pollsConfig = pollsConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
