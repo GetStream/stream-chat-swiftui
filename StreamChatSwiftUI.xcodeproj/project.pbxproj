@@ -221,7 +221,6 @@
 				Tests/ChatChannel/Suggestions/TypingSuggester_Tests.swift,
 				Tests/ChatChannel/TypingIndicatorView_Tests.swift,
 				Tests/ChatChannel/WebView_Tests.swift,
-				Tests/ChatChannelList/ChannelAvatarsMerger_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListTestHelpers.swift,
 				Tests/ChatChannelList/ChatChannelListView_Tests.swift,
