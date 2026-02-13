@@ -80,7 +80,7 @@ import SwiftUI
             [(url, "EC"), (url, "EC")],
             [(url, "EC"), (url, "EC"), (nil, "EC")],
             [(url, "EC"), (url, "EC"), (nil, "EC"), (url, "EC")],
-            [(url, "EC"), (url, "EC"), (nil, "EC"), (url, "EC"), (url, "EC")]
+            [(url, "EC"), (url, "EC"), (nil, "EC"), (url, "EC")] // capped at 4 like avatarUsers
         ]
     }
 
@@ -121,7 +121,7 @@ import SwiftUI
                             url: nil,
                             size: group.size,
                             stackedPlaceholders: placeholders,
-                            memberCount: index < 4 ? placeholders.count + 1 : placeholders.count + 2,
+                            memberCount: index < 4 ? index + 1 : 7,
                             indicator: .online
                         )
                         .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)
