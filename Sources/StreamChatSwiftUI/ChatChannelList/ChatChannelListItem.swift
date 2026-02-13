@@ -12,6 +12,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channel: ChatChannel
@@ -40,7 +41,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         Button {
             onItemTap(channel)
         } label: {
-            HStack {
+            HStack(spacing: tokens.spacingMd) {
                 factory.makeChannelAvatarView(
                     options: ChannelAvatarViewOptions(
                         channel: channel,
@@ -60,10 +61,15 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
 
                         Spacer()
-
-                        if channel.isMuted, mutedLayoutStyle == .topRightCorner {
-                            mutedIcon
+                        
+                        HStack(spacing: 4) {
+                            SubtitleText(
+                                text: injectedChannelInfo?.timestamp ?? channel.timestampText,
+                                color: Color(colors.textTertiary)
+                            )
+                            .accessibilityIdentifier("timestampView")
                         }
+                        
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
                             UnreadIndicatorView(
                                 unreadCount: channel.unreadCount.messages
@@ -71,29 +77,29 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
                     }
 
-                    HStack {
+                    HStack(spacing: tokens.spacingXxs) {
+                        if shouldShowReadEvents {
+                            MessageReadIndicatorView(
+                                readUsers: channel.readUsers(
+                                    currentUserId: chatClient.currentUserId,
+                                    message: channel.previewMessage
+                                ),
+                                showReadCount: false,
+                                showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
+                            )
+                        }
+                        
                         subtitleView
 
                         Spacer()
-
-                        HStack(spacing: 4) {
-                            if shouldShowReadEvents {
-                                MessageReadIndicatorView(
-                                    readUsers: channel.readUsers(
-                                        currentUserId: chatClient.currentUserId,
-                                        message: channel.previewMessage
-                                    ),
-                                    showReadCount: false,
-                                    showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
-                                )
-                            }
-                            SubtitleText(text: injectedChannelInfo?.timestamp ?? channel.timestampText)
-                                .accessibilityIdentifier("timestampView")
+                        
+                        if channel.isMuted, mutedLayoutStyle == .topBottomCorner {
+                            mutedIcon
                         }
                     }
                 }
             }
-            .padding(.all, 8)
+            .padding(.all, tokens.spacingMd)
         }
         .foregroundColor(.black)
         .disabled(disabled)
@@ -120,12 +126,31 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         .foregroundColor(Color(colors.highlightedAccentBackground))
                     SubtitleText(text: draftText)
                 }
+            } else if let authorName = subtitleAuthorName {
+                (Text(authorName).fontWeight(.semibold).foregroundColor(Color(colors.textTertiary))
+                    + Text(": " + String(subtitleText.dropFirst(authorName.count + 2))))
+                    .lineLimit(1)
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.textSecondary))
             } else {
                 SubtitleText(text: subtitleText)
             }
             Spacer()
         }
         .accessibilityIdentifier("subtitleView")
+    }
+
+    private var subtitleAuthorName: String? {
+        guard let previewMessage = channel.previewMessage,
+              previewMessage.poll == nil else {
+            return nil
+        }
+        let authorName = previewMessage.author.name ?? previewMessage.author.id
+        let prefix = "\(authorName): "
+        guard subtitleText.hasPrefix(prefix) else {
+            return nil
+        }
+        return authorName
     }
 
     private var subtitleText: String {
@@ -187,10 +212,10 @@ public struct UnreadIndicatorView: View {
         Text("\(unreadCount)")
             .lineLimit(1)
             .font(fonts.footnoteBold)
-            .foregroundColor(Color(colors.staticColorText))
+            .foregroundColor(Color(colors.badgeTextOnAccent))
             .frame(width: unreadCount < 10 ? 18 : nil, height: 18)
             .padding(.horizontal, unreadCount < 10 ? 0 : 6)
-            .background(Color(colors.alert))
+            .background(Color(colors.badgeBackgroundPrimary))
             .cornerRadius(9)
             .accessibilityIdentifier("UnreadIndicatorView")
     }
@@ -279,7 +304,7 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
 
     /// This style shows the muted icon at the top right corner of the channel item.
     /// The subtitle text shows the last message preview text.
-    public static let topRightCorner: ChannelItemMutedLayoutStyle = .init("topRightCorner")
+    public static let topBottomCorner: ChannelItemMutedLayoutStyle = .init("topBottomCorner")
 
     /// This style shows the muted icon after the channel name.
     /// The subtitle text shows the last message preview text.
