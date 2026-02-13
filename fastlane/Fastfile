@@ -8,7 +8,7 @@ require 'xcodeproj'
 import 'Sonarfile'
 import 'Allurefile'
 
-xcode_version = ENV['XCODE_VERSION'] || '26.1.1'
+xcode_version = ENV['XCODE_VERSION'] || '26.2'
 xcode_project = 'StreamChatSwiftUI.xcodeproj'
 sdk_names = ['StreamChatSwiftUI']
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
@@ -552,13 +552,13 @@ end
 
 lane :sources_matrix do
   {
-    e2e: ['Sources', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp'],
-    ui: ['Sources', 'StreamChatSwiftUITests', xcode_project],
-    sample_apps: ['Sources', 'DemoAppSwiftUI', xcode_project],
-    ruby: ['fastlane', 'Gemfile', 'Gemfile.lock'],
-    size: ['Sources', xcode_project],
-    sonar: ['Sources'],
-    public_interface: ['Sources']
+    e2e: ['Sources', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp', '.github/workflows/smoke-checks.yml', xcode_project],
+    ui: ['Sources', 'StreamChatSwiftUITests', '.github/workflows/smoke-checks.yml', xcode_project],
+    sample_apps: ['Sources', 'DemoAppSwiftUI', '.github/workflows/smoke-checks.yml', xcode_project],
+    ruby: ['fastlane', 'Gemfile', 'Gemfile.lock', '.github/workflows/smoke-checks.yml'],
+    size: ['Sources', '.github/workflows/smoke-checks.yml', xcode_project],
+    sonar: ['Sources', '.github/workflows/smoke-checks.yml'],
+    public_interface: ['Sources', '.github/workflows/smoke-checks.yml']
   }
 end
 
