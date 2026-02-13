@@ -120,6 +120,7 @@
 				Infrastructure/Mocks/APIClient_Mock.swift,
 				Infrastructure/Mocks/CDNClient_Mock.swift,
 				Infrastructure/Mocks/ChatMessageControllerSUI_Mock.swift,
+				Infrastructure/Mocks/ChatReactionListControllerSUI_Mock.swift,
 				Infrastructure/Mocks/EventBatcherMock.swift,
 				Infrastructure/Mocks/EventNotificationCenterMock.swift,
 				Infrastructure/Mocks/ImageLoader_Mock.swift,
@@ -209,8 +210,9 @@
 				Tests/ChatChannel/PollCommentsViewModel_Tests.swift,
 				Tests/ChatChannel/PollOptionAllVotesViewModel_Tests.swift,
 				Tests/ChatChannel/QuotedMessageView_Tests.swift,
+				Tests/ChatChannel/ReactionsDetailView_Tests.swift,
+				Tests/ChatChannel/ReactionsDetailViewModel_Tests.swift,
 				Tests/ChatChannel/ReactionsOverlayView_Tests.swift,
-				Tests/ChatChannel/ReactionsUsersView_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandsHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/InstantCommandsHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/InstantCommandsView_Tests.swift,
@@ -219,7 +221,6 @@
 				Tests/ChatChannel/Suggestions/TypingSuggester_Tests.swift,
 				Tests/ChatChannel/TypingIndicatorView_Tests.swift,
 				Tests/ChatChannel/WebView_Tests.swift,
-				Tests/ChatChannelList/ChannelAvatarsMerger_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListTestHelpers.swift,
 				Tests/ChatChannelList/ChatChannelListView_Tests.swift,
@@ -237,6 +238,7 @@
 				Tests/CommonViews/Avatars/ChannelAvatar_Tests.swift,
 				Tests/CommonViews/Avatars/UserAvatar_Tests.swift,
 				Tests/CommonViews/GalleryHeaderView_Tests.swift,
+				Tests/CommonViews/StreamButton_Tests.swift,
 				Tests/StreamChatTestCase.swift,
 				Tests/Utils/ChatClientExtensions_Tests.swift,
 				Tests/Utils/ChatMessageExtensions_Tests.swift,
@@ -1526,8 +1528,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = v5;
-				kind = branch;
+				kind = revision;
+				revision = c1a1d53190b0cfff7595a6a0cc4f84bdd427f0d3;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

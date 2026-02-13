@@ -262,7 +262,7 @@ public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
                 factory.makeUserAvatarView(
                     options: UserAvatarViewOptions(
                         user: user,
-                        size: AvatarSize.extraLarge,
+                        size: AvatarSize.extraExtraLarge,
                         showsIndicator: true
                     )
                 )

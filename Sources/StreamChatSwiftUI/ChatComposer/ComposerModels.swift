@@ -16,8 +16,8 @@ public enum AttachmentPickerState: Sendable {
     case custom
 }
 
-/// Struct representing an asset added to the composer.
-public struct AddedAsset: Identifiable, Equatable, Sendable {
+/// An object representing an asset added to the composer.
+public final class AddedAsset: Identifiable, Equatable, Sendable {
     public static func == (lhs: AddedAsset, rhs: AddedAsset) -> Bool {
         lhs.id == rhs.id
     }
@@ -26,11 +26,11 @@ public struct AddedAsset: Identifiable, Equatable, Sendable {
     public let id: String
     public let url: URL
     public let type: AssetType
-    public var extraData: [String: RawJSON] = [:]
+    public let extraData: [String: RawJSON]
 
     /// The payload of the attachment, in case the attachment has been uploaded to server already.
     /// This is mostly used when editing an existing message that contains attachments.
-    public var payload: AttachmentPayload?
+    public let payload: AttachmentPayload?
 
     public init(
         image: UIImage,
@@ -86,7 +86,7 @@ public enum AssetType: Sendable {
     case video
 }
 
-public struct CustomAttachment: Identifiable, Equatable, Sendable {
+public final class CustomAttachment: Identifiable, Equatable, Sendable {
     public static func == (lhs: CustomAttachment, rhs: CustomAttachment) -> Bool {
         lhs.id == rhs.id
     }
@@ -101,7 +101,7 @@ public struct CustomAttachment: Identifiable, Equatable, Sendable {
 }
 
 /// Represents an added voice recording.
-public struct AddedVoiceRecording: Identifiable, Equatable, Sendable {
+public final class AddedVoiceRecording: Identifiable, Equatable, Sendable {
     public var id: String {
         url.absoluteString
     }

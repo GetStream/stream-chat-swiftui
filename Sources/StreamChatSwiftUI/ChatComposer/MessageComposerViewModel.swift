@@ -921,7 +921,7 @@ struct TotalAddedAssets: Sendable {
 
 // A asset containing file information.
 // If it has a payload, it means that the file is already uploaded to the server.
-struct FileAddedAsset: Sendable {
+final class FileAddedAsset {
     var url: URL
     var payload: FileAttachmentPayload?
 

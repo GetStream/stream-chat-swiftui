@@ -10,7 +10,7 @@ import SwiftUI
 public struct UserAvatar: View {
     @Injected(\.colors) var colors
     
-    let urls: [URL]
+    let url: URL?
     let initials: String
     let size: CGFloat
     let indicator: AvatarIndicator
@@ -56,7 +56,7 @@ public struct UserAvatar: View {
         indicator: AvatarIndicator,
         showsBorder: Bool = true
     ) {
-        self.urls = [url].compactMap { $0 }
+        self.url = url
         self.initials = String(initials.prefix(size >= AvatarSize.medium ? 2 : 1))
         self.size = size
         self.indicator = indicator
@@ -65,7 +65,7 @@ public struct UserAvatar: View {
     
     public var body: some View {
         StreamAsyncImage(
-            urls: urls,
+            url: url,
             thumbnailSize: .avatarThumbnailSize,
             content: { phase in
                 Group {
@@ -125,7 +125,8 @@ extension UserAvatar {
         
         var iconSize: CGSize {
             switch size {
-            case AvatarSize.sizeClassExtraLarge: CGSize(width: 22, height: 22)
+            case AvatarSize.sizeClassExtraExtraLarge: CGSize(width: 22, height: 22)
+            case AvatarSize.sizeClassExtraLarge: CGSize(width: 18, height: 18)
             case AvatarSize.sizeClassLarge: CGSize(width: 16, height: 16)
             case AvatarSize.sizeClassMedium: CGSize(width: 14, height: 14)
             case AvatarSize.sizeClassSmall: CGSize(width: 10, height: 10)
@@ -135,7 +136,8 @@ extension UserAvatar {
         
         var font: Font {
             switch size {
-            case AvatarSize.sizeClassExtraLarge: fonts.title2.weight(.semibold)
+            case AvatarSize.sizeClassExtraExtraLarge: fonts.title2.weight(.semibold)
+            case AvatarSize.sizeClassExtraLarge: fonts.title3.weight(.semibold)
             case AvatarSize.sizeClassLarge: fonts.subheadline.weight(.semibold)
             case AvatarSize.sizeClassMedium: fonts.footnote.weight(.semibold)
             default: fonts.caption1.weight(.semibold)
@@ -151,7 +153,7 @@ extension UserAvatar {
         return formatter
     }()
     
-    private static func initials(from name: String) -> String {
+    static func initials(from name: String) -> String {
         guard !name.isEmpty else { return "" }
         guard let components = initialsFormatter.personNameComponents(from: name) else { return "" }
         return initialsFormatter.string(from: components)

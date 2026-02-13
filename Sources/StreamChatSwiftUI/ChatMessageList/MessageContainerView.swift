@@ -232,8 +232,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 showsAllInfo: showsAllInfo,
                                 onTap: {
                                     handleGestureForMessage(
-                                        showsMessageActions: false,
-                                        showsBottomContainer: false
+                                        showsMessageActions: false
                                     )
                                 },
                                 onLongPress: {
@@ -406,8 +405,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     }
 
     func handleGestureForMessage(
-        showsMessageActions: Bool,
-        showsBottomContainer: Bool = true
+        showsMessageActions: Bool
     ) {
         guard message.isInteractionEnabled else {
             return
@@ -422,8 +420,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     frame: frame,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
-                    showsMessageActions: showsMessageActions,
-                    showsBottomContainer: showsBottomContainer
+                    showsMessageActions: showsMessageActions
                 )
             )
         }
@@ -459,14 +456,13 @@ struct SendFailureIndicator: View {
     }
 }
 
-public struct MessageDisplayInfo: Sendable {
+public final class MessageDisplayInfo: Sendable {
     public let message: ChatMessage
     public let frame: CGRect
     public let contentWidth: CGFloat
     public let isFirst: Bool
-    public var showsMessageActions: Bool = true
-    public var showsBottomContainer: Bool = true
-    public var keyboardWasShown: Bool = false
+    public let showsMessageActions: Bool
+    public let keyboardWasShown: Bool
 
     public init(
         message: ChatMessage,
@@ -474,7 +470,6 @@ public struct MessageDisplayInfo: Sendable {
         contentWidth: CGFloat,
         isFirst: Bool,
         showsMessageActions: Bool = true,
-        showsBottomContainer: Bool = true,
         keyboardWasShown: Bool = false
     ) {
         self.message = message
@@ -483,6 +478,5 @@ public struct MessageDisplayInfo: Sendable {
         self.isFirst = isFirst
         self.showsMessageActions = showsMessageActions
         self.keyboardWasShown = keyboardWasShown
-        self.showsBottomContainer = showsBottomContainer
     }
 }

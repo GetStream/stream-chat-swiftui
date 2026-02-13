@@ -47,7 +47,7 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                 factory.makeUserAvatarView(
                     options: .init(
                         user: participant.chatUser,
-                        size: AvatarSize.extraLarge,
+                        size: AvatarSize.extraExtraLarge,
                         showsIndicator: true
                     )
                 )

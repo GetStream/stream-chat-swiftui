@@ -349,6 +349,18 @@ import SwiftUI
     /// - Parameter options: the options for creating the trailing composer view.
     /// - Returns: view displayed in the trailing area of the message composer view.
     func makeTrailingComposerView(options: TrailingComposerViewOptions) -> TrailingComposerViewType
+
+    associatedtype SendMessageButtonType: View
+    /// Creates the send message button.
+    /// - Parameter options: the options for creating the send message button.
+    /// - Returns: view displayed in the send button slot.
+    func makeSendMessageButton(options: SendMessageButtonOptions) -> SendMessageButtonType
+
+    associatedtype ConfirmEditButtonType: View
+    /// Creates the confirm edit button.
+    /// - Parameter options: the options for creating the confirm edit button.
+    /// - Returns: view displayed in the confirm edit button slot.
+    func makeConfirmEditButton(options: ConfirmEditButtonOptions) -> ConfirmEditButtonType
     
     associatedtype ComposerRecordingViewType: View
     /// Creates a view shown when the composer is recording a voice message.
@@ -429,12 +441,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the message actions view.
     /// - Returns: view displayed in the message actions slot.
     func makeMessageActionsView(options: MessageActionsViewOptions) -> MessageActionsViewType
-
-    associatedtype ReactionsUsersViewType: View
-    /// Creates the view that displays users that reacted to a message.
-    /// - Parameter options: the options for creating the reactions users view.
-    /// - Returns: view displayed in the users reactions slot.
-    func makeReactionsUsersView(options: ReactionsUsersViewOptions) -> ReactionsUsersViewType
     
     associatedtype ReactionsBottomViewType: View
     /// Creates a reactions view displayed below the message.
@@ -467,6 +473,12 @@ import SwiftUI
     /// Creates the more reactions view.
     /// - Parameter options: The options for creating the more reactions view.
     func makeMoreReactionsView(options: MoreReactionsViewOptions) -> MoreReactionsViewType
+
+    associatedtype ReactionsDetailViewType: View
+    /// Creates the reactions detail view.
+    /// - Parameter options: the options for creating the reactions detail view.
+    /// - Returns: view displayed in the reactions detail slot.
+    func makeReactionsDetailView(options: ReactionsDetailViewOptions) -> ReactionsDetailViewType
 
     associatedtype ComposerQuotedMessageViewType: View
     /// Creates the quoted message view shown in the composer.

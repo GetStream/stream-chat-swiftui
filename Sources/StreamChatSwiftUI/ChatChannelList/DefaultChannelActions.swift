@@ -204,7 +204,7 @@ extension ChannelAction {
     }
 
     @MainActor private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
-        var viewInfo = ChannelAction(
+        let viewInfo = ChannelAction(
             title: L10n.Alert.Actions.viewInfoTitle,
             iconName: "person.fill",
             action: { /* no-op */ },
