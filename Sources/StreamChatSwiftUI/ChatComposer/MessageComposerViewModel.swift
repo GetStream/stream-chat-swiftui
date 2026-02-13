@@ -640,29 +640,30 @@ import SwiftUI
     /// Converts all added assets to payloads.
     open func convertAddedAssetsToPayloads() throws -> [AnyAttachmentPayload] {
         try attachmentsConverter.assetsToPayloads(
-            payloadComposerAssets
+            totalAddedAssets
         )
     }
 
     // MARK: - private
 
-    private var payloadComposerAssets: ComposerAssets {
-        ComposerAssets(
+    private var totalAddedAssets: TotalAddedAssets {
+        TotalAddedAssets(
             mediaAssets: composerAssets.compactMap {
-                if case .addedAsset(let a) = $0 { return a }
+                if case .addedAsset(let asset) = $0 { return asset }
                 return nil
             },
-            fileAssets: composerAssets.compactMap { if case .addedFile(let url) = $0 {
-                return FileAddedAsset(url: url, payload: addedRemoteFileURLs[url])
-            }
-            return nil
+            fileAssets: composerAssets.compactMap {
+                if case .addedFile(let url) = $0 {
+                    return FileAddedAsset(url: url, payload: addedRemoteFileURLs[url])
+                }
+                return nil
             },
             voiceAssets: addedVoiceRecordings,
             customAssets: addedCustomAttachments
         )
     }
 
-    private func updateComposerAssets(_ assets: ComposerAssets) {
+    private func updateComposerAssets(_ assets: TotalAddedAssets) {
         addedRemoteFileURLs = assets.fileAssets.reduce(into: [:]) { result, asset in
             result[asset.url] = asset.payload
         }
@@ -917,8 +918,8 @@ extension MessageComposerViewModel: EventsControllerDelegate {
     }
 }
 
-// The assets added to the composer.
-struct ComposerAssets: Sendable {
+// The total assets added to the composer.
+struct TotalAddedAssets: Sendable {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
@@ -958,7 +959,7 @@ struct FileAddedAsset: Sendable {
     @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
-    func assetsToPayloads(_ assets: ComposerAssets) throws -> [AnyAttachmentPayload] {
+    func assetsToPayloads(_ assets: TotalAddedAssets) throws -> [AnyAttachmentPayload] {
         let mediaAssets = assets.mediaAssets
         let fileAssets = assets.fileAssets
         let voiceAssets = assets.voiceAssets
@@ -993,7 +994,7 @@ struct FileAddedAsset: Sendable {
     /// Converts the attachments to assets asynchronously.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping @MainActor (ComposerAssets) -> Void
+        completion: @escaping @MainActor (TotalAddedAssets) -> Void
     ) {
         let group = DispatchGroup()
         attachmentsToAssets(attachments, with: group, completion: completion)
@@ -1007,9 +1008,9 @@ struct FileAddedAsset: Sendable {
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         with group: DispatchGroup?,
-        completion: @escaping @MainActor (ComposerAssets) -> Void
+        completion: @escaping @MainActor (TotalAddedAssets) -> Void
     ) {
-        nonisolated(unsafe) var addedAssets = ComposerAssets()
+        nonisolated(unsafe) var addedAssets = TotalAddedAssets()
 
         for attachment in attachments {
             group?.enter()
