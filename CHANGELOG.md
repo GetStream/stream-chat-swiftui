@@ -15,6 +15,10 @@ _February 11, 2026_
 - Add public init for `ImageContainerView` [#1174](https://github.com/GetStream/stream-chat-swiftui/pull/1174)
 - Expose Keyboard Handling methods [#1175](https://github.com/GetStream/stream-chat-swiftui/pull/1175)
 
+### ⚡️ Performance
+- Reduction of the SDK size by 2MB [#1173
+](https://github.com/GetStream/stream-chat-swiftui/pull/1173)
+
 # [4.97.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.97.0)
 _January 27, 2026_
 
