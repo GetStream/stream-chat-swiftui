@@ -63,10 +63,8 @@ public final class ComposerInputViewOptions: Sendable {
     public let command: Binding<ComposerCommand?>
     /// Binding to the recording state.
     public let recordingState: Binding<RecordingState>
-    /// The added assets.
-    public let addedAssets: [AddedAsset]
-    /// The added file URLs.
-    public let addedFileURLs: [URL]
+    /// The composer assets (images + files in insertion order).
+    public let composerAssets: [ComposerAsset]
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// The added voice recordings.
@@ -85,8 +83,6 @@ public final class ComposerInputViewOptions: Sendable {
     public let canSendMessage: Bool
     /// Callback when a custom attachment is tapped.
     public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
-    /// Whether the input should scroll.
-    public let shouldScroll: Bool
     /// Callback to remove an attachment by ID.
     public let removeAttachmentWithId: @MainActor (String) -> Void
     /// Sends a message.
@@ -104,8 +100,7 @@ public final class ComposerInputViewOptions: Sendable {
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         recordingState: Binding<RecordingState>,
-        addedAssets: [AddedAsset],
-        addedFileURLs: [URL],
+        composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
@@ -115,7 +110,6 @@ public final class ComposerInputViewOptions: Sendable {
         hasContent: Bool,
         canSendMessage: Bool,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
-        shouldScroll: Bool,
         removeAttachmentWithId: @escaping @MainActor (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
@@ -127,8 +121,7 @@ public final class ComposerInputViewOptions: Sendable {
         self.selectedRangeLocation = selectedRangeLocation
         self.command = command
         self.recordingState = recordingState
-        self.addedAssets = addedAssets
-        self.addedFileURLs = addedFileURLs
+        self.composerAssets = composerAssets
         self.addedCustomAttachments = addedCustomAttachments
         self.addedVoiceRecordings = addedVoiceRecordings
         self.quotedMessage = quotedMessage
@@ -138,7 +131,6 @@ public final class ComposerInputViewOptions: Sendable {
         self.hasContent = hasContent
         self.canSendMessage = canSendMessage
         self.onCustomAttachmentTap = onCustomAttachmentTap
-        self.shouldScroll = shouldScroll
         self.removeAttachmentWithId = removeAttachmentWithId
         self.sendMessage = sendMessage
         self.onImagePasted = onImagePasted

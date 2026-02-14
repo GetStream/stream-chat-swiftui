@@ -70,8 +70,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
                         command: $viewModel.composerCommand,
                         recordingState: $viewModel.recordingState,
-                        addedAssets: viewModel.addedAssets,
-                        addedFileURLs: viewModel.addedFileURLs,
+                        composerAssets: viewModel.composerAssets,
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
@@ -81,7 +80,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         hasContent: viewModel.hasContent,
                         canSendMessage: viewModel.canSendMessage,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                        shouldScroll: viewModel.inputComposerShouldScroll,
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
                         sendMessage: sendMessage,
                         onImagePasted: viewModel.imagePasted,
@@ -152,7 +150,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     attachmentPickerState: $viewModel.pickerState,
                     filePickerShown: $viewModel.filePickerShown,
                     cameraPickerShown: $viewModel.cameraPickerShown,
-                    addedFileURLs: $viewModel.addedFileURLs,
+                    onFilesPicked: viewModel.addFileURLs,
                     onPickerStateChange: viewModel.change(pickerState:),
                     photoLibraryAssets: viewModel.imageAssets,
                     onAssetTap: viewModel.imageTapped(_:),
@@ -164,7 +162,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     isDisplayed: viewModel.overlayShown,
                     height: viewModel.overlayShown ? popupSize : 0,
                     popupHeight: popupSize,
-                    selectedAssetIds: viewModel.addedAssets.map(\.id),
+                    selectedAssetIds: viewModel.composerAssets.compactMap {
+                        if case .addedAsset(let asset) = $0 { return asset.id }
+                        return nil
+                    },
                     channelController: viewModel.channelController,
                     messageController: viewModel.messageController,
                     canSendPoll: viewModel.canSendPoll,
@@ -305,8 +306,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
     @Binding var recordingState: RecordingState
-    var addedAssets: [AddedAsset]
-    var addedFileURLs: [URL]
+    var composerAssets: [ComposerAsset]
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
     var quotedMessage: Binding<ChatMessage?>
@@ -332,8 +332,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         recordingState: Binding<RecordingState>,
-        addedAssets: [AddedAsset],
-        addedFileURLs: [URL],
+        composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
         quotedMessage: Binding<ChatMessage?>,
@@ -356,8 +355,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         _selectedRangeLocation = selectedRangeLocation
         _command = command
         _recordingState = recordingState
-        self.addedAssets = addedAssets
-        self.addedFileURLs = addedFileURLs
+        self.composerAssets = composerAssets
         self.addedCustomAttachments = addedCustomAttachments
         self.canSendMessage = canSendMessage
         self.hasContent = hasContent
@@ -389,7 +387,96 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     public var body: some View {
-        VStack(spacing: tokens.spacingXs) {
+        VStack(spacing: tokens.spacingXxs) {
+            referenceMessageView
+                .padding(.top, tokens.spacingXxs)
+
+            attachmentsTray
+                .padding(.top, tokens.spacingXxs)
+                .padding(.leading, tokens.spacingXs)
+
+            inputView
+                .padding(.leading, tokens.spacingXs)
+        }
+        .modifier(
+            factory.styles.makeComposerInputViewModifier(
+                options: .init(keyboardShown: keyboardShown)
+            )
+        )
+        .onReceive(keyboardWillChangePublisher) { visible in
+            keyboardShown = visible
+        }
+    }
+
+    private var inputView: some View {
+        HStack(alignment: .bottom) {
+            HStack {
+                if let command,
+                   let displayInfo = command.displayInfo,
+                   displayInfo.isInstant == true {
+                    HStack(spacing: 0) {
+                        Image(uiImage: images.smallBolt)
+                            .renderingMode(.template)
+                            .foregroundColor(Color(colors.staticColorText))
+                        Text(displayInfo.displayName.uppercased())
+                    }
+                    .padding(.horizontal, 8)
+                    .font(fonts.footnoteBold)
+                    .frame(height: 24)
+                    .background(Color(colors.accentPrimary))
+                    .foregroundColor(Color(colors.staticColorText))
+                    .cornerRadius(16)
+                }
+
+                factory.makeComposerTextInputView(
+                    options: ComposerTextInputViewOptions(
+                        text: $text,
+                        height: $textHeight,
+                        selectedRangeLocation: $selectedRangeLocation,
+                        placeholder: placeholderText,
+                        editable: !isInputDisabled,
+                        maxMessageLength: maxMessageLength,
+                        currentHeight: textFieldHeight,
+                        onImagePasted: onImagePasted
+                    )
+                )
+                .accessibilityIdentifier("ComposerTextInputView")
+                .accessibilityElement(children: .contain)
+                .overlay(
+                    command?.displayInfo?.isInstant == true ?
+                        HStack {
+                            Spacer()
+                            Button {
+                                command = nil
+                            } label: {
+                                DiscardButtonView(
+                                    color: Color(colors.background7)
+                                )
+                            }
+                        }
+                        : nil
+                )
+            }
+            .frame(height: textFieldHeight)
+            .padding(.vertical, 4)
+
+            factory.makeComposerInputTrailingView(
+                options: .init(
+                    text: $text,
+                    recordingState: $recordingState,
+                    composerInputState: composerInputState,
+                    startRecording: startRecording,
+                    stopRecording: stopRecording,
+                    sendMessage: sendMessage
+                )
+            )
+            .padding(.trailing, tokens.spacingXs)
+            .padding(.bottom, tokens.spacingXs)
+        }
+    }
+
+    private var referenceMessageView: some View {
+        Group {
             if let editedMessage = editedMessage.wrappedValue {
                 factory.makeComposerEditedMessageView(
                     options: .init(
@@ -413,107 +500,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
             }
-
-            attachmentsTray
-                .padding(.leading, tokens.spacingSm)
-
-            HStack(alignment: .bottom) {
-                HStack {
-                    if let command,
-                       let displayInfo = command.displayInfo,
-                       displayInfo.isInstant == true {
-                        HStack(spacing: 0) {
-                            Image(uiImage: images.smallBolt)
-                                .renderingMode(.template)
-                                .foregroundColor(Color(colors.staticColorText))
-                            Text(displayInfo.displayName.uppercased())
-                        }
-                        .padding(.horizontal, 8)
-                        .font(fonts.footnoteBold)
-                        .frame(height: 24)
-                        .background(Color(colors.accentPrimary))
-                        .foregroundColor(Color(colors.staticColorText))
-                        .cornerRadius(16)
-                    }
-
-                    factory.makeComposerTextInputView(
-                        options: ComposerTextInputViewOptions(
-                            text: $text,
-                            height: $textHeight,
-                            selectedRangeLocation: $selectedRangeLocation,
-                            placeholder: placeholderText,
-                            editable: !isInputDisabled,
-                            maxMessageLength: maxMessageLength,
-                            currentHeight: textFieldHeight,
-                            onImagePasted: onImagePasted
-                        )
-                    )
-                    .accessibilityIdentifier("ComposerTextInputView")
-                    .accessibilityElement(children: .contain)
-                    .overlay(
-                        command?.displayInfo?.isInstant == true ?
-                            HStack {
-                                Spacer()
-                                Button {
-                                    command = nil
-                                } label: {
-                                    DiscardButtonView(
-                                        color: Color(colors.background7)
-                                    )
-                                }
-                            }
-                            : nil
-                    )
-                }
-                .frame(height: textFieldHeight)
-                .padding(.vertical, 4)
-
-                factory.makeComposerInputTrailingView(
-                    options: .init(
-                        text: $text,
-                        recordingState: $recordingState,
-                        composerInputState: composerInputState,
-                        startRecording: startRecording,
-                        stopRecording: stopRecording,
-                        sendMessage: sendMessage
-                    )
-                )
-                .padding(.trailing, tokens.spacingXs)
-                .padding(.bottom, tokens.spacingXs)
-            }
-            .padding(.leading, tokens.spacingXs)
-        }
-        .modifier(
-            factory.styles.makeComposerInputViewModifier(
-                options: .init(keyboardShown: keyboardShown)
-            )
-        )
-        .onReceive(keyboardWillChangePublisher) { visible in
-            keyboardShown = visible
         }
     }
 
     private var attachmentsTray: some View {
         Group {
-            if !addedAssets.isEmpty {
-                AddedImageAttachmentsView(
-                    images: addedAssets,
+            if !composerAssets.isEmpty {
+                ComposerAttachmentsContainerView(
+                    assets: composerAssets,
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .transition(.scale)
                 .animation(.default)
-            }
-
-            if !addedFileURLs.isEmpty {
-                if !addedAssets.isEmpty {
-                    Divider()
-                }
-
-                AddedFileAttachmentsView(
-                    addedFileURLs: addedFileURLs,
-                    onDiscardAttachment: removeAttachmentWithId
-                )
-                .padding(.trailing, 8)
             }
 
             if !addedVoiceRecordings.isEmpty {

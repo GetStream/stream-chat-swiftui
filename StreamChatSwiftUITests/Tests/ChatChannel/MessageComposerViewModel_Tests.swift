@@ -66,7 +66,7 @@ import XCTest
         
         // Then
         XCTAssert(buttonEnabled == true)
-        XCTAssertEqual(viewModel.addedAssets.count, 1)
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
     }
     
     func test_messageComposerVM_sendButtonEnabled_addedFile() {
@@ -74,12 +74,12 @@ import XCTest
         let viewModel = makeComposerViewModel()
         
         // When
-        viewModel.addedFileURLs.append(mockURL)
+        viewModel.addFileURLs([mockURL])
         let buttonEnabled = viewModel.hasContent
         
         // Then
         XCTAssert(buttonEnabled == true)
-        XCTAssertEqual(viewModel.addedFileURLs.count, 1)
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
     }
 
     func test_messageComposerVM_onCommandSelected_setsInstantCommand() {
@@ -152,49 +152,6 @@ import XCTest
         XCTAssert(viewModel.pickerState == .custom)
     }
     
-    func test_messageComposerVM_inputComposerNotScrollable() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        
-        // When
-        viewModel.imageTapped(defaultAsset)
-        let inputComposerScrollable = viewModel.inputComposerShouldScroll
-        
-        // Then
-        XCTAssert(inputComposerScrollable == false)
-    }
-    
-    func test_messageComposerVM_inputComposerScrollableAttachments() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        let attachments = [
-            CustomAttachment(id: .unique, content: .mockFile),
-            CustomAttachment(id: .unique, content: .mockImage),
-            CustomAttachment(id: .unique, content: .mockVideo),
-            CustomAttachment(id: .unique, content: .mockVideo)
-        ]
-        
-        // When
-        viewModel.addedCustomAttachments = attachments
-        let inputComposerScrollable = viewModel.inputComposerShouldScroll
-        
-        // Then
-        XCTAssert(inputComposerScrollable == true)
-    }
-    
-    func test_messageComposerVM_inputComposerScrollableFiles() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        let attachments: [URL] = [mockURL, mockURL, mockURL]
-        
-        // When
-        viewModel.addedFileURLs = attachments
-        let inputComposerScrollable = viewModel.inputComposerShouldScroll
-        
-        // Then
-        XCTAssert(inputComposerScrollable == true)
-    }
-    
     func test_messageComposerVM_imageRemovalByTappingTwice() {
         // Given
         let viewModel = makeComposerViewModel()
@@ -205,7 +162,7 @@ import XCTest
         viewModel.imageTapped(asset) // removed from the attachments list
         
         // Then
-        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(viewModel.composerAssets.isEmpty)
     }
     
     func test_messageComposerVM_removeFileAttachment() {
@@ -213,11 +170,11 @@ import XCTest
         let viewModel = makeComposerViewModel()
         
         // When
-        viewModel.addedFileURLs = [mockURL]
+        viewModel.composerAssets = [.addedFile(mockURL)]
         viewModel.removeAttachment(with: mockURL.absoluteString)
         
         // Then
-        XCTAssert(viewModel.addedFileURLs.isEmpty)
+        XCTAssert(viewModel.composerAssets.isEmpty)
     }
     
     func test_messageComposerVM_removeImageAttachment() {
@@ -230,7 +187,7 @@ import XCTest
         viewModel.removeAttachment(with: asset.id)
         
         // Then
-        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(viewModel.composerAssets.isEmpty)
     }
     
     func test_messageComposerVM_cameraImageAdded() {
@@ -241,7 +198,7 @@ import XCTest
         viewModel.cameraImageAdded(defaultAsset)
         
         // Then
-        XCTAssertEqual(viewModel.addedAssets.count, 1)
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
         XCTAssert(viewModel.pickerState == .photos)
     }
     
@@ -351,7 +308,7 @@ import XCTest
         // When
         viewModel.text = "test"
         viewModel.imageTapped(defaultAsset)
-        viewModel.addedFileURLs = [mockURL]
+        viewModel.composerAssets.append(.addedFile(mockURL))
         viewModel.sendMessage(
             quotedMessage: nil,
             editedMessage: nil
@@ -359,8 +316,7 @@ import XCTest
             // Then
             XCTAssert(viewModel.errorShown == false)
             XCTAssert(viewModel.text == "")
-            XCTAssert(viewModel.addedAssets.isEmpty)
-            XCTAssert(viewModel.addedFileURLs.isEmpty)
+            XCTAssert(viewModel.composerAssets.isEmpty)
         }
     }
     
@@ -475,7 +431,7 @@ import XCTest
         viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
 
         // Then
-        XCTAssertEqual(viewModel.addedAssets.count, 10)
+        XCTAssertEqual(viewModel.composerAssets.count, 10)
     }
     
     func test_messageComposerVM_maxAttachmentsCombined() {
@@ -492,15 +448,15 @@ import XCTest
             let newURL = generateURL()
             writeMockData(for: newURL)
             urls.append(newURL)
-            viewModel.addedFileURLs.append(newURL)
+            viewModel.addFileURLs([newURL])
         }
         let newAsset = defaultAsset
         viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
         let newURL = generateURL()
-        viewModel.addedFileURLs.append(newURL)
+        viewModel.addFileURLs([newURL])
         
         // Then
-        let total = viewModel.addedAssets.count + viewModel.addedFileURLs.count
+        let total = viewModel.composerAssets.count
         XCTAssertEqual(total, 10)
         for url in urls {
             try? FileManager.default.removeItem(at: url)
@@ -521,7 +477,7 @@ import XCTest
         let alertShown = viewModel.attachmentSizeExceeded
         
         // Then
-        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(viewModel.composerAssets.isEmpty)
         XCTAssert(alertShown == true)
     }
     
@@ -539,7 +495,7 @@ import XCTest
         let alertShown = viewModel.attachmentSizeExceeded
         
         // Then
-        XCTAssert(viewModel.addedAssets.isEmpty)
+        XCTAssert(viewModel.composerAssets.isEmpty)
         XCTAssert(alertShown == true)
     }
     
@@ -1238,7 +1194,7 @@ import XCTest
             channelController: channelController,
             messageController: nil
         )
-        viewModel.addedFileURLs = [mockURL]
+        viewModel.composerAssets = [.addedFile(mockURL)]
 
         // When
         viewModel.removeAttachment(with: mockURL.absoluteString)
