@@ -49,7 +49,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     )
                 )
 
-                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
                     HStack {
                         HStack(spacing: 6) {
                             ChatTitleView(name: channelName)
@@ -62,12 +62,19 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
                         Spacer()
                         
-                        HStack(spacing: 4) {
+                        HStack(spacing: tokens.spacingXs) {
                             SubtitleText(
                                 text: injectedChannelInfo?.timestamp ?? channel.timestampText,
                                 color: Color(colors.textTertiary)
                             )
                             .accessibilityIdentifier("timestampView")
+
+                            if lastMessageFailedToSend {
+                                Image(uiImage: images.messageListErrorIndicator)
+                                    .customizable()
+                                    .frame(width: 16, height: 16)
+                                    .foregroundColor(Color(colors.badgeBackgroundError))
+                            }
                         }
                         
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
@@ -112,7 +119,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var subtitleView: some View {
         HStack(spacing: 4) {
-            if channel.shouldShowTypingIndicator {
+            if lastMessageFailedToSend {
+                Text(L10n.Channel.Item.messageFailedToSend)
+                    .font(fonts.body)
+                    .foregroundColor(Color(colors.accentError))
+                    .lineLimit(1)
+            } else if channel.shouldShowTypingIndicator {
                 TypingIndicatorView()
                 SubtitleText(text: typingText)
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
@@ -203,8 +215,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             .foregroundColor(Color(colors.subtitleText))
     }
 
+    private var lastMessageFailedToSend: Bool {
+        channel.previewMessage?.localState == .sendingFailed
+    }
+
     private var shouldShowReadEvents: Bool {
-        if channel.shouldShowTypingIndicator {
+        if channel.shouldShowTypingIndicator || lastMessageFailedToSend {
             return false
         }
         if let message = channel.previewMessage,
