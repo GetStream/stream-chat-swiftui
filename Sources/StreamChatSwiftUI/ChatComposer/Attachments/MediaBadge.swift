@@ -114,24 +114,6 @@ extension View {
     }
 }
 
-// TODO: Move to Common Module
-
-extension Appearance.Images {
-    var videoMediaIcon: UIImage {
-        UIImage(
-            systemName: "video.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 10)
-        )!
-    }
-
-    var audioMediaIcon: UIImage {
-        UIImage(
-            systemName: "mic.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 10)
-        )!
-    }
-}
-
 // MARK: - Preview
 
 #Preview("Badges") {
