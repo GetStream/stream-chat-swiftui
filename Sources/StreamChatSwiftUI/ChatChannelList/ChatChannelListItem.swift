@@ -49,7 +49,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     )
                 )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                     HStack {
                         HStack(spacing: 6) {
                             ChatTitleView(name: channelName)
@@ -77,7 +77,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
                     }
 
-                    HStack(spacing: tokens.spacingXxs) {
+                    HStack(spacing: tokens.spacingXxxs) {
                         if shouldShowReadEvents {
                             MessageReadIndicatorView(
                                 readUsers: channel.readUsers(
@@ -114,12 +114,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         HStack(spacing: 4) {
             if channel.shouldShowTypingIndicator {
                 TypingIndicatorView()
-            }
-            if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
+                SubtitleText(text: typingText)
+            } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
                     Text("\(L10n.Message.Preview.draft):")
-                        .font(fonts.caption1).bold()
-                        .foregroundColor(Color(colors.highlightedAccentBackground))
+                        .font(fonts.body).fontWeight(.semibold)
+                        .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
             } else if let authorName = subtitleAuthorName {
@@ -127,12 +127,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 (Text(authorName).fontWeight(.semibold).foregroundColor(Color(colors.textTertiary))
                     + Text(": ") + subtitleContentText(contentString))
                     .lineLimit(1)
-                    .font(fonts.subheadline)
+                    .font(fonts.body)
                     .foregroundColor(Color(colors.textSecondary))
-            } else if let iconName = previewAttachmentIconName {
-                (Text(Image(systemName: iconName)) + Text(" \(subtitleText)"))
+            } else if previewAttachmentIconName != nil {
+                subtitleContentText(subtitleText)
                     .lineLimit(1)
-                    .font(fonts.subheadline)
+                    .font(fonts.body)
                     .foregroundColor(Color(colors.textSecondary))
             } else {
                 SubtitleText(text: subtitleText)
@@ -142,6 +142,13 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         .accessibilityIdentifier("subtitleView")
     }
 
+    private var typingText: String {
+        if channel.isDirectMessageChannel && channel.memberCount == 2 {
+            return L10n.Channel.Item.typing
+        }
+        return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+    }
+
     private var previewAttachmentIconName: String? {
         guard let previewMessage = channel.previewMessage else { return nil }
         return utils.messagePreviewFormatter.attachmentIconName(for: previewMessage)
@@ -149,7 +156,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private func subtitleContentText(_ text: String) -> Text {
         if let iconName = previewAttachmentIconName {
-            return Text(Image(systemName: iconName)) + Text(" \(text)")
+            return Text(Image(systemName: iconName)).font(fonts.subheadline) + Text(" \(text)")
         }
         return Text(text)
     }
@@ -158,6 +165,11 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         guard let previewMessage = channel.previewMessage,
               previewMessage.poll == nil else {
             return nil
+        }
+        if previewMessage.isSentByCurrentUser {
+            let youPrefix = "\(L10n.Channel.Item.you): "
+            guard subtitleText.hasPrefix(youPrefix) else { return nil }
+            return L10n.Channel.Item.you
         }
         let authorName = previewMessage.author.name ?? previewMessage.author.id
         let prefix = "\(authorName): "
@@ -192,6 +204,9 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var shouldShowReadEvents: Bool {
+        if channel.shouldShowTypingIndicator {
+            return false
+        }
         if let message = channel.previewMessage,
            message.isSentByCurrentUser {
             return channel.config.readEventsEnabled

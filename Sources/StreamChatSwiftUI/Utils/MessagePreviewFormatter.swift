@@ -17,7 +17,17 @@ import SwiftUI
         if let poll = previewMessage.poll {
             return formatPoll(poll)
         }
-        return "\(previewMessage.author.name ?? previewMessage.author.id): \(formatContent(for: previewMessage, in: channel))"
+        let content = formatContent(for: previewMessage, in: channel)
+        if channel.isDirectMessageChannel && channel.memberCount == 2 {
+            return content
+        }
+        let authorName: String
+        if previewMessage.isSentByCurrentUser {
+            authorName = L10n.Channel.Item.you
+        } else {
+            authorName = previewMessage.author.name ?? previewMessage.author.id
+        }
+        return "\(authorName): \(content)"
     }
     
     /// Formats only the content of the message without the author's name.

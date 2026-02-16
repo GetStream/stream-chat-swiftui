@@ -12,6 +12,8 @@
 "channel.item.poll-you-created" = "You created:";
 "channel.item.typing-singular" = "is typing ...";
 "channel.item.typing-plural" = "are typing ...";
+"channel.item.typing" = "Typing";
+"channel.item.you" = "You";
 "channel.item.muted" = "Channel is muted";
 "channel.item.mute" = "Mute";
 "channel.item.unmute" = "Unmute";
