@@ -123,8 +123,14 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     SubtitleText(text: draftText)
                 }
             } else if let authorName = subtitleAuthorName {
+                let contentString = String(subtitleText.dropFirst(authorName.count + 2))
                 (Text(authorName).fontWeight(.semibold).foregroundColor(Color(colors.textTertiary))
-                    + Text(": " + String(subtitleText.dropFirst(authorName.count + 2))))
+                    + Text(": ") + subtitleContentText(contentString))
+                    .lineLimit(1)
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.textSecondary))
+            } else if let iconName = previewAttachmentIconName {
+                (Text(Image(systemName: iconName)) + Text(" \(subtitleText)"))
                     .lineLimit(1)
                     .font(fonts.subheadline)
                     .foregroundColor(Color(colors.textSecondary))
@@ -134,6 +140,18 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             Spacer()
         }
         .accessibilityIdentifier("subtitleView")
+    }
+
+    private var previewAttachmentIconName: String? {
+        guard let previewMessage = channel.previewMessage else { return nil }
+        return utils.messagePreviewFormatter.attachmentIconName(for: previewMessage)
+    }
+
+    private func subtitleContentText(_ text: String) -> Text {
+        if let iconName = previewAttachmentIconName {
+            return Text(Image(systemName: iconName)) + Text(" \(text)")
+        }
+        return Text(text)
     }
 
     private var subtitleAuthorName: String? {
