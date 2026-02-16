@@ -6,6 +6,7 @@ import SwiftUI
 
 /// View for the button for sending messages.
 public struct SendMessageButton: View {
+    @Environment(\.layoutDirection) private var layoutDirection
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
 
@@ -23,6 +24,7 @@ public struct SendMessageButton: View {
         } label: {
             Image(uiImage: images.sendArrow)
                 .renderingMode(.template)
+                .scaleEffect(x: layoutDirection == .rightToLeft ? -1 : 1, y: 1)
                 .rotationEffect(enabled ? Angle(degrees: -90) : .zero)
                 .foregroundColor(
                     Color(

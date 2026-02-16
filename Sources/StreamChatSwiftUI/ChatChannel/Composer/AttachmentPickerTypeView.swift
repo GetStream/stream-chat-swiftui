@@ -27,6 +27,7 @@ public enum AttachmentPickerType {
 
 /// View for picking the attachment type (media or giphy commands).
 public struct AttachmentPickerTypeView: View {
+    @Environment(\.layoutDirection) private var layoutDirection
     @EnvironmentObject private var composerViewModel: MessageComposerViewModel
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
@@ -79,6 +80,7 @@ public struct AttachmentPickerTypeView: View {
                         Image(uiImage: images.shrinkInputArrow)
                             .renderingMode(.template)
                             .foregroundColor(Color(colors.highlightedAccentBackground))
+                            .scaleEffect(x: layoutDirection == .rightToLeft ? -1 : 1, y: 1)
                     }
                     .accessibilityIdentifier("PickerTypeButtonCollapsed")
                 }

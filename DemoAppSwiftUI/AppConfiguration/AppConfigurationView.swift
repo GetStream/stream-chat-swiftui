@@ -6,6 +6,8 @@ import Combine
 import SwiftUI
 
 struct AppConfigurationView: View {
+    @AppStorage("DemoApp.forceRTL") private var forceRTL = false
+
     var channelPinningEnabled: Binding<Bool> = Binding {
         AppConfiguration.default.isChannelPinningFeatureEnabled
     } set: { newValue in
@@ -20,6 +22,9 @@ struct AppConfigurationView: View {
                         AppConfigurationTranslationView()
                     }
                     Toggle("Channel Pinning", isOn: channelPinningEnabled)
+                }
+                Section("Layout") {
+                    Toggle("Force RTL (preview)", isOn: $forceRTL)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

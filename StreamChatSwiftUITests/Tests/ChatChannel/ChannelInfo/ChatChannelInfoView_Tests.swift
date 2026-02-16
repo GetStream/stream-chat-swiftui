@@ -34,6 +34,32 @@ class ChatChannelInfoView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_chatChannelInfoView_rtlSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 8,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1]
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel, .updateChannelMembers, .muteChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+
+        // When – RTL layout (e.g. Arabic)
+        let view = NavigationContainerView(embedInNavigationView: true) {
+            ChatChannelInfoView(channel: channel)
+        }
+        .environment(\.layoutDirection, .rightToLeft)
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), named: "rtl")
+    }
     
     func test_chatChannelInfoView_directChannelOfflineSnapshot() {
         // Given
