@@ -669,14 +669,12 @@ extension ViewFactory {
     public func makePhotoAttachmentPickerView(
         options: PhotoAttachmentPickerViewOptions
     ) -> some View {
-        AttachmentTypeContainer {
-            PhotoAttachmentPickerView(
-                assets: options.assets,
-                onImageTap: options.onAssetTap,
-                imageSelected: options.isAssetSelected,
-                selectedAssetIds: options.selectedAssetIds
-            )
-        }
+        PhotoAttachmentPickerView(
+            assets: options.assets,
+            onImageTap: options.onAssetTap,
+            imageSelected: options.isAssetSelected,
+            selectedAssetIds: options.selectedAssetIds
+        )
     }
     
     public func makeFilePickerView(

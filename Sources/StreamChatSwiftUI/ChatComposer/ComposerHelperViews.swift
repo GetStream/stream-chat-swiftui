@@ -45,30 +45,6 @@ public struct VideoDurationIndicatorView: View {
     }
 }
 
-/// Container that displays attachment types.
-public struct AttachmentTypeContainer<Content: View>: View {
-    @Injected(\.colors) private var colors
-
-    var content: () -> Content
-
-    public init(content: @escaping () -> Content) {
-        self.content = content
-    }
-
-    public var body: some View {
-        VStack(spacing: 0) {
-            Color(colors.background)
-                .frame(height: 20)
-
-            content()
-                .background(Color(colors.background))
-        }
-        .background(Color(colors.background1))
-        .cornerRadius(16)
-        .accessibilityIdentifier("AttachmentTypeContainer")
-    }
-}
-
 /// View shown after the native file picker is closed.
 struct FilePickerDisplayView: View {
     @Injected(\.fonts) private var fonts
@@ -78,20 +54,18 @@ struct FilePickerDisplayView: View {
     var onFilesPicked: ([URL]) -> Void
 
     var body: some View {
-        AttachmentTypeContainer {
-            ZStack {
-                Button {
-                    filePickerShown = true
-                } label: {
-                    Text(L10n.Composer.Files.addMore)
-                        .font(fonts.bodyBold)
-                }
+        ZStack {
+            Button {
+                filePickerShown = true
+            } label: {
+                Text(L10n.Composer.Files.addMore)
+                    .font(fonts.bodyBold)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .foregroundColor(Color(colors.highlightedAccentBackground))
-            .sheet(isPresented: $filePickerShown) {
-                FilePickerView(onFilesPicked: onFilesPicked)
-            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .foregroundColor(Color(colors.highlightedAccentBackground))
+        .sheet(isPresented: $filePickerShown) {
+            FilePickerView(onFilesPicked: onFilesPicked)
         }
     }
 }

@@ -170,29 +170,27 @@ struct CustomContactAttachmentView: View {
     var onCustomAttachmentTap: (CustomAttachment) -> Void
 
     var body: some View {
-        AttachmentTypeContainer {
-            VStack(alignment: .leading) {
-                Text("Contacts")
-                    .font(fonts.headlineBold)
-                    .standardPadding()
+        VStack(alignment: .leading) {
+            Text("Contacts")
+                .font(fonts.headlineBold)
+                .standardPadding()
 
-                ScrollView {
-                    VStack {
-                        ForEach(contacts) { contact in
-                            if let payload = contact.content.payload as? ContactAttachmentPayload {
-                                CustomContactAttachmentPreview(
-                                    contact: contact,
-                                    payload: payload,
-                                    onCustomAttachmentTap: onCustomAttachmentTap,
-                                    isAttachmentSelected: addedContacts.contains(contact)
-                                )
-                                .padding(.all, 4)
-                                .padding(.horizontal, 8)
-                            }
+            ScrollView {
+                VStack {
+                    ForEach(contacts) { contact in
+                        if let payload = contact.content.payload as? ContactAttachmentPayload {
+                            CustomContactAttachmentPreview(
+                                contact: contact,
+                                payload: payload,
+                                onCustomAttachmentTap: onCustomAttachmentTap,
+                                isAttachmentSelected: addedContacts.contains(contact)
+                            )
+                            .padding(.all, 4)
+                            .padding(.horizontal, 8)
                         }
                     }
-                    .frame(maxWidth: .infinity)
                 }
+                .frame(maxWidth: .infinity)
             }
         }
     }
