@@ -129,9 +129,9 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_channelListItem_muted_topRightCornerStyle() throws {
+    func test_channelListItem_muted_bottomRightCornerStyle() throws {
         // Given
-        streamChat?.utils.channelListConfig.channelItemMutedStyle = .topRightCorner
+        streamChat?.utils.channelListConfig.channelItemMutedStyle = .bottomRightCorner
         let message = try mockPollMessage(isSentByCurrentUser: false)
         let channel = ChatChannel.mock(
             cid: .unique,

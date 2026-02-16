@@ -174,19 +174,24 @@ private extension ChannelAvatar {
         
         var body: some View {
             Group {
-                switch users.count {
+                switch memberCount {
                 case 0:
                     EmptyView()
-                case 1:
+                case 1 where users.count >= 1:
                     singleMemberLayout
-                case 2:
+                case 2 where users.count >= 2:
                     twoMemberLayout
-                case 3:
+                case 3 where users.count >= 3:
                     threeMemberLayout
-                case 4:
+                case 4 where users.count >= 4:
                     fourMemberLayout
                 default:
-                    overflowLayout
+                    if users.count >= 2 {
+                        overflowLayout
+                    } else {
+                        PlaceholderView(size: size)
+                            .clipShape(Circle())
+                    }
                 }
             }
             .frame(width: size, height: size)
