@@ -13,6 +13,7 @@ struct StreamButton: View {
     private let role: StreamButtonRole
     private let style: StreamButtonVisualStyle
     private let size: StreamButtonSize
+    private let isSelected: Bool
     private let action: () -> Void
 
     init(
@@ -21,11 +22,13 @@ struct StreamButton: View {
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
+        isSelected: Bool = false,
         action: @escaping () -> Void
     ) {
         self.role = role
         self.style = style
         self.size = size
+        self.isSelected = isSelected
         self.icon = icon
         self.text = text
         self.action = action
@@ -47,7 +50,8 @@ struct StreamButton: View {
                 role: role,
                 style: style,
                 size: size,
-                isIconOnly: text == nil
+                isIconOnly: text == nil,
+                isSelected: isSelected
             )
         )
     }
@@ -72,17 +76,20 @@ struct StreamButtonStyle: ButtonStyle {
     let style: StreamButtonVisualStyle
     let size: StreamButtonSize
     let isIconOnly: Bool
+    let isSelected: Bool
 
     init(
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
-        isIconOnly: Bool
+        isIconOnly: Bool,
+        isSelected: Bool = false
     ) {
         self.role = role
         self.style = style
         self.size = size
         self.isIconOnly = isIconOnly
+        self.isSelected = isSelected
     }
 
     func makeBody(configuration: Configuration) -> some View {
@@ -95,6 +102,7 @@ struct StreamButtonStyle: ButtonStyle {
         }
         .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
         .animation(.easeInOut(duration: 0.15), value: isEnabled)
+        .animation(.easeInOut(duration: 0.15), value: isSelected)
     }
 
     private func baseContent(configuration: Configuration) -> some View {
@@ -169,6 +177,7 @@ struct StreamButtonStyle: ButtonStyle {
     private func interactionOverlayColor(isPressed: Bool) -> UIColor? {
         guard isEnabled else { return nil }
         if isPressed { return colors.backgroundCorePressed }
+        if isSelected { return colors.backgroundCoreSelected }
         return nil
     }
 
