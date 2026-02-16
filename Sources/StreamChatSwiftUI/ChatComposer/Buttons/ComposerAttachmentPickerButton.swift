@@ -35,6 +35,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
         } label: {
             Image(uiImage: images.composerAdd)
                 .renderingMode(.template)
+                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .foregroundColor(Color(colors.buttonSecondaryText))
                 .rotationEffect(.degrees(isExpanded ? 45 : 0))
         }

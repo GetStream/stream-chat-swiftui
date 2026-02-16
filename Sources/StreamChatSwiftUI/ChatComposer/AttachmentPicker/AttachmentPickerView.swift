@@ -4,6 +4,7 @@
 
 import Photos
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// Enum for the picker type state.
@@ -179,10 +180,50 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
     }
 }
 
+// TODO: Move to Common Module
+
+extension Appearance.Images {
+    var attachmentPickerPhotosIcon: UIImage {
+        UIImage(
+            systemName: "photo",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+        )!
+    }
+
+    var attachmentPickerCameraIcon: UIImage {
+        UIImage(
+            systemName: "camera",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+        )!
+    }
+
+    var attachmentPickerDocumentIcon: UIImage {
+        UIImage(
+            systemName: "camera",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+        )!
+    }
+
+    var attachmentPickerPollIcon: UIImage {
+        UIImage(
+            systemName: "chart.bar",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+        )!
+    }
+
+    var attachmentPickerCommandIcon: UIImage {
+        UIImage(
+            systemName: "chevron.left.forwardslash.chevron.right",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+        )!
+    }
+}
+
 /// View for picking the source of the attachment (photo, files or camera).
 public struct AttachmentSourcePickerView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     var selected: AttachmentPickerState
     var canSendPoll: Bool
@@ -199,9 +240,9 @@ public struct AttachmentSourcePickerView: View {
     }
 
     public var body: some View {
-        HStack(alignment: .center, spacing: 24) {
+        HStack(alignment: .center, spacing: tokens.spacingXxxs) {
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerPhotos,
+                icon: images.attachmentPickerPhotosIcon,
                 pickerType: .photos,
                 isSelected: selected == .photos,
                 onTap: onTap
@@ -209,7 +250,7 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityIdentifier("attachmentPickerPhotos")
 
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerFolder,
+                icon: images.attachmentPickerDocumentIcon,
                 pickerType: .files,
                 isSelected: selected == .files,
                 onTap: onTap
@@ -218,7 +259,7 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityIdentifier("attachmentPickerFiles")
 
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerCamera,
+                icon: images.attachmentPickerCameraIcon,
                 pickerType: .camera,
                 isSelected: selected == .camera,
                 onTap: onTap
@@ -227,7 +268,7 @@ public struct AttachmentSourcePickerView: View {
             
             if canSendPoll {
                 AttachmentTypePickerButton(
-                    icon: images.attachmentPickerPolls,
+                    icon: images.attachmentPickerPollIcon,
                     pickerType: .polls,
                     isSelected: selected == .polls,
                     onTap: onTap
@@ -237,7 +278,7 @@ public struct AttachmentSourcePickerView: View {
             }
 
             AttachmentTypePickerButton(
-                icon: images.commands,
+                icon: images.attachmentPickerCommandIcon,
                 pickerType: .commands,
                 isSelected: selected == .commands,
                 onTap: onTap
@@ -247,9 +288,9 @@ public struct AttachmentSourcePickerView: View {
 
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .frame(height: 56)
-        .background(Color(colors.background1))
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.bottom, tokens.spacingSm)
+        .background(Color(colors.backgroundElevationElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentSourcePickerView")
     }
@@ -257,6 +298,7 @@ public struct AttachmentSourcePickerView: View {
 
 /// Button used for picking of attachment types.
 public struct AttachmentTypePickerButton: View {
+    @Injected(\.tokens) private var tokens
     @Injected(\.colors) private var colors
 
     var icon: UIImage
@@ -277,16 +319,15 @@ public struct AttachmentTypePickerButton: View {
     }
 
     public var body: some View {
-        Button {
+        StreamButton(
+            icon: Image(uiImage: icon).renderingMode(.template),
+            text: nil,
+            role: .secondary,
+            style: .ghost,
+            size: .large,
+            isSelected: isSelected
+        ) {
             onTap(pickerType)
-        } label: {
-            Image(uiImage: icon)
-                .customizable()
-                .frame(maxWidth: 20, maxHeight: 20)
-                .foregroundColor(
-                    isSelected ? Color(colors.highlightedAccentBackground)
-                        : Color(colors.textLowEmphasis)
-                )
         }
     }
 }
