@@ -305,7 +305,7 @@ import XCTest
         let view = viewFactory.makeFilePickerView(
             options: FilePickerViewOptions(
                 filePickerShown: .constant(true),
-                addedFileURLs: .constant([])
+                onFilesPicked: { _ in }
             )
         )
 

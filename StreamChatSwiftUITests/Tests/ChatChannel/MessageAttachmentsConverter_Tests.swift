@@ -53,11 +53,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments: [AnyChatMessageAttachment] = []
         let expectation = XCTestExpectation(description: "Empty attachments conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -79,11 +79,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
             createImageAttachmentWithoutLocalURL()
         ]
         let expectation = XCTestExpectation(description: "Mixed attachments conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -109,11 +109,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         try? "corrupted data".data(using: .utf8)?.write(to: corruptedURL)
         let attachment = createImageAttachmentWithSpecificLocalURL(corruptedURL)
         let expectation = XCTestExpectation(description: "Corrupted image conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets([attachment]) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets([attachment]) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -132,11 +132,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createFileAttachmentWithLocalURL()]
         let expectation = XCTestExpectation(description: "File attachment conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -152,11 +152,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createFileAttachmentWithoutLocalURL()]
         let expectation = XCTestExpectation(description: "File attachment conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -172,11 +172,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createVideoAttachmentWithLocalURL()]
         let expectation = XCTestExpectation(description: "Video attachment conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -195,11 +195,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createVideoAttachmentWithoutLocalURL()]
         let expectation = XCTestExpectation(description: "Video attachment conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -218,11 +218,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createImageAttachmentWithLocalURL()]
         let expectation = XCTestExpectation(description: "Image attachment conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         
@@ -241,11 +241,11 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         // Given
         let attachments = [createImageAttachmentWithoutLocalURL()]
         let expectation = XCTestExpectation(description: "Image attachment conversion completion")
-        nonisolated(unsafe) var result: ComposerAssets?
+        nonisolated(unsafe) var result: TotalAddedAssets?
         
         // When
-        converter.attachmentsToAssets(attachments) { composerAssets in
-            result = composerAssets
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
             expectation.fulfill()
         }
         

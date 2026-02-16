@@ -497,60 +497,29 @@ extension ViewFactory {
     public func makeComposerInputView(
         options: ComposerInputViewOptions
     ) -> some View {
-        if options.shouldScroll {
-            ScrollView {
-                ComposerInputView(
-                    factory: self,
-                    channelController: options.channelController,
-                    text: options.text,
-                    selectedRangeLocation: options.selectedRangeLocation,
-                    command: options.command,
-                    recordingState: options.recordingState,
-                    addedAssets: options.addedAssets,
-                    addedFileURLs: options.addedFileURLs,
-                    addedCustomAttachments: options.addedCustomAttachments,
-                    addedVoiceRecordings: options.addedVoiceRecordings,
-                    quotedMessage: options.quotedMessage,
-                    editedMessage: options.editedMessage,
-                    maxMessageLength: options.maxMessageLength,
-                    cooldownDuration: options.cooldownDuration,
-                    hasContent: options.hasContent,
-                    canSendMessage: options.canSendMessage,
-                    onCustomAttachmentTap: options.onCustomAttachmentTap,
-                    removeAttachmentWithId: options.removeAttachmentWithId,
-                    sendMessage: options.sendMessage,
-                    onImagePasted: options.onImagePasted,
-                    startRecording: options.startRecording,
-                    stopRecording: options.stopRecording
-                )
-            }
-            .frame(height: 240)
-        } else {
-            ComposerInputView(
-                factory: self,
-                channelController: options.channelController,
-                text: options.text,
-                selectedRangeLocation: options.selectedRangeLocation,
-                command: options.command,
-                recordingState: options.recordingState,
-                addedAssets: options.addedAssets,
-                addedFileURLs: options.addedFileURLs,
-                addedCustomAttachments: options.addedCustomAttachments,
-                addedVoiceRecordings: options.addedVoiceRecordings,
-                quotedMessage: options.quotedMessage,
-                editedMessage: options.editedMessage,
-                maxMessageLength: options.maxMessageLength,
-                cooldownDuration: options.cooldownDuration,
-                hasContent: options.hasContent,
-                canSendMessage: options.canSendMessage,
-                onCustomAttachmentTap: options.onCustomAttachmentTap,
-                removeAttachmentWithId: options.removeAttachmentWithId,
-                sendMessage: options.sendMessage,
-                onImagePasted: options.onImagePasted,
-                startRecording: options.startRecording,
-                stopRecording: options.stopRecording
-            )
-        }
+        ComposerInputView(
+            factory: self,
+            channelController: options.channelController,
+            text: options.text,
+            selectedRangeLocation: options.selectedRangeLocation,
+            command: options.command,
+            recordingState: options.recordingState,
+            composerAssets: options.composerAssets,
+            addedCustomAttachments: options.addedCustomAttachments,
+            addedVoiceRecordings: options.addedVoiceRecordings,
+            quotedMessage: options.quotedMessage,
+            editedMessage: options.editedMessage,
+            maxMessageLength: options.maxMessageLength,
+            cooldownDuration: options.cooldownDuration,
+            hasContent: options.hasContent,
+            canSendMessage: options.canSendMessage,
+            onCustomAttachmentTap: options.onCustomAttachmentTap,
+            removeAttachmentWithId: options.removeAttachmentWithId,
+            sendMessage: options.sendMessage,
+            onImagePasted: options.onImagePasted,
+            startRecording: options.startRecording,
+            stopRecording: options.stopRecording
+        )
     }
     
     public func makeComposerTextInputView(
@@ -634,7 +603,7 @@ extension ViewFactory {
             selectedPickerState: options.attachmentPickerState,
             filePickerShown: options.filePickerShown,
             cameraPickerShown: options.cameraPickerShown,
-            addedFileURLs: options.addedFileURLs,
+            onFilesPicked: options.onFilesPicked,
             onPickerStateChange: options.onPickerStateChange,
             photoLibraryAssets: options.photoLibraryAssets,
             onAssetTap: options.onAssetTap,
@@ -715,7 +684,7 @@ extension ViewFactory {
     ) -> some View {
         FilePickerDisplayView(
             filePickerShown: options.filePickerShown,
-            addedFileURLs: options.addedFileURLs
+            onFilesPicked: options.onFilesPicked
         )
     }
     

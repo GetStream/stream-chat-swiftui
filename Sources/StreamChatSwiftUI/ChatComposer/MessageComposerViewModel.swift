@@ -13,13 +13,14 @@ import SwiftUI
     @Injected(\.utils) var utils
 
     var attachmentsConverter = MessageAttachmentsConverter()
-    var composerAssets: ComposerAssets {
-        ComposerAssets(
-            mediaAssets: addedAssets,
-            fileAssets: addedFileURLs.map { FileAddedAsset(url: $0, payload: addedRemoteFileURLs[$0]) },
-            voiceAssets: addedVoiceRecordings,
-            customAssets: addedCustomAttachments
-        )
+
+    /// The attachments added to the composer input view.
+    @Published public var composerAssets = [ComposerAsset]() {
+        didSet {
+            if shouldDeleteDraftMessage(oldValue: oldValue) {
+                deleteDraftMessage()
+            }
+        }
     }
 
     @Published public var pickerState: AttachmentPickerState = .photos {
@@ -37,14 +38,7 @@ import SwiftUI
     }
     
     @Published public private(set) var imageAssets: PHFetchResult<PHAsset>?
-    @Published public private(set) var addedAssets = [AddedAsset]() {
-        didSet {
-            if shouldDeleteDraftMessage(oldValue: oldValue) {
-                deleteDraftMessage()
-            }
-        }
-    }
-    
+
     @Published public var text = "" {
         didSet {
             if text != "" {
@@ -69,19 +63,7 @@ import SwiftUI
 
     /// An helper property to store additional information of file attachments.
     private var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
-    @Published public var addedFileURLs = [URL]() {
-        didSet {
-            if totalAttachmentsCount > chatClient.config.maxAttachmentCountPerMessage
-                || !checkAttachmentSize(with: addedFileURLs.last) {
-                addedFileURLs.removeLast()
-            }
 
-            if shouldDeleteDraftMessage(oldValue: oldValue) {
-                deleteDraftMessage()
-            }
-        }
-    }
-    
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
             if shouldDeleteDraftMessage(oldValue: oldValue) {
@@ -234,9 +216,7 @@ import SwiftUI
     }
     
     private var totalAttachmentsCount: Int {
-        addedAssets.count +
-            addedCustomAttachments.count +
-            addedFileURLs.count
+        composerAssets.count + addedCustomAttachments.count
     }
     
     private var canAddAdditionalAttachments: Bool {
@@ -264,6 +244,14 @@ import SwiftUI
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+    }
+
+    /// Appends the file to the attachments in the composer input view.
+    public func addFileURLs(_ urls: [URL]) {
+        for url in urls {
+            guard canAddAttachment(with: url) else { continue }
+            composerAssets.append(.addedFile(url))
+        }
     }
 
     /// Populates the composer with the edited message.
@@ -449,9 +437,8 @@ import SwiftUI
                 .canBeExecuted(composerCommand: composerCommand)
         }
         
-        return !addedAssets.isEmpty ||
+        return !composerAssets.isEmpty ||
             !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-            !addedFileURLs.isEmpty ||
             !addedCustomAttachments.isEmpty ||
             !addedVoiceRecordings.isEmpty
     }
@@ -483,44 +470,27 @@ import SwiftUI
         }
     }
     
-    public var inputComposerShouldScroll: Bool {
-        if addedCustomAttachments.count > 3 {
-            return true
-        }
-        
-        if addedFileURLs.count > 2 {
-            return true
-        }
-        
-        if addedFileURLs.count == 2 && !addedAssets.isEmpty {
-            return true
-        }
-        
-        if addedVoiceRecordings.count > 2 {
-            return true
-        }
-        
-        return false
-    }
-    
     public func imageTapped(_ addedAsset: AddedAsset) {
-        var images = [AddedAsset]()
-        var imageRemoved = false
-        for image in addedAssets {
-            if image.id != addedAsset.id {
-                images.append(image)
-            } else {
-                imageRemoved = true
+        var found = false
+        var newAssets = [ComposerAsset]()
+        for composerAsset in composerAssets {
+            switch composerAsset {
+            case .addedAsset(let asset):
+                if asset.id == addedAsset.id {
+                    found = true
+                } else {
+                    newAssets.append(composerAsset)
+                }
+            case .addedFile:
+                newAssets.append(composerAsset)
             }
         }
-        
-        if !imageRemoved && canAddAttachment(with: addedAsset.url) {
-            images.append(addedAsset)
+        if !found && canAddAttachment(with: addedAsset.url) {
+            newAssets.append(.addedAsset(addedAsset))
         }
-        
-        addedAssets = images
+        composerAssets = newAssets
     }
-    
+
     public func imagePasted(_ image: UIImage) {
         guard let imageURL = try? image.saveAsJpgToTemporaryUrl() else {
             log.error("Failed to write image to local temporary file")
@@ -532,18 +502,21 @@ import SwiftUI
             url: imageURL,
             type: .image
         )
-        addedAssets.append(addedImage)
+        composerAssets.append(.addedAsset(addedImage))
     }
     
     public func removeAttachment(with id: String) {
         if id.isURL, let url = URL(string: id) {
-            var urls = [URL]()
-            for added in addedFileURLs {
-                if url != added {
-                    urls.append(added)
-                }
+            let isFile = composerAssets.contains {
+                if case .addedFile(let fileUrl) = $0 { return fileUrl == url }
+                return false
             }
-            if addedFileURLs.count == urls.count {
+            if isFile {
+                composerAssets.removeAll {
+                    if case .addedFile(let fileUrl) = $0 { return fileUrl == url }
+                    return false
+                }
+            } else {
                 var addedRecordings = [AddedVoiceRecording]()
                 for added in addedVoiceRecordings {
                     if added.url != url {
@@ -551,35 +524,27 @@ import SwiftUI
                     }
                 }
                 addedVoiceRecordings = addedRecordings
-            } else {
-                addedFileURLs = urls
             }
         } else {
-            var images = [AddedAsset]()
-            for image in addedAssets {
-                if image.id != id {
-                    images.append(image)
-                }
+            composerAssets.removeAll {
+                if case .addedAsset(let asset) = $0 { return asset.id == id }
+                return false
             }
-            addedAssets = images
         }
     }
     
     public func cameraImageAdded(_ image: AddedAsset) {
         if canAddAttachment(with: image.url) {
-            addedAssets.append(image)
+            composerAssets.append(.addedAsset(image))
         }
         pickerState = .photos
     }
-    
+
     public func isImageSelected(with id: String) -> Bool {
-        for image in addedAssets {
-            if image.id == id {
-                return true
-            }
+        composerAssets.contains {
+            if case .addedAsset(let asset) = $0 { return asset.id == id }
+            return false
         }
-        
-        return false
     }
     
     public func customAttachmentTapped(_ attachment: CustomAttachment) {
@@ -651,19 +616,38 @@ import SwiftUI
 
     /// Converts all added assets to payloads.
     open func convertAddedAssetsToPayloads() throws -> [AnyAttachmentPayload] {
-        try attachmentsConverter.assetsToPayloads(composerAssets)
+        try attachmentsConverter.assetsToPayloads(
+            totalAddedAssets
+        )
     }
 
     // MARK: - private
 
-    private func updateComposerAssets(_ assets: ComposerAssets) {
-        addedAssets = assets.mediaAssets
-        addedFileURLs = assets.fileAssets.map(\.url)
+    private var totalAddedAssets: TotalAddedAssets {
+        TotalAddedAssets(
+            mediaAssets: composerAssets.compactMap {
+                if case .addedAsset(let asset) = $0 { return asset }
+                return nil
+            },
+            fileAssets: composerAssets.compactMap {
+                if case .addedFile(let url) = $0 {
+                    return FileAddedAsset(url: url, payload: addedRemoteFileURLs[url])
+                }
+                return nil
+            },
+            voiceAssets: addedVoiceRecordings,
+            customAssets: addedCustomAttachments
+        )
+    }
+
+    private func updateComposerAssets(_ assets: TotalAddedAssets) {
         addedRemoteFileURLs = assets.fileAssets.reduce(into: [:]) { result, asset in
             result[asset.url] = asset.payload
         }
         addedVoiceRecordings = assets.voiceAssets
         addedCustomAttachments = assets.customAssets
+        composerAssets = assets.mediaAssets.map { .addedAsset($0) }
+            + assets.fileAssets.map { .addedFile($0.url) }
     }
 
     /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
@@ -740,8 +724,7 @@ import SwiftUI
     }
     
     public func clearInputData() {
-        addedAssets = []
-        addedFileURLs = []
+        composerAssets = []
         addedVoiceRecordings = []
         addedCustomAttachments = []
         composerCommand = nil
@@ -872,7 +855,7 @@ import SwiftUI
     }
     
     public func updateAddedAssets(_ assets: [AddedAsset]) {
-        addedAssets = assets
+        composerAssets = assets.map { .addedAsset($0) }
     }
     
     private func checkAttachmentSize(with url: URL?) -> Bool {
@@ -912,8 +895,8 @@ extension MessageComposerViewModel: EventsControllerDelegate {
     }
 }
 
-// The assets added to the composer.
-final class ComposerAssets {
+// The total assets added to the composer.
+final class TotalAddedAssets {
     // Image and Video Assets.
     var mediaAssets: [AddedAsset] = []
     // File Assets.
@@ -953,7 +936,7 @@ final class FileAddedAsset {
     @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
-    func assetsToPayloads(_ assets: ComposerAssets) throws -> [AnyAttachmentPayload] {
+    func assetsToPayloads(_ assets: TotalAddedAssets) throws -> [AnyAttachmentPayload] {
         let mediaAssets = assets.mediaAssets
         let fileAssets = assets.fileAssets
         let voiceAssets = assets.voiceAssets
@@ -988,7 +971,7 @@ final class FileAddedAsset {
     /// Converts the attachments to assets asynchronously.
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
-        completion: @escaping @MainActor (ComposerAssets) -> Void
+        completion: @escaping @MainActor (TotalAddedAssets) -> Void
     ) {
         let group = DispatchGroup()
         attachmentsToAssets(attachments, with: group, completion: completion)
@@ -1002,9 +985,9 @@ final class FileAddedAsset {
     func attachmentsToAssets(
         _ attachments: [AnyChatMessageAttachment],
         with group: DispatchGroup?,
-        completion: @escaping @MainActor (ComposerAssets) -> Void
+        completion: @escaping @MainActor (TotalAddedAssets) -> Void
     ) {
-        nonisolated(unsafe) let addedAssets = ComposerAssets()
+        nonisolated(unsafe) var addedAssets = TotalAddedAssets()
 
         for attachment in attachments {
             group?.enter()
