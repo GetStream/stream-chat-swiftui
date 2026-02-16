@@ -93,7 +93,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
                         Spacer()
                         
-                        if channel.isMuted, mutedLayoutStyle == .topBottomCorner {
+                        if channel.isMuted, mutedLayoutStyle == .bottomRightCorner {
                             mutedIcon
                         }
                     }
@@ -112,12 +112,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var subtitleView: some View {
         HStack(spacing: 4) {
-            if channel.isMuted, mutedLayoutStyle == .default {
-                mutedIcon
-            } else {
-                if channel.shouldShowTypingIndicator {
-                    TypingIndicatorView()
-                }
+            if channel.shouldShowTypingIndicator {
+                TypingIndicatorView()
             }
             if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
@@ -156,9 +152,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     private var subtitleText: String {
         if let injectedSubtitle = injectedChannelInfo?.subtitle {
             return injectedSubtitle
-        }
-        if mutedLayoutStyle != .default {
-            return channelSubtitleText
         }
         return channel.subtitleText
     }
@@ -269,9 +262,7 @@ extension ChatChannel {
     }
 
     @MainActor public var subtitleText: String {
-        if isMuted {
-            L10n.Channel.Item.muted
-        } else if shouldShowTypingIndicator {
+        if shouldShowTypingIndicator {
             typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
         } else if let previewMessageText {
             previewMessageText
@@ -299,12 +290,9 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
         self.identifier = identifier
     }
 
-    /// The default style shows the muted icon and the text "channel is muted" as the subtitle text.
-    public static let `default`: ChannelItemMutedLayoutStyle = .init("default")
-
     /// This style shows the muted icon at the top right corner of the channel item.
     /// The subtitle text shows the last message preview text.
-    public static let topBottomCorner: ChannelItemMutedLayoutStyle = .init("topBottomCorner")
+    public static let bottomRightCorner: ChannelItemMutedLayoutStyle = .init("bottomRightCorner")
 
     /// This style shows the muted icon after the channel name.
     /// The subtitle text shows the last message preview text.
