@@ -20,7 +20,7 @@ public struct SubtitleText: View {
     public var body: some View {
         Text(text)
             .lineLimit(1)
-            .font(fonts.body)
+            .font(fonts.subheadline)
             .foregroundColor(color ?? Color(colors.textSecondary))
     }
 }

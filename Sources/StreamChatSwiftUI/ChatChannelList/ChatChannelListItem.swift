@@ -50,7 +50,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     )
                 )
 
-                VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                     HStack {
                         HStack(spacing: 6) {
                             ChatTitleView(name: channelName)
@@ -122,7 +122,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         HStack(spacing: 4) {
             if lastMessageFailedToSend {
                 Text(L10n.Channel.Item.messageFailedToSend)
-                    .font(fonts.body)
+                    .font(fonts.subheadline)
                     .foregroundColor(Color(colors.accentError))
                     .lineLimit(1)
             } else if channel.shouldShowTypingIndicator {
@@ -131,7 +131,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
                     Text("\(L10n.Message.Preview.draft):")
-                        .font(fonts.body).fontWeight(.semibold)
+                        .font(fonts.subheadline).fontWeight(.semibold)
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
@@ -139,13 +139,14 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 let contentString = String(subtitleText.dropFirst(authorName.count + 2))
                 HStack(spacing: tokens.spacingXxs) {
                     Text("\(authorName): ")
+                        .font(fonts.subheadline)
                         .fontWeight(.semibold)
                         .foregroundColor(Color(colors.textTertiary))
                     attachmentIconView
                     Text(contentString)
                 }
                 .lineLimit(1)
-                .font(fonts.body)
+                .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textSecondary))
             } else if previewAttachmentIcon != nil {
                 HStack(spacing: tokens.spacingXxs) {
@@ -153,7 +154,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     Text(subtitleText)
                 }
                 .lineLimit(1)
-                .font(fonts.body)
+                .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textSecondary))
             } else {
                 SubtitleText(text: subtitleText)
