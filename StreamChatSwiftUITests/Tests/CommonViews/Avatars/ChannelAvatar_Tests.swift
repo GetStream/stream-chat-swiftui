@@ -137,6 +137,22 @@ final class ChannelAvatar_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: size)
     }
     
+    func test_channelAvatar_stackedPlaceholders_overflowInsufficientUsers() {
+        // Given — memberCount triggers overflow but too few placeholders to render it;
+        // should fall back to generic PlaceholderView instead of crashing.
+        let size = CGSize(width: 240, height: 220)
+        let view = VStack(spacing: 8) {
+            // 0 placeholders
+            stackedRow(placeholderCount: 0, memberCount: 5)
+            // 1 placeholder
+            stackedRow(placeholderCount: 1, memberCount: 5)
+        }
+        .frame(width: size.width, height: size.height)
+        
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+    
     // MARK: - Helpers
     
     /// Creates a horizontal row of stacked channel avatars at lg, xl, and 2xl sizes.

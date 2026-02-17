@@ -123,7 +123,7 @@ public struct PhotoAttachmentCell: View {
                                                 url: assetURL,
                                                 type: assetType,
                                                 extraData: asset
-                                                    .mediaType == .video ? ["duration": .string(asset.durationString)] : [:]
+                                                    .mediaType == .video ? ["duration": .number(asset.duration)] : [:]
                                             )
                                         )
                                     }

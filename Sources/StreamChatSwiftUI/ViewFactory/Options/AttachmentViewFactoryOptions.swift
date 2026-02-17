@@ -341,8 +341,8 @@ public final class AttachmentPickerViewOptions: Sendable {
     public let filePickerShown: Binding<Bool>
     /// Binding to whether the camera picker is shown.
     public let cameraPickerShown: Binding<Bool>
-    /// Binding to the added file URLs.
-    public let addedFileURLs: Binding<[URL]>
+    /// Callback invoked with the URLs of newly picked files.
+    public let onFilesPicked: @MainActor ([URL]) -> Void
     /// Callback when the picker state changes.
     public let onPickerStateChange: @MainActor (AttachmentPickerState) -> Void
     /// The photo library assets.
@@ -382,7 +382,7 @@ public final class AttachmentPickerViewOptions: Sendable {
         attachmentPickerState: Binding<AttachmentPickerState>,
         filePickerShown: Binding<Bool>,
         cameraPickerShown: Binding<Bool>,
-        addedFileURLs: Binding<[URL]>,
+        onFilesPicked: @escaping @MainActor ([URL]) -> Void,
         onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void,
         photoLibraryAssets: PHFetchResult<PHAsset>?,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
@@ -404,7 +404,7 @@ public final class AttachmentPickerViewOptions: Sendable {
         self.attachmentPickerState = attachmentPickerState
         self.filePickerShown = filePickerShown
         self.cameraPickerShown = cameraPickerShown
-        self.addedFileURLs = addedFileURLs
+        self.onFilesPicked = onFilesPicked
         self.onPickerStateChange = onPickerStateChange
         self.photoLibraryAssets = photoLibraryAssets
         self.onAssetTap = onAssetTap
@@ -489,12 +489,12 @@ public final class PhotoAttachmentPickerViewOptions: Sendable {
 public final class FilePickerViewOptions: Sendable {
     /// Binding to whether the file picker is shown.
     public let filePickerShown: Binding<Bool>
-    /// Binding to the added file URLs.
-    public let addedFileURLs: Binding<[URL]>
+    /// Callback invoked with the URLs of newly picked files.
+    public let onFilesPicked: @MainActor ([URL]) -> Void
     
-    public init(filePickerShown: Binding<Bool>, addedFileURLs: Binding<[URL]>) {
+    public init(filePickerShown: Binding<Bool>, onFilesPicked: @escaping @MainActor ([URL]) -> Void) {
         self.filePickerShown = filePickerShown
-        self.addedFileURLs = addedFileURLs
+        self.onFilesPicked = onFilesPicked
     }
 }
 
