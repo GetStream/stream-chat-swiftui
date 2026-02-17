@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// View for the channel list item.
@@ -136,16 +137,24 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 }
             } else if let authorName = subtitleAuthorName {
                 let contentString = String(subtitleText.dropFirst(authorName.count + 2))
-                (Text(authorName).fontWeight(.semibold).foregroundColor(Color(colors.textTertiary))
-                    + Text(": ") + subtitleContentText(contentString))
-                    .lineLimit(1)
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.textSecondary))
-            } else if previewAttachmentIconName != nil {
-                subtitleContentText(subtitleText)
-                    .lineLimit(1)
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.textSecondary))
+                HStack(spacing: tokens.spacingXxs) {
+                    Text("\(authorName): ")
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(colors.textTertiary))
+                    attachmentIconView
+                    Text(contentString)
+                }
+                .lineLimit(1)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textSecondary))
+            } else if previewAttachmentIcon != nil {
+                HStack(spacing: tokens.spacingXxs) {
+                    attachmentIconView
+                    Text(subtitleText)
+                }
+                .lineLimit(1)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textSecondary))
             } else {
                 SubtitleText(text: subtitleText)
             }
@@ -161,16 +170,23 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
     }
 
-    private var previewAttachmentIconName: String? {
+    private var previewAttachmentIcon: AttachmentIcon? {
         guard let previewMessage = channel.previewMessage else { return nil }
-        return utils.messagePreviewFormatter.attachmentIconName(for: previewMessage)
+        return utils.messagePreviewFormatter.attachmentIcon(for: previewMessage)
     }
 
-    private func subtitleContentText(_ text: String) -> Text {
-        if let iconName = previewAttachmentIconName {
-            return Text(Image(systemName: iconName)).font(fonts.subheadline) + Text(" \(text)")
+    @ViewBuilder
+    private var attachmentIconView: some View {
+        if let icon = previewAttachmentIcon {
+            if icon.isSystemImage {
+                Image(systemName: icon.name)
+                    .font(fonts.subheadline)
+            } else {
+                Image(icon.name, bundle: .streamChatCommonUI)
+                    .customizable()
+                    .frame(maxHeight: 16)
+            }
         }
-        return Text(text)
     }
 
     private var subtitleAuthorName: String? {

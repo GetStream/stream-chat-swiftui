@@ -94,9 +94,9 @@ import XCTest
         XCTAssertEqual(result, "\(userId): Hello")
     }
 
-    // MARK: - attachmentIconName(for:)
+    // MARK: - attachmentIcon(for:)
 
-    func test_attachmentIconName_poll() {
+    func test_attachmentIcon_poll() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -106,13 +106,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "chart.bar")
+        XCTAssertEqual(result, AttachmentIcon(name: "attachment_picker_polls", isSystemImage: false))
     }
 
-    func test_attachmentIconName_audio() {
+    func test_attachmentIcon_audio() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -122,13 +122,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "headphones")
+        XCTAssertEqual(result, AttachmentIcon(name: "headphones"))
     }
 
-    func test_attachmentIconName_file() {
+    func test_attachmentIcon_file() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -138,13 +138,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "doc")
+        XCTAssertEqual(result, AttachmentIcon(name: "doc"))
     }
 
-    func test_attachmentIconName_image() {
+    func test_attachmentIcon_image() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -154,13 +154,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "camera")
+        XCTAssertEqual(result, AttachmentIcon(name: "camera"))
     }
 
-    func test_attachmentIconName_video() {
+    func test_attachmentIcon_video() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -170,13 +170,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "video")
+        XCTAssertEqual(result, AttachmentIcon(name: "video"))
     }
 
-    func test_attachmentIconName_voiceRecording() {
+    func test_attachmentIcon_voiceRecording() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -186,13 +186,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "mic")
+        XCTAssertEqual(result, AttachmentIcon(name: "mic"))
     }
 
-    func test_attachmentIconName_linkPreview() {
+    func test_attachmentIcon_linkPreview() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -202,13 +202,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
-        XCTAssertEqual(result, "link")
+        XCTAssertEqual(result, AttachmentIcon(name: "link"))
     }
 
-    func test_attachmentIconName_noAttachment() {
+    func test_attachmentIcon_noAttachment() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -217,13 +217,13 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
         XCTAssertNil(result)
     }
 
-    func test_attachmentIconName_deletedMessage() {
+    func test_attachmentIcon_deletedMessage() {
         // Given
         let message = ChatMessage.mock(
             id: .unique,
@@ -234,7 +234,7 @@ import XCTest
         )
 
         // When
-        let result = formatter.attachmentIconName(for: message)
+        let result = formatter.attachmentIcon(for: message)
 
         // Then
         XCTAssertNil(result)

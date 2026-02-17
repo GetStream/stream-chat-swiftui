@@ -5,6 +5,19 @@
 import StreamChat
 import SwiftUI
 
+/// Represents an icon used for attachment previews.
+public struct AttachmentIcon: Equatable, Sendable {
+    /// The name of the icon.
+    public let name: String
+    /// Whether the icon is an SF Symbol (system image) or a bundled asset.
+    public let isSystemImage: Bool
+
+    public init(name: String, isSystemImage: Bool = true) {
+        self.name = name
+        self.isSystemImage = isSystemImage
+    }
+}
+
 /// A formatter that converts a message to a text preview representation.
 /// By default it is used to show message previews in the Channel List and Thread List.
 @MainActor open class MessagePreviewFormatter {
@@ -41,27 +54,27 @@ import SwiftUI
         return previewMessage.adjustedText
     }
 
-    /// Returns the SF Symbol name for the attachment icon of the given message.
-    open func attachmentIconName(for previewMessage: ChatMessage) -> String? {
+    /// Returns the icon for the attachment preview of the given message.
+    open func attachmentIcon(for previewMessage: ChatMessage) -> AttachmentIcon? {
         if previewMessage.poll != nil {
-            return "chart.bar"
+            return AttachmentIcon(name: "attachment_picker_polls", isSystemImage: false)
         }
         guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
             return nil
         }
         switch attachment.type {
         case .audio:
-            return "headphones"
+            return AttachmentIcon(name: "headphones")
         case .file:
-            return "doc"
+            return AttachmentIcon(name: "doc")
         case .image:
-            return "camera"
+            return AttachmentIcon(name: "camera")
         case .video:
-            return "video"
+            return AttachmentIcon(name: "video")
         case .voiceRecording:
-            return "mic"
+            return AttachmentIcon(name: "mic")
         case .linkPreview:
-            return "link"
+            return AttachmentIcon(name: "link")
         default:
             return nil
         }
