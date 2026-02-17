@@ -137,6 +137,16 @@ final class ChannelAvatar_Tests: StreamChatTestCase {
         AssertSnapshot(view, size: size)
     }
     
+    func test_channelAvatar_stackedPlaceholders_brokenDataZeroMemberCount() {
+        // Given — memberCount is 0 (broken data) but 2 members are present
+        let size = CGSize(width: 240, height: 100)
+        let view = stackedRow(placeholderCount: 2, memberCount: 0)
+            .frame(width: size.width, height: size.height)
+        
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+    
     func test_channelAvatar_stackedPlaceholders_overflowInsufficientUsers() {
         // Given — memberCount triggers overflow but too few placeholders to render it;
         // should fall back to generic PlaceholderView instead of crashing.
