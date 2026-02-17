@@ -3,7 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix composer text, placeholder and icons not respecting layout direction in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
+- Use `chevron.forward` instead of `chevron.right` for channel info disclosure indicator in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
 
 # [4.97.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.97.1)
 _February 11, 2026_

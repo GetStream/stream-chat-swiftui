@@ -197,7 +197,7 @@ struct DisclosureIndicatorView: View {
     @Injected(\.colors) private var colors
 
     var body: some View {
-        Image(systemName: "chevron.right")
+        Image(systemName: "chevron.forward")
             .foregroundColor(Color(colors.textLowEmphasis))
     }
 }

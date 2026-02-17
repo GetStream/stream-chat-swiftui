@@ -55,6 +55,13 @@ class InputTextView: UITextView, AccessibilityView {
     
     var onImagePasted: ((UIImage) -> Void)?
 
+    override open var semanticContentAttribute: UISemanticContentAttribute {
+        didSet {
+            placeholderLabel.semanticContentAttribute = semanticContentAttribute
+            applyTextAlignmentForCurrentDirection()
+        }
+    }
+
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         guard superview != nil else { return }
@@ -85,24 +92,37 @@ class InputTextView: UITextView, AccessibilityView {
         textContainer.lineFragmentPadding = 8
         font = InjectedValues[\.utils].composerConfig.inputFont
         textColor = InjectedValues[\.colors].text
-        textAlignment = .natural
 
         placeholderLabel.font = font
-        placeholderLabel.textAlignment = .center
         placeholderLabel.textColor = InjectedValues[\.colors].composerPlaceholderColor
+        applyTextAlignmentForCurrentDirection()
+    }
+
+    private func applyTextAlignmentForCurrentDirection() {
+        switch semanticContentAttribute {
+        case .forceRightToLeft:
+            textAlignment = .right
+            placeholderLabel.textAlignment = .right
+        case .forceLeftToRight:
+            textAlignment = .left
+            placeholderLabel.textAlignment = .left
+        default:
+            textAlignment = .natural
+            placeholderLabel.textAlignment = .natural
+        }
     }
 
     open func setUpLayout() {
-        embed(
-            placeholderLabel,
-            insets: .init(
-                top: .zero,
-                leading: directionalLayoutMargins.leading,
-                bottom: .zero,
-                trailing: .zero
-            )
-        )
-        placeholderLabel.pin(anchors: [.centerY], to: self)
+        addSubview(placeholderLabel)
+        placeholderLabel.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
+        NSLayoutConstraint.activate([
+            placeholderLabel.leadingAnchor.pin(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading),
+            placeholderLabel.trailingAnchor.pin(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing),
+            placeholderLabel.widthAnchor.pin(equalTo: layoutMarginsGuide.widthAnchor),
+            placeholderLabel.topAnchor.pin(equalTo: topAnchor),
+            placeholderLabel.bottomAnchor.pin(lessThanOrEqualTo: bottomAnchor),
+            placeholderLabel.centerYAnchor.pin(equalTo: centerYAnchor)
+        ])
         isScrollEnabled = true
     }
 

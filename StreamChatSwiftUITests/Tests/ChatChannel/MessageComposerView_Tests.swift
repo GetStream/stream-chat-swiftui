@@ -46,6 +46,51 @@ class MessageComposerView_Tests: StreamChatTestCase {
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_messageComposerView_rtlSnapshot() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+
+        // When – RTL layout (e.g. Arabic)
+        let view = MessageComposerView(
+            viewFactory: factory,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .environment(\.layoutDirection, .rightToLeft)
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), named: "rtl")
+    }
+
+    func test_messageComposerView_rtlWithTextSnapshot() {
+        // Given – composer with text so Send button is enabled (arrow up) in RTL
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Hello"
+
+        // When – RTL layout
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .environment(\.layoutDirection, .rightToLeft)
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then – Send button should show arrow up
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), named: "rtl-with-text")
+    }
     
     func test_messageComposerView_recording() {
         // Given
