@@ -131,9 +131,13 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                     .foregroundColor(Color(colors.text))
 
                 HStack {
-                    Text(pinnedMessageSubtitle)
-                        .font(fonts.footnote)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                    HStack(spacing: 4) {
+                        attachmentIconView
+                        Text(pinnedMessageSubtitle)
+                    }
+                    .lineLimit(1)
+                    .font(fonts.footnote)
+                    .foregroundColor(Color(colors.textLowEmphasis))
 
                     Spacer()
 
@@ -145,12 +149,27 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
         }
         .padding(.all, 8)
     }
-    
-    private var pinnedMessageSubtitle: String {
-        if message.poll != nil {
-            return "📊 \(L10n.Channel.Item.poll)"
+
+    private var previewAttachmentIcon: AttachmentIcon? {
+        utils.messagePreviewFormatter.attachmentIcon(for: message)
+    }
+
+    @ViewBuilder
+    private var attachmentIconView: some View {
+        if let icon = previewAttachmentIcon {
+            if icon.isSystemImage {
+                Image(systemName: icon.name)
+                    .font(fonts.footnote)
+            } else {
+                Image(icon.name, bundle: .streamChatCommonUI)
+                    .customizable()
+                    .frame(maxHeight: 12)
+            }
         }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+    }
+
+    private var pinnedMessageSubtitle: String {
+        let messageFormatter = utils.messagePreviewFormatter
         return messageFormatter.formatAttachmentContent(for: message, in: channel) ?? message.adjustedText
     }
 }
