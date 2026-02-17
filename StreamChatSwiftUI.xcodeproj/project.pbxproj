@@ -1529,8 +1529,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-updated-icons";
-				kind = branch;
+				kind = revision;
+				revision = c5614ba8a454a9aee421e7f631d7e8d2165cb3e8;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
