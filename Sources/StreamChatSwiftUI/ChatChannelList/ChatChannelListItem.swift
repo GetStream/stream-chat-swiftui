@@ -45,7 +45,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 factory.makeChannelAvatarView(
                     options: ChannelAvatarViewOptions(
                         channel: channel,
-                        size: AvatarSize.large
+                        size: AvatarSize.extraLarge
                     )
                 )
 
